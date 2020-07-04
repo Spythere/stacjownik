@@ -1,5 +1,5 @@
-@mixin midScreen() {
-    @media only screen and (min-width: 850px) {
+@mixin smallScreen() {
+    @media only screen and (max-width: 850px) {
         @content;
     }
 }

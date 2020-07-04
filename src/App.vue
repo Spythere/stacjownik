@@ -9,12 +9,15 @@
         </div>
       </header>
 
-      <div class="app-info"></div>
+      <div
+        class="app-info"
+      >Scenerie online: {{stations.length}} | Maszyniści online: {{ trainCount }}</div>
 
       <main class="app-main">
         <Loading v-if="connectionState == 0" />
         <Error v-else-if="connectionState == 1" :error="errorMessage" />
         <router-view v-else />
+        <!-- <router-view /> -->
       </main>
 
       <footer class="app-footer">&copy; Spythere 2020</footer>
@@ -32,7 +35,10 @@ import Loading from "@/components/states/Loading.vue";
 export default Vue.extend({
   name: "App",
   components: { Error, Loading },
-  computed: mapGetters({ stations: "getStations" }),
+  computed: mapGetters({
+    stations: "getStations",
+    trainCount: "getTrainCount"
+  }),
 
   methods: {
     ...mapActions(["fetchStations"])
@@ -44,7 +50,7 @@ export default Vue.extend({
 
   mounted() {
     this.fetchStations()
-      .then(result => console.log(result))
+      .then(() => (this.connectionState = 2))
       .catch(err => {
         this.connectionState = 1;
         this.errorMessage = err.message;
@@ -93,54 +99,16 @@ a {
   }
 }
 
-ul {
-  list-style: none;
-  padding: 0;
-}
-
-.hour {
-  padding: 0.4em;
-  border-radius: 1rem;
-
-  &.ending {
-    background-color: $accentCol;
-    color: black;
-    font-size: 0.9em;
-  }
-
-  &.no-limit {
-    // background-color: #57ae00;
-    font-size: 0.85em;
-  }
-
-  &.not-signed {
-    background-color: $accent2Col;
-    font-size: 0.8em;
-  }
-
-  &.unavailable {
-    background-color: $accent2Col;
-    font-size: 0.9em;
-  }
-}
-
-.text {
-  &--title {
-    color: #fdc62f;
-    font-size: 1em;
-  }
-
-  &--content {
-    font-size: 0.8em;
-  }
-}
-
 .app {
+  color: white;
+  overflow: hidden;
+
   &-container {
     display: grid;
     grid-template-rows: auto auto 1fr auto;
     grid-template-columns: minmax(0, 1fr);
 
+    min-width: 0;
     min-height: 100vh;
   }
 
@@ -151,8 +119,6 @@ ul {
 
     flex-direction: column;
     background: #333;
-
-    color: white;
 
     & > .brand-name {
       font-size: calc(1rem + 3.5vw);

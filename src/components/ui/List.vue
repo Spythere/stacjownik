@@ -1,11 +1,304 @@
-<template></template>
+<template>
+  <div class="list">
+    <Card :stationInfo="focusedStationInfo" :closeCard="closeCard" />
+    <div class="table-wrapper">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Stacja</th>
+            <th>Dyżurny</th>
+            <th>Poziom</th>
+            <th>Maszyniści</th>
+            <th>Zajęta do</th>
+            <th>
+              Informacje
+              <div>ogólne</div>
+            </th>
+            <th>
+              Szlaki
+              <div>2-torowe</div>
+            </th>
+            <th>
+              Szlaki
+              <div>1-torowe</div>
+            </th>
+          </tr>
+        </thead>
+
+        <tr
+          class="table-item"
+          v-for="(station, i) in computedStations"
+          :key="i + station.stationHash"
+          @click="() => { setFocusedStation(station.stationName) }"
+        >
+          <td
+            class="station-name"
+            :class="station.default && 'default-station'"
+          >{{station.stationName}}</td>
+
+          <td class="disptacher-name">{{station.dispatcherName}}</td>
+          <td class="dispatcher-exp">
+            <span :style="calculateStyle(station.dispatcherExp)">{{station.dispatcherExp}}</span>
+          </td>
+          <td class="users">{{station.currentUsers}}/{{station.maxUsers}}</td>
+          <td class="hours">
+            <span class="hour" :class="occupationClasses(station.occupiedTo)">{{station.occupiedTo}}</span>
+          </td>
+          <td class="info">
+            <img
+              v-if="station.controlType"
+              :src="require(`@/assets/icon-${station.controlType}.svg`)"
+              :alt="station.controlType"
+              :title="'Sterowanie ' + station.controlType"
+            />
+
+            <img
+              v-if="station.signalType"
+              :src="require(`@/assets/icon-${station.signalType}.svg`)"
+              :alt="station.signalType"
+              :title="'Sygnalizacja ' + station.signalType"
+            />
+
+            <img
+              v-if="station.SBL && station.SBL !== ''"
+              :src="require(`@/assets/icon-SBL.svg`)"
+              alt="SBL"
+              title="Sceneria posiada SBL na przynajmniej jednym ze szlaków"
+            />
+          </td>
+
+          <td class="tracks twoway">
+            <span
+              v-if="station.routes.twoWay.catenary > 0"
+              class="track catenary"
+              :title="'Liczba zelektryfikowanych szlaków dwutorowych: ' + station.routes.twoWay.catenary"
+            >{{station.routes.twoWay.catenary}}</span>
+
+            <span
+              v-if="station.routes.twoWay.noCatenary > 0"
+              class="track no-catenary"
+              :title="'Liczba niezelektryfikowanych szlaków dwutorowych: ' + station.routes.twoWay.noCatenary"
+            >{{station.routes.twoWay.noCatenary}}</span>
+          </td>
+
+          <td class="tracks oneway">
+            <span
+              v-if="station.routes.oneWay.catenary > 0"
+              class="track catenary"
+              :title="'Liczba zelektryfikowanych szlaków jednotorowych: ' + station.routes.oneWay.catenary"
+            >{{station.routes.oneWay.catenary}}</span>
+
+            <span
+              v-if="station.routes.oneWay.noCatenary > 0"
+              class="track no-catenary"
+              :title="'Liczba niezelektryfikowanych szlaków jednotorowych: ' + station.routes.oneWay.noCatenary"
+            >{{station.routes.oneWay.noCatenary}}</span>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</template>
 
 <script lang="ts">
 import Vue from "vue";
+import { mapGetters } from "vuex";
+
+import Card from "@/components/ui/Card.vue";
+
 export default Vue.extend({
-  name: "List"
+  name: "List",
+  components: {
+    Card
+  },
+  data: () => ({
+    focusedStationName: ""
+  }),
+  computed: {
+    ...mapGetters({ stations: "getStations" }),
+    computedStations() {
+      return this.stations.sort((a: any, b: any) =>
+        a.stationName < b.stationName ? -1 : 1
+      );
+    },
+    focusedStationInfo() {
+      console.log(this.focusedStationName);
+
+      return this.stations.find(
+        (station: any) => station.stationName === this.focusedStationName
+      );
+    }
+  },
+  methods: {
+    calculateStyle: (exp: string | number) => {
+      const bgColor =
+        exp === "L" ? "#26B0D9" : `hsl(${-exp * 5 + 100},  65%, 50%)`;
+      const fontColor = exp > 15 ? "white" : "black";
+
+      return `backgroundColor: ${bgColor}; color: ${fontColor}`;
+    },
+
+    occupationClasses: (occupiedTo: string) => {
+      let className = "";
+
+      switch (occupiedTo) {
+        case "KOŃCZY":
+          className = "ending";
+          break;
+        case "NIEZALOGOWANY":
+          className = "not-signed";
+          break;
+        case "BEZ LIMITU":
+          className = "no-limit";
+          break;
+        case "NIEDOSTĘPNY":
+          className = "unavailable";
+          break;
+        default:
+          break;
+      }
+
+      return className;
+    },
+
+    setFocusedStation(name: string) {
+      this.focusedStationName = name;
+    },
+
+    closeCard() {
+      this.focusedStationName = "";
+    }
+  }
 });
 </script>
 
 <style lang="scss" scoped>
+@import "../../styles/variables.scss";
+@import "../../styles/responsive.scss";
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+.hour {
+  padding: 0.4em;
+  border-radius: 1rem;
+
+  &.ending {
+    background-color: $accentCol;
+    color: black;
+    font-size: 0.9em;
+  }
+
+  &.no-limit {
+    // background-color: #57ae00;
+    font-size: 0.85em;
+  }
+
+  &.not-signed {
+    background-color: $accent2Col;
+    font-size: 0.8em;
+  }
+
+  &.unavailable {
+    background-color: $accent2Col;
+    font-size: 0.9em;
+  }
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+.default-station {
+  color: $secondaryCol;
+}
+
+.table {
+  &-wrapper {
+    display: flex;
+    justify-content: center;
+
+    overflow-x: auto;
+  }
+
+  display: block;
+  overflow-y: hidden;
+
+  white-space: nowrap;
+  border-collapse: collapse;
+
+  font-size: calc(0.6rem + 0.5vw);
+  cursor: pointer;
+
+  thead th {
+    padding: 0.8rem;
+    background-color: #444;
+  }
+
+  tr {
+    background-color: #5c5b5b;
+
+    &:nth-child(even) {
+      background-color: rgb(102, 101, 101);
+      color: white;
+
+      a {
+        color: white;
+      }
+    }
+
+    &:hover,
+    &:focus {
+      background-color: #818181;
+      // transform: scale(1.2);
+    }
+
+    & > td {
+      padding: 0.3rem 1rem;
+      margin: 0 3rem;
+      text-align: center;
+      vertical-align: middle;
+
+      @include smallScreen() {
+        margin: 0;
+        padding: 0.1rem 0.5rem;
+      }
+    }
+
+    .dispatcher-exp {
+      & > span {
+        display: block;
+        width: 2em;
+        height: 2em;
+        line-height: 2em;
+        margin: 0 auto;
+      }
+    }
+
+    .info,
+    .tracks {
+      img {
+        width: 2.2em;
+        margin: 0 0.2em;
+        vertical-align: middle;
+      }
+    }
+
+    .no-catenary {
+      background-color: #939393;
+    }
+
+    .catenary {
+      background-color: #009dce;
+    }
+
+    .track {
+      margin: 0 0.3rem;
+      padding: 0.5em;
+    }
+  }
+}
 </style>
