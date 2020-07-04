@@ -1,0 +1,11 @@
+@mixin midScreen() {
+    @media only screen and (min-width: 850px) {
+        @content;
+    }
+}
+
+@mixin bigScreen() {
+    @media only screen and (min-width: 1600px) {
+        @content;
+    }
+}
