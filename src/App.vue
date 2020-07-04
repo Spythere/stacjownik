@@ -41,7 +41,15 @@ export default Vue.extend({
   }),
 
   methods: {
-    ...mapActions(["fetchStations"])
+    ...mapActions(["fetchStations"]),
+    getStationList() {
+      this.fetchStations()
+        .then(() => (this.connectionState = 2))
+        .catch(err => {
+          this.connectionState = 1;
+          this.errorMessage = err.message;
+        });
+    }
   },
   data: () => ({
     errorMessage: "",
@@ -49,12 +57,9 @@ export default Vue.extend({
   }),
 
   mounted() {
-    this.fetchStations()
-      .then(() => (this.connectionState = 2))
-      .catch(err => {
-        this.connectionState = 1;
-        this.errorMessage = err.message;
-      });
+    this.getStationList();
+
+    setInterval(this.getStationList, 5000);
   }
 });
 </script>

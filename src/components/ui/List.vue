@@ -122,8 +122,6 @@ export default Vue.extend({
       );
     },
     focusedStationInfo() {
-      console.log(this.focusedStationName);
-
       return this.stations.find(
         (station: any) => station.stationName === this.focusedStationName
       );

@@ -1,6 +1,7 @@
 {
   "hosting": {
-    "public": "public",
+    "public": "dist",
+    "site": "stacjownik-td2",
     "ignore": [
       "firebase.json",
       "**/.*",
