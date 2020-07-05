@@ -2,6 +2,7 @@
   <div class="list">
     <Card :stationInfo="focusedStationInfo" :closeCard="closeCard" />
     <div class="table-wrapper">
+      <!-- <ListFilter /> -->
       <table class="table">
         <thead>
           <tr>
@@ -69,13 +70,13 @@
 
           <td class="tracks twoway">
             <span
-              v-if="station.routes.twoWay.catenary > 0"
+              v-if="station.routes && station.routes.twoWay.catenary > 0"
               class="track catenary"
               :title="'Liczba zelektryfikowanych szlaków dwutorowych: ' + station.routes.twoWay.catenary"
             >{{station.routes.twoWay.catenary}}</span>
 
             <span
-              v-if="station.routes.twoWay.noCatenary > 0"
+              v-if="station.routes && station.routes.twoWay.noCatenary > 0"
               class="track no-catenary"
               :title="'Liczba niezelektryfikowanych szlaków dwutorowych: ' + station.routes.twoWay.noCatenary"
             >{{station.routes.twoWay.noCatenary}}</span>
@@ -83,13 +84,13 @@
 
           <td class="tracks oneway">
             <span
-              v-if="station.routes.oneWay.catenary > 0"
+              v-if="station.routes && station.routes.oneWay.catenary > 0"
               class="track catenary"
               :title="'Liczba zelektryfikowanych szlaków jednotorowych: ' + station.routes.oneWay.catenary"
             >{{station.routes.oneWay.catenary}}</span>
 
             <span
-              v-if="station.routes.oneWay.noCatenary > 0"
+              v-if="station.routes && station.routes.oneWay.noCatenary > 0"
               class="track no-catenary"
               :title="'Liczba niezelektryfikowanych szlaków jednotorowych: ' + station.routes.oneWay.noCatenary"
             >{{station.routes.oneWay.noCatenary}}</span>
@@ -105,11 +106,13 @@ import Vue from "vue";
 import { mapGetters } from "vuex";
 
 import Card from "@/components/ui/Card.vue";
+import ListFilter from "@/components/utils/ListFilter.vue";
 
 export default Vue.extend({
   name: "List",
   components: {
-    Card
+    Card,
+    ListFilter
   },
   data: () => ({
     focusedStationName: ""
@@ -216,10 +219,9 @@ ul {
 
 .table {
   &-wrapper {
-    display: flex;
-    justify-content: center;
-
     overflow-x: auto;
+
+    position: relative;
   }
 
   display: block;
@@ -228,7 +230,7 @@ ul {
   white-space: nowrap;
   border-collapse: collapse;
 
-  font-size: calc(0.6rem + 0.5vw);
+  font-size: calc(0.6rem + 0.4vw);
   cursor: pointer;
 
   thead th {
