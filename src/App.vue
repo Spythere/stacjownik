@@ -9,9 +9,9 @@
         </div>
       </header>
 
-      <div
-        class="app-info"
-      >Scenerie online: {{stations.length}} | Maszyniści online: {{ trainCount }}</div>
+      <div class="app-info">
+        <span>Scenerie online: {{stations.length}} | Maszyniści online: {{ trainCount }}</span>
+      </div>
 
       <main class="app-main">
         <Loading v-if="connectionState == 0" />
@@ -31,6 +31,7 @@ import { mapGetters, mapActions } from "vuex";
 
 import Error from "@/components/states/Error.vue";
 import Loading from "@/components/states/Loading.vue";
+// import ListFilter from "@/components/utils/ListFilter.vue";
 
 export default Vue.extend({
   name: "App",
@@ -143,13 +144,12 @@ a {
 
     background: #222;
 
-    padding: 0.4rem;
+    padding: 0.3rem;
   }
 
   &-main {
     display: flex;
     justify-content: center;
-    align-items: center;
   }
 }
 

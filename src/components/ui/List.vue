@@ -1,8 +1,10 @@
 <template>
   <div class="list">
     <Card :stationInfo="focusedStationInfo" :closeCard="closeCard" />
+
+    <Options />
+
     <div class="table-wrapper">
-      <!-- <ListFilter />  -->
       <table class="table">
         <thead>
           <tr>
@@ -113,13 +115,13 @@ import Vue from "vue";
 import { mapGetters } from "vuex";
 
 import Card from "@/components/ui/Card.vue";
-import ListFilter from "@/components/utils/ListFilter.vue";
+import Options from "@/components/ui/Options.vue";
 
 export default Vue.extend({
   name: "List",
   components: {
     Card,
-    ListFilter
+    Options
   },
   data: () => ({
     focusedStationName: ""
@@ -165,6 +167,9 @@ export default Vue.extend({
         case "Z/W":
           className = "brb";
           break;
+        case "BRAK MIEJSCA":
+          className = "no-space";
+          break;
         default:
           break;
       }
@@ -195,6 +200,7 @@ ul {
 .hour {
   padding: 0.4em;
   border-radius: 1rem;
+  font-weight: 500;
 
   &.ending {
     background-color: $accentCol;
@@ -222,6 +228,12 @@ ul {
     color: black;
     font-size: 0.95em;
   }
+
+  &.no-space {
+    background-color: #222;
+    color: white;
+    font-size: 0.85em;
+  }
 }
 
 .list {
@@ -234,12 +246,6 @@ ul {
 }
 
 .table {
-  &-wrapper {
-    overflow-x: auto;
-
-    position: relative;
-  }
-
   display: block;
   overflow-y: hidden;
 
