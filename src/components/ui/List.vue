@@ -2,7 +2,7 @@
   <div class="list">
     <Card :stationInfo="focusedStationInfo" :closeCard="closeCard" />
     <div class="table-wrapper">
-      <!-- <ListFilter /> -->
+      <!-- <ListFilter />  -->
       <table class="table">
         <thead>
           <tr>
@@ -35,7 +35,7 @@
           <td
             class="station-name"
             :class="station.default && 'default-station'"
-          >{{station.stationName}}</td>
+          >{{station.stationName}} {{ station.reqLevel ? "| " + (parseInt(station.reqLevel) >= 2 ? station.reqLevel : "L") : "" }}</td>
 
           <td class="disptacher-name">{{station.dispatcherName}}</td>
           <td class="dispatcher-exp">
@@ -65,6 +65,13 @@
               :src="require(`@/assets/icon-SBL.svg`)"
               alt="SBL"
               title="Sceneria posiada SBL na przynajmniej jednym ze szlaków"
+            />
+
+            <img
+              v-if="!station.reqLevel || station.nonPublic"
+              :src="require(`@/assets/icon-lock.svg`)"
+              alt="non-public"
+              title="Sceneria niepubliczna"
             />
           </td>
 
@@ -155,6 +162,9 @@ export default Vue.extend({
         case "NIEDOSTĘPNY":
           className = "unavailable";
           break;
+        case "Z/W":
+          className = "brb";
+          break;
         default:
           break;
       }
@@ -205,6 +215,12 @@ ul {
   &.unavailable {
     background-color: $accent2Col;
     font-size: 0.9em;
+  }
+
+  &.brb {
+    background-color: $accentCol;
+    color: black;
+    font-size: 0.95em;
   }
 }
 

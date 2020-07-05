@@ -44,7 +44,8 @@
                 "noCatenary": 0
             }
         },
-        "default": false
+        "default": false,
+        "nonPublic": true
     },
     {
         "stationName": "LCS Gdańsk",
@@ -1614,6 +1615,7 @@
                 "noCatenary": 0
             }
         },
-        "default": false
+        "default": false,
+        "non-public": true
     }
 ]

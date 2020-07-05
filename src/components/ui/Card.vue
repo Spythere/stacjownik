@@ -43,6 +43,18 @@
           alt="default-pack"
           title="Sceneria domyślnie dostępna w grze"
         />
+
+        <img
+          v-if="stationInfo.nonPublic || !stationInfo.reqLevel"
+          :src="require(`@/assets/icon-lock.svg`)"
+          alt="non-public"
+          title="Sceneria niepubliczna"
+        />
+
+        <span
+          v-if="stationInfo.reqLevel"
+          :title="'Wymagany poziom dyżurnego: ' +  stationInfo.reqLevel"
+        >{{parseInt(stationInfo.reqLevel) < 2 ? "L" : stationInfo.reqLevel}}</span>
       </div>
 
       <div class="station-info"></div>
@@ -104,7 +116,10 @@
             </a>
           </div>
 
-          <span class="user--borderless" v-if="!stationInfo.trains">BRAK</span>
+          <span
+            class="user borderless"
+            v-if="!stationInfo.trains || stationInfo.trains.length == 0"
+          >BRAK</span>
         </div>
       </div>
     </div>
@@ -151,8 +166,8 @@ export default Vue.extend({
 
   overflow: auto;
 
-  width: 70%;
-  max-width: 550px;
+  width: 65%;
+  max-width: 650px;
 
   box-shadow: 0 0 15px 5px #474747;
 
@@ -177,7 +192,7 @@ export default Vue.extend({
   &-content {
     display: grid;
     grid-template-areas: "dispatcher dispatcher" "rating rating" "hours hours" "users spawns";
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
 
     align-items: center;
     text-align: center;
@@ -226,9 +241,25 @@ export default Vue.extend({
     justify-content: center;
     align-items: center;
 
-    & > img {
+    img,
+    span {
       width: 2.5em;
+      height: 2.5em;
       margin: 0 0.5em;
+    }
+
+    span {
+      background-color: #898989;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      font-weight: bold;
+
+      -moz-user-select: none;
+      -webkit-user-select: none;
+      user-select: none;
     }
   }
 }
@@ -325,7 +356,7 @@ export default Vue.extend({
       margin: 0.3rem;
       border: 1px solid white;
 
-      &--no-border {
+      &.borderless {
         border: none;
       }
     }

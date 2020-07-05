@@ -56,6 +56,9 @@ export default new Vuex.Store({
                                         { hour12: false, hour: '2-digit', minute: '2-digit' });
                         }
 
+                        if (occupiedCode === 1)
+                            occupiedTo = "Z/W";
+
                         if (occupiedCode === 2 && occupiedTimestamp === 0)
                             occupiedTo = "KOŃCZY";
                     }
