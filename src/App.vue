@@ -10,7 +10,7 @@
       </header>
 
       <div class="app-info">
-        <span>Scenerie online: {{stations.length}} | Maszyniści online: {{ trainCount }}</span>
+        <span>Scenerie online: {{stationCount}} | Maszyniści online: {{ trainCount }}</span>
       </div>
 
       <main class="app-main">
@@ -38,7 +38,8 @@ export default Vue.extend({
   components: { Error, Loading },
   computed: mapGetters({
     stations: "getStations",
-    trainCount: "getTrainCount"
+    trainCount: "getTrainCount",
+    stationCount: "getStationCount"
   }),
 
   methods: {
@@ -79,6 +80,11 @@ body {
   background: $bgCol;
   width: 100%;
   min-height: 100vh;
+}
+
+button,
+input {
+  font-family: "Lato", sans-serif;
 }
 
 *,
@@ -145,11 +151,6 @@ a {
     background: #222;
 
     padding: 0.3rem;
-  }
-
-  &-main {
-    display: flex;
-    justify-content: center;
   }
 }
 

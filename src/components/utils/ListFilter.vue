@@ -1,61 +1,15 @@
 <template>
   <div class="list-filter">
-    <div class="filter-content">
-      <div class="content-row">
-        <div class="content-column">
-          <div class="column-title">Dostępność:</div>
+    <div class="filter-grid">
+      <div class="grid-row">
+        <div class="grid-column" v-for="(el, i) in gridElements" :key="i">
+          <div class="column-title">{{el.title}}</div>
 
-          <div class="content-item">
-            <input type="checkbox" id="is-default" checked @change="handleChange" />
-            <label for="is-default">W paczce z grą</label>
-          </div>
-
-          <div class="content-item">
-            <input type="checkbox" id="not-default" checked @change="handleChange" />
-            <label for="not-default">Poza paczką z grą</label>
-          </div>
-        </div>
-
-        <div class="content-column">
-          <div class="column-title">Sterowanie:</div>
-
-          <div class="content-item">
-            <input type="checkbox" id="control-SPK" checked @change="handleChange" />
-            <label for="control-SPK">SPK</label>
-          </div>
-
-          <div class="content-item">
-            <input type="checkbox" id="control-SCS" checked @change="handleChange" />
-            <label for="control-SCS">SCS</label>
-          </div>
-
-          <div class="content-item">
-            <input type="checkbox" id="control-hands" checked @change="handleChange" />
-            <label for="control-hands">ręczne</label>
-          </div>
-
-          <div class="content-item">
-            <input type="checkbox" id="control-levers" checked @change="handleChange" />
-            <label for="control-levers">mechaniczne</label>
-          </div>
-        </div>
-
-        <div class="content-column">
-          <div class="column-title">Sygnalizacja:</div>
-
-          <div class="content-item">
-            <input type="checkbox" id="signals-modern" checked @change="handleChange" />
-            <label for="signals-modern">współczesna</label>
-          </div>
-
-          <div class="content-item">
-            <input type="checkbox" id="signals-mixed" checked @change="handleChange" />
-            <label for="signals-mixed">mieszana</label>
-          </div>
-
-          <div class="content-item">
-            <input type="checkbox" id="signals-historic" checked @change="handleChange" />
-            <label for="signals-historic">kształtowa</label>
+          <div class="column-content">
+            <div class="grid-item" v-for="(item, i) in el.items" :key="i">
+              <input :type="el.type" :id="item.id" :name="item.name" checked @change="handleChange" />
+              <label :for="item.id">{{ item.content }}</label>
+            </div>
           </div>
         </div>
       </div>
@@ -64,21 +18,98 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { Vue, Component } from "vue-property-decorator";
 import { mapActions } from "vuex";
 
 export default Vue.extend({
   name: "list-filter",
-  data: () => ({}),
-  methods: {
-    ...mapActions(["addFilter", "removeFilter"]),
-    handleChange(e: any) {
-      // this.$store.commit(e.target.checked ? "removeFilter" : "addFilter", {
-      //   id: e.target.id
-      // });
+  data: () => ({
+    gridElements: {
+      access: {
+        title: "Dostępność",
+        type: "checkbox",
+        items: [
+          {
+            id: "is-default",
+            name: "default",
+            content: "w paczce z grą"
+          },
+          {
+            id: "not-default",
+            name: "notDefault",
+            content: "poza paczką z grą"
+          },
+          {
+            id: "non-public",
+            name: "nonPublic",
+            content: "niepubliczna"
+          }
+        ]
+      },
 
-      if (e.target.checked) this.removeFilter(e.target.id);
-      else this.addFilter(e.target.id);
+      control: {
+        title: "Sterowanie",
+        type: "checkbox",
+
+        items: [
+          {
+            id: "SPK",
+            name: "SPK",
+            content: "SPK"
+          },
+          {
+            id: "SCS",
+            name: "SCS",
+            content: "SCS"
+          },
+          {
+            id: "by-hand",
+            name: "ręczne",
+            content: "ręczne"
+          },
+          {
+            id: "levers",
+            name: "mechaniczne",
+            content: "mechaniczne"
+          }
+        ]
+      },
+
+      signals: {
+        title: "Sygnalizacja",
+        type: "checkbox",
+
+        items: [
+          {
+            id: "modern",
+            name: "współczesna",
+            content: "współczesna"
+          },
+          {
+            id: "semaphore",
+            name: "kształtowa",
+            content: "kształtowa"
+          },
+          {
+            id: "mixed",
+            name: "mieszana",
+            content: "mieszana"
+          },
+          {
+            id: "historic",
+            name: "historyczna",
+            content: "historyczna"
+          }
+        ]
+      }
+    }
+  }),
+  methods: {
+    ...mapActions(["addFilters", "removeFilters"]),
+    handleChange(e: any) {
+      if (e.target.checked) {
+        this.removeFilters([e.target.name]);
+      } else this.addFilters([e.target.name]);
     }
   }
 });
@@ -91,20 +122,19 @@ export default Vue.extend({
   display: flex;
 
   font-size: calc(0.6rem + 0.4vw);
-}
-
-.filter-content {
-  background: #333;
-  border-top-left-radius: 1rem;
-  border-top-right-radius: 1rem;
-  padding: 0.3rem;
 
   @include smallScreen() {
     width: 100%;
   }
 }
 
-.content {
+.filter-grid {
+  background: #333;
+  border-radius: 0 1rem 1rem 1rem;
+  padding: 0.3rem;
+}
+
+.grid {
   &-row {
     display: flex;
     justify-content: center;

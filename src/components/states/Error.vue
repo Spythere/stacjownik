@@ -19,6 +19,8 @@ export default {
   justify-content: center;
   align-items: center;
 
+  min-height: 100vh;
+
   flex-direction: column;
 
   font-size: calc(1rem + 1.5vw);

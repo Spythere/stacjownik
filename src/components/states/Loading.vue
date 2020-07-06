@@ -13,6 +13,8 @@ export default Vue.extend({});
   justify-content: center;
   align-items: center;
 
+  min-height: 100vh;
+
   font-size: calc(0.75rem + 1vw);
 
   color: #fdc62f;

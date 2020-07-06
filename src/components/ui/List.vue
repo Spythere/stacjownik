@@ -2,8 +2,6 @@
   <div class="list">
     <Card :stationInfo="focusedStationInfo" :closeCard="closeCard" />
 
-    <Options />
-
     <div class="table-wrapper">
       <table class="table">
         <thead>
@@ -115,13 +113,11 @@ import Vue from "vue";
 import { mapGetters } from "vuex";
 
 import Card from "@/components/ui/Card.vue";
-import Options from "@/components/ui/Options.vue";
 
 export default Vue.extend({
   name: "List",
   components: {
-    Card,
-    Options
+    Card
   },
   data: () => ({
     focusedStationName: ""
@@ -238,7 +234,7 @@ ul {
 
 .list {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
 }
 
 .default-station {
@@ -246,8 +242,13 @@ ul {
 }
 
 .table {
+  &-wrapper {
+    overflow: auto;
+  }
+
   display: block;
-  overflow-y: hidden;
+
+  max-height: 100vh;
 
   white-space: nowrap;
   border-collapse: collapse;
@@ -258,6 +259,7 @@ ul {
   thead th {
     padding: 0.8rem;
     background-color: #444;
+    min-width: 100px;
   }
 
   tr {

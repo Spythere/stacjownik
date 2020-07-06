@@ -1615,7 +1615,6 @@
                 "noCatenary": 0
             }
         },
-        "default": false,
-        "non-public": true
+        "default": false
     }
 ]

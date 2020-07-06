@@ -1,7 +1,11 @@
 <template>
   <div class="options">
     <div class="option-buttons">
-      <button class="button-filters" @click="filtersOpen = !filtersOpen">FILTRY</button>
+      <button
+        class="button-filters"
+        :class="{'open': filtersOpen}"
+        @click="filtersOpen = !filtersOpen"
+      >FILTRY</button>
     </div>
 
     <div class="option-wrapper">
@@ -29,30 +33,57 @@ export default Vue.extend({
 
 
 <style lang="scss" scoped>
+@import "../../styles/variables.scss";
+@import "../../styles/responsive.scss";
+
 .options {
   font-size: calc(0.7rem + 0.5vw);
+
+  display: flex;
+  padding: 1rem;
+
+  @include smallScreen() {
+    flex-direction: column;
+    padding: 1rem 0;
+  }
 }
 
-button.button-filters {
+button {
   color: #e0e0e0;
-  font-size: 0.9em;
+  font-size: 1em;
 
-  border: 2px solid #e0e0e0;
-  background: rgba(#e0e0e0, 0.2);
+  background: #333;
+  border: none;
+
   outline: none;
 
-  border-radius: 0.5em;
-
   padding: 0.5em;
-  margin: 0.4em 0;
 
   cursor: pointer;
 
-  transition: background 0.4s, color 0.4s;
+  border-left: 3px solid white;
+  transition: all 0.3s;
+
+  @include smallScreen {
+    border-left: none;
+    border-top: 2px solid white;
+  }
+
+  &.open {
+    color: $accentCol;
+    border-radius: 1em 0 0 1em;
+    border: none;
+
+    @include smallScreen() {
+      border-radius: 1em 1em 0 0;
+    }
+
+    font-weight: bold;
+  }
 
   &:hover {
     color: #ffffff;
-    background: rgba(#e0e0e0, 0.4);
+    background: rgba(#e0e0e0, 0.1);
   }
 
   img {

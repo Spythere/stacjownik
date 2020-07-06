@@ -87,13 +87,13 @@ export default new Vuex.Store({
       commit('filterStations');
     },
 
-    addFilter({ commit }, filterId) {
-      commit('addFilter', filterId);
+    addFilters({ commit }, filterId) {
+      commit('addFilters', filterId);
       commit('filterStations');
     },
 
-    removeFilter({ commit }, filterId) {
-      commit('removeFilter', filterId);
+    removeFilters({ commit }, filterId) {
+      commit('removeFilters', filterId);
       commit('filterStations');
     }
   },
@@ -101,40 +101,25 @@ export default new Vuex.Store({
     setStations: (state, stations) => state.stations = stations,
     setTrainCount: (state, count) => state.trainCount = count,
 
-    addFilter(state: any, filterId: string) {
-      state.filters.push(filterId);
-
+    addFilters(state: any, filters: string[]) {
+      state.filters.push(...filters);
     },
-    removeFilter: (state: { filters: string[] }, filterId: string) => {
-      state.filters = state.filters.filter((id: string) => id !== filterId);
+    removeFilters: (state: { filters: string[] }, filters: string[]) => {
+      filters.forEach(filter => {
+        state.filters = state.filters.filter((id: string) => id !== filter);
+      })
     },
 
     filterStations(state: any) {
-      let isDefault = state.filters.includes("is-default");
-      let isNotDefault = state.filters.includes("not-default");
-
-      let hasSPK = state.filters.includes("control-SPK");
-      let hasSCS = state.filters.includes("control-SCS");
-      let hasHand = state.filters.includes("control-hands");
-      let hasLevers = state.filters.includes("control-levers");
-
-      let modernSignals = state.filters.includes("signals-modern");
-      let mixedSignals = state.filters.includes("signals-mixed");
-      let historicSignals = state.filters.includes("signals-historic");
-
       state.filteredStations = state.stations.filter((station: any) => {
-        if (isDefault && station.default) return false;
-        if (isNotDefault && !station.default) return false;
-        if (hasSPK && (station.controlType === "SPK" || station.controlType === "SCS-SPK")) return false;
-        if (hasSCS && (station.controlType === "SCS" || station.controlType === "SCS-SPK")) return false;
-        if (hasHand && (station.controlType === "ręczne")) return false;
-        if (hasLevers && (station.controlType === "mechaniczne"
-          || station.controlType === "mechaniczne+SCS"
-          || station.controlType === "mechaniczne+SPK")) return false;
+        if (station.default && state.filters.includes("default")) return false;
+        if ((!station.default) && state.filters.includes("notDefault")) return false;
+        if ((station.nonPublic || !station.reqLevel) && (state.filters.includes("nonPublic"))) return false;
 
-        if (modernSignals && (station.signalType === "współczesna")) return false;
-        if (mixedSignals && (station.signalType === "mieszana")) return false;
-        if (historicSignals && (station.signalType === "kształtowa" || station.signalType === "historyczna")) return false;
+        if (state.filters.includes(station.controlType)) return false;
+        if (state.filters.includes(station.signalType)) return false;
+
+        if (station.controlType && state.filters.filter((f: string) => station.controlType.includes(f)).length > 0) return false;
 
         return true;
       })
@@ -142,6 +127,7 @@ export default new Vuex.Store({
   },
   getters: {
     getStations: state => state.filteredStations,
+    getStationCount: state => state.stations.length,
     getTrainCount: state => state.trainCount,
     getFilters: (state: any) => state.filters,
   }
