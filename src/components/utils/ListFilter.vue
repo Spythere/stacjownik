@@ -1,19 +1,129 @@
 <template>
   <div class="list-filter">
-    <div class="filter-grid">
-      <div class="grid-row">
-        <div class="grid-column" v-for="(el, i) in gridElements" :key="i">
-          <div class="column-title">{{el.title}}</div>
+    <ul class="grid">
+      <li class="grid-row">
+        <div class="grid-col" v-for="(el, i) in gridElements" :key="i">
+          <div class="grid-item">
+            <div class="item-title">{{el.title}}</div>
 
-          <div class="column-content">
-            <div class="grid-item" v-for="(item, i) in el.items" :key="i">
-              <input :type="el.type" :id="item.id" :name="item.name" checked @change="handleChange" />
-              <label :for="item.id">{{ item.content }}</label>
+            <div class="item-content">
+              <div class="item-input" v-for="(item, i) in el.items" :key="i">
+                <input
+                  :type="el.type"
+                  :id="item.id"
+                  :name="item.name"
+                  checked
+                  @change="handleChange"
+                />
+                <label :for="item.id">{{ item.content }}</label>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </li>
+
+      <li class="grid-row">
+        <div class="grid-col">
+          <div class="grid-item">
+            <div class="item-title">Poziomy dyżurnego</div>
+
+            <div class="item-content centered">
+              <div class="item-input" style="text-align: center;">
+                <input
+                  type="number"
+                  name="level-from"
+                  min="0"
+                  max="25"
+                  value="0"
+                  @change="handleInput"
+                />
+                <span>&nbsp;do&nbsp;</span>
+                <input
+                  type="number"
+                  name="level-to"
+                  min="0"
+                  max="20"
+                  value="20"
+                  @change="handleInput"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>
+
+      <li class="grid-row">
+        <div class="grid-col">
+          <div class="grid-item">
+            <div class="item-title">
+              Szlaki jednotorowe
+              <div>(minimum)</div>
+            </div>
+
+            <div class="item-content">
+              <div class="item-input">
+                <input
+                  type="number"
+                  name="1track-e"
+                  min="0"
+                  max="5"
+                  placeholder="0"
+                  @change="handleInput"
+                />
+                <span>&nbsp;Zelektryfikowane</span>
+              </div>
+
+              <div class="item-input">
+                <input
+                  type="number"
+                  name="1track-ne"
+                  min="0"
+                  max="5"
+                  placeholder="0"
+                  @change="handleInput"
+                />
+                <span>&nbsp;Niezelektryfikowane</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-col">
+          <div class="grid-item">
+            <div class="item-title">
+              Szlaki dwutorowe
+              <div>(minimum)</div>
+            </div>
+
+            <div class="item-content">
+              <div class="item-input">
+                <input
+                  type="number"
+                  name="2track-e"
+                  min="0"
+                  max="5"
+                  placeholder="0"
+                  @change="handleInput"
+                />
+                <span>&nbsp;Zelektryfikowane</span>
+              </div>
+
+              <div class="item-input">
+                <input
+                  type="number"
+                  name="2track-ne"
+                  min="0"
+                  max="5"
+                  placeholder="0"
+                  @change="handleInput"
+                />
+                <span>&nbsp;Niezelektryfikowane</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -105,11 +215,15 @@ export default Vue.extend({
     }
   }),
   methods: {
-    ...mapActions(["addFilters", "removeFilters"]),
+    ...mapActions(["setFilter"]),
     handleChange(e: any) {
-      if (e.target.checked) {
-        this.removeFilters([e.target.name]);
-      } else this.addFilters([e.target.name]);
+      this.setFilter({ filterName: e.target.name, value: !e.target.checked });
+    },
+    handleInput(e: any) {
+      this.setFilter({
+        filterName: e.target.name,
+        value: parseInt(e.target.value)
+      });
     }
   }
 });
@@ -117,39 +231,52 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 @import "../../styles/responsive";
+@import "../../styles/variables";
 
 .list-filter {
-  display: flex;
-
-  font-size: calc(0.6rem + 0.4vw);
+  position: absolute;
+  top: 100%;
+  left: 0;
+  padding: 0.3rem;
 
   @include smallScreen() {
-    width: 100%;
+    width: 100vw;
   }
-}
 
-.filter-grid {
-  background: #333;
-  border-radius: 0 1rem 1rem 1rem;
-  padding: 0.3rem;
+  white-space: nowrap;
+
+  font-size: calc(0.6rem + 0.4vw);
 }
 
 .grid {
+  background: rgba(black, 0.65);
+  padding: 0.5rem;
+
   &-row {
     display: flex;
     justify-content: center;
-    flex-wrap: wrap;
+
+    @include smallScreen() {
+      flex-wrap: wrap;
+    }
   }
 
-  &-column {
-    margin: 0.3rem;
-    padding: 0.2rem;
+  &-col {
+    padding: 0.3rem;
+  }
+
+  &-item {
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
   }
 }
 
-.column-title {
+.item-title {
   text-align: center;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.5rem;
   font-weight: bold;
+
+  color: $accentCol;
 }
 </style>

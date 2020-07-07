@@ -248,8 +248,6 @@ ul {
 
   display: block;
 
-  max-height: 100vh;
-
   white-space: nowrap;
   border-collapse: collapse;
 

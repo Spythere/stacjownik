@@ -7,10 +7,17 @@
           <img src="@/assets/trainlogo.png" alt="trainlogo" />
           <span>wnik</span>
         </div>
+        <span class="online">Scenerie online: {{stationCount}} | Maszyniści online: {{ trainCount }}</span>
       </header>
 
-      <div class="app-info">
-        <span>Scenerie online: {{stationCount}} | Maszyniści online: {{ trainCount }}</span>
+      <div class="app-bar">
+        <div class="bar-left">
+          <Options />
+        </div>
+
+        <div class="bar-right">
+          <!-- <div class="last-update">Ostatnie zmiany</div> -->
+        </div>
       </div>
 
       <main class="app-main">
@@ -31,11 +38,12 @@ import { mapGetters, mapActions } from "vuex";
 
 import Error from "@/components/states/Error.vue";
 import Loading from "@/components/states/Loading.vue";
+import Options from "@/components/ui/Options.vue";
 // import ListFilter from "@/components/utils/ListFilter.vue";
 
 export default Vue.extend({
   name: "App",
-  components: { Error, Loading },
+  components: { Error, Loading, Options },
   computed: mapGetters({
     stations: "getStations",
     trainCount: "getTrainCount",
@@ -87,6 +95,22 @@ input {
   font-family: "Lato", sans-serif;
 }
 
+input {
+  border: 1px solid white;
+  background: none;
+  color: white;
+  font-size: 1em;
+
+  padding: 0.15em;
+  margin: 0.2em;
+
+  max-width: 55px;
+
+  &::placeholder {
+    color: #bebebe;
+  }
+}
+
 *,
 *::before,
 *::after {
@@ -111,6 +135,11 @@ a {
   }
 }
 
+ul {
+  padding: 0;
+  list-style: none;
+}
+
 .app {
   color: white;
   overflow: hidden;
@@ -131,6 +160,7 @@ a {
 
     flex-direction: column;
     background: #333;
+    padding: 0.4rem;
 
     & > .brand-name {
       font-size: calc(1rem + 3.5vw);
@@ -139,18 +169,20 @@ a {
         width: calc(1rem + 2.3vw);
       }
     }
+
+    .online {
+      font-size: calc(0.6rem + 0.4vw);
+    }
   }
 
-  &-info {
+  &-bar {
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: space-between;
 
     font-size: calc(0.8rem + 0.2vw);
 
     background: #222;
-
-    padding: 0.3rem;
   }
 }
 

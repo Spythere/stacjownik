@@ -5,14 +5,16 @@
         class="button-filters"
         :class="{'open': filtersOpen}"
         @click="filtersOpen = !filtersOpen"
-      >FILTRY</button>
+      >
+        <img :src="require('@/assets/icon-filter2.svg')" alt="icon-filter" /> FILTRY
+      </button>
     </div>
 
-    <div class="option-wrapper">
+    <transition name="slide">
       <keep-alive>
         <ListFilter v-if="filtersOpen" />
       </keep-alive>
-    </div>
+    </transition>
   </div>
 </template>
 
@@ -36,58 +38,55 @@ export default Vue.extend({
 @import "../../styles/variables.scss";
 @import "../../styles/responsive.scss";
 
+.slide-enter-active,
+.slide-leave-active {
+  transition: all 0.3s ease;
+}
+
+.slide-enter,
+.slide-leave-to {
+  transform: translateX(10px);
+  opacity: 0;
+}
+
 .options {
+  position: relative;
   font-size: calc(0.7rem + 0.5vw);
 
   display: flex;
-  padding: 1rem;
-
-  @include smallScreen() {
-    flex-direction: column;
-    padding: 1rem 0;
-  }
 }
 
 button {
   color: #e0e0e0;
   font-size: 1em;
 
+  display: flex;
+  align-items: center;
+
   background: #333;
   border: none;
 
   outline: none;
-
-  padding: 0.5em;
+  padding: 0.2em;
 
   cursor: pointer;
 
-  border-left: 3px solid white;
   transition: all 0.3s;
 
-  @include smallScreen {
-    border-left: none;
-    border-top: 2px solid white;
+  img {
+    width: 1.3em;
+    margin: 0.2em;
   }
 
   &.open {
     color: $accentCol;
-    border-radius: 1em 0 0 1em;
     border: none;
-
-    @include smallScreen() {
-      border-radius: 1em 1em 0 0;
-    }
-
     font-weight: bold;
   }
 
-  &:hover {
-    color: #ffffff;
+  &:hover,
+  &:focus {
     background: rgba(#e0e0e0, 0.1);
-  }
-
-  img {
-    width: 45px;
   }
 }
 </style>

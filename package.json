@@ -24,6 +24,7 @@
     "sass-loader": "^8.0.2",
     "typescript": "~3.9.3",
     "vue-template-compiler": "^2.6.11",
+    "vuex-class": "^0.3.2",
     "vuex-module-decorators": "^0.17.0"
   },
   "browserslist": [
