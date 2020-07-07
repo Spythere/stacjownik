@@ -10,13 +10,15 @@
         <span class="online">Scenerie online: {{stationCount}} | Maszyniści online: {{ trainCount }}</span>
       </header>
 
-      <div class="app-bar">
-        <div class="bar-left">
-          <Options />
-        </div>
+      <div class="app-bar" ref="appBar">
+        <div class="bar-content">
+          <div class="bar-left">
+            <Options />
+          </div>
 
-        <div class="bar-right">
-          <!-- <div class="last-update">Ostatnie zmiany</div> -->
+          <div class="bar-right">
+            <!-- <div class="last-update">Ostatnie zmiany</div> -->
+          </div>
         </div>
       </div>
 
@@ -70,6 +72,14 @@ export default Vue.extend({
     this.getStationList();
 
     setInterval(this.getStationList, 5000);
+
+    document.addEventListener("scroll", e => {
+      const appBarEl = this.$refs.appBar as Element;
+
+      if (appBarEl.getBoundingClientRect().top < 0)
+        appBarEl.classList.add("sticky");
+      else appBarEl.classList.remove("sticky");
+    });
   }
 });
 </script>
@@ -83,11 +93,9 @@ html {
 }
 
 body {
+  width: 100%;
   margin: 0;
   font-family: "Lato", sans-serif;
-  background: $bgCol;
-  width: 100%;
-  min-height: 100vh;
 }
 
 button,
@@ -141,7 +149,10 @@ ul {
 }
 
 .app {
+  background: $bgCol;
   color: white;
+  width: 100%;
+
   overflow: hidden;
 
   &-container {
@@ -171,7 +182,7 @@ ul {
     }
 
     .online {
-      font-size: calc(0.6rem + 0.4vw);
+      font-size: calc(0.3rem + 0.8vw);
     }
   }
 
@@ -179,13 +190,14 @@ ul {
     display: flex;
     align-items: center;
     justify-content: space-between;
-
     font-size: calc(0.8rem + 0.2vw);
+
+    position: sticky;
+    top: 0;
 
     background: #222;
   }
 }
-
 footer {
   background: #111;
   padding: 0.3rem;

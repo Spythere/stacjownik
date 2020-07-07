@@ -188,11 +188,6 @@ export default Vue.extend({
 @import "../../styles/variables.scss";
 @import "../../styles/responsive.scss";
 
-ul {
-  list-style: none;
-  padding: 0;
-}
-
 .hour {
   padding: 0.4em;
   border-radius: 1rem;
@@ -247,17 +242,18 @@ ul {
   }
 
   display: block;
-
   white-space: nowrap;
   border-collapse: collapse;
 
   font-size: calc(0.6rem + 0.4vw);
-  cursor: pointer;
+
+  @include smallScreen() {
+    font-size: 0.5rem;
+  }
 
   thead th {
-    padding: 0.8rem;
+    padding: 0.2rem;
     background-color: #444;
-    min-width: 100px;
   }
 
   tr {
@@ -283,6 +279,8 @@ ul {
       margin: 0 3rem;
       text-align: center;
       vertical-align: middle;
+
+      cursor: pointer;
 
       @include smallScreen() {
         margin: 0;

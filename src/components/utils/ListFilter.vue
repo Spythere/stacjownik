@@ -12,6 +12,7 @@
                   :type="el.type"
                   :id="item.id"
                   :name="item.name"
+                  v-model="item.value"
                   checked
                   @change="handleChange"
                 />
@@ -30,15 +31,16 @@
             <div class="item-content centered">
               <div class="item-input" style="text-align: center;">
                 <input
+                  v-model="levelFrom"
                   type="number"
                   name="level-from"
                   min="0"
                   max="25"
-                  value="0"
                   @change="handleInput"
                 />
                 <span>&nbsp;do&nbsp;</span>
                 <input
+                  v-model="levelTo"
                   type="number"
                   name="level-to"
                   min="0"
@@ -63,6 +65,19 @@
             <div class="item-content">
               <div class="item-input">
                 <input
+                  v-model="oneWay"
+                  type="checkbox"
+                  id="no-1track"
+                  name="no-1track"
+                  checked
+                  @change="handleChange"
+                />
+                <label for="no-1track">Jednotory</label>
+              </div>
+
+              <div class="item-input">
+                <input
+                  v-model="oneWayCatenary"
                   type="number"
                   name="1track-e"
                   min="0"
@@ -75,6 +90,7 @@
 
               <div class="item-input">
                 <input
+                  v-model="oneWayOther"
                   type="number"
                   name="1track-ne"
                   min="0"
@@ -98,6 +114,20 @@
             <div class="item-content">
               <div class="item-input">
                 <input
+                  v-model="twoWay"
+                  type="checkbox"
+                  id="no-2track"
+                  name="no-2track"
+                  ref="2track"
+                  checked
+                  @change="handleChange"
+                />
+                <label for="no-2track">Dwutory</label>
+              </div>
+
+              <div class="item-input">
+                <input
+                  v-model="twoWayCatenary"
                   type="number"
                   name="2track-e"
                   min="0"
@@ -110,6 +140,7 @@
 
               <div class="item-input">
                 <input
+                  v-model="twoWayOther"
                   type="number"
                   name="2track-ne"
                   min="0"
@@ -123,6 +154,10 @@
           </div>
         </div>
       </li>
+
+      <li class="grid-row">
+        <button @click="reset">RESET FILTRÓW</button>
+      </li>
     </ul>
   </div>
 </template>
@@ -133,7 +168,22 @@ import { mapActions } from "vuex";
 
 export default Vue.extend({
   name: "list-filter",
+  watch: {
+    gridElements: {
+      handler: (v1, v2) => {},
+      deep: true
+    }
+  },
   data: () => ({
+    oneWay: true,
+    twoWay: true,
+    levelFrom: 0,
+    levelTo: 20,
+    oneWayCatenary: 0,
+    oneWayOther: 0,
+    twoWayCatenary: 0,
+    twoWayOther: 0,
+
     gridElements: {
       access: {
         title: "Dostępność",
@@ -141,16 +191,19 @@ export default Vue.extend({
         items: [
           {
             id: "is-default",
+            value: true,
             name: "default",
             content: "w paczce z grą"
           },
           {
             id: "not-default",
+            value: true,
             name: "notDefault",
             content: "poza paczką z grą"
           },
           {
             id: "non-public",
+            value: true,
             name: "nonPublic",
             content: "niepubliczna"
           }
@@ -164,21 +217,25 @@ export default Vue.extend({
         items: [
           {
             id: "SPK",
+            value: true,
             name: "SPK",
             content: "SPK"
           },
           {
             id: "SCS",
+            value: true,
             name: "SCS",
             content: "SCS"
           },
           {
             id: "by-hand",
+            value: true,
             name: "ręczne",
             content: "ręczne"
           },
           {
             id: "levers",
+            value: true,
             name: "mechaniczne",
             content: "mechaniczne"
           }
@@ -192,21 +249,25 @@ export default Vue.extend({
         items: [
           {
             id: "modern",
+            value: true,
             name: "współczesna",
             content: "współczesna"
           },
           {
             id: "semaphore",
+            value: true,
             name: "kształtowa",
             content: "kształtowa"
           },
           {
             id: "mixed",
+            value: true,
             name: "mieszana",
             content: "mieszana"
           },
           {
             id: "historic",
+            value: true,
             name: "historyczna",
             content: "historyczna"
           }
@@ -215,7 +276,7 @@ export default Vue.extend({
     }
   }),
   methods: {
-    ...mapActions(["setFilter"]),
+    ...mapActions(["setFilter", "resetFilters"]),
     handleChange(e: any) {
       this.setFilter({ filterName: e.target.name, value: !e.target.checked });
     },
@@ -224,6 +285,24 @@ export default Vue.extend({
         filterName: e.target.name,
         value: parseInt(e.target.value)
       });
+    },
+    reset() {
+      for (const [key, value] of Object.entries(this.gridElements)) {
+        for (const item of this.gridElements[key].items) {
+          item.value = true;
+        }
+      }
+
+      this.oneWay = true;
+      this.twoWay = true;
+      this.levelFrom = 0;
+      this.levelTo = 20;
+      this.oneWayCatenary = 0;
+      this.oneWayOther = 0;
+      this.twoWayCatenary = 0;
+      this.twoWayOther = 0;
+
+      this.resetFilters();
     }
   }
 });
@@ -246,6 +325,10 @@ export default Vue.extend({
   white-space: nowrap;
 
   font-size: calc(0.6rem + 0.4vw);
+
+  @include smallScreen() {
+    font-size: 0.65rem;
+  }
 }
 
 .grid {
@@ -271,12 +354,13 @@ export default Vue.extend({
     -webkit-user-select: none;
   }
 }
+.item {
+  &-title {
+    text-align: center;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
 
-.item-title {
-  text-align: center;
-  margin-bottom: 0.5rem;
-  font-weight: bold;
-
-  color: $accentCol;
+    color: $accentCol;
+  }
 }
 </style>

@@ -27,6 +27,28 @@ class Store extends VuexModule {
 
     public filteredStations: {}[] = [];
 
+    public filterInitStates = {
+        "default": false,
+        "notDefault": false,
+        "nonPublic": false,
+        "SPK": false,
+        "SCS": false,
+        "ręczne": false,
+        "mechaniczne": false,
+        "współczesna": false,
+        "kształtowa": false,
+        "historyczna": false,
+        "mieszana": false,
+        "levelFrom": 0,
+        "levelTo": 20,
+        "1track-ne": 0,
+        "2track-ne": 0,
+        "1track-e": 0,
+        "2track-e": 0,
+        "no-1track": false,
+        "no-2track": false
+    } as const;
+
     public filters = {
         "default": false,
         "notDefault": false,
@@ -45,6 +67,8 @@ class Store extends VuexModule {
         "2track-ne": 0,
         "1track-e": 0,
         "2track-e": 0,
+        "no-1track": false,
+        "no-2track": false
     } as any;
 
 
@@ -67,6 +91,12 @@ class Store extends VuexModule {
     @Action
     public setFilter(payload: { filterName: string, value: number | boolean }) {
         this.context.commit('mutateFilter', payload);
+        this.context.commit('filterStations');
+    }
+
+    @Action
+    public resetFilters() {
+        this.context.commit('resetFilterList');
         this.context.commit('filterStations');
     }
 
@@ -175,6 +205,9 @@ class Store extends VuexModule {
             if (station.reqLevel < this.filters['level-from']) return false;
             if (station.reqLevel > this.filters['level-to']) return false;
 
+            if (this.filters["no-1track"] && (station.routes.oneWay.catenary != 0 || station.routes.oneWay.noCatenary != 0)) return false;
+            if (this.filters["no-2track"] && (station.routes.twoWay.catenary != 0 || station.routes.twoWay.noCatenary != 0)) return false;
+
             if (station.routes.oneWay.catenary < this.filters['1track-e']) return false;
             if (station.routes.oneWay.noCatenary < this.filters['1track-ne']) return false;
 
@@ -193,6 +226,11 @@ class Store extends VuexModule {
 
             return true;
         })
+    }
+
+    @Mutation
+    public resetFilterList() {
+        this.filters = { ...this.filterInitStates };
     }
 
     @Mutation

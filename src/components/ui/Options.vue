@@ -51,14 +51,14 @@ export default Vue.extend({
 
 .options {
   position: relative;
-  font-size: calc(0.7rem + 0.5vw);
+  font-size: calc(0.6rem + 0.9vw);
 
   display: flex;
 }
 
 button {
   color: #e0e0e0;
-  font-size: 1em;
+  font-size: 0.8em;
 
   display: flex;
   align-items: center;
