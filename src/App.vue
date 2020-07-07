@@ -125,6 +125,27 @@ input {
   box-sizing: border-box;
 }
 
+button {
+  display: flex;
+  align-items: center;
+
+  background: #333;
+  border: none;
+
+  color: #e0e0e0;
+  font-size: 0.9em;
+
+  outline: none;
+  padding: 0.5em;
+  cursor: pointer;
+
+  transition: all 0.3s;
+
+  &:hover {
+    background: rgba(#e0e0e0, 0.4);
+  }
+}
+
 a {
   color: white;
   text-decoration: none;

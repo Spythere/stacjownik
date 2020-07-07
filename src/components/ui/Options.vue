@@ -57,21 +57,8 @@ export default Vue.extend({
 }
 
 button {
-  color: #e0e0e0;
   font-size: 0.8em;
-
-  display: flex;
-  align-items: center;
-
-  background: #333;
-  border: none;
-
-  outline: none;
-  padding: 0.2em;
-
-  cursor: pointer;
-
-  transition: all 0.3s;
+  padding: 0.3em;
 
   img {
     width: 1.3em;
@@ -82,11 +69,6 @@ button {
     color: $accentCol;
     border: none;
     font-weight: bold;
-  }
-
-  &:hover,
-  &:focus {
-    background: rgba(#e0e0e0, 0.1);
   }
 }
 </style>
