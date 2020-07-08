@@ -2,8 +2,10 @@
   <div class="list">
     <Card :stationInfo="focusedStationInfo" :closeCard="closeCard" />
 
+    <!-- <div class="info">Ups! Brak stacji do wyświetlenia!</div> -->
+
     <div class="table-wrapper">
-      <table class="table">
+      <table class="table" v-if="stations.length > 0">
         <thead>
           <tr>
             <th>Stacja</th>
@@ -248,7 +250,7 @@ export default Vue.extend({
   font-size: calc(0.6rem + 0.4vw);
 
   @include smallScreen() {
-    font-size: 0.5rem;
+    font-size: 0.65rem;
   }
 
   thead th {

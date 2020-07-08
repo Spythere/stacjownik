@@ -196,6 +196,7 @@ class Store extends VuexModule {
     public filterStations() {
         this.filteredStations = this.stations.filter(station => {
 
+
             if ((station.nonPublic || !station.reqLevel) && this.filters['nonPublic']) return false;
             if (!station.reqLevel) return true;
 

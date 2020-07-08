@@ -1,5 +1,7 @@
 <template>
   <div class="list-filter">
+    <div class="exit" @click="exitFilters">X</div>
+    <div class="list-filter-title">FILTRY</div>
     <ul class="grid">
       <li class="grid-row">
         <div class="grid-col" v-for="(el, i) in gridElements" :key="i">
@@ -275,6 +277,7 @@ export default Vue.extend({
       }
     }
   }),
+  props: ["exit"],
   methods: {
     ...mapActions(["setFilter", "resetFilters"]),
     handleChange(e: any) {
@@ -303,6 +306,9 @@ export default Vue.extend({
       this.twoWayOther = 0;
 
       this.resetFilters();
+    },
+    exitFilters() {
+      this.exit();
     }
   }
 });
@@ -313,28 +319,46 @@ export default Vue.extend({
 @import "../../styles/variables";
 
 .list-filter {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  padding: 0.3rem;
+  position: fixed;
+  top: 50%;
+  left: 50%;
 
-  @include smallScreen() {
-    width: 100vw;
-  }
+  overflow: auto;
+  max-height: 90%;
 
+  padding: 0.4em;
+
+  background: rgba(black, 0.85);
   white-space: nowrap;
-
+  transform: translate(-50%, -50%);
   font-size: calc(0.6rem + 0.4vw);
 
   @include smallScreen() {
-    font-size: 0.65rem;
+    width: 100vw;
+    font-size: 0.75em;
   }
 }
 
-.grid {
-  background: rgba(black, 0.65);
-  padding: 0.5rem;
+.exit {
+  position: absolute;
+  top: 0;
+  right: 0;
 
+  padding: 0.4rem;
+
+  font-size: calc(1rem + 0.4vw);
+
+  cursor: pointer;
+}
+
+.list-filter-title {
+  text-align: center;
+  padding: 0.3rem;
+  font-size: 1.6em;
+  font-weight: bold;
+}
+
+.grid {
   &-row {
     display: flex;
     justify-content: center;

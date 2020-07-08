@@ -12,7 +12,7 @@
 
     <transition name="slide">
       <keep-alive>
-        <ListFilter v-if="filtersOpen" />
+        <ListFilter v-if="filtersOpen" :exit="() => filtersOpen = !filtersOpen" />
       </keep-alive>
     </transition>
   </div>
@@ -45,15 +45,14 @@ export default Vue.extend({
 
 .slide-enter,
 .slide-leave-to {
-  transform: translateX(10px);
+  transform: translate(-40%, -50%);
   opacity: 0;
 }
 
 .options {
-  position: relative;
   font-size: calc(0.6rem + 0.9vw);
 
-  display: flex;
+  // display: flex;
 }
 
 button {

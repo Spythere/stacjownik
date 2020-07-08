@@ -1,129 +1,131 @@
 <template>
-  <div class="card" v-if="stationInfo">
-    <div class="card-exit" @click="closeCard">X</div>
+  <transition name="card-anim">
+    <div class="card" v-if="stationInfo">
+      <div class="card-exit" @click="closeCard">X</div>
 
-    <div class="card-upper">
-      <div class="station-name">
-        <a
-          v-if="stationInfo.stationURL"
-          :href="stationInfo.stationURL"
-          target="_blank"
-          rel="noopener noreferrer"
-        >{{stationInfo.stationName}}</a>
-        <span v-else>{{stationInfo.stationName}}</span>
-      </div>
-
-      <div class="station-hash">{{stationInfo.stationHash}}</div>
-
-      <div class="station-icons">
-        <img
-          v-if="stationInfo.controlType"
-          :src="require(`@/assets/icon-${stationInfo.controlType}.svg`)"
-          :alt="stationInfo.controlType"
-          :title="'Sterowanie ' + stationInfo.controlType"
-        />
-
-        <img
-          v-if="stationInfo.signalType"
-          :src="require(`@/assets/icon-${stationInfo.signalType}.svg`)"
-          :alt="stationInfo.signalType"
-          :title="'Sygnalizacja ' + stationInfo.signalType"
-        />
-
-        <img
-          v-if="stationInfo.SBL && stationInfo.SBL !== ''"
-          :src="require(`@/assets/icon-SBL.svg`)"
-          alt="SBL"
-          title="Sceneria posiada SBL na przynajmniej jednym ze szlaków"
-        />
-
-        <img
-          v-if="stationInfo.default"
-          :src="require(`@/assets/icon-td2.svg`)"
-          alt="default-pack"
-          title="Sceneria domyślnie dostępna w grze"
-        />
-
-        <img
-          v-if="stationInfo.nonPublic || !stationInfo.reqLevel"
-          :src="require(`@/assets/icon-lock.svg`)"
-          alt="non-public"
-          title="Sceneria niepubliczna"
-        />
-
-        <span
-          v-if="stationInfo.reqLevel"
-          :title="'Wymagany poziom dyżurnego: ' +  stationInfo.reqLevel"
-        >{{parseInt(stationInfo.reqLevel) < 2 ? "L" : stationInfo.reqLevel}}</span>
-      </div>
-
-      <div class="station-info"></div>
-    </div>
-
-    <div class="card-content">
-      <div class="dispatcher">
-        <div class="dispatcher-exp">{{stationInfo.dispatcherExp}}</div>
-        <div class="dispatcher-name">
+      <div class="card-upper">
+        <div class="station-name">
           <a
-            :href="'https://td2.info.pl/profile/?u=' + stationInfo.dispatcherId"
+            v-if="stationInfo.stationURL"
+            :href="stationInfo.stationURL"
             target="_blank"
             rel="noopener noreferrer"
-          >{{stationInfo.dispatcherName}}</a>
+          >{{stationInfo.stationName}}</a>
+          <span v-else>{{stationInfo.stationName}}</span>
         </div>
-      </div>
 
-      <div class="rating">
-        <div class="rating-content">
-          <img :src="require(`@/assets/icon-like.svg`)" alt="like-icon" />
-          {{stationInfo.dispatcherRate}}
-        </div>
-      </div>
+        <div class="station-hash">{{stationInfo.stationHash}}</div>
 
-      <div class="occupation">
-        <div class="occupation-title text--title">SCENERIA ZAJĘTA DO</div>
-        <div class="occupation-content text--content">{{stationInfo.occupiedTo}}</div>
-      </div>
+        <div class="station-icons">
+          <img
+            v-if="stationInfo.controlType"
+            :src="require(`@/assets/icon-${stationInfo.controlType}.svg`)"
+            :alt="stationInfo.controlType"
+            :title="'Sterowanie ' + stationInfo.controlType"
+          />
 
-      <div class="spawns">
-        <div class="spawns-title text--title">OTWARTE SPAWNY</div>
-        <div class="spawns-content text--content">
+          <img
+            v-if="stationInfo.signalType"
+            :src="require(`@/assets/icon-${stationInfo.signalType}.svg`)"
+            :alt="stationInfo.signalType"
+            :title="'Sygnalizacja ' + stationInfo.signalType"
+          />
+
+          <img
+            v-if="stationInfo.SBL && stationInfo.SBL !== ''"
+            :src="require(`@/assets/icon-SBL.svg`)"
+            alt="SBL"
+            title="Sceneria posiada SBL na przynajmniej jednym ze szlaków"
+          />
+
+          <img
+            v-if="stationInfo.default"
+            :src="require(`@/assets/icon-td2.svg`)"
+            alt="default-pack"
+            title="Sceneria domyślnie dostępna w grze"
+          />
+
+          <img
+            v-if="stationInfo.nonPublic || !stationInfo.reqLevel"
+            :src="require(`@/assets/icon-lock.svg`)"
+            alt="non-public"
+            title="Sceneria niepubliczna"
+          />
+
           <span
-            class="spawn"
-            v-for="(spawn, i) in stationInfo.spawnString"
-            :key="spawn + stationInfo.dispatcherName + i"
-          >{{spawn}}</span>
-
-          <span class="spawn" v-if="!stationInfo.spawnString">BRAK</span>
+            v-if="stationInfo.reqLevel"
+            :title="'Wymagany poziom dyżurnego: ' +  stationInfo.reqLevel"
+          >{{(parseInt(stationInfo.reqLevel) < 2) ? "L" : stationInfo.reqLevel}}</span>
         </div>
+
+        <div class="station-info"></div>
       </div>
 
-      <div class="users">
-        <div class="users-title text--title">GRACZE NA STACJI</div>
-        <div class="users-content text--content">
-          <div
-            class="user"
-            v-for="train in stationInfo.trains"
-            :key="train.trainNo + train.driverName"
-          >
+      <div class="card-content">
+        <div class="dispatcher">
+          <div class="dispatcher-exp">{{stationInfo.dispatcherExp}}</div>
+          <div class="dispatcher-name">
             <a
-              :href="'https://rj.td2.info.pl/train#' + train.trainNo + ';eu'"
+              :href="'https://td2.info.pl/profile/?u=' + stationInfo.dispatcherId"
               target="_blank"
               rel="noopener noreferrer"
-            >
-              <span>{{train.trainNo}}</span>
-              |
-              <span>{{train.driverName}}</span>
-            </a>
+            >{{stationInfo.dispatcherName}}</a>
           </div>
+        </div>
 
-          <span
-            class="user borderless"
-            v-if="!stationInfo.trains || stationInfo.trains.length == 0"
-          >BRAK</span>
+        <div class="rating">
+          <div class="rating-content">
+            <img :src="require(`@/assets/icon-like.svg`)" alt="like-icon" />
+            {{stationInfo.dispatcherRate}}
+          </div>
+        </div>
+
+        <div class="occupation">
+          <div class="occupation-title text--title">SCENERIA ZAJĘTA DO</div>
+          <div class="occupation-content text--content">{{stationInfo.occupiedTo}}</div>
+        </div>
+
+        <div class="spawns">
+          <div class="spawns-title text--title">OTWARTE SPAWNY</div>
+          <div class="spawns-content text--content">
+            <span
+              class="spawn"
+              v-for="(spawn, i) in stationInfo.spawnString"
+              :key="spawn + stationInfo.dispatcherName + i"
+            >{{spawn}}</span>
+
+            <span class="spawn" v-if="!stationInfo.spawnString">BRAK</span>
+          </div>
+        </div>
+
+        <div class="users">
+          <div class="users-title text--title">GRACZE NA STACJI</div>
+          <div class="users-content text--content">
+            <div
+              class="user"
+              v-for="train in stationInfo.trains"
+              :key="train.trainNo + train.driverName"
+            >
+              <a
+                :href="'https://rj.td2.info.pl/train#' + train.trainNo + ';eu'"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span>{{train.trainNo}}</span>
+                |
+                <span>{{train.driverName}}</span>
+              </a>
+            </div>
+
+            <span
+              class="user borderless"
+              v-if="!stationInfo.trains || stationInfo.trains.length == 0"
+            >BRAK</span>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </transition>
 </template>
 
 <script lang="ts">
@@ -149,27 +151,34 @@ export default Vue.extend({
   }
 }
 
+.card-anim {
+  &-enter-active,
+  &-leave-active {
+    transition: all 0.25s ease-in-out;
+  }
+
+  &-enter,
+  &-leave-to {
+    opacity: 0;
+  }
+}
+
 .card {
+  display: flex;
+  flex-direction: column;
   position: fixed;
   top: 50%;
   left: 50%;
-
-  display: flex;
-  flex-direction: column;
-
+  transform: translate(-50%, -50%);
   z-index: 2;
 
-  transform: translate(-50%, -50%);
-  background: #474747;
-
-  max-height: 95%;
-
   overflow: auto;
+  background: #474747;
+  box-shadow: 0 0 15px 5px #474747;
 
   width: 65%;
   max-width: 650px;
-
-  box-shadow: 0 0 15px 5px #474747;
+  max-height: 95%;
 
   font-size: calc(0.6rem + 0.5vw);
 
@@ -181,9 +190,7 @@ export default Vue.extend({
     position: absolute;
     top: 0;
     right: 0;
-
     padding: 1rem;
-
     font-size: calc(1rem + 0.7vw);
 
     cursor: pointer;
@@ -196,7 +203,6 @@ export default Vue.extend({
 
     align-items: center;
     text-align: center;
-
     padding: 1em;
 
     & > div {
@@ -208,7 +214,6 @@ export default Vue.extend({
   &-upper {
     background: #959595;
     text-align: center;
-
     padding: 0.2em;
   }
 }
@@ -235,17 +240,16 @@ export default Vue.extend({
   }
 
   &-icons {
-    padding: 0.5rem;
-
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 0.5rem;
 
     img,
     span {
+      margin: 0 0.5em;
       width: 2.5em;
       height: 2.5em;
-      margin: 0 0.5em;
     }
 
     span {
@@ -257,9 +261,9 @@ export default Vue.extend({
 
       font-weight: bold;
 
+      user-select: none;
       -moz-user-select: none;
       -webkit-user-select: none;
-      user-select: none;
     }
   }
 }
@@ -271,6 +275,8 @@ export default Vue.extend({
   justify-content: center;
   align-items: center;
 
+  text-align: center;
+
   @include smallScreen() {
     flex-direction: column;
   }
@@ -280,12 +286,12 @@ export default Vue.extend({
     justify-content: center;
     align-items: center;
 
-    border: 2px solid #ffbb00;
-    border-radius: 50%;
-    font-size: 1.3em;
-
     width: 2em;
     height: 2em;
+
+    font-size: 1.3em;
+    border: 2px solid #ffbb00;
+    border-radius: 50%;
   }
 
   &-name {
@@ -298,8 +304,6 @@ export default Vue.extend({
       margin-left: 0;
       margin-top: 0.2em;
     }
-
-    text-align: center;
   }
 }
 
@@ -327,7 +331,6 @@ export default Vue.extend({
   display: flex;
   justify-content: center;
   align-items: center;
-
   flex-direction: column;
 
   &-content {
@@ -343,7 +346,6 @@ export default Vue.extend({
   display: flex;
   justify-content: center;
   align-items: center;
-
   flex-direction: column;
 
   &-content {
@@ -369,7 +371,6 @@ export default Vue.extend({
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   flex-direction: column;
 
   overflow: hidden;
