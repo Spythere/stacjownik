@@ -1,5 +1,5 @@
 <template>
-  <div class="list">
+  <div class="list flex">
     <Card :stationInfo="focusedStationInfo" :closeCard="closeCard" />
 
     <!-- <div class="info">Ups! Brak stacji do wyświetlenia!</div> -->
@@ -9,10 +9,10 @@
         <thead>
           <tr>
             <th>Stacja</th>
+            <th>Status</th>
             <th>Dyżurny</th>
             <th>Poziom</th>
             <th>Maszyniści</th>
-            <th>Zajęta do</th>
             <th>
               Informacje
               <div>ogólne</div>
@@ -28,83 +28,100 @@
           </tr>
         </thead>
 
-        <tr
-          class="table-item"
-          v-for="(station, i) in computedStations"
-          :key="i + station.stationHash"
-          @click="() => { setFocusedStation(station.stationName) }"
-        >
-          <td
-            class="station-name"
-            :class="station.default && 'default-station'"
-          >{{station.stationName}} {{ station.reqLevel ? "| " + (parseInt(station.reqLevel) >= 2 ? station.reqLevel : "L") : "" }}</td>
+        <tbody>
+          <tr
+            class="table-item"
+            v-for="(station, i) in computedStations"
+            :key="i + station.stationHash"
+            @click="() => { if(station.online) setFocusedStation(station.stationName) }"
+          >
+            <td
+              class="station-name"
+              :class="{'default-station': station.default, 'online': station.online}"
+            >{{station.stationName}} {{ station.reqLevel ? "| " + (parseInt(station.reqLevel) >= 2 ? station.reqLevel : "L") : "" }}</td>
+            <td class="hours">
+              <span
+                class="hour"
+                :class="occupationClasses(station.occupiedTo)"
+              >{{station.occupiedTo}}</span>
+            </td>
 
-          <td class="disptacher-name">{{station.dispatcherName}}</td>
-          <td class="dispatcher-exp">
-            <span :style="calculateStyle(station.dispatcherExp)">{{station.dispatcherExp}}</span>
-          </td>
-          <td class="users">{{station.currentUsers}}/{{station.maxUsers}}</td>
-          <td class="hours">
-            <span class="hour" :class="occupationClasses(station.occupiedTo)">{{station.occupiedTo}}</span>
-          </td>
-          <td class="info">
-            <img
-              v-if="station.controlType"
-              :src="require(`@/assets/icon-${station.controlType}.svg`)"
-              :alt="station.controlType"
-              :title="'Sterowanie ' + station.controlType"
-            />
+            <td class="disptacher-name">{{station.online ? station.dispatcherName : ""}}</td>
+            <td class="dispatcher-exp">
+              <span
+                v-if="station.online"
+                :style="calculateStyle(station.dispatcherExp)"
+              >{{station.dispatcherExp}}</span>
+            </td>
+            <td
+              class="users"
+            >{{station.online ? (station.currentUsers + "/" + station.maxUsers) : ""}}</td>
+            <td class="info">
+              <!-- <img
+                v-if="station.default"
+                :src="require(`@/assets/icon-td2.svg`)"
+                alt="default"
+                title="Sceneria domyślnie dostępna w grze"
+              />-->
 
-            <img
-              v-if="station.signalType"
-              :src="require(`@/assets/icon-${station.signalType}.svg`)"
-              :alt="station.signalType"
-              :title="'Sygnalizacja ' + station.signalType"
-            />
+              <img
+                v-if="station.controlType"
+                :src="require(`@/assets/icon-${station.controlType}.svg`)"
+                :alt="station.controlType"
+                :title="'Sterowanie ' + station.controlType"
+              />
 
-            <img
-              v-if="station.SBL && station.SBL !== ''"
-              :src="require(`@/assets/icon-SBL.svg`)"
-              alt="SBL"
-              title="Sceneria posiada SBL na przynajmniej jednym ze szlaków"
-            />
+              <img
+                v-if="station.signalType"
+                :src="require(`@/assets/icon-${station.signalType}.svg`)"
+                :alt="station.signalType"
+                :title="'Sygnalizacja ' + station.signalType"
+              />
 
-            <img
-              v-if="!station.reqLevel || station.nonPublic"
-              :src="require(`@/assets/icon-lock.svg`)"
-              alt="non-public"
-              title="Sceneria niepubliczna"
-            />
-          </td>
+              <img
+                v-if="station.SBL && station.SBL !== ''"
+                :src="require(`@/assets/icon-SBL.svg`)"
+                alt="SBL"
+                title="Sceneria posiada SBL na przynajmniej jednym ze szlaków"
+              />
 
-          <td class="tracks twoway">
-            <span
-              v-if="station.routes && station.routes.twoWay.catenary > 0"
-              class="track catenary"
-              :title="'Liczba zelektryfikowanych szlaków dwutorowych: ' + station.routes.twoWay.catenary"
-            >{{station.routes.twoWay.catenary}}</span>
+              <img
+                v-if="!station.reqLevel || station.nonPublic"
+                :src="require(`@/assets/icon-lock.svg`)"
+                alt="non-public"
+                title="Sceneria niepubliczna"
+              />
+            </td>
 
-            <span
-              v-if="station.routes && station.routes.twoWay.noCatenary > 0"
-              class="track no-catenary"
-              :title="'Liczba niezelektryfikowanych szlaków dwutorowych: ' + station.routes.twoWay.noCatenary"
-            >{{station.routes.twoWay.noCatenary}}</span>
-          </td>
+            <td class="tracks twoway">
+              <span
+                v-if="station.routes && station.routes.twoWay.catenary > 0"
+                class="track catenary"
+                :title="'Liczba zelektryfikowanych szlaków dwutorowych: ' + station.routes.twoWay.catenary"
+              >{{station.routes.twoWay.catenary}}</span>
 
-          <td class="tracks oneway">
-            <span
-              v-if="station.routes && station.routes.oneWay.catenary > 0"
-              class="track catenary"
-              :title="'Liczba zelektryfikowanych szlaków jednotorowych: ' + station.routes.oneWay.catenary"
-            >{{station.routes.oneWay.catenary}}</span>
+              <span
+                v-if="station.routes && station.routes.twoWay.noCatenary > 0"
+                class="track no-catenary"
+                :title="'Liczba niezelektryfikowanych szlaków dwutorowych: ' + station.routes.twoWay.noCatenary"
+              >{{station.routes.twoWay.noCatenary}}</span>
+            </td>
 
-            <span
-              v-if="station.routes && station.routes.oneWay.noCatenary > 0"
-              class="track no-catenary"
-              :title="'Liczba niezelektryfikowanych szlaków jednotorowych: ' + station.routes.oneWay.noCatenary"
-            >{{station.routes.oneWay.noCatenary}}</span>
-          </td>
-        </tr>
+            <td class="tracks oneway">
+              <span
+                v-if="station.routes && station.routes.oneWay.catenary > 0"
+                class="track catenary"
+                :title="'Liczba zelektryfikowanych szlaków jednotorowych: ' + station.routes.oneWay.catenary"
+              >{{station.routes.oneWay.catenary}}</span>
+
+              <span
+                v-if="station.routes && station.routes.oneWay.noCatenary > 0"
+                class="track no-catenary"
+                :title="'Liczba niezelektryfikowanych szlaków jednotorowych: ' + station.routes.oneWay.noCatenary"
+              >{{station.routes.oneWay.noCatenary}}</span>
+            </td>
+          </tr>
+        </tbody>
       </table>
     </div>
   </div>
@@ -150,6 +167,9 @@ export default Vue.extend({
       let className = "";
 
       switch (occupiedTo) {
+        case "WOLNA":
+          className = "free";
+          break;
         case "KOŃCZY":
           className = "ending";
           break;
@@ -193,7 +213,14 @@ export default Vue.extend({
 .hour {
   padding: 0.4em;
   border-radius: 1rem;
-  font-weight: 500;
+  font-weight: bold;
+
+  background-color: #00be19;
+
+  &.free {
+    background-color: #8a8a8a;
+    font-size: 0.95em;
+  }
 
   &.ending {
     background-color: $accentCol;
@@ -202,7 +229,7 @@ export default Vue.extend({
   }
 
   &.no-limit {
-    // background-color: #57ae00;
+    background-color: #0077ae;
     font-size: 0.85em;
   }
 
@@ -229,13 +256,9 @@ export default Vue.extend({
   }
 }
 
-.list {
-  display: flex;
-  justify-content: center;
-}
-
 .default-station {
-  color: $secondaryCol;
+  font-weight: bold;
+  color: $accentCol;
 }
 
 .table {
@@ -247,14 +270,14 @@ export default Vue.extend({
   white-space: nowrap;
   border-collapse: collapse;
 
-  font-size: calc(0.6rem + 0.4vw);
+  font-size: calc(0.6rem + 0.35vw);
 
   @include smallScreen() {
     font-size: 0.65rem;
   }
 
   thead th {
-    padding: 0.2rem;
+    padding: 0.3rem;
     background-color: #444;
   }
 
@@ -264,19 +287,14 @@ export default Vue.extend({
     &:nth-child(even) {
       background-color: rgb(102, 101, 101);
       color: white;
-
-      a {
-        color: white;
-      }
     }
 
     &:hover,
     &:focus {
       background-color: #818181;
-      // transform: scale(1.2);
     }
 
-    & > td {
+    td {
       padding: 0.3rem 1rem;
       margin: 0 3rem;
       text-align: center;

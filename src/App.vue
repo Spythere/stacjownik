@@ -1,7 +1,7 @@
 <template>
   <div class="app">
     <div class="app-container">
-      <header class="app-header">
+      <header class="app-header flex flex-column">
         <div class="brand-name">
           <span>Stacj</span>
           <img src="@/assets/trainlogo.png" alt="trainlogo" />
@@ -10,15 +10,13 @@
         <span class="online">Scenerie online: {{stationCount}} | Maszyniści online: {{ trainCount }}</span>
       </header>
 
-      <div class="app-bar" ref="appBar">
+      <div class="app-bar flex flex-spaced">
         <div class="bar-content">
           <div class="bar-left">
             <Options />
           </div>
 
-          <div class="bar-right">
-            <!-- <div class="last-update">Ostatnie zmiany</div> -->
-          </div>
+          <div class="bar-right"></div>
         </div>
       </div>
 
@@ -26,10 +24,9 @@
         <Loading v-if="connectionState == 0" />
         <Error v-else-if="connectionState == 1" :error="errorMessage" />
         <router-view v-else />
-        <!-- <router-view /> -->
       </main>
 
-      <footer class="app-footer">&copy; Spythere 2020</footer>
+      <footer class="app-footer flex">&copy; Spythere 2020</footer>
     </div>
   </div>
 </template>
@@ -53,9 +50,9 @@ export default Vue.extend({
   }),
 
   methods: {
-    ...mapActions(["fetchStations"]),
+    ...mapActions(["initStations"]),
     getStationList() {
-      this.fetchStations()
+      this.initStations()
         .then(() => (this.connectionState = 2))
         .catch(err => {
           this.connectionState = 1;
@@ -70,16 +67,6 @@ export default Vue.extend({
 
   mounted() {
     this.getStationList();
-
-    setInterval(this.getStationList, 5000);
-
-    document.addEventListener("scroll", e => {
-      const appBarEl = this.$refs.appBar as Element;
-
-      if (appBarEl.getBoundingClientRect().top < 0)
-        appBarEl.classList.add("sticky");
-      else appBarEl.classList.remove("sticky");
-    });
   }
 });
 </script>
@@ -125,7 +112,7 @@ input {
   box-sizing: border-box;
 }
 
-button {
+.button {
   display: flex;
   align-items: center;
 
@@ -136,10 +123,16 @@ button {
   font-size: 0.9em;
 
   outline: none;
-  padding: 0.5em;
+  padding: 0.35em;
   cursor: pointer;
 
   transition: all 0.3s;
+
+  &.open {
+    color: $accentCol;
+    border: none;
+    font-weight: bold;
+  }
 
   &:hover {
     background: rgba(#e0e0e0, 0.4);
@@ -169,11 +162,24 @@ ul {
   list-style: none;
 }
 
+.flex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &-spaced {
+    justify-content: space-between;
+  }
+
+  &-column {
+    flex-direction: column;
+  }
+}
+
 .app {
   background: $bgCol;
   color: white;
   width: 100%;
-
   overflow: hidden;
 
   &-container {
@@ -186,11 +192,6 @@ ul {
   }
 
   &-header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    flex-direction: column;
     background: #333;
     padding: 0.4rem;
 
@@ -208,29 +209,18 @@ ul {
   }
 
   &-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: calc(0.8rem + 0.2vw);
-
     position: sticky;
+    font-size: calc(0.8rem + 0.2vw);
     top: 0;
-
     background: #222;
   }
 }
+
 footer {
   background: #111;
   padding: 0.3rem;
-
   color: white;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
   max-width: 100%;
-
   font-size: calc(0.5rem + 0.5vw);
 }
 </style>

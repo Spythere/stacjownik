@@ -4,7 +4,6 @@
         "stationURL": "https://td2.info.pl/scenerie/blaszki/",
         "stationLines": "",
         "stationProject": "",
-        "stationHash": "d712b295",
         "reqLevel": "10",
         "supportersOnly": "NIE",
         "signalType": "współczesna",
@@ -21,7 +20,8 @@
                 "noCatenary": 0
             }
         },
-        "default": true
+        "default": true,
+        "nonPublic": false
     },
     {
         "stationName": "LCS Borowe",
@@ -52,7 +52,6 @@
         "stationURL": "https://td2.info.pl/scenerie/lcs-gdansk/",
         "stationLines": "9, 202, 227, 249, 250",
         "stationProject": "",
-        "stationHash": "5c3dac7f",
         "reqLevel": "10",
         "supportersOnly": "NIE",
         "signalType": "współczesna",
@@ -69,14 +68,14 @@
                 "noCatenary": 0
             }
         },
-        "default": true
+        "default": true,
+        "nonPublic": false
     },
     {
         "stationName": "Lębork",
         "stationURL": "https://td2.info.pl/scenerie/lebork-5834/",
         "stationLines": "202, 229, 237",
         "stationProject": "",
-        "stationHash": "ea695f02",
         "reqLevel": "8",
         "supportersOnly": "NIE",
         "signalType": "współczesna",
@@ -93,14 +92,14 @@
                 "noCatenary": 0
             }
         },
-        "default": true
+        "default": true,
+        "nonPublic": false
     },
     {
         "stationName": "Grabów Miasto",
         "stationURL": "https://td2.info.pl/scenerie/grabow-miasto-v2/",
         "stationLines": "",
         "stationProject": "",
-        "stationHash": "1626cc27",
         "reqLevel": "6",
         "supportersOnly": "NIE",
         "signalType": "współczesna",
@@ -117,14 +116,14 @@
                 "noCatenary": 0
             }
         },
-        "default": true
+        "default": true,
+        "nonPublic": false
     },
     {
         "stationName": "Parzęczewo",
         "stationURL": "https://td2.info.pl/scenerie/parzeczewo/",
         "stationLines": "",
         "stationProject": "",
-        "stationHash": "a7d464d4",
         "reqLevel": "6",
         "supportersOnly": "NIE",
         "signalType": "mieszana",
@@ -141,14 +140,14 @@
                 "noCatenary": 0
             }
         },
-        "default": true
+        "default": true,
+        "nonPublic": false
     },
     {
         "stationName": "Aleksandrów Kujawski",
         "stationURL": "https://td2.info.pl/scenerie/aleksandrow-kujawski/",
         "stationLines": "18, 245",
         "stationProject": "",
-        "stationHash": "6d72679c",
         "reqLevel": "4",
         "supportersOnly": "NIE",
         "signalType": "współczesna",
@@ -165,14 +164,14 @@
                 "noCatenary": 0
             }
         },
-        "default": true
+        "default": true,
+        "nonPublic": false
     },
     {
         "stationName": "Arkadia Zdrój 2012",
         "stationURL": "https://td2.info.pl/scenerie/arkadia-zdroj/",
         "stationLines": "",
         "stationProject": "",
-        "stationHash": "147375b3",
         "reqLevel": "4",
         "supportersOnly": "NIE",
         "signalType": "mieszana",
@@ -189,14 +188,14 @@
                 "noCatenary": 0
             }
         },
-        "default": true
+        "default": true,
+        "nonPublic": false
     },
     {
         "stationName": "Buk 2018",
         "stationURL": "https://td2.info.pl/scenerie/buk2/",
         "stationLines": "",
         "stationProject": "",
-        "stationHash": "4983e8bf",
         "reqLevel": "4",
         "supportersOnly": "NIE",
         "signalType": "współczesna",
@@ -213,14 +212,14 @@
                 "noCatenary": 0
             }
         },
-        "default": true
+        "default": true,
+        "nonPublic": false
     },
     {
         "stationName": "Jordanowo",
         "stationURL": "https://td2.info.pl/scenerie/jordanowo/",
         "stationLines": "",
         "stationProject": "",
-        "stationHash": "dcb27980",
         "reqLevel": "4",
         "supportersOnly": "NIE",
         "signalType": "mieszana",
@@ -237,14 +236,14 @@
                 "noCatenary": 0
             }
         },
-        "default": true
+        "default": true,
+        "nonPublic": false
     },
     {
         "stationName": "LCS Głowno",
         "stationURL": "https://td2.info.pl/scenerie/glowno-(linia-nr-15-lka)/",
         "stationLines": "15",
         "stationProject": "ŁKA",
-        "stationHash": "c876ed93",
         "reqLevel": "4",
         "supportersOnly": "NIE",
         "signalType": "współczesna",
@@ -261,14 +260,14 @@
                 "noCatenary": 0
             }
         },
-        "default": true
+        "default": true,
+        "nonPublic": false
     },
     {
         "stationName": "LCS Ozorków",
         "stationURL": "https://td2.info.pl/scenerie/lcs-ozorkow/",
         "stationLines": "16",
         "stationProject": "ŁKA",
-        "stationHash": "c4de852a",
         "reqLevel": "4",
         "supportersOnly": "NIE",
         "signalType": "współczesna",
@@ -285,14 +284,14 @@
                 "noCatenary": 0
             }
         },
-        "default": true
+        "default": true,
+        "nonPublic": false
     },
     {
         "stationName": "LCS Skrzynki",
         "stationURL": "https://td2.info.pl/scenerie/lcs-skrzynki/",
         "stationLines": "25",
         "stationProject": "ŁKA",
-        "stationHash": "46963c3a",
         "reqLevel": "4",
         "supportersOnly": "NIE",
         "signalType": "współczesna",
@@ -309,14 +308,14 @@
                 "noCatenary": 0
             }
         },
-        "default": true
+        "default": true,
+        "nonPublic": false
     },
     {
         "stationName": "Łask",
         "stationURL": "https://td2.info.pl/scenerie/lask-w-ramach-lka/",
         "stationLines": "14",
         "stationProject": "ŁKA",
-        "stationHash": "1da6b1db",
         "reqLevel": "4",
         "supportersOnly": "NIE",
         "signalType": "współczesna",
@@ -333,14 +332,14 @@
                 "noCatenary": 0
             }
         },
-        "default": true
+        "default": true,
+        "nonPublic": false
     },
     {
         "stationName": "Naterki",
         "stationURL": "https://td2.info.pl/scenerie/naterki/",
         "stationLines": "353",
         "stationProject": "",
-        "stationHash": "672ad968",
         "reqLevel": "4",
         "supportersOnly": "NIE",
         "signalType": "kształtowa",
@@ -357,14 +356,14 @@
                 "noCatenary": 0
             }
         },
-        "default": true
+        "default": true,
+        "nonPublic": false
     },
     {
         "stationName": "Santok Zdrój",
         "stationURL": "https://td2.info.pl/scenerie/santok-zdroj/",
         "stationLines": "",
         "stationProject": "",
-        "stationHash": "c876ed93",
         "reqLevel": "4",
         "supportersOnly": "NIE",
         "signalType": "współczesna",
@@ -381,14 +380,14 @@
                 "noCatenary": 0
             }
         },
-        "default": true
+        "default": true,
+        "nonPublic": false
     },
     {
         "stationName": "Testowo",
         "stationURL": "https://td2.info.pl/scenerie/testowo-3581",
         "stationLines": "",
         "stationProject": "",
-        "stationHash": "cfa1069a",
         "reqLevel": "4",
         "supportersOnly": "NIE",
         "signalType": "współczesna",
@@ -405,14 +404,14 @@
                 "noCatenary": 0
             }
         },
-        "default": true
+        "default": true,
+        "nonPublic": false
     },
     {
         "stationName": "Tłoki",
         "stationURL": "https://td2.info.pl/scenerie/podg-tloki",
         "stationLines": "",
         "stationProject": "",
-        "stationHash": "631aa683",
         "reqLevel": "4",
         "supportersOnly": "NIE",
         "signalType": "współczesna",
@@ -429,14 +428,14 @@
                 "noCatenary": 0
             }
         },
-        "default": true
+        "default": true,
+        "nonPublic": false
     },
     {
         "stationName": "Witaszyczki",
         "stationURL": "https://td2.info.pl/scenerie/witaszyczki/",
         "stationLines": "",
         "stationProject": "",
-        "stationHash": "46963c3a",
         "reqLevel": "4",
         "supportersOnly": "NIE",
         "signalType": "współczesna",
@@ -453,14 +452,14 @@
                 "noCatenary": 0
             }
         },
-        "default": true
+        "default": true,
+        "nonPublic": false
     },
     {
         "stationName": "Bydgowo",
         "stationURL": "https://td2.info.pl/scenerie/bydgowo/",
         "stationLines": "",
         "stationProject": "",
-        "stationHash": "596cf99d",
         "reqLevel": "2",
         "supportersOnly": "NIE",
         "signalType": "współczesna",
@@ -477,14 +476,14 @@
                 "noCatenary": 0
             }
         },
-        "default": true
+        "default": true,
+        "nonPublic": false
     },
     {
         "stationName": "Głębce",
         "stationURL": "https://td2.info.pl/scenerie/glebce",
         "stationLines": "",
         "stationProject": "",
-        "stationHash": "152274d7",
         "reqLevel": "2",
         "supportersOnly": "NIE",
         "signalType": "współczesna",
@@ -501,14 +500,14 @@
                 "noCatenary": 0
             }
         },
-        "default": true
+        "default": true,
+        "nonPublic": false
     },
     {
         "stationName": "Hel",
         "stationURL": "https://td2.info.pl/scenerie/hel/",
         "stationLines": "213",
         "stationProject": "",
-        "stationHash": "7baf7401",
         "reqLevel": "2",
         "supportersOnly": "NIE",
         "signalType": "współczesna",
@@ -525,14 +524,14 @@
                 "noCatenary": 0
             }
         },
-        "default": true
+        "default": true,
+        "nonPublic": false
     },
     {
         "stationName": "Kcynia",
         "stationURL": "https://td2.info.pl/scenerie/kcynia",
         "stationLines": "281, 356",
         "stationProject": "",
-        "stationHash": "a8b3c098",
         "reqLevel": "2",
         "supportersOnly": "NIE",
         "signalType": "kształtowa",
@@ -549,14 +548,14 @@
                 "noCatenary": 0
             }
         },
-        "default": true
+        "default": true,
+        "nonPublic": false
     },
     {
         "stationName": "Lewków",
         "stationURL": "https://td2.info.pl/scenerie/lewkow/",
         "stationLines": "",
         "stationProject": "",
-        "stationHash": "ec92d52c",
         "reqLevel": "2",
         "supportersOnly": "NIE",
         "signalType": "mieszana",
@@ -573,14 +572,14 @@
                 "noCatenary": 0
             }
         },
-        "default": true
+        "default": true,
+        "nonPublic": false
     },
     {
         "stationName": "Cis 2013",
         "stationURL": "https://td2.info.pl/scenerie/cis2",
         "stationLines": "",
         "stationProject": "",
-        "stationHash": "0f8fe101",
         "reqLevel": "0",
         "supportersOnly": "NIE",
         "signalType": "kształtowa",
@@ -597,14 +596,14 @@
                 "noCatenary": 0
             }
         },
-        "default": true
+        "default": true,
+        "nonPublic": false
     },
     {
         "stationName": "Cis 2018",
         "stationURL": "https://td2.info.pl/scenerie/cis2",
         "stationLines": "",
         "stationProject": "",
-        "stationHash": "9b0b6551",
         "reqLevel": "0",
         "supportersOnly": "NIE",
         "signalType": "współczesna",
@@ -621,14 +620,14 @@
                 "noCatenary": 0
             }
         },
-        "default": true
+        "default": true,
+        "nonPublic": false
     },
     {
         "stationName": "Glinnik",
         "stationURL": "https://td2.info.pl/scenerie/glinnik-(projekt-lka)/",
         "stationLines": "15",
         "stationProject": "ŁKA",
-        "stationHash": "3d3def6e",
         "reqLevel": "0",
         "supportersOnly": "NIE",
         "signalType": "współczesna",
@@ -645,14 +644,14 @@
                 "noCatenary": 0
             }
         },
-        "default": true
+        "default": true,
+        "nonPublic": false
     },
     {
         "stationName": "Głogowo",
         "stationURL": "https://td2.info.pl/scenerie/glogowo",
         "stationLines": "",
         "stationProject": "",
-        "stationHash": "6084e6e8",
         "reqLevel": "0",
         "supportersOnly": "NIE",
         "signalType": "współczesna",
@@ -669,14 +668,14 @@
                 "noCatenary": 0
             }
         },
-        "default": true
+        "default": true,
+        "nonPublic": false
     },
     {
         "stationName": "Karszynek",
         "stationURL": "https://td2.info.pl/scenerie/karszynek/",
         "stationLines": "",
         "stationProject": "",
-        "stationHash": "64b3977a",
         "reqLevel": "0",
         "supportersOnly": "NIE",
         "signalType": "historyczna",
@@ -693,14 +692,14 @@
                 "noCatenary": 0
             }
         },
-        "default": true
+        "default": true,
+        "nonPublic": false
     },
     {
         "stationName": "Imielin 2015",
         "stationURL": "https://td2.info.pl/scenerie/imielin-2015",
         "stationLines": "138",
         "stationProject": "",
-        "stationHash": "13353c83",
         "reqLevel": "0",
         "supportersOnly": "NIE",
         "signalType": "współczesna",
@@ -717,14 +716,14 @@
                 "noCatenary": 0
             }
         },
-        "default": true
+        "default": true,
+        "nonPublic": false
     },
     {
         "stationName": "Kolsko",
         "stationURL": "https://td2.info.pl/scenerie/kolsko/",
         "stationLines": "",
         "stationProject": "",
-        "stationHash": "fd9ba98c",
         "reqLevel": "0",
         "supportersOnly": "NIE",
         "signalType": "kształtowa",
@@ -741,14 +740,14 @@
                 "noCatenary": 0
             }
         },
-        "default": true
+        "default": true,
+        "nonPublic": false
     },
     {
         "stationName": "LCS Bucz Wileński",
         "stationURL": "https://td2.info.pl/scenerie/bucz-wilenski/",
         "stationLines": "",
         "stationProject": "",
-        "stationHash": "1e8e451a",
         "reqLevel": "0",
         "supportersOnly": "NIE",
         "signalType": "współczesna",
@@ -765,14 +764,14 @@
                 "noCatenary": 0
             }
         },
-        "default": true
+        "default": true,
+        "nonPublic": false
     },
     {
         "stationName": "Lisiczki",
         "stationURL": "https://td2.info.pl/scenerie/lisiczki",
         "stationLines": "",
         "stationProject": "",
-        "stationHash": "c3366fd2",
         "reqLevel": "0",
         "supportersOnly": "NIE",
         "signalType": "współczesna",
@@ -789,14 +788,14 @@
                 "noCatenary": 0
             }
         },
-        "default": true
+        "default": true,
+        "nonPublic": false
     },
     {
         "stationName": "Łęczyca",
         "stationURL": "https://td2.info.pl/scenerie/leczyca-projekt-lka/",
         "stationLines": "16",
         "stationProject": "ŁKA",
-        "stationHash": "da6ba7c6",
         "reqLevel": "0",
         "supportersOnly": "NIE",
         "signalType": "współczesna",
@@ -813,14 +812,14 @@
                 "noCatenary": 0
             }
         },
-        "default": true
+        "default": true,
+        "nonPublic": false
     },
     {
         "stationName": "Poreńsk",
         "stationURL": "https://td2.info.pl/scenerie/porensk/",
         "stationLines": "",
         "stationProject": "",
-        "stationHash": "4710695a",
         "reqLevel": "0",
         "supportersOnly": "NIE",
         "signalType": "współczesna",
@@ -837,14 +836,14 @@
                 "noCatenary": 0
             }
         },
-        "default": true
+        "default": true,
+        "nonPublic": false
     },
     {
         "stationName": "Radowice",
         "stationURL": "https://td2.info.pl/scenerie/radowice",
         "stationLines": "",
         "stationProject": "",
-        "stationHash": "53d8d684",
         "reqLevel": "0",
         "supportersOnly": "NIE",
         "signalType": "kształtowa",
@@ -861,14 +860,14 @@
                 "noCatenary": 0
             }
         },
-        "default": true
+        "default": true,
+        "nonPublic": false
     },
     {
         "stationName": "Witonia",
         "stationURL": "https://td2.info.pl/scenerie/witonia-(projekt-lka)/",
         "stationLines": "16",
         "stationProject": "ŁKA",
-        "stationHash": "770a09de",
         "reqLevel": "0",
         "supportersOnly": "NIE",
         "signalType": "współczesna",
@@ -885,14 +884,14 @@
                 "noCatenary": 0
             }
         },
-        "default": true
+        "default": true,
+        "nonPublic": false
     },
     {
         "stationName": "Wola",
         "stationURL": "https://td2.info.pl/scenerie/wola/",
         "stationLines": "",
         "stationProject": "",
-        "stationHash": "864d8b89",
         "reqLevel": "0",
         "supportersOnly": "NIE",
         "signalType": "mieszana",
@@ -909,14 +908,14 @@
                 "noCatenary": 0
             }
         },
-        "default": true
+        "default": true,
+        "nonPublic": false
     },
     {
         "stationName": "Zgierz Kontrewers",
         "stationURL": "https://td2.info.pl/scenerie/zgierz-kontrewers-6172/",
         "stationLines": "16",
         "stationProject": "ŁKA",
-        "stationHash": "484f8aef",
         "reqLevel": "0",
         "supportersOnly": "NIE",
         "signalType": "współczesna",
@@ -933,7 +932,8 @@
                 "noCatenary": 0
             }
         },
-        "default": true
+        "default": true,
+        "nonPublic": false
     },
     {
         "stationName": "Bargowice",
@@ -955,7 +955,8 @@
                 "noCatenary": 0
             }
         },
-        "default": false
+        "default": false,
+        "nonPublic": false
     },
     {
         "stationName": "Szklana Poręba",
@@ -977,7 +978,8 @@
                 "noCatenary": 0
             }
         },
-        "default": false
+        "default": false,
+        "nonPublic": false
     },
     {
         "stationName": "Wschodna",
@@ -999,7 +1001,8 @@
                 "noCatenary": 0
             }
         },
-        "default": false
+        "default": false,
+        "nonPublic": false
     },
     {
         "stationName": "Zabłocie",
@@ -1021,7 +1024,8 @@
                 "noCatenary": 0
             }
         },
-        "default": false
+        "default": false,
+        "nonPublic": false
     },
     {
         "stationName": "Zdroje",
@@ -1043,7 +1047,8 @@
                 "noCatenary": 0
             }
         },
-        "default": false
+        "default": false,
+        "nonPublic": false
     },
     {
         "stationName": "Grzybowo",
@@ -1065,7 +1070,8 @@
                 "noCatenary": 0
             }
         },
-        "default": false
+        "default": false,
+        "nonPublic": false
     },
     {
         "stationName": "Zwardoń",
@@ -1087,7 +1093,8 @@
                 "noCatenary": 0
             }
         },
-        "default": false
+        "default": false,
+        "nonPublic": false
     },
     {
         "stationName": "Piaskowo",
@@ -1109,7 +1116,8 @@
                 "noCatenary": 0
             }
         },
-        "default": false
+        "default": false,
+        "nonPublic": false
     },
     {
         "stationName": "Rajcza",
@@ -1131,7 +1139,8 @@
                 "noCatenary": 0
             }
         },
-        "default": false
+        "default": false,
+        "nonPublic": false
     },
     {
         "stationName": "Brzezinka",
@@ -1153,7 +1162,8 @@
                 "noCatenary": 0
             }
         },
-        "default": false
+        "default": false,
+        "nonPublic": false
     },
     {
         "stationName": "Torzyn",
@@ -1175,7 +1185,8 @@
                 "noCatenary": 0
             }
         },
-        "default": false
+        "default": false,
+        "nonPublic": false
     },
     {
         "stationName": "Wola Nowska",
@@ -1197,7 +1208,8 @@
                 "noCatenary": 0
             }
         },
-        "default": false
+        "default": false,
+        "nonPublic": false
     },
     {
         "stationName": "Chełmik Wołowski",
@@ -1219,7 +1231,8 @@
                 "noCatenary": 0
             }
         },
-        "default": false
+        "default": false,
+        "nonPublic": false
     },
     {
         "stationName": "Drzewko",
@@ -1241,7 +1254,8 @@
                 "noCatenary": 0
             }
         },
-        "default": false
+        "default": false,
+        "nonPublic": false
     },
     {
         "stationName": "Krzemienice",
@@ -1263,7 +1277,8 @@
                 "noCatenary": 0
             }
         },
-        "default": false
+        "default": false,
+        "nonPublic": false
     },
     {
         "stationName": "Milówka",
@@ -1285,7 +1300,8 @@
                 "noCatenary": 0
             }
         },
-        "default": false
+        "default": false,
+        "nonPublic": false
     },
     {
         "stationName": "Orniki",
@@ -1307,7 +1323,8 @@
                 "noCatenary": 0
             }
         },
-        "default": false
+        "default": false,
+        "nonPublic": false
     },
     {
         "stationName": "Otwocko",
@@ -1329,7 +1346,8 @@
                 "noCatenary": 0
             }
         },
-        "default": false
+        "default": false,
+        "nonPublic": false
     },
     {
         "stationName": "Skostomłoty",
@@ -1351,7 +1369,8 @@
                 "noCatenary": 0
             }
         },
-        "default": false
+        "default": false,
+        "nonPublic": false
     },
     {
         "stationName": "Babimost",
@@ -1373,7 +1392,8 @@
                 "noCatenary": 0
             }
         },
-        "default": false
+        "default": false,
+        "nonPublic": false
     },
     {
         "stationName": "Czerepy",
@@ -1395,7 +1415,8 @@
                 "noCatenary": 0
             }
         },
-        "default": false
+        "default": false,
+        "nonPublic": false
     },
     {
         "stationName": "Grabiny",
@@ -1417,7 +1438,8 @@
                 "noCatenary": 0
             }
         },
-        "default": false
+        "default": false,
+        "nonPublic": false
     },
     {
         "stationName": "Kieły",
@@ -1439,7 +1461,8 @@
                 "noCatenary": 0
             }
         },
-        "default": false
+        "default": false,
+        "nonPublic": false
     },
     {
         "stationName": "Lutol Suchy",
@@ -1461,7 +1484,8 @@
                 "noCatenary": 0
             }
         },
-        "default": false
+        "default": false,
+        "nonPublic": false
     },
     {
         "stationName": "Raki",
@@ -1483,7 +1507,8 @@
                 "noCatenary": 0
             }
         },
-        "default": false
+        "default": false,
+        "nonPublic": false
     },
     {
         "stationName": "Sieniawka",
@@ -1505,7 +1530,8 @@
                 "noCatenary": 1
             }
         },
-        "default": false
+        "default": false,
+        "nonPublic": false
     },
     {
         "stationName": "Stefanowo",
@@ -1527,7 +1553,8 @@
                 "noCatenary": 0
             }
         },
-        "default": false
+        "default": false,
+        "nonPublic": false
     },
     {
         "stationName": "Szlichtyngowa",
@@ -1549,7 +1576,8 @@
                 "noCatenary": 0
             }
         },
-        "default": false
+        "default": false,
+        "nonPublic": false
     },
     {
         "stationName": "Tarnowo Górne",
@@ -1571,7 +1599,8 @@
                 "noCatenary": 0
             }
         },
-        "default": false
+        "default": false,
+        "nonPublic": false
     },
     {
         "stationName": "Tartakowo 2013",
@@ -1593,7 +1622,8 @@
                 "noCatenary": 0
             }
         },
-        "default": false
+        "default": false,
+        "nonPublic": false
     },
     {
         "stationName": "Wielgowo",
@@ -1615,6 +1645,7 @@
                 "noCatenary": 0
             }
         },
-        "default": false
+        "default": false,
+        "nonPublic": false
     }
 ]

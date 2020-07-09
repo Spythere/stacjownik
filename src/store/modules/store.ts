@@ -3,8 +3,10 @@ import data from '@/data/stations.json';
 
 @Module
 class Store extends VuexModule {
-    public trainCount: number = 0;
-    public stations: {
+    private trainCount: number = 0;
+    private stationCount: number = 0;
+
+    private stations: {
         stationName: string;
         stationHash: string;
         maxUsers: number;
@@ -21,13 +23,14 @@ class Store extends VuexModule {
         signalType: string;
         controlType: string;
         default: boolean;
-        nonPublic: boolean;
+        nonPublic: boolean
         routes: { oneWay: { catenary: number; noCatenary: number; }, twoWay: { catenary: number; noCatenary: number; } };
+        online: boolean;
     }[] = [];
 
-    public filteredStations: {}[] = [];
+    private filteredStations: {}[] = [];
 
-    public filterInitStates = {
+    private filterInitStates = {
         "default": false,
         "notDefault": false,
         "nonPublic": false,
@@ -49,7 +52,7 @@ class Store extends VuexModule {
         "no-2track": false
     } as const;
 
-    public filters = {
+    private filters = {
         "default": false,
         "notDefault": false,
         "nonPublic": false,
@@ -73,7 +76,7 @@ class Store extends VuexModule {
 
 
     get getStationCount(): number {
-        return this.stations.length;
+        return this.stationCount;
     }
 
     get getTrainCount(): number {
@@ -101,7 +104,15 @@ class Store extends VuexModule {
     }
 
     @Action
-    public async fetchStations() {
+    public async initStations() {
+        this.context.commit('loadAllStations');
+        this.context.dispatch('fetchStations');
+
+        setInterval(() => this.context.dispatch('fetchStations'), 3000);
+    }
+
+    @Action
+    private async fetchStations() {
         let onlineStations: {
             stationName: string,
             stationHash: string,
@@ -188,15 +199,14 @@ class Store extends VuexModule {
                 }
             })
 
-        this.context.commit('setStations', mappedStations);
+        this.context.commit('updateStations', mappedStations);
+        this.context.commit('setStationCount');
         this.context.commit('filterStations');
     }
 
     @Mutation
-    public filterStations() {
+    private filterStations() {
         this.filteredStations = this.stations.filter(station => {
-
-
             if ((station.nonPublic || !station.reqLevel) && this.filters['nonPublic']) return false;
             if (!station.reqLevel) return true;
 
@@ -230,22 +240,57 @@ class Store extends VuexModule {
     }
 
     @Mutation
-    public resetFilterList() {
+    private loadAllStations() {
+        this.stations = data.map(stationData => ({
+            stationProject: "",
+            spawnString: "",
+            stationHash: "",
+            maxUsers: 0,
+            currentUsers: 0,
+            dispatcherName: "",
+            dispatcherRate: 0,
+            dispatcherExp: 0,
+            dispatcherId: 0,
+            online: false,
+            occupiedTo: "WOLNA",
+            ...stationData,
+        }))
+
+        // WSPARCIE DLA NIEWPISANYCH SCENERII!!!
+    }
+
+    @Mutation
+    private resetFilterList() {
         this.filters = { ...this.filterInitStates };
     }
 
     @Mutation
-    public setStations(stations: []) {
-        this.stations = stations;
+    private updateStations(updatedStations: []) {
+        for (let i = 0; i < this.stations.length; i++) {
+            const toUpdate: any = updatedStations.find((updated: any) => updated.stationName === this.stations[i].stationName);
+
+            if (!toUpdate) {
+                this.stations[i].online = false;
+                continue;
+            }
+
+            this.stations[i] = { ...this.stations[i], ...toUpdate }
+            this.stations[i].online = true;
+        }
     }
 
     @Mutation
-    public setTrainCount(count: number) {
+    private setTrainCount(count: number) {
         this.trainCount = count;
     }
 
     @Mutation
-    public mutateFilter(payload: { filterName: string, value: number | boolean }) {
+    private setStationCount() {
+        this.stationCount = this.stations.filter(station => station.online).length;
+    }
+
+    @Mutation
+    private mutateFilter(payload: { filterName: string, value: number | boolean }) {
         this.filters[payload.filterName] = payload.value;
     }
 
