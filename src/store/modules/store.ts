@@ -23,9 +23,10 @@ class Store extends VuexModule {
         signalType: string;
         controlType: string;
         default: boolean;
-        nonPublic: boolean
+        nonPublic: boolean;
         routes: { oneWay: { catenary: number; noCatenary: number; }, twoWay: { catenary: number; noCatenary: number; } };
         online: boolean;
+        occupiedTo: string;
     }[] = [];
 
     private filteredStations: {}[] = [];
@@ -42,38 +43,19 @@ class Store extends VuexModule {
         "kształtowa": false,
         "historyczna": false,
         "mieszana": false,
-        "levelFrom": 0,
-        "levelTo": 20,
-        "1track-ne": 0,
-        "2track-ne": 0,
-        "1track-e": 0,
-        "2track-e": 0,
+        "minLevel": 0,
+        "minOneWayCatenary": 0,
+        "minOneWay": 0,
+        "minTwoWayCatenary": 0,
+        "minTwoWay": 0,
         "no-1track": false,
-        "no-2track": false
+        "no-2track": false,
+        "free": false,
+        "occupied": false,
+        "ending": false
     } as const;
 
-    private filters = {
-        "default": false,
-        "notDefault": false,
-        "nonPublic": false,
-        "SPK": false,
-        "SCS": false,
-        "ręczne": false,
-        "mechaniczne": false,
-        "współczesna": false,
-        "kształtowa": false,
-        "historyczna": false,
-        "mieszana": false,
-        "levelFrom": 0,
-        "levelTo": 20,
-        "1track-ne": 0,
-        "2track-ne": 0,
-        "1track-e": 0,
-        "2track-e": 0,
-        "no-1track": false,
-        "no-2track": false
-    } as any;
-
+    private filters: any = this.filterInitStates;
 
     get getStationCount(): number {
         return this.stationCount;
@@ -210,21 +192,23 @@ class Store extends VuexModule {
             if ((station.nonPublic || !station.reqLevel) && this.filters['nonPublic']) return false;
             if (!station.reqLevel) return true;
 
+            if (station.online && this.filters['occupied']) return false;
+            if (!station.online && this.filters['free']) return false;
+            if (station.online && station.occupiedTo == "KOŃCZY" && this.filters['ending']) return false;
+
             if (station.default && this.filters['default']) return false;
             if (!station.default && this.filters['notDefault']) return false;
 
-            if (station.reqLevel < this.filters['level-from']) return false;
-            if (station.reqLevel > this.filters['level-to']) return false;
+            if (station.reqLevel < this.filters['minLevel']) return false;
 
             if (this.filters["no-1track"] && (station.routes.oneWay.catenary != 0 || station.routes.oneWay.noCatenary != 0)) return false;
             if (this.filters["no-2track"] && (station.routes.twoWay.catenary != 0 || station.routes.twoWay.noCatenary != 0)) return false;
 
-            if (station.routes.oneWay.catenary < this.filters['1track-e']) return false;
-            if (station.routes.oneWay.noCatenary < this.filters['1track-ne']) return false;
+            if (station.routes.oneWay.catenary < this.filters['minOneWayCatenary']) return false;
+            if (station.routes.oneWay.noCatenary < this.filters['minOneWay']) return false;
 
-            if (station.routes.twoWay.catenary < this.filters['2track-e']) return false;
-            if (station.routes.twoWay.noCatenary < this.filters['2track-ne']) return false;
-
+            if (station.routes.twoWay.catenary < this.filters['minTwoWayCatenary']) return false;
+            if (station.routes.twoWay.noCatenary < this.filters['minTwoWay']) return false;
 
             if (this.filters[station.controlType]) return false;
             if (this.filters[station.signalType]) return false;
@@ -271,6 +255,7 @@ class Store extends VuexModule {
 
             if (!toUpdate) {
                 this.stations[i].online = false;
+                this.stations[i].occupiedTo = "WOLNA";
                 continue;
             }
 

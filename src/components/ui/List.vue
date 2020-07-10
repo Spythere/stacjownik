@@ -273,7 +273,7 @@ export default Vue.extend({
   font-size: calc(0.6rem + 0.35vw);
 
   @include smallScreen() {
-    font-size: 0.65rem;
+    font-size: 0.75rem;
   }
 
   thead th {

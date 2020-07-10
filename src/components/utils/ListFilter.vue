@@ -1,168 +1,51 @@
 <template>
   <transition name="slide">
-    <div class="list-filter">
-      <div class="exit" @click="exitFilters">X</div>
-      <div class="list-filter-title">FILTRY</div>
-      <ul class="grid">
-        <li class="grid-row">
-          <div class="grid-col" v-for="(el, i) in gridElements" :key="i">
-            <div class="grid-item">
-              <div class="item-title">{{el.title}}</div>
+    <section class="filter-card">
+      <div class="card-exit" @click="exit">
+        <img :src="require('@/assets/icon-exit.svg')" alt="exit icon" />
+      </div>
 
-              <div class="item-content">
-                <div class="item-input" v-for="(item, i) in el.items" :key="i">
-                  <input
-                    :type="el.type"
-                    :id="item.id"
-                    :name="item.name"
-                    v-model="item.value"
-                    checked
-                    @change="handleChange"
-                  />
-                  <label :for="item.id">{{ item.content }}</label>
-                </div>
-              </div>
-            </div>
-          </div>
-        </li>
+      <div class="card-title flex">FILTRY</div>
 
-        <li class="grid-row">
-          <div class="grid-col">
-            <div class="grid-item">
-              <div class="item-title">Poziomy dyżurnego</div>
+      <div class="card-options">
+        <div class="option" v-for="(option, i) in options" :key="i">
+          <label class="option-label">
+            <input
+              class="option-input"
+              type="checkbox"
+              :name="option.name"
+              :id="option.id"
+              v-model="option.value"
+              @change="handleChange"
+            />
+            <span class="option-content" :class="option.section">{{option.content}}</span>
+          </label>
+        </div>
+      </div>
 
-              <div class="item-content centered">
-                <div class="item-input" style="text-align: center;">
-                  <input
-                    v-model="levelFrom"
-                    type="number"
-                    name="level-from"
-                    min="0"
-                    max="25"
-                    @change="handleInput"
-                  />
-                  <span>&nbsp;do&nbsp;</span>
-                  <input
-                    v-model="levelTo"
-                    type="number"
-                    name="level-to"
-                    min="0"
-                    max="20"
-                    value="20"
-                    @change="handleInput"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </li>
+      <div class="card-sliders">
+        <div class="slider" v-for="(slider, i) in sliders" :key="i">
+          <input
+            class="slider-input"
+            type="range"
+            :name="slider.name"
+            :id="slider.id"
+            :min="slider.minRange"
+            :max="slider.maxRange"
+            v-model="slider.value"
+            @change="handleInput"
+          />
 
-        <li class="grid-row">
-          <div class="grid-col">
-            <div class="grid-item">
-              <div class="item-title">
-                Szlaki jednotorowe
-                <div>(minimum)</div>
-              </div>
+          <span class="slider-value">{{slider.value}}</span>
 
-              <div class="item-content">
-                <div class="item-input">
-                  <input
-                    v-model="oneWay"
-                    type="checkbox"
-                    id="no-1track"
-                    name="no-1track"
-                    checked
-                    @change="handleChange"
-                  />
-                  <label for="no-1track">Jednotory</label>
-                </div>
+          <div class="slider-content">{{slider.content}}</div>
+        </div>
+      </div>
 
-                <div class="item-input">
-                  <input
-                    v-model="oneWayCatenary"
-                    type="number"
-                    name="1track-e"
-                    min="0"
-                    max="5"
-                    placeholder="0"
-                    @change="handleInput"
-                  />
-                  <span>&nbsp;Zelektryfikowane</span>
-                </div>
-
-                <div class="item-input">
-                  <input
-                    v-model="oneWayOther"
-                    type="number"
-                    name="1track-ne"
-                    min="0"
-                    max="5"
-                    placeholder="0"
-                    @change="handleInput"
-                  />
-                  <span>&nbsp;Niezelektryfikowane</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="grid-col">
-            <div class="grid-item">
-              <div class="item-title">
-                Szlaki dwutorowe
-                <div>(minimum)</div>
-              </div>
-
-              <div class="item-content">
-                <div class="item-input">
-                  <input
-                    v-model="twoWay"
-                    type="checkbox"
-                    id="no-2track"
-                    name="no-2track"
-                    ref="2track"
-                    checked
-                    @change="handleChange"
-                  />
-                  <label for="no-2track">Dwutory</label>
-                </div>
-
-                <div class="item-input">
-                  <input
-                    v-model="twoWayCatenary"
-                    type="number"
-                    name="2track-e"
-                    min="0"
-                    max="5"
-                    placeholder="0"
-                    @change="handleInput"
-                  />
-                  <span>&nbsp;Zelektryfikowane</span>
-                </div>
-
-                <div class="item-input">
-                  <input
-                    v-model="twoWayOther"
-                    type="number"
-                    name="2track-ne"
-                    min="0"
-                    max="5"
-                    placeholder="0"
-                    @change="handleInput"
-                  />
-                  <span>&nbsp;Niezelektryfikowane</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </li>
-
-        <li class="grid-row">
-          <button class="button" @click="reset">RESET FILTRÓW</button>
-        </li>
-      </ul>
-    </div>
+      <div class="card-reset flex">
+        <button class="button" @click="reset">RESET FILTRÓW</button>
+      </div>
+    </section>
   </transition>
 </template>
 
@@ -172,119 +55,170 @@ import { mapActions } from "vuex";
 
 export default Vue.extend({
   name: "list-filter",
-  watch: {
-    gridElements: {
-      handler: (v1, v2) => {},
-      deep: true
-    }
-  },
   data: () => ({
-    oneWay: true,
-    twoWay: true,
-    levelFrom: 0,
-    levelTo: 20,
-    oneWayCatenary: 0,
-    oneWayOther: 0,
-    twoWayCatenary: 0,
-    twoWayOther: 0,
-
-    gridElements: {
-      access: {
-        title: "Dostępność",
-        type: "checkbox",
-        items: [
-          {
-            id: "is-default",
-            value: true,
-            name: "default",
-            content: "w paczce z grą"
-          },
-          {
-            id: "not-default",
-            value: true,
-            name: "notDefault",
-            content: "poza paczką z grą"
-          },
-          {
-            id: "non-public",
-            value: true,
-            name: "nonPublic",
-            content: "niepubliczna"
-          }
-        ]
+    options: [
+      {
+        id: "is-default",
+        name: "default",
+        section: "access",
+        value: true,
+        defaultValue: true,
+        content: "W PACZCE"
+      },
+      {
+        id: "not-default",
+        name: "notDefault",
+        section: "access",
+        value: true,
+        defaultValue: true,
+        content: "POZA PACZKĄ"
+      },
+      {
+        id: "non-public",
+        name: "nonPublic",
+        section: "access",
+        value: true,
+        defaultValue: true,
+        content: "NIEPUBLICZNA"
+      },
+      {
+        id: "SPK",
+        name: "SPK",
+        section: "control",
+        value: true,
+        defaultValue: true,
+        content: "SPK"
+      },
+      {
+        id: "SCS",
+        name: "SCS",
+        section: "control",
+        value: true,
+        defaultValue: true,
+        content: "SCS"
+      },
+      {
+        id: "by-hand",
+        name: "ręczne",
+        section: "control",
+        value: true,
+        defaultValue: true,
+        content: "RĘCZNE"
+      },
+      {
+        id: "levers",
+        name: "mechaniczne",
+        section: "control",
+        value: true,
+        defaultValue: true,
+        content: "MECHANICZNE"
+      },
+      {
+        id: "modern",
+        name: "współczesna",
+        section: "signals",
+        value: true,
+        defaultValue: true,
+        content: "WSPÓŁCZESNA"
+      },
+      {
+        id: "semaphore",
+        name: "kształtowa",
+        section: "signals",
+        value: true,
+        defaultValue: true,
+        content: "KSZTAŁTOWA"
+      },
+      {
+        id: "mixed",
+        name: "mieszana",
+        section: "signals",
+        value: true,
+        defaultValue: true,
+        content: "MIESZANA"
+      },
+      {
+        id: "historic",
+        name: "historyczna",
+        section: "signals",
+        value: true,
+        defaultValue: true,
+        content: "HISTORYCZNA"
       },
 
-      control: {
-        title: "Sterowanie",
-        type: "checkbox",
-
-        items: [
-          {
-            id: "SPK",
-            value: true,
-            name: "SPK",
-            content: "SPK"
-          },
-          {
-            id: "SCS",
-            value: true,
-            name: "SCS",
-            content: "SCS"
-          },
-          {
-            id: "by-hand",
-            value: true,
-            name: "ręczne",
-            content: "ręczne"
-          },
-          {
-            id: "levers",
-            value: true,
-            name: "mechaniczne",
-            content: "mechaniczne"
-          }
-        ]
+      {
+        id: "free",
+        name: "free",
+        section: "status",
+        value: true,
+        defaultValue: true,
+        content: "WOLNA"
       },
-
-      signals: {
-        title: "Sygnalizacja",
-        type: "checkbox",
-
-        items: [
-          {
-            id: "modern",
-            value: true,
-            name: "współczesna",
-            content: "współczesna"
-          },
-          {
-            id: "semaphore",
-            value: true,
-            name: "kształtowa",
-            content: "kształtowa"
-          },
-          {
-            id: "mixed",
-            value: true,
-            name: "mieszana",
-            content: "mieszana"
-          },
-          {
-            id: "historic",
-            value: true,
-            name: "historyczna",
-            content: "historyczna"
-          }
-        ]
+      {
+        id: "occupied",
+        name: "occupied",
+        section: "status",
+        value: true,
+        defaultValue: true,
+        content: "ZAJĘTA"
       },
-
-      status: {
-        title: "Status",
-        type: "checkbox",
-
-        items: []
+      {
+        id: "ending",
+        name: "ending",
+        section: "status",
+        value: true,
+        defaultValue: true,
+        content: "KOŃCZY"
       }
-    }
+    ],
+
+    sliders: [
+      {
+        id: "min-level",
+        name: "minLevel",
+        minRange: 0,
+        maxRange: 20,
+        value: 0,
+        defaultValue: 0,
+        content: "MINIMALNY WYMAGANY POZIOM DYŻURNEGO"
+      },
+      {
+        id: "min-oneway-e",
+        name: "minOneWayCatenary",
+        minRange: 0,
+        maxRange: 5,
+        value: 0,
+        defaultValue: 0,
+        content: "MINIMALNA LICZBA SZLAKÓW JEDNOTOROWYCH ZELEKTRYFIKOWANYCH"
+      },
+      {
+        id: "min-oneway-ne",
+        name: "minOneWay",
+        minRange: 0,
+        maxRange: 5,
+        value: 0,
+        defaultValue: 0,
+        content: "MINIMALNA LICZBA SZLAKÓW JEDNOTOROWYCH NIEZELEKTRYFIKOWANYCH"
+      },
+      {
+        id: "min-twoway-e",
+        name: "minTwoWayCatenary",
+        minRange: 0,
+        maxRange: 5,
+        value: 0,
+        defaultValue: 0,
+        content: "MINIMALNA LICZBA SZLAKÓW DWUTOROWYCH ZELEKTRYFIKOWANYCH"
+      },
+      {
+        id: "min-twoway-ne",
+        name: "minTwoWay",
+        minRange: 0,
+        maxRange: 5,
+        value: 0,
+        defaultValue: 0,
+        content: "MINIMALNA LICZBA SZLAKÓW DWUTOROWYCH NIEZELEKTRYFIKOWANYCH"
+      }
+    ]
   }),
   props: ["exit"],
   methods: {
@@ -299,20 +233,8 @@ export default Vue.extend({
       });
     },
     reset() {
-      for (const [key, value] of Object.entries(this.gridElements)) {
-        for (const item of this.gridElements[key].items) {
-          item.value = true;
-        }
-      }
-
-      this.oneWay = true;
-      this.twoWay = true;
-      this.levelFrom = 0;
-      this.levelTo = 20;
-      this.oneWayCatenary = 0;
-      this.oneWayOther = 0;
-      this.twoWayCatenary = 0;
-      this.twoWayOther = 0;
+      this.options.forEach(option => (option.value = option.defaultValue));
+      this.sliders.forEach(slider => (slider.value = slider.defaultValue));
 
       this.resetFilters();
     },
@@ -337,74 +259,249 @@ export default Vue.extend({
   opacity: 0;
 }
 
-.list-filter {
+.filter-card {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 
+  z-index: 0;
+
   overflow: auto;
-  max-height: 90%;
+  max-height: 95vh;
 
   padding: 0.5em;
+  max-width: 600px;
+  width: 65%;
 
-  background: rgba(black, 0.85);
-  white-space: nowrap;
-  font-size: calc(0.6rem + 0.4vw);
+  background: #262a2e;
+
+  font-size: calc(0.75rem + 0.4vw);
 
   @include smallScreen() {
-    width: 100vw;
+    width: 85vw;
     font-size: 1em;
+  }
+  box-shadow: 0 0 15px 5px #474747;
+}
+
+.card {
+  &-exit {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0.8em;
+
+    img {
+      width: 1.1em;
+    }
+
+    cursor: pointer;
+  }
+
+  &-title {
+    font-size: 2em;
+    font-weight: 700;
+    color: $accentCol;
+
+    margin: 0.5em 0;
+  }
+
+  &-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(6em, 1fr));
+    padding: 0 1.5em;
+  }
+
+  &-sliders {
+    margin-top: 1em;
+  }
+
+  &-reset {
+    margin-top: 0.7em;
   }
 }
 
-.exit {
-  position: absolute;
-  top: 0;
-  right: 0;
-  padding: 0.4rem;
-  font-size: calc(1rem + 0.4vw);
+.option {
+  margin: 0.3em;
 
-  cursor: pointer;
-}
+  &-input {
+    display: none;
 
-.list-filter-title {
-  text-align: center;
-  font-size: 1.9em;
-  font-weight: bold;
-}
+    &:not(:checked) + span {
+      background-color: #585858;
 
-.grid {
-  &-row {
-    display: flex;
-    justify-content: center;
-
-    @include smallScreen() {
-      flex-wrap: wrap;
+      &::before {
+        box-shadow: none;
+      }
     }
   }
 
-  &-col {
-    padding: 0.3rem;
-  }
-
-  &-item {
+  &-content {
     user-select: none;
     -moz-user-select: none;
     -webkit-user-select: none;
-  }
-}
 
-.item {
-  &-title {
+    width: 100%;
     text-align: center;
-    margin-bottom: 0.5rem;
-    font-weight: bold;
-    color: $accentCol;
+
+    cursor: pointer;
+
+    padding: 0.6em 0.5em;
+    border-radius: 0.4em;
+
+    font-size: 0.65em;
+
+    background-color: #333;
+
+    display: inline-block;
+    position: relative;
+
+    transition: all 0.2s;
+
+    &.access {
+      background-color: #e03b07;
+
+      &::before {
+        box-shadow: 0 0 6px 1px #e03b07;
+      }
+    }
+
+    &.control {
+      background-color: #0085ff;
+
+      &::before {
+        box-shadow: 0 0 6px 1px #0085ff;
+      }
+    }
+
+    &.signals {
+      background-color: #b000bf;
+
+      &::before {
+        box-shadow: 0 0 6px 1px #b000bf;
+      }
+    }
+
+    &.status {
+      background-color: #05b702;
+
+      &::before {
+        box-shadow: 0 0 6px 1px #05b702;
+      }
+    }
+
+    &::before {
+      position: absolute;
+      content: "";
+      top: 0;
+      left: 0;
+
+      width: 100%;
+      height: 100%;
+
+      border-radius: inherit;
+    }
   }
 }
 
-button.button {
-  margin-top: 0.5em;
+.slider {
+  display: flex;
+
+  padding: 0.5em;
+
+  &-value {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    color: $accentCol;
+    margin-right: 0.3em;
+    padding: 0.1em 0.2em;
+
+    font-size: 1.1em;
+    font-weight: 500;
+
+    border-radius: 0.2em;
+  }
+
+  &-content {
+    display: flex;
+    align-items: center;
+
+    font-size: 0.6em;
+  }
+
+  &-input {
+    -webkit-appearance: none;
+    appearance: none;
+    background: none;
+    border: none;
+    outline: none;
+
+    min-width: 25%;
+
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+
+      height: 20px;
+      width: 20px;
+      margin-top: -7px;
+
+      border-radius: 50%;
+
+      background: white;
+      border: 4px solid $accentCol;
+
+      @include smallScreen() {
+        width: 15px;
+        height: 15px;
+        margin-top: -5px;
+        border: 3px solid $accentCol;
+      }
+    }
+
+    &::-moz-range-thumb {
+      height: 15px;
+      width: 15px;
+
+      border-radius: 50%;
+
+      background: white;
+      border: 4px solid $accentCol;
+
+      cursor: pointer;
+
+      @include smallScreen() {
+        width: 15px;
+        height: 15px;
+        border: 3px solid $accentCol;
+      }
+    }
+
+    &::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 5px;
+      cursor: pointer;
+      background: #ffffff;
+      border-radius: 1em;
+    }
+
+    &::-moz-range-track {
+      width: 100%;
+      height: 5px;
+      cursor: pointer;
+      background: #ffffff;
+      border-radius: 1em;
+    }
+
+    &::-ms-track {
+      width: 100%;
+      height: 5px;
+      cursor: pointer;
+      background: #ffffff;
+      border-radius: 1em;
+    }
+  }
 }
 </style>

@@ -75,6 +75,10 @@ export default Vue.extend({
 @import "./styles/responsive.scss";
 @import "./styles/variables.scss";
 
+:root {
+  font-size: 16px;
+}
+
 html {
   scroll-behavior: smooth;
 }
