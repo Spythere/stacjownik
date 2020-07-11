@@ -21,5 +21,7 @@ export default class Home extends Vue {
 <style lang="scss" scoped>
 .home {
   padding: 1rem;
+
+  max-height: 100%;
 }
 </style>

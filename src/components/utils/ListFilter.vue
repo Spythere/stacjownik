@@ -14,6 +14,7 @@
               class="option-input"
               type="checkbox"
               :name="option.name"
+              :defaultValue="option.defaultValue"
               :id="option.id"
               v-model="option.value"
               @change="handleChange"
@@ -150,8 +151,8 @@ export default Vue.extend({
         id: "free",
         name: "free",
         section: "status",
-        value: true,
-        defaultValue: true,
+        value: false,
+        defaultValue: false,
         content: "WOLNA"
       },
       {
@@ -189,7 +190,7 @@ export default Vue.extend({
         maxRange: 5,
         value: 0,
         defaultValue: 0,
-        content: "MINIMALNA LICZBA SZLAKÓW JEDNOTOROWYCH ZELEKTRYFIKOWANYCH"
+        content: "SZLAKI JEDNOTOROWE ZELEKTR. (MINIMUM)"
       },
       {
         id: "min-oneway-ne",
@@ -198,7 +199,7 @@ export default Vue.extend({
         maxRange: 5,
         value: 0,
         defaultValue: 0,
-        content: "MINIMALNA LICZBA SZLAKÓW JEDNOTOROWYCH NIEZELEKTRYFIKOWANYCH"
+        content: "SZLAKI JEDNOTOROWE NIEZELEKTR. (MINIMUM)"
       },
       {
         id: "min-twoway-e",
@@ -207,7 +208,7 @@ export default Vue.extend({
         maxRange: 5,
         value: 0,
         defaultValue: 0,
-        content: "MINIMALNA LICZBA SZLAKÓW DWUTOROWYCH ZELEKTRYFIKOWANYCH"
+        content: "SZLAKI DWUTOROWE ZELEKTR. (MINIMUM)"
       },
       {
         id: "min-twoway-ne",
@@ -216,7 +217,7 @@ export default Vue.extend({
         maxRange: 5,
         value: 0,
         defaultValue: 0,
-        content: "MINIMALNA LICZBA SZLAKÓW DWUTOROWYCH NIEZELEKTRYFIKOWANYCH"
+        content: "SZLAKI DWUTOROWE NIEELEKTR. (MINIMUM)"
       }
     ]
   }),
@@ -224,7 +225,10 @@ export default Vue.extend({
   methods: {
     ...mapActions(["setFilter", "resetFilters"]),
     handleChange(e: any) {
-      this.setFilter({ filterName: e.target.name, value: !e.target.checked });
+      this.setFilter({
+        filterName: e.target.name,
+        value: !e.target.checked
+      });
     },
     handleInput(e: any) {
       this.setFilter({
@@ -429,7 +433,7 @@ export default Vue.extend({
     display: flex;
     align-items: center;
 
-    font-size: 0.6em;
+    font-size: 0.75em;
   }
 
   &-input {

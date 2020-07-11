@@ -1,7 +1,9 @@
 <template>
   <transition name="card-anim">
     <div class="card" v-if="stationInfo">
-      <div class="card-exit" @click="closeCard">X</div>
+      <div class="card-exit" @click="closeCard">
+        <img :src="require('@/assets/icon-exit.svg')" alt="exit icon" />
+      </div>
 
       <div class="card-upper">
         <div class="station-name">
@@ -190,8 +192,11 @@ export default Vue.extend({
     position: absolute;
     top: 0;
     right: 0;
-    padding: 1rem;
-    font-size: calc(1rem + 0.7vw);
+    margin: 0.8em;
+
+    img {
+      width: 1.3em;
+    }
 
     cursor: pointer;
   }

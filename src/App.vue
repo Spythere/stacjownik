@@ -7,16 +7,29 @@
           <img src="@/assets/trainlogo.png" alt="trainlogo" />
           <span>wnik</span>
         </div>
-        <span class="online">Scenerie online: {{stationCount}} | Maszyniści online: {{ trainCount }}</span>
       </header>
 
-      <div class="app-bar flex flex-spaced">
-        <div class="bar-content">
+      <div class="app-bar">
+        <div class="bar-content flex flex-spaced">
           <div class="bar-left">
             <Options />
           </div>
 
-          <div class="bar-right"></div>
+          <div class="bar-center">
+            <Clock />
+          </div>
+
+          <div class="bar-right">
+            <span class="counter dispatchers">
+              <img src="@/assets/icon-dispatcher.svg" alt="icon dispatcher" />
+              {{stationCount}}
+            </span>
+
+            <span class="counter trains">
+              {{trainCount}}
+              <img src="@/assets/icon-train.svg" alt="icon train" />
+            </span>
+          </div>
         </div>
       </div>
 
@@ -38,11 +51,12 @@ import { mapGetters, mapActions } from "vuex";
 import Error from "@/components/states/Error.vue";
 import Loading from "@/components/states/Loading.vue";
 import Options from "@/components/ui/Options.vue";
+import Clock from "@/components/ui/Clock.vue";
 // import ListFilter from "@/components/utils/ListFilter.vue";
 
 export default Vue.extend({
   name: "App",
-  components: { Error, Loading, Options },
+  components: { Error, Loading, Options, Clock },
   computed: mapGetters({
     stations: "getStations",
     trainCount: "getTrainCount",
@@ -77,6 +91,19 @@ export default Vue.extend({
 
 :root {
   font-size: 16px;
+}
+
+::-webkit-scrollbar {
+  width: 15px;
+
+  &-track {
+    background: #222;
+  }
+
+  &-thumb {
+    border-radius: 1rem;
+    background: #777;
+  }
 }
 
 html {
@@ -171,6 +198,8 @@ ul {
   align-items: center;
   justify-content: center;
 
+  width: 100%;
+
   &-spaced {
     justify-content: space-between;
   }
@@ -183,8 +212,8 @@ ul {
 .app {
   background: $bgCol;
   color: white;
-  width: 100%;
-  overflow: hidden;
+
+  font-size: calc(1rem + 2.1vw);
 
   &-container {
     display: grid;
@@ -197,26 +226,49 @@ ul {
 
   &-header {
     background: #333;
-    padding: 0.4rem;
+    padding: 0.1em;
 
     & > .brand-name {
-      font-size: calc(1rem + 3.5vw);
+      font-size: 1.1em;
 
       img {
-        width: calc(1rem + 2.3vw);
+        width: 0.8em;
       }
     }
 
     .online {
-      font-size: calc(0.3rem + 0.8vw);
+      font-size: 0.35em;
     }
   }
 
   &-bar {
+    display: flex;
+    justify-content: space-between;
+
     position: sticky;
-    font-size: calc(0.8rem + 0.2vw);
     top: 0;
+    font-size: 0.3em;
     background: #222;
+  }
+}
+
+.bar {
+  &-right {
+    font-size: 1.35em;
+    display: flex;
+  }
+}
+
+.counter {
+  display: flex;
+  align-items: center;
+  color: $accentCol;
+
+  margin: 0 0.3em;
+
+  img {
+    width: 1.4em;
+    margin: 0 0.1em;
   }
 }
 

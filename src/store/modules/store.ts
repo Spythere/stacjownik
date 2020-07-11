@@ -50,7 +50,7 @@ class Store extends VuexModule {
         "minTwoWay": 0,
         "no-1track": false,
         "no-2track": false,
-        "free": false,
+        "free": true,
         "occupied": false,
         "ending": false
     } as const;
@@ -182,7 +182,7 @@ class Store extends VuexModule {
             })
 
         this.context.commit('updateStations', mappedStations);
-        this.context.commit('setStationCount');
+        this.context.commit('setStationCount', mappedStations.length);
         this.context.commit('filterStations');
     }
 
@@ -192,9 +192,9 @@ class Store extends VuexModule {
             if ((station.nonPublic || !station.reqLevel) && this.filters['nonPublic']) return false;
             if (!station.reqLevel) return true;
 
+            if (station.online && station.occupiedTo == "KOŃCZY" && this.filters['ending']) return false;
             if (station.online && this.filters['occupied']) return false;
             if (!station.online && this.filters['free']) return false;
-            if (station.online && station.occupiedTo == "KOŃCZY" && this.filters['ending']) return false;
 
             if (station.default && this.filters['default']) return false;
             if (!station.default && this.filters['notDefault']) return false;
@@ -249,7 +249,7 @@ class Store extends VuexModule {
     }
 
     @Mutation
-    private updateStations(updatedStations: []) {
+    private updateStations(updatedStations: any) {
         for (let i = 0; i < this.stations.length; i++) {
             const toUpdate: any = updatedStations.find((updated: any) => updated.stationName === this.stations[i].stationName);
 
@@ -261,7 +261,19 @@ class Store extends VuexModule {
 
             this.stations[i] = { ...this.stations[i], ...toUpdate }
             this.stations[i].online = true;
+
+            updatedStations = updatedStations.filter((updated: any) => updated.stationName !== this.stations[i].stationName);
+
         }
+
+        // Dodawanie do listy online potencjalnych scenerii niewpisanych do bazy 
+        updatedStations.forEach((updated: any) => {
+            const toUpdate: any = this.stations.find(station => station.stationName === updated.stationName);
+
+            if (!toUpdate) {
+                this.stations.push({ ...updated, online: true });
+            }
+        })
     }
 
     @Mutation
@@ -270,8 +282,8 @@ class Store extends VuexModule {
     }
 
     @Mutation
-    private setStationCount() {
-        this.stationCount = this.stations.filter(station => station.online).length;
+    private setStationCount(count: number) {
+        this.stationCount = count;
     }
 
     @Mutation
