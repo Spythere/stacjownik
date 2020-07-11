@@ -55,7 +55,7 @@ class Store extends VuexModule {
         "ending": false
     } as const;
 
-    private filters: any = this.filterInitStates;
+    private filters: any = { ...this.filterInitStates };
 
     get getStationCount(): number {
         return this.stationCount;
