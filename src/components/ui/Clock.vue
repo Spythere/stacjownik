@@ -27,6 +27,6 @@ export default Vue.extend({
   justify-content: center;
   align-items: center;
 
-  font-size: 1.25em;
+  font-size: 0.35em;
 }
 </style>

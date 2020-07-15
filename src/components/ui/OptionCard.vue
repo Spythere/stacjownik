@@ -1,57 +1,55 @@
 <template>
-  <transition name="appear">
-    <section class="option-card">
-      <div class="card-exit" @click="exit">
-        <img :src="require('@/assets/icon-exit.svg')" alt="exit icon" />
-      </div>
+  <section class="option-card">
+    <div class="card-exit" @click="exit">
+      <img :src="require('@/assets/icon-exit.svg')" alt="exit icon" />
+    </div>
 
-      <div class="card-title flex">FILTRUJ STACJE</div>
+    <div class="card-title flex">FILTRUJ STACJE</div>
 
-      <div class="card-options">
-        <div class="option" v-for="(option, i) in inputs.options" :key="i">
-          <label class="option-label">
-            <input
-              class="option-input"
-              type="checkbox"
-              :name="option.name"
-              :defaultValue="option.defaultValue"
-              :id="option.id"
-              v-model="option.value"
-              @change="handleChange"
-            />
-            <span class="option-content" :class="option.section">{{option.content}}</span>
-          </label>
-        </div>
-      </div>
-
-      <div class="card-sorts">
-        <!-- <div class="sort" v-for="(sort, i) in inputs.sorts" :key="i">{{ sort.content }}</div> -->
-      </div>
-
-      <div class="card-sliders">
-        <div class="slider" v-for="(slider, i) in inputs.sliders" :key="i">
+    <div class="card-options">
+      <div class="option" v-for="(option, i) in inputs.options" :key="i">
+        <label class="option-label">
           <input
-            class="slider-input"
-            type="range"
-            :name="slider.name"
-            :id="slider.id"
-            :min="slider.minRange"
-            :max="slider.maxRange"
-            v-model="slider.value"
-            @change="handleInput"
+            class="option-input"
+            type="checkbox"
+            :name="option.name"
+            :defaultValue="option.defaultValue"
+            :id="option.id"
+            v-model="option.value"
+            @change="handleChange"
           />
-
-          <span class="slider-value">{{slider.value}}</span>
-
-          <div class="slider-content">{{slider.content}}</div>
-        </div>
+          <span class="option-content" :class="option.section">{{option.content}}</span>
+        </label>
       </div>
+    </div>
 
-      <div class="card-reset flex">
-        <button class="button" @click="reset">RESET FILTRÓW</button>
+    <div class="card-sorts">
+      <!-- <div class="sort" v-for="(sort, i) in inputs.sorts" :key="i">{{ sort.content }}</div> -->
+    </div>
+
+    <div class="card-sliders">
+      <div class="slider" v-for="(slider, i) in inputs.sliders" :key="i">
+        <input
+          class="slider-input"
+          type="range"
+          :name="slider.name"
+          :id="slider.id"
+          :min="slider.minRange"
+          :max="slider.maxRange"
+          v-model="slider.value"
+          @change="handleInput"
+        />
+
+        <span class="slider-value">{{slider.value}}</span>
+
+        <div class="slider-content">{{slider.content}}</div>
       </div>
-    </section>
-  </transition>
+    </div>
+
+    <div class="card-reset flex">
+      <button class="button" @click="reset">RESET FILTRÓW</button>
+    </div>
+  </section>
 </template>
 
 <script lang="ts">
@@ -110,16 +108,6 @@ export default class OptionCard extends Vue {
 <style lang="scss" scoped>
 @import "../../styles/responsive";
 @import "../../styles/variables";
-
-.appear-enter-active,
-.appear-leave-active {
-  transition: all 0.3s ease;
-}
-
-.appear-enter,
-.appear-leave-to {
-  opacity: 0;
-}
 
 .option-card {
   position: fixed;

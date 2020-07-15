@@ -2,12 +2,14 @@
   <div class="options">
     <div class="options-actions">
       <button class="action-btn button" :class="{'open': filterCardOpen}" @click="toggleCardState">
-        <img :src="require('@/assets/icon-filter2.svg')" alt="icon-filter" /> OPCJE
+        <img :src="require('@/assets/icon-filter2.svg')" alt="icon-filter" />
       </button>
     </div>
 
     <keep-alive>
-      <OptionCard v-if="filterCardOpen" :exit="toggleCardState" />
+      <transition name="card-anim">
+        <OptionCard v-if="filterCardOpen" :exit="toggleCardState" />
+      </transition>
     </keep-alive>
   </div>
 </template>
@@ -33,6 +35,19 @@ export default class Options extends Vue {
 @import "../../styles/variables.scss";
 @import "../../styles/responsive.scss";
 
+.card-anim {
+  &-enter-active,
+  &-leave-active {
+    transition: all 0.25s ease-in-out;
+  }
+
+  &-enter,
+  &-leave-to {
+    transform: translate(-45%, -50%);
+    opacity: 0;
+  }
+}
+
 .options {
   font-size: calc(0.6rem + 0.9vw);
 
@@ -42,9 +57,6 @@ export default class Options extends Vue {
 }
 
 .action-btn {
-  font-size: 0.75em;
-  margin: 0 0.2em;
-
   img {
     width: 1.3em;
   }

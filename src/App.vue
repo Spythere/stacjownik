@@ -7,31 +7,11 @@
           <img src="@/assets/trainlogo.png" alt="trainlogo" />
           <span>wnik</span>
         </div>
+
+        <Clock />
       </header>
 
-      <div class="app-bar">
-        <div class="bar-content flex flex-spaced">
-          <div class="bar-left">
-            <Options />
-          </div>
-
-          <div class="bar-center">
-            <Clock />
-          </div>
-
-          <div class="bar-right">
-            <span class="counter dispatchers">
-              <img src="@/assets/icon-dispatcher.svg" alt="icon dispatcher" />
-              {{stationCount}}
-            </span>
-
-            <span class="counter trains">
-              {{trainCount}}
-              <img src="@/assets/icon-train.svg" alt="icon train" />
-            </span>
-          </div>
-        </div>
-      </div>
+      <AppBar :stationCount="stationCount" :trainCount="trainCount" />
 
       <main class="app-main">
         <Loading v-if="connectionState == 0" />
@@ -50,13 +30,13 @@ import { mapGetters, mapActions } from "vuex";
 
 import Error from "@/components/states/Error.vue";
 import Loading from "@/components/states/Loading.vue";
-import Options from "@/components/ui/Options.vue";
 import Clock from "@/components/ui/Clock.vue";
+import AppBar from "@/components/ui/AppBar.vue";
 // import ListFilter from "@/components/utils/ListFilter.vue";
 
 export default Vue.extend({
   name: "App",
-  components: { Error, Loading, Options, Clock },
+  components: { Error, Loading, Clock, AppBar },
   computed: mapGetters({
     stations: "getStations",
     trainCount: "getTrainCount",
@@ -163,7 +143,6 @@ input {
   &.open {
     color: $accentCol;
     border: none;
-    font-weight: bold;
   }
 
   &:hover {
@@ -240,23 +219,6 @@ ul {
     .online {
       font-size: 0.35em;
     }
-  }
-
-  &-bar {
-    display: flex;
-    justify-content: space-between;
-
-    position: sticky;
-    top: 0;
-    font-size: 0.3em;
-    background: #222;
-  }
-}
-
-.bar {
-  &-right {
-    font-size: 1.35em;
-    display: flex;
   }
 }
 

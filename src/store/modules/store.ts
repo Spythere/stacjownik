@@ -43,6 +43,7 @@ class Store extends VuexModule {
         routes: { oneWay: { catenary: number; noCatenary: number; }, twoWay: { catenary: number; noCatenary: number; } };
         online: boolean;
         occupiedTo: string;
+        statusTimestamp: number;
     }[] = [];
 
     private filteredStations: {}[] = [];
@@ -151,12 +152,13 @@ class Store extends VuexModule {
                     const stationStatus = onlineDispatchersData.find(status => status[0] == station.stationHash && status[1] == "eu");
 
                     let statusLabel = "";
+                    let statusTimestamp = -1;
 
                     if (!stationStatus)
                         statusLabel = "NIEZALOGOWANY";
                     else {
                         let statusCode = stationStatus[2];
-                        let statusTimestamp = stationStatus[3];
+                        statusTimestamp = stationStatus[3];
 
                         statusLabel = "NIEDOSTĘPNY";
 
@@ -205,6 +207,7 @@ class Store extends VuexModule {
                         dispatcherId: station.dispatcherId,
                         dispatcherExp: station.dispatcherExp,
                         occupiedTo: statusLabel,
+                        statusTimestamp,
                         trains
                     }
                 });
@@ -266,10 +269,11 @@ class Store extends VuexModule {
             currentUsers: 0,
             dispatcherName: "",
             dispatcherRate: 0,
-            dispatcherExp: 0,
+            dispatcherExp: -1,
             dispatcherId: 0,
             online: false,
             occupiedTo: "WOLNA",
+            statusTimestamp: 0,
             ...stationData,
         }))
     }
@@ -282,6 +286,8 @@ class Store extends VuexModule {
             if (!toUpdate) {
                 this.stations[i].online = false;
                 this.stations[i].occupiedTo = "WOLNA";
+                this.stations[i].statusTimestamp = -1;
+                this.stations[i].dispatcherExp = -1;
                 continue;
             }
 

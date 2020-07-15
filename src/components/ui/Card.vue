@@ -1,133 +1,131 @@
 <template>
-  <transition name="card-anim">
-    <div class="card" v-if="stationInfo">
-      <div class="card-exit" @click="closeCard">
-        <img :src="require('@/assets/icon-exit.svg')" alt="exit icon" />
+  <div class="card">
+    <div class="card-exit" @click="closeCard">
+      <img :src="require('@/assets/icon-exit.svg')" alt="exit icon" />
+    </div>
+
+    <div class="card-upper">
+      <div class="station-name">
+        <a
+          v-if="stationInfo.stationURL"
+          :href="stationInfo.stationURL"
+          target="_blank"
+          rel="noopener noreferrer"
+        >{{stationInfo.stationName}}</a>
+        <span v-else>{{stationInfo.stationName}}</span>
       </div>
 
-      <div class="card-upper">
-        <div class="station-name">
+      <div class="station-hash">{{stationInfo.stationHash}}</div>
+
+      <div class="station-icons">
+        <img
+          v-if="stationInfo.controlType"
+          :src="require(`@/assets/icon-${stationInfo.controlType}.svg`)"
+          :alt="stationInfo.controlType"
+          :title="'Sterowanie ' + stationInfo.controlType"
+        />
+
+        <img
+          v-if="stationInfo.signalType"
+          :src="require(`@/assets/icon-${stationInfo.signalType}.svg`)"
+          :alt="stationInfo.signalType"
+          :title="'Sygnalizacja ' + stationInfo.signalType"
+        />
+
+        <img
+          v-if="stationInfo.SBL && stationInfo.SBL !== ''"
+          :src="require(`@/assets/icon-SBL.svg`)"
+          alt="SBL"
+          title="Sceneria posiada SBL na przynajmniej jednym ze szlaków"
+        />
+
+        <img
+          v-if="stationInfo.default"
+          :src="require(`@/assets/icon-td2.svg`)"
+          alt="default-pack"
+          title="Sceneria domyślnie dostępna w grze"
+        />
+
+        <img
+          v-if="stationInfo.nonPublic || !stationInfo.reqLevel"
+          :src="require(`@/assets/icon-lock.svg`)"
+          alt="non-public"
+          title="Sceneria niepubliczna"
+        />
+
+        <span
+          v-if="stationInfo.reqLevel"
+          :title="'Wymagany poziom dyżurnego: ' +  stationInfo.reqLevel"
+        >{{(parseInt(stationInfo.reqLevel) < 2) ? "L" : stationInfo.reqLevel}}</span>
+      </div>
+
+      <div class="station-info"></div>
+    </div>
+
+    <div class="card-content">
+      <div class="dispatcher">
+        <div class="dispatcher-exp">{{stationInfo.dispatcherExp}}</div>
+        <div class="dispatcher-name">
           <a
-            v-if="stationInfo.stationURL"
-            :href="stationInfo.stationURL"
+            :href="'https://td2.info.pl/profile/?u=' + stationInfo.dispatcherId"
             target="_blank"
             rel="noopener noreferrer"
-          >{{stationInfo.stationName}}</a>
-          <span v-else>{{stationInfo.stationName}}</span>
+          >{{stationInfo.dispatcherName}}</a>
         </div>
-
-        <div class="station-hash">{{stationInfo.stationHash}}</div>
-
-        <div class="station-icons">
-          <img
-            v-if="stationInfo.controlType"
-            :src="require(`@/assets/icon-${stationInfo.controlType}.svg`)"
-            :alt="stationInfo.controlType"
-            :title="'Sterowanie ' + stationInfo.controlType"
-          />
-
-          <img
-            v-if="stationInfo.signalType"
-            :src="require(`@/assets/icon-${stationInfo.signalType}.svg`)"
-            :alt="stationInfo.signalType"
-            :title="'Sygnalizacja ' + stationInfo.signalType"
-          />
-
-          <img
-            v-if="stationInfo.SBL && stationInfo.SBL !== ''"
-            :src="require(`@/assets/icon-SBL.svg`)"
-            alt="SBL"
-            title="Sceneria posiada SBL na przynajmniej jednym ze szlaków"
-          />
-
-          <img
-            v-if="stationInfo.default"
-            :src="require(`@/assets/icon-td2.svg`)"
-            alt="default-pack"
-            title="Sceneria domyślnie dostępna w grze"
-          />
-
-          <img
-            v-if="stationInfo.nonPublic || !stationInfo.reqLevel"
-            :src="require(`@/assets/icon-lock.svg`)"
-            alt="non-public"
-            title="Sceneria niepubliczna"
-          />
-
-          <span
-            v-if="stationInfo.reqLevel"
-            :title="'Wymagany poziom dyżurnego: ' +  stationInfo.reqLevel"
-          >{{(parseInt(stationInfo.reqLevel) < 2) ? "L" : stationInfo.reqLevel}}</span>
-        </div>
-
-        <div class="station-info"></div>
       </div>
 
-      <div class="card-content">
-        <div class="dispatcher">
-          <div class="dispatcher-exp">{{stationInfo.dispatcherExp}}</div>
-          <div class="dispatcher-name">
+      <div class="rating">
+        <div class="rating-content">
+          <img :src="require(`@/assets/icon-like.svg`)" alt="like-icon" />
+          {{stationInfo.dispatcherRate}}
+        </div>
+      </div>
+
+      <div class="occupation">
+        <div class="occupation-title text--title">SCENERIA ZAJĘTA DO</div>
+        <div class="occupation-content text--content">{{stationInfo.occupiedTo}}</div>
+      </div>
+
+      <div class="spawns">
+        <div class="spawns-title text--title">OTWARTE SPAWNY</div>
+        <div class="spawns-content text--content">
+          <span
+            class="spawn"
+            v-for="(spawn, i) in stationInfo.spawnString"
+            :key="spawn + stationInfo.dispatcherName + i"
+          >{{spawn}}</span>
+
+          <span class="spawn" v-if="!stationInfo.spawnString">BRAK</span>
+        </div>
+      </div>
+
+      <div class="users">
+        <div class="users-title text--title">GRACZE NA STACJI</div>
+        <div class="users-content text--content">
+          <div
+            class="user"
+            v-for="train in stationInfo.trains"
+            :key="train.trainNo + train.driverName"
+          >
             <a
-              :href="'https://td2.info.pl/profile/?u=' + stationInfo.dispatcherId"
+              :href="'https://rj.td2.info.pl/train#' + train.trainNo + ';eu'"
               target="_blank"
               rel="noopener noreferrer"
-            >{{stationInfo.dispatcherName}}</a>
-          </div>
-        </div>
-
-        <div class="rating">
-          <div class="rating-content">
-            <img :src="require(`@/assets/icon-like.svg`)" alt="like-icon" />
-            {{stationInfo.dispatcherRate}}
-          </div>
-        </div>
-
-        <div class="occupation">
-          <div class="occupation-title text--title">SCENERIA ZAJĘTA DO</div>
-          <div class="occupation-content text--content">{{stationInfo.occupiedTo}}</div>
-        </div>
-
-        <div class="spawns">
-          <div class="spawns-title text--title">OTWARTE SPAWNY</div>
-          <div class="spawns-content text--content">
-            <span
-              class="spawn"
-              v-for="(spawn, i) in stationInfo.spawnString"
-              :key="spawn + stationInfo.dispatcherName + i"
-            >{{spawn}}</span>
-
-            <span class="spawn" v-if="!stationInfo.spawnString">BRAK</span>
-          </div>
-        </div>
-
-        <div class="users">
-          <div class="users-title text--title">GRACZE NA STACJI</div>
-          <div class="users-content text--content">
-            <div
-              class="user"
-              v-for="train in stationInfo.trains"
-              :key="train.trainNo + train.driverName"
             >
-              <a
-                :href="'https://rj.td2.info.pl/train#' + train.trainNo + ';eu'"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <span>{{train.trainNo}}</span>
-                |
-                <span>{{train.driverName}}</span>
-              </a>
-            </div>
-
-            <span
-              class="user borderless"
-              v-if="!stationInfo.trains || stationInfo.trains.length == 0"
-            >BRAK</span>
+              <span>{{train.trainNo}}</span>
+              |
+              <span>{{train.driverName}}</span>
+            </a>
           </div>
+
+          <span
+            class="user borderless"
+            v-if="!stationInfo.trains || stationInfo.trains.length == 0"
+          >BRAK</span>
         </div>
       </div>
     </div>
-  </transition>
+  </div>
 </template>
 
 <script lang="ts">
@@ -150,18 +148,6 @@ export default Vue.extend({
 
   &--content {
     font-size: 0.8em;
-  }
-}
-
-.card-anim {
-  &-enter-active,
-  &-leave-active {
-    transition: all 0.25s ease-in-out;
-  }
-
-  &-enter,
-  &-leave-to {
-    opacity: 0;
   }
 }
 

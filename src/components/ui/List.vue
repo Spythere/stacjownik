@@ -1,12 +1,13 @@
 <template>
   <div class="list flex">
-    <Card :stationInfo="focusedStationInfo" :closeCard="closeCard" />
-
+    <transition name="card-anim">
+      <Card v-if="focusedStationInfo" :stationInfo="focusedStationInfo" :closeCard="closeCard" />
+    </transition>
     <!-- <div class="info" v-if="stations.length == 0">Ups! Brak stacji do wyświetlenia!</div> -->
 
     <div class="table-wrapper" v-if="stations.length > 0">
       <table class="table">
-        <thead>
+        <thead class="table-head">
           <tr>
             <th v-for="(head, i) in headTitles" :key="i" @click="() => changeSorter(i)">
               <span>
@@ -15,16 +16,18 @@
                   <div v-if="head.length > 1">{{head[1]}}</div>
                 </div>
 
-                <Icon
-                  :name="`arrow-${sorterActive.type == 1 ? 'asc' : 'desc'}`"
+                <img
+                  class="icon"
                   v-if="sorterActive.index == i"
+                  :src="sorterActive.type == 1 ? icons.ascSVG : icons.descSVG"
+                  alt
                 />
               </span>
             </th>
           </tr>
         </thead>
 
-        <transition-group tag="tbody" name="table-anim">
+        <transition-group tag="tbody" class="table-body" name="table-anim">
           <tr
             class="table-item"
             v-for="(station, i) in computedStations"
@@ -32,27 +35,34 @@
             @click="() => { if(station.online) setFocusedStation(station.stationName) }"
           >
             <td
-              class="station-name"
+              class="item-station-name"
               :class="{'default-station': station.default, 'online': station.online}"
-            >{{station.stationName}} {{ station.reqLevel ? "| " + (parseInt(station.reqLevel) >= 2 ? station.reqLevel : "L") : "" }}</td>
-            <td class="hours">
+            >{{station.stationName}}</td>
+
+            <td class="item-station-level">
               <span
-                class="hour"
+                :style="calculateStyle(station.reqLevel)"
+              >{{ station.reqLevel ? (parseInt(station.reqLevel) >= 2 ? station.reqLevel : "L") : "" }}</span>
+            </td>
+
+            <td class="item-station-status">
+              <span
+                class="status"
                 :class="occupationClasses(station.occupiedTo)"
               >{{station.occupiedTo}}</span>
             </td>
 
-            <td class="disptacher-name">{{station.online ? station.dispatcherName : ""}}</td>
-            <td class="dispatcher-exp">
+            <td class="item-dispatcher-name">{{station.online ? station.dispatcherName : ""}}</td>
+            <td class="item-dispatcher-exp">
               <span
                 v-if="station.online"
                 :style="calculateStyle(station.dispatcherExp)"
               >{{station.dispatcherExp < 2 ? 'L' : station.dispatcherExp}}</span>
             </td>
             <td
-              class="users"
+              class="item-users"
             >{{station.online ? (station.currentUsers + "/" + station.maxUsers) : ""}}</td>
-            <td class="info">
+            <td class="item-info">
               <!-- <img
                 v-if="station.default"
                 :src="require(`@/assets/icon-td2.svg`)"
@@ -61,6 +71,7 @@
               />-->
 
               <img
+                class="icon-info"
                 v-if="station.controlType"
                 :src="require(`@/assets/icon-${station.controlType}.svg`)"
                 :alt="station.controlType"
@@ -68,6 +79,7 @@
               />
 
               <img
+                class="icon-info"
                 v-if="station.signalType"
                 :src="require(`@/assets/icon-${station.signalType}.svg`)"
                 :alt="station.signalType"
@@ -75,6 +87,7 @@
               />
 
               <img
+                class="icon-info"
                 v-if="station.SBL && station.SBL !== ''"
                 :src="require(`@/assets/icon-SBL.svg`)"
                 alt="SBL"
@@ -82,6 +95,7 @@
               />
 
               <img
+                class="icon-info"
                 v-if="!station.reqLevel || station.nonPublic"
                 :src="require(`@/assets/icon-lock.svg`)"
                 alt="non-public"
@@ -89,7 +103,7 @@
               />
             </td>
 
-            <td class="tracks twoway">
+            <td class="item-tracks twoway">
               <span
                 v-if="station.routes && station.routes.twoWay.catenary > 0"
                 class="track catenary"
@@ -103,7 +117,7 @@
               >{{station.routes.twoWay.noCatenary}}</span>
             </td>
 
-            <td class="tracks oneway">
+            <td class="item-tracks oneway">
               <span
                 v-if="station.routes && station.routes.oneWay.catenary > 0"
                 class="track catenary"
@@ -128,22 +142,28 @@ import Vue from "vue";
 import { mapGetters } from "vuex";
 
 import Card from "@/components/ui/Card.vue";
-import Icon from "@/components/ui/Icon.vue";
+
+const ascSVG = require("@/assets/icon-arrow-asc.svg");
+const descSVG = require("@/assets/icon-arrow-desc.svg");
 
 export default Vue.extend({
   name: "List",
   components: {
-    Card,
-    Icon
+    Card
   },
   data: () => ({
     focusedStationName: "",
+    icons: {
+      ascSVG,
+      descSVG
+    },
     sorterActive: { index: 0, type: 1 },
     headTitles: [
       ["Stacja"],
+      ["Wymagany poz.", "dyżurnego"],
       ["Status"],
       ["Dyżurny"],
-      ["Poziom"],
+      ["Poziom", "dyżurnego"],
       ["Maszyniści"],
       ["Informacje", "ogólne"],
       ["Szlaki", "dwutorowe"],
@@ -157,7 +177,7 @@ export default Vue.extend({
       const type: number = this.sorterActive.type;
 
       const sortByName = (a, b) => {
-        if (a.stationName > b.stationName) return type;
+        if (a.stationName >= b.stationName) return type;
         if (a.stationName < b.stationName) return -type;
       };
 
@@ -169,47 +189,37 @@ export default Vue.extend({
 
         case 1:
           sortFun = (a, b) => {
-            if (a.occupiedTo > b.occupiedTo) return type;
-            if (a.occupiedTo < b.occupiedTo) return -type;
+            if (parseInt(a.reqLevel) > parseInt(b.reqLevel)) return type;
+            if (parseInt(a.reqLevel) < parseInt(b.reqLevel)) return -type;
 
-            sortByName(a, b);
-
-            return 0;
+            return sortByName(a, b);
           };
           break;
 
         case 2:
           sortFun = (a, b) => {
-            if (a.dispatcherName > b.dispatcherName) return type;
-            if (a.dispatcherName < b.dispatcherName) return -type;
+            if (a.statusTimestamp > b.statusTimestamp) return type;
+            if (a.statusTimestamp < b.statusTimestamp) return -type;
 
-            sortByName(a, b);
-
-            return 0;
+            return sortByName(a, b);
           };
           break;
 
         case 3:
           sortFun = (a, b) => {
-            if (a.dispatcherExp > b.dispatcherExp) return type;
-            if (a.dispatcherExp < b.dispatcherExp) return -type;
+            if (a.dispatcherName > b.dispatcherName) return type;
+            if (a.dispatcherName < b.dispatcherName) return -type;
 
-            // TO DO: naprawić bugujące się sortowanie
-
-            // sortByName(a, b);
-
-            return 0;
+            return sortByName(a, b);
           };
           break;
 
         case 4:
           sortFun = (a, b) => {
-            if (a.currentUsers > b.currentUsers) return type;
-            if (a.currentUsers < b.currentUsers) return -type;
+            if (a.dispatcherExp > b.dispatcherExp) return type;
+            if (a.dispatcherExp < b.dispatcherExp) return -type;
 
-            sortByName(a, b);
-
-            return 0;
+            return sortByName(a, b);
           };
           break;
 
@@ -218,10 +228,17 @@ export default Vue.extend({
             if (a.currentUsers > b.currentUsers) return type;
             if (a.currentUsers < b.currentUsers) return -type;
 
+            return sortByName(a, b);
+          };
+          break;
+
+        case 6:
+          sortFun = (a, b) => {
+            if (a.currentUsers > b.currentUsers) return type;
+            if (a.currentUsers < b.currentUsers) return -type;
+
             if (a.maxUsers > b.maxUsers) return type;
             if (a.maxUsers < b.maxUsers) return -type;
-
-            return 0;
           };
           break;
       }
@@ -236,7 +253,7 @@ export default Vue.extend({
   },
   methods: {
     changeSorter(index: number) {
-      if (index >= 5) return;
+      if (index > 5) return;
 
       if (index == this.sorterActive.index)
         this.sorterActive.type = this.sorterActive.type == 1 ? -1 : 1;
@@ -284,7 +301,8 @@ export default Vue.extend({
     },
 
     setFocusedStation(name: string) {
-      this.focusedStationName = name;
+      if (this.focusedStationName == name) this.focusedStationName = "";
+      else this.focusedStationName = name;
     },
 
     closeCard() {
@@ -298,7 +316,20 @@ export default Vue.extend({
 @import "../../styles/variables.scss";
 @import "../../styles/responsive.scss";
 
-.hour {
+.card-anim {
+  &-enter-active,
+  &-leave-active {
+    transition: all 0.25s ease-in-out;
+  }
+
+  &-enter,
+  &-leave-to {
+    transform: translate(-45%, -50%);
+    opacity: 0;
+  }
+}
+
+.status {
   padding: 0.4em;
   border-radius: 1rem;
   font-weight: bold;
@@ -358,16 +389,16 @@ export default Vue.extend({
   white-space: nowrap;
   border-collapse: collapse;
 
-  font-size: calc(0.6rem + 0.35vw);
+  font-size: calc(0.55rem + 0.35vw);
 
   @include smallScreen() {
     font-size: 0.75rem;
   }
 
-  th {
+  &-head th {
     padding: 0.3rem;
     background-color: #444;
-    min-width: 150px;
+    min-width: 140px;
 
     cursor: pointer;
     user-select: none;
@@ -385,7 +416,7 @@ export default Vue.extend({
     }
   }
 
-  tr {
+  &-item {
     background-color: #5c5b5b;
 
     &:nth-child(even) {
@@ -398,7 +429,7 @@ export default Vue.extend({
       background-color: #818181;
     }
 
-    td {
+    & > td {
       padding: 0.3rem 1rem;
       margin: 0 3rem;
       text-align: center;
@@ -411,10 +442,14 @@ export default Vue.extend({
         padding: 0.1rem 0.5rem;
       }
     }
+  }
 
-    .dispatcher-exp {
-      & > span {
+  .item {
+    &-station-level,
+    &-dispatcher-exp {
+      span {
         display: block;
+
         width: 2em;
         height: 2em;
         line-height: 2em;
@@ -422,8 +457,15 @@ export default Vue.extend({
       }
     }
 
-    .info,
-    .tracks {
+    &-station-level {
+      span {
+        background-color: #888;
+        border-radius: 50%;
+      }
+    }
+
+    &-info,
+    &-tracks {
       img {
         width: 2.2em;
         margin: 0 0.2em;
@@ -431,17 +473,19 @@ export default Vue.extend({
       }
     }
 
-    .no-catenary {
-      background-color: #939393;
-    }
+    &-tracks {
+      .no-catenary {
+        background-color: #939393;
+      }
 
-    .catenary {
-      background-color: #009dce;
-    }
+      .catenary {
+        background-color: #009dce;
+      }
 
-    .track {
-      margin: 0 0.3rem;
-      padding: 0.5em;
+      .track {
+        margin: 0 0.3rem;
+        padding: 0.5em;
+      }
     }
   }
 }
