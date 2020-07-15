@@ -3,12 +3,6 @@
     <div class="bar-content flex flex-spaced">
       <div class="bar-left">
         <Options />
-
-        <span class="legend">
-          <!-- <button class="button">
-            <img :src="require('@/assets/icon-legend.svg')" alt="icon legend" />
-          </button>-->
-        </span>
       </div>
 
       <div class="bar-center"></div>

@@ -1,31 +1,67 @@
 <template>
   <div class="options">
     <div class="options-actions">
-      <button class="action-btn button" :class="{'open': filterCardOpen}" @click="toggleCardState">
+      <button
+        class="action-btn"
+        :class="{'open': filterCardOpen}"
+        @click="() => toggleCardsState('filter')"
+      >
         <img :src="require('@/assets/icon-filter2.svg')" alt="icon-filter" />
+        <div>FILTRY</div>
+      </button>
+
+      <button
+        class="action-btn"
+        :class="{'open': legendCardOpen}"
+        @click="() => toggleCardsState('legend')"
+      >
+        <img :src="require('@/assets/icon-legend.svg')" alt="icon legend" />
+        <div>LEGENDA</div>
       </button>
     </div>
 
-    <keep-alive>
+    <div class="options-content">
       <transition name="card-anim">
-        <OptionCard v-if="filterCardOpen" :exit="toggleCardState" />
+        <OptionCard v-if="filterCardOpen" :exit="() => toggleCardsState('filter')" />
       </transition>
-    </keep-alive>
+
+      <transition name="card-anim">
+        <LegendCard v-if="legendCardOpen" :exit="() => toggleCardsState('legend')" />
+      </transition>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import OptionCard from "@/components/ui/OptionCard.vue";
+import LegendCard from "@/components/ui/LegendCard.vue";
 
 @Component({
-  components: { OptionCard }
+  components: { OptionCard, LegendCard }
 })
 export default class Options extends Vue {
   filterCardOpen: boolean = false;
+  legendCardOpen: boolean = false;
+
+  toggleCardsState(name: string): void {
+    if (name == "filter") {
+      this.legendCardOpen = false;
+      this.filterCardOpen = !this.filterCardOpen;
+    }
+
+    if (name == "legend") {
+      this.filterCardOpen = false;
+      this.legendCardOpen = !this.legendCardOpen;
+    }
+  }
 
   toggleCardState(): void {
     this.filterCardOpen = !this.filterCardOpen;
+  }
+
+  toggleLegendCardState(): void {
+    this.legendCardOpen = !this.legendCardOpen;
   }
 }
 </script>
@@ -48,17 +84,52 @@ export default class Options extends Vue {
   }
 }
 
+.action-btn {
+  display: flex;
+  align-items: center;
+
+  background: #333;
+  border: none;
+
+  color: #e0e0e0;
+  font-size: 0.9em;
+
+  padding: 0.3em;
+
+  outline: none;
+  cursor: pointer;
+
+  transition: all 0.3s;
+
+  img {
+    width: 1.3em;
+    margin-right: 0.2em;
+  }
+
+  div {
+    max-width: 0;
+    font-size: 1em;
+    overflow: hidden;
+
+    transition: max-width 0.35s ease-in-out;
+  }
+
+  &:hover > div,
+  &.open > div {
+    max-width: 500px;
+    color: $accentCol;
+  }
+
+  &:hover {
+    background: rgba(#e0e0e0, 0.4);
+  }
+}
+
 .options {
   font-size: calc(0.6rem + 0.9vw);
 
   &-actions {
     display: flex;
-  }
-}
-
-.action-btn {
-  img {
-    width: 1.3em;
   }
 }
 </style>

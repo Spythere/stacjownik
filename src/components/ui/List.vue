@@ -398,7 +398,7 @@ export default Vue.extend({
   &-head th {
     padding: 0.3rem;
     background-color: #444;
-    min-width: 140px;
+    min-width: 120px;
 
     cursor: pointer;
     user-select: none;
