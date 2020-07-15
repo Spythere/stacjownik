@@ -168,6 +168,7 @@ export default Vue.extend({
 .card {
   display: flex;
   flex-direction: column;
+
   position: fixed;
   top: 50%;
   left: 50%;

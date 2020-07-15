@@ -67,7 +67,7 @@ export default Vue.extend({
     ...mapActions(["initStations"]),
     getStationList() {
       this.initStations()
-        .then(() => (this.connectionState = 2))
+        .then(result => (this.connectionState = 2))
         .catch(err => {
           this.connectionState = 1;
           this.errorMessage = err.message;
@@ -94,7 +94,8 @@ export default Vue.extend({
 }
 
 ::-webkit-scrollbar {
-  width: 15px;
+  width: 0.5rem;
+  height: 0.5rem;
 
   &-track {
     background: #222;
@@ -113,12 +114,12 @@ html {
 body {
   width: 100%;
   margin: 0;
-  font-family: "Lato", sans-serif;
+  font-family: "Muli", sans-serif;
 }
 
 button,
 input {
-  font-family: "Lato", sans-serif;
+  font-family: "Muli", sans-serif;
 }
 
 input {

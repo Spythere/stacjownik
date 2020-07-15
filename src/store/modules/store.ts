@@ -1,10 +1,26 @@
 import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators';
+import axios from 'axios';
 import data from '@/data/stations.json';
+
+enum ConnState {
+    Loading = 0,
+    Error = 1,
+    Connected = 2
+}
 
 @Module
 class Store extends VuexModule {
     private trainCount: number = 0;
     private stationCount: number = 0;
+
+    private connectionState: number = ConnState.Loading;
+    private errorMessage: string = "";
+
+    private apiURLS = {
+        stationDataURL: "https://api.td2.info.pl:9640/?method=getStationsOnline",
+        trainDataURL: "https://api.td2.info.pl:9640/?method=getTrainsOnline",
+        dispatcherDataURL: "https://api.td2.info.pl:9640/?method=readFromSWDR&value=getDispatcherStatusList%3B1"
+    }
 
     private stations: {
         stationName: string;
@@ -94,8 +110,8 @@ class Store extends VuexModule {
     }
 
     @Action
-    private async fetchStations() {
-        let onlineStations: {
+    private fetchStations() {
+        let onlineStationsData: {
             stationName: string,
             stationHash: string,
             maxUsers: number,
@@ -109,81 +125,98 @@ class Store extends VuexModule {
             isOnline: number
         }[];
 
-        let statusList: [string, string, number, number][];
+        let onlineDispatchersData: [string, string, number, number][];
 
-        let onlineTrains: { isOnline: number, region: string, station: { stationName: string } }[];
+        let onlineTrainsData: { isOnline: number, region: string, station: { stationName: string } }[];
 
-        try {
-            onlineStations = (await (await fetch('https://api.td2.info.pl:9640/?method=getStationsOnline')).json()).message
-            statusList = (await (await fetch('https://api.td2.info.pl:9640/?method=readFromSWDR&value=getDispatcherStatusList%3B1')).json()).message
-            onlineTrains = (await (await fetch('https://api.td2.info.pl:9640/?method=getTrainsOnline')).json()).message
-        } catch (error) {
-            throw Error(error.message);
-        }
+        const queryStations = (async () => {
+            return (await axios.get(this.apiURLS.stationDataURL)).data.message;
+        })();
 
-        this.context.commit('setTrainCount', onlineTrains.filter((train) => train.isOnline && train.region === 'eu').length);
+        const queryTrains = (async () => {
+            return await (await axios.get(this.apiURLS.trainDataURL)).data.message;
+        })();
 
-        const mappedStations = onlineStations
-            .filter((station) => station.region === 'eu')
-            .filter((station) => station.isOnline)
-            .map((
-                { stationName = '', stationHash = '', maxUsers = 0, currentUsers = 0, spawnString = '',
-                    dispatcherRate = 0, dispatcherName = '', dispatcherExp = 0, dispatcherId = 0 }) => {
+        const queryDisptachers = (async () => {
+            return await (await axios.get(this.apiURLS.dispatcherDataURL)).data.message;
+        })();
 
-                const status = statusList.find((s) => s[0] === stationHash && s[1] === 'eu')
-                let occupiedTo = "---"
-                let occupiedTimestamp = 0
+        return Promise.all([queryStations, queryTrains, queryDisptachers])
+            .then(response => {
+                onlineStationsData = response[0];
+                onlineTrainsData = response[1];
+                onlineDispatchersData = response[2];
 
-                if (!status)
-                    occupiedTo = "NIEZALOGOWANY";
-                else {
-                    let occupiedCode = status[2];
+                const updatedStations = onlineStationsData.filter(station => station.region === "eu" && station.isOnline).map(station => {
+                    const stationStatus = onlineDispatchersData.find(status => status[0] == station.stationHash && status[1] == "eu");
 
-                    occupiedTimestamp = status[3];
-                    occupiedTo = "NIEDOSTĘPNY";
+                    let statusLabel = "";
 
-                    if (occupiedCode === 0) {
-                        if (occupiedTimestamp - Date.now() > 21000000)
-                            occupiedTo = "BEZ LIMITU";
-                        else
-                            occupiedTo = new Date(status[3])
-                                .toLocaleTimeString('en-US',
-                                    { hour12: false, hour: '2-digit', minute: '2-digit' });
+                    if (!stationStatus)
+                        statusLabel = "NIEZALOGOWANY";
+                    else {
+                        let statusCode = stationStatus[2];
+                        let statusTimestamp = stationStatus[3];
+
+                        statusLabel = "NIEDOSTĘPNY";
+
+                        switch (statusCode) {
+                            case 0:
+                                if (statusTimestamp - Date.now() > 21000000)
+                                    statusLabel = "BEZ LIMITU";
+                                else
+                                    statusLabel = new Date(statusTimestamp)
+                                        .toLocaleTimeString('en-US',
+                                            { hour12: false, hour: '2-digit', minute: '2-digit' });
+                                break;
+
+                            case 1:
+                                statusLabel = "Z/W";
+                                break;
+
+                            case 2:
+                                if (statusTimestamp == 0)
+                                    statusLabel = "KOŃCZY";
+                                break;
+
+                            case 3:
+                                statusLabel = "BRAK MIEJSCA"
+                                break;
+
+                            default:
+                                break;
+                        }
                     }
 
-                    if (occupiedCode === 1)
-                        occupiedTo = "Z/W";
+                    const trains = onlineTrainsData.filter((train) =>
+                        train.region === 'eu' && train.isOnline && train.station.stationName === station.stationName)
 
-                    if (occupiedCode === 2 && occupiedTimestamp === 0)
-                        occupiedTo = "KOŃCZY";
+                    const stationData = data.find(s => s.stationName === station.stationName) || { stationName: station.stationName, stationURL: "" }
 
-                    if (occupiedCode === 3)
-                        occupiedTo = "BRAK MIEJSCA";
-                }
+                    return {
+                        ...stationData,
+                        stationHash: station.stationHash,
+                        maxUsers: station.maxUsers,
+                        currentUsers: station.currentUsers,
+                        spawnString: station.spawnString && station.spawnString.split(';')
+                            .map(v => v.split(',')[6] ? v.split(',')[6] : v.split(',')[0]),
+                        dispatcherName: station.dispatcherName,
+                        dispatcherRate: station.dispatcherRate,
+                        dispatcherId: station.dispatcherId,
+                        dispatcherExp: station.dispatcherExp,
+                        occupiedTo: statusLabel,
+                        trains
+                    }
+                });
 
-                const trains = onlineTrains.filter((train) =>
-                    train.region === 'eu' && train.isOnline && train.station.stationName === stationName)
+                this.context.commit('updateStations', {
+                    updatedStations,
+                    trainCount: onlineTrainsData.filter((train) => train.isOnline && train.region === 'eu').length
+                });
 
-                const stationData = data.find((station) => station.stationName === stationName) || { stationName, stationURL: "" }
-
-                return {
-                    ...stationData,
-                    stationHash,
-                    maxUsers,
-                    currentUsers,
-                    spawnString: spawnString && spawnString.split(';').map(v => v.split(',')[6] ? v.split(',')[6] : v.split(',')[0]),
-                    dispatcherName,
-                    dispatcherRate,
-                    dispatcherId,
-                    dispatcherExp: dispatcherExp < 2 ? 'L' : dispatcherExp,
-                    occupiedTo,
-                    trains
-                }
+                this.context.commit('filterStations');
             })
-
-        this.context.commit('updateStations', mappedStations);
-        this.context.commit('setStationCount', mappedStations.length);
-        this.context.commit('filterStations');
+            .catch(err => console.log(err));
     }
 
     @Mutation
@@ -239,17 +272,10 @@ class Store extends VuexModule {
             occupiedTo: "WOLNA",
             ...stationData,
         }))
-
-        // WSPARCIE DLA NIEWPISANYCH SCENERII!!!
     }
 
     @Mutation
-    private resetFilterList() {
-        this.filters = { ...this.filterInitStates };
-    }
-
-    @Mutation
-    private updateStations(updatedStations: any) {
+    private updateStations({ updatedStations, trainCount }) {
         for (let i = 0; i < this.stations.length; i++) {
             const toUpdate: any = updatedStations.find((updated: any) => updated.stationName === this.stations[i].stationName);
 
@@ -263,7 +289,6 @@ class Store extends VuexModule {
             this.stations[i].online = true;
 
             updatedStations = updatedStations.filter((updated: any) => updated.stationName !== this.stations[i].stationName);
-
         }
 
         // Dodawanie do listy online potencjalnych scenerii niewpisanych do bazy 
@@ -274,16 +299,10 @@ class Store extends VuexModule {
                 this.stations.push({ ...updated, online: true });
             }
         })
-    }
 
-    @Mutation
-    private setTrainCount(count: number) {
-        this.trainCount = count;
-    }
-
-    @Mutation
-    private setStationCount(count: number) {
-        this.stationCount = count;
+        // Aktualizacja liczników
+        this.stationCount = this.stations.filter(station => station.online).length;
+        this.trainCount = trainCount;
     }
 
     @Mutation
@@ -291,6 +310,11 @@ class Store extends VuexModule {
         this.filters[payload.filterName] = payload.value;
     }
 
+
+    @Mutation
+    private resetFilterList() {
+        this.filters = { ...this.filterInitStates };
+    }
 }
 
 export default Store;

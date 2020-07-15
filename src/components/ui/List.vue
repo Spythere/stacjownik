@@ -2,33 +2,29 @@
   <div class="list flex">
     <Card :stationInfo="focusedStationInfo" :closeCard="closeCard" />
 
-    <!-- <div class="info">Ups! Brak stacji do wyświetlenia!</div> -->
+    <!-- <div class="info" v-if="stations.length == 0">Ups! Brak stacji do wyświetlenia!</div> -->
 
-    <div class="table-wrapper">
-      <table class="table" v-if="stations.length > 0">
+    <div class="table-wrapper" v-if="stations.length > 0">
+      <table class="table">
         <thead>
           <tr>
-            <th>Stacja</th>
-            <th>Status</th>
-            <th>Dyżurny</th>
-            <th>Poziom</th>
-            <th>Maszyniści</th>
-            <th>
-              Informacje
-              <div>ogólne</div>
-            </th>
-            <th>
-              Szlaki
-              <div>2-torowe</div>
-            </th>
-            <th>
-              Szlaki
-              <div>1-torowe</div>
+            <th v-for="(head, i) in headTitles" :key="i" @click="() => changeSorter(i)">
+              <span>
+                <div>
+                  <div>{{head[0]}}</div>
+                  <div v-if="head.length > 1">{{head[1]}}</div>
+                </div>
+
+                <Icon
+                  :name="`arrow-${sorterActive.type == 1 ? 'asc' : 'desc'}`"
+                  v-if="sorterActive.index == i"
+                />
+              </span>
             </th>
           </tr>
         </thead>
 
-        <tbody>
+        <transition-group tag="tbody" name="table-anim">
           <tr
             class="table-item"
             v-for="(station, i) in computedStations"
@@ -51,7 +47,7 @@
               <span
                 v-if="station.online"
                 :style="calculateStyle(station.dispatcherExp)"
-              >{{station.dispatcherExp}}</span>
+              >{{station.dispatcherExp < 2 ? 'L' : station.dispatcherExp}}</span>
             </td>
             <td
               class="users"
@@ -121,7 +117,7 @@
               >{{station.routes.oneWay.noCatenary}}</span>
             </td>
           </tr>
-        </tbody>
+        </transition-group>
       </table>
     </div>
   </div>
@@ -132,21 +128,105 @@ import Vue from "vue";
 import { mapGetters } from "vuex";
 
 import Card from "@/components/ui/Card.vue";
+import Icon from "@/components/ui/Icon.vue";
 
 export default Vue.extend({
   name: "List",
   components: {
-    Card
+    Card,
+    Icon
   },
   data: () => ({
-    focusedStationName: ""
+    focusedStationName: "",
+    sorterActive: { index: 0, type: 1 },
+    headTitles: [
+      ["Stacja"],
+      ["Status"],
+      ["Dyżurny"],
+      ["Poziom"],
+      ["Maszyniści"],
+      ["Informacje", "ogólne"],
+      ["Szlaki", "dwutorowe"],
+      ["Szlaki", "jednotorowe"]
+    ]
   }),
   computed: {
     ...mapGetters({ stations: "getStations" }),
     computedStations() {
-      return this.stations.sort((a: any, b: any) =>
-        a.stationName < b.stationName ? -1 : 1
-      );
+      let sortFun;
+      const type: number = this.sorterActive.type;
+
+      const sortByName = (a, b) => {
+        if (a.stationName > b.stationName) return type;
+        if (a.stationName < b.stationName) return -type;
+      };
+
+      switch (this.sorterActive.index) {
+        case 0:
+        default:
+          sortFun = sortByName;
+          break;
+
+        case 1:
+          sortFun = (a, b) => {
+            if (a.occupiedTo > b.occupiedTo) return type;
+            if (a.occupiedTo < b.occupiedTo) return -type;
+
+            sortByName(a, b);
+
+            return 0;
+          };
+          break;
+
+        case 2:
+          sortFun = (a, b) => {
+            if (a.dispatcherName > b.dispatcherName) return type;
+            if (a.dispatcherName < b.dispatcherName) return -type;
+
+            sortByName(a, b);
+
+            return 0;
+          };
+          break;
+
+        case 3:
+          sortFun = (a, b) => {
+            if (a.dispatcherExp > b.dispatcherExp) return type;
+            if (a.dispatcherExp < b.dispatcherExp) return -type;
+
+            // TO DO: naprawić bugujące się sortowanie
+
+            // sortByName(a, b);
+
+            return 0;
+          };
+          break;
+
+        case 4:
+          sortFun = (a, b) => {
+            if (a.currentUsers > b.currentUsers) return type;
+            if (a.currentUsers < b.currentUsers) return -type;
+
+            sortByName(a, b);
+
+            return 0;
+          };
+          break;
+
+        case 5:
+          sortFun = (a, b) => {
+            if (a.currentUsers > b.currentUsers) return type;
+            if (a.currentUsers < b.currentUsers) return -type;
+
+            if (a.maxUsers > b.maxUsers) return type;
+            if (a.maxUsers < b.maxUsers) return -type;
+
+            return 0;
+          };
+          break;
+      }
+
+      return this.stations.sort(sortFun);
     },
     focusedStationInfo() {
       return this.stations.find(
@@ -155,9 +235,17 @@ export default Vue.extend({
     }
   },
   methods: {
+    changeSorter(index: number) {
+      if (index >= 5) return;
+
+      if (index == this.sorterActive.index)
+        this.sorterActive.type = this.sorterActive.type == 1 ? -1 : 1;
+      else this.sorterActive.type = 1;
+
+      this.sorterActive.index = index;
+    },
     calculateStyle: (exp: string | number) => {
-      const bgColor =
-        exp === "L" ? "#26B0D9" : `hsl(${-exp * 5 + 100},  65%, 50%)`;
+      const bgColor = exp < 2 ? "#26B0D9" : `hsl(${-exp * 5 + 100},  65%, 50%)`;
       const fontColor = exp > 15 ? "white" : "black";
 
       return `backgroundColor: ${bgColor}; color: ${fontColor}`;
@@ -276,9 +364,25 @@ export default Vue.extend({
     font-size: 0.75rem;
   }
 
-  thead th {
+  th {
     padding: 0.3rem;
     background-color: #444;
+    min-width: 150px;
+
+    cursor: pointer;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+
+    span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      & > img {
+        width: 1.5em;
+      }
+    }
   }
 
   tr {

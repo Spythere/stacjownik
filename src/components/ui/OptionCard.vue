@@ -1,14 +1,14 @@
 <template>
-  <transition name="slide">
-    <section class="filter-card">
+  <transition name="appear">
+    <section class="option-card">
       <div class="card-exit" @click="exit">
         <img :src="require('@/assets/icon-exit.svg')" alt="exit icon" />
       </div>
 
-      <div class="card-title flex">FILTRY</div>
+      <div class="card-title flex">FILTRUJ STACJE</div>
 
       <div class="card-options">
-        <div class="option" v-for="(option, i) in options" :key="i">
+        <div class="option" v-for="(option, i) in inputs.options" :key="i">
           <label class="option-label">
             <input
               class="option-input"
@@ -24,8 +24,12 @@
         </div>
       </div>
 
+      <div class="card-sorts">
+        <!-- <div class="sort" v-for="(sort, i) in inputs.sorts" :key="i">{{ sort.content }}</div> -->
+      </div>
+
       <div class="card-sliders">
-        <div class="slider" v-for="(slider, i) in sliders" :key="i">
+        <div class="slider" v-for="(slider, i) in inputs.sliders" :key="i">
           <input
             class="slider-input"
             type="range"
@@ -51,225 +55,79 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
-import { mapActions } from "vuex";
+import { Vue, Component, Prop } from "vue-property-decorator";
+import { Action } from "vuex-class";
 
-export default Vue.extend({
-  name: "list-filter",
-  data: () => ({
-    options: [
-      {
-        id: "is-default",
-        name: "default",
-        section: "access",
-        value: true,
-        defaultValue: true,
-        content: "W PACZCE"
-      },
-      {
-        id: "not-default",
-        name: "notDefault",
-        section: "access",
-        value: true,
-        defaultValue: true,
-        content: "POZA PACZKĄ"
-      },
-      {
-        id: "non-public",
-        name: "nonPublic",
-        section: "access",
-        value: true,
-        defaultValue: true,
-        content: "NIEPUBLICZNA"
-      },
-      {
-        id: "SPK",
-        name: "SPK",
-        section: "control",
-        value: true,
-        defaultValue: true,
-        content: "SPK"
-      },
-      {
-        id: "SCS",
-        name: "SCS",
-        section: "control",
-        value: true,
-        defaultValue: true,
-        content: "SCS"
-      },
-      {
-        id: "by-hand",
-        name: "ręczne",
-        section: "control",
-        value: true,
-        defaultValue: true,
-        content: "RĘCZNE"
-      },
-      {
-        id: "levers",
-        name: "mechaniczne",
-        section: "control",
-        value: true,
-        defaultValue: true,
-        content: "MECHANICZNE"
-      },
-      {
-        id: "modern",
-        name: "współczesna",
-        section: "signals",
-        value: true,
-        defaultValue: true,
-        content: "WSPÓŁCZESNA"
-      },
-      {
-        id: "semaphore",
-        name: "kształtowa",
-        section: "signals",
-        value: true,
-        defaultValue: true,
-        content: "KSZTAŁTOWA"
-      },
-      {
-        id: "mixed",
-        name: "mieszana",
-        section: "signals",
-        value: true,
-        defaultValue: true,
-        content: "MIESZANA"
-      },
-      {
-        id: "historic",
-        name: "historyczna",
-        section: "signals",
-        value: true,
-        defaultValue: true,
-        content: "HISTORYCZNA"
-      },
+import inputData from "@/data/options.json";
 
-      {
-        id: "free",
-        name: "free",
-        section: "status",
-        value: false,
-        defaultValue: false,
-        content: "WOLNA"
-      },
-      {
-        id: "occupied",
-        name: "occupied",
-        section: "status",
-        value: true,
-        defaultValue: true,
-        content: "ZAJĘTA"
-      },
-      {
-        id: "ending",
-        name: "ending",
-        section: "status",
-        value: true,
-        defaultValue: true,
-        content: "KOŃCZY"
-      }
-    ],
+@Component
+export default class OptionCard extends Vue {
+  inputs = { ...inputData };
 
-    sliders: [
-      {
-        id: "min-level",
-        name: "minLevel",
-        minRange: 0,
-        maxRange: 20,
-        value: 0,
-        defaultValue: 0,
-        content: "MINIMALNY WYMAGANY POZIOM DYŻURNEGO"
-      },
-      {
-        id: "min-oneway-e",
-        name: "minOneWayCatenary",
-        minRange: 0,
-        maxRange: 5,
-        value: 0,
-        defaultValue: 0,
-        content: "SZLAKI JEDNOTOROWE ZELEKTR. (MINIMUM)"
-      },
-      {
-        id: "min-oneway-ne",
-        name: "minOneWay",
-        minRange: 0,
-        maxRange: 5,
-        value: 0,
-        defaultValue: 0,
-        content: "SZLAKI JEDNOTOROWE NIEZELEKTR. (MINIMUM)"
-      },
-      {
-        id: "min-twoway-e",
-        name: "minTwoWayCatenary",
-        minRange: 0,
-        maxRange: 5,
-        value: 0,
-        defaultValue: 0,
-        content: "SZLAKI DWUTOROWE ZELEKTR. (MINIMUM)"
-      },
-      {
-        id: "min-twoway-ne",
-        name: "minTwoWay",
-        minRange: 0,
-        maxRange: 5,
-        value: 0,
-        defaultValue: 0,
-        content: "SZLAKI DWUTOROWE NIEELEKTR. (MINIMUM)"
-      }
-    ]
-  }),
-  props: ["exit"],
-  methods: {
-    ...mapActions(["setFilter", "resetFilters"]),
-    handleChange(e: any) {
-      this.setFilter({
-        filterName: e.target.name,
-        value: !e.target.checked
-      });
-    },
-    handleInput(e: any) {
-      this.setFilter({
-        filterName: e.target.name,
-        value: parseInt(e.target.value)
-      });
-    },
-    reset() {
-      this.options.forEach(option => (option.value = option.defaultValue));
-      this.sliders.forEach(slider => (slider.value = slider.defaultValue));
+  mounted() {}
 
-      this.resetFilters();
-    },
-    exitFilters() {
-      this.exit();
-    }
+  @Prop() exit!: () => void;
+
+  @Action("setFilter") setFilter;
+  @Action("resetFilters") resetFilters;
+
+  handleChange(e: Event): void {
+    const target = <HTMLInputElement>e.target;
+
+    this.setFilter({
+      filterName: target.name,
+      value: !target.checked
+    });
   }
-});
+
+  handleInput(e: Event): void {
+    const target = <HTMLInputElement>e.target;
+
+    this.setFilter({
+      filterName: target.name,
+      value: parseInt(target.value)
+    });
+  }
+
+  reset(): void {
+    this.inputs.options.forEach(option => {
+      option.value = option.defaultValue;
+    });
+
+    this.inputs.sliders.forEach(slider => {
+      slider.value = slider.defaultValue;
+    });
+
+    this.resetFilters();
+  }
+
+  closeCard(): void {
+    this.exit();
+  }
+}
 </script>
 
 <style lang="scss" scoped>
 @import "../../styles/responsive";
 @import "../../styles/variables";
 
-.slide-enter-active,
-.slide-leave-active {
+.appear-enter-active,
+.appear-leave-active {
   transition: all 0.3s ease;
 }
 
-.slide-enter,
-.slide-leave-to {
+.appear-enter,
+.appear-leave-to {
   opacity: 0;
 }
 
-.filter-card {
+.option-card {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 
-  z-index: 0;
+  z-index: 3;
 
   overflow: auto;
   max-height: 95vh;
@@ -281,12 +139,12 @@ export default Vue.extend({
   background: #262a2e;
 
   font-size: calc(0.75rem + 0.4vw);
+  box-shadow: 0 0 15px 5px #474747;
 
   @include smallScreen() {
     width: 85vw;
     font-size: 1em;
   }
-  box-shadow: 0 0 15px 5px #474747;
 }
 
 .card {
@@ -294,6 +152,7 @@ export default Vue.extend({
     position: absolute;
     top: 0;
     right: 0;
+
     margin: 0.8em;
 
     img {

@@ -1,30 +1,31 @@
 <template>
   <div class="options">
-    <div class="option-buttons">
-      <button class="button" :class="{'open': filtersOpen}" @click="filtersOpen = !filtersOpen">
-        <img :src="require('@/assets/icon-filter2.svg')" alt="icon-filter" /> FILTRY
+    <div class="options-actions">
+      <button class="action-btn button" :class="{'open': filterCardOpen}" @click="toggleCardState">
+        <img :src="require('@/assets/icon-filter2.svg')" alt="icon-filter" /> OPCJE
       </button>
     </div>
 
     <keep-alive>
-      <ListFilter v-if="filtersOpen" :exit="() => filtersOpen = !filtersOpen" />
+      <OptionCard v-if="filterCardOpen" :exit="toggleCardState" />
     </keep-alive>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import ListFilter from "@/components/utils/ListFilter.vue";
+import { Vue, Component } from "vue-property-decorator";
+import OptionCard from "@/components/ui/OptionCard.vue";
 
-export default Vue.extend({
-  components: {
-    ListFilter
-  },
-  data: () => ({
-    filtersOpen: false,
-    sortingsOpen: false
-  })
-});
+@Component({
+  components: { OptionCard }
+})
+export default class Options extends Vue {
+  filterCardOpen: boolean = false;
+
+  toggleCardState(): void {
+    this.filterCardOpen = !this.filterCardOpen;
+  }
+}
 </script>
 
 
@@ -34,10 +35,15 @@ export default Vue.extend({
 
 .options {
   font-size: calc(0.6rem + 0.9vw);
+
+  &-actions {
+    display: flex;
+  }
 }
 
-.button {
+.action-btn {
   font-size: 0.75em;
+  margin: 0 0.2em;
 
   img {
     width: 1.3em;
