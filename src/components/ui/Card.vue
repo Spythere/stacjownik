@@ -151,65 +151,6 @@ export default Vue.extend({
   }
 }
 
-.card {
-  display: flex;
-  flex-direction: column;
-
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 2;
-
-  overflow: auto;
-  background: #474747;
-  box-shadow: 0 0 15px 5px #474747;
-
-  width: 65%;
-  max-width: 650px;
-  max-height: 95%;
-
-  font-size: calc(0.6rem + 0.5vw);
-
-  @include smallScreen {
-    width: 85%;
-  }
-
-  &-exit {
-    position: absolute;
-    top: 0;
-    right: 0;
-    margin: 0.8em;
-
-    img {
-      width: 1.3em;
-    }
-
-    cursor: pointer;
-  }
-
-  &-content {
-    display: grid;
-    grid-template-areas: "dispatcher dispatcher" "rating rating" "hours hours" "users spawns";
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-
-    align-items: center;
-    text-align: center;
-    padding: 1em;
-
-    & > div {
-      text-align: center;
-      padding: 0.2em;
-    }
-  }
-
-  &-upper {
-    background: #959595;
-    text-align: center;
-    padding: 0.2em;
-  }
-}
-
 .station {
   &-name {
     color: #2f2f2f;

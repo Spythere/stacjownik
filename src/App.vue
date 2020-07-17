@@ -124,6 +124,119 @@ input {
   box-sizing: border-box;
 }
 
+.status {
+  padding: 0.3em 0.7em;
+  border-radius: 1.3rem;
+  font-weight: 500;
+
+  background-color: #00be19;
+
+  &.free {
+    background-color: #8a8a8a;
+    font-size: 0.95em;
+  }
+
+  &.ending {
+    background-color: $accentCol;
+    color: black;
+    font-size: 0.9em;
+  }
+
+  &.no-limit {
+    background-color: #0077ae;
+    font-size: 0.9em;
+  }
+
+  &.not-signed {
+    background-color: $accent2Col;
+    font-size: 0.8em;
+  }
+
+  &.unavailable {
+    background-color: $accent2Col;
+    font-size: 0.9em;
+  }
+
+  &.brb {
+    background-color: $accentCol;
+    color: black;
+    font-size: 0.95em;
+  }
+
+  &.no-space {
+    background-color: #222;
+    color: white;
+    font-size: 0.85em;
+  }
+}
+
+.default-station {
+  font-weight: bold;
+  color: $accentCol;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+
+  overflow: auto;
+  // background: #474747;
+  background: #262a2e;
+
+  box-shadow: 0 0 15px 5px #474747;
+
+  width: 75%;
+  max-width: 750px;
+  max-height: 95%;
+
+  // font-size: calc(0.6rem + 0.5vw);
+  font-size: calc(0.55rem + 0.35vw);
+
+  @include smallScreen {
+    width: 95%;
+  }
+
+  &-exit {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0.8em;
+
+    img {
+      width: 1.5em;
+    }
+
+    cursor: pointer;
+  }
+
+  // &-content {
+  //   display: grid;
+  //   grid-template-areas: "dispatcher dispatcher" "rating rating" "hours hours" "users spawns";
+  //   grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  //   align-items: center;
+  //   text-align: center;
+  //   padding: 1em;
+
+  //   & > div {
+  //     text-align: center;
+  //     padding: 0.2em;
+  //   }
+  // }
+
+  // &-upper {
+  //   background: #959595;
+  //   text-align: center;
+  //   padding: 0.2em;
+  // }
+}
+
 .button {
   display: flex;
   align-items: center;

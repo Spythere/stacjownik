@@ -1,5 +1,5 @@
 <template>
-  <section class="legend-card">
+  <section class="legend-card card">
     <div class="card-exit" @click="exit">
       <img :src="require('@/assets/icon-exit.svg')" alt="exit icon" />
     </div>
@@ -67,32 +67,6 @@ export default class LegendCard extends Vue {
 @import "../../styles/variables.scss";
 @import "../../styles/responsive.scss";
 
-.legend-card {
-  display: flex;
-  flex-direction: column;
-
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 2;
-
-  overflow: auto;
-  background: #262a2e;
-
-  box-shadow: 0 0 15px 5px #474747;
-
-  width: 65%;
-  max-width: 650px;
-  max-height: 95%;
-
-  font-size: calc(0.6rem + 0.5vw);
-
-  @include smallScreen {
-    width: 85%;
-  }
-}
-
 .card {
   &-exit {
     position: absolute;
@@ -109,14 +83,11 @@ export default class LegendCard extends Vue {
   }
 
   &-title {
-    font-size: 2em;
+    font-size: 3em;
     font-weight: 700;
     color: $accentCol;
 
-    margin: 0.5em 0;
-  }
-
-  &-icons {
+    margin: 0.3em 0;
   }
 }
 
@@ -127,12 +98,13 @@ export default class LegendCard extends Vue {
   padding: 0.5em;
 
   img {
-    width: 2em;
+    width: 2.5em;
     margin-right: 0.5em;
   }
 
   span {
-    font-size: 0.9em;
+    font-size: 1.1em;
+    text-align: start;
   }
 }
 </style>

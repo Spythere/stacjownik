@@ -167,7 +167,7 @@ class Store extends VuexModule {
                                 if (statusTimestamp - Date.now() > 21000000)
                                     statusLabel = "BEZ LIMITU";
                                 else
-                                    statusLabel = new Date(statusTimestamp)
+                                    statusLabel = "DO " + new Date(statusTimestamp)
                                         .toLocaleTimeString('en-US',
                                             { hour12: false, hour: '2-digit', minute: '2-digit' });
                                 break;
@@ -226,7 +226,7 @@ class Store extends VuexModule {
     private filterStations() {
         this.filteredStations = this.stations.filter(station => {
             if ((station.nonPublic || !station.reqLevel) && this.filters['nonPublic']) return false;
-            if (!station.reqLevel) return true;
+            if (!station.reqLevel || station.reqLevel == "-1") return true;
 
             if (station.online && station.occupiedTo == "KOŃCZY" && this.filters['ending']) return false;
             if (station.online && this.filters['occupied']) return false;
@@ -302,7 +302,7 @@ class Store extends VuexModule {
             const toUpdate: any = this.stations.find(station => station.stationName === updated.stationName);
 
             if (!toUpdate) {
-                this.stations.push({ ...updated, online: true });
+                this.stations.push({ ...updated, online: true, reqLevel: "-1" });
             }
         })
 

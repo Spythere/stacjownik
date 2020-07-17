@@ -1,7 +1,7 @@
 <template>
   <div class="list flex">
     <transition name="card-anim">
-      <Card v-if="focusedStationInfo" :stationInfo="focusedStationInfo" :closeCard="closeCard" />
+      <StationCard v-if="focusedStationInfo" :stationInfo="focusedStationInfo" :exit="closeCard" />
     </transition>
     <!-- <div class="info" v-if="stations.length == 0">Ups! Brak stacji do wyświetlenia!</div> -->
 
@@ -41,8 +41,11 @@
 
             <td class="item-station-level">
               <span
+                v-if="station.reqLevel"
                 :style="calculateStyle(station.reqLevel)"
-              >{{ station.reqLevel ? (parseInt(station.reqLevel) >= 2 ? station.reqLevel : "L") : "" }}</span>
+              >{{ (station.reqLevel && station.reqLevel > -1) ? (parseInt(station.reqLevel) >= 2 ? station.reqLevel : "L") : "?" }}</span>
+
+              <span v-else>?</span>
             </td>
 
             <td class="item-station-status">
@@ -63,13 +66,6 @@
               class="item-users"
             >{{station.online ? (station.currentUsers + "/" + station.maxUsers) : ""}}</td>
             <td class="item-info">
-              <!-- <img
-                v-if="station.default"
-                :src="require(`@/assets/icon-td2.svg`)"
-                alt="default"
-                title="Sceneria domyślnie dostępna w grze"
-              />-->
-
               <img
                 class="icon-info"
                 v-if="station.controlType"
@@ -141,7 +137,9 @@
 import Vue from "vue";
 import { mapGetters } from "vuex";
 
-import Card from "@/components/ui/Card.vue";
+import styleMixin from "@/mixins/styleMixin";
+
+import StationCard from "@/components/ui/StationCard.vue";
 
 const ascSVG = require("@/assets/icon-arrow-asc.svg");
 const descSVG = require("@/assets/icon-arrow-desc.svg");
@@ -149,7 +147,7 @@ const descSVG = require("@/assets/icon-arrow-desc.svg");
 export default Vue.extend({
   name: "List",
   components: {
-    Card
+    StationCard
   },
   data: () => ({
     focusedStationName: "",
@@ -200,6 +198,9 @@ export default Vue.extend({
           sortFun = (a, b) => {
             if (a.statusTimestamp > b.statusTimestamp) return type;
             if (a.statusTimestamp < b.statusTimestamp) return -type;
+
+            if (a.occupiedTo > b.occupiedTo) return type;
+            if (a.occupiedTo < b.occupiedTo) return -type;
 
             return sortByName(a, b);
           };
@@ -261,13 +262,18 @@ export default Vue.extend({
 
       this.sorterActive.index = index;
     },
-    calculateStyle: (exp: string | number) => {
-      const bgColor = exp < 2 ? "#26B0D9" : `hsl(${-exp * 5 + 100},  65%, 50%)`;
+    calculateStyle(exp: string | number): string {
+      const bgColor =
+        exp > -1
+          ? exp < 2
+            ? "#26B0D9"
+            : `hsl(${-exp * 5 + 100},  65%, 50%)`
+          : "#888";
+
       const fontColor = exp > 15 ? "white" : "black";
 
       return `backgroundColor: ${bgColor}; color: ${fontColor}`;
     },
-
     occupationClasses: (occupiedTo: string) => {
       let className = "";
 
@@ -329,57 +335,6 @@ export default Vue.extend({
   }
 }
 
-.status {
-  padding: 0.4em;
-  border-radius: 1rem;
-  font-weight: bold;
-
-  background-color: #00be19;
-
-  &.free {
-    background-color: #8a8a8a;
-    font-size: 0.95em;
-  }
-
-  &.ending {
-    background-color: $accentCol;
-    color: black;
-    font-size: 0.9em;
-  }
-
-  &.no-limit {
-    background-color: #0077ae;
-    font-size: 0.85em;
-  }
-
-  &.not-signed {
-    background-color: $accent2Col;
-    font-size: 0.8em;
-  }
-
-  &.unavailable {
-    background-color: $accent2Col;
-    font-size: 0.9em;
-  }
-
-  &.brb {
-    background-color: $accentCol;
-    color: black;
-    font-size: 0.95em;
-  }
-
-  &.no-space {
-    background-color: #222;
-    color: white;
-    font-size: 0.85em;
-  }
-}
-
-.default-station {
-  font-weight: bold;
-  color: $accentCol;
-}
-
 .table {
   &-wrapper {
     overflow: auto;
@@ -389,7 +344,7 @@ export default Vue.extend({
   white-space: nowrap;
   border-collapse: collapse;
 
-  font-size: calc(0.55rem + 0.35vw);
+  font-size: calc(0.7rem + 0.2vw);
 
   @include smallScreen() {
     font-size: 0.75rem;
