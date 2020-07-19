@@ -13,8 +13,7 @@ class Store extends VuexModule {
     private trainCount: number = 0;
     private stationCount: number = 0;
 
-    private connectionState: number = ConnState.Loading;
-    private errorMessage: string = "";
+    private connectionState: ConnState = ConnState.Loading;
 
     private apiURLS = {
         stationDataURL: "https://api.td2.info.pl:9640/?method=getStationsOnline",
@@ -90,6 +89,10 @@ class Store extends VuexModule {
         return this.filters;
     }
 
+    get getConnectionState() {
+        return this.connectionState;
+    }
+
     @Action
     public setFilter(payload: { filterName: string, value: number | boolean }) {
         this.context.commit('mutateFilter', payload);
@@ -103,11 +106,9 @@ class Store extends VuexModule {
     }
 
     @Action
-    public async initStations() {
+    public initStations() {
         this.context.commit('loadAllStations');
         this.context.dispatch('fetchStations');
-
-        setInterval(() => this.context.dispatch('fetchStations'), 3000);
     }
 
     @Action
@@ -142,7 +143,7 @@ class Store extends VuexModule {
             return await (await axios.get(this.apiURLS.dispatcherDataURL)).data.message;
         })();
 
-        return Promise.all([queryStations, queryTrains, queryDisptachers])
+        Promise.all([queryStations, queryTrains, queryDisptachers])
             .then(response => {
                 onlineStationsData = response[0];
                 onlineTrainsData = response[1];
@@ -218,8 +219,11 @@ class Store extends VuexModule {
                 });
 
                 this.context.commit('filterStations');
+                this.context.commit('setConnState', ConnState.Connected);
             })
-            .catch(err => console.log(err));
+            .catch(err => {
+                this.context.commit('setConnState', ConnState.Error);
+            });
     }
 
     @Mutation
@@ -316,10 +320,14 @@ class Store extends VuexModule {
         this.filters[payload.filterName] = payload.value;
     }
 
-
     @Mutation
     private resetFilterList() {
         this.filters = { ...this.filterInitStates };
+    }
+
+    @Mutation
+    private setConnState(state: ConnState) {
+        this.connectionState = state;
     }
 }
 

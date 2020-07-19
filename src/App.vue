@@ -14,9 +14,9 @@
       <AppBar :stationCount="stationCount" :trainCount="trainCount" />
 
       <main class="app-main">
-        <Loading v-if="connectionState == 0" />
-        <Error v-else-if="connectionState == 1" :error="errorMessage" />
-        <router-view v-else />
+          <Loading v-if="connectionState == 0" />
+          <Error v-else-if="connectionState == 1" :error="errorMessage" />
+          <router-view v-else />
       </main>
 
       <footer class="app-footer flex">&copy; Spythere 2020</footer>
@@ -25,44 +25,42 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { Vue, Component, Prop } from "vue-property-decorator";
+import { Action, Getter } from "vuex-class";
+
 import { mapGetters, mapActions } from "vuex";
 
 import Error from "@/components/states/Error.vue";
 import Loading from "@/components/states/Loading.vue";
 import Clock from "@/components/ui/Clock.vue";
 import AppBar from "@/components/ui/AppBar.vue";
-// import ListFilter from "@/components/utils/ListFilter.vue";
 
-export default Vue.extend({
-  name: "App",
-  components: { Error, Loading, Clock, AppBar },
-  computed: mapGetters({
-    stations: "getStations",
-    trainCount: "getTrainCount",
-    stationCount: "getStationCount"
-  }),
+enum ConnState {
+    Loading = 0,
+    Error = 1,
+    Connected = 2
+}
 
-  methods: {
-    ...mapActions(["initStations"]),
-    getStationList() {
-      this.initStations()
-        .then(result => (this.connectionState = 2))
-        .catch(err => {
-          this.connectionState = 1;
-          this.errorMessage = err.message;
-        });
-    }
-  },
-  data: () => ({
-    errorMessage: "",
-    connectionState: 0
-  }),
+@Component({
+  components: { Error, Loading, Clock, AppBar }
+})
+export default class App extends Vue {
+  @Getter('getStations') stations
+  @Getter('getTrainCount') trainCount
+  @Getter("getStationCount") stationCount
 
+  @Action("initStations") initStations
+
+  errorMessage: string = "";
+  connectionState: ConnState = ConnState.Loading;
+  
   mounted() {
-    this.getStationList();
+    this.initStations();
+
+    this.$store.watch((state, getters) => getters.getConnectionState, (state: ConnState) => this.connectionState = state);
   }
-});
+
+}
 </script>
 
 <style lang="scss">
