@@ -109,6 +109,8 @@ class Store extends VuexModule {
     public initStations() {
         this.context.commit('loadAllStations');
         this.context.dispatch('fetchStations');
+
+        setInterval(() => this.context.dispatch('fetchStations'), 15000);
     }
 
     @Action
