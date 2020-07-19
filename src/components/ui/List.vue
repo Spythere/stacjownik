@@ -344,7 +344,7 @@ export default Vue.extend({
   white-space: nowrap;
   border-collapse: collapse;
 
-  font-size: calc(0.7rem + 0.2vw);
+  font-size: calc(0.7rem + 0.3vw);
 
   @include smallScreen() {
     font-size: 0.75rem;

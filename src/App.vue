@@ -123,9 +123,11 @@ input {
 }
 
 .status {
-  padding: 0.3em 0.7em;
   border-radius: 1.3rem;
   font-weight: 500;
+
+  font-size: .95em;
+  padding: 0.25em 0.4em;
 
   background-color: #00be19;
 

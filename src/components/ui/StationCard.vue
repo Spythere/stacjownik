@@ -282,6 +282,7 @@ export default class StationCard extends Vue {
   &-level {
     font-size: 2.5em;
     font-weight: bold;
+    margin-right: .3em;
 
     max-width: 2em;
 
@@ -347,6 +348,8 @@ export default class StationCard extends Vue {
 
       &.borderless {
         border: none;
+        margin: 0;
+        padding: 0;
       }
     }
   }
