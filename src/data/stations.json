@@ -772,7 +772,7 @@
         "stationURL": "https://td2.info.pl/scenerie/lisiczki",
         "stationLines": "",
         "stationProject": "",
-        "reqLevel": "0",
+        "reqLevel": "6",
         "supportersOnly": "NIE",
         "signalType": "współczesna",
         "controlType": "SCS-SPK",
