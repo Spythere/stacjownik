@@ -27,7 +27,6 @@
           </tr>
         </thead>
 
-        <transition-group tag="tbody" class="table-body" name="table-anim">
           <tr
             class="table-item"
             v-for="(station, i) in computedStations"
@@ -127,7 +126,6 @@
               >{{station.routes.oneWay.noCatenary}}</span>
             </td>
           </tr>
-        </transition-group>
       </table>
     </div>
   </div>
