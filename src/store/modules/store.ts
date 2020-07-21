@@ -2,6 +2,8 @@ import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators';
 import axios from 'axios';
 import data from '@/data/stations.json';
 
+import Station from "@/scripts/interfaces/Station";
+
 enum ConnState {
     Loading = 0,
     Error = 1,
@@ -21,29 +23,7 @@ class Store extends VuexModule {
         dispatcherDataURL: "https://api.td2.info.pl:9640/?method=readFromSWDR&value=getDispatcherStatusList%3B1"
     }
 
-    private stations: {
-        stationName: string;
-        stationHash: string;
-        maxUsers: number;
-        currentUsers: number;
-        spawnString: string;
-        dispatcherRate: number;
-        dispatcherName: string;
-        dispatcherExp: number;
-        dispatcherId: number;
-        stationLines: string;
-        stationProject: string;
-        reqLevel: string;
-        supportersOnly: string;
-        signalType: string;
-        controlType: string;
-        default: boolean;
-        nonPublic: boolean;
-        routes: { oneWay: { catenary: number; noCatenary: number; }, twoWay: { catenary: number; noCatenary: number; } };
-        online: boolean;
-        occupiedTo: string;
-        statusTimestamp: number;
-    }[] = [];
+    private stations: Station[] = [];
 
     private filteredStations: {}[] = [];
 

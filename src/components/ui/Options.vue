@@ -92,7 +92,7 @@ export default class Options extends Vue {
   border: none;
 
   color: #e0e0e0;
-  font-size: 0.9em;
+  font-size: 0.7em;
 
   padding: 0.3em;
 

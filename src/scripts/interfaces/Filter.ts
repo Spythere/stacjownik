@@ -1,0 +1,23 @@
+export default interface Filter {
+    "default": false,
+    "notDefault": false,
+    "nonPublic": false,
+    "SPK": false,
+    "SCS": false,
+    "ręczne": false,
+    "mechaniczne": false,
+    "współczesna": false,
+    "kształtowa": false,
+    "historyczna": false,
+    "mieszana": false,
+    "minLevel": 0,
+    "minOneWayCatenary": 0,
+    "minOneWay": 0,
+    "minTwoWayCatenary": 0,
+    "minTwoWay": 0,
+    "no-1track": false,
+    "no-2track": false,
+    "free": true,
+    "occupied": false,
+    "ending": false
+}

@@ -43,7 +43,7 @@ export default class AppBar extends Vue {
 
   position: sticky;
   top: 0;
-  font-size: 0.3em;
+  font-size: 0.25em;
   background: #222;
 }
 

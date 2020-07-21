@@ -58,6 +58,11 @@ export default class LegendCard extends Vue {
       name: "mieszana",
       desc:
         "Sceneria ze sygnalizacją mieszaną (kształtowe, historyczne lub/i współczesne)"
+    },
+    {
+      name: "SBL",
+      desc:
+        "Sceneria posiadająca samoczynną blokadę liniową na co najmniej jednym z jej szlaków"
     }
   ];
 }

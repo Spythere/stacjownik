@@ -14,9 +14,9 @@
       <AppBar :stationCount="stationCount" :trainCount="trainCount" />
 
       <main class="app-main">
-          <Loading v-if="connectionState == 0" />
-          <Error v-else-if="connectionState == 1" :error="errorMessage" />
-          <router-view v-else />
+        <Loading v-if="connectionState == 0" />
+        <Error v-else-if="connectionState == 1" :error="errorMessage" />
+        <router-view v-else />
       </main>
 
       <footer class="app-footer flex">&copy; Spythere 2020</footer>
@@ -36,30 +36,32 @@ import Clock from "@/components/ui/Clock.vue";
 import AppBar from "@/components/ui/AppBar.vue";
 
 enum ConnState {
-    Loading = 0,
-    Error = 1,
-    Connected = 2
+  Loading = 0,
+  Error = 1,
+  Connected = 2
 }
 
 @Component({
   components: { Error, Loading, Clock, AppBar }
 })
 export default class App extends Vue {
-  @Getter('getStations') stations
-  @Getter('getTrainCount') trainCount
-  @Getter("getStationCount") stationCount
+  @Getter("getStations") stations;
+  @Getter("getTrainCount") trainCount;
+  @Getter("getStationCount") stationCount;
 
-  @Action("initStations") initStations
+  @Action("initStations") initStations;
 
   errorMessage: string = "";
   connectionState: ConnState = ConnState.Loading;
-  
+
   mounted() {
     this.initStations();
 
-    this.$store.watch((state, getters) => getters.getConnectionState, (state: ConnState) => this.connectionState = state);
+    this.$store.watch(
+      (state, getters) => getters.getConnectionState,
+      (state: ConnState) => (this.connectionState = state)
+    );
   }
-
 }
 </script>
 
@@ -126,7 +128,7 @@ input {
   border-radius: 1.3rem;
   font-weight: 500;
 
-  font-size: .95em;
+  font-size: 0.95em;
   padding: 0.25em 0.4em;
 
   background-color: #00be19;
@@ -144,17 +146,13 @@ input {
 
   &.no-limit {
     background-color: #0077ae;
-    font-size: 0.9em;
+    font-size: 0.85em;
   }
 
-  &.not-signed {
-    background-color: $accent2Col;
-    font-size: 0.8em;
-  }
-
+  &.not-signed,
   &.unavailable {
     background-color: $accent2Col;
-    font-size: 0.9em;
+    font-size: 0.8em;
   }
 
   &.brb {
@@ -196,7 +194,7 @@ input {
   max-height: 95%;
 
   // font-size: calc(0.6rem + 0.5vw);
-  font-size: calc(0.55rem + 0.35vw);
+  font-size: calc(0.45rem + 0.35vw);
 
   @include smallScreen {
     width: 95%;

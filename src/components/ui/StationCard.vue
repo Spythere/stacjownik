@@ -67,7 +67,7 @@
       <div class="dispatcher">
         <div
           class="dispatcher-level flex"
-          :style="calculateStyle(stationInfo.dispatcherExp)"
+          :style="calculateExpStyle(stationInfo.dispatcherExp)"
         >{{computedExp}}</div>
         <div class="dispatcher-info">
           <div class="dispatcher-name">
@@ -136,51 +136,13 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Component, Prop } from "vue-property-decorator";
+import styleMixin from "@/mixins/styleMixin";
 
 @Component
-export default class StationCard extends Vue {
+export default class StationCard extends styleMixin {
   @Prop() stationInfo;
   @Prop() exit!: void;
-
-  calculateStyle(exp: number): string {
-    const bgColor = exp < 2 ? "#26B0D9" : `hsl(${-exp * 5 + 100},  65%, 50%)`;
-    const fontColor = exp > 15 ? "white" : "black";
-
-    return `backgroundColor: ${bgColor}; color: ${fontColor}`;
-  }
-
-  statusClasses(status: string) {
-    let className = "";
-
-    switch (status) {
-      case "WOLNA":
-        className = "free";
-        break;
-      case "KOŃCZY":
-        className = "ending";
-        break;
-      case "NIEZALOGOWANY":
-        className = "not-signed";
-        break;
-      case "BEZ LIMITU":
-        className = "no-limit";
-        break;
-      case "NIEDOSTĘPNY":
-        className = "unavailable";
-        break;
-      case "Z/W":
-        className = "brb";
-        break;
-      case "BRAK MIEJSCA":
-        className = "no-space";
-        break;
-      default:
-        break;
-    }
-
-    return className;
-  }
 
   get computedExp(): string {
     return this.stationInfo.dispatcherExp < 2
@@ -282,7 +244,7 @@ export default class StationCard extends Vue {
   &-level {
     font-size: 2.5em;
     font-weight: bold;
-    margin-right: .3em;
+    margin-right: 0.3em;
 
     max-width: 2em;
 
