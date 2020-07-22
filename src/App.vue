@@ -318,7 +318,6 @@ ul {
   &-header {
     background: #333;
     padding: 0.1em;
-
     & > .brand-name {
       font-size: 1.1em;
 

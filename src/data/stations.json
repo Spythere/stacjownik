@@ -1651,7 +1651,7 @@
     {
         "stationName": "Sulechów",
         "stationURL": "https://td2.info.pl/scenerie/sulechow/",
-        "stationLines": "358,379",
+        "stationLines": "358",
         "reqLevel": "0",
         "supportersOnly": "NIE",
         "signalType": "mieszana",
@@ -1665,6 +1665,52 @@
             },
             "twoWay": {
                 "catenary": 0,
+                "noCatenary": 0
+            }
+        },
+        "default": false,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Wilczyca",
+        "stationURL": "https://td2.info.pl/scenerie/wilczyca/",
+        "stationLines": "",
+        "reqLevel": "0",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SCS",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 0,
+                "noCatenary": 2
+            },
+            "twoWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            }
+        },
+        "default": false,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Sowi Bór",
+        "stationURL": "https://td2.info.pl/scenerie/sowi-bor/",
+        "stationLines": "",
+        "reqLevel": "3",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SPK",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 2,
                 "noCatenary": 0
             }
         },
