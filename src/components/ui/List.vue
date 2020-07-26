@@ -142,7 +142,7 @@ const ascSVG = require("@/assets/icon-arrow-asc.svg");
 const descSVG = require("@/assets/icon-arrow-desc.svg");
 
 @Component({
-  components: { StationCard }
+  components: { StationCard },
 })
 export default class List extends styleMixin {
   focusedStationName: string = "";
@@ -160,7 +160,7 @@ export default class List extends styleMixin {
     ["Maszyniści"],
     ["Informacje", "ogólne"],
     ["Szlaki", "dwutorowe"],
-    ["Szlaki", "jednotorowe"]
+    ["Szlaki", "jednotorowe"],
   ];
 
   changeSorter(index: number) {
@@ -184,7 +184,7 @@ export default class List extends styleMixin {
 
   get focusedStationInfo() {
     return this.stations.find(
-      station => station.stationName === this.focusedStationName
+      (station) => station.stationName === this.focusedStationName
     );
   }
 
@@ -300,10 +300,10 @@ export default class List extends styleMixin {
   white-space: nowrap;
   border-collapse: collapse;
 
-  font-size: calc(0.5rem + 0.3vw);
+  font-size: calc(0.6rem + 0.3vw);
 
   @include smallScreen() {
-    font-size: 0.65rem;
+    font-size: 0.7rem;
   }
 
   &-head th {
@@ -354,49 +354,49 @@ export default class List extends styleMixin {
       }
     }
   }
+}
 
-  .item {
-    &-station-level,
-    &-dispatcher-exp {
-      span {
-        display: block;
+.item {
+  &-station-level,
+  &-dispatcher-exp {
+    span {
+      display: block;
 
-        width: 2em;
-        height: 2em;
-        line-height: 2em;
-        margin: 0 auto;
-      }
+      width: 2em;
+      height: 2em;
+      line-height: 2em;
+      margin: 0 auto;
+    }
+  }
+
+  &-station-level {
+    span {
+      background-color: #888;
+      border-radius: 50%;
+    }
+  }
+
+  &-info,
+  &-tracks {
+    img {
+      width: 2.2em;
+      margin: 0 0.2em;
+      vertical-align: middle;
+    }
+  }
+
+  &-tracks {
+    .no-catenary {
+      background-color: #939393;
     }
 
-    &-station-level {
-      span {
-        background-color: #888;
-        border-radius: 50%;
-      }
+    .catenary {
+      background-color: #009dce;
     }
 
-    &-info,
-    &-tracks {
-      img {
-        width: 2.2em;
-        margin: 0 0.2em;
-        vertical-align: middle;
-      }
-    }
-
-    &-tracks {
-      .no-catenary {
-        background-color: #939393;
-      }
-
-      .catenary {
-        background-color: #009dce;
-      }
-
-      .track {
-        margin: 0 0.3rem;
-        padding: 0.5em;
-      }
+    .track {
+      margin: 0 0.3rem;
+      padding: 0.5em;
     }
   }
 }

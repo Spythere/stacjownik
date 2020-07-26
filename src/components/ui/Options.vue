@@ -7,7 +7,7 @@
         @click="() => toggleCardsState('filter')"
       >
         <img :src="require('@/assets/icon-filter2.svg')" alt="icon-filter" />
-        <div>FILTRY</div>
+        <p>FILTRY</p>
       </button>
 
       <button
@@ -16,7 +16,7 @@
         @click="() => toggleCardsState('legend')"
       >
         <img :src="require('@/assets/icon-legend.svg')" alt="icon legend" />
-        <div>LEGENDA</div>
+        <p>LEGENDA</p>
       </button>
     </div>
 
@@ -38,7 +38,7 @@ import OptionCard from "@/components/ui/OptionCard.vue";
 import LegendCard from "@/components/ui/LegendCard.vue";
 
 @Component({
-  components: { OptionCard, LegendCard }
+  components: { OptionCard, LegendCard },
 })
 export default class Options extends Vue {
   filterCardOpen: boolean = false;
@@ -106,7 +106,7 @@ export default class Options extends Vue {
     margin-right: 0.2em;
   }
 
-  div {
+  p {
     max-width: 0;
     font-size: 1em;
     overflow: hidden;
@@ -114,8 +114,8 @@ export default class Options extends Vue {
     transition: max-width 0.35s ease-in-out;
   }
 
-  &:hover > div,
-  &.open > div {
+  &:hover > p,
+  &.open > p {
     max-width: 500px;
     color: $accentCol;
   }
@@ -130,6 +130,17 @@ export default class Options extends Vue {
 
   &-actions {
     display: flex;
+  }
+}
+
+@include smallScreen {
+  .action-btn {
+    margin-right: 0.5rem;
+    font-size: 0.8rem;
+
+    p {
+      max-width: 100%;
+    }
   }
 }
 </style>

@@ -1,23 +1,15 @@
 <template>
   <div class="app-bar">
-    <div class="bar-content flex flex-spaced">
-      <div class="bar-left">
-        <Options />
-      </div>
+    <Options />
 
-      <div class="bar-center"></div>
+    <div></div>
 
-      <div class="bar-right">
-        <span class="counter dispatchers">
-          <img src="@/assets/icon-dispatcher.svg" alt="icon dispatcher" />
-          {{stationCount}}
-        </span>
+    <div class="counter">
+      <img src="@/assets/icon-dispatcher.svg" alt="icon dispatcher" />
+      <span>{{stationCount}}</span>
 
-        <span class="counter trains">
-          {{trainCount}}
-          <img src="@/assets/icon-train.svg" alt="icon train" />
-        </span>
-      </div>
+      <span>{{trainCount}}</span>
+      <img src="@/assets/icon-train.svg" alt="icon train" />
     </div>
   </div>
 </template>
@@ -28,7 +20,7 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 import Options from "@/components/ui/Options.vue";
 
 @Component({
-  components: { Options }
+  components: { Options },
 })
 export default class AppBar extends Vue {
   @Prop(Number) trainCount;
@@ -37,33 +29,31 @@ export default class AppBar extends Vue {
 </script>
 
 <style lang="scss">
+@import "../../styles/responsive.scss";
+
 .app-bar {
   display: flex;
   justify-content: space-between;
 
   position: sticky;
   top: 0;
-  font-size: 0.25em;
+  font-size: 0.35em;
   background: #222;
 }
 
-.bar {
-  &-left {
-    display: flex;
+.counter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
 
-    & > .legend {
-      display: flex;
-      align-items: center;
-
-      img {
-        width: 1.6em;
-      }
-    }
+  span {
+    margin: 0 0.3em;
   }
+}
 
-  &-right {
-    font-size: 1.35em;
-    display: flex;
+@include smallScreen {
+  .app-bar {
+    font-size: 0.8rem;
   }
 }
 </style>

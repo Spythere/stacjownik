@@ -38,11 +38,11 @@ import AppBar from "@/components/ui/AppBar.vue";
 enum ConnState {
   Loading = 0,
   Error = 1,
-  Connected = 2
+  Connected = 2,
 }
 
 @Component({
-  components: { Error, Loading, Clock, AppBar }
+  components: { Error, Loading, Clock, AppBar },
 })
 export default class App extends Vue {
   @Getter("getStations") stations;
@@ -122,6 +122,8 @@ input {
 *::before,
 *::after {
   box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
 .status {
@@ -212,27 +214,6 @@ input {
 
     cursor: pointer;
   }
-
-  // &-content {
-  //   display: grid;
-  //   grid-template-areas: "dispatcher dispatcher" "rating rating" "hours hours" "users spawns";
-  //   grid-template-columns: repeat(2, minmax(0, 1fr));
-
-  //   align-items: center;
-  //   text-align: center;
-  //   padding: 1em;
-
-  //   & > div {
-  //     text-align: center;
-  //     padding: 0.2em;
-  //   }
-  // }
-
-  // &-upper {
-  //   background: #959595;
-  //   text-align: center;
-  //   padding: 0.2em;
-  // }
 }
 
 .button {
@@ -318,6 +299,7 @@ ul {
   &-header {
     background: #333;
     padding: 0.1em;
+
     & > .brand-name {
       font-size: 1.1em;
 
