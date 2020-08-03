@@ -1,16 +1,6 @@
 <template>
   <div class="app-bar">
     <Options />
-
-    <div></div>
-
-    <div class="counter">
-      <img src="@/assets/icon-dispatcher.svg" alt="icon dispatcher" />
-      <span>{{stationCount}}</span>
-
-      <span>{{trainCount}}</span>
-      <img src="@/assets/icon-train.svg" alt="icon train" />
-    </div>
   </div>
 </template>
 
@@ -22,10 +12,7 @@ import Options from "@/components/ui/Options.vue";
 @Component({
   components: { Options },
 })
-export default class AppBar extends Vue {
-  @Prop(Number) trainCount;
-  @Prop(Number) stationCount;
-}
+export default class AppBar extends Vue {}
 </script>
 
 <style lang="scss">

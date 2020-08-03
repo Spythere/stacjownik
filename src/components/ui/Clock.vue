@@ -1,5 +1,5 @@
 <template>
-  <section class="clock">{{ formattedDate }}</section>
+  <div class="clock">{{ formattedDate }}</div>
 </template>
 
 
@@ -12,7 +12,11 @@ export default Vue.extend({
   }),
   computed: {
     formattedDate() {
-      return new Date(this.timestamp).toLocaleString("pl-PL");
+      return new Date(this.timestamp).toLocaleString("pl-PL", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      });
     },
   },
   mounted() {
@@ -28,8 +32,6 @@ export default Vue.extend({
   display: flex;
   justify-content: center;
   align-items: center;
-
-  font-size: 0.35em;
 
   @include smallScreen() {
     font-size: 0.65rem;

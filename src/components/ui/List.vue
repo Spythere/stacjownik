@@ -5,126 +5,130 @@
     </transition>
     <!-- <div class="info" v-if="stations.length == 0">Ups! Brak stacji do wyświetlenia!</div> -->
 
-    <div class="table-wrapper" v-if="stations.length > 0">
-      <table class="table">
-        <thead class="table-head">
-          <tr>
-            <th v-for="(head, i) in headTitles" :key="i" @click="() => changeSorter(i)">
-              <span>
-                <div>
-                  <div>{{head[0]}}</div>
-                  <div v-if="head.length > 1">{{head[1]}}</div>
-                </div>
+    <section class="list-body">
+      <Options />
 
-                <img
-                  class="icon"
-                  v-if="sorterActive.index == i"
-                  :src="sorterActive.type == 1 ? icons.ascSVG : icons.descSVG"
-                  alt
-                />
-              </span>
-            </th>
+      <div class="table-wrapper">
+        <table class="table">
+          <thead class="table-head">
+            <tr>
+              <th v-for="(head, i) in headTitles" :key="i" @click="() => changeSorter(i)">
+                <span>
+                  <div>
+                    <div>{{head[0]}}</div>
+                    <div v-if="head.length > 1">{{head[1]}}</div>
+                  </div>
+
+                  <img
+                    class="icon"
+                    v-if="sorterActive.index == i"
+                    :src="sorterActive.type == 1 ? icons.ascSVG : icons.descSVG"
+                    alt
+                  />
+                </span>
+              </th>
+            </tr>
+          </thead>
+
+          <tr
+            class="table-item"
+            v-for="(station, i) in computedStations"
+            :key="i + station.stationHash"
+            @click="() => { if(station.online) setFocusedStation(station.stationName) }"
+          >
+            <td
+              class="item-station-name"
+              :class="{'default-station': station.default, 'online': station.online}"
+            >{{station.stationName}}</td>
+
+            <td class="item-station-level">
+              <span
+                v-if="station.reqLevel"
+                :style="calculateExpStyle(station.reqLevel)"
+              >{{ (station.reqLevel && station.reqLevel > -1) ? (parseInt(station.reqLevel) >= 2 ? station.reqLevel : "L") : "?" }}</span>
+
+              <span v-else>?</span>
+            </td>
+
+            <td class="item-station-status">
+              <span class="status" :class="statusClasses(station.occupiedTo)">{{station.occupiedTo}}</span>
+            </td>
+
+            <td class="item-dispatcher-name">{{station.online ? station.dispatcherName : ""}}</td>
+            <td class="item-dispatcher-exp">
+              <span
+                v-if="station.online"
+                :style="calculateExpStyle(station.dispatcherExp)"
+              >{{station.dispatcherExp < 2 ? 'L' : station.dispatcherExp}}</span>
+            </td>
+            <td
+              class="item-users"
+            >{{station.online ? (station.currentUsers + "/" + station.maxUsers) : ""}}</td>
+            <td class="item-info">
+              <img
+                class="icon-info"
+                v-if="station.controlType"
+                :src="require(`@/assets/icon-${station.controlType}.svg`)"
+                :alt="station.controlType"
+                :title="'Sterowanie ' + station.controlType"
+              />
+
+              <img
+                class="icon-info"
+                v-if="station.signalType"
+                :src="require(`@/assets/icon-${station.signalType}.svg`)"
+                :alt="station.signalType"
+                :title="'Sygnalizacja ' + station.signalType"
+              />
+
+              <img
+                class="icon-info"
+                v-if="station.SBL && station.SBL !== ''"
+                :src="require(`@/assets/icon-SBL.svg`)"
+                alt="SBL"
+                title="Sceneria posiada SBL na przynajmniej jednym ze szlaków"
+              />
+
+              <img
+                class="icon-info"
+                v-if="!station.reqLevel || station.nonPublic"
+                :src="require(`@/assets/icon-lock.svg`)"
+                alt="non-public"
+                title="Sceneria niepubliczna"
+              />
+            </td>
+
+            <td class="item-tracks twoway">
+              <span
+                v-if="station.routes && station.routes.twoWay.catenary > 0"
+                class="track catenary"
+                :title="'Liczba zelektryfikowanych szlaków dwutorowych: ' + station.routes.twoWay.catenary"
+              >{{station.routes.twoWay.catenary}}</span>
+
+              <span
+                v-if="station.routes && station.routes.twoWay.noCatenary > 0"
+                class="track no-catenary"
+                :title="'Liczba niezelektryfikowanych szlaków dwutorowych: ' + station.routes.twoWay.noCatenary"
+              >{{station.routes.twoWay.noCatenary}}</span>
+            </td>
+
+            <td class="item-tracks oneway">
+              <span
+                v-if="station.routes && station.routes.oneWay.catenary > 0"
+                class="track catenary"
+                :title="'Liczba zelektryfikowanych szlaków jednotorowych: ' + station.routes.oneWay.catenary"
+              >{{station.routes.oneWay.catenary}}</span>
+
+              <span
+                v-if="station.routes && station.routes.oneWay.noCatenary > 0"
+                class="track no-catenary"
+                :title="'Liczba niezelektryfikowanych szlaków jednotorowych: ' + station.routes.oneWay.noCatenary"
+              >{{station.routes.oneWay.noCatenary}}</span>
+            </td>
           </tr>
-        </thead>
-
-        <tr
-          class="table-item"
-          v-for="(station, i) in computedStations"
-          :key="i + station.stationHash"
-          @click="() => { if(station.online) setFocusedStation(station.stationName) }"
-        >
-          <td
-            class="item-station-name"
-            :class="{'default-station': station.default, 'online': station.online}"
-          >{{station.stationName}}</td>
-
-          <td class="item-station-level">
-            <span
-              v-if="station.reqLevel"
-              :style="calculateExpStyle(station.reqLevel)"
-            >{{ (station.reqLevel && station.reqLevel > -1) ? (parseInt(station.reqLevel) >= 2 ? station.reqLevel : "L") : "?" }}</span>
-
-            <span v-else>?</span>
-          </td>
-
-          <td class="item-station-status">
-            <span class="status" :class="statusClasses(station.occupiedTo)">{{station.occupiedTo}}</span>
-          </td>
-
-          <td class="item-dispatcher-name">{{station.online ? station.dispatcherName : ""}}</td>
-          <td class="item-dispatcher-exp">
-            <span
-              v-if="station.online"
-              :style="calculateExpStyle(station.dispatcherExp)"
-            >{{station.dispatcherExp < 2 ? 'L' : station.dispatcherExp}}</span>
-          </td>
-          <td
-            class="item-users"
-          >{{station.online ? (station.currentUsers + "/" + station.maxUsers) : ""}}</td>
-          <td class="item-info">
-            <img
-              class="icon-info"
-              v-if="station.controlType"
-              :src="require(`@/assets/icon-${station.controlType}.svg`)"
-              :alt="station.controlType"
-              :title="'Sterowanie ' + station.controlType"
-            />
-
-            <img
-              class="icon-info"
-              v-if="station.signalType"
-              :src="require(`@/assets/icon-${station.signalType}.svg`)"
-              :alt="station.signalType"
-              :title="'Sygnalizacja ' + station.signalType"
-            />
-
-            <img
-              class="icon-info"
-              v-if="station.SBL && station.SBL !== ''"
-              :src="require(`@/assets/icon-SBL.svg`)"
-              alt="SBL"
-              title="Sceneria posiada SBL na przynajmniej jednym ze szlaków"
-            />
-
-            <img
-              class="icon-info"
-              v-if="!station.reqLevel || station.nonPublic"
-              :src="require(`@/assets/icon-lock.svg`)"
-              alt="non-public"
-              title="Sceneria niepubliczna"
-            />
-          </td>
-
-          <td class="item-tracks twoway">
-            <span
-              v-if="station.routes && station.routes.twoWay.catenary > 0"
-              class="track catenary"
-              :title="'Liczba zelektryfikowanych szlaków dwutorowych: ' + station.routes.twoWay.catenary"
-            >{{station.routes.twoWay.catenary}}</span>
-
-            <span
-              v-if="station.routes && station.routes.twoWay.noCatenary > 0"
-              class="track no-catenary"
-              :title="'Liczba niezelektryfikowanych szlaków dwutorowych: ' + station.routes.twoWay.noCatenary"
-            >{{station.routes.twoWay.noCatenary}}</span>
-          </td>
-
-          <td class="item-tracks oneway">
-            <span
-              v-if="station.routes && station.routes.oneWay.catenary > 0"
-              class="track catenary"
-              :title="'Liczba zelektryfikowanych szlaków jednotorowych: ' + station.routes.oneWay.catenary"
-            >{{station.routes.oneWay.catenary}}</span>
-
-            <span
-              v-if="station.routes && station.routes.oneWay.noCatenary > 0"
-              class="track no-catenary"
-              :title="'Liczba niezelektryfikowanych szlaków jednotorowych: ' + station.routes.oneWay.noCatenary"
-            >{{station.routes.oneWay.noCatenary}}</span>
-          </td>
-        </tr>
-      </table>
-    </div>
+        </table>
+      </div>
+    </section>
   </div>
 </template>
 
@@ -135,6 +139,7 @@ import { Getter } from "vuex-class";
 import styleMixin from "@/mixins/styleMixin";
 
 import StationCard from "@/components/ui/StationCard.vue";
+import Options from "@/components/ui/Options.vue";
 
 import Station from "@/scripts/interfaces/Station";
 
@@ -142,7 +147,7 @@ const ascSVG = require("@/assets/icon-arrow-asc.svg");
 const descSVG = require("@/assets/icon-arrow-desc.svg");
 
 @Component({
-  components: { StationCard },
+  components: { StationCard, Options },
 })
 export default class List extends styleMixin {
   focusedStationName: string = "";
@@ -291,6 +296,13 @@ export default class List extends styleMixin {
   }
 }
 
+.list-body {
+  max-height: calc(100vh - 4em);
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+}
+
 .table {
   &-wrapper {
     overflow: auto;
@@ -310,6 +322,10 @@ export default class List extends styleMixin {
     padding: 0.3rem;
     background-color: #444;
     min-width: 120px;
+
+    position: sticky;
+    top: 0;
+    z-index: 2;
 
     cursor: pointer;
     user-select: none;

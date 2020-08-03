@@ -84,6 +84,14 @@ export default class Options extends Vue {
   }
 }
 
+.options {
+  font-size: calc(0.6rem + 0.9vw);
+
+  &-actions {
+    display: flex;
+  }
+}
+
 .action-btn {
   display: flex;
   align-items: center;
@@ -92,7 +100,7 @@ export default class Options extends Vue {
   border: none;
 
   color: #e0e0e0;
-  font-size: 0.7em;
+  font-size: 0.75em;
 
   padding: 0.3em;
 
@@ -125,21 +133,17 @@ export default class Options extends Vue {
   }
 }
 
-.options {
-  font-size: calc(0.6rem + 0.9vw);
-
-  &-actions {
-    display: flex;
-  }
-}
-
 @include smallScreen {
+  .options {
+    display: flex;
+    justify-content: center;
+  }
+
   .action-btn {
-    margin-right: 0.5rem;
-    font-size: 0.8rem;
+    font-size: 1rem;
 
     p {
-      max-width: 100%;
+      // max-width: 100%;
     }
   }
 }

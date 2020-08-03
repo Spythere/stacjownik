@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="stations-view">
     <List />
   </div>
 </template>
@@ -11,7 +11,7 @@ import { Vue, Component } from "vue-property-decorator";
 import List from "@/components/ui/List.vue";
 
 @Component({
-  components: { List }
+  components: { List },
 })
 export default class Home extends Vue {
   mounted() {}
@@ -19,8 +19,8 @@ export default class Home extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.home {
-  padding: 1rem;
+.stations-view {
+  padding: 1rem 0;
 
   max-height: 100%;
 }
