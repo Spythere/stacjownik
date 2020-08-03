@@ -315,7 +315,7 @@ export default class List extends styleMixin {
   font-size: calc(0.6rem + 0.3vw);
 
   @include smallScreen() {
-    font-size: 0.7rem;
+    font-size: 0.6rem;
   }
 
   &-head th {

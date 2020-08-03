@@ -15,7 +15,7 @@ import Options from "@/components/ui/Options.vue";
 export default class AppBar extends Vue {}
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import "../../styles/responsive.scss";
 
 .app-bar {

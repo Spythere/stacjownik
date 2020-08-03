@@ -19,6 +19,11 @@
               <img src="@/assets/icon-train.svg" alt="icon train" />
             </div>
           </span>
+
+          <span class="header-links">
+            <router-link class="route" active-class="route-active" to="/" exact>SCENERIE</router-link>*
+            <router-link class="route" active-class="route-active" to="/trains">POCIĄGI</router-link>
+          </span>
         </div>
       </header>
 
@@ -79,6 +84,15 @@ export default class App extends Vue {
 @import "./styles/variables.scss";
 @import "./styles/global.scss";
 
+.route {
+  margin: 0 0.2em;
+
+  &-active {
+    color: $accentCol;
+    font-weight: bold;
+  }
+}
+
 .app {
   background: $bgCol;
   color: white;
@@ -118,7 +132,19 @@ export default class App extends Vue {
     justify-content: space-between;
 
     margin: 0 0.3em;
-    font-size: 0.4em;
+    padding: 0.2em;
+    font-size: 0.35em;
+  }
+
+  &-links {
+    display: flex;
+    justify-content: center;
+
+    background-color: #222;
+    border-radius: 0.7em;
+
+    padding: 0.2em;
+    font-size: 0.35em;
   }
 }
 
