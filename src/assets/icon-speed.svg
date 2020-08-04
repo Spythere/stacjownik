@@ -1,0 +1,18 @@
+<svg width="31" height="30" viewBox="0 0 31 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="30.3072" height="30" rx="6" fill="#7B7B7B"/>
+<mask id="mask0" mask-type="alpha" maskUnits="userSpaceOnUse" x="5" y="8" width="21" height="12">
+<rect x="5.05118" y="8" width="20.2048" height="11.5" fill="#C4C4C4"/>
+</mask>
+<g mask="url(#mask0)">
+<ellipse cx="15.1536" cy="19" rx="10.1024" ry="10" fill="white"/>
+<rect width="3.02307" height="1.00257" transform="matrix(0.868217 -0.496185 -0.503825 -0.863806 21.5304 15.933)" fill="#4A4A4A"/>
+<rect x="5.05118" y="18.5" width="3.03072" height="1" fill="#4A4A4A"/>
+<rect width="3.03072" height="1" transform="matrix(1 0 0 -1 22.2253 19.5)" fill="#4A4A4A"/>
+<rect width="3.00771" height="1.00769" transform="matrix(-0.503825 -0.863806 -0.868217 0.496185 12.0552 12.6879)" fill="#4A4A4A"/>
+<rect width="3.00771" height="1.00769" transform="matrix(-0.503825 0.863806 -0.868217 -0.496185 20.6422 10.5897)" fill="#4A4A4A"/>
+<rect width="3" height="1.01024" transform="matrix(-4.41589e-08 -1 -1 4.32684e-08 15.6587 12)" fill="#4A4A4A"/>
+<rect width="3.02307" height="1.00257" transform="matrix(0.868217 0.496185 -0.503825 0.863806 6.6572 13.567)" fill="#4A4A4A"/>
+<ellipse cx="15.1536" cy="19.5" rx="1.01024" ry="1" fill="#474747"/>
+<path d="M18.4254 13.9298C18.3862 13.798 18.2465 13.7226 18.1134 13.7614L15.9439 14.393C15.8107 14.4318 15.7345 14.57 15.7737 14.7018C15.8129 14.8336 15.9525 14.909 16.0857 14.8702L18.0141 14.3088L18.5813 16.2177C18.6205 16.3495 18.7602 16.4249 18.8933 16.3862C19.0264 16.3474 19.1026 16.2092 19.0635 16.0774L18.4254 13.9298ZM15.3742 19.6191L18.4049 14.1191L17.9637 13.8809L14.933 19.3809L15.3742 19.6191Z" fill="#474747"/>
+</g>
+</svg>

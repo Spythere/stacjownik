@@ -30,7 +30,9 @@
       <main class="app-main">
         <Loading v-if="connectionState == 0" />
         <Error v-else-if="connectionState == 1" :error="errorMessage" />
-        <router-view v-else />
+        <keep-alive v-else>
+          <router-view />
+        </keep-alive>
       </main>
 
       <footer class="app-footer flex">&copy; Spythere 2020</footer>

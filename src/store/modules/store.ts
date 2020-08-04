@@ -65,6 +65,10 @@ class Store extends VuexModule {
         return this.filteredStations;
     }
 
+    get getAllStations() {
+        return this.stations;
+    }
+
     get getFilters() {
         return this.filters;
     }
