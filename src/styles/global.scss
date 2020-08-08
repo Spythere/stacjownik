@@ -1,211 +1,213 @@
 :root {
-    font-size: 16px;
+  font-size: 16px;
 }
 
 ::-webkit-scrollbar {
-    width: 0.5rem;
-    height: 0.5rem;
+  width: 0.5rem;
+  height: 0.5rem;
 
-    &-track {
-        background: #222;
-    }
+  &-track {
+    background: #222;
+  }
 
-    &-thumb {
-        border-radius: 1rem;
-        background: #777;
-    }
+  &-thumb {
+    border-radius: 1rem;
+    background: #777;
+  }
 }
 
 html {
-    scroll-behavior: smooth;
+  scroll-behavior: smooth;
 }
 
 body {
-    width: 100%;
-    margin: 0;
-    font-family: "Muli", sans-serif;
+  width: 100%;
+  margin: 0;
+  font-family: "Lato", sans-serif;
+
+  overflow-x: hidden;
 }
 
 button,
 input {
-    font-family: "Muli", sans-serif;
+  font-family: "Lato", sans-serif;
 }
 
 input {
-    border: 1px solid white;
-    background: none;
-    color: white;
-    font-size: 1em;
+  border: 1px solid white;
+  background: none;
+  color: white;
+  font-size: 1em;
 
-    padding: 0.15em;
-    margin: 0.2em;
+  padding: 0.15em;
+  margin: 0.2em;
 
-    max-width: 55px;
+  max-width: 55px;
 
-    &::placeholder {
-        color: #bebebe;
-    }
+  &::placeholder {
+    color: #bebebe;
+  }
 }
 
 *,
 *::before,
 *::after {
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
 .status {
-    border-radius: 1.3rem;
-    font-weight: 500;
+  border-radius: 1.3rem;
+  font-weight: 500;
 
+  font-size: 0.95em;
+  padding: 0.25em 0.4em;
+
+  background-color: #00be19;
+
+  &.free {
+    background-color: #8a8a8a;
     font-size: 0.95em;
-    padding: 0.25em 0.4em;
+  }
 
-    background-color: #00be19;
+  &.ending {
+    background-color: $accentCol;
+    color: black;
+    font-size: 0.9em;
+  }
 
-    &.free {
-        background-color: #8a8a8a;
-        font-size: 0.95em;
-    }
+  &.no-limit {
+    background-color: #0077ae;
+    font-size: 0.85em;
+  }
 
-    &.ending {
-        background-color: $accentCol;
-        color: black;
-        font-size: 0.9em;
-    }
+  &.not-signed,
+  &.unavailable {
+    background-color: $accent2Col;
+    font-size: 0.8em;
+  }
 
-    &.no-limit {
-        background-color: #0077ae;
-        font-size: 0.85em;
-    }
+  &.brb {
+    background-color: $accentCol;
+    color: black;
+    font-size: 0.95em;
+  }
 
-    &.not-signed,
-    &.unavailable {
-        background-color: $accent2Col;
-        font-size: 0.8em;
-    }
-
-    &.brb {
-        background-color: $accentCol;
-        color: black;
-        font-size: 0.95em;
-    }
-
-    &.no-space {
-        background-color: #222;
-        color: white;
-        font-size: 0.85em;
-    }
+  &.no-space {
+    background-color: #222;
+    color: white;
+    font-size: 0.85em;
+  }
 }
 
 .default-station {
-    font-weight: bold;
-    color: $accentCol;
+  font-weight: bold;
+  color: $accentCol;
 }
 
 .card {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 4;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 4;
 
-    overflow: auto;
-    // background: #474747;
-    background: #262a2e;
+  overflow: auto;
+  // background: #474747;
+  background: #262a2e;
 
-    box-shadow: 0 0 15px 5px #474747;
+  box-shadow: 0 0 15px 5px #474747;
 
-    width: 75%;
-    max-width: 750px;
-    max-height: 95%;
+  width: 75%;
+  max-width: 750px;
+  max-height: 95%;
 
-    // font-size: calc(0.6rem + 0.5vw);
-    font-size: calc(0.45rem + 0.35vw);
+  // font-size: calc(0.6rem + 0.5vw);
+  font-size: calc(0.45rem + 0.35vw);
 
-    @include smallScreen {
-        width: 95%;
+  @include smallScreen {
+    width: 95%;
+  }
+
+  &-exit {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0.8em;
+
+    img {
+      width: 1.5em;
     }
 
-    &-exit {
-        position: absolute;
-        top: 0;
-        right: 0;
-        margin: 0.8em;
-
-        img {
-            width: 1.5em;
-        }
-
-        cursor: pointer;
-    }
+    cursor: pointer;
+  }
 }
 
 .button {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 
-    background: #333;
+  background: #333;
+  border: none;
+
+  color: #e0e0e0;
+  font-size: 0.9em;
+
+  outline: none;
+  padding: 0.35em;
+  cursor: pointer;
+
+  transition: all 0.3s;
+
+  &.open {
+    color: $accentCol;
     border: none;
+  }
 
-    color: #e0e0e0;
-    font-size: 0.9em;
-
-    outline: none;
-    padding: 0.35em;
-    cursor: pointer;
-
-    transition: all 0.3s;
-
-    &.open {
-        color: $accentCol;
-        border: none;
-    }
-
-    &:hover {
-        background: rgba(#e0e0e0, 0.4);
-    }
+  &:hover {
+    background: rgba(#e0e0e0, 0.4);
+  }
 }
 
 a {
-    color: white;
-    text-decoration: none;
+  color: white;
+  text-decoration: none;
 
-    transition: color 0.3s;
+  transition: color 0.3s;
 
-    &:hover,
-    &:focus {
-        color: $accentCol;
-        border: none;
-        outline: none;
-    }
+  &:hover,
+  &:focus {
+    color: $accentCol;
+    border: none;
+    outline: none;
+  }
 
-    &:focus {
-        text-decoration: underline;
-    }
+  &:focus {
+    // text-decoration: underline;
+  }
 }
 
 ul {
-    padding: 0;
-    list-style: none;
+  padding: 0;
+  list-style: none;
 }
 
 .flex {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-    width: 100%;
+  width: 100%;
 
-    &-spaced {
-        justify-content: space-between;
-    }
+  &-spaced {
+    justify-content: space-between;
+  }
 
-    &-column {
-        flex-direction: column;
-    }
+  &-column {
+    flex-direction: column;
+  }
 }

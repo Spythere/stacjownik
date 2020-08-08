@@ -1,5 +1,5 @@
 <template>
-  <div class="loading">Pobieranie danych o sceneriach...</div>
+  <div class="loading">Stój, pobieranie danych...</div>
 </template>
 
 <script lang="ts">

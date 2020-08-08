@@ -46,8 +46,9 @@
       </div>
     </div>
 
-    <div class="card-reset flex">
+    <div class="card-actions flex">
       <button class="button" @click="reset">RESET FILTRÓW</button>
+      <button class="button" @click="exit">ZAMKNIJ FILTRY</button>
     </div>
   </section>
 </template>
@@ -74,7 +75,7 @@ export default class OptionCard extends Vue {
 
     this.setFilter({
       filterName: target.name,
-      value: !target.checked
+      value: !target.checked,
     });
   }
 
@@ -83,16 +84,16 @@ export default class OptionCard extends Vue {
 
     this.setFilter({
       filterName: target.name,
-      value: parseInt(target.value)
+      value: parseInt(target.value),
     });
   }
 
   reset(): void {
-    this.inputs.options.forEach(option => {
+    this.inputs.options.forEach((option) => {
       option.value = option.defaultValue;
     });
 
-    this.inputs.sliders.forEach(slider => {
+    this.inputs.sliders.forEach((slider) => {
       slider.value = slider.defaultValue;
     });
 
@@ -168,8 +169,12 @@ export default class OptionCard extends Vue {
     margin-top: 1em;
   }
 
-  &-reset {
+  &-actions {
     margin-top: 0.7em;
+
+    button {
+      margin: 0 0.3em;
+    }
   }
 }
 

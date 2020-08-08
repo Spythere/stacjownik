@@ -2,32 +2,41 @@
   <section class="trains-view">
     <ul class="list" v-if="listLoaded">
       <li class="item" v-for="train in computedTrains" :key="train.timetableId">
-        <span class="info">
-          <div class="info-category">
-            <strong>{{train.category}}</strong>
-            {{train.trainNo}}
-          </div>
+        <a :href="'https://rj.td2.info.pl/train#' + train.trainNo + ';eu'" target="_blank">
+          <span class="info">
+            <div class="info-category">
+              <span>
+                <strong>{{train.category}}</strong>
+                {{train.trainNo}} |
+              </span>
+              <span style=" color: gold;">{{train.routeDistance}} km</span>
+            </div>
 
-          <div class="info-warnings">
-            <span class="warning twr" v-if="train.TWR">TWR</span>
-            <span class="warning skr" v-if="train.SKR">SKR</span>
-          </div>
+            <div class="info-warnings">
+              <span class="warning twr" v-if="train.TWR">TWR</span>
+              <span class="warning skr" v-if="train.SKR">SKR</span>
+            </div>
 
-          <div class="info-route">
-            <strong>{{train.route && train.route.replace("|", " -> ")}}</strong>
-          </div>
+            <div class="info-route">
+              <strong>{{train.route && train.route.replace("|", " - ")}}</strong>
+            </div>
 
-          <div class="info-stations">
-            <i v-if="train.sceneries.length > 0">Przez: {{train.sceneries}}</i>
-          </div>
-        </span>
+            <div class="info-stations">
+              <i v-if="train.sceneries.length > 0">Przez: {{train.sceneries}}</i>
+            </div>
+          </span>
+        </a>
 
         <span class="driver">
-          <span class="driver-name">{{train.driverName}}</span>
+          <span class="driver-name">
+            {{train.driverName}}
+            <span style="color: #bbb; margin-left: 1em;">{{train.locoType}}</span>
+          </span>
           <span class="driver-loco">
-            <img src="https://rj.td2.info.pl/dist/img/thumbnails/ET41-144.png" alt="icon-train" />
+            <img :src="train.locoURL" @error="onImageError" />
           </span>
         </span>
+
         <span class="stats">
           <div class="stats-general">
             <span class="mass">
@@ -81,6 +90,8 @@ import Station from "@/scripts/interfaces/Station";
 
 import axios from "axios";
 
+const unknownTrainImage = require("@/assets/unknown.png");
+
 @Component
 export default class TrainsView extends Vue {
   speedIcon: string = require("@/assets/icon-speed.svg");
@@ -95,7 +106,6 @@ export default class TrainsView extends Vue {
     speed: number;
     signal: string;
     distance: number;
-    imageURL: string;
     connectedTrack: string;
     driverId: number;
     trainNo: number;
@@ -108,6 +118,9 @@ export default class TrainsView extends Vue {
     TWR: boolean | null;
     SKR: boolean | null;
     noTimetable: boolean;
+    locoURL: string;
+    locoType: string;
+    routeDistance: number;
   }[] = [];
 
   listLoaded: boolean = false;
@@ -138,6 +151,14 @@ export default class TrainsView extends Vue {
         .map(async (train) => {
           const timetableData = await this.getTimetableData(train.trainNo);
 
+          let locoType = train.dataCon.split(";")
+            ? train.dataCon.split(";")[0]
+            : train.dataCon;
+
+          const locoURL = `https://rj.td2.info.pl/dist/img/thumbnails/${
+            locoType.includes("EN") ? locoType + "rb" : locoType
+          }.png`;
+
           return {
             driverId: train.driverId,
             driverName: train.driverName,
@@ -148,12 +169,14 @@ export default class TrainsView extends Vue {
             speed: train.dataSpeed,
             distance: train.dataDistance,
             signal: train.dataSignal,
-            imageURL: train.dataCon,
             connectedTrack: train.dataSceneryConnection,
+            locoURL,
+            locoType,
             noTimetable: timetableData == null,
             route: timetableData && timetableData.route,
             timetableId: timetableData && timetableData.timetableId,
             category: timetableData && timetableData.trainCategoryCode,
+            routeDistance: (timetableData && timetableData.routeDistance) || 0,
             sceneries:
               timetableData &&
               (await this.mapSceneries(timetableData.sceneries)),
@@ -167,20 +190,45 @@ export default class TrainsView extends Vue {
   }
 
   async getTimetableData(trainNo: number) {
-    const response = await axios.get(
-      `https://api.td2.info.pl:9640/?method=readFromSWDR&value=getTimetable%3B${trainNo}%3Beu`
-    );
+    const responseDataMessage: {
+      stopPoints: { pointDistance: number }[] | [];
+      trainInfo: {
+        timetableId: number;
+        trainCategoryCode: string;
+        route: string;
+        twr: boolean;
+        skr: boolean;
+        sceneries: string[];
+      } | null;
+    } = (
+      await axios.get(
+        `https://api.td2.info.pl:9640/?method=readFromSWDR&value=getTimetable%3B${trainNo}%3Beu`
+      )
+    ).data.message;
 
-    const timetableData: {
+    let result: {
       timetableId: number;
       trainCategoryCode: string;
       route: string;
       twr: boolean;
       skr: boolean;
       sceneries: string[];
-    } | null = response.data.message.trainInfo;
+      routeDistance: number;
+    } | null = null;
 
-    return timetableData;
+    if (responseDataMessage.trainInfo) {
+      const routeDistance: number =
+        responseDataMessage.stopPoints[
+          responseDataMessage.stopPoints.length - 1
+        ].pointDistance;
+
+      result = {
+        ...responseDataMessage.trainInfo,
+        routeDistance,
+      };
+    }
+
+    return result;
   }
 
   mapSceneries(sceneries: string[]): string {
@@ -200,17 +248,25 @@ export default class TrainsView extends Vue {
     return text;
   }
 
+  onImageError(e: Event) {
+    (e.target as HTMLImageElement).src = unknownTrainImage;
+  }
+
   get computedTrains() {
     return this.onlineTrainsList.filter((train) => !train.noTimetable);
   }
 
   mounted() {
     this.getTrainData();
+
+    setInterval(this.getTrainData, 5000);
   }
 }
 </script>
 
 <style lang="scss" scoped>
+@import "../styles/responsive.scss";
+
 .trains-view {
   display: flex;
   align-items: center;
@@ -218,24 +274,34 @@ export default class TrainsView extends Vue {
 }
 
 .list {
-  font-size: calc(0.5rem + 0.5vw);
-
-  margin-top: 2rem;
-  max-height: calc(100vh - 14em);
+  margin: 2rem 0;
   overflow: auto;
 
-  max-width: 1300px;
+  max-width: 2000px;
 }
 
 .item {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+
+  font-size: calc(0.5rem + 0.5vw);
 
   background-color: #444;
   padding: 1rem;
 
+  margin: 1rem 0;
+
   &:nth-child(even) {
     background-color: #666;
+  }
+
+  @include smallScreen() {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(3, 1fr);
+
+    font-size: 0.9rem;
+    gap: 0.2em 0;
+    // grid-template-columns: repeat(3, 1fr);
   }
 }
 
@@ -284,16 +350,19 @@ export default class TrainsView extends Vue {
   }
 
   &-loco img {
-    max-width: 15em;
+    max-width: 12em;
   }
 }
 
 .stats {
+  width: 100%;
   &-general {
     display: flex;
 
     span {
       display: flex;
+      justify-content: center;
+
       width: 100%;
 
       align-items: center;
@@ -306,7 +375,9 @@ export default class TrainsView extends Vue {
 
   &-position {
     display: flex;
+
     margin-top: 1em;
+    text-align: center;
 
     span {
       width: 100%;

@@ -14,7 +14,7 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: "/trains",
-    name: "TrainsView",
+    name: "TrainsView", 
     component: TrainsView
   }
 ]

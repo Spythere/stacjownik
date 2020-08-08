@@ -297,7 +297,6 @@ export default class List extends styleMixin {
 }
 
 .list-body {
-  max-height: calc(100vh - 4.5em);
   overflow: auto;
   display: flex;
   flex-direction: column;

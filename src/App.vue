@@ -21,7 +21,7 @@
           </span>
 
           <span class="header-links">
-            <router-link class="route" active-class="route-active" to="/" exact>SCENERIE</router-link>*
+            <router-link class="route" active-class="route-active" to="/" exact>SCENERIE</router-link>/
             <router-link class="route" active-class="route-active" to="/trains">POCIĄGI</router-link>
           </span>
         </div>
@@ -30,12 +30,17 @@
       <main class="app-main">
         <Loading v-if="connectionState == 0" />
         <Error v-else-if="connectionState == 1" :error="errorMessage" />
-        <keep-alive v-else>
-          <router-view />
-        </keep-alive>
+        <transition name="view-anim" mode="out-in" v-else>
+          <keep-alive>
+            <router-view />
+          </keep-alive>
+        </transition>
       </main>
 
-      <footer class="app-footer flex">&copy; Spythere 2020</footer>
+      <footer class="app-footer flex">
+        <span>&copy; Spythere 2020</span>
+        <span>Sprawdź, co nowego w Stacjowniku!</span>
+      </footer>
     </div>
   </div>
 </template>
@@ -86,6 +91,23 @@ export default class App extends Vue {
 @import "./styles/variables.scss";
 @import "./styles/global.scss";
 
+.view-anim {
+  &-enter {
+    transform: translateX(-10%);
+    opacity: 0;
+  }
+
+  &-leave-to {
+    transform: translateX(10%);
+    opacity: 0;
+  }
+
+  &-enter-active,
+  &-leave-active {
+    transition: all $animDuration $animType;
+  }
+}
+
 .route {
   margin: 0 0.2em;
 
@@ -100,6 +122,10 @@ export default class App extends Vue {
   color: white;
 
   font-size: calc(1rem + 2.1vw);
+
+  @include smallScreen() {
+    font-size: 2rem;
+  }
 }
 
 .container {
@@ -114,6 +140,8 @@ export default class App extends Vue {
 .header {
   background: #333;
   padding: 0.15em;
+
+  border-radius: 0 0 0.7em 0.7em;
 
   display: flex;
   justify-content: center;
@@ -142,7 +170,6 @@ export default class App extends Vue {
     display: flex;
     justify-content: center;
 
-    background-color: #222;
     border-radius: 0.7em;
 
     padding: 0.2em;
@@ -172,5 +199,16 @@ footer {
   color: white;
   max-width: 100%;
   font-size: calc(0.5rem + 0.5vw);
+
+  flex-direction: column;
+
+  span {
+    margin: 0.2rem;
+
+    &:nth-child(2) {
+      color: #888;
+      font-size: 0.95em;
+    }
+  }
 }
 </style>
