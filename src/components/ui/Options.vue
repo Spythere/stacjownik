@@ -141,10 +141,6 @@ export default class Options extends Vue {
 
   .action-btn {
     font-size: 1rem;
-
-    p {
-      // max-width: 100%;
-    }
   }
 }
 </style>
