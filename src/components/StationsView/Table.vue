@@ -23,7 +23,7 @@
 
       <tr
         class="table-item"
-        v-for="(station, i) in stations"
+        v-for="(station, i) in computedStations"
         :key="i + station.stationHash"
         @click="() => { if(station.online) setFocusedStation(station.stationName) }"
       >
