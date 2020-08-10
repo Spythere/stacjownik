@@ -1,10 +1,14 @@
 <template>
-  <div class="loading">Stój, pobieranie danych...</div>
+  <div class="loading">{{message}}</div>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-export default Vue.extend({});
+import { Vue, Component, Prop } from "vue-property-decorator";
+
+@Component
+export default class Loading extends Vue {
+  @Prop() readonly message!: string;
+}
 </script>
 
 <style lang="scss" scoped>
@@ -14,6 +18,12 @@ export default Vue.extend({});
   align-items: center;
 
   min-height: 100%;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+
+  transform: translate(-50%, -50%);
 
   font-size: calc(0.75rem + 1vw);
 

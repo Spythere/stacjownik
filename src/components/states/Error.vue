@@ -9,7 +9,7 @@
 
 <script>
 export default {
-  props: ["error"]
+  props: ["error"],
 };
 </script>
 
@@ -19,9 +19,15 @@ export default {
   justify-content: center;
   align-items: center;
 
-  min-height: 100%;
-
   flex-direction: column;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+
+  transform: translate(-50%, -50%);
+
+  text-align: center;
 
   font-size: calc(1rem + 1.5vw);
   font-weight: 550;

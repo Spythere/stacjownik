@@ -1,6 +1,8 @@
 <template>
   <section class="trains-view">
-    <ul class="list" v-if="listLoaded">
+    <Loading v-if="!listLoaded" message="Liczenie pociągów..." />
+
+    <ul class="list" v-else>
       <li class="item" v-for="train in computedTrains" :key="train.timetableId">
         <a :href="'https://rj.td2.info.pl/train#' + train.trainNo + ';eu'" target="_blank">
           <span class="info">
@@ -88,11 +90,17 @@ import { Getter } from "vuex-class";
 
 import Station from "@/scripts/interfaces/Station";
 
+import Loading from "@/components/states/Loading.vue";
+
 import axios from "axios";
 
 const unknownTrainImage = require("@/assets/unknown.png");
 
-@Component
+@Component({
+  components: {
+    Loading,
+  },
+})
 export default class TrainsView extends Vue {
   speedIcon: string = require("@/assets/icon-speed.svg");
   massIcon: string = require("@/assets/icon-mass.svg");
@@ -269,20 +277,27 @@ export default class TrainsView extends Vue {
 
 .trains-view {
   display: flex;
-  align-items: center;
-  flex-direction: column;
+  justify-content: center;
+
+  position: relative;
+  min-height: 100%;
 }
 
 .list {
   margin: 2rem 0;
   overflow: auto;
 
-  max-width: 2000px;
+  width: 90%;
+  max-width: 1024px;
+
+  @include smallScreen() {
+    width: 100%;
+  }
 }
 
 .item {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
 
   font-size: calc(0.5rem + 0.5vw);
 
@@ -299,8 +314,8 @@ export default class TrainsView extends Vue {
     grid-template-columns: 1fr;
     grid-template-rows: repeat(3, 1fr);
 
-    font-size: 0.9rem;
-    gap: 0.2em 0;
+    font-size: 0.8rem;
+    gap: 0.4em 0;
     // grid-template-columns: repeat(3, 1fr);
   }
 }
@@ -350,12 +365,14 @@ export default class TrainsView extends Vue {
   }
 
   &-loco img {
-    max-width: 12em;
+    width: 13em;
+    max-width: 190px;
   }
 }
 
 .stats {
   width: 100%;
+
   &-general {
     display: flex;
 
@@ -370,6 +387,7 @@ export default class TrainsView extends Vue {
 
     img {
       margin: 0 0.3em;
+      width: 1.8em;
     }
   }
 

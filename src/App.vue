@@ -28,9 +28,7 @@
       </header>
 
       <main class="app-main">
-        <Loading v-if="connectionState == 0" />
-        <Error v-else-if="connectionState == 1" :error="errorMessage" />
-        <transition name="view-anim" mode="out-in" v-else>
+        <transition name="view-anim" mode="out-in">
           <keep-alive>
             <router-view />
           </keep-alive>
@@ -39,7 +37,6 @@
 
       <footer class="app-footer flex">
         <span>&copy; Spythere 2020</span>
-        <span>Sprawdź, co nowego w Stacjowniku!</span>
       </footer>
     </div>
   </div>
@@ -56,12 +53,6 @@ import Loading from "@/components/states/Loading.vue";
 import Clock from "@/components/ui/Clock.vue";
 import Options from "@/components/ui/Options.vue";
 
-enum ConnState {
-  Loading = 0,
-  Error = 1,
-  Connected = 2,
-}
-
 @Component({
   components: { Error, Loading, Clock, Options },
 })
@@ -73,15 +64,9 @@ export default class App extends Vue {
   @Action("initStations") initStations;
 
   errorMessage: string = "";
-  connectionState: ConnState = ConnState.Loading;
 
   mounted() {
     this.initStations();
-
-    this.$store.watch(
-      (state, getters) => getters.getConnectionState,
-      (state: ConnState) => (this.connectionState = state)
-    );
   }
 }
 </script>
@@ -93,18 +78,19 @@ export default class App extends Vue {
 
 .view-anim {
   &-enter {
-    transform: translateX(-10%);
-    opacity: 0;
+    // transform: translateX(-5%);
+    opacity: 0.02;
   }
 
   &-leave-to {
-    transform: translateX(10%);
-    opacity: 0;
+    // transform: translateX(5%);
+    opacity: 0.02;
   }
 
   &-enter-active,
   &-leave-active {
     transition: all $animDuration $animType;
+    min-height: 100%;
   }
 }
 
