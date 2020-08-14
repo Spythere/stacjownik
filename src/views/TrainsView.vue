@@ -2,84 +2,100 @@
   <section class="trains-view">
     <Loading v-if="!listLoaded" message="Liczenie pociągów..." />
 
-    <ul class="list" v-else>
-      <li class="item" v-for="train in computedTrains" :key="train.timetableId">
-        <a :href="'https://rj.td2.info.pl/train#' + train.trainNo + ';eu'" target="_blank">
-          <span class="info">
-            <div class="info-category">
-              <span>
-                <strong>{{train.category}}</strong>
-                {{train.trainNo}} |
+    <div class="body-wrapper" v-else>
+      <div class="train-sorter">
+        <select name="sort-type" class="sort-type">
+          <option>Masa składu</option>
+          <option>Długość składu</option>
+          <option>Numer pociągu</option>
+          <option>Kilometraż</option>
+        </select>
+
+        <select name="sort-dir" class="sort-dir">
+          <option>Rosnąco</option>
+          <option>Malejąco</option>
+        </select>
+      </div>
+
+      <ul class="list">
+        <li class="item" v-for="train in computedTrains" :key="train.timetableId">
+          <a :href="'https://rj.td2.info.pl/train#' + train.trainNo + ';eu'" target="_blank">
+            <span class="info">
+              <div class="info-category">
+                <span>
+                  <strong>{{train.category}}</strong>
+                  {{train.trainNo}} |
+                </span>
+                <span style=" color: gold;">{{train.routeDistance}} km</span>
+              </div>
+
+              <div class="info-warnings">
+                <span class="warning twr" v-if="train.TWR">TWR</span>
+                <span class="warning skr" v-if="train.SKR">SKR</span>
+              </div>
+
+              <div class="info-route">
+                <strong>{{train.route && train.route.replace("|", " - ")}}</strong>
+              </div>
+
+              <div class="info-stations">
+                <i v-if="train.sceneries.length > 0">Przez: {{train.sceneries}}</i>
+              </div>
+            </span>
+          </a>
+
+          <span class="driver">
+            <span class="driver-name">
+              {{train.driverName}}
+              <span style="color: #bbb; margin-left: 1em;">{{train.locoType}}</span>
+            </span>
+            <span class="driver-loco">
+              <img :src="train.locoURL" @error="onImageError" />
+            </span>
+          </span>
+
+          <span class="stats">
+            <div class="stats-general">
+              <span class="mass">
+                <img :src="massIcon" alt="icon-mass" />
+                {{train.mass/1000}}t
               </span>
-              <span style=" color: gold;">{{train.routeDistance}} km</span>
+
+              <span class="speed">
+                <img :src="speedIcon" alt="icon-speed" />
+                {{train.speed}} km/h
+              </span>
+
+              <span class="length">
+                <img :src="lengthIcon" alt="icon-length" />
+                {{train.length}}m
+              </span>
             </div>
 
-            <div class="info-warnings">
-              <span class="warning twr" v-if="train.TWR">TWR</span>
-              <span class="warning skr" v-if="train.SKR">SKR</span>
-            </div>
-
-            <div class="info-route">
-              <strong>{{train.route && train.route.replace("|", " - ")}}</strong>
-            </div>
-
-            <div class="info-stations">
-              <i v-if="train.sceneries.length > 0">Przez: {{train.sceneries}}</i>
+            <div class="stats-position">
+              <span class="station">
+                <p>
+                  <strong>SCENERIA</strong>
+                </p>
+                {{train.currentStationName}}
+              </span>
+              <span class="track">
+                <p>
+                  <strong>SZLAK</strong>
+                </p>
+                {{train.connectedTrack || "---"}}
+              </span>
+              <span class="signal">
+                <p>
+                  <strong>SEMAFOR</strong>
+                </p>
+                {{train.signal || "---"}}
+              </span>
             </div>
           </span>
-        </a>
-
-        <span class="driver">
-          <span class="driver-name">
-            {{train.driverName}}
-            <span style="color: #bbb; margin-left: 1em;">{{train.locoType}}</span>
-          </span>
-          <span class="driver-loco">
-            <img :src="train.locoURL" @error="onImageError" />
-          </span>
-        </span>
-
-        <span class="stats">
-          <div class="stats-general">
-            <span class="mass">
-              <img :src="massIcon" alt="icon-mass" />
-              {{train.mass/1000}}t
-            </span>
-
-            <span class="speed">
-              <img :src="speedIcon" alt="icon-speed" />
-              {{train.speed}} km/h
-            </span>
-
-            <span class="length">
-              <img :src="lengthIcon" alt="icon-length" />
-              {{train.length}}m
-            </span>
-          </div>
-
-          <div class="stats-position">
-            <span class="station">
-              <p>
-                <strong>SCENERIA</strong>
-              </p>
-              {{train.currentStationName}}
-            </span>
-            <span class="track">
-              <p>
-                <strong>SZLAK</strong>
-              </p>
-              {{train.connectedTrack || "---"}}
-            </span>
-            <span class="signal">
-              <p>
-                <strong>SEMAFOR</strong>
-              </p>
-              {{train.signal || "---"}}
-            </span>
-          </div>
-        </span>
-      </li>
-    </ul>
+        </li>
+      </ul>
+    </div>
   </section>
 </template>
 
@@ -276,19 +292,17 @@ export default class TrainsView extends Vue {
 @import "../styles/responsive.scss";
 
 .trains-view {
-  display: flex;
-  justify-content: center;
-
   position: relative;
   min-height: 100%;
 }
 
-.list {
-  margin: 2rem 0;
-  overflow: auto;
-
-  width: 90%;
+.body-wrapper {
+  margin: 0 auto;
   max-width: 1024px;
+}
+
+.list {
+  overflow: auto;
 
   @include smallScreen() {
     width: 100%;

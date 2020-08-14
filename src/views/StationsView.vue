@@ -29,6 +29,8 @@ import Options from "@/components/ui/Options.vue";
 import Loading from "@/components/states/Loading.vue";
 import Error from "@/components/states/Error.vue";
 
+import db from "@/scripts/firebase/firebaseInit";
+
 enum ConnState {
   Loading = 0,
   Error = 1,
@@ -65,7 +67,13 @@ export default class StationsView extends Vue {
     );
   }
 
-  mounted() {
+  async mounted() {
+    const { docs } = await db.collection("history").get();
+
+    docs.forEach((doc) => {
+      console.log(doc.data());
+    });
+
     // this.$store.watch(
     //   (state, getters) => getters.getConnectionState,
     //   (state: ConnState) => {
