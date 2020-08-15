@@ -68,12 +68,10 @@ export default class StationsView extends Vue {
   }
 
   async mounted() {
-    const { docs } = await db.collection("history").get();
-
-    docs.forEach((doc) => {
-      console.log(doc.data());
-    });
-
+    // const { docs } = await db.collection("history").get();
+    // docs.forEach((doc) => {
+    //   console.log(doc.data());
+    // });
     // this.$store.watch(
     //   (state, getters) => getters.getConnectionState,
     //   (state: ConnState) => {
