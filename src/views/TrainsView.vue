@@ -3,7 +3,7 @@
     <Loading v-if="!listLoaded" message="Liczenie pociągów..." />
 
     <div class="body-wrapper" v-else>
-      <div class="train-sorter">
+      <!-- <div class="train-sorter">
         <select name="sort-type" class="sort-type">
           <option>Masa składu</option>
           <option>Długość składu</option>
@@ -15,7 +15,7 @@
           <option>Rosnąco</option>
           <option>Malejąco</option>
         </select>
-      </div>
+      </div>-->
 
       <ul class="list">
         <li class="item" v-for="train in computedTrains" :key="train.timetableId">
@@ -298,7 +298,7 @@ export default class TrainsView extends Vue {
 
 .body-wrapper {
   margin: 0 auto;
-  max-width: 1024px;
+  max-width: 1250px;
 }
 
 .list {
@@ -313,7 +313,7 @@ export default class TrainsView extends Vue {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
 
-  font-size: calc(0.5rem + 0.5vw);
+  font-size: calc(0.4rem + 0.5vw);
 
   background-color: #444;
   padding: 1rem;

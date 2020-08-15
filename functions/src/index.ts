@@ -7,14 +7,22 @@ const db = admin.firestore();
 import axios from "axios";
 
 exports.scheduledUpdate = functions.pubsub
-  .schedule("5 * * * *")
+  .schedule("*/5 * * * *")
   .onRun(async (context) => {
-    const stationData: {
+    let stationData: {
       stationName: string;
       dispatcherName: string;
-    }[] = await (
-      await axios.get("https://api.td2.info.pl:9640/?method=getStationsOnline")
-    ).data.message;
+    }[];
+
+    try {
+      stationData = await (
+        await axios.get(
+          "https://api.td2.info.pl:9640/?method=getStationsOnline"
+        )
+      ).data.message;
+    } catch (error) {
+      return;
+    }
 
     const historyRef = db.collection("history");
 
@@ -28,11 +36,11 @@ exports.scheduledUpdate = functions.pubsub
           currentDispatcherName: station.dispatcherName,
         });
 
-        docRef.collection("dispatcherHistory").add({
-          dispatcherName: station.dispatcherName,
-          occupiedFrom: Date.now(),
-          occupiedTo: 0,
-        });
+        // docRef.collection("dispatcherHistory").add({
+        //   dispatcherName: station.dispatcherName,
+        //   occupiedFrom: Date.now(),
+        //   occupiedTo: 0,
+        // });
 
         return;
       }
