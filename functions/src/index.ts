@@ -12,6 +12,8 @@ exports.scheduledUpdate = functions.pubsub
     let stationData: {
       stationName: string;
       dispatcherName: string;
+      isOnline: boolean;
+      region: string;
     }[];
 
     try {
@@ -52,9 +54,9 @@ exports.scheduledUpdate = functions.pubsub
       const docData = doc.data();
       const docRef = historyRef.doc(doc.id);
 
-      const APIStationData = stationData.find(
-        (station) => station.stationName == doc.id
-      );
+      const APIStationData = stationData
+        .filter((station) => station.isOnline && station.region === "eu")
+        .find((station) => station.stationName == doc.id);
 
       if (docData.currentDispatcherName != "") {
         if (
