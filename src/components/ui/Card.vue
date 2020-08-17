@@ -132,7 +132,7 @@
 import Vue from "vue";
 export default Vue.extend({
   name: "Card",
-  props: ["stationInfo", "closeCard"]
+  props: ["stationInfo", "closeCard"],
 });
 </script>
 

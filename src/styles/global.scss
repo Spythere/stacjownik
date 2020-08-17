@@ -29,7 +29,8 @@ body {
 }
 
 button,
-input {
+input,
+select {
   font-family: "Lato", sans-serif;
 }
 
@@ -43,6 +44,7 @@ input {
   margin: 0.2em;
 
   max-width: 55px;
+  outline: none;
 
   &::placeholder {
     color: #bebebe;
