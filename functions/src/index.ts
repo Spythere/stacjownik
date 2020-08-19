@@ -7,7 +7,7 @@ const db = admin.firestore();
 import axios from "axios";
 
 exports.scheduledUpdate = functions.pubsub
-  .schedule("*/5 * * * *")
+  .schedule("*/20 * * * *")
   .onRun(async (context) => {
     let stationData: {
       stationName: string;

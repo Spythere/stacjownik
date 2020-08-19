@@ -5,7 +5,12 @@
 
     <div class="list flex" v-if="connectionState == 2">
       <transition name="card-anim">
-        <StationCard v-if="focusedStationInfo" :stationInfo="focusedStationInfo" :exit="closeCard" />
+        <StationCard
+          v-if="focusedStationInfo"
+          :stationInfo="focusedStationInfo"
+          :dispatcherHistory="dispatcherHistory()"
+          :exit="closeCard"
+        />
       </transition>
       <!-- <div class="info" v-if="stations.length == 0">Ups! Brak stacji do wyświetlenia!</div> -->
 
@@ -61,6 +66,24 @@ export default class StationsView extends Vue {
     else this.focusedStationName = name;
   }
 
+  get dispatcherHistory() {
+    return async () => {
+      let history: any[] = [];
+
+      if (this.focusedStationName != "") {
+        const historyRef = await db
+          .collection("history")
+          .doc(this.focusedStationName)
+          .collection("dispatcherHistory")
+          .get();
+
+        history = historyRef.docs.map((doc) => doc.data());
+      }
+
+      return history;
+    };
+  }
+
   get focusedStationInfo() {
     return this.stations.find(
       (station) => station.stationName === this.focusedStationName
@@ -68,7 +91,6 @@ export default class StationsView extends Vue {
   }
 
   async mounted() {
-    // const { docs } = await db.collection("history").get();
     // docs.forEach((doc) => {
     //   console.log(doc.data());
     // });

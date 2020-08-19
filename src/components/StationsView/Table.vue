@@ -25,7 +25,7 @@
         class="table-item"
         v-for="(station, i) in computedStations"
         :key="i + station.stationHash"
-        @click="() => { if(station.online) setFocusedStation(station.stationName) }"
+        @click="() => {  setFocusedStation(station.stationName) }"
       >
         <td
           class="item-station-name"
