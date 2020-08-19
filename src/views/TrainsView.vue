@@ -180,17 +180,6 @@ export default class TrainsView extends Vue {
   }
 
   get computedTrains() {
-    // const trainDetected = this.onlineTrainsList.filter(
-    //   (train) =>
-    //     train.trainNo.toString().includes(this.searched) && this.searched != ""
-    // );
-    // const playerDetected = this.onlineTrainsList.filter(
-    //   (train) =>
-    //     // this.searched.toLowerCase().includes(train.driverName.toLowerCase())
-    //     train.driverName.toLowerCase().includes(this.searched.toLowerCase()) &&
-    //     this.searched != ""
-    // );
-
     const computed = this.onlineTrainsList.filter(
       (train) =>
         !train.noTimetable &&
