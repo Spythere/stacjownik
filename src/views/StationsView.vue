@@ -3,21 +3,21 @@
     <Loading v-if="connectionState == 0" message="Ładowanie scenerii..." />
     <Error v-if="connectionState == 1" />
 
-    <div class="list flex" v-if="connectionState == 2">
-      <transition name="card-anim">
-        <StationCard
-          v-if="focusedStationInfo"
-          :stationInfo="focusedStationInfo"
-          :dispatcherHistory="dispatcherHistory()"
-          :exit="closeCard"
-        />
-      </transition>
-      <!-- <div class="info" v-if="stations.length == 0">Ups! Brak stacji do wyświetlenia!</div> -->
+    <transition name="card-anim">
+      <StationCard
+        v-if="focusedStationInfo"
+        :stationInfo="focusedStationInfo"
+        :dispatcherHistory="dispatcherHistory()"
+        :exit="closeCard"
+      />
+    </transition>
+    <!-- <div class="info" v-if="stations.length == 0">Ups! Brak stacji do wyświetlenia!</div> -->
 
-      <section class="list-body">
+    <div class="stations-wrapper" v-if="connectionState == 2">
+      <div class="stations-body">
         <Options />
-        <Table :stations="stations" :setFocusedStation="setFocusedStation" />
-      </section>
+        <StationTable :stations="stations" :setFocusedStation="setFocusedStation" />
+      </div>
     </div>
   </div>
 </template>
@@ -28,11 +28,12 @@ import { Getter } from "vuex-class";
 
 import Station from "@/scripts/interfaces/Station";
 
-import Table from "@/components/StationsView/Table.vue";
-import StationCard from "@/components/ui/StationCard.vue";
-import Options from "@/components/ui/Options.vue";
-import Loading from "@/components/states/Loading.vue";
-import Error from "@/components/states/Error.vue";
+import Loading from "@/components/App/Loading.vue";
+import Error from "@/components/App/Error.vue";
+
+import StationTable from "@/components/StationsView/StationTable.vue";
+import StationCard from "@/components/StationsView/StationCard.vue";
+import Options from "@/components/StationsView/Options.vue";
 
 import db from "@/scripts/firebase/firebaseInit";
 
@@ -45,10 +46,10 @@ enum ConnState {
 @Component({
   components: {
     StationCard,
-    Options,
-    Table,
+    StationTable,
     Loading,
     Error,
+    Options,
   },
 })
 export default class StationsView extends Vue {
@@ -89,25 +90,11 @@ export default class StationsView extends Vue {
       (station) => station.stationName === this.focusedStationName
     );
   }
-
-  async mounted() {
-    // docs.forEach((doc) => {
-    //   console.log(doc.data());
-    // });
-    // this.$store.watch(
-    //   (state, getters) => getters.getConnectionState,
-    //   (state: ConnState) => {
-    //     this.connectionState = state;
-    //     console.log("Najs");
-    //   }
-    // );
-  }
 }
 </script>
 
 <style lang="scss" scoped>
 .stations-view {
-  position: relative;
   padding: 1rem 0;
   min-height: 100%;
 }
@@ -128,9 +115,12 @@ export default class StationsView extends Vue {
   }
 }
 
-.list-body {
-  overflow: auto;
+.stations-wrapper {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+}
+
+.stations-body {
+  overflow: auto;
 }
 </style>

@@ -34,8 +34,8 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import OptionCard from "@/components/ui/OptionCard.vue";
-import LegendCard from "@/components/ui/LegendCard.vue";
+import OptionCard from "@/components/StationsView/OptionCard.vue";
+import LegendCard from "@/components/StationsView/LegendCard.vue";
 
 @Component({
   components: { OptionCard, LegendCard },
@@ -70,6 +70,11 @@ export default class Options extends Vue {
 <style lang="scss" scoped>
 @import "../../styles/variables.scss";
 @import "../../styles/responsive.scss";
+
+.options {
+  display: flex;
+  z-index: 5;
+}
 
 .card-anim {
   &-enter-active,

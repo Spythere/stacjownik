@@ -29,7 +29,8 @@ import { Getter } from "vuex-class";
 import Station from "@/scripts/interfaces/Station";
 import Train from "@/scripts/interfaces/Train";
 
-import Loading from "@/components/states/Loading.vue";
+import Loading from "@/components/App/Loading.vue";
+
 import TrainSorter from "@/components/TrainsView/TrainSorter.vue";
 import TrainTable from "@/components/TrainsView/TrainTable.vue";
 

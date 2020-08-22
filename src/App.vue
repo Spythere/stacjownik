@@ -48,13 +48,13 @@ import { Action, Getter } from "vuex-class";
 
 import { mapGetters, mapActions } from "vuex";
 
-import Error from "@/components/states/Error.vue";
-import Loading from "@/components/states/Loading.vue";
-import Clock from "@/components/ui/Clock.vue";
-import Options from "@/components/ui/Options.vue";
+import Error from "@/components/App/Error.vue";
+import Loading from "@/components/App/Loading.vue";
+
+import Clock from "@/components/App/Clock.vue";
 
 @Component({
-  components: { Error, Loading, Clock, Options },
+  components: { Error, Loading, Clock },
 })
 export default class App extends Vue {
   @Getter("getStations") stations;
@@ -78,12 +78,10 @@ export default class App extends Vue {
 
 .view-anim {
   &-enter {
-    // transform: translateX(-5%);
     opacity: 0.02;
   }
 
   &-leave-to {
-    // transform: translateX(5%);
     opacity: 0.02;
   }
 
