@@ -7,7 +7,7 @@ const db = admin.firestore();
 import axios from "axios";
 
 exports.scheduledUpdate = functions.pubsub
-  .schedule("*/20 * * * *")
+  .schedule("0 * * * *")
   .onRun(async (context) => {
     let stationData: {
       stationName: string;
@@ -37,13 +37,6 @@ exports.scheduledUpdate = functions.pubsub
           occupiedFrom: Date.now(),
           currentDispatcherName: station.dispatcherName,
         });
-
-        // docRef.collection("dispatcherHistory").add({
-        //   dispatcherName: station.dispatcherName,
-        //   occupiedFrom: Date.now(),
-        //   occupiedTo: 0,
-        // });
-
         return;
       }
     });

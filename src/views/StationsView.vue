@@ -24,7 +24,7 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { Getter } from "vuex-class";
+import { Getter, Action } from "vuex-class";
 
 import Station from "@/scripts/interfaces/Station";
 
@@ -36,6 +36,7 @@ import StationCard from "@/components/StationsView/StationCard.vue";
 import Options from "@/components/StationsView/Options.vue";
 
 import db from "@/scripts/firebase/firebaseInit";
+import inputData from "@/data/options.json";
 
 enum ConnState {
   Loading = 0,
@@ -54,9 +55,50 @@ enum ConnState {
 })
 export default class StationsView extends Vue {
   focusedStationName: string = "";
+  inputs = { ...inputData };
+  STORAGE_KEY: string = "options_saved";
 
   @Getter("getStations") stations!: Station[];
   @Getter("getConnectionState") connectionState!: ConnState;
+
+  @Action("setFilter") setFilter;
+
+  mounted() {
+    const storage = window.localStorage;
+
+    if (storage.getItem(this.STORAGE_KEY) !== "true") return;
+
+    this.inputs.options.forEach((input) => {
+      if (storage.getItem(input.name) === "true") {
+        this.setFilter({
+          filterName: input.name,
+          value: false,
+        });
+
+        input.value = true;
+      } else if (storage.getItem(input.name) === "false") {
+        this.setFilter({
+          filterName: input.name,
+          value: true,
+        });
+
+        input.value = false;
+      }
+    });
+
+    this.inputs.sliders.forEach((slider) => {
+      const value = parseInt(
+        window.localStorage.getItem(slider.name) as string
+      );
+
+      this.setFilter({
+        filterName: slider.name,
+        value,
+      });
+
+      slider.value = value;
+    });
+  }
 
   closeCard() {
     this.focusedStationName = "";

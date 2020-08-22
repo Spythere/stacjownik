@@ -23,10 +23,6 @@
       </div>
     </div>
 
-    <div class="card-sorts">
-      <!-- <div class="sort" v-for="(sort, i) in inputs.sorts" :key="i">{{ sort.content }}</div> -->
-    </div>
-
     <div class="card-sliders">
       <div class="slider" v-for="(slider, i) in inputs.sliders" :key="i">
         <input
@@ -46,6 +42,20 @@
       </div>
     </div>
 
+    <div class="card-save">
+      <div class="option">
+        <label class="option-label">
+          <input
+            class="option-input"
+            type="checkbox"
+            v-model="saveOptions"
+            @change="changeSaveState"
+          />
+          <span class="option-content save">ZAPISZ FILTRY</span>
+        </label>
+      </div>
+    </div>
+
     <div class="card-actions flex">
       <button class="button" @click="reset">RESET FILTRÓW</button>
       <button class="button" @click="exit">ZAMKNIJ FILTRY</button>
@@ -62,13 +72,21 @@ import inputData from "@/data/options.json";
 @Component
 export default class OptionCard extends Vue {
   inputs = { ...inputData };
+  saveOptions: boolean = false;
 
-  mounted() {}
+  STORAGE_KEY: string = "options_saved";
 
   @Prop() exit!: () => void;
 
   @Action("setFilter") setFilter;
   @Action("resetFilters") resetFilters;
+
+  mounted() {
+    const storage = window.localStorage;
+
+    if (storage.getItem(this.STORAGE_KEY) === "true") this.saveOptions = true;
+    else this.saveOptions = false;
+  }
 
   handleChange(e: Event): void {
     const target = <HTMLInputElement>e.target;
@@ -77,6 +95,9 @@ export default class OptionCard extends Vue {
       filterName: target.name,
       value: !target.checked,
     });
+
+    if (this.saveOptions)
+      window.localStorage.setItem(target.name, target.checked + "");
   }
 
   handleInput(e: Event): void {
@@ -86,15 +107,36 @@ export default class OptionCard extends Vue {
       filterName: target.name,
       value: parseInt(target.value),
     });
+
+    if (this.saveOptions)
+      window.localStorage.setItem(target.name, target.value + "");
+  }
+
+  changeSaveState(): void {
+    const storage = window.localStorage;
+
+    if (this.saveOptions) {
+      this.inputs.options.forEach((option) =>
+        storage.setItem(option.name, option.value + "")
+      );
+
+      this.inputs.sliders.forEach((slider) =>
+        storage.setItem(slider.name, slider.value + "")
+      );
+
+      storage.setItem(this.STORAGE_KEY, "true");
+    } else storage.setItem(this.STORAGE_KEY, "false");
   }
 
   reset(): void {
     this.inputs.options.forEach((option) => {
       option.value = option.defaultValue;
+      window.localStorage.setItem(option.name, option.value + "");
     });
 
     this.inputs.sliders.forEach((slider) => {
       slider.value = slider.defaultValue;
+      window.localStorage.setItem(slider.name, slider.value + "");
     });
 
     this.resetFilters();
@@ -176,6 +218,16 @@ export default class OptionCard extends Vue {
       margin: 0 0.3em;
     }
   }
+
+  &-save {
+    display: flex;
+    justify-content: center;
+
+    .option {
+      width: 30%;
+      font-size: 0.9em;
+    }
+  }
 }
 
 .option {
@@ -240,6 +292,14 @@ export default class OptionCard extends Vue {
     }
 
     &.status {
+      background-color: #05b702;
+
+      &::before {
+        box-shadow: 0 0 6px 1px #05b702;
+      }
+    }
+
+    &.save {
       background-color: #05b702;
 
       &::before {

@@ -145,7 +145,7 @@ export default class Options extends Vue {
   }
 
   .action-btn {
-    font-size: 1rem;
+    font-size: 0.8rem;
   }
 }
 </style>

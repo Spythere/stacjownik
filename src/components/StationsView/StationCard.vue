@@ -10,7 +10,7 @@
       <ul class="history-list">
         <div
           class="history-info"
-        >Wersja eksperymentalna! Dziennik aktualizowany co 20 minut od 23:00 14 sierpnia 2020r.</div>
+        >Wersja eksperymentalna! Dziennik aktualizuje się automatycznie co godzinę.</div>
         <li class="history-log" v-for="(log, i) in computedHistory" :key="i">
           <div class="log-time">
             <div class="from">
