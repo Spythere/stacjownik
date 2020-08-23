@@ -1,5 +1,6 @@
 import * as firebase from "firebase/app";
 import "firebase/firestore";
+import "firebase/functions";
 
 require("dotenv").config();
 
@@ -10,4 +11,7 @@ firebase.initializeApp({
   projectId: "stacjownik-td2",
 });
 
-export default firebase.firestore();
+export default {
+  db: firebase.firestore(),
+  functions: firebase.functions(),
+};

@@ -1,0 +1,1743 @@
+[
+    {
+        "stationName": "Blaszki",
+        "stationURL": "https://td2.info.pl/scenerie/blaszki/",
+        "stationLines": "",
+        "stationProject": "",
+        "reqLevel": "10",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SPK",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 1,
+                "noCatenary": 1
+            },
+            "twoWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            }
+        },
+        "default": true,
+        "nonPublic": false
+    },
+    {
+        "stationName": "LCS Borowe",
+        "stationURL": "https://td2.info.pl/scenerie/lcs-borowe/",
+        "stationLines": "",
+        "stationProject": "",
+        "reqLevel": "12",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SCS",
+        "SBL": "TAK",
+        "twoWayBlock": "TAK",
+        "routes": {
+            "oneWay": {
+                "catenary": 1,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 3,
+                "noCatenary": 0
+            }
+        },
+        "default": false,
+        "nonPublic": true
+    },
+    {
+        "stationName": "LCS Gdańsk",
+        "stationURL": "https://td2.info.pl/scenerie/lcs-gdansk/",
+        "stationLines": "9, 202, 227, 249, 250",
+        "stationProject": "",
+        "reqLevel": "10",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SCS",
+        "SBL": "TAK",
+        "twoWayBlock": "TAK",
+        "routes": {
+            "oneWay": {
+                "catenary": 3,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 3,
+                "noCatenary": 0
+            }
+        },
+        "default": true,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Lębork",
+        "stationURL": "https://td2.info.pl/scenerie/lebork-5834/",
+        "stationLines": "202, 229, 237",
+        "stationProject": "",
+        "reqLevel": "8",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "mechaniczne+SCS",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 2,
+                "noCatenary": 2
+            },
+            "twoWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            }
+        },
+        "default": true,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Grabów Miasto",
+        "stationURL": "https://td2.info.pl/scenerie/grabow-miasto-v2/",
+        "stationLines": "",
+        "stationProject": "",
+        "reqLevel": "6",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SCS",
+        "SBL": "",
+        "twoWayBlock": "TAK",
+        "routes": {
+            "oneWay": {
+                "catenary": 2,
+                "noCatenary": 1
+            },
+            "twoWay": {
+                "catenary": 1,
+                "noCatenary": 0
+            }
+        },
+        "default": true,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Parzęczewo",
+        "stationURL": "https://td2.info.pl/scenerie/parzeczewo/",
+        "stationLines": "",
+        "stationProject": "",
+        "reqLevel": "6",
+        "supportersOnly": "NIE",
+        "signalType": "mieszana",
+        "controlType": "SCS",
+        "SBL": "TAK",
+        "twoWayBlock": "TAK",
+        "routes": {
+            "oneWay": {
+                "catenary": 1,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            }
+        },
+        "default": true,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Aleksandrów Kujawski",
+        "stationURL": "https://td2.info.pl/scenerie/aleksandrow-kujawski/",
+        "stationLines": "18, 245",
+        "stationProject": "",
+        "reqLevel": "4",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SCS-SPK",
+        "SBL": "",
+        "twoWayBlock": "TAK",
+        "routes": {
+            "oneWay": {
+                "catenary": 1,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            }
+        },
+        "default": true,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Arkadia Zdrój 2012",
+        "stationURL": "https://td2.info.pl/scenerie/arkadia-zdroj/",
+        "stationLines": "",
+        "stationProject": "",
+        "reqLevel": "4",
+        "supportersOnly": "NIE",
+        "signalType": "mieszana",
+        "controlType": "mechaniczne+SPK",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 1,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            }
+        },
+        "default": true,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Buk 2018",
+        "stationURL": "https://td2.info.pl/scenerie/buk2/",
+        "stationLines": "",
+        "stationProject": "",
+        "reqLevel": "4",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SCS-SPK",
+        "SBL": "",
+        "twoWayBlock": "TAK",
+        "routes": {
+            "oneWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 1,
+                "noCatenary": 0
+            }
+        },
+        "default": true,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Jordanowo",
+        "stationURL": "https://td2.info.pl/scenerie/jordanowo/",
+        "stationLines": "",
+        "stationProject": "",
+        "reqLevel": "4",
+        "supportersOnly": "NIE",
+        "signalType": "mieszana",
+        "controlType": "mechaniczne",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 3,
+                "noCatenary": 2
+            },
+            "twoWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            }
+        },
+        "default": true,
+        "nonPublic": false
+    },
+    {
+        "stationName": "LCS Głowno",
+        "stationURL": "https://td2.info.pl/scenerie/glowno-(linia-nr-15-lka)/",
+        "stationLines": "15",
+        "stationProject": "ŁKA",
+        "reqLevel": "4",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SCS",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            }
+        },
+        "default": true,
+        "nonPublic": false
+    },
+    {
+        "stationName": "LCS Ozorków",
+        "stationURL": "https://td2.info.pl/scenerie/lcs-ozorkow/",
+        "stationLines": "16",
+        "stationProject": "ŁKA",
+        "reqLevel": "4",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SCS",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            }
+        },
+        "default": true,
+        "nonPublic": false
+    },
+    {
+        "stationName": "LCS Skrzynki",
+        "stationURL": "https://td2.info.pl/scenerie/lcs-skrzynki/",
+        "stationLines": "25",
+        "stationProject": "ŁKA",
+        "reqLevel": "4",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SCS-SPK",
+        "SBL": "",
+        "twoWayBlock": "TAK",
+        "routes": {
+            "oneWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            }
+        },
+        "default": true,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Łask",
+        "stationURL": "https://td2.info.pl/scenerie/lask-w-ramach-lka/",
+        "stationLines": "14",
+        "stationProject": "ŁKA",
+        "reqLevel": "4",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "mechaniczne+SCS",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            }
+        },
+        "default": true,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Naterki",
+        "stationURL": "https://td2.info.pl/scenerie/naterki/",
+        "stationLines": "353",
+        "stationProject": "",
+        "reqLevel": "4",
+        "supportersOnly": "NIE",
+        "signalType": "kształtowa",
+        "controlType": "mechaniczne+SCS",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            }
+        },
+        "default": true,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Santok Zdrój",
+        "stationURL": "https://td2.info.pl/scenerie/santok-zdroj/",
+        "stationLines": "",
+        "stationProject": "",
+        "reqLevel": "4",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SPK",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            }
+        },
+        "default": true,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Testowo",
+        "stationURL": "https://td2.info.pl/scenerie/testowo-3581",
+        "stationLines": "",
+        "stationProject": "",
+        "reqLevel": "4",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SPK",
+        "SBL": "TAK (szlak Sl)",
+        "twoWayBlock": "TAK",
+        "routes": {
+            "oneWay": {
+                "catenary": 1,
+                "noCatenary": 1
+            },
+            "twoWay": {
+                "catenary": 1,
+                "noCatenary": 0
+            }
+        },
+        "default": true,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Tłoki",
+        "stationURL": "https://td2.info.pl/scenerie/podg-tloki",
+        "stationLines": "",
+        "stationProject": "",
+        "reqLevel": "4",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SCS-SPK",
+        "SBL": "",
+        "twoWayBlock": "TAK",
+        "routes": {
+            "oneWay": {
+                "catenary": 1,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            }
+        },
+        "default": true,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Witaszyczki",
+        "stationURL": "https://td2.info.pl/scenerie/witaszyczki/",
+        "stationLines": "",
+        "stationProject": "",
+        "reqLevel": "4",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SCS",
+        "SBL": "",
+        "twoWayBlock": "TAK",
+        "routes": {
+            "oneWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            }
+        },
+        "default": true,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Bydgowo",
+        "stationURL": "https://td2.info.pl/scenerie/bydgowo/",
+        "stationLines": "",
+        "stationProject": "",
+        "reqLevel": "2",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SPK",
+        "SBL": "TAK (szlak SK)",
+        "twoWayBlock": "TAK",
+        "routes": {
+            "oneWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            }
+        },
+        "default": true,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Głębce",
+        "stationURL": "https://td2.info.pl/scenerie/glebce",
+        "stationLines": "",
+        "stationProject": "",
+        "reqLevel": "2",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "ręczne+SPK",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 1,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            }
+        },
+        "default": true,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Hel",
+        "stationURL": "https://td2.info.pl/scenerie/hel/",
+        "stationLines": "213",
+        "stationProject": "",
+        "reqLevel": "2",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SPK",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 0,
+                "noCatenary": 1
+            },
+            "twoWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            }
+        },
+        "default": true,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Kcynia",
+        "stationURL": "https://td2.info.pl/scenerie/kcynia",
+        "stationLines": "281, 356",
+        "stationProject": "",
+        "reqLevel": "2",
+        "supportersOnly": "NIE",
+        "signalType": "kształtowa",
+        "controlType": "mechaniczne",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 0,
+                "noCatenary": 4
+            },
+            "twoWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            }
+        },
+        "default": true,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Lewków",
+        "stationURL": "https://td2.info.pl/scenerie/lewkow/",
+        "stationLines": "",
+        "stationProject": "",
+        "reqLevel": "2",
+        "supportersOnly": "NIE",
+        "signalType": "mieszana",
+        "controlType": "mechaniczne+SCS",
+        "SBL": "",
+        "twoWayBlock": "TAK (szlak Ks)",
+        "routes": {
+            "oneWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            }
+        },
+        "default": true,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Cis 2013",
+        "stationURL": "https://td2.info.pl/scenerie/cis2",
+        "stationLines": "",
+        "stationProject": "",
+        "reqLevel": "0",
+        "supportersOnly": "NIE",
+        "signalType": "kształtowa",
+        "controlType": "mechaniczne",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            }
+        },
+        "default": true,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Cis 2018",
+        "stationURL": "https://td2.info.pl/scenerie/cis2",
+        "stationLines": "",
+        "stationProject": "",
+        "reqLevel": "0",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SCS-SPK",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            }
+        },
+        "default": true,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Glinnik",
+        "stationURL": "https://td2.info.pl/scenerie/glinnik-(projekt-lka)/",
+        "stationLines": "15",
+        "stationProject": "ŁKA",
+        "reqLevel": "0",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SPK",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            }
+        },
+        "default": true,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Głogowo",
+        "stationURL": "https://td2.info.pl/scenerie/glogowo",
+        "stationLines": "",
+        "stationProject": "",
+        "reqLevel": "0",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SCS",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 0,
+                "noCatenary": 2
+            },
+            "twoWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            }
+        },
+        "default": true,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Karszynek",
+        "stationURL": "https://td2.info.pl/scenerie/karszynek/",
+        "stationLines": "",
+        "stationProject": "",
+        "reqLevel": "0",
+        "supportersOnly": "NIE",
+        "signalType": "historyczna",
+        "controlType": "mechaniczne",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            }
+        },
+        "default": true,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Imielin 2015",
+        "stationURL": "https://td2.info.pl/scenerie/imielin-2015",
+        "stationLines": "138",
+        "stationProject": "",
+        "reqLevel": "0",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "mechaniczne+SCS",
+        "SBL": "",
+        "twoWayBlock": "TAK",
+        "routes": {
+            "oneWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            }
+        },
+        "default": true,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Kolsko",
+        "stationURL": "https://td2.info.pl/scenerie/kolsko/",
+        "stationLines": "",
+        "stationProject": "",
+        "reqLevel": "0",
+        "supportersOnly": "NIE",
+        "signalType": "kształtowa",
+        "controlType": "mechaniczne",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 0,
+                "noCatenary": 3
+            },
+            "twoWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            }
+        },
+        "default": true,
+        "nonPublic": false
+    },
+    {
+        "stationName": "LCS Bucz Wileński",
+        "stationURL": "https://td2.info.pl/scenerie/bucz-wilenski/",
+        "stationLines": "",
+        "stationProject": "",
+        "reqLevel": "0",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SCS",
+        "SBL": "TAK",
+        "twoWayBlock": "TAK",
+        "routes": {
+            "oneWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 1,
+                "noCatenary": 0
+            }
+        },
+        "default": true,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Lisiczki",
+        "stationURL": "https://td2.info.pl/scenerie/lisiczki",
+        "stationLines": "",
+        "stationProject": "",
+        "reqLevel": "6",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SCS-SPK",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            }
+        },
+        "default": true,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Łęczyca",
+        "stationURL": "https://td2.info.pl/scenerie/leczyca-projekt-lka/",
+        "stationLines": "16",
+        "stationProject": "ŁKA",
+        "reqLevel": "0",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SPK",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            }
+        },
+        "default": true,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Poreńsk",
+        "stationURL": "https://td2.info.pl/scenerie/porensk/",
+        "stationLines": "",
+        "stationProject": "",
+        "reqLevel": "0",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SPK",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            }
+        },
+        "default": true,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Radowice",
+        "stationURL": "https://td2.info.pl/scenerie/radowice",
+        "stationLines": "",
+        "stationProject": "",
+        "reqLevel": "0",
+        "supportersOnly": "NIE",
+        "signalType": "kształtowa",
+        "controlType": "mechaniczne",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 0,
+                "noCatenary": 2
+            },
+            "twoWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            }
+        },
+        "default": true,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Witonia",
+        "stationURL": "https://td2.info.pl/scenerie/witonia-(projekt-lka)/",
+        "stationLines": "16",
+        "stationProject": "ŁKA",
+        "reqLevel": "0",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SCS",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            }
+        },
+        "default": true,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Wola",
+        "stationURL": "https://td2.info.pl/scenerie/wola/",
+        "stationLines": "",
+        "stationProject": "",
+        "reqLevel": "0",
+        "supportersOnly": "NIE",
+        "signalType": "mieszana",
+        "controlType": "mechaniczne+SCS",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            }
+        },
+        "default": true,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Zgierz Kontrewers",
+        "stationURL": "https://td2.info.pl/scenerie/zgierz-kontrewers-6172/",
+        "stationLines": "16",
+        "stationProject": "ŁKA",
+        "reqLevel": "0",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SPK",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            }
+        },
+        "default": true,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Bargowice",
+        "stationURL": "https://td2.info.pl/scenerie/bargowice-4441/",
+        "stationLines": "",
+        "reqLevel": "10",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SCS-SPK",
+        "SBL": "",
+        "twoWayBlock": "TAK",
+        "routes": {
+            "oneWay": {
+                "catenary": 1,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            }
+        },
+        "default": false,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Szklana Poręba",
+        "stationURL": "https://td2.info.pl/scenerie/szklana-poreba-gorna/",
+        "stationLines": "",
+        "reqLevel": "8",
+        "supportersOnly": "TAK",
+        "signalType": "współczesna",
+        "controlType": "mechaniczne",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 1,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            }
+        },
+        "default": false,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Wschodna",
+        "stationURL": "https://td2.info.pl/scenerie/wschodna/",
+        "stationLines": "",
+        "reqLevel": "8",
+        "supportersOnly": "NIE",
+        "signalType": "kształtowa",
+        "controlType": "mechaniczne",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 1,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            }
+        },
+        "default": false,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Zabłocie",
+        "stationURL": "https://td2.info.pl/scenerie/zablocie-3896",
+        "stationLines": "",
+        "reqLevel": "8",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SCS",
+        "SBL": "",
+        "twoWayBlock": "TAK",
+        "routes": {
+            "oneWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 1,
+                "noCatenary": 0
+            }
+        },
+        "default": false,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Zdroje",
+        "stationURL": "https://td2.info.pl/scenerie/zdroje",
+        "stationLines": "",
+        "reqLevel": "8",
+        "supportersOnly": "NIE",
+        "signalType": "kształtowa",
+        "controlType": "mechaniczne",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 0,
+                "noCatenary": 1
+            },
+            "twoWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            }
+        },
+        "default": false,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Grzybowo",
+        "stationURL": "https://td2.info.pl/scenerie/grzybowo",
+        "stationLines": "",
+        "reqLevel": "6",
+        "supportersOnly": "NIE",
+        "signalType": "kształtowa",
+        "controlType": "mechaniczne",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            }
+        },
+        "default": false,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Zwardoń",
+        "stationURL": "https://td2.info.pl/scenerie/zwardon-4161",
+        "stationLines": "139",
+        "reqLevel": "6",
+        "supportersOnly": "TAK",
+        "signalType": "współczesna",
+        "controlType": "SCS",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            }
+        },
+        "default": false,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Piaskowo",
+        "stationURL": "https://td2.info.pl/scenerie/piaskowo/",
+        "stationLines": "",
+        "reqLevel": "4",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SCS",
+        "SBL": "TAK",
+        "twoWayBlock": "TAK",
+        "routes": {
+            "oneWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            }
+        },
+        "default": false,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Rajcza",
+        "stationURL": "https://td2.info.pl/scenerie/rajcza/",
+        "stationLines": "139",
+        "reqLevel": "4",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SPK",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            }
+        },
+        "default": false,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Brzezinka",
+        "stationURL": "https://td2.info.pl/scenerie/brzezinka/",
+        "stationLines": "",
+        "reqLevel": "3",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SCS-SPK",
+        "SBL": "",
+        "twoWayBlock": "TAK (szlak KSG)",
+        "routes": {
+            "oneWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            }
+        },
+        "default": false,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Torzyn",
+        "stationURL": "https://td2.info.pl/scenerie/torzyn/",
+        "stationLines": "",
+        "reqLevel": "3",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SCS",
+        "SBL": "TAK",
+        "twoWayBlock": "TAK",
+        "routes": {
+            "oneWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            }
+        },
+        "default": false,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Wola Nowska",
+        "stationURL": "https://td2.info.pl/scenerie/wola-nowska//",
+        "stationLines": "",
+        "reqLevel": "3",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SPK",
+        "SBL": "",
+        "twoWayBlock": "TAK",
+        "routes": {
+            "oneWay": {
+                "catenary": 1,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            }
+        },
+        "default": false,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Chełmik Wołowski",
+        "stationURL": "https://td2.info.pl/scenerie/chelmik-wolowski//",
+        "stationLines": "",
+        "reqLevel": "2",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SPK",
+        "SBL": "",
+        "twoWayBlock": "TAK",
+        "routes": {
+            "oneWay": {
+                "catenary": 1,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            }
+        },
+        "default": false,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Drzewko",
+        "stationURL": "https://td2.info.pl/w-trakcie-prac/drzewko/",
+        "stationLines": "",
+        "reqLevel": "2",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SCS",
+        "SBL": "",
+        "twoWayBlock": "TAK",
+        "routes": {
+            "oneWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            }
+        },
+        "default": false,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Krzemienice",
+        "stationURL": "https://td2.info.pl/scenerie/krzemienice/",
+        "stationLines": "",
+        "reqLevel": "2",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SCS",
+        "SBL": "",
+        "twoWayBlock": "TAK",
+        "routes": {
+            "oneWay": {
+                "catenary": 3,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 1,
+                "noCatenary": 0
+            }
+        },
+        "default": false,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Milówka",
+        "stationURL": "https://td2.info.pl/scenerie/milowka/",
+        "stationLines": "139",
+        "reqLevel": "2",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SPK",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            }
+        },
+        "default": false,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Orniki",
+        "stationURL": "https://td2.info.pl/scenerie/orniki/",
+        "stationLines": "",
+        "reqLevel": "2",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SCS",
+        "SBL": "",
+        "twoWayBlock": "TAK",
+        "routes": {
+            "oneWay": {
+                "catenary": 1,
+                "noCatenary": 1
+            },
+            "twoWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            }
+        },
+        "default": false,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Otwocko",
+        "stationURL": "https://td2.info.pl/scenerie/otwocko/",
+        "stationLines": "",
+        "reqLevel": "2",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SCS",
+        "SBL": "",
+        "twoWayBlock": "TAK",
+        "routes": {
+            "oneWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            }
+        },
+        "default": false,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Skostomłoty",
+        "stationURL": "https://td2.info.pl/w-trakcie-prac/skostomloty/",
+        "stationLines": "",
+        "reqLevel": "2",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "mechaniczne",
+        "SBL": "",
+        "twoWayBlock": "TAK",
+        "routes": {
+            "oneWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            }
+        },
+        "default": false,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Babimost",
+        "stationURL": "https://td2.info.pl/scenerie/babimost",
+        "stationLines": "358",
+        "reqLevel": "0",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "mechaniczne",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            }
+        },
+        "default": false,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Czerepy",
+        "stationURL": "https://td2.info.pl/scenerie/czerepy/",
+        "stationLines": "",
+        "reqLevel": "0",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SPK",
+        "SBL": "TAK (szlak BO)",
+        "twoWayBlock": "TAK",
+        "routes": {
+            "oneWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            }
+        },
+        "default": false,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Grabiny",
+        "stationURL": "https://td2.info.pl/scenerie/grabiny",
+        "stationLines": "",
+        "reqLevel": "0",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "mechaniczne",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            }
+        },
+        "default": false,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Kieły",
+        "stationURL": "https://td2.info.pl/scenerie/kiely-6224/",
+        "stationLines": "",
+        "reqLevel": "0",
+        "supportersOnly": "NIE",
+        "signalType": "kształtowa",
+        "controlType": "mechaniczne",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 0,
+                "noCatenary": 1
+            },
+            "twoWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            }
+        },
+        "default": false,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Lutol Suchy",
+        "stationURL": "https://td2.info.pl/scenerie/lutol-suchy/",
+        "stationLines": "367",
+        "reqLevel": "0",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "mechaniczne",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 0,
+                "noCatenary": 2
+            },
+            "twoWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            }
+        },
+        "default": false,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Raki",
+        "stationURL": "https://td2.info.pl/scenerie/raki/",
+        "stationLines": "",
+        "reqLevel": "0",
+        "supportersOnly": "NIE",
+        "signalType": "kształtowa",
+        "controlType": "mechaniczne",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 0,
+                "noCatenary": 1
+            },
+            "twoWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            }
+        },
+        "default": false,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Sieniawka",
+        "stationURL": "https://td2.info.pl/scenerie/sieniawka/",
+        "stationLines": "",
+        "reqLevel": "0",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "mechaniczne",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 0,
+                "noCatenary": 1
+            },
+            "twoWay": {
+                "catenary": 0,
+                "noCatenary": 1
+            }
+        },
+        "default": false,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Stefanowo",
+        "stationURL": "https://td2.info.pl/scenerie/stefanowo/",
+        "stationLines": "359",
+        "reqLevel": "0",
+        "supportersOnly": "NIE",
+        "signalType": "kształtowa",
+        "controlType": "mechaniczne",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 0,
+                "noCatenary": 2
+            },
+            "twoWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            }
+        },
+        "default": false,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Szlichtyngowa",
+        "stationURL": "https://td2.info.pl/scenerie/szlichtyngowa//",
+        "stationLines": "",
+        "reqLevel": "0",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SPK",
+        "SBL": "",
+        "twoWayBlock": "TAK",
+        "routes": {
+            "oneWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            }
+        },
+        "default": false,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Tarnowo Górne",
+        "stationURL": "https://td2.info.pl/scenerie/tarnowo-gorne/",
+        "stationLines": "",
+        "reqLevel": "0",
+        "supportersOnly": "NIE",
+        "signalType": "kształtowa",
+        "controlType": "mechaniczne",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 0,
+                "noCatenary": 2
+            },
+            "twoWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            }
+        },
+        "default": false,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Tartakowo 2013",
+        "stationURL": "https://td2.info.pl/w-trakcie-prac/tartakowo/",
+        "stationLines": "",
+        "reqLevel": "0",
+        "supportersOnly": "NIE",
+        "signalType": "mieszana",
+        "controlType": "mechaniczne",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 0,
+                "noCatenary": 2
+            },
+            "twoWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            }
+        },
+        "default": false,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Wielgowo",
+        "stationURL": "https://td2.info.pl/scenerie/wielgowo/",
+        "stationLines": "",
+        "reqLevel": "0",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SPK",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 0,
+                "noCatenary": 2
+            },
+            "twoWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            }
+        },
+        "default": false,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Sulechów",
+        "stationURL": "https://td2.info.pl/scenerie/sulechow/",
+        "stationLines": "358",
+        "reqLevel": "0",
+        "supportersOnly": "NIE",
+        "signalType": "mieszana",
+        "controlType": "SPK",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 2,
+                "noCatenary": 1
+            },
+            "twoWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            }
+        },
+        "default": false,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Wilczyca",
+        "stationURL": "https://td2.info.pl/scenerie/wilczyca/",
+        "stationLines": "",
+        "reqLevel": "0",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SCS",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 0,
+                "noCatenary": 2
+            },
+            "twoWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            }
+        },
+        "default": false,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Sowi Bór",
+        "stationURL": "https://td2.info.pl/scenerie/sowi-bor/",
+        "stationLines": "",
+        "reqLevel": "3",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SPK",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            }
+        },
+        "default": false,
+        "nonPublic": false
+    },
+    {
+        "stationName": "Sól",
+        "stationURL": "https://td2.info.pl/scenerie/sol/",
+        "stationLines": "139",
+        "reqLevel": "0",
+        "supportersOnly": "NIE",
+        "signalType": "współczesna",
+        "controlType": "SPK",
+        "SBL": "",
+        "twoWayBlock": "",
+        "routes": {
+            "oneWay": {
+                "catenary": 2,
+                "noCatenary": 0
+            },
+            "twoWay": {
+                "catenary": 0,
+                "noCatenary": 0
+            }
+        },
+        "default": false,
+        "nonPublic": false
+    }
+]

@@ -4,12 +4,7 @@
     <Error v-if="connectionState == 1" />
 
     <transition name="card-anim">
-      <StationCard
-        v-if="focusedStationInfo"
-        :stationInfo="focusedStationInfo"
-        :dispatcherHistory="dispatcherHistory()"
-        :exit="closeCard"
-      />
+      <StationCard v-if="focusedStationInfo" :stationInfo="focusedStationInfo" :exit="closeCard" />
     </transition>
     <!-- <div class="info" v-if="stations.length == 0">Ups! Brak stacji do wyświetlenia!</div> -->
 
@@ -35,7 +30,6 @@ import StationTable from "@/components/StationsView/StationTable.vue";
 import StationCard from "@/components/StationsView/StationCard.vue";
 import Options from "@/components/StationsView/Options.vue";
 
-import db from "@/scripts/firebase/firebaseInit";
 import inputData from "@/data/options.json";
 
 enum ConnState {
@@ -107,24 +101,6 @@ export default class StationsView extends Vue {
   setFocusedStation(name: string) {
     if (this.focusedStationName == name) this.focusedStationName = "";
     else this.focusedStationName = name;
-  }
-
-  get dispatcherHistory() {
-    return async () => {
-      let history: any[] = [];
-
-      if (this.focusedStationName != "") {
-        const historyRef = await db
-          .collection("history")
-          .doc(this.focusedStationName)
-          .collection("dispatcherHistory")
-          .get();
-
-        history = historyRef.docs.map((doc) => doc.data());
-      }
-
-      return history;
-    };
   }
 
   get focusedStationInfo() {

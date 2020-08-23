@@ -1,98 +1,106 @@
-// import * as functions from "firebase-functions";
-// import * as admin from "firebase-admin";
+import * as functions from "firebase-functions";
+import * as admin from "firebase-admin";
 
-// admin.initializeApp();
+admin.initializeApp();
 // const db = admin.firestore();
 
-// import axios from "axios";
+import axios from "axios";
 
-// const stationJSONList: any[] = require("./stations.json");
+import stationJSONList from "./stations.json";
 
-// let stationAPIData: {
-//   stationName: string;
-//   dispatcherName: string;
-//   isOnline: boolean;
-//   region: string;
-// }[];
+let stationAPIData: {
+  stationName: string;
+  dispatcherName: string;
+  isOnline: boolean;
+  region: string;
+}[] = [];
 
-// let previousOnlineStations: {
-//   stationName: string;
-//   dispatcherName: string;
-//   occupiedFrom: number;
-// }[] = [];
+let previousOnlineStations: {
+  stationName: string;
+  dispatcherName: string;
+  occupiedFrom: number;
+}[] = [];
 
-// // const test = functions.pubsub.schedule("0 * * * *").onRun(async (context) => {
-// //   try {
-// //     stationAPIData = await (
-// //       await axios.get("https://api.td2.info.pl:9640/?method=getStationsOnline")
-// //     ).data.message;
-// //   } catch (error) {
-// //     return;
-// //   }
+const API_URL = "https://api.td2.info.pl:9640/?method=getStationsOnline";
 
-// //   if (previousOnlineStations.length == 0) {
-// //     const historyRef = db.collection("dispatcherHistory");
+exports.updateHistory = functions.pubsub
+  .schedule("*/5 * * * *")
+  .onRun(async () => {
+    try {
+      stationAPIData = await (await axios.get(API_URL)).data.message;
+    } catch (error) {
+      return;
+    }
 
-// //     stationAPIData
-// //       .filter((station) => station.isOnline && station.region === "eu")
-// //       .forEach(async (station) => {
-// //         const isOfficial: boolean = stationJSONList.some(
-// //           (stationData) => stationData.stationName === station.stationName
-// //         );
+    // On server start
+    if (previousOnlineStations.length == 0) {
+      stationAPIData
+        .filter(
+          (station) =>
+            station.isOnline &&
+            station.region === "eu" &&
+            stationJSONList.some(
+              (data) => data.stationName === station.stationName
+            )
+        )
+        .forEach((station) => {
+          const occupiedFrom = Date.now();
 
-// //         if (!isOfficial) return;
+          previousOnlineStations.push({
+            stationName: station.stationName,
+            dispatcherName: station.dispatcherName,
+            occupiedFrom,
+          });
+        });
 
-// //         const docRef = historyRef.doc(station.stationName);
-// //         const docSnap = await docRef.get();
+      return;
+    }
 
-// //         const occupiedFrom = Date.now();
+    // When array with previous stations isn't empty
+    previousOnlineStations.forEach((prevStation) => {
+      const currStationData = stationAPIData.find(
+        (currStation) => currStation.stationName === prevStation.stationName
+      );
 
-// //         if (!docSnap.exists) {
-// //           docRef.set({
-// //             occupiedFrom,
-// //             currentDispatcherName: station.dispatcherName,
-// //           });
-// //         } else {
-// //           docRef.update({
-// //             occupiedFrom,
-// //             currentDispatcherName: station.dispatcherName,
-// //           });
-// //         }
+      // Dispatcher left
+      if (!currStationData) {
+        previousOnlineStations = previousOnlineStations.filter(
+          (s) => s.stationName !== prevStation.stationName
+        );
+      }
+      // Dispatchers switched
+      else if (prevStation.dispatcherName !== currStationData.dispatcherName) {
+        previousOnlineStations = previousOnlineStations.filter(
+          (s) => s.stationName !== prevStation.stationName
+        );
 
-// //         previousOnlineStations.push({
-// //           dispatcherName: station.dispatcherName,
-// //           occupiedFrom,
-// //           stationName: station.stationName,
-// //         });
-// //       });
-// //   } else {
-// //     previousOnlineStations.forEach((prevStation) => {
-// //       const currStationData = stationAPIData.find(
-// //         (currStation) => currStation.stationName === prevStation.stationName
-// //       );
+        previousOnlineStations.push({
+          stationName: currStationData.stationName,
+          dispatcherName: currStationData.dispatcherName,
+          occupiedFrom: Date.now(),
+        });
+      }
+    });
 
-// //       // Dispatcher left
-// //       if (!currStationData) {
-// //       }
-// //       // The same dispatcher is still online - do nothing
-// //       else if (prevStation.dispatcherName === currStationData.dispatcherName) {
-// //       }
-// //       // Dispatchers switched
-// //       else if (prevStation.dispatcherName !== currStationData.dispatcherName) {
-// //       }
-// //     });
+    stationAPIData
+      .filter(
+        (stationData) =>
+          !previousOnlineStations.find(
+            (prevStation) => prevStation.stationName === stationData.stationName
+          )
+      )
+      .forEach((stationData) => {
+        previousOnlineStations.push({
+          stationName: stationData.stationName,
+          dispatcherName: stationData.dispatcherName,
+          occupiedFrom: Date.now(),
+        });
+      });
+  });
 
-// //     stationAPIData.forEach((stationData) => {
-// //       const isPrevious = previousOnlineStations.find(
-// //         (prevStation) => prevStation.stationName === stationData.stationName
-// //       );
-
-// //       // New station turned online
-// //       if (!isPrevious) {
-// //       }
-// //     });
-// //   }
-// // });
+exports.getHistoryData = functions.https.onCall((data, context) => {
+  return { previousOnlineStations };
+});
 
 // // const scheduledUpdate = functions.pubsub
 // //   .schedule("0 * * * *")
