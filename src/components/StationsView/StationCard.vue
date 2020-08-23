@@ -5,13 +5,17 @@
     </div>
 
     <div class="card-history">
-      <div class="history-title title">DZIENNIK STACJI</div>
+      <div class="history-title">
+        <span class="title">DZIENNIK STACJI</span>
+        |
+        <span>Usługa czasowo wstrzymana ⏲</span>
+      </div>
 
       <ul class="history-list">
-        <div
+        <!-- <div
           class="history-info"
-        >Wersja eksperymentalna! Dziennik aktualizuje się automatycznie co godzinę.</div>
-        <li class="history-log" v-for="(log, i) in computedHistory" :key="i">
+        >Wersja eksperymentalna! Dziennik aktualizuje się automatycznie co godzinę.</div>-->
+        <!-- <li class="history-log" v-for="(log, i) in computedHistory" :key="i">
           <div class="log-time">
             <div class="from">
               <span>
@@ -47,7 +51,7 @@
           </div>
 
           <div class="log-dispatcher">{{log.dispatcher}}</div>
-        </li>
+        </li>-->
       </ul>
     </div>
 
@@ -57,7 +61,7 @@
           <span
             class="main-level flex"
             v-if="stationInfo.reqLevel > -1"
-          >{{parseInt(stationInfo.reqLevel) < 2 ? "L" : stationInfo.reqLevel}}</span>
+          >{{ 2 > parseInt(stationInfo.reqLevel) ? "L" : stationInfo.reqLevel}}</span>
           <span class="main-general">
             <div class="main-name">
               <a
@@ -202,54 +206,54 @@ export default class StationCard extends styleMixin {
       : `${this.stationInfo.dispatcherExp}`;
   }
 
-  toLocaleDate(timestamp: number) {
-    return new Date(timestamp).toLocaleDateString("pl-PL", {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  }
+  // toLocaleDate(timestamp: number) {
+  //   return new Date(timestamp).toLocaleDateString("pl-PL", {
+  //     hour: "2-digit",
+  //     minute: "2-digit",
+  //   });
+  // }
 
-  get computedHistory() {
-    return this.history.sort((a, b) => {
-      if (a.occupiedFrom < b.occupiedFrom) return 1;
-      else return -1;
-    });
-  }
+  // get computedHistory() {
+  //   return this.history.sort((a, b) => {
+  //     if (a.occupiedFrom < b.occupiedFrom) return 1;
+  //     else return -1;
+  //   });
+  // }
 
-  async loadHistory() {
-    const historyRef = await db
-      .collection("history")
-      .doc(this.stationInfo.stationName)
-      .collection("dispatcherHistory")
-      .get();
+  // async loadHistory() {
+  //   const historyRef = await db
+  //     .collection("history")
+  //     .doc(this.stationInfo.stationName)
+  //     .collection("dispatcherHistory")
+  //     .get();
 
-    this.history = historyRef.docs
-      .filter((doc) => doc.data().occupiedTo != 0)
-      .map((doc) => {
-        const occupiedFrom = doc.data().occupiedFrom;
-        const occupiedTo = doc.data().occupiedTo;
+  //   this.history = historyRef.docs
+  //     .filter((doc) => doc.data().occupiedTo != 0)
+  //     .map((doc) => {
+  //       const occupiedFrom = doc.data().occupiedFrom;
+  //       const occupiedTo = doc.data().occupiedTo;
 
-        const sameDay =
-          new Date(occupiedFrom).getDate() == new Date(occupiedTo).getDate();
+  //       const sameDay =
+  //         new Date(occupiedFrom).getDate() == new Date(occupiedTo).getDate();
 
-        return {
-          occupiedFrom,
-          occupiedTo,
-          dispatcher:
-            doc.data().currentDispatcherName || doc.data().dispatcherName,
-          sameDay,
-        };
-      });
-  }
+  //       return {
+  //         occupiedFrom,
+  //         occupiedTo,
+  //         dispatcher:
+  //           doc.data().currentDispatcherName || doc.data().dispatcherName,
+  //         sameDay,
+  //       };
+  //     });
+  // }
 
-  @Watch("stationInfo")
-  async onStationChange(val: any, oldVal: any) {
-    this.loadHistory();
-  }
+  // @Watch("stationInfo")
+  // async onStationChange(val: any, oldVal: any) {
+  //   this.loadHistory();
+  // }
 
-  created() {
-    this.loadHistory();
-  }
+  // created() {
+  //   this.loadHistory();
+  // }
 }
 </script>
 
@@ -325,23 +329,25 @@ export default class StationCard extends styleMixin {
   transition: min-height 150ms ease-in, min-width 150ms ease-in,
     font-size 150ms ease-in;
 
-  &:hover {
-    min-height: 90%;
+  // &:hover {
+  //   min-height: 90%;
 
-    & > .history-list {
-      opacity: 1;
-      max-height: 350px;
-    }
+  //   & > .history-list {
+  //     opacity: 1;
+  //     max-height: 350px;
+  //   }
 
-    & > .history-title {
-      font-size: 2em;
-    }
-  }
+  //   & > .history-title {
+  //     font-size: 2em;
+  //   }
+  // }
 }
 
 .history {
   &-title {
     transition: font-size 150ms ease-in;
+
+    color: #999;
   }
 
   &-info {
