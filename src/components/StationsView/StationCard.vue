@@ -222,6 +222,14 @@ export default class StationCard extends styleMixin {
   -moz-user-select: none;
   -webkit-user-select: none;
 
+  &-exit {
+    img {
+      width: 1.5em;
+    }
+
+    cursor: pointer;
+  }
+
   &-content {
     display: grid;
     grid-template-areas: "main main" "icons icons" "dispatcher hours" "users spawns" "history history";

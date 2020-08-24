@@ -102,9 +102,9 @@
               class="track no-catenary"
               :title="'Liczba niezelektryfikowanych szlaków dwutorowych: ' + station.routes.twoWay.noCatenary"
             >{{station.routes.twoWay.noCatenary}}</span>
-          </td>
 
-          <td class="item-tracks oneway">
+            <span class="separator"></span>
+
             <span
               v-if="station.routes && station.routes.oneWay.catenary > 0"
               class="track catenary"
@@ -117,6 +117,8 @@
               :title="'Liczba niezelektryfikowanych szlaków jednotorowych: ' + station.routes.oneWay.noCatenary"
             >{{station.routes.oneWay.noCatenary}}</span>
           </td>
+
+          <!-- <td class="item-tracks oneway"></td> -->
         </tr>
       </table>
     </div>
@@ -147,14 +149,13 @@ export default class StationTable extends styleMixin {
 
   headTitles: string[][] = [
     ["Stacja"],
-    ["Wymagany poz.", "dyżurnego"],
+    ["Min. poziom", "dyżurnego"],
     ["Status"],
     ["Dyżurny"],
     ["Poziom", "dyżurnego"],
     ["Maszyniści"],
     ["Informacje", "ogólne"],
-    ["Szlaki", "dwutorowe"],
-    ["Szlaki", "jednotorowe"],
+    ["Szlaki", "2tor | 1tor"],
   ];
 
   changeSorter(index: number) {
@@ -214,6 +215,10 @@ export default class StationTable extends styleMixin {
 @import "../../styles/responsive.scss";
 @import "../../styles/variables.scss";
 @import "../../styles/global.scss";
+
+.separator {
+  border-left: 3px solid #b3b3b3;
+}
 
 .table {
   &-wrapper {

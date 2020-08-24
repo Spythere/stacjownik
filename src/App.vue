@@ -53,8 +53,6 @@ import Loading from "@/components/App/Loading.vue";
 
 import Clock from "@/components/App/Clock.vue";
 
-// import firebase from "@/scripts/firebase/firebaseInit";
-
 @Component({
   components: { Error, Loading, Clock },
 })
@@ -69,9 +67,6 @@ export default class App extends Vue {
 
   async mounted() {
     this.initStations();
-
-    // const getData = firebase.functions.httpsCallable("getHistoryData");
-    // getData().then((res) => console.log(res.data));
   }
 }
 </script>
