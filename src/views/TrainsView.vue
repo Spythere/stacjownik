@@ -1,6 +1,6 @@
 <template>
   <section class="trains-view">
-    <Loading v-if="!listLoaded" message="Liczenie pociągów..." />
+    <Loading v-if="connectionState == 0" message="Liczenie pociągów..." />
 
     <div class="body-wrapper" v-else>
       <div class="options-wrapper">
@@ -24,7 +24,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import { Getter } from "vuex-class";
+import { Getter, Action } from "vuex-class";
 
 import Station from "@/scripts/interfaces/Station";
 import Train from "@/scripts/interfaces/Train";
@@ -44,12 +44,12 @@ import axios from "axios";
   },
 })
 export default class TrainsView extends Vue {
-  @Getter("getAllStations") stations!: Station[];
+  @Getter("trainsDataList") trains!: Train[];
+  @Getter("trainsDataState") connectionState;
+
+  @Action("fetchTrainsData") fetchTrainsData;
 
   sorterActive: { id: string; dir: number } = { id: "timetable", dir: 1 };
-  onlineTrainsList: Train[] = [];
-  listLoaded: boolean = false;
-
   searchedTrain: string = "";
   searchedDriver: string = "";
 
@@ -57,182 +57,57 @@ export default class TrainsView extends Vue {
     this.sorterActive = sorter;
   }
 
-  async getTrainData() {
-    const response = await axios.get(
-      "https://api.td2.info.pl:9640/?method=getTrainsOnline"
-    );
-
-    let onlineTrainsData: {
-      driverId: number;
-      driverName: string;
-      trainNo: number;
-      station: { stationName: string };
-      dataMass: number;
-      dataLength: number;
-      dataSpeed: number;
-      dataDistance: number;
-      dataSignal: string;
-      dataCon: string;
-      dataSceneryConnection: string;
-      isOnline: boolean;
-    }[] = response.data.message;
-
-    this.onlineTrainsList = await Promise.all(
-      onlineTrainsData
-        .filter((train) => train.isOnline)
-        .map(async (train) => {
-          const timetableData = await this.getTimetableData(train.trainNo);
-
-          let locoType = train.dataCon.split(";")
-            ? train.dataCon.split(";")[0]
-            : train.dataCon;
-
-          const locoURL = `https://rj.td2.info.pl/dist/img/thumbnails/${
-            locoType.includes("EN") ? locoType + "rb" : locoType
-          }.png`;
-
-          return {
-            driverId: train.driverId,
-            driverName: train.driverName,
-            trainNo: train.trainNo,
-            currentStationName: train.station.stationName,
-            mass: train.dataMass,
-            length: train.dataLength,
-            speed: train.dataSpeed,
-            distance: train.dataDistance,
-            signal: train.dataSignal,
-            connectedTrack: train.dataSceneryConnection,
-            locoURL,
-            locoType,
-            noTimetable: timetableData == null,
-            route: timetableData && timetableData.route,
-            timetableId: timetableData && timetableData.timetableId,
-            category: timetableData && timetableData.trainCategoryCode,
-            routeDistance: (timetableData && timetableData.routeDistance) || 0,
-            sceneries:
-              timetableData &&
-              (await this.mapSceneries(timetableData.sceneries)),
-            TWR: timetableData && timetableData.twr,
-            SKR: timetableData && timetableData.skr,
-          };
-        })
-    );
-
-    this.listLoaded = true;
-  }
-
-  async getTimetableData(trainNo: number) {
-    const responseDataMessage: {
-      stopPoints: { pointDistance: number }[] | [];
-      trainInfo: {
-        timetableId: number;
-        trainCategoryCode: string;
-        route: string;
-        twr: boolean;
-        skr: boolean;
-        sceneries: string[];
-      } | null;
-    } = (
-      await axios.get(
-        `https://api.td2.info.pl:9640/?method=readFromSWDR&value=getTimetable%3B${trainNo}%3Beu`
-      )
-    ).data.message;
-
-    let result: {
-      timetableId: number;
-      trainCategoryCode: string;
-      route: string;
-      twr: boolean;
-      skr: boolean;
-      sceneries: string[];
-      routeDistance: number;
-    } | null = null;
-
-    if (responseDataMessage.trainInfo) {
-      const routeDistance: number =
-        responseDataMessage.stopPoints[
-          responseDataMessage.stopPoints.length - 1
-        ].pointDistance;
-
-      result = {
-        ...responseDataMessage.trainInfo,
-        routeDistance,
-      };
-    }
-
-    return result;
-  }
-
-  mapSceneries(sceneries: string[]): string {
-    let text = "";
-
-    for (let i = sceneries.length - 1; i >= 0; i--) {
-      const station = this.stations.find(
-        (station) => station.stationHash == sceneries[i]
-      );
-
-      if (!station) continue;
-      if (i == sceneries.length - 1 || i == 0) continue;
-
-      text += `${station.stationName}${i > 1 ? ", " : ""}`;
-    }
-
-    return text;
-  }
-
   get computedTrains() {
-    const computed = this.onlineTrainsList.filter(
-      (train) =>
-        !train.noTimetable &&
-        (this.searchedTrain.length > 0
-          ? train.trainNo.toString().includes(this.searchedTrain)
-          : true) &&
-        (this.searchedDriver.length > 0
-          ? train.driverName.includes(this.searchedDriver)
-          : true)
-    );
+    return this.trains
+      .filter(
+        (train) =>
+          !train.noTimetable &&
+          (this.searchedTrain.length > 0
+            ? train.trainNo.toString().includes(this.searchedTrain)
+            : true) &&
+          (this.searchedDriver.length > 0
+            ? train.driverName.includes(this.searchedDriver)
+            : true)
+      )
+      .sort((a, b) => {
+        switch (this.sorterActive.id) {
+          case "mass":
+            if (a.mass > b.mass) return this.sorterActive.dir;
+            else return -this.sorterActive.dir;
+            break;
 
-    computed.sort((a, b) => {
-      switch (this.sorterActive.id) {
-        case "mass":
-          if (a.mass > b.mass) return this.sorterActive.dir;
-          else return -this.sorterActive.dir;
-          break;
+          case "distance":
+            if (a.routeDistance > b.routeDistance) return this.sorterActive.dir;
+            else return -this.sorterActive.dir;
+            break;
 
-        case "distance":
-          if (a.routeDistance > b.routeDistance) return this.sorterActive.dir;
-          else return -this.sorterActive.dir;
-          break;
+          case "speed":
+            if (a.speed > b.speed) return this.sorterActive.dir;
+            else return -this.sorterActive.dir;
+            break;
 
-        case "speed":
-          if (a.speed > b.speed) return this.sorterActive.dir;
-          else return -this.sorterActive.dir;
-          break;
+          case "timetable":
+            if (a.trainNo > b.trainNo) return this.sorterActive.dir;
+            else return -this.sorterActive.dir;
+            break;
 
-        case "timetable":
-          if (a.trainNo > b.trainNo) return this.sorterActive.dir;
-          else return -this.sorterActive.dir;
-          break;
+          case "length":
+            if (a.length > b.length) return this.sorterActive.dir;
+            else return -this.sorterActive.dir;
+            break;
 
-        case "length":
-          if (a.length > b.length) return this.sorterActive.dir;
-          else return -this.sorterActive.dir;
-          break;
+          default:
+            break;
+        }
 
-        default:
-          break;
-      }
-
-      return 0;
-    });
-
-    return computed;
+        return 0;
+      });
   }
 
   mounted() {
-    this.getTrainData();
+    this.fetchTrainsData();
 
-    setInterval(this.getTrainData, 5000);
+    setInterval(this.fetchTrainsData, 5000);
   }
 }
 </script>

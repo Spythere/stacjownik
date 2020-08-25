@@ -152,55 +152,6 @@ export default class StationCard extends styleMixin {
       ? "L"
       : `${this.stationInfo.dispatcherExp}`;
   }
-
-  // toLocaleDate(timestamp: number) {
-  //   return new Date(timestamp).toLocaleDateString("pl-PL", {
-  //     hour: "2-digit",
-  //     minute: "2-digit",
-  //   });
-  // }
-
-  // get computedHistory() {
-  //   return this.history.sort((a, b) => {
-  //     if (a.occupiedFrom < b.occupiedFrom) return 1;
-  //     else return -1;
-  //   });
-  // }
-
-  // async loadHistory() {
-  //   const historyRef = await db
-  //     .collection("history")
-  //     .doc(this.stationInfo.stationName)
-  //     .collection("dispatcherHistory")
-  //     .get();
-
-  //   this.history = historyRef.docs
-  //     .filter((doc) => doc.data().occupiedTo != 0)
-  //     .map((doc) => {
-  //       const occupiedFrom = doc.data().occupiedFrom;
-  //       const occupiedTo = doc.data().occupiedTo;
-
-  //       const sameDay =
-  //         new Date(occupiedFrom).getDate() == new Date(occupiedTo).getDate();
-
-  //       return {
-  //         occupiedFrom,
-  //         occupiedTo,
-  //         dispatcher:
-  //           doc.data().currentDispatcherName || doc.data().dispatcherName,
-  //         sameDay,
-  //       };
-  //     });
-  // }
-
-  // @Watch("stationInfo")
-  // async onStationChange(val: any, oldVal: any) {
-  //   this.loadHistory();
-  // }
-
-  // created() {
-  //   this.loadHistory();
-  // }
 }
 </script>
 

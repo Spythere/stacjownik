@@ -10,19 +10,115 @@ enum ConnState {
   Connected = 2,
 }
 
+const apiURLS = {
+  stationDataURL: "https://api.td2.info.pl:9640/?method=getStationsOnline",
+  trainDataURL: "https://api.td2.info.pl:9640/?method=getTrainsOnline",
+  dispatcherDataURL:
+    "https://api.td2.info.pl:9640/?method=readFromSWDR&value=getDispatcherStatusList%3B1",
+};
+
+interface TimetableResponseData {
+  stopPoints:
+    | {
+        arrivalTime: string;
+        arrivalDelay: number;
+        departureTime: string;
+        departureDelay: number;
+        pointNameRAW: string;
+      }[]
+    | [];
+  trainInfo: {
+    timetableId: number;
+    trainCategoryCode: string;
+  };
+}
+
+interface OnlineStationsResponseData {
+  stationName: string;
+  stationHash: string;
+  maxUsers: number;
+  currentUsers: number;
+  spawnString: string;
+  dispatcherRate: number;
+  dispatcherName: string;
+  dispatcherExp: number;
+  dispatcherId: number;
+  region: string;
+  isOnline: number;
+}
+
+let onlineStationsData: OnlineStationsResponseData[];
+
+let onlineDispatchersData: [string, string, number, number][];
+
+let onlineTrainsData: {
+  isOnline: number;
+  region: string;
+  trainNo: number;
+  station: { stationName: string };
+}[];
+
+const queryStations = (async () => {
+  return (await axios.get(apiURLS.stationDataURL)).data.message;
+})();
+
+const queryTrains = (async () => {
+  return await (await axios.get(apiURLS.trainDataURL)).data.message;
+})();
+
+const queryDisptachers = (async () => {
+  return await (await axios.get(apiURLS.dispatcherDataURL)).data.message;
+})();
+
+const queryTimetableData = async (
+  trainNo: number
+): Promise<TimetableResponseData> =>
+  (
+    await axios.get(
+      `https://api.td2.info.pl:9640/?method=readFromSWDR&value=getTimetable%3B${trainNo}%3Beu`
+    )
+  ).data.message;
+
+async function getScheduledTrains(stationName: string) {
+  let scheduledTrains: any[] = [];
+
+  for (let train of onlineTrainsData) {
+    if (train.region !== "eu" || !train.isOnline) continue;
+
+    const timetable = await queryTimetableData(train.trainNo);
+
+    if (!timetable.trainInfo) continue;
+
+    const stop = timetable.stopPoints.find((point) => {
+      return (
+        stationName.toLowerCase().includes(point.pointNameRAW.toLowerCase()) ||
+        stationName
+          .toLowerCase()
+          .includes(point.pointNameRAW.toLowerCase().split(" ")[0]) ||
+        stationName
+          .toLowerCase()
+          .includes(point.pointNameRAW.toLowerCase().split(",")[0])
+      );
+    });
+
+    if (!stop) continue;
+
+    scheduledTrains.push({
+      arrivalTime: stop?.arrivalTime,
+      departureTime: stop?.departureTime,
+      trainCategory: timetable.trainInfo?.trainCategoryCode,
+      trainNo: train.trainNo,
+    });
+  }
+
+  return scheduledTrains;
+}
 @Module
 class Store extends VuexModule {
   private trainCount: number = 0;
   private stationCount: number = 0;
 
   private connectionState: ConnState = ConnState.Loading;
-
-  private apiURLS = {
-    stationDataURL: "https://api.td2.info.pl:9640/?method=getStationsOnline",
-    trainDataURL: "https://api.td2.info.pl:9640/?method=getTrainsOnline",
-    dispatcherDataURL:
-      "https://api.td2.info.pl:9640/?method=readFromSWDR&value=getDispatcherStatusList%3B1",
-  };
 
   private stations: Station[] = [];
 
@@ -95,132 +191,107 @@ class Store extends VuexModule {
     this.context.commit("loadAllStations");
     this.context.dispatch("fetchStations");
 
-    setInterval(() => this.context.dispatch("fetchStations"), 15000);
+    setInterval(() => this.context.dispatch("fetchStations"), 10000);
   }
 
   @Action
   private fetchStations() {
-    let onlineStationsData: {
-      stationName: string;
-      stationHash: string;
-      maxUsers: number;
-      currentUsers: number;
-      spawnString: string;
-      dispatcherRate: number;
-      dispatcherName: string;
-      dispatcherExp: number;
-      dispatcherId: number;
-      region: string;
-      isOnline: number;
-    }[];
-
-    let onlineDispatchersData: [string, string, number, number][];
-
-    let onlineTrainsData: {
-      isOnline: number;
-      region: string;
-      station: { stationName: string };
-    }[];
-
-    const queryStations = (async () => {
-      return (await axios.get(this.apiURLS.stationDataURL)).data.message;
-    })();
-
-    const queryTrains = (async () => {
-      return await (await axios.get(this.apiURLS.trainDataURL)).data.message;
-    })();
-
-    const queryDisptachers = (async () => {
-      return await (await axios.get(this.apiURLS.dispatcherDataURL)).data
-        .message;
-    })();
-
     Promise.all([queryStations, queryTrains, queryDisptachers])
-      .then((response) => {
+      .then(async (response) => {
         onlineStationsData = response[0];
         onlineTrainsData = response[1];
         onlineDispatchersData = response[2];
 
-        const updatedStations = onlineStationsData
-          .filter((station) => station.region === "eu" && station.isOnline)
-          .map((station) => {
-            const stationStatus = onlineDispatchersData.find(
-              (status) => status[0] == station.stationHash && status[1] == "eu"
-            );
+        const updatedStations = await Promise.all(
+          onlineStationsData
+            .filter((station) => station.region === "eu" && station.isOnline)
+            .map(async (station) => {
+              const stationStatus = onlineDispatchersData.find(
+                (status) =>
+                  status[0] == station.stationHash && status[1] == "eu"
+              );
 
-            let statusLabel = "";
-            let statusTimestamp = -1;
+              let statusLabel = "";
+              let statusTimestamp = -1;
 
-            if (!stationStatus) statusLabel = "NIEZALOGOWANY";
-            else {
-              let statusCode = stationStatus[2];
-              statusTimestamp = stationStatus[3];
+              if (!stationStatus) statusLabel = "NIEZALOGOWANY";
+              else {
+                let statusCode = stationStatus[2];
+                statusTimestamp = stationStatus[3];
 
-              statusLabel = "NIEDOSTĘPNY";
+                statusLabel = "NIEDOSTĘPNY";
 
-              switch (statusCode) {
-                case 0:
-                  if (statusTimestamp - Date.now() > 21000000)
-                    statusLabel = "BEZ LIMITU";
-                  else
-                    statusLabel =
-                      "DO " +
-                      new Date(statusTimestamp).toLocaleTimeString("en-US", {
-                        hour12: false,
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      });
-                  break;
+                switch (statusCode) {
+                  case 0:
+                    if (statusTimestamp - Date.now() > 21000000)
+                      statusLabel = "BEZ LIMITU";
+                    else
+                      statusLabel =
+                        "DO " +
+                        new Date(statusTimestamp).toLocaleTimeString("en-US", {
+                          hour12: false,
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        });
+                    break;
 
-                case 1:
-                  statusLabel = "Z/W";
-                  break;
+                  case 1:
+                    statusLabel = "Z/W";
+                    break;
 
-                case 2:
-                  if (statusTimestamp == 0) statusLabel = "KOŃCZY";
-                  break;
+                  case 2:
+                    if (statusTimestamp == 0) statusLabel = "KOŃCZY";
+                    break;
 
-                case 3:
-                  statusLabel = "BRAK MIEJSCA";
-                  break;
+                  case 3:
+                    statusLabel = "BRAK MIEJSCA";
+                    break;
 
-                default:
-                  break;
+                  default:
+                    break;
+                }
               }
-            }
 
-            const trains = onlineTrainsData.filter(
-              (train) =>
-                train.region === "eu" &&
-                train.isOnline &&
-                train.station.stationName === station.stationName
-            );
+              const trains = onlineTrainsData.filter(
+                (train) =>
+                  train.region === "eu" &&
+                  train.isOnline &&
+                  train.station.stationName === station.stationName
+              );
 
-            const stationData = data.find(
-              (s) => s.stationName === station.stationName
-            ) || { stationName: station.stationName, stationURL: "" };
+              const stationData = data.find(
+                (s) => s.stationName === station.stationName
+              ) || { stationName: station.stationName, stationURL: "" };
 
-            return {
-              ...stationData,
-              stationHash: station.stationHash,
-              maxUsers: station.maxUsers,
-              currentUsers: station.currentUsers,
-              spawnString:
-                station.spawnString &&
-                station.spawnString
-                  .split(";")
-                  .map((v) =>
-                    v.split(",")[6] ? v.split(",")[6] : v.split(",")[0]
-                  ),
-              dispatcherName: station.dispatcherName,
-              dispatcherRate: station.dispatcherRate,
-              dispatcherId: station.dispatcherId,
-              dispatcherExp: station.dispatcherExp,
-              occupiedTo: statusLabel,
-              statusTimestamp,
-              trains,
-            };
-          });
+              // let scheduledTrains = await getScheduledTrains(
+              //   station.stationName
+              // );
+
+              let scheduledTrains = [];
+
+              return {
+                ...stationData,
+                stationHash: station.stationHash,
+                maxUsers: station.maxUsers,
+                currentUsers: station.currentUsers,
+                spawnString:
+                  station.spawnString &&
+                  station.spawnString
+                    .split(";")
+                    .map((v) =>
+                      v.split(",")[6] ? v.split(",")[6] : v.split(",")[0]
+                    ),
+                dispatcherName: station.dispatcherName,
+                dispatcherRate: station.dispatcherRate,
+                dispatcherId: station.dispatcherId,
+                dispatcherExp: station.dispatcherExp,
+                occupiedTo: statusLabel,
+                statusTimestamp,
+                trains,
+                scheduledTrains,
+              };
+            })
+        );
 
         this.context.commit("updateStations", {
           updatedStations,
@@ -315,6 +386,7 @@ class Store extends VuexModule {
       online: false,
       occupiedTo: "WOLNA",
       statusTimestamp: 0,
+      scheduledTrains: [],
       ...stationData,
     }));
   }

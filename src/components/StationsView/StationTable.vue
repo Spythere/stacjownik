@@ -51,7 +51,7 @@
             <span
               v-if="station.online"
               :style="calculateExpStyle(station.dispatcherExp)"
-            >{{station.dispatcherExp < 2 ? 'L' : station.dispatcherExp}}</span>
+            >{{2 > station.dispatcherExp ? 'L' : station.dispatcherExp}}</span>
           </td>
           <td
             class="item-users"
@@ -118,7 +118,10 @@
             >{{station.routes.oneWay.noCatenary}}</span>
           </td>
 
-          <!-- <td class="item-tracks oneway"></td> -->
+          <td
+            class="active-timetables"
+            @click="() => showScheduledTrains(station)"
+          >{{station.scheduledTrains.length}}</td>
         </tr>
       </table>
     </div>
@@ -129,7 +132,11 @@
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 
+import { Getter } from "vuex-class";
+
 import Station from "@/scripts/interfaces/Station";
+import Train from "@/scripts/interfaces/Train";
+
 import styleMixin from "@/mixins/styleMixin";
 
 import Options from "@/components/StationsView/Options.vue";
@@ -144,6 +151,9 @@ export default class StationTable extends styleMixin {
   @Prop() readonly stations!: Station[];
   @Prop() readonly setFocusedStation!: () => void;
 
+  @Getter("trainsDataList") trains!: Train[];
+  @Getter("trainsDataState") state!: number;
+
   icons: { ascSVG; descSVG } = { ascSVG, descSVG };
   sorterActive: { index: number; dir: number } = { index: 0, dir: 1 };
 
@@ -156,6 +166,7 @@ export default class StationTable extends styleMixin {
     ["Maszyniści"],
     ["Informacje", "ogólne"],
     ["Szlaki", "2tor | 1tor"],
+    ["Aktywne RJ"],
   ];
 
   changeSorter(index: number) {
@@ -166,6 +177,14 @@ export default class StationTable extends styleMixin {
     else this.sorterActive.dir = 1;
 
     this.sorterActive.index = index;
+  }
+
+  get test() {
+    return this.trains;
+  }
+
+  showScheduledTrains(station) {
+    console.log(station.scheduledTrains);
   }
 
   get computedStations() {

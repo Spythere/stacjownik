@@ -12,7 +12,7 @@ export default interface Train {
   route: string | null;
   timetableId: number | null;
   category: string | null;
-  sceneries: string | null;
+  sceneries: string[] | null;
   TWR: boolean | null;
   SKR: boolean | null;
   noTimetable: boolean;

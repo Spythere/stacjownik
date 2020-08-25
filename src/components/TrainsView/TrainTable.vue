@@ -28,7 +28,9 @@
             </div>
 
             <div class="info-stations">
-              <i v-if="train.sceneries.length > 0">Przez: {{ train.sceneries }}</i>
+              <i
+                v-if="train.sceneries.length > 2"
+              >Przez: {{ mapTimetableSceneries(train.sceneries) }}</i>
             </div>
           </span>
         </a>
@@ -93,14 +95,18 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
+import { Getter } from "vuex-class";
 
 const unknownTrainImage = require("@/assets/unknown.png");
 
 import Train from "@/scripts/interfaces/Train";
+import Station from "@/scripts/interfaces/Station";
 
 @Component
 export default class TrainTable extends Vue {
   @Prop() readonly computedTrains!: Train[];
+
+  @Getter("getAllStations") stations!: Station[];
 
   speedIcon: string = require("@/assets/icon-speed.svg");
   massIcon: string = require("@/assets/icon-mass.svg");
@@ -108,6 +114,22 @@ export default class TrainTable extends Vue {
 
   onImageError(e: Event) {
     (e.target as HTMLImageElement).src = unknownTrainImage;
+  }
+
+  mapTimetableSceneries(sceneries: string[]): string {
+    let text = "";
+
+    for (let i = sceneries.length - 2; i > 0; i--) {
+      const station = this.stations.find(
+        (station) => station.stationHash == sceneries[i]
+      );
+
+      if (!station) continue;
+
+      text += `${station.stationName}${i > 1 ? ", " : ""}`;
+    }
+
+    return text;
   }
 }
 </script>
