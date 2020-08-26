@@ -118,10 +118,10 @@
             >{{station.routes.oneWay.noCatenary}}</span>
           </td>
 
-          <td
+          <!-- <td
             class="active-timetables"
             @click="() => showScheduledTrains(station)"
-          >{{station.scheduledTrains.length}}</td>
+          >{{station.scheduledTrains.length}}</td>-->
         </tr>
       </table>
     </div>
@@ -166,7 +166,7 @@ export default class StationTable extends styleMixin {
     ["Maszyniści"],
     ["Informacje", "ogólne"],
     ["Szlaki", "2tor | 1tor"],
-    ["Aktywne RJ"],
+    // ["Aktywne RJ"],
   ];
 
   changeSorter(index: number) {

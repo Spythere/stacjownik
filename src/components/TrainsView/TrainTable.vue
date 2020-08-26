@@ -117,19 +117,11 @@ export default class TrainTable extends Vue {
   }
 
   mapTimetableSceneries(sceneries: string[]): string {
-    let text = "";
+    if (sceneries.length < 1) return "";
 
-    for (let i = sceneries.length - 2; i > 0; i--) {
-      const station = this.stations.find(
-        (station) => station.stationHash == sceneries[i]
-      );
-
-      if (!station) continue;
-
-      text += `${station.stationName}${i > 1 ? ", " : ""}`;
-    }
-
-    return text;
+    return sceneries
+      .filter((scenery, i) => i > 0 && i < sceneries.length - 1)
+      .join(" * ");
   }
 }
 </script>
@@ -166,7 +158,7 @@ export default class TrainTable extends Vue {
   background-color: #444;
   padding: 1rem;
 
-  margin: 1rem 0;
+  margin-bottom: 1em;
 
   &:nth-child(even) {
     background-color: #666;

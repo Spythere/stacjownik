@@ -16,6 +16,8 @@
         </div>
       </div>
 
+      <TrainStats :trains="trains" />
+
       <TrainTable :computedTrains="computedTrains" />
     </div>
   </section>
@@ -33,6 +35,7 @@ import Loading from "@/components/App/Loading.vue";
 
 import TrainSorter from "@/components/TrainsView/TrainSorter.vue";
 import TrainTable from "@/components/TrainsView/TrainTable.vue";
+import TrainStats from "@/components/TrainsView/TrainStats.vue";
 
 import axios from "axios";
 
@@ -41,6 +44,7 @@ import axios from "axios";
     Loading,
     TrainSorter,
     TrainTable,
+    TrainStats,
   },
 })
 export default class TrainsView extends Vue {

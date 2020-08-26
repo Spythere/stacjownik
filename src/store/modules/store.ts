@@ -113,6 +113,55 @@ async function getScheduledTrains(stationName: string) {
 
   return scheduledTrains;
 }
+
+async function testLoad() {
+  let scheduledTrains: any[] = [];
+
+  for (let train of onlineTrainsData) {
+    if (train.region !== "eu" || !train.isOnline) continue;
+
+    const timetable = await queryTimetableData(train.trainNo);
+
+    if (!timetable.trainInfo) continue;
+
+    timetable.stopPoints.forEach((point) => {
+      const station = onlineStationsData.find(
+        (online) =>
+          online.stationName
+            .toLowerCase()
+            .includes(point.pointNameRAW.toLowerCase()) ||
+          online.stationName
+            .toLowerCase()
+            .includes(point.pointNameRAW.toLowerCase().split(" ")[0]) ||
+          online.stationName
+            .toLowerCase()
+            .includes(point.pointNameRAW.toLowerCase().split(",")[0])
+      );
+
+      if (!station) return;
+
+      if (!scheduledTrains[station.stationName])
+        scheduledTrains[station.stationName] = [];
+
+      if (
+        scheduledTrains[station.stationName].find(
+          (scheduled) => train.trainNo === scheduled.trainNo
+        )
+      )
+        return;
+
+      scheduledTrains[station.stationName].push({
+        arrivalTime: point?.arrivalTime,
+        departureTime: point?.departureTime,
+        trainCategory: timetable.trainInfo?.trainCategoryCode,
+        trainNo: train.trainNo,
+      });
+    });
+  }
+
+  return scheduledTrains;
+}
+
 @Module
 class Store extends VuexModule {
   private trainCount: number = 0;
@@ -121,6 +170,13 @@ class Store extends VuexModule {
   private connectionState: ConnState = ConnState.Loading;
 
   private stations: Station[] = [];
+
+  // private scheduledTrains: {
+  //   trainNo: number;
+  //   trainCategory: string;
+  //   arrivalTime: string;
+  //   departureTime: string;
+  // }[] = [];
 
   private filteredStations: {}[] = [];
 
@@ -267,7 +323,7 @@ class Store extends VuexModule {
               //   station.stationName
               // );
 
-              let scheduledTrains = [];
+              let scheduledTrains: any[] = [];
 
               return {
                 ...stationData,
@@ -292,6 +348,18 @@ class Store extends VuexModule {
               };
             })
         );
+
+        // const scheduled = await testLoad();
+
+        // for (let stationName in scheduled) {
+        //   let t = updatedStations.find(
+        //     (updated) => updated.stationName === stationName
+        //   );
+
+        //   if (!t) continue;
+
+        //   t.scheduledTrains = scheduled[stationName];
+        // }
 
         this.context.commit("updateStations", {
           updatedStations,
