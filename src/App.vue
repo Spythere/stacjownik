@@ -13,9 +13,9 @@
             <Clock />
             <div class="counter">
               <img src="@/assets/icon-dispatcher.svg" alt="icon dispatcher" />
-              <span>{{stationCount}}</span>
+              <span>{{onlineInfo.stationCount}}</span>
 
-              <span>{{trainCount}}</span>
+              <span>{{onlineInfo.trainCount}}</span>
               <img src="@/assets/icon-train.svg" alt="icon train" />
             </div>
           </span>
@@ -57,16 +57,18 @@ import Clock from "@/components/App/Clock.vue";
   components: { Error, Loading, Clock },
 })
 export default class App extends Vue {
-  @Getter("getStations") stations;
-  @Getter("getTrainCount") trainCount;
-  @Getter("getStationCount") stationCount;
+  @Getter("getStationList") stations;
+  @Getter("getOnlineInfo") onlineInfo;
 
   @Action("initStations") initStations;
+  @Action("fetchOnlineStations") fetchStations;
 
   errorMessage: string = "";
 
   async mounted() {
     this.initStations();
+
+    setInterval(this.fetchStations, 5000);
   }
 }
 </script>

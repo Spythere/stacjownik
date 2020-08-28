@@ -52,7 +52,7 @@ export default class StationsView extends Vue {
   inputs = { ...inputData };
   STORAGE_KEY: string = "options_saved";
 
-  @Getter("getStations") stations!: Station[];
+  @Getter("getStationList") stations!: Station[];
   @Getter("getConnectionState") connectionState!: ConnState;
 
   @Action("setFilter") setFilter;

@@ -137,6 +137,8 @@ export default class TrainSorter extends Vue {
   top: 0;
   left: 0;
 
+  z-index: 5;
+
   width: 100%;
   background-color: rgba(#333, 0.85);
   overflow: hidden;

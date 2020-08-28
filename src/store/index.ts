@@ -1,12 +1,12 @@
 import Vue from "vue";
 import Vuex from "vuex";
 
-import Store from "@/store/modules/store";
-import TrainsModule from "@/store/modules/trains";
+import StationsModule from "@/store/modules/stationsModule";
+import TrainsModule from "@/store/modules/trainsModule";
 Vue.use(Vuex);
 const store = new Vuex.Store({
   modules: {
-    Store,
+    StationsModule,
     TrainsModule,
   },
 });

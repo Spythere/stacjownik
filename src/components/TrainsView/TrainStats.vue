@@ -5,36 +5,32 @@
         class="stats-btn button"
         @click="toggleStats"
         v-if="trains.length > 0"
-      >{{statsOpen ? 'Zamknij' : 'Otwórz'}} statystki ruchu</button>
+      >STATYSTYKI RUCHU</button>
     </div>
 
-    <div class="stats-body" v-if="statsOpen">
-      <h2 class="stats-header">STATYSTYKI RUCHU</h2>
-      <div class="stats-speed">
-        <div class="title">PRĘDKOŚCI POCIĄGÓW (MIN | ŚR | MAX)</div>
-        <div class="content">{{speedStats.min}} | {{speedStats.avg}} | {{speedStats.max}} km/h</div>
-      </div>
-
-      <div class="stats-length">
-        <div class="title">DŁUGOŚCI ROZKŁADÓW (MIN | ŚR | MAX)</div>
-        <div
-          class="content"
-        >{{timetableStats.min}} | {{timetableStats.avg}} | {{timetableStats.max}} km</div>
-      </div>
-
-      <div class="stats-categories">
-        <div class="title">KATEGORIE RJ</div>
-        <div class="category-list">
-          <span class="category" v-for="[key, value] of categoryList" :key="key">
-            <span class="category-type">{{key}}</span>
-            <span class="category-count">{{value}}</span>
-          </span>
+    <transition name="stats-anim">
+      <div class="stats-body" v-if="statsOpen">
+        <h2 class="stats-header">STATYSTYKI RUCHU</h2>
+        <div class="stats-speed">
+          <div class="title">PRĘDKOŚCI POCIĄGÓW (MIN | ŚR | MAX) [km/h]</div>
+          <div class="content">{{speedStats.min}} | {{speedStats.avg}} | {{speedStats.max}}</div>
         </div>
-      </div>
 
-      <div class="stats-warnings">
-        <div class="title">TWR/SKR</div>
-        <div class="content">
+        <div class="stats-length">
+          <div class="title">DŁUGOŚCI ROZKŁADÓW (MIN | ŚR | MAX) [km]</div>
+          <div
+            class="content"
+          >{{timetableStats.min}} | {{timetableStats.avg}} | {{timetableStats.max}}</div>
+        </div>
+
+        <div class="stats-categories">
+          <div class="title">KATEGORIE RJ</div>
+          <div class="category-list">
+            <span class="category" v-for="[key, value] of categoryList" :key="key">
+              <span class="category-type">{{key}}</span>
+              <span class="category-count">{{value}}</span>
+            </span>
+          </div>
           <div class="warning twr">
             Wysokiego ryzyka
             [{{specialTrainCount[0]}}]
@@ -45,15 +41,15 @@
             [{{specialTrainCount[1]}}]
           </div>
         </div>
-      </div>
 
-      <div class="stats-locos">
-        <div class="title">NAJCZĘSTSZE JEDNOSTKI</div>
-        <div class="loco-list content">
-          <div class="loco" v-for="(loco,i) in locoList" :key="i">{{loco[0]}} | {{loco[1]}}</div>
+        <div class="stats-locos">
+          <div class="title">NAJCZĘSTSZE JEDNOSTKI</div>
+          <div class="loco-list content">
+            <div class="loco" v-for="(loco,i) in locoList" :key="i">{{loco[0]}} | {{loco[1]}}</div>
+          </div>
         </div>
       </div>
-    </div>
+    </transition>
   </div>
 </template>
 
@@ -166,13 +162,28 @@ export default class TrainStats extends Vue {
 <style lang="scss" scoped>
 @import "../../styles/responsive";
 
+.stats-anim {
+  &-enter-active,
+  &-leave-active {
+    transition: all 150ms ease-out;
+  }
+
+  &-enter,
+  &-leave-to {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+}
+
 .train-stats {
   padding: 0.3em 0;
   font-size: 0.9em;
+
+  position: relative;
 }
 
 .button {
-  font-size: 1em;
+  font-size: 1.1em;
   padding: 0.5em;
 }
 
@@ -186,10 +197,12 @@ export default class TrainStats extends Vue {
 }
 
 .stats-body {
+  position: absolute;
   display: inline-block;
   max-width: 800px;
 
-  background: #333;
+  background: rgba(black, 0.85);
+  border-radius: 0 1em 1em 1em;
 
   padding: 1rem;
 }
@@ -247,7 +260,9 @@ export default class TrainStats extends Vue {
   }
   .stats-body {
     display: block;
-    max-width: 100%;
+    width: 100%;
+
+    border-radius: 0 0 1em 1em;
   }
   .btn-wrapper {
     display: flex;
