@@ -118,7 +118,24 @@
             >{{station.routes.oneWay.noCatenary}}</span>
           </td>
 
-          <td class="active-timetables">0</td>
+          <td class="active-timetables">
+            <transition name="change-anim" mode="out-in">
+              <span
+                :key="trainsDataState + station.scheduledTrains.length"
+                @click="() => getScheduledTrains(station.stationName)"
+              >
+                <span v-if="trainsDataState == 2">
+                  <span style="color:#eee">{{ station.scheduledTrains.length}}</span>
+                  /
+                  <span
+                    style="color:#bbb"
+                  >{{ station.scheduledTrains.filter(train => train.confirmed).length }}</span>
+                </span>
+
+                <span v-else>...</span>
+              </span>
+            </transition>
+          </td>
         </tr>
       </table>
       <div class="no-stations" v-if="stations.length == 0">Ups! Brak stacji do wyświetlenia!</div>
@@ -150,6 +167,7 @@ export default class StationTable extends styleMixin {
   @Prop() readonly setFocusedStation!: () => void;
 
   @Getter("trainsDataList") trains!: Train[];
+  @Getter("trainsDataState") trainsDataState!: number;
 
   icons: { ascSVG; descSVG } = { ascSVG, descSVG };
   sorterActive: { index: number; dir: number } = { index: 0, dir: 1 };
@@ -176,69 +194,96 @@ export default class StationTable extends styleMixin {
     this.sorterActive.index = index;
   }
 
+  getScheduledTrains(stationName: string) {
+    if (this.trainsDataState != 2) return null;
+    // console.log(
+    //   this.computedStations.find((s) => s.stationName === stationName)
+    //     ?.scheduledTrains
+    // );
+  }
+
   get scheduledTrains() {
-    return this.stations.reduce((acc, station) => {
+    const reducedList = this.stations.reduce((acc, station) => {
       if (!acc[station.stationName]) acc[station.stationName] = [];
 
       this.trains
         .filter((train) => !train.noTimetable)
         .forEach((train) => {
           const found = train.stopPoints!.find(
-            (sp: any) =>
-              (station.stationName.includes(sp.pointNameRAW) ||
-                station.stationName.includes(sp.pointNameRAW.split(" ")[0])) &&
-              !acc[station.stationName].find((t) => t === train.trainNo)
-            // !acc[station.stationName].find((t) => t.trainNo === train.trainNo)
+            (sp) =>
+              (station.stationName
+                .toLowerCase()
+                .includes(sp.pointNameRAW.toLowerCase()) ||
+                station.stationName
+                  .toLowerCase()
+                  .includes(sp.pointNameRAW.toLowerCase().split(",")[0]) ||
+                station.stationName
+                  .toLowerCase()
+                  .includes(sp.pointNameRAW.toLowerCase().split(" ")[0])) &&
+              !acc[station.stationName].find((t) => t.trainNo === train.trainNo)
           );
 
           if (!found) return acc;
 
-          acc[station.stationName].push(train.trainNo);
+          acc[station.stationName].push({
+            trainNo: train.trainNo,
+            driverName: train.driverName,
+            category: train.category,
+            ...found,
+          });
         });
 
       return acc;
     }, {});
+
+    return reducedList;
   }
 
   get computedStations() {
     const dir: number = this.sorterActive.dir;
+    const scheduledTrainList = this.scheduledTrains;
 
-    return this.stations.sort((a, b) => {
-      switch (this.sorterActive.index) {
-        case 1:
-          if (parseInt(a.reqLevel) > parseInt(b.reqLevel)) return dir;
-          if (parseInt(a.reqLevel) < parseInt(b.reqLevel)) return -dir;
-          break;
+    return this.stations
+      .sort((a, b) => {
+        switch (this.sorterActive.index) {
+          case 1:
+            if (parseInt(a.reqLevel) > parseInt(b.reqLevel)) return dir;
+            if (parseInt(a.reqLevel) < parseInt(b.reqLevel)) return -dir;
+            break;
 
-        case 2:
-          if (a.statusTimestamp > b.statusTimestamp) return dir;
-          if (a.statusTimestamp < b.statusTimestamp) return -dir;
-          break;
+          case 2:
+            if (a.statusTimestamp > b.statusTimestamp) return dir;
+            if (a.statusTimestamp < b.statusTimestamp) return -dir;
+            break;
 
-        case 3:
-          if (a.dispatcherName > b.dispatcherName) return dir;
-          if (a.dispatcherName < b.dispatcherName) return -dir;
-          break;
+          case 3:
+            if (a.dispatcherName > b.dispatcherName) return dir;
+            if (a.dispatcherName < b.dispatcherName) return -dir;
+            break;
 
-        case 4:
-          if (a.dispatcherExp > b.dispatcherExp) return dir;
-          if (a.dispatcherExp < b.dispatcherExp) return -dir;
-          break;
+          case 4:
+            if (a.dispatcherExp > b.dispatcherExp) return dir;
+            if (a.dispatcherExp < b.dispatcherExp) return -dir;
+            break;
 
-        case 5:
-          if (a.currentUsers > b.currentUsers) return dir;
-          if (a.currentUsers < b.currentUsers) return -dir;
-          if (a.maxUsers > b.maxUsers) return dir;
-          if (a.maxUsers < b.maxUsers) return -dir;
-          break;
+          case 5:
+            if (a.currentUsers > b.currentUsers) return dir;
+            if (a.currentUsers < b.currentUsers) return -dir;
+            if (a.maxUsers > b.maxUsers) return dir;
+            if (a.maxUsers < b.maxUsers) return -dir;
+            break;
 
-        default:
-          break;
-      }
+          default:
+            break;
+        }
 
-      if (a.stationName >= b.stationName) return dir;
-      return -dir;
-    });
+        if (a.stationName >= b.stationName) return dir;
+        return -dir;
+      })
+      .map((station) => ({
+        ...station,
+        scheduledTrains: scheduledTrainList[station.stationName],
+      }));
   }
 }
 </script>
@@ -247,6 +292,18 @@ export default class StationTable extends styleMixin {
 @import "../../styles/responsive.scss";
 @import "../../styles/variables.scss";
 @import "../../styles/global.scss";
+
+.change-anim {
+  &-enter-active,
+  &-leave-active {
+    transition: opacity 100ms ease-in;
+  }
+
+  &-enter,
+  &-leave-to {
+    opacity: 0;
+  }
+}
 
 .station-table {
   font-size: calc(0.6rem + 0.3vw);
