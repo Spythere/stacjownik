@@ -50,6 +50,7 @@ interface TimetableData {
   skr: boolean;
   sceneries: string[];
   routeDistance: number;
+  stopPoints?: {}[];
 }
 
 const getTimetableURL = (trainNo: number) =>
@@ -79,65 +80,65 @@ export default class TrainsModule extends VuexModule {
     let onlineTrainsData: TrainData[] = trainDataResponse.data.message;
 
     return await Promise.all(
-      onlineTrainsData
-        .filter((train) => train.isOnline)
-        .map(async (train) => {
-          const timetableResponseData: TimetableResponseData | null = (
-            await axios.get(getTimetableURL(train.trainNo))
-          ).data.message;
+      onlineTrainsData.map(async (train) => {
+        const timetableResponseData: TimetableResponseData | null = (
+          await axios.get(getTimetableURL(train.trainNo))
+        ).data.message;
 
-          let timetableData: TimetableData | null = null;
+        let timetableData: TimetableData | null = null;
 
-          if (timetableResponseData && timetableResponseData.trainInfo) {
-            const routeDistance: number =
-              timetableResponseData.stopPoints[
-                timetableResponseData.stopPoints.length - 1
-              ].pointDistance;
+        if (timetableResponseData && timetableResponseData.trainInfo) {
+          const routeDistance: number =
+            timetableResponseData.stopPoints[
+              timetableResponseData.stopPoints.length - 1
+            ].pointDistance;
 
-            timetableData = {
-              ...timetableResponseData.trainInfo,
-              routeDistance,
-            };
-          }
-
-          const locoType = train.dataCon.split(";")
-            ? train.dataCon.split(";")[0]
-            : train.dataCon;
-
-          const stopPoints = timetableResponseData?.stopPoints.reduce(
-            (acc, point) => {
-              if (point.pointName.includes("strong")) {
-                acc.push(point.pointNameRAW);
-              }
-
-              return acc;
-            },
-            [] as string[]
-          );
-
-          return {
-            driverId: train.driverId,
-            driverName: train.driverName,
-            trainNo: train.trainNo,
-            currentStationName: train.station.stationName,
-            mass: train.dataMass,
-            length: train.dataLength,
-            speed: train.dataSpeed,
-            distance: train.dataDistance,
-            signal: train.dataSignal,
-            connectedTrack: train.dataSceneryConnection,
-            locoType,
-            locoURL: getLocoURL(locoType),
-            noTimetable: timetableData == null,
-            route: timetableData && timetableData.route,
-            timetableId: timetableData && timetableData.timetableId,
-            category: timetableData && timetableData.trainCategoryCode,
-            routeDistance: (timetableData && timetableData.routeDistance) || 0,
-            sceneries: stopPoints,
-            TWR: timetableData && timetableData.twr,
-            SKR: timetableData && timetableData.skr,
+          timetableData = {
+            ...timetableResponseData.trainInfo,
+            routeDistance,
+            stopPoints: timetableResponseData.stopPoints,
           };
-        })
+        }
+
+        const locoType = train.dataCon.split(";")
+          ? train.dataCon.split(";")[0]
+          : train.dataCon;
+
+        const stopPoints = timetableResponseData?.stopPoints.reduce(
+          (acc, point) => {
+            if (point.pointName.includes("strong")) {
+              acc.push(point.pointNameRAW);
+            }
+
+            return acc;
+          },
+          [] as string[]
+        );
+
+        return {
+          driverId: train.driverId,
+          driverName: train.driverName,
+          trainNo: train.trainNo,
+          currentStationName: train.station.stationName,
+          mass: train.dataMass,
+          length: train.dataLength,
+          speed: train.dataSpeed,
+          distance: train.dataDistance,
+          signal: train.dataSignal,
+          connectedTrack: train.dataSceneryConnection,
+          locoType,
+          locoURL: getLocoURL(locoType),
+          noTimetable: timetableData == null,
+          route: timetableData?.route,
+          timetableId: timetableData?.timetableId,
+          category: timetableData?.trainCategoryCode,
+          routeDistance: timetableData?.routeDistance || 0,
+          sceneries: stopPoints,
+          stopPoints: timetableData?.stopPoints,
+          TWR: timetableData?.twr,
+          SKR: timetableData?.skr,
+        };
+      })
     );
   }
 

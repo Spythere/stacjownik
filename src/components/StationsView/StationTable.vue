@@ -118,12 +118,10 @@
             >{{station.routes.oneWay.noCatenary}}</span>
           </td>
 
-          <!-- <td
-            class="active-timetables"
-            @click="() => showScheduledTrains(station)"
-          >{{station.scheduledTrains.length}}</td>-->
+          <td class="active-timetables">0</td>
         </tr>
       </table>
+      <div class="no-stations" v-if="stations.length == 0">Ups! Brak stacji do wyświetlenia!</div>
     </div>
   </section>
 </template>
@@ -152,7 +150,6 @@ export default class StationTable extends styleMixin {
   @Prop() readonly setFocusedStation!: () => void;
 
   @Getter("trainsDataList") trains!: Train[];
-  @Getter("trainsDataState") state!: number;
 
   icons: { ascSVG; descSVG } = { ascSVG, descSVG };
   sorterActive: { index: number; dir: number } = { index: 0, dir: 1 };
@@ -166,7 +163,7 @@ export default class StationTable extends styleMixin {
     ["Maszyniści"],
     ["Informacje", "ogólne"],
     ["Szlaki", "2tor | 1tor"],
-    // ["Aktywne RJ"],
+    ["Aktywne RJ"],
   ];
 
   changeSorter(index: number) {
@@ -179,12 +176,28 @@ export default class StationTable extends styleMixin {
     this.sorterActive.index = index;
   }
 
-  get test() {
-    return this.trains;
-  }
+  get scheduledTrains() {
+    return this.stations.reduce((acc, station) => {
+      if (!acc[station.stationName]) acc[station.stationName] = [];
 
-  showScheduledTrains(station) {
-    console.log(station.scheduledTrains);
+      this.trains
+        .filter((train) => !train.noTimetable)
+        .forEach((train) => {
+          const found = train.stopPoints!.find(
+            (sp: any) =>
+              (station.stationName.includes(sp.pointNameRAW) ||
+                station.stationName.includes(sp.pointNameRAW.split(" ")[0])) &&
+              !acc[station.stationName].find((t) => t === train.trainNo)
+            // !acc[station.stationName].find((t) => t.trainNo === train.trainNo)
+          );
+
+          if (!found) return acc;
+
+          acc[station.stationName].push(train.trainNo);
+        });
+
+      return acc;
+    }, {});
   }
 
   get computedStations() {
@@ -235,8 +248,22 @@ export default class StationTable extends styleMixin {
 @import "../../styles/variables.scss";
 @import "../../styles/global.scss";
 
+.station-table {
+  font-size: calc(0.6rem + 0.3vw);
+}
+
 .separator {
   border-left: 3px solid #b3b3b3;
+}
+
+.no-stations {
+  text-align: center;
+  font-size: 1.5em;
+
+  padding: 1rem;
+  margin: 1rem 0;
+
+  background: #333;
 }
 
 .table {
@@ -246,8 +273,6 @@ export default class StationTable extends styleMixin {
 
   white-space: nowrap;
   border-collapse: collapse;
-
-  font-size: calc(0.6rem + 0.3vw);
 
   @include smallScreen() {
     font-size: 0.6rem;

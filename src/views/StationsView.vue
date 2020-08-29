@@ -6,7 +6,6 @@
     <transition name="card-anim">
       <StationCard v-if="focusedStationInfo" :stationInfo="focusedStationInfo" :exit="closeCard" />
     </transition>
-    <!-- <div class="info" v-if="stations.length == 0">Ups! Brak stacji do wyświetlenia!</div> -->
 
     <div class="stations-wrapper" v-if="connectionState == 2">
       <div class="stations-body">
@@ -22,6 +21,9 @@ import { Vue, Component } from "vue-property-decorator";
 import { Getter, Action } from "vuex-class";
 
 import Station from "@/scripts/interfaces/Station";
+import Train from "@/scripts/interfaces/Train";
+
+import inputData from "@/data/options.json";
 
 import Loading from "@/components/App/Loading.vue";
 import Error from "@/components/App/Error.vue";
@@ -29,8 +31,6 @@ import Error from "@/components/App/Error.vue";
 import StationTable from "@/components/StationsView/StationTable.vue";
 import StationCard from "@/components/StationsView/StationCard.vue";
 import Options from "@/components/StationsView/Options.vue";
-
-import inputData from "@/data/options.json";
 
 enum ConnState {
   Loading = 0,

@@ -19,4 +19,5 @@ export default interface Train {
   locoURL: string;
   locoType: string;
   routeDistance: number;
+  stopPoints?: [];
 }

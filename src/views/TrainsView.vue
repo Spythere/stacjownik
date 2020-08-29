@@ -7,12 +7,28 @@
         <TrainSorter :trainList="computedTrains" @changeSorter="changeSorter" />
         <div class="search train">
           <div class="search-title title">Szukaj składu</div>
-          <input class="search-input" v-model="searchedTrain" />
+          <div class="search-box">
+            <input class="search-input" v-model="searchedTrain" />
+            <img
+              class="search-exit"
+              :src="exitIcon"
+              alt="exit-icon"
+              @click="() => searchedTrain = ''"
+            />
+          </div>
         </div>
 
         <div class="search driver">
           <div class="search-title title">Szukaj maszynisty</div>
-          <input class="search-input" v-model="searchedDriver" />
+          <div class="search-box">
+            <input class="search-input" v-model="searchedDriver" />
+            <img
+              class="search-exit"
+              :src="exitIcon"
+              alt="exit-icon"
+              @click="() => searchedDriver = ''"
+            />
+          </div>
         </div>
       </div>
 
@@ -48,7 +64,10 @@ import axios from "axios";
   },
 })
 export default class TrainsView extends Vue {
+  exitIcon = require("@/assets/icon-exit.svg");
+
   @Getter("trainsDataList") trains!: Train[];
+
   @Getter("trainsDataState") connectionState;
 
   @Action("fetchTrainsData") fetchTrainsData;
@@ -70,7 +89,9 @@ export default class TrainsView extends Vue {
             ? train.trainNo.toString().includes(this.searchedTrain)
             : true) &&
           (this.searchedDriver.length > 0
-            ? train.driverName.includes(this.searchedDriver)
+            ? train.driverName
+                .toLowerCase()
+                .includes(this.searchedDriver.toLowerCase())
             : true)
       )
       .sort((a, b) => {
@@ -107,12 +128,6 @@ export default class TrainsView extends Vue {
         return 0;
       });
   }
-
-  mounted() {
-    this.fetchTrainsData();
-
-    setInterval(this.fetchTrainsData, 5000);
-  }
 }
 </script>
 
@@ -142,17 +157,34 @@ export default class TrainsView extends Vue {
   }
 
   .search {
-    &-input {
+    &-box {
+      position: relative;
+
       background: #333;
-      border: none;
       border-radius: 0.5em;
+      min-width: 150px;
+    }
+
+    &-input {
+      border: none;
 
       padding: 0.5rem 1rem;
       margin: 0;
 
       font-size: 1em;
 
-      min-width: 150px;
+      min-width: 85%;
+    }
+
+    &-exit {
+      position: absolute;
+      cursor: pointer;
+
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+
+      width: 1em;
     }
   }
 }

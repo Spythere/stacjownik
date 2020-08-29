@@ -140,7 +140,7 @@ export default class TrainSorter extends Vue {
   z-index: 5;
 
   width: 100%;
-  background-color: rgba(#333, 0.85);
+  background-color: rgba(#222, 0.95);
   overflow: hidden;
 
   max-height: 0;
@@ -150,7 +150,7 @@ export default class TrainSorter extends Vue {
     opacity: 1;
   }
 
-  transition: all 250ms ease-in;
+  transition: all 150ms ease-in;
 }
 
 .option {

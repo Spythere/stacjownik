@@ -57,18 +57,19 @@ import Clock from "@/components/App/Clock.vue";
   components: { Error, Loading, Clock },
 })
 export default class App extends Vue {
-  @Getter("getStationList") stations;
   @Getter("getOnlineInfo") onlineInfo;
 
   @Action("initStations") initStations;
-  @Action("fetchOnlineStations") fetchStations;
 
-  errorMessage: string = "";
+  @Action("fetchOnlineStations") fetchStations;
+  @Action("fetchTrainsData") fetchTrainsData;
 
   async mounted() {
     this.initStations();
+    this.fetchTrainsData();
 
-    setInterval(this.fetchStations, 5000);
+    setInterval(this.fetchStations, 15000);
+    setInterval(this.fetchTrainsData, 10000);
   }
 }
 </script>
