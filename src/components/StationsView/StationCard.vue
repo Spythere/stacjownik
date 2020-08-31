@@ -132,6 +132,14 @@
         </div>
       </div>
     </div>
+
+    <!-- <div class="card-timetables">
+      <div class="title">AKTYWNE ROZKŁADY JAZDY</div>
+      <div class="content">
+        <ul>
+        </ul>
+      </div>
+    </div>-->
   </section>
 </template>
 
@@ -355,5 +363,25 @@ export default class StationCard extends styleMixin {
       text-align: center;
     }
   }
+}
+
+.card-timetables {
+  position: absolute;
+  width: 100%;
+
+  height: 90%;
+
+  background: #333;
+
+  overflow: hidden;
+
+  bottom: 0;
+  left: 0;
+
+  .content {
+    position: absolute;
+  }
+
+  // transform: translateY(80%);
 }
 </style>

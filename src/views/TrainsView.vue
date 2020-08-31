@@ -5,35 +5,13 @@
     <div class="body-wrapper" v-else>
       <div class="options-wrapper">
         <TrainSorter :trainList="computedTrains" @changeSorter="changeSorter" />
-        <div class="search train">
-          <div class="search-title title">Szukaj składu</div>
-          <div class="search-box">
-            <input class="search-input" v-model="searchedTrain" />
-            <img
-              class="search-exit"
-              :src="exitIcon"
-              alt="exit-icon"
-              @click="() => searchedTrain = ''"
-            />
-          </div>
-        </div>
-
-        <div class="search driver">
-          <div class="search-title title">Szukaj maszynisty</div>
-          <div class="search-box">
-            <input class="search-input" v-model="searchedDriver" />
-            <img
-              class="search-exit"
-              :src="exitIcon"
-              alt="exit-icon"
-              @click="() => searchedDriver = ''"
-            />
-          </div>
-        </div>
+        <TrainSearch
+          @changeSearchedTrain="changeSearchedTrain"
+          @changeSearchedDriver="changeSearchedDriver"
+        />
       </div>
 
       <TrainStats :trains="trains" />
-
       <TrainTable :computedTrains="computedTrains" />
     </div>
   </section>
@@ -50,6 +28,7 @@ import Train from "@/scripts/interfaces/Train";
 import Loading from "@/components/App/Loading.vue";
 
 import TrainSorter from "@/components/TrainsView/TrainSorter.vue";
+import TrainSearch from "@/components/TrainsView/TrainSearch.vue";
 import TrainTable from "@/components/TrainsView/TrainTable.vue";
 import TrainStats from "@/components/TrainsView/TrainStats.vue";
 
@@ -61,11 +40,10 @@ import axios from "axios";
     TrainSorter,
     TrainTable,
     TrainStats,
+    TrainSearch,
   },
 })
 export default class TrainsView extends Vue {
-  exitIcon = require("@/assets/icon-exit.svg");
-
   @Getter("trainsDataList") trains!: Train[];
 
   @Getter("trainsDataState") connectionState;
@@ -75,6 +53,14 @@ export default class TrainsView extends Vue {
   sorterActive: { id: string; dir: number } = { id: "timetable", dir: 1 };
   searchedTrain: string = "";
   searchedDriver: string = "";
+
+  changeSearchedTrain(trainNo: string) {
+    this.searchedTrain = trainNo;
+  }
+
+  changeSearchedDriver(name: string) {
+    this.searchedDriver = name;
+  }
 
   changeSorter(sorter: { id: string; dir: number }) {
     this.sorterActive = sorter;
@@ -141,11 +127,11 @@ export default class TrainsView extends Vue {
 
 .body-wrapper {
   margin: 1rem auto;
-  max-width: 1250px;
+  max-width: 1200px;
 
   padding: 0 0.5rem;
 
-  font-size: calc(0.4rem + 0.5vw);
+  font-size: calc(0.3rem + 0.4vw);
 }
 
 .options-wrapper {
@@ -155,43 +141,11 @@ export default class TrainsView extends Vue {
   & > div {
     margin-right: 1rem;
   }
-
-  .search {
-    &-box {
-      position: relative;
-
-      background: #333;
-      border-radius: 0.5em;
-      min-width: 150px;
-    }
-
-    &-input {
-      border: none;
-
-      padding: 0.5rem 1rem;
-      margin: 0;
-
-      font-size: 1em;
-
-      min-width: 85%;
-    }
-
-    &-exit {
-      position: absolute;
-      cursor: pointer;
-
-      top: 50%;
-      right: 10px;
-      transform: translateY(-50%);
-
-      width: 1em;
-    }
-  }
 }
 
 @include bigScreen() {
   .body-wrapper {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 }
 

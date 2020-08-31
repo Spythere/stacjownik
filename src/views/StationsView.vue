@@ -10,7 +10,12 @@
     <div class="stations-wrapper" v-if="connectionState == 2">
       <div class="stations-body">
         <Options />
-        <StationTable :stations="stations" :setFocusedStation="setFocusedStation" />
+        <StationTable
+          :stations="computedStations"
+          :sorterActive="sorterActive"
+          :setFocusedStation="setFocusedStation"
+          :changeSorter="changeSorter"
+        />
       </div>
     </div>
   </div>
@@ -55,7 +60,107 @@ export default class StationsView extends Vue {
   @Getter("getStationList") stations!: Station[];
   @Getter("getConnectionState") connectionState!: ConnState;
 
+  @Getter("trainsDataList") trains!: Train[];
+  @Getter("trainsDataState") trainsDataState!: number;
+
   @Action("setFilter") setFilter;
+
+  sorterActive: { index: number; dir: number } = { index: 0, dir: 1 };
+
+  changeSorter(index: number) {
+    if (index > 5) return;
+
+    if (index == this.sorterActive.index)
+      this.sorterActive.dir = -1 * this.sorterActive.dir;
+    else this.sorterActive.dir = 1;
+
+    this.sorterActive.index = index;
+  }
+
+  get scheduledTrains() {
+    const reducedList = this.stations.reduce((acc, station) => {
+      if (!acc[station.stationName]) acc[station.stationName] = [];
+
+      this.trains
+        .filter((train) => !train.noTimetable)
+        .forEach((train) => {
+          const found = train.stopPoints!.find(
+            (sp) =>
+              (station.stationName
+                .toLowerCase()
+                .includes(sp.pointNameRAW.toLowerCase()) ||
+                station.stationName
+                  .toLowerCase()
+                  .includes(sp.pointNameRAW.toLowerCase().split(",")[0]) ||
+                (station.stationName
+                  .toLowerCase()
+                  .includes(sp.pointNameRAW.toLowerCase().split(" ")[0]) &&
+                  station.stationName.toLowerCase().includes("lcs"))) &&
+              !acc[station.stationName].find((t) => t.trainNo === train.trainNo)
+          );
+
+          if (!found) return acc;
+
+          acc[station.stationName].push({
+            trainNo: train.trainNo,
+            driverName: train.driverName,
+            category: train.category,
+            ...found,
+          });
+        });
+
+      return acc;
+    }, {});
+
+    return reducedList;
+  }
+
+  get computedStations() {
+    const dir: number = this.sorterActive.dir;
+    const scheduledTrainList = this.scheduledTrains;
+
+    return this.stations
+      .sort((a, b) => {
+        switch (this.sorterActive.index) {
+          case 1:
+            if (parseInt(a.reqLevel) > parseInt(b.reqLevel)) return dir;
+            if (parseInt(a.reqLevel) < parseInt(b.reqLevel)) return -dir;
+            break;
+
+          case 2:
+            if (a.statusTimestamp > b.statusTimestamp) return dir;
+            if (a.statusTimestamp < b.statusTimestamp) return -dir;
+            break;
+
+          case 3:
+            if (a.dispatcherName > b.dispatcherName) return dir;
+            if (a.dispatcherName < b.dispatcherName) return -dir;
+            break;
+
+          case 4:
+            if (a.dispatcherExp > b.dispatcherExp) return dir;
+            if (a.dispatcherExp < b.dispatcherExp) return -dir;
+            break;
+
+          case 5:
+            if (a.currentUsers > b.currentUsers) return dir;
+            if (a.currentUsers < b.currentUsers) return -dir;
+            if (a.maxUsers > b.maxUsers) return dir;
+            if (a.maxUsers < b.maxUsers) return -dir;
+            break;
+
+          default:
+            break;
+        }
+
+        if (a.stationName >= b.stationName) return dir;
+        return -dir;
+      })
+      .map((station) => ({
+        ...station,
+        scheduledTrains: scheduledTrainList[station.stationName],
+      }));
+  }
 
   mounted() {
     const storage = window.localStorage;
@@ -139,6 +244,7 @@ export default class StationsView extends Vue {
 }
 
 .stations-body {
+  margin: 0 auto;
   overflow: auto;
 }
 </style>

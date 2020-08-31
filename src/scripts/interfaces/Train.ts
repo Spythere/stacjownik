@@ -19,6 +19,7 @@ export default interface Train {
   locoURL: string;
   locoType: string;
   routeDistance: number;
+  online: boolean;
   stopPoints: {
     arrivalTime: string;
     arrivalDelay: number;

@@ -31,6 +31,7 @@ interface TimetableResponseData {
     pointDistance: number;
     pointNameRAW: string;
     pointName: string;
+    pointStopType: string;
   }[];
   trainInfo: {
     timetableId: number;
@@ -106,9 +107,19 @@ export default class TrainsModule extends VuexModule {
 
         const stopPoints = timetableResponseData?.stopPoints.reduce(
           (acc, point) => {
-            if (point.pointName.includes("strong")) {
-              acc.push(point.pointNameRAW);
-            }
+            if (point.pointName.includes("strong"))
+              acc.push(
+                point.pointStopType.includes("ph")
+                  ? `<strong>${point.pointNameRAW}</strong>`
+                  : `<span style='color: #ccc;'>${point.pointNameRAW}</span>`
+              );
+
+            if (point.pointName.includes("podg."))
+              acc.push(
+                `<span style='color: #ccc;'>${
+                  point.pointNameRAW.split(",")[0]
+                }</span>`
+              );
 
             return acc;
           },
@@ -116,6 +127,7 @@ export default class TrainsModule extends VuexModule {
         );
 
         return {
+          online: train.isOnline,
           driverId: train.driverId,
           driverName: train.driverName,
           trainNo: train.trainNo,
