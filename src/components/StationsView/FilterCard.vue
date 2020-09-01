@@ -1,5 +1,5 @@
 <template>
-  <section class="option-card">
+  <section class="filter-card">
     <div class="card-exit" @click="exit">
       <img :src="require('@/assets/icon-exit.svg')" alt="exit icon" />
     </div>
@@ -18,7 +18,10 @@
             v-model="option.value"
             @change="handleChange"
           />
-          <span class="option-content" :class="option.section">{{option.content}}</span>
+          <span
+            class="option-content"
+            :class="option.section + (option.value ? ' checked' : '')"
+          >{{option.content}}</span>
         </label>
       </div>
     </div>
@@ -45,13 +48,8 @@
     <div class="card-save">
       <div class="option">
         <label class="option-label">
-          <input
-            class="option-input"
-            type="checkbox"
-            v-model="saveOptions"
-            @change="changeSaveState"
-          />
-          <span class="option-content save">ZAPISZ FILTRY</span>
+          <input class="option-input" type="checkbox" v-model="saveOptions" @change="saveFilters" />
+          <span class="option-content save" :class="{'checked': saveOptions}">ZAPISZ FILTRY</span>
         </label>
       </div>
     </div>
@@ -65,21 +63,16 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { Action } from "vuex-class";
 
 import inputData from "@/data/options.json";
 
 @Component
-export default class OptionCard extends Vue {
+export default class FilterCard extends Vue {
   inputs = { ...inputData };
   saveOptions: boolean = false;
-
   STORAGE_KEY: string = "options_saved";
 
   @Prop() exit!: () => void;
-
-  @Action("setFilter") setFilter;
-  @Action("resetFilters") resetFilters;
 
   mounted() {
     const storage = window.localStorage;
@@ -91,8 +84,8 @@ export default class OptionCard extends Vue {
   handleChange(e: Event): void {
     const target = <HTMLInputElement>e.target;
 
-    this.setFilter({
-      filterName: target.name,
+    this.$emit("changeFilterValue", {
+      name: target.name,
       value: !target.checked,
     });
 
@@ -102,17 +95,16 @@ export default class OptionCard extends Vue {
 
   handleInput(e: Event): void {
     const target = <HTMLInputElement>e.target;
-
-    this.setFilter({
-      filterName: target.name,
-      value: parseInt(target.value),
+    this.$emit("changeFilterValue", {
+      name: target.name,
+      value: target.value,
     });
 
     if (this.saveOptions)
       window.localStorage.setItem(target.name, target.value + "");
   }
 
-  changeSaveState(): void {
+  saveFilters(): void {
     const storage = window.localStorage;
 
     if (this.saveOptions) {
@@ -139,7 +131,7 @@ export default class OptionCard extends Vue {
       window.localStorage.setItem(slider.name, slider.value + "");
     });
 
-    this.resetFilters();
+    this.$emit('resetFilters');
   }
 
   closeCard(): void {
@@ -152,7 +144,7 @@ export default class OptionCard extends Vue {
 @import "../../styles/responsive";
 @import "../../styles/variables";
 
-.option-card {
+.filter-card {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -235,14 +227,6 @@ export default class OptionCard extends Vue {
 
   &-input {
     display: none;
-
-    &:not(:checked) + span {
-      background-color: #585858;
-
-      &::before {
-        box-shadow: none;
-      }
-    }
   }
 
   &-content {
@@ -267,56 +251,66 @@ export default class OptionCard extends Vue {
 
     transition: all 0.2s;
 
-    &.access {
-      background-color: #e03b07;
+    &:not(.checked) {
+      background-color: #585858;
 
       &::before {
-        box-shadow: 0 0 6px 1px #e03b07;
+        box-shadow: none;
       }
     }
 
-    &.control {
-      background-color: #0085ff;
+    &.checked {
+      &.access {
+        background-color: #e03b07;
+
+        &::before {
+          box-shadow: 0 0 6px 1px #e03b07;
+        }
+      }
+
+      &.control {
+        background-color: #0085ff;
+
+        &::before {
+          box-shadow: 0 0 6px 1px #0085ff;
+        }
+      }
+
+      &.signals {
+        background-color: #b000bf;
+
+        &::before {
+          box-shadow: 0 0 6px 1px #b000bf;
+        }
+      }
+
+      &.status {
+        background-color: #05b702;
+
+        &::before {
+          box-shadow: 0 0 6px 1px #05b702;
+        }
+      }
+
+      &.save {
+        background-color: #05b702;
+
+        &::before {
+          box-shadow: 0 0 6px 1px #05b702;
+        }
+      }
 
       &::before {
-        box-shadow: 0 0 6px 1px #0085ff;
+        position: absolute;
+        content: "";
+        top: 0;
+        left: 0;
+
+        width: 100%;
+        height: 100%;
+
+        border-radius: inherit;
       }
-    }
-
-    &.signals {
-      background-color: #b000bf;
-
-      &::before {
-        box-shadow: 0 0 6px 1px #b000bf;
-      }
-    }
-
-    &.status {
-      background-color: #05b702;
-
-      &::before {
-        box-shadow: 0 0 6px 1px #05b702;
-      }
-    }
-
-    &.save {
-      background-color: #05b702;
-
-      &::before {
-        box-shadow: 0 0 6px 1px #05b702;
-      }
-    }
-
-    &::before {
-      position: absolute;
-      content: "";
-      top: 0;
-      left: 0;
-
-      width: 100%;
-      height: 100%;
-
-      border-radius: inherit;
     }
   }
 }

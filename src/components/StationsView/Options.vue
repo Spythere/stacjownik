@@ -21,25 +21,15 @@
     </div>
 
     <div class="options-content">
-      <transition name="card-anim">
-        <OptionCard v-if="filterCardOpen" :exit="() => toggleCardsState('filter')" />
-      </transition>
-
-      <transition name="card-anim">
-        <LegendCard v-if="legendCardOpen" :exit="() => toggleCardsState('legend')" />
-      </transition>
+      <transition name="card-anim"></transition>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import OptionCard from "@/components/StationsView/OptionCard.vue";
-import LegendCard from "@/components/StationsView/LegendCard.vue";
 
-@Component({
-  components: { OptionCard, LegendCard },
-})
+@Component({})
 export default class Options extends Vue {
   filterCardOpen: boolean = false;
   legendCardOpen: boolean = false;

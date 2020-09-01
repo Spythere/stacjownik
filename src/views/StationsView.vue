@@ -1,15 +1,20 @@
 <template>
   <div class="stations-view">
-    <Loading v-if="connectionState == 0" message="Ładowanie scenerii..." />
-    <Error v-if="connectionState == 1" />
-
-    <transition name="card-anim">
-      <StationCard v-if="focusedStationInfo" :stationInfo="focusedStationInfo" :exit="closeCard" />
-    </transition>
-
-    <div class="stations-wrapper" v-if="connectionState == 2">
+    <div class="stations-wrapper">
       <div class="stations-body">
-        <Options />
+        <div class="options">
+          <div class="options-actions">
+            <button
+              class="action-btn"
+              :class="{'open': filterCardOpen}"
+              @click="() => toggleCardsState('filter')"
+            >
+              <img :src="require('@/assets/icon-filter2.svg')" alt="icon-filter" />
+              <p>FILTRY</p>
+            </button>
+          </div>
+        </div>
+
         <StationTable
           :stations="computedStations"
           :sorterActive="sorterActive"
@@ -18,54 +23,84 @@
         />
       </div>
     </div>
+
+    <transition name="card-anim">
+      <StationCard v-if="focusedStationInfo" :stationInfo="focusedStationInfo" :exit="closeCard" />
+    </transition>
+
+    <transition name="card-anim">
+      <FilterCard
+        v-if="filterCardOpen"
+        :exit="() => toggleCardsState('filter')"
+        @changeFilterValue="changeFilterValue"
+        @resetFilters="resetFilters"
+      />
+    </transition>
   </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { Getter, Action } from "vuex-class";
+import { Getter } from "vuex-class";
 
 import Station from "@/scripts/interfaces/Station";
 import Train from "@/scripts/interfaces/Train";
 
 import inputData from "@/data/options.json";
 
-import Loading from "@/components/App/Loading.vue";
-import Error from "@/components/App/Error.vue";
-
 import StationTable from "@/components/StationsView/StationTable.vue";
 import StationCard from "@/components/StationsView/StationCard.vue";
-import Options from "@/components/StationsView/Options.vue";
+import FilterCard from "@/components/StationsView/FilterCard.vue";
 
-enum ConnState {
-  Loading = 0,
-  Error = 1,
-  Connected = 2,
-}
+const filterInitStates = {
+  default: false,
+  notDefault: false,
+  nonPublic: false,
+  SPK: false,
+  SCS: false,
+  ręczne: false,
+  mechaniczne: false,
+  współczesna: false,
+  kształtowa: false,
+  historyczna: false,
+  mieszana: false,
+  minLevel: 0,
+  minOneWayCatenary: 0,
+  minOneWay: 0,
+  minTwoWayCatenary: 0,
+  minTwoWay: 0,
+  "no-1track": false,
+  "no-2track": false,
+  free: true,
+  occupied: false,
+  ending: false,
+};
 
 @Component({
   components: {
     StationCard,
     StationTable,
-    Loading,
-    Error,
-    Options,
+    FilterCard,
   },
 })
 export default class StationsView extends Vue {
-  focusedStationName: string = "";
-  inputs = { ...inputData };
   STORAGE_KEY: string = "options_saved";
 
-  @Getter("getStationList") stations!: Station[];
-  @Getter("getConnectionState") connectionState!: ConnState;
-
-  @Getter("trainsDataList") trains!: Train[];
-  @Getter("trainsDataState") trainsDataState!: number;
-
-  @Action("setFilter") setFilter;
-
   sorterActive: { index: number; dir: number } = { index: 0, dir: 1 };
+  focusedStationName: string = "";
+  filterCardOpen: boolean = false;
+  filters = { ...filterInitStates };
+
+  inputs = inputData;
+
+  @Getter("getStationList") stations!: Station[];
+  @Getter("trainsDataList") trains!: Train[];
+
+  toggleCardsState(name: string): void {
+    if (name == "filter") {
+      this.filterCardOpen = !this.filterCardOpen;
+    }
+  }
 
   changeSorter(index: number) {
     if (index > 5) return;
@@ -75,6 +110,14 @@ export default class StationsView extends Vue {
     else this.sorterActive.dir = 1;
 
     this.sorterActive.index = index;
+  }
+
+  changeFilterValue(filter: { name: string; value: number }) {
+    this.filters[filter.name] = filter.value;
+  }
+
+  resetFilters() {
+    this.filters = { ...filterInitStates };
   }
 
   get scheduledTrains() {
@@ -120,6 +163,74 @@ export default class StationsView extends Vue {
     const scheduledTrainList = this.scheduledTrains;
 
     return this.stations
+      .filter((station) => {
+        if (!station.reqLevel || station.reqLevel == "-1") return true;
+
+        if (
+          (station.nonPublic || !station.reqLevel) &&
+          this.filters["nonPublic"]
+        )
+          return false;
+
+        if (
+          station.online &&
+          station.occupiedTo == "KOŃCZY" &&
+          this.filters["ending"]
+        )
+          return false;
+
+        if (station.online && this.filters["occupied"]) return false;
+        if (!station.online && this.filters["free"]) return false;
+
+        if (station.default && this.filters["default"]) return false;
+        if (!station.default && this.filters["notDefault"]) return false;
+
+        if (parseInt(station.reqLevel) < this.filters["minLevel"]) return false;
+
+        if (
+          this.filters["no-1track"] &&
+          (station.routes.oneWay.catenary != 0 ||
+            station.routes.oneWay.noCatenary != 0)
+        )
+          return false;
+        if (
+          this.filters["no-2track"] &&
+          (station.routes.twoWay.catenary != 0 ||
+            station.routes.twoWay.noCatenary != 0)
+        )
+          return false;
+
+        if (station.routes.oneWay.catenary < this.filters["minOneWayCatenary"])
+          return false;
+        if (station.routes.oneWay.noCatenary < this.filters["minOneWay"])
+          return false;
+
+        if (station.routes.twoWay.catenary < this.filters["minTwoWayCatenary"])
+          return false;
+        if (station.routes.twoWay.noCatenary < this.filters["minTwoWay"])
+          return false;
+
+        if (this.filters[station.controlType]) return false;
+        if (this.filters[station.signalType]) return false;
+
+        if (this.filters["SPK"] && (station.controlType === "SPK" || station.controlType.includes("+SPK")))
+          return false;
+        if (this.filters["SCS"] && station.controlType === "SCS" || station.controlType.includes("+SCS"))
+          return false;
+
+        if (this.filters["SCS"] && this.filters["SPK"] && (station.controlType.includes("SPK") || station.controlType.includes("SCS")))
+          return false;
+
+        if (
+          this.filters["mechaniczne"] &&
+          station.controlType.includes("mechaniczne")
+        )
+          return false;
+        if (this.filters["ręczne"] && station.controlType.includes("ręczne"))
+          return false;
+
+        return true;
+      })
       .sort((a, b) => {
         switch (this.sorterActive.index) {
           case 1:
@@ -164,39 +275,26 @@ export default class StationsView extends Vue {
 
   mounted() {
     const storage = window.localStorage;
+    console.log(storage.getItem(this.STORAGE_KEY));
 
     if (storage.getItem(this.STORAGE_KEY) !== "true") return;
 
-    this.inputs.options.forEach((input) => {
-      if (storage.getItem(input.name) === "true") {
-        this.setFilter({
-          filterName: input.name,
-          value: false,
-        });
+    this.inputs.options.forEach(option => {
+      const value = storage.getItem(option.name) === "true" ? true : false;
+      console.log(option.name, value);
 
-        input.value = true;
-      } else if (storage.getItem(input.name) === "false") {
-        this.setFilter({
-          filterName: input.name,
-          value: true,
-        });
 
-        input.value = false;
-      }
-    });
+      this.changeFilterValue({ name: option.name, value: value ? 0 : 1 });
+      option.value = value;
+    })
 
-    this.inputs.sliders.forEach((slider) => {
-      const value = parseInt(
-        window.localStorage.getItem(slider.name) as string
-      );
+    this.inputs.sliders.forEach(slider => {
+      const value = parseInt(storage.getItem(slider.name) || "0");
 
-      this.setFilter({
-        filterName: slider.name,
-        value,
-      });
 
+      this.changeFilterValue({ name: slider.name, value });
       slider.value = value;
-    });
+    })
   }
 
   closeCard() {
@@ -220,6 +318,8 @@ export default class StationsView extends Vue {
 .stations-view {
   padding: 1rem 0;
   min-height: 100%;
+
+  position: relative;
 }
 
 @import "../styles/variables.scss";
@@ -235,6 +335,64 @@ export default class StationsView extends Vue {
   &-leave-to {
     transform: translate(-45%, -50%);
     opacity: 0;
+  }
+}
+
+.options {
+  font-size: calc(0.6rem + 0.9vw);
+
+  &-actions {
+    display: flex;
+  }
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+
+  background: #333;
+  border: none;
+
+  color: #e0e0e0;
+  font-size: 0.75em;
+
+  padding: 0.3em;
+
+  outline: none;
+  cursor: pointer;
+
+  transition: all 0.3s;
+
+  img {
+    width: 1.3em;
+    margin-right: 0.2em;
+  }
+
+  p {
+    font-size: 1em;
+    overflow: hidden;
+
+    transition: max-width 0.35s ease-in-out;
+  }
+
+  &:hover {
+    color: $accentCol;
+    background: rgba(#e0e0e0, 0.4);
+  }
+
+  &.open {
+    color: $accentCol;
+  }
+}
+
+@include smallScreen {
+  .options {
+    display: flex;
+    justify-content: center;
+  }
+
+  .action-btn {
+    font-size: 0.8rem;
   }
 }
 

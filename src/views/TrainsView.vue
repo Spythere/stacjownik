@@ -1,8 +1,6 @@
 <template>
   <section class="trains-view">
-    <Loading v-if="connectionState == 0" message="Liczenie pociągów..." />
-
-    <div class="body-wrapper" v-else>
+    <div class="body-wrapper">
       <div class="options-wrapper">
         <TrainSorter :trainList="computedTrains" @changeSorter="changeSorter" />
         <TrainSearch
@@ -25,8 +23,6 @@ import { Getter, Action } from "vuex-class";
 import Station from "@/scripts/interfaces/Station";
 import Train from "@/scripts/interfaces/Train";
 
-import Loading from "@/components/App/Loading.vue";
-
 import TrainSorter from "@/components/TrainsView/TrainSorter.vue";
 import TrainSearch from "@/components/TrainsView/TrainSearch.vue";
 import TrainTable from "@/components/TrainsView/TrainTable.vue";
@@ -36,7 +32,6 @@ import axios from "axios";
 
 @Component({
   components: {
-    Loading,
     TrainSorter,
     TrainTable,
     TrainStats,
@@ -45,8 +40,6 @@ import axios from "axios";
 })
 export default class TrainsView extends Vue {
   @Getter("trainsDataList") trains!: Train[];
-
-  @Getter("trainsDataState") connectionState;
 
   @Action("fetchTrainsData") fetchTrainsData;
 
@@ -121,8 +114,8 @@ export default class TrainsView extends Vue {
 @import "../styles/responsive.scss";
 
 .trains-view {
-  position: relative;
   min-height: 100%;
+  position: relative;
 }
 
 .body-wrapper {

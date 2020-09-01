@@ -1,6 +1,5 @@
 {
-  "options": [
-    {
+  "options": [{
       "id": "is-default",
       "name": "default",
       "section": "access",
@@ -113,8 +112,7 @@
       "content": "KOŃCZY"
     }
   ],
-  "sliders": [
-    {
+  "sliders": [{
       "id": "min-level",
       "name": "minLevel",
       "minRange": 0,

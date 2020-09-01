@@ -38,6 +38,17 @@
       <footer class="app-footer flex">
         <span>&copy; Spythere 2020</span>
       </footer>
+
+      <transition name="message-anim" mode="out-in">
+        <span :key="connState">
+          <div class="message loading" v-if="connState == 0">Pobieranie danych...</div>
+
+          <div class="message error" v-if="connState == 1">
+            <img :src="ErrorIcon" alt="Error" />
+            Brak odpowiedzi ze strony serwera!
+          </div>
+        </span>
+      </transition>
     </div>
   </div>
 </template>
@@ -48,16 +59,16 @@ import { Action, Getter } from "vuex-class";
 
 import { mapGetters, mapActions } from "vuex";
 
-import Error from "@/components/App/Error.vue";
-import Loading from "@/components/App/Loading.vue";
-
 import Clock from "@/components/App/Clock.vue";
 
 @Component({
-  components: { Error, Loading, Clock },
+  components: { Clock },
 })
 export default class App extends Vue {
+  ErrorIcon = require("@/assets/icon-error.svg");
+
   @Getter("getOnlineInfo") onlineInfo;
+  @Getter("getConnectionState") connState;
 
   @Action("initStations") initStations;
 
@@ -92,6 +103,48 @@ export default class App extends Vue {
   &-leave-active {
     transition: all $animDuration $animType;
     min-height: 100%;
+  }
+}
+
+.message {
+  &-anim {
+    &-enter-active,
+    &-leave-active {
+      transition: all $animDuration $animType;
+    }
+
+    &-enter {
+      transform: translateY(100%);
+    }
+
+    &-leave-to {
+      transform: translateY(0);
+    }
+  }
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  position: fixed;
+  bottom: 0;
+
+  width: 100%;
+
+  font-size: calc(0.5rem + 0.5vw);
+  padding: 0.5rem;
+
+  img {
+    width: 1.5em;
+    margin: 0 0.5em;
+  }
+
+  &.loading {
+    background: #cc8b21;
+  }
+
+  &.error {
+    background: firebrick;
   }
 }
 
