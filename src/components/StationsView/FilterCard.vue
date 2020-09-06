@@ -166,7 +166,7 @@ export default class FilterCard extends Vue {
 
   @include smallScreen() {
     width: 85vw;
-    font-size: 1em;
+    font-size: 0.45em;
   }
 }
 

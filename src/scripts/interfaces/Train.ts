@@ -12,7 +12,25 @@ export default interface Train {
   route: string | null;
   timetableId: number | null;
   category: string | null;
-  sceneries: string[] | null;
+  followingStops: {
+    stopName: string;
+    stopType: string;
+    arrivalLine?: string;
+    arrivalTime: number;
+    arrivalDelay: number;
+    departureLine?: string;
+    departureTime: number;
+    beginsHere: boolean;
+    terminatesHere: boolean;
+    departureDelay: number;
+    confirmed: boolean;
+    stopped: boolean;
+
+    stopTime: number;
+
+    arrivalScenery?: string;
+    departureScenery?: string;
+  }[];
   TWR: boolean | null;
   SKR: boolean | null;
   noTimetable: boolean;
@@ -20,13 +38,4 @@ export default interface Train {
   locoType: string;
   routeDistance: number;
   online: boolean;
-  stopPoints: {
-    arrivalTime: string;
-    arrivalDelay: number;
-    departureTime: string;
-    departureDelay: number;
-    pointNameRAW: string;
-    pointStopType: string;
-    confirmed: boolean;
-  }[];
 }

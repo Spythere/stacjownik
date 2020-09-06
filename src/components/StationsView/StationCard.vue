@@ -1,7 +1,13 @@
 <template>
   <section class="card station-card">
-    <div class="card-exit" @click="exit">
-      <img :src="require('@/assets/icon-exit.svg')" alt="exit icon" />
+    <div class="card-exit">
+      <img
+        class="schedule-icon"
+        :src="require('@/assets/icon-clock.svg')"
+        alt="schedule-icon"
+        @click="() => cardMode = cardMode == 0 ? 1 : 0"
+      />
+      <img :src="require('@/assets/icon-exit.svg')" alt="exit-icon" @click="exit" />
     </div>
 
     <div class="card-content" :class="{'offline': !stationInfo.online}">
@@ -133,13 +139,63 @@
       </div>
     </div>
 
-    <!-- <div class="card-timetables">
-      <div class="title">AKTYWNE ROZKŁADY JAZDY</div>
-      <div class="content">
-        <ul>
-        </ul>
+    <div class="card-timetables" id="card-timetables" :class="{show: cardMode == 1}">
+      <div class="timetables-wrapper">
+        <div class="timetables-title title">
+          <div style="font-size: 1.2em;">{{stationInfo.stationName.toUpperCase()}}</div>
+          <div>AKTYWNE ROZKŁADY JAZDY</div>
+        </div>
+
+        <div class="timetables-content">
+          <div class="timetable" v-for="(timetable, i) in computedScheduledTrains" :key="i">
+            <span class="timetable-general">
+              <span class="general-category">
+                <span>{{timetable.category}}</span>
+                {{timetable.trainNo}}
+              </span>
+              <span class="general-driver">{{timetable.driverName}}</span>
+              <span class="general-confirmed">
+                <span
+                  style="color: gold"
+                  v-if="timetable.stopped || (timetable.beginsHere && !timetable.confirmed)"
+                >Na stacji</span>
+                <span style="color: #aaa" v-else-if="!timetable.confirmed">W drodze</span>
+                <span
+                  style="color: red"
+                  v-else-if="(timetable.terminatesHere && timetable.confirmed)"
+                >Skończył bieg</span>
+                <span style="color: lime" v-else>Odprawiony</span>
+              </span>
+            </span>
+
+            <span class="timetable-schedule">
+              <span class="schedule-arrival">
+                <span class="arrival-time begins" v-if="timetable.beginsHere">ROZPOCZYNA BIEG</span>
+                <span
+                  class="arrival-time"
+                  v-else
+                >{{timestampToTime(timetable.arrivalTime)}} ({{timetable.arrivalDelay}})</span>
+              </span>
+
+              <span class="schedule-stop">
+                <span
+                  class="stop-time"
+                  v-if="timetable.stopTime"
+                >{{timetable.stopTime}} {{timetable.stopType}}</span>
+                <span class="stop-arrow arrow"></span>
+              </span>
+              <span class="schedule-departure">
+                <span class="departure-time terminates" v-if="timetable.terminatesHere">KOŃCZY BIEG</span>
+                <span
+                  class="departure-time"
+                  v-else
+                >{{timestampToTime(timetable.departureTime)}} ({{timetable.departureDelay}})</span>
+              </span>
+            </span>
+          </div>
+        </div>
       </div>
-    </div>-->
+    </div>
   </section>
 </template>
 
@@ -147,18 +203,38 @@
 import { Component, Prop, Watch } from "vue-property-decorator";
 import styleMixin from "@/mixins/styleMixin";
 
+import Station from "@/scripts/interfaces/Station";
+
 @Component
 export default class StationCard extends styleMixin {
-  @Prop() stationInfo;
-  @Prop() dispatcherHistory;
+  @Prop() stationInfo!: Station;
   @Prop() exit!: void;
 
   history: any[] = [];
+  cardMode: number = 0;
 
   get computedExp(): string {
+    console.log(this.stationInfo.scheduledTrains);
+
     return this.stationInfo.dispatcherExp < 2
       ? "L"
       : `${this.stationInfo.dispatcherExp}`;
+  }
+
+  get computedScheduledTrains() {
+    return this.stationInfo.scheduledTrains.sort((a, b) => {
+      if (a.arrivalTime > b.arrivalTime) return 1;
+      else if ((a.arrivalTime < b.arrivalTime)) return -1;
+
+      return a.departureTime > b.departureTime ? 1 : -1;
+    })
+  }
+
+  timestampToTime(timestamp: number) {
+    return new Date(timestamp).toLocaleTimeString('pl-PL', {
+      hour: '2-digit',
+      minute: '2-digit',
+    })
   }
 }
 </script>
@@ -166,11 +242,14 @@ export default class StationCard extends styleMixin {
 <style lang="scss">
 @import "../../styles/variables.scss";
 @import "../../styles/responsive.scss";
-
 .title {
   color: $accentCol;
   font-weight: 600;
   margin: 0.5em 0;
+}
+
+.station-card {
+  scroll-behavior: smooth;
 }
 
 .card {
@@ -182,18 +261,26 @@ export default class StationCard extends styleMixin {
   -webkit-user-select: none;
 
   &-exit {
+    z-index: 3;
+
     img {
-      width: 1.5em;
+      margin: 0 0.3em;
+      font-size: 1.6em;
     }
 
     cursor: pointer;
   }
 
   &-content {
+    position: relative;
+
     display: grid;
     grid-template-areas: "main main" "icons icons" "dispatcher hours" "users spawns" "history history";
     grid-template-columns: repeat(2, minmax(0, 1fr));
     min-width: 200px;
+    max-height: 500px;
+
+    transform: translateY(0%);
 
     gap: 1.5em;
 
@@ -367,21 +454,138 @@ export default class StationCard extends styleMixin {
 
 .card-timetables {
   position: absolute;
-  width: 100%;
-
-  height: 90%;
-
-  background: #333;
-
-  overflow: hidden;
-
-  bottom: 0;
   left: 0;
+  top: 0;
+  width: 100%;
+  min-height: 100%;
 
-  .content {
-    position: absolute;
+  transform: translateY(-100%);
+  -webikit-transform: translateY(-100%);
+
+  &.show {
+    transform: translateY(0);
+    -webkit-transform: translateY(0);
   }
 
-  // transform: translateY(80%);
+  transition: transform 150ms ease-out;
+
+  overflow: auto;
+
+  background: #333;
+}
+
+.timetables {
+  &-content {
+    width: 100%;
+    height: 100%;
+
+    padding: 25px 0;
+  }
+
+  &-title {
+    padding-top: 1rem;
+    font-size: 1.3em;
+  }
+}
+
+.timetable {
+  position: relative;
+
+  // margin: 0.rem auto;
+  margin: 1em auto;
+
+  max-width: 600px;
+
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  gap: 0 1rem;
+
+  @include smallScreen() {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &-general {
+    padding: 0.3rem 0.5rem;
+    border: 1px solid white;
+
+    display: flex;
+    justify-content: space-between;
+
+    @include smallScreen() {
+      width: 75%;
+    }
+  }
+
+  &-schedule {
+    @include smallScreen() {
+      width: 70%;
+      margin: 0.7em 0;
+    }
+
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+    font-size: 1.2em;
+  }
+}
+
+.arrow {
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  display: inline-block;
+  padding: 2px;
+  margin-left: 50px;
+
+  position: relative;
+
+  transform: rotate(-45deg);
+
+  &::before {
+    content: "";
+    position: absolute;
+    display: block;
+    width: 55px;
+    height: 3px;
+    top: 4px;
+    left: 4px;
+
+    transform: translate(-100%, -1px) rotate(45deg);
+    transform-origin: right bottom;
+
+    background: white;
+  }
+}
+
+.general-category {
+  span {
+    color: $accentCol;
+  }
+}
+
+.schedule {
+  &-arrival,
+  &-stop,
+  &-departure {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    margin: 0 0.3rem;
+  }
+
+  &-stop {
+    display: flex;
+    flex-direction: column;
+
+    .stop-time {
+      font-size: 0.7em;
+    }
+  }
+}
+
+.arrival-time.begins,
+.departure-time.terminates {
+  font-size: 0.75em;
 }
 </style>

@@ -30,9 +30,9 @@
             </div>
 
             <div class="info-stations">
-              <span v-if="train.sceneries.length > 2">
+              <span v-if="train.followingStops.length > 2">
                 Przez:
-                <span v-html="mapTimetableSceneries(train.sceneries)"></span>
+                <span v-html="generateStopList(train.followingStops)"></span>
               </span>
             </div>
           </div>
@@ -140,12 +140,18 @@ export default class TrainTable extends Vue {
     (e.target as HTMLImageElement).src = unknownTrainImage;
   }
 
-  mapTimetableSceneries(sceneries: string[]): string {
-    if (sceneries.length < 1) return "";
+  generateStopList(stops: any): string | undefined {
+    if (!stops) return "";
+    return stops.reduce((acc, stop, i) => {
+      if (i < 2 || i > stops.length - 2) return acc;
 
-    return sceneries
-      .filter((scenery, i) => i > 0 && i < sceneries.length - 1)
-      .join(" * ");
+      if (stop.stopType.includes("ph")) acc.push(`<strong>${stop.stopName}</strong>`);
+      if (stop.stopType == "") acc.push(`<span style='color: #ccc;'>${stop.stopName}</span>`);
+      if (stop.stopType == "podg.") acc.push(`<span style='color: #ccc;'>${stop.stopName
+        }</span>`);
+
+      return acc;
+    }, []).join(" * ");
   }
 }
 </script>

@@ -1,9 +1,9 @@
-import { Module, VuexModule, Mutation, Action } from "vuex-module-decorators";
+import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators';
 
-import Train from "@/scripts/interfaces/Train";
+import Train from '@/scripts/interfaces/Train';
 
-import axios from "axios";
-const API_URL = "https://api.td2.info.pl:9640/?method=getTrainsOnline";
+import axios from 'axios';
+const API_URL = 'https://api.td2.info.pl:9640/?method=getTrainsOnline';
 
 enum ConnState {
   Loading = 0,
@@ -32,6 +32,15 @@ interface TimetableResponseData {
     pointNameRAW: string;
     pointName: string;
     pointStopType: string;
+    arrivalLine: string;
+    departureLine: string;
+    arrivalTime: string;
+    arrivalDelay: number;
+    departureTime: string;
+    departureDelay: number;
+    confirmed: boolean;
+    stopped: boolean;
+    pointStopTime: number;
   }[];
   trainInfo: {
     timetableId: number;
@@ -54,12 +63,14 @@ interface TimetableData {
   stopPoints?: {}[];
 }
 
+const getTimestamp = (date: string) => (date ? new Date(date).getTime() : 0);
+
 const getTimetableURL = (trainNo: number) =>
   `https://api.td2.info.pl:9640/?method=readFromSWDR&value=getTimetable%3B${trainNo}%3Beu`;
 
 const getLocoURL = (locoType: string) =>
   `https://rj.td2.info.pl/dist/img/thumbnails/${
-    locoType.includes("EN") ? locoType + "rb" : locoType
+    locoType.includes('EN') ? locoType + 'rb' : locoType
   }.png`;
 
 @Module
@@ -67,21 +78,21 @@ export default class TrainsModule extends VuexModule {
   onlineTrainsData: Train[] = [];
   onlineTrainsState: ConnState = ConnState.Loading;
 
-  @Action({ commit: "loadTrainsData" })
+  @Action({ commit: 'loadTrainsData' })
   async fetchTrainsData() {
     let trainDataResponse;
 
     try {
       trainDataResponse = await axios.get(API_URL);
     } catch (error) {
-      this.context.commit("setConnectionState", ConnState.Error);
+      this.context.commit('setConnectionState', ConnState.Error);
       return null;
     }
 
     let onlineTrainsData: TrainData[] = trainDataResponse.data.message;
 
     return await Promise.all(
-      onlineTrainsData.map(async (train) => {
+      onlineTrainsData.map(async train => {
         const timetableResponseData: TimetableResponseData | null = (
           await axios.get(getTimetableURL(train.trainNo))
         ).data.message;
@@ -101,29 +112,57 @@ export default class TrainsModule extends VuexModule {
           };
         }
 
-        const locoType = train.dataCon.split(";")
-          ? train.dataCon.split(";")[0]
+        const locoType = train.dataCon.split(';')
+          ? train.dataCon.split(';')[0]
           : train.dataCon;
 
-        const stopPoints = timetableResponseData?.stopPoints.reduce(
+        const followingStops = timetableResponseData?.stopPoints.reduce(
           (acc, point) => {
-            if (point.pointName.includes("strong"))
-              acc.push(
-                point.pointStopType.includes("ph")
-                  ? `<strong>${point.pointNameRAW}</strong>`
-                  : `<span style='color: #ccc;'>${point.pointNameRAW}</span>`
-              );
+            const stopObj: any = {};
+            if (
+              !point.pointName.includes('Południowy') &&
+              (point.pointName.includes('strong') ||
+                point.pointName.includes('podg.'))
+            ) {
+              if (point.pointName.includes('strong')) {
+                stopObj.stopName = point.pointNameRAW;
 
-            if (point.pointName.includes("podg."))
-              acc.push(
-                `<span style='color: #ccc;'>${
-                  point.pointNameRAW.split(",")[0]
-                }</span>`
-              );
+                stopObj.stopType = point.pointStopType;
+              } else {
+                stopObj.stopName = point.pointNameRAW.split(',')[0];
+                stopObj.stopType = 'podg.';
+              }
+
+              stopObj.arrivalTime = getTimestamp(point.arrivalTime);
+              stopObj.departureTime = getTimestamp(point.departureTime);
+              stopObj.arrivalDelay = point.arrivalDelay;
+              stopObj.departureDelay = point.departureDelay;
+              stopObj.beginsHere =
+                getTimestamp(point.arrivalTime) == 0 ? true : false;
+              stopObj.terminatesHere =
+                getTimestamp(point.departureTime) == 0 ? true : false;
+              stopObj.confirmed = point.confirmed;
+              stopObj.stopped = point.stopped;
+              stopObj.stopTime = point.pointStopTime;
+
+              acc.push(stopObj);
+            }
 
             return acc;
           },
-          [] as string[]
+          [] as {
+            stopName: string;
+            stopType: string;
+            arrivalTime: number;
+            arrivalDelay: number;
+            departureTime: number;
+            departureDelay: number;
+            confirmed: boolean;
+            stopped: boolean;
+            stopTime: number;
+            beginsHere: boolean;
+            terminatesHere: boolean;
+          }[]
         );
 
         return {
@@ -145,8 +184,7 @@ export default class TrainsModule extends VuexModule {
           timetableId: timetableData?.timetableId,
           category: timetableData?.trainCategoryCode,
           routeDistance: timetableData?.routeDistance || 0,
-          sceneries: stopPoints,
-          stopPoints: timetableData?.stopPoints,
+          followingStops,
           TWR: timetableData?.twr,
           SKR: timetableData?.skr,
         };

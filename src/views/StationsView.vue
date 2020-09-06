@@ -127,28 +127,30 @@ export default class StationsView extends Vue {
       this.trains
         .filter((train) => !train.noTimetable)
         .forEach((train) => {
-          const found = train.stopPoints!.find(
-            (sp) =>
+          const foundIndex = train.followingStops.findIndex(
+            (stop) =>
               (station.stationName
                 .toLowerCase()
-                .includes(sp.pointNameRAW.toLowerCase()) ||
+                .includes(stop.stopName) ||
                 station.stationName
                   .toLowerCase()
-                  .includes(sp.pointNameRAW.toLowerCase().split(",")[0]) ||
+                  .includes(stop.stopName.toLowerCase().split(",")[0]) ||
                 (station.stationName
                   .toLowerCase()
-                  .includes(sp.pointNameRAW.toLowerCase().split(" ")[0]) &&
+                  .includes(stop.stopName.toLowerCase().split(" ")[0]) &&
                   station.stationName.toLowerCase().includes("lcs"))) &&
               !acc[station.stationName].find((t) => t.trainNo === train.trainNo)
           );
 
-          if (!found) return acc;
+          if (foundIndex < 0) return acc;
+
+          const foundStop = train.followingStops[foundIndex];
 
           acc[station.stationName].push({
             trainNo: train.trainNo,
             driverName: train.driverName,
             category: train.category,
-            ...found,
+            ...foundStop
           });
         });
 
@@ -244,8 +246,8 @@ export default class StationsView extends Vue {
             break;
 
           case 3:
-            if (a.dispatcherName > b.dispatcherName) return dir;
-            if (a.dispatcherName < b.dispatcherName) return -dir;
+            if (a.dispatcherName.toLowerCase() > b.dispatcherName.toLowerCase()) return dir;
+            if (a.dispatcherName.toLowerCase() < b.dispatcherName.toLowerCase()) return -dir;
             break;
 
           case 4:
@@ -264,7 +266,7 @@ export default class StationsView extends Vue {
             break;
         }
 
-        if (a.stationName >= b.stationName) return dir;
+        if (a.stationName.toLowerCase() >= b.stationName.toLowerCase()) return dir;
         return -dir;
       })
       .map((station) => ({
@@ -307,7 +309,7 @@ export default class StationsView extends Vue {
   }
 
   get focusedStationInfo() {
-    return this.stations.find(
+    return this.computedStations.find(
       (station) => station.stationName === this.focusedStationName
     );
   }
