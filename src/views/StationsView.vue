@@ -149,6 +149,7 @@ export default class StationsView extends Vue {
           acc[station.stationName].push({
             trainNo: train.trainNo,
             driverName: train.driverName,
+            driverId: train.driverId,
             category: train.category,
             ...foundStop
           });

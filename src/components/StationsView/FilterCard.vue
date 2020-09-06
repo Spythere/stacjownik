@@ -166,23 +166,19 @@ export default class FilterCard extends Vue {
 
   @include smallScreen() {
     width: 85vw;
-    font-size: 0.45em;
+    font-size: calc(0.3em + 1vw);
+  }
+
+  @include bigScreen {
+    font-size: 1.1rem;
   }
 }
 
 .card {
   &-exit {
-    position: absolute;
-    top: 0;
-    right: 0;
-
-    margin: 0.8em;
-
     img {
-      width: 1.1em;
+      width: 1.2em;
     }
-
-    cursor: pointer;
   }
 
   &-title {
@@ -191,6 +187,7 @@ export default class FilterCard extends Vue {
     color: $accentCol;
 
     margin: 0.5em 0;
+    margin-top: 1em;
   }
 
   &-options {

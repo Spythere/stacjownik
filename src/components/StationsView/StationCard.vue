@@ -68,6 +68,13 @@
           alt="non-public"
           title="Sceneria niepubliczna"
         />
+
+        <img
+          v-if="stationInfo.unavailable"
+          :src="require(`@/assets/icon-unavailable.svg`)"
+          alt="icon-unavailable"
+          title="Sceneria niedostępna"
+        />
       </div>
 
       <div class="dispatcher">
@@ -142,18 +149,30 @@
     <div class="card-timetables" id="card-timetables" :class="{show: cardMode == 1}">
       <div class="timetables-wrapper">
         <div class="timetables-title title">
-          <div style="font-size: 1.2em;">{{stationInfo.stationName.toUpperCase()}}</div>
-          <div>AKTYWNE ROZKŁADY JAZDY</div>
+          <div style="font-size: 1.5em;">{{stationInfo.stationName.toUpperCase()}}</div>
+          <div style="font-size: 0.7em;">AKTYWNE ROZKŁADY JAZDY</div>
         </div>
 
         <div class="timetables-content">
           <div class="timetable" v-for="(timetable, i) in computedScheduledTrains" :key="i">
             <span class="timetable-general">
-              <span class="general-category">
-                <span>{{timetable.category}}</span>
-                {{timetable.trainNo}}
+              <span class="general-info">
+                <router-link
+                  :to="{ name: 'TrainsView', params: { passedSearchedTrain: timetable.trainNo.toString()}}"
+                >
+                  <span>
+                    {{timetable.category}}
+                    {{timetable.trainNo}}
+                  </span>
+                </router-link>|
+                <span>
+                  <a
+                    :href="'https://td2.info.pl/profile/?u=' + timetable.driverId"
+                    target="_blank"
+                  >{{ timetable.driverName }}</a>
+                </span>
               </span>
-              <span class="general-driver">{{timetable.driverName}}</span>
+
               <span class="general-confirmed">
                 <span
                   style="color: gold"
@@ -214,7 +233,6 @@ export default class StationCard extends styleMixin {
   cardMode: number = 0;
 
   get computedExp(): string {
-    console.log(this.stationInfo.scheduledTrains);
 
     return this.stationInfo.dispatcherExp < 2
       ? "L"
@@ -250,6 +268,12 @@ export default class StationCard extends styleMixin {
 
 .station-card {
   scroll-behavior: smooth;
+
+  font-size: calc(0.55rem + 0.3vw);
+
+  @include bigScreen {
+    font-size: 1.1rem;
+  }
 }
 
 .card {
@@ -264,15 +288,14 @@ export default class StationCard extends styleMixin {
     z-index: 3;
 
     img {
-      margin: 0 0.3em;
+      margin: 0.1em 0.3em;
       font-size: 1.6em;
     }
-
-    cursor: pointer;
   }
 
   &-content {
     position: relative;
+    margin-top: 1rem;
 
     display: grid;
     grid-template-areas: "main main" "icons icons" "dispatcher hours" "users spawns" "history history";
@@ -294,7 +317,7 @@ export default class StationCard extends styleMixin {
     }
 
     @include smallScreen() {
-      grid-template-areas: "main main" "icons icons" "dispatcher dispatcher" "hours hours" "users spawns";
+      grid-template-areas: "main main" "icons icons" "dispatcher dispatcher" "hours hours" "users users" "spawns spawns";
     }
   }
 }
@@ -457,7 +480,9 @@ export default class StationCard extends styleMixin {
   left: 0;
   top: 0;
   width: 100%;
-  min-height: 100%;
+  height: 100%;
+
+  overflow: hidden;
 
   transform: translateY(-100%);
   -webikit-transform: translateY(-100%);
@@ -469,8 +494,6 @@ export default class StationCard extends styleMixin {
 
   transition: transform 150ms ease-out;
 
-  overflow: auto;
-
   background: #333;
 }
 
@@ -478,27 +501,31 @@ export default class StationCard extends styleMixin {
   &-content {
     width: 100%;
     height: 100%;
-
-    padding: 25px 0;
+    overflow: auto;
   }
 
   &-title {
-    padding-top: 1rem;
-    font-size: 1.3em;
+    padding-top: 2rem;
+    padding-bottom: 0.3rem;
+    font-size: 1.6em;
+  }
+
+  &-wrapper {
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
   }
 }
 
 .timetable {
-  position: relative;
-
-  // margin: 0.rem auto;
   margin: 1em auto;
-
-  max-width: 600px;
 
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
   gap: 0 1rem;
+
+  padding: 0 2rem;
 
   @include smallScreen() {
     display: flex;
@@ -514,13 +541,13 @@ export default class StationCard extends styleMixin {
     justify-content: space-between;
 
     @include smallScreen() {
-      width: 75%;
+      width: 95%;
     }
   }
 
   &-schedule {
     @include smallScreen() {
-      width: 70%;
+      width: 80%;
       margin: 0.7em 0;
     }
 
@@ -557,7 +584,7 @@ export default class StationCard extends styleMixin {
   }
 }
 
-.general-category {
+.general-info {
   span {
     color: $accentCol;
   }

@@ -19,13 +19,16 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from "vue-property-decorator";
+import { Component, Vue, Watch, Prop } from "vue-property-decorator";
 
 @Component
 export default class extends Vue {
   exitIcon = require("@/assets/icon-exit.svg");
   searchedTrain = "";
   searchedDriver = "";
+
+  @Prop() readonly passedSearchedTrain!: string;
+  // @Prop() readonly passedSearchedDriver!: string;
 
   @Watch("searchedTrain")
   onSearchedTrainChanged(val: string, oldVal: string) {
@@ -35,6 +38,14 @@ export default class extends Vue {
   @Watch("searchedDriver")
   onSearchedDriverChanged(val: string, oldVal: string) {
     this.$emit("changeSearchedDriver", val);
+  }
+
+  @Watch("passedSearchedTrain")
+  onPassedSearchedTrainChanged(val: string, oldVal: string) {
+    if (val && val != "") {
+      this.searchedTrain = val;
+      this.searchedDriver = "";
+    }
   }
 }
 </script>

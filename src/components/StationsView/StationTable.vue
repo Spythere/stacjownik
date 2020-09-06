@@ -30,7 +30,7 @@
         >
           <td
             class="item-station-name"
-            :class="{'default-station': station.default, 'online': station.online}"
+            :class="{'default-station': station.default, 'online': station.online, 'station-unavailable': station.unavailable}"
           >{{station.stationName}}</td>
 
           <td class="item-station-level">
@@ -328,5 +328,10 @@ export default class StationTable extends styleMixin {
       padding: 0.5em;
     }
   }
+}
+
+.station-unavailable {
+  color: #ff1e1e;
+  font-weight: bold;
 }
 </style>

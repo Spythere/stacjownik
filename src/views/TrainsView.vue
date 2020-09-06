@@ -6,6 +6,7 @@
         <TrainSearch
           @changeSearchedTrain="changeSearchedTrain"
           @changeSearchedDriver="changeSearchedDriver"
+          :passedSearchedTrain="passedSearchedTrain"
         />
       </div>
 
@@ -17,7 +18,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Prop } from "vue-property-decorator";
 import { Getter, Action } from "vuex-class";
 
 import Station from "@/scripts/interfaces/Station";
@@ -43,6 +44,8 @@ export default class TrainsView extends Vue {
 
   @Action("fetchTrainsData") fetchTrainsData;
 
+  @Prop() readonly passedSearchedTrain!: string;
+
   sorterActive: { id: string; dir: number } = { id: "timetable", dir: 1 };
   searchedTrain: string = "";
   searchedDriver: string = "";
@@ -59,6 +62,7 @@ export default class TrainsView extends Vue {
     this.sorterActive = sorter;
   }
 
+
   get computedTrains() {
     return this.trains
       .filter(
@@ -69,8 +73,8 @@ export default class TrainsView extends Vue {
             : true) &&
           (this.searchedDriver.length > 0
             ? train.driverName
-                .toLowerCase()
-                .includes(this.searchedDriver.toLowerCase())
+              .toLowerCase()
+              .includes(this.searchedDriver.toLowerCase())
             : true)
       )
       .sort((a, b) => {
