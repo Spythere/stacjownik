@@ -8,31 +8,31 @@
           <div class="info-top">
             <div class="info-category">
               <span>
-                <strong>{{ train.category }}</strong>
+                <strong>{{ train.timetableData.category }}</strong>
                 {{ train.trainNo }} |
               </span>
-              <span style=" color: gold;">{{ train.routeDistance }} km</span>
+              <span style=" color: gold;">{{ train.timetableData.routeDistance }} km</span>
             </div>
 
             <div class="info-warnings">
-              <span class="warning twr" v-if="train.TWR">TWR</span>
-              <span class="warning skr" v-if="train.SKR">SKR</span>
+              <span class="warning twr" v-if="train.timetableData.TWR">TWR</span>
+              <span class="warning skr" v-if="train.timetableData.SKR">SKR</span>
             </div>
 
             <div class="info-route">
               <a :href="'https://rj.td2.info.pl/train#' + train.trainNo + ';eu'" target="_blank">
                 <strong>
                   {{
-                  train.route && train.route.replace("|", " - ")
+                  train.timetableData.route.replace("|", " - ")
                   }}
                 </strong>
               </a>
             </div>
 
             <div class="info-stations">
-              <span v-if="train.followingStops.length > 2">
+              <span v-if="train.timetableData.followingStops.length > 2">
                 Przez:
-                <span v-html="generateStopList(train.followingStops)"></span>
+                <span v-html="generateStopList(train.timetableData.followingStops)"></span>
               </span>
             </div>
           </div>
@@ -114,7 +114,6 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { Getter } from "vuex-class";
 
 const unknownTrainImage = require("@/assets/unknown.png");
 
@@ -124,8 +123,6 @@ import Station from "@/scripts/interfaces/Station";
 @Component
 export default class TrainTable extends Vue {
   @Prop() readonly computedTrains!: Train[];
-
-  @Getter("getAllStations") stations!: Station[];
 
   speedIcon: string = require("@/assets/icon-speed.svg");
   massIcon: string = require("@/assets/icon-mass.svg");

@@ -165,8 +165,8 @@ export default class FilterCard extends Vue {
   box-shadow: 0 0 15px 5px #474747;
 
   @include smallScreen() {
-    width: 85vw;
-    font-size: calc(0.3em + 1vw);
+    width: 100%;
+    font-size: calc(0.7em + 1.1vw);
   }
 
   @include bigScreen {

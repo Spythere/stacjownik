@@ -144,8 +144,6 @@
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 
-import { Getter } from "vuex-class";
-
 import Station from "@/scripts/interfaces/Station";
 import Train from "@/scripts/interfaces/Train";
 

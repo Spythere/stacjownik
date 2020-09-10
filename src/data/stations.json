@@ -1720,7 +1720,7 @@
     "stationName": "Sól",
     "stationURL": "https://td2.info.pl/scenerie/sol/",
     "stationLines": "139",
-    "reqLevel": "0",
+    "reqLevel": "2",
     "supportersOnly": "NIE",
     "signalType": "współczesna",
     "controlType": "SPK",
@@ -1784,8 +1784,7 @@
       }
     },
     "default": false,
-    "nonPublic": false,
-    "unavailable": true
+    "nonPublic": false
   },
   {
     "stationName": "Głęboszów",

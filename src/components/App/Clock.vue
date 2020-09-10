@@ -34,7 +34,7 @@ export default Vue.extend({
   align-items: center;
 
   @include smallScreen() {
-    font-size: 0.65rem;
+    font-size: 0.95rem;
   }
 }
 </style>

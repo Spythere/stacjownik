@@ -124,11 +124,12 @@
         <div class="users-content">
           <div
             class="user"
-            v-for="train in stationInfo.trains"
+            v-for="train in stationInfo.stationTrains"
             :key="train.trainNo + train.driverName"
+            :class="{'no-timetable': !hasTimetable(train.trainNo)}"
           >
             <a
-              :href="'https://rj.td2.info.pl/train#' + train.trainNo + ';eu'"
+              :href="`https://rj.td2.info.pl/train#${train.trainNo};eu`"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -140,7 +141,7 @@
 
           <span
             class="user borderless"
-            v-if="!stationInfo.trains || stationInfo.trains.length == 0"
+            v-if="!stationInfo.stationTrains || stationInfo.stationTrains.length == 0"
           >BRAK</span>
         </div>
       </div>
@@ -174,16 +175,19 @@
               </span>
 
               <span class="general-confirmed">
+                <span style="color: lime" v-if="timetable.confirmed">Odprawiony</span>
                 <span
                   style="color: gold"
-                  v-if="timetable.stopped || (timetable.beginsHere && !timetable.confirmed)"
+                  v-else-if="timetable.currentStationName == stationInfo.stationName"
                 >Na stacji</span>
+
+                <span style="color: #FF4646" v-else-if="timetable.stopped">Postój</span>
                 <span style="color: #aaa" v-else-if="!timetable.confirmed">W drodze</span>
+
                 <span
                   style="color: red"
-                  v-else-if="(timetable.terminatesHere && timetable.confirmed)"
+                  v-else-if="(timetable.terminatesHere && timetable.confimed)"
                 >Skończył bieg</span>
-                <span style="color: lime" v-else>Odprawiony</span>
               </span>
             </span>
 
@@ -220,6 +224,8 @@
 
 <script lang="ts">
 import { Component, Prop, Watch } from "vue-property-decorator";
+import { Getter } from "vuex-class";
+
 import styleMixin from "@/mixins/styleMixin";
 
 import Station from "@/scripts/interfaces/Station";
@@ -228,8 +234,8 @@ import Station from "@/scripts/interfaces/Station";
 export default class StationCard extends styleMixin {
   @Prop() stationInfo!: Station;
   @Prop() exit!: void;
+  @Getter('getTrainList') trains;
 
-  history: any[] = [];
   cardMode: number = 0;
 
   get computedExp(): string {
@@ -239,6 +245,7 @@ export default class StationCard extends styleMixin {
       : `${this.stationInfo.dispatcherExp}`;
   }
 
+
   get computedScheduledTrains() {
     return this.stationInfo.scheduledTrains.sort((a, b) => {
       if (a.arrivalTime > b.arrivalTime) return 1;
@@ -246,6 +253,10 @@ export default class StationCard extends styleMixin {
 
       return a.departureTime > b.departureTime ? 1 : -1;
     })
+  }
+
+  hasTimetable(trainNo: number) {
+    return this.trains.find(train => train.timetableData && train.trainNo === trainNo);
   }
 
   timestampToTime(timestamp: number) {
@@ -286,10 +297,16 @@ export default class StationCard extends styleMixin {
 
   &-exit {
     z-index: 3;
+    display: flex;
+    align-items: center;
 
     img {
-      margin: 0.1em 0.3em;
       font-size: 1.6em;
+      margin: 0.1em 0.1em;
+    }
+
+    .schedule-icon {
+      font-size: 1.4em;
     }
   }
 
@@ -450,6 +467,15 @@ export default class StationCard extends styleMixin {
         border: none;
         margin: 0;
         padding: 0;
+      }
+
+      &.no-timetable {
+        border: 1px solid #aaa;
+
+        a {
+          color: #aaa;
+          pointer-events: none;
+        }
       }
     }
   }

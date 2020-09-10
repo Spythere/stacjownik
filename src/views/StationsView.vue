@@ -93,8 +93,7 @@ export default class StationsView extends Vue {
 
   inputs = inputData;
 
-  @Getter("getStationList") stations!: Station[];
-  @Getter("trainsDataList") trains!: Train[];
+  @Getter("getStationList") stationList!: Station[];
 
   toggleCardsState(name: string): void {
     if (name == "filter") {
@@ -120,52 +119,14 @@ export default class StationsView extends Vue {
     this.filters = { ...filterInitStates };
   }
 
-  get scheduledTrains() {
-    const reducedList = this.stations.reduce((acc, station) => {
-      if (!acc[station.stationName]) acc[station.stationName] = [];
-
-      this.trains
-        .filter((train) => !train.noTimetable)
-        .forEach((train) => {
-          const foundIndex = train.followingStops.findIndex(
-            (stop) =>
-              (station.stationName
-                .toLowerCase()
-                .includes(stop.stopName) ||
-                station.stationName
-                  .toLowerCase()
-                  .includes(stop.stopName.toLowerCase().split(",")[0]) ||
-                (station.stationName
-                  .toLowerCase()
-                  .includes(stop.stopName.toLowerCase().split(" ")[0]) &&
-                  station.stationName.toLowerCase().includes("lcs"))) &&
-              !acc[station.stationName].find((t) => t.trainNo === train.trainNo)
-          );
-
-          if (foundIndex < 0) return acc;
-
-          const foundStop = train.followingStops[foundIndex];
-
-          acc[station.stationName].push({
-            trainNo: train.trainNo,
-            driverName: train.driverName,
-            driverId: train.driverId,
-            category: train.category,
-            ...foundStop
-          });
-        });
-
-      return acc;
-    }, {});
-
-    return reducedList;
-  }
 
   get computedStations() {
     const dir: number = this.sorterActive.dir;
-    const scheduledTrainList = this.scheduledTrains;
+    // const scheduledTrainList = this.scheduledTrains;
 
-    return this.stations
+
+
+    return this.stationList
       .filter((station) => {
         if (!station.reqLevel || station.reqLevel == "-1") return true;
 
@@ -270,21 +231,15 @@ export default class StationsView extends Vue {
         if (a.stationName.toLowerCase() >= b.stationName.toLowerCase()) return dir;
         return -dir;
       })
-      .map((station) => ({
-        ...station,
-        scheduledTrains: scheduledTrainList[station.stationName],
-      }));
   }
 
   mounted() {
     const storage = window.localStorage;
-    console.log(storage.getItem(this.STORAGE_KEY));
 
     if (storage.getItem(this.STORAGE_KEY) !== "true") return;
 
     this.inputs.options.forEach(option => {
       const value = storage.getItem(option.name) === "true" ? true : false;
-      console.log(option.name, value);
 
 
       this.changeFilterValue({ name: option.name, value: value ? 0 : 1 });
@@ -297,6 +252,13 @@ export default class StationsView extends Vue {
 
       this.changeFilterValue({ name: slider.name, value });
       slider.value = value;
+    })
+
+    window.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.keyCode == 27 && this.focusedStationName != "") {
+        this.focusedStationName = "";
+      }
+
     })
   }
 
@@ -322,6 +284,8 @@ export default class StationsView extends Vue {
   padding: 1rem 0;
   min-height: 100%;
 
+  font-size: calc(0.6rem + 0.9vw);
+
   position: relative;
 }
 
@@ -342,8 +306,6 @@ export default class StationsView extends Vue {
 }
 
 .options {
-  font-size: calc(0.6rem + 0.9vw);
-
   &-actions {
     display: flex;
   }
@@ -357,7 +319,7 @@ export default class StationsView extends Vue {
   border: none;
 
   color: #e0e0e0;
-  font-size: 0.75em;
+  font-size: 0.65em;
 
   padding: 0.3em;
 
@@ -395,7 +357,7 @@ export default class StationsView extends Vue {
   }
 
   .action-btn {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
   }
 }
 

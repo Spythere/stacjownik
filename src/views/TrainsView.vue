@@ -40,10 +40,7 @@ import axios from "axios";
   },
 })
 export default class TrainsView extends Vue {
-  @Getter("trainsDataList") trains!: Train[];
-
-  @Action("fetchTrainsData") fetchTrainsData;
-
+  @Getter("getTrainList") trains!: Train[];
   @Prop() readonly passedSearchedTrain!: string;
 
   sorterActive: { id: string; dir: number } = { id: "timetable", dir: 1 };
@@ -62,12 +59,11 @@ export default class TrainsView extends Vue {
     this.sorterActive = sorter;
   }
 
-
   get computedTrains() {
     return this.trains
       .filter(
         (train) =>
-          !train.noTimetable &&
+          train.timetableData &&
           (this.searchedTrain.length > 0
             ? train.trainNo.toString().includes(this.searchedTrain)
             : true) &&
@@ -85,7 +81,9 @@ export default class TrainsView extends Vue {
             break;
 
           case "distance":
-            if (a.routeDistance > b.routeDistance) return this.sorterActive.dir;
+            if (!a.timetableData || !b.timetableData) return 0;
+
+            if (a.timetableData.routeDistance > b.timetableData.routeDistance) return this.sorterActive.dir;
             else return -this.sorterActive.dir;
             break;
 
@@ -128,7 +126,7 @@ export default class TrainsView extends Vue {
 
   padding: 0 0.5rem;
 
-  font-size: calc(0.3rem + 0.4vw);
+  font-size: calc(0.4rem + 0.4vw);
 }
 
 .options-wrapper {

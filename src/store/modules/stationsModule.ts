@@ -4,11 +4,9 @@ import axios from 'axios';
 import data from '@/data/stations.json';
 import Station from '@/scripts/interfaces/Station';
 
-const stationsOnlineURL =
-  'https://api.td2.info.pl:9640/?method=getStationsOnline';
+const stationsOnlineURL = 'https://api.td2.info.pl:9640/?method=getStationsOnline';
 const trainsOnlineURL = 'https://api.td2.info.pl:9640/?method=getTrainsOnline';
-const dispatchersOnlineURL =
-  'https://api.td2.info.pl:9640/?method=readFromSWDR&value=getDispatcherStatusList%3B1';
+const dispatchersOnlineURL = 'https://api.td2.info.pl:9640/?method=readFromSWDR&value=getDispatcherStatusList%3B1';
 
 enum ConnState {
   Loading = 0,
@@ -17,8 +15,7 @@ enum ConnState {
 }
 
 interface TimetableResponseData {
-  stopPoints:
-  {
+  stopPoints: {
     arrivalTime: string;
     arrivalDelay: number;
     departureTime: string;
@@ -57,10 +54,6 @@ let onlineTrainsData: {
   };
 }[];
 
-const queryStations = axios.get(stationsOnlineURL);
-const queryTrains = axios.get(trainsOnlineURL);
-const queryDispatchers = axios.get(dispatchersOnlineURL);
-
 const getStationLabel = (stationStatus: any) => {
   if (!stationStatus) return 'NIEZALOGOWANY';
 
@@ -97,9 +90,7 @@ const getStationLabel = (stationStatus: any) => {
 const getOpenSpawns = (spawnString: string) => {
   if (!spawnString) return '';
 
-  return spawnString
-    .split(';')
-    .map(v => (v.split(',')[6] ? v.split(',')[6] : v.split(',')[0]));
+  return spawnString.split(';').map(v => (v.split(',')[6] ? v.split(',')[6] : v.split(',')[0]));
 };
 
 @Module
@@ -134,9 +125,7 @@ export default class StationsModule extends VuexModule {
   @Mutation
   private updateStations(updatedStations) {
     this.stations = this.stations.reduce((acc, station) => {
-      const onlineStationData = updatedStations.find(
-        uStation => uStation.stationName === station.stationName
-      );
+      const onlineStationData = updatedStations.find(uStation => uStation.stationName === station.stationName);
 
       if (!onlineStationData) {
         acc.push({
@@ -152,7 +141,6 @@ export default class StationsModule extends VuexModule {
           dispatcherId: 0,
           occupiedTo: 'WOLNA',
           statusTimestamp: 0,
-          scheduledTrains: [],
           online: false,
         });
 
@@ -174,9 +162,7 @@ export default class StationsModule extends VuexModule {
 
     // Dodawanie do listy online potencjalnych scenerii niewpisanych do bazy
     updatedStations.forEach((updated: any) => {
-      const alreadyInList: any = this.stations.find(
-        station => station.stationName === updated.stationName
-      );
+      const alreadyInList: any = this.stations.find(station => station.stationName === updated.stationName);
 
       if (!alreadyInList) {
         this.stations.push({
@@ -189,9 +175,7 @@ export default class StationsModule extends VuexModule {
 
     this.stationCount = this.stations.filter(station => station.online).length;
 
-    this.trainCount = onlineTrainsData.filter(
-      train => train.isOnline && train.region === 'eu'
-    ).length;
+    this.trainCount = onlineTrainsData.filter(train => train.isOnline && train.region === 'eu').length;
 
     this.stationsConnectionState = ConnState.Connected;
   }
@@ -233,11 +217,7 @@ export default class StationsModule extends VuexModule {
     commit: 'updateStations',
   })
   async fetchOnlineStations() {
-    return await Promise.all([
-      axios.get(stationsOnlineURL),
-      axios.get(trainsOnlineURL),
-      axios.get(dispatchersOnlineURL),
-    ])
+    return await Promise.all([axios.get(stationsOnlineURL), axios.get(trainsOnlineURL), axios.get(dispatchersOnlineURL)])
       .then(async response => {
         onlineStationsData = response[0].data.message;
         onlineTrainsData = await response[1].data.message;
@@ -247,22 +227,13 @@ export default class StationsModule extends VuexModule {
           onlineStationsData
             .filter(station => station.region === 'eu' && station.isOnline)
             .map(async station => {
-              const stationStatus = onlineDispatchersData.find(
-                status => status[0] == station.stationHash && status[1] == 'eu'
-              );
+              const stationStatus = onlineDispatchersData.find(status => status[0] == station.stationHash && status[1] == 'eu');
 
               const statusLabel = getStationLabel(stationStatus);
               const statusTimestamp = stationStatus ? stationStatus[3] : -1;
-              const trains = onlineTrainsData.filter(
-                train =>
-                  train.region === 'eu' &&
-                  train.isOnline &&
-                  train.station.stationName === station.stationName
-              );
+              const trains = onlineTrainsData.filter(train => train.region === 'eu' && train.isOnline && train.station.stationName === station.stationName);
 
-              const stationData = data.find(
-                s => s.stationName === station.stationName
-              ) || {
+              const stationData = data.find(s => s.stationName === station.stationName) || {
                 stationName: station.stationName,
                 stationURL: '',
               };
@@ -285,8 +256,9 @@ export default class StationsModule extends VuexModule {
         );
         return updatedStations;
       })
-      .catch(() => {
+      .catch(err => {
         this.context.commit('setConnectionState', ConnState.Error);
+        console.log(err);
       });
   }
 }

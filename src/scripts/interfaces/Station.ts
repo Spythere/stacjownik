@@ -1,3 +1,5 @@
+import Train from '@/scripts/interfaces/Train';
+
 export default interface Station {
   stationName: string;
   stationHash: string;
@@ -23,20 +25,24 @@ export default interface Station {
   online: boolean;
   occupiedTo: string;
   statusTimestamp: number;
+  stationTrains: Train[];
   scheduledTrains: {
     trainNo: number;
     driverName: string;
-    category: string;
+    driverId: number;
+    currentStationName: string;
     stopName: string;
     stopType: string;
+    arrivalLine?: string;
     arrivalTime: number;
     arrivalDelay: number;
+    departureLine?: string;
     departureTime: number;
+    beginsHere: boolean;
+    terminatesHere: boolean;
     departureDelay: number;
     confirmed: boolean;
     stopped: boolean;
     stopTime: number;
-    beginsHere: boolean;
-    terminatesHere: boolean;
   }[];
 }
