@@ -182,7 +182,10 @@
                 >Na stacji</span>
 
                 <span style="color: #FF4646" v-else-if="timetable.stopped">Postój</span>
-                <span style="color: #aaa" v-else-if="!timetable.confirmed">W drodze</span>
+                <span
+                  style="color: #aaa"
+                  v-else-if="!timetable.confirmed && timetable.currentStationName != stationInfo.stationName"
+                >W drodze</span>
 
                 <span
                   style="color: red"
@@ -254,8 +257,6 @@ export default class StationCard extends styleMixin {
 
 
   get computedScheduledTrains() {
-    console.log(this.stationInfo.stationName, "test");
-
     return this.stationInfo.scheduledTrains.sort((a, b) => {
       if (a.arrivalTime > b.arrivalTime) return 1;
       else if ((a.arrivalTime < b.arrivalTime)) return -1;

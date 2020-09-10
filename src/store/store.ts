@@ -131,6 +131,7 @@ export default class Store extends VuexModule {
               stopObj.terminatesHere = getTimestamp(point.departureTime) == 0 ? true : false;
               stopObj.confirmed = point.confirmed;
               stopObj.stopped = point.stopped;
+              stopObj.stopTime = point.pointStopTime;
 
               acc.push(stopObj);
             }
@@ -307,7 +308,7 @@ export default class Store extends VuexModule {
     this.trainList = updatedTrainList.reduce((acc, updatedTrain) => {
       const trainData = this.trainList.find(train => train.trainNo === updatedTrain.trainNo);
 
-      if (trainData) acc.push({ ...updatedTrain, ...trainData });
+      if (trainData) acc.push({ ...trainData, ...updatedTrain });
       else acc.push({ ...updatedTrain });
 
       return acc;
@@ -344,8 +345,6 @@ export default class Store extends VuexModule {
 
         return acc;
       }, []);
-
-      // console.log('gituwa');
 
       return { ...station, scheduledTrains };
     });
