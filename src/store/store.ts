@@ -97,7 +97,7 @@ export default class Store extends VuexModule {
     this.context.commit('setJSONData');
 
     this.context.dispatch('fetchOnlineData');
-    setInterval(() => this.context.dispatch('fetchOnlineData'), 5000);
+    setInterval(() => this.context.dispatch('fetchOnlineData'), 20000);
   }
 
   @Action({ commit: 'updateTimetableData' })
@@ -286,11 +286,13 @@ export default class Store extends VuexModule {
       return acc;
     }, [] as Station[]);
 
+    console.log(this.stationList);
+
     // Dodawanie do listy online potencjalnych scenerii niewpisanych do bazy
     updatedStationList.forEach(updatedStation => {
-      const alreadyInList: any = this.stationList.find(station => station.stationName === updatedStation.stationName);
+      const alreadyInList: any = this.stationList.findIndex(station => station.stationName === updatedStation.stationName);
 
-      if (!alreadyInList) {
+      if (alreadyInList < 0) {
         this.stationList.push({
           ...updatedStation,
           online: true,

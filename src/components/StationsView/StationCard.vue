@@ -175,22 +175,27 @@
               </span>
 
               <span class="general-confirmed">
-                <span style="color: lime" v-if="timetable.confirmed">Odprawiony</span>
+                <span
+                  style="color: red"
+                  v-if="timetable.terminatesHere && timetable.confimed"
+                >Skończył bieg</span>
+
+                <span
+                  style="color: lime"
+                  v-else-if="timetable.confirmed && !timetable.terminatesHere"
+                >Odprawiony</span>
+
                 <span
                   style="color: gold"
-                  v-else-if="timetable.currentStationName == stationInfo.stationName"
+                  v-else-if="timetable.currentStationName == stationInfo.stationName && !timetable.stopped"
                 >Na stacji</span>
 
-                <span style="color: #FF4646" v-else-if="timetable.stopped">Postój</span>
                 <span
                   style="color: #aaa"
                   v-else-if="!timetable.confirmed && timetable.currentStationName != stationInfo.stationName"
                 >W drodze</span>
 
-                <span
-                  style="color: red"
-                  v-else-if="(timetable.terminatesHere && timetable.confimed)"
-                >Skończył bieg</span>
+                <span style="color: #FF4646" v-else-if="timetable.stopped">Postój</span>
               </span>
             </span>
 

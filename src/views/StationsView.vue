@@ -177,7 +177,7 @@ export default class StationsView extends Vue {
 
         if (this.filters["SPK"] && (station.controlType === "SPK" || station.controlType.includes("+SPK")))
           return false;
-        if (this.filters["SCS"] && station.controlType === "SCS" || station.controlType.includes("+SCS"))
+        if (this.filters["SCS"] && (station.controlType === "SCS" || station.controlType.includes("+SCS")))
           return false;
 
         if (this.filters["SCS"] && this.filters["SPK"] && (station.controlType.includes("SPK") || station.controlType.includes("SCS")))
@@ -188,6 +188,7 @@ export default class StationsView extends Vue {
           station.controlType.includes("mechaniczne")
         )
           return false;
+
         if (this.filters["ręczne"] && station.controlType.includes("ręczne"))
           return false;
 
