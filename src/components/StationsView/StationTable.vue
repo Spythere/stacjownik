@@ -145,7 +145,6 @@ import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 
 import Station from "@/scripts/interfaces/Station";
-import Train from "@/scripts/interfaces/Train";
 
 import styleMixin from "@/mixins/styleMixin";
 

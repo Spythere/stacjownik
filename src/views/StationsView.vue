@@ -124,8 +124,6 @@ export default class StationsView extends Vue {
     const dir: number = this.sorterActive.dir;
     // const scheduledTrainList = this.scheduledTrains;
 
-
-
     return this.stationList
       .filter((station) => {
         if (!station.reqLevel || station.reqLevel == "-1") return true;

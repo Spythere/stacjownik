@@ -124,9 +124,9 @@
         <div class="users-content">
           <div
             class="user"
-            v-for="train in stationInfo.stationTrains"
+            v-for="train in computedStationTrains"
             :key="train.trainNo + train.driverName"
-            :class="{'no-timetable': !hasTimetable(train.trainNo)}"
+            :class="{'no-timetable': !train.hasTimetable}"
           >
             <a
               :href="`https://rj.td2.info.pl/train#${train.trainNo};eu`"
@@ -245,18 +245,24 @@ export default class StationCard extends styleMixin {
       : `${this.stationInfo.dispatcherExp}`;
   }
 
+  get computedStationTrains() {
+    return this.stationInfo.stationTrains.map(stationTrain => ({
+      ...stationTrain,
+      hasTimetable: this.trains.find(train => train.timetableData && train.trainNo === stationTrain.trainNo)
+    }))
+  }
+
 
   get computedScheduledTrains() {
+    console.log(this.stationInfo.stationName, "test");
+
     return this.stationInfo.scheduledTrains.sort((a, b) => {
       if (a.arrivalTime > b.arrivalTime) return 1;
       else if ((a.arrivalTime < b.arrivalTime)) return -1;
 
       return a.departureTime > b.departureTime ? 1 : -1;
     })
-  }
 
-  hasTimetable(trainNo: number) {
-    return this.trains.find(train => train.timetableData && train.trainNo === trainNo);
   }
 
   timestampToTime(timestamp: number) {

@@ -97,7 +97,7 @@ export default class Store extends VuexModule {
     this.context.commit('setJSONData');
 
     this.context.dispatch('fetchOnlineData');
-    setInterval(() => this.context.dispatch('fetchOnlineData'), 20000);
+    setInterval(() => this.context.dispatch('fetchOnlineData'), 5000);
   }
 
   @Action({ commit: 'updateTimetableData' })
@@ -304,16 +304,14 @@ export default class Store extends VuexModule {
 
   @Mutation
   private updateOnlineTrains(updatedTrainList) {
-    this.trainList =
-      this.trainList.length == 0
-        ? updatedTrainList
-        : this.trainList.reduce((acc, train) => {
-            const onlineTrainData = updatedTrainList.find(updatedTrain => train.trainNo === updatedTrain.trainNo);
+    this.trainList = updatedTrainList.reduce((acc, updatedTrain) => {
+      const trainData = this.trainList.find(train => train.trainNo === updatedTrain.trainNo);
 
-            if (onlineTrainData) acc.push({ ...train, ...onlineTrainData });
+      if (trainData) acc.push({ ...updatedTrain, ...trainData });
+      else acc.push({ ...updatedTrain });
 
-            return acc;
-          }, [] as Train[]);
+      return acc;
+    }, [] as Train[]);
 
     this.trainCount = this.trainList.filter(train => train.online).length;
     this.dataConnectionStatus = Status.Loaded;
@@ -346,6 +344,8 @@ export default class Store extends VuexModule {
 
         return acc;
       }, []);
+
+      // console.log('gituwa');
 
       return { ...station, scheduledTrains };
     });
