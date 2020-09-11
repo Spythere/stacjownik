@@ -140,12 +140,10 @@ export default class TrainTable extends Vue {
   generateStopList(stops: any): string | undefined {
     if (!stops) return "";
     return stops.reduce((acc, stop, i) => {
-      if (i < 2 || i > stops.length - 2) return acc;
 
       if (stop.stopType.includes("ph")) acc.push(`<strong>${stop.stopName}</strong>`);
-      if (stop.stopType == "") acc.push(`<span style='color: #ccc;'>${stop.stopName}</span>`);
-      if (stop.stopType == "podg.") acc.push(`<span style='color: #ccc;'>${stop.stopName
-        }</span>`);
+      else if (i > 0 && i < stops.length - 1) acc.push(`<span style='color: #ccc;'>${stop.stopName}</span>`);
+      // if (stop.stopType == "podg.") acc.push(`<span style='color: #ccc;'>${stop.stopName}</span>`);
 
       return acc;
     }, []).join(" * ");

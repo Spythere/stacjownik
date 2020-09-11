@@ -22,7 +22,7 @@ const URLs = {
 const timetableURL = (trainNo: number) => `https://api.td2.info.pl:9640/?method=readFromSWDR&value=getTimetable%3B${trainNo}%3Beu`;
 const getLocoURL = (locoType: string) => `https://rj.td2.info.pl/dist/img/thumbnails/${locoType.includes('EN') ? locoType + 'rb' : locoType}.png`;
 
-const getStationLabel = (stationStatus: any) => {
+const getStatusLabel = (stationStatus: any) => {
   if (!stationStatus) return 'NIEZALOGOWANY';
 
   const statusCode = stationStatus[2];
@@ -53,6 +53,29 @@ const getStationLabel = (stationStatus: any) => {
   }
 
   return 'NIEDOSTĘPNY';
+};
+
+const getStatusTimestamp = (stationStatus: any) => {
+  if (!stationStatus) return -2;
+
+  const statusCode = stationStatus[2];
+  const statusTimestamp = stationStatus[3];
+
+  switch (statusCode) {
+    case 0:
+    case 1:
+    case 3:
+      return statusTimestamp;
+
+    case 2:
+      if (statusTimestamp == 0) return 0;
+      break;
+
+    default:
+      break;
+  }
+
+  return -1;
 };
 
 const getOpenSpawns = (spawnString: string) => (spawnString ? spawnString.split(';').map(v => (v.split(',')[6] ? v.split(',')[6] : v.split(',')[0])) : '');
@@ -114,13 +137,19 @@ export default class Store extends VuexModule {
 
           const followingStops = timetable.stopPoints.reduce((acc, point) => {
             const stopObj: any = {};
+
+            // if (point.pointName.includes('strong') && !point.pointName.includes('Południowy')) {
+            //   stopObj.stopName = point.pointNameRAW;
+            //   stopObj.stopType = point.pointStopType;
+            // }
+
             if (!point.pointName.includes('Południowy') && (point.pointName.includes('strong') || point.pointName.includes('podg.'))) {
               if (point.pointName.includes('strong')) {
                 stopObj.stopName = point.pointNameRAW;
                 stopObj.stopType = point.pointStopType;
-              } else {
+              } else if (JSONStationData.some(data => data.stationName.toLowerCase().includes(point.pointNameRAW.split(',')[0].toLowerCase()))) {
                 stopObj.stopName = point.pointNameRAW.split(',')[0];
-                stopObj.stopType = 'podg.';
+                stopObj.stopType = 'pt podg.';
               }
 
               stopObj.arrivalTime = getTimestamp(point.arrivalTime);
@@ -130,7 +159,7 @@ export default class Store extends VuexModule {
               stopObj.beginsHere = getTimestamp(point.arrivalTime) == 0 ? true : false;
               stopObj.terminatesHere = getTimestamp(point.departureTime) == 0 ? true : false;
               stopObj.confirmed = point.confirmed;
-              stopObj.stopped = point.stopped;
+              stopObj.stopped = point.isStopped;
               stopObj.stopTime = point.pointStopTime;
 
               acc.push(stopObj);
@@ -172,8 +201,9 @@ export default class Store extends VuexModule {
 
           const stationStatus = onlineDispatchersData.find(status => status[0] == station.stationHash && status[1] == 'eu');
 
-          const statusLabel = getStationLabel(stationStatus);
-          const statusTimestamp = stationStatus ? stationStatus[3] : -1;
+          const statusLabel = getStatusLabel(stationStatus);
+          // let statusTimestamp = stationStatus ? stationStatus[3] : -1;
+          const statusTimestamp = getStatusTimestamp(stationStatus);
 
           const stationTrains = onlineTrainsData.filter(train => train.region === 'eu' && train.isOnline && train.station.stationName === station.stationName);
 
@@ -248,7 +278,7 @@ export default class Store extends VuexModule {
       dispatcherId: 0,
       online: false,
       occupiedTo: 'WOLNA',
-      statusTimestamp: 0,
+      statusTimestamp: -3,
       stationTrains: [],
       scheduledTrains: [],
       ...stationData,
@@ -273,7 +303,7 @@ export default class Store extends VuexModule {
           dispatcherExp: -1,
           dispatcherId: 0,
           occupiedTo: 'WOLNA',
-          statusTimestamp: 0,
+          statusTimestamp: -3,
           online: false,
         });
       } else
@@ -285,8 +315,6 @@ export default class Store extends VuexModule {
 
       return acc;
     }, [] as Station[]);
-
-    console.log(this.stationList);
 
     // Dodawanie do listy online potencjalnych scenerii niewpisanych do bazy
     updatedStationList.forEach(updatedStation => {
@@ -342,6 +370,7 @@ export default class Store extends VuexModule {
             driverName: timetableData.driverName,
             driverId: timetableData.driverId,
             currentStationName: timetableData.currentStationName,
+            category: timetableData.category,
           });
         }
 

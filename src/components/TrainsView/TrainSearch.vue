@@ -47,6 +47,13 @@ export default class extends Vue {
       this.searchedDriver = "";
     }
   }
+
+  mounted() {
+    if (this.passedSearchedTrain && this.passedSearchedTrain != "") {
+      this.searchedTrain = this.passedSearchedTrain;
+      this.searchedDriver = "";
+    }
+  }
 }
 </script>
 

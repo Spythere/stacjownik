@@ -126,17 +126,15 @@
             class="user"
             v-for="train in computedStationTrains"
             :key="train.trainNo + train.driverName"
-            :class="{'no-timetable': !train.hasTimetable}"
+            :class="{'no-timetable': !train.timetableData}"
           >
-            <a
-              :href="`https://rj.td2.info.pl/train#${train.trainNo};eu`"
-              target="_blank"
-              rel="noopener noreferrer"
+            <router-link
+              :to="{ name: 'TrainsView', params: { passedSearchedTrain: train.trainNo.toString()}}"
             >
               <span>{{train.trainNo}}</span>
               |
               <span>{{train.driverName}}</span>
-            </a>
+            </router-link>
           </div>
 
           <span
@@ -147,86 +145,7 @@
       </div>
     </div>
 
-    <div class="card-timetables" id="card-timetables" :class="{show: cardMode == 1}">
-      <div class="timetables-wrapper">
-        <div class="timetables-title title">
-          <div style="font-size: 1.5em;">{{stationInfo.stationName.toUpperCase()}}</div>
-          <div style="font-size: 0.7em;">AKTYWNE ROZKŁADY JAZDY</div>
-        </div>
-
-        <div class="timetables-content">
-          <div class="timetable" v-for="(timetable, i) in computedScheduledTrains" :key="i">
-            <span class="timetable-general">
-              <span class="general-info">
-                <router-link
-                  :to="{ name: 'TrainsView', params: { passedSearchedTrain: timetable.trainNo.toString()}}"
-                >
-                  <span>
-                    {{timetable.category}}
-                    {{timetable.trainNo}}
-                  </span>
-                </router-link>|
-                <span>
-                  <a
-                    :href="'https://td2.info.pl/profile/?u=' + timetable.driverId"
-                    target="_blank"
-                  >{{ timetable.driverName }}</a>
-                </span>
-              </span>
-
-              <span class="general-confirmed">
-                <span
-                  style="color: red"
-                  v-if="timetable.terminatesHere && timetable.confimed"
-                >Skończył bieg</span>
-
-                <span
-                  style="color: lime"
-                  v-else-if="timetable.confirmed && !timetable.terminatesHere"
-                >Odprawiony</span>
-
-                <span
-                  style="color: gold"
-                  v-else-if="timetable.currentStationName == stationInfo.stationName && !timetable.stopped"
-                >Na stacji</span>
-
-                <span
-                  style="color: #aaa"
-                  v-else-if="!timetable.confirmed && timetable.currentStationName != stationInfo.stationName"
-                >W drodze</span>
-
-                <span style="color: #FF4646" v-else-if="timetable.stopped">Postój</span>
-              </span>
-            </span>
-
-            <span class="timetable-schedule">
-              <span class="schedule-arrival">
-                <span class="arrival-time begins" v-if="timetable.beginsHere">ROZPOCZYNA BIEG</span>
-                <span
-                  class="arrival-time"
-                  v-else
-                >{{timestampToTime(timetable.arrivalTime)}} ({{timetable.arrivalDelay}})</span>
-              </span>
-
-              <span class="schedule-stop">
-                <span
-                  class="stop-time"
-                  v-if="timetable.stopTime"
-                >{{timetable.stopTime}} {{timetable.stopType}}</span>
-                <span class="stop-arrow arrow"></span>
-              </span>
-              <span class="schedule-departure">
-                <span class="departure-time terminates" v-if="timetable.terminatesHere">KOŃCZY BIEG</span>
-                <span
-                  class="departure-time"
-                  v-else
-                >{{timestampToTime(timetable.departureTime)}} ({{timetable.departureDelay}})</span>
-              </span>
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
+    <StationTimetable :class="{show: cardMode == 1}" :stationInfo="stationInfo" />
   </section>
 </template>
 
@@ -238,7 +157,13 @@ import styleMixin from "@/mixins/styleMixin";
 
 import Station from "@/scripts/interfaces/Station";
 
-@Component
+import StationTimetable from "@/components/StationsView/StationTimetable.vue";
+
+@Component({
+  components: {
+    StationTimetable
+  }
+})
 export default class StationCard extends styleMixin {
   @Prop() stationInfo!: Station;
   @Prop() exit!: void;
@@ -247,7 +172,6 @@ export default class StationCard extends styleMixin {
   cardMode: number = 0;
 
   get computedExp(): string {
-
     return this.stationInfo.dispatcherExp < 2
       ? "L"
       : `${this.stationInfo.dispatcherExp}`;
@@ -256,26 +180,8 @@ export default class StationCard extends styleMixin {
   get computedStationTrains() {
     return this.stationInfo.stationTrains.map(stationTrain => ({
       ...stationTrain,
-      hasTimetable: this.trains.find(train => train.timetableData && train.trainNo === stationTrain.trainNo)
+      timetableData: this.trains.find(train => train.timetableData && train.trainNo === stationTrain.trainNo)
     }))
-  }
-
-
-  get computedScheduledTrains() {
-    return this.stationInfo.scheduledTrains.sort((a, b) => {
-      if (a.arrivalTime > b.arrivalTime) return 1;
-      else if ((a.arrivalTime < b.arrivalTime)) return -1;
-
-      return a.departureTime > b.departureTime ? 1 : -1;
-    })
-
-  }
-
-  timestampToTime(timestamp: number) {
-    return new Date(timestamp).toLocaleTimeString('pl-PL', {
-      hour: '2-digit',
-      minute: '2-digit',
-    })
   }
 }
 </script>
@@ -292,10 +198,16 @@ export default class StationCard extends styleMixin {
 .station-card {
   scroll-behavior: smooth;
 
-  font-size: calc(0.55rem + 0.3vw);
+  font-size: calc(0.5rem + 0.4vw);
+  max-width: 850px;
 
   @include bigScreen {
     font-size: 1.1rem;
+  }
+
+  @include smallScreen {
+    font-size: 0.8em;
+    width: 100%;
   }
 }
 
@@ -327,7 +239,7 @@ export default class StationCard extends styleMixin {
     margin-top: 1rem;
 
     display: grid;
-    grid-template-areas: "main main" "icons icons" "dispatcher hours" "users spawns" "history history";
+    grid-template-areas: "main main" "icons icons" "dispatcher hours" "users spawns";
     grid-template-columns: repeat(2, minmax(0, 1fr));
     min-width: 200px;
     max-height: 500px;
@@ -369,7 +281,7 @@ export default class StationCard extends styleMixin {
     background: $accentCol;
     color: black;
 
-    font-size: 2.5em;
+    font-size: 3em;
     font-weight: 600;
 
     border-radius: 50%;
@@ -511,146 +423,5 @@ export default class StationCard extends styleMixin {
       text-align: center;
     }
   }
-}
-
-.card-timetables {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-
-  overflow: hidden;
-
-  transform: translateY(-100%);
-  -webikit-transform: translateY(-100%);
-
-  &.show {
-    transform: translateY(0);
-    -webkit-transform: translateY(0);
-  }
-
-  transition: transform 150ms ease-out;
-
-  background: #333;
-}
-
-.timetables {
-  &-content {
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-  }
-
-  &-title {
-    padding-top: 2rem;
-    padding-bottom: 0.3rem;
-    font-size: 1.6em;
-  }
-
-  &-wrapper {
-    height: 100%;
-
-    display: flex;
-    flex-direction: column;
-  }
-}
-
-.timetable {
-  margin: 1em auto;
-
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
-  gap: 0 1rem;
-
-  padding: 0 2rem;
-
-  @include smallScreen() {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  &-general {
-    padding: 0.3rem 0.5rem;
-    border: 1px solid white;
-
-    display: flex;
-    justify-content: space-between;
-
-    @include smallScreen() {
-      width: 95%;
-    }
-  }
-
-  &-schedule {
-    @include smallScreen() {
-      width: 80%;
-      margin: 0.7em 0;
-    }
-
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
-    font-size: 1.2em;
-  }
-}
-
-.arrow {
-  border: solid white;
-  border-width: 0 2px 2px 0;
-  display: inline-block;
-  padding: 2px;
-  margin-left: 50px;
-
-  position: relative;
-
-  transform: rotate(-45deg);
-
-  &::before {
-    content: "";
-    position: absolute;
-    display: block;
-    width: 55px;
-    height: 3px;
-    top: 4px;
-    left: 4px;
-
-    transform: translate(-100%, -1px) rotate(45deg);
-    transform-origin: right bottom;
-
-    background: white;
-  }
-}
-
-.general-info {
-  span {
-    color: $accentCol;
-  }
-}
-
-.schedule {
-  &-arrival,
-  &-stop,
-  &-departure {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    margin: 0 0.3rem;
-  }
-
-  &-stop {
-    display: flex;
-    flex-direction: column;
-
-    .stop-time {
-      font-size: 0.7em;
-    }
-  }
-}
-
-.arrival-time.begins,
-.departure-time.terminates {
-  font-size: 0.75em;
 }
 </style>
