@@ -10,13 +10,15 @@
               <span>
                 <strong>{{ train.timetableData.category }}</strong>
                 {{ train.trainNo }} |
+                <span
+                  style=" color: gold;"
+                >{{ train.timetableData.routeDistance }} km</span>
               </span>
-              <span style=" color: gold;">{{ train.timetableData.routeDistance }} km</span>
-            </div>
 
-            <div class="info-warnings">
-              <span class="warning twr" v-if="train.timetableData.TWR">TWR</span>
-              <span class="warning skr" v-if="train.timetableData.SKR">SKR</span>
+              <span>
+                <span class="warning twr" v-if="train.timetableData.TWR">TWR</span>
+                <span class="warning skr" v-if="train.timetableData.SKR">SKR</span>
+              </span>
             </div>
 
             <div class="info-route">
@@ -152,6 +154,7 @@ export default class TrainTable extends Vue {
 
 <style lang="scss" scoped>
 @import "../../styles/responsive.scss";
+@import "../../styles/variables.scss";
 
 .train-table {
   font-size: calc(0.4rem + 0.5vw);
@@ -206,6 +209,9 @@ export default class TrainTable extends Vue {
   &-category {
     flex-grow: 2;
     font-size: 1.05em;
+
+    display: flex;
+    justify-content: space-between;
   }
 
   &-route {
@@ -315,11 +321,12 @@ export default class TrainTable extends Vue {
   font-size: 0.85em;
 
   &.twr {
-    background-color: #ffc700;
+    background-color: $twr;
   }
 
   &.skr {
-    background-color: #ff4646;
+    background-color: $skr;
+    color: white;
   }
 }
 

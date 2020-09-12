@@ -11,41 +11,47 @@
     <transition name="stats-anim">
       <div class="stats-body" v-if="statsOpen">
         <h2 class="stats-header">STATYSTYKI RUCHU</h2>
+
         <div class="stats-speed">
-          <div class="title">PRĘDKOŚCI POCIĄGÓW (MIN | ŚR | MAX) [km/h]</div>
-          <div class="content">{{speedStats.min}} | {{speedStats.avg}} | {{speedStats.max}}</div>
+          <div class="title stats-title">PRĘDKOŚCI POCIĄGÓW (MIN | ŚR | MAX) [km/h]</div>
+          <div class="stats-content">{{speedStats.min}} | {{speedStats.avg}} | {{speedStats.max}}</div>
         </div>
 
         <div class="stats-length">
-          <div class="title">DŁUGOŚCI ROZKŁADÓW (MIN | ŚR | MAX) [km]</div>
+          <div class="title stats-title">DŁUGOŚCI ROZKŁADÓW (MIN | ŚR | MAX) [km]</div>
           <div
-            class="content"
+            class="stats-content"
           >{{timetableStats.min}} | {{timetableStats.avg}} | {{timetableStats.max}}</div>
         </div>
 
         <div class="stats-categories">
-          <div class="title">KATEGORIE RJ</div>
+          <div class="title stats-title">KATEGORIE RJ</div>
+
           <div class="category-list">
             <span class="category" v-for="[key, value] of categoryList" :key="key">
               <span class="category-type">{{key}}</span>
               <span class="category-count">{{value}}</span>
             </span>
           </div>
-          <div class="warning twr">
-            Wysokiego ryzyka
-            [{{specialTrainCount[0]}}]
-          </div>
 
-          <div class="warning skr">
-            Przekroczona skrajnia
-            [{{specialTrainCount[1]}}]
+          <div class="special-list">
+            <span class="special twr">
+              <span class="special-type">WYSOKIEGO RYZYKA</span>
+              <span class="special-count">{{specialTrainCount[0]}}</span>
+            </span>
+
+            <span class="special skr">
+              <span class="special-type">PRZEKROCZONA SKRAJNIA</span>
+              <span class="special-count">{{specialTrainCount[1]}}</span>
+            </span>
           </div>
         </div>
 
         <div class="stats-locos">
-          <div class="title">NAJCZĘSTSZE JEDNOSTKI</div>
-          <div class="loco-list content">
-            <div class="loco" v-for="(loco,i) in locoList" :key="i">{{loco[0]}} | {{loco[1]}}</div>
+          <div class="title stats-title">NAJCZĘSTSZE JEDNOSTKI</div>
+
+          <div class="loco-list stats-content">
+            <div class="loco-item" v-for="(loco,i) in locoList" :key="i">{{loco[0]}} | {{loco[1]}}</div>
           </div>
         </div>
       </div>
@@ -161,6 +167,7 @@ export default class TrainStats extends Vue {
 
 <style lang="scss" scoped>
 @import "../../styles/responsive";
+@import "../../styles/variables";
 
 .stats-anim {
   &-enter-active,
@@ -182,38 +189,40 @@ export default class TrainStats extends Vue {
   position: relative;
 }
 
-.button {
-  font-size: 1em;
-  padding: 0.5em;
+.stats {
+  &-btn {
+    font-size: 1em;
+    padding: 0.5em;
+  }
+
+  &-header {
+    margin-bottom: 1rem;
+  }
+
+  &-body {
+    position: absolute;
+    display: inline-block;
+    max-width: 700px;
+
+    background: rgba(black, 0.85);
+    border-radius: 0 1em 1em 1em;
+
+    padding: 1rem;
+  }
+
+  &-content {
+    font-size: 1.1em;
+    color: #ddd;
+  }
 }
 
-.content {
-  font-size: 1.1em;
-  color: #ddd;
-}
-
-.stats-header {
-  margin-bottom: 1rem;
-}
-
-.stats-body {
-  position: absolute;
-  display: inline-block;
-  max-width: 700px;
-
-  background: rgba(black, 0.85);
-  border-radius: 0 1em 1em 1em;
-
-  padding: 1rem;
-}
-
-.category-list {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.category {
-  font-size: 0.9em;
+.category,
+.special {
+  &-list {
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 0.85em;
+  }
 
   margin-right: 0.4em;
   margin-bottom: 0.4em;
@@ -234,6 +243,27 @@ export default class TrainStats extends Vue {
   }
 }
 
+.special {
+  &-list {
+    font-size: 0.85em;
+  }
+
+  &-count {
+    background: gray;
+    color: white;
+  }
+
+  &.twr > &-type {
+    background-color: $twr;
+    color: black;
+  }
+
+  &.skr > &-type {
+    background-color: $skr;
+    color: white;
+  }
+}
+
 .warning {
   display: inline-block;
   margin-right: 0.4em;
@@ -248,30 +278,24 @@ export default class TrainStats extends Vue {
   }
 
   &.skr {
-    background-color: #ff4646;
+    background-color: #f00000;
   }
-}
-
-.loco {
-  padding-bottom: 0.4em;
 }
 
 @include smallScreen {
   .button {
     font-size: 0.85rem;
   }
+
   .stats-body {
     display: block;
     font-size: 0.9em;
-    // position: fixed;
-    // top: 0;
-    // left: 0;
 
     width: 100%;
-    // height: 100%;
 
     border-radius: 0 0 1em 1em;
   }
+
   .btn-wrapper {
     display: flex;
     justify-content: center;

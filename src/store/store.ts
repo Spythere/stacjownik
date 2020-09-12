@@ -295,8 +295,15 @@ export default class Store extends VuexModule {
   private updateOnlineStations(updatedStationList: any[]) {
     this.stationList = this.stationList.reduce((acc, station) => {
       const onlineStationData = updatedStationList.find(updatedStation => updatedStation.stationName === station.stationName);
+      const isRegistered = JSONStationData.some(data => data.stationName === station.stationName);
 
-      if (!onlineStationData) {
+      if (onlineStationData)
+        acc.push({
+          ...station,
+          ...onlineStationData,
+          online: true,
+        });
+      else if (isRegistered)
         acc.push({
           ...station,
           stationProject: '',
@@ -311,12 +318,6 @@ export default class Store extends VuexModule {
           occupiedTo: 'WOLNA',
           statusTimestamp: -3,
           online: false,
-        });
-      } else
-        acc.push({
-          ...station,
-          ...onlineStationData,
-          online: true,
         });
 
       return acc;

@@ -14,7 +14,7 @@
                 :to="{ name: 'TrainsView', params: { passedSearchedTrain: scheduledTrain.trainNo.toString()}}"
               >
                 <span>
-                  {{scheduledTrain.category}}
+                  <strong>{{scheduledTrain.category}}</strong>
                   {{scheduledTrain.trainNo}}
                 </span>
               </router-link>|
@@ -185,6 +185,7 @@ export default class StationTimetable extends Vue {
     border: 1px solid white;
 
     display: flex;
+    align-items: center;
     justify-content: space-between;
 
     @include smallScreen() {
