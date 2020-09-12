@@ -19,7 +19,9 @@ export default interface Train {
     route: string;
     followingStops: {
       stopName: string;
+      stopNameRAW: string;
       stopType: string;
+      mainStop: boolean;
       arrivalLine?: string;
       arrivalTime: number;
       arrivalDelay: number;

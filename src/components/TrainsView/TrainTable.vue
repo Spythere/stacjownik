@@ -142,9 +142,8 @@ export default class TrainTable extends Vue {
     return stops.reduce((acc, stop, i) => {
 
       if (stop.stopType.includes("ph")) acc.push(`<strong>${stop.stopName}</strong>`);
-      else if (i > 0 && i < stops.length - 1) acc.push(`<span style='color: #ccc;'>${stop.stopName}</span>`);
-      // if (stop.stopType == "podg.") acc.push(`<span style='color: #ccc;'>${stop.stopName}</span>`);
-
+      else if (i > 0 && i < stops.length - 1 && !stop.stopName.includes("po."))
+        acc.push(`<span style='color: #ccc;'>${stop.stopName.includes("podg.") ? stop.stopName.split(",")[0] : stop.stopName}</span>`);
       return acc;
     }, []).join(" * ");
   }
@@ -216,6 +215,8 @@ export default class TrainTable extends Vue {
 
   &-stations {
     margin-top: 0.35em;
+    margin-bottom: 1rem;
+
     font-size: 0.75em;
   }
 

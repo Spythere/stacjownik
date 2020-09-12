@@ -143,27 +143,33 @@ export default class Store extends VuexModule {
             //   stopObj.stopType = point.pointStopType;
             // }
 
-            if (!point.pointName.includes('Południowy') && (point.pointName.includes('strong') || point.pointName.includes('podg.'))) {
-              if (point.pointName.includes('strong')) {
-                stopObj.stopName = point.pointNameRAW;
-                stopObj.stopType = point.pointStopType;
-              } else if (JSONStationData.some(data => data.stationName.toLowerCase().includes(point.pointNameRAW.split(',')[0].toLowerCase()))) {
-                stopObj.stopName = point.pointNameRAW.split(',')[0];
-                stopObj.stopType = 'pt podg.';
-              }
+            // if (point.pointNameRAW.includes('Południowy')) return acc;
+            // if (
+            //   !point.pointName.includes('strong') ||
+            //   !(point.pointNameRAW.includes('podg.') || JSONStationData.some(data => data.stationName.toLowerCase().includes(point.pointNameRAW.split(',')[0].toLowerCase())))
+            // )
+            //   return acc;
 
-              stopObj.arrivalTime = getTimestamp(point.arrivalTime);
-              stopObj.departureTime = getTimestamp(point.departureTime);
-              stopObj.arrivalDelay = point.arrivalDelay;
-              stopObj.departureDelay = point.departureDelay;
-              stopObj.beginsHere = getTimestamp(point.arrivalTime) == 0 ? true : false;
-              stopObj.terminatesHere = getTimestamp(point.departureTime) == 0 ? true : false;
-              stopObj.confirmed = point.confirmed;
-              stopObj.stopped = point.isStopped;
-              stopObj.stopTime = point.pointStopTime;
+            // stopObj.stopName = point.pointName.includes('strong') ? point.pointNameRAW : point.pointNameRAW.split(',')[0];
+            // stopObj.stopType = point.pointName.includes('strong') ? point.pointStopType : 'pt podg.';
 
-              acc.push(stopObj);
-            }
+            stopObj.stopName = point.pointName;
+            stopObj.stopNameRAW = point.pointNameRAW;
+            stopObj.stopType = point.pointStopType;
+
+            stopObj.mainStop = point.pointName.includes('strong');
+
+            stopObj.arrivalTime = getTimestamp(point.arrivalTime);
+            stopObj.departureTime = getTimestamp(point.departureTime);
+            stopObj.arrivalDelay = point.arrivalDelay;
+            stopObj.departureDelay = point.departureDelay;
+            stopObj.beginsHere = getTimestamp(point.arrivalTime) == 0 ? true : false;
+            stopObj.terminatesHere = getTimestamp(point.departureTime) == 0 ? true : false;
+            stopObj.confirmed = point.confirmed;
+            stopObj.stopped = point.isStopped;
+            stopObj.stopTime = point.pointStopTime;
+
+            acc.push(stopObj);
 
             return acc;
           }, []);
@@ -353,12 +359,16 @@ export default class Store extends VuexModule {
     this.stationList = this.stationList.map(station => {
       const scheduledTrains = timetableList.reduce((acc, timetableData: any) => {
         const scheduledIndex = timetableData
-          ? timetableData.followingStops.findIndex(
-              (stop: any) =>
-                station.stationName.toLowerCase().includes(stop.stopName) ||
-                station.stationName.toLowerCase().includes(stop.stopName.toLowerCase().split(',')[0]) ||
-                (station.stationName.toLowerCase().includes(stop.stopName.toLowerCase().split(' ')[0]) && station.stationName.toLowerCase().includes('lcs'))
-            )
+          ? timetableData.followingStops.findIndex((stop: any) => {
+              const stationName = station.stationName.toLowerCase();
+              const stopName = stop.stopNameRAW.toLowerCase();
+
+              return (
+                stationName.includes(stopName) ||
+                (stopName.includes('podg.') && stopName.split(', podg.')[0] && stationName.includes(stopName.split(', podg.')[0])) ||
+                (stationName.includes('lcs') && JSONStationData.some(data => data.stationName.includes(station.stationName) && data.stops && data.stops.includes(stop.stopNameRAW)))
+              );
+            })
           : -1;
 
         if (scheduledIndex >= 0) {

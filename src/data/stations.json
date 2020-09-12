@@ -44,7 +44,8 @@
       }
     },
     "default": false,
-    "nonPublic": true
+    "nonPublic": true,
+    "stops": ["Borowe, podg.", "Wysoka, podg.", "Naprawa, podg."]
   },
   {
     "stationName": "LCS Gdańsk",
@@ -68,7 +69,8 @@
       }
     },
     "default": true,
-    "nonPublic": false
+    "nonPublic": false,
+    "stops": ["Gdańsk Główny"]
   },
   {
     "stationName": "Lębork",
@@ -260,7 +262,8 @@
       }
     },
     "default": true,
-    "nonPublic": false
+    "nonPublic": false,
+    "stops": ["Głowno"]
   },
   {
     "stationName": "LCS Ozorków",
@@ -284,7 +287,8 @@
       }
     },
     "default": true,
-    "nonPublic": false
+    "nonPublic": false,
+    "stops": ["Ozorków"]
   },
   {
     "stationName": "LCS Skrzynki",
@@ -308,7 +312,8 @@
       }
     },
     "default": true,
-    "nonPublic": false
+    "nonPublic": false,
+    "stops": ["Skrzynki"]
   },
   {
     "stationName": "Łask",
@@ -428,7 +433,8 @@
       }
     },
     "default": true,
-    "nonPublic": false
+    "nonPublic": false,
+    "stops": ["Tłoki, podg."]
   },
   {
     "stationName": "Witaszyczki",
@@ -764,7 +770,8 @@
       }
     },
     "default": true,
-    "nonPublic": false
+    "nonPublic": false,
+    "stops": ["Bucz Wileński"]
   },
   {
     "stationName": "Lisiczki",
@@ -1309,7 +1316,7 @@
     "reqLevel": "2",
     "supportersOnly": "NIE",
     "signalType": "współczesna",
-    "controlType": "SCS",
+    "controlType": "SPK",
     "SBL": "",
     "twoWayBlock": "TAK",
     "routes": {
@@ -1856,6 +1863,7 @@
     },
     "default": false,
     "nonPublic": false,
-    "unavailable": true
+    "unavailable": true,
+    "stops": ["Sroka, podg."]
   }
 ]
