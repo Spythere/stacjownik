@@ -325,13 +325,16 @@ export default class Store extends VuexModule {
 
     // Dodawanie do listy online potencjalnych scenerii niewpisanych do bazy
     updatedStationList.forEach(updatedStation => {
-      const alreadyInList: any = this.stationList.findIndex(station => station.stationName === updatedStation.stationName);
+      const alreadyInList: any = this.stationList.some(station => station.stationName === updatedStation.stationName);
 
-      if (alreadyInList < 0) {
+      if (!alreadyInList) {
         this.stationList.push({
           ...updatedStation,
+          scheduledTrains: [],
+          stationTrains: [],
           online: true,
           reqLevel: '-1',
+          nonPublic: true,
         });
       }
     });

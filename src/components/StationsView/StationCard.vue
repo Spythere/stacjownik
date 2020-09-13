@@ -124,9 +124,9 @@
         <div class="users-content">
           <div
             class="user"
+            :class="train.stopStatus"
             v-for="train in computedStationTrains"
             :key="train.trainNo + train.driverName"
-            :class="{'no-timetable': !train.timetableData}"
           >
             <router-link
               :to="{ name: 'TrainsView', params: { passedSearchedTrain: train.trainNo.toString()}}"
@@ -145,7 +145,11 @@
       </div>
     </div>
 
-    <StationTimetable :class="{show: cardMode == 1}" :stationInfo="stationInfo" />
+    <StationTimetable
+      :class="{show: cardMode == 1}"
+      :scheduledTrains="computedScheduledTrains"
+      :stationName="stationInfo.stationName"
+    />
   </section>
 </template>
 
@@ -156,6 +160,7 @@ import { Getter } from "vuex-class";
 import styleMixin from "@/mixins/styleMixin";
 
 import Station from "@/scripts/interfaces/Station";
+import Train from "@/scripts/interfaces/Train";
 
 import StationTimetable from "@/components/StationsView/StationTimetable.vue";
 
@@ -167,7 +172,6 @@ import StationTimetable from "@/components/StationsView/StationTimetable.vue";
 export default class StationCard extends styleMixin {
   @Prop() stationInfo!: Station;
   @Prop() exit!: void;
-  @Getter('getTrainList') trains;
 
   cardMode: number = 0;
 
@@ -177,11 +181,34 @@ export default class StationCard extends styleMixin {
       : `${this.stationInfo.dispatcherExp}`;
   }
 
+  get computedScheduledTrains() {
+    return this.stationInfo.scheduledTrains.map(scheduledTrain => {
+      let stopStatus = "";
+      let stopLabel = "";
+
+      if (scheduledTrain.terminatesHere && scheduledTrain.confirmed) { stopStatus = "terminated"; stopLabel = "Skończył bieg" }
+      else if (!scheduledTrain.terminatesHere && scheduledTrain.confirmed) { stopStatus = "departed"; stopLabel = "Odprawiony" }
+      else if (scheduledTrain.currentStationName == this.stationInfo.stationName && !scheduledTrain.stopped) { stopStatus = "online"; stopLabel = "Na stacji" }
+      else if (scheduledTrain.currentStationName == this.stationInfo.stationName && scheduledTrain.stopped) { stopStatus = "stopped"; stopLabel = "Postój" }
+      else if (scheduledTrain.currentStationName != this.stationInfo.stationName) { stopStatus = "arriving"; stopLabel = "W drodze" }
+
+      return {
+        ...scheduledTrain,
+        stopStatus,
+        stopLabel
+      }
+    })
+  }
+
   get computedStationTrains() {
-    return this.stationInfo.stationTrains.map(stationTrain => ({
-      ...stationTrain,
-      timetableData: this.trains.find(train => train.timetableData && train.trainNo === stationTrain.trainNo)
-    }))
+    return this.stationInfo.stationTrains.map(stationTrain => {
+      const scheduledData = this.computedScheduledTrains.find(scheduledTrain => scheduledTrain.trainNo === stationTrain.trainNo);
+
+      return {
+        ...stationTrain,
+        stopStatus: scheduledData?.stopStatus || "no-timetable"
+      }
+    })
   }
 }
 </script>
@@ -400,6 +427,22 @@ export default class StationCard extends styleMixin {
           color: #aaa;
           pointer-events: none;
         }
+      }
+
+      &.departed {
+        border: 1px solid lime;
+      }
+
+      &.stopped {
+        border: 1px solid #ffa600;
+      }
+
+      &.online {
+        border: 1px solid gold;
+      }
+
+      &.terminated {
+        border: 1px solid red;
       }
     }
   }

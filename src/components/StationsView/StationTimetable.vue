@@ -2,7 +2,7 @@
   <div class="station-timetable">
     <div class="timetable-wrapper">
       <div class="timetable-title title">
-        <div style="font-size: 1.5em;">{{stationInfo.stationName.toUpperCase()}}</div>
+        <div style="font-size: 1.5em;">{{stationName.toUpperCase()}}</div>
         <div style="font-size: 0.7em;">AKTYWNE ROZKŁADY JAZDY</div>
       </div>
 
@@ -26,28 +26,8 @@
               </span>
             </span>
 
-            <span class="general-confirmed">
-              <span
-                style="color: red"
-                v-if="scheduledTrain.terminatesHere && scheduledTrain.confimed"
-              >Skończył bieg</span>
-
-              <span
-                style="color: lime"
-                v-else-if="scheduledTrain.confirmed && !scheduledTrain.terminatesHere"
-              >Odprawiony</span>
-
-              <span
-                style="color: gold"
-                v-else-if="scheduledTrain.currentStationName == stationInfo.stationName && !scheduledTrain.stopped"
-              >Na stacji</span>
-
-              <span
-                style="color: #aaa"
-                v-else-if="!scheduledTrain.confirmed && scheduledTrain.currentStationName != stationInfo.stationName"
-              >W drodze</span>
-
-              <span style="color: orangered" v-else-if="scheduledTrain.stopped">Postój</span>
+            <span class="general-status">
+              <span :class="scheduledTrain.stopStatus">{{scheduledTrain.stopLabel}}</span>
             </span>
           </span>
 
@@ -87,15 +67,13 @@
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
 
-import Station from "@/scripts/interfaces/Station";
-
-
 @Component
 export default class StationTimetable extends Vue {
-  @Prop() readonly stationInfo!: Station;
+  @Prop() readonly scheduledTrains;
+  @Prop() readonly stationName;
 
   get computedScheduledTrains() {
-    return this.stationInfo.scheduledTrains.sort((a, b) => {
+    return this.scheduledTrains.sort((a, b) => {
       if (a.arrivalTime > b.arrivalTime) return 1;
       else if ((a.arrivalTime < b.arrivalTime)) return -1;
 
@@ -237,6 +215,28 @@ export default class StationTimetable extends Vue {
 .general-info {
   span {
     color: $accentCol;
+  }
+}
+
+.general-status {
+  span.arriving {
+    color: #aaa;
+  }
+
+  span.departed {
+    color: lime;
+  }
+
+  span.stopped {
+    color: #ffa600;
+  }
+
+  span.online {
+    color: gold;
+  }
+
+  span.terminated {
+    color: red;
   }
 }
 
