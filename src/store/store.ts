@@ -223,6 +223,7 @@ export default class Store extends VuexModule {
             dispatcherRate: station.dispatcherRate,
             dispatcherId: station.dispatcherId,
             dispatcherExp: station.dispatcherExp,
+            dispatcherIsSupporter: station.dispatcherIsSupporter,
             occupiedTo: statusLabel,
             stationTrains,
             statusTimestamp,
@@ -282,6 +283,7 @@ export default class Store extends VuexModule {
       dispatcherRate: 0,
       dispatcherExp: -1,
       dispatcherId: 0,
+      dispatcherIsSupporter: false,
       online: false,
       occupiedTo: 'WOLNA',
       statusTimestamp: -3,
@@ -315,9 +317,12 @@ export default class Store extends VuexModule {
           dispatcherRate: 0,
           dispatcherExp: -1,
           dispatcherId: 0,
+          dispatcherIsSupporter: false,
+          online: false,
           occupiedTo: 'WOLNA',
           statusTimestamp: -3,
-          online: false,
+          stationTrains: [],
+          scheduledTrains: [],
         });
 
       return acc;

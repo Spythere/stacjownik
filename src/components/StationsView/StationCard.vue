@@ -80,8 +80,8 @@
       <div class="dispatcher">
         <div
           class="dispatcher-level flex"
-          :style="calculateExpStyle(stationInfo.dispatcherExp)"
-        >{{stationInfo.online ? computedExp : ""}}</div>
+          :style="calculateExpStyle(stationInfo.dispatcherExp, stationInfo.dispatcherIsSupporter)"
+        >{{stationInfo.online ? computedDispatcherExp : ""}}</div>
         <div class="dispatcher-info">
           <div class="dispatcher-name">
             <a
@@ -175,7 +175,7 @@ export default class StationCard extends styleMixin {
 
   cardMode: number = 0;
 
-  get computedExp(): string {
+  get computedDispatcherExp(): string {
     return this.stationInfo.dispatcherExp < 2
       ? "L"
       : `${this.stationInfo.dispatcherExp}`;

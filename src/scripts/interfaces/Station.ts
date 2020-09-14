@@ -10,6 +10,7 @@ export default interface Station {
   dispatcherName: string;
   dispatcherExp: number;
   dispatcherId: number;
+  dispatcherIsSupporter: boolean;
   stationLines: string;
   stationProject: string;
   reqLevel: string;
