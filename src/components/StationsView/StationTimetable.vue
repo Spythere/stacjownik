@@ -33,29 +33,32 @@
 
           <span class="timetable-schedule">
             <span class="schedule-arrival">
-              <span class="arrival-time begins" v-if="scheduledTrain.beginsHere">ROZPOCZYNA BIEG</span>
+              <span
+                class="arrival-time begins"
+                v-if="scheduledTrain.stopInfo.beginsHere"
+              >ROZPOCZYNA BIEG</span>
               <span
                 class="arrival-time"
                 v-else
-              >{{timestampToTime(scheduledTrain.arrivalTime)}} ({{scheduledTrain.arrivalDelay}})</span>
+              >{{scheduledTrain.stopInfo.arrivalTimeString}} ({{scheduledTrain.stopInfo.arrivalDelay}})</span>
             </span>
 
             <span class="schedule-stop">
               <span
                 class="stop-time"
-                v-if="scheduledTrain.stopTime"
-              >{{scheduledTrain.stopTime}} {{scheduledTrain.stopType}}</span>
+                v-if="scheduledTrain.stopInfo.stopTime"
+              >{{scheduledTrain.stopInfo.stopTime}} {{scheduledTrain.stopInfo.stopType}}</span>
               <span class="stop-arrow arrow"></span>
             </span>
             <span class="schedule-departure">
               <span
                 class="departure-time terminates"
-                v-if="scheduledTrain.terminatesHere"
+                v-if="scheduledTrain.stopInfo.terminatesHere"
               >KOŃCZY BIEG</span>
               <span
                 class="departure-time"
                 v-else
-              >{{timestampToTime(scheduledTrain.departureTime)}} ({{scheduledTrain.departureDelay}})</span>
+              >{{scheduledTrain.stopInfo.departureTimeString}} ({{scheduledTrain.stopInfo.departureDelay}})</span>
             </span>
           </span>
         </div>
@@ -67,6 +70,8 @@
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
 
+import Station from "@/scripts/interfaces/Station";
+
 @Component
 export default class StationTimetable extends Vue {
   @Prop() readonly scheduledTrains;
@@ -74,17 +79,10 @@ export default class StationTimetable extends Vue {
 
   get computedScheduledTrains() {
     return this.scheduledTrains.sort((a, b) => {
-      if (a.arrivalTime > b.arrivalTime) return 1;
-      else if ((a.arrivalTime < b.arrivalTime)) return -1;
+      if (a.stopInfo.arrivalTimestamp > b.stopInfo.arrivalTimestamp) return 1;
+      else if ((a.stopInfo.arrivalTimestamp < b.stopInfo.arrivalTimestamp)) return -1;
 
-      return a.departureTime > b.departureTime ? 1 : -1;
-    })
-  }
-
-  timestampToTime(timestamp: number) {
-    return new Date(timestamp).toLocaleTimeString('pl-PL', {
-      hour: '2-digit',
-      minute: '2-digit',
+      return a.stopInfo.departureTimestamp > b.stopInfo.departureTimestamp ? 1 : -1;
     })
   }
 }

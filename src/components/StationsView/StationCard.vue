@@ -186,10 +186,10 @@ export default class StationCard extends styleMixin {
       let stopStatus = "";
       let stopLabel = "";
 
-      if (scheduledTrain.terminatesHere && scheduledTrain.confirmed) { stopStatus = "terminated"; stopLabel = "Skończył bieg" }
-      else if (!scheduledTrain.terminatesHere && scheduledTrain.confirmed) { stopStatus = "departed"; stopLabel = "Odprawiony" }
-      else if (scheduledTrain.currentStationName == this.stationInfo.stationName && !scheduledTrain.stopped) { stopStatus = "online"; stopLabel = "Na stacji" }
-      else if (scheduledTrain.currentStationName == this.stationInfo.stationName && scheduledTrain.stopped) { stopStatus = "stopped"; stopLabel = "Postój" }
+      if (scheduledTrain.stopInfo.terminatesHere && scheduledTrain.stopInfo.confirmed) { stopStatus = "terminated"; stopLabel = "Skończył bieg" }
+      else if (!scheduledTrain.stopInfo.terminatesHere && scheduledTrain.stopInfo.confirmed) { stopStatus = "departed"; stopLabel = "Odprawiony" }
+      else if (scheduledTrain.currentStationName == this.stationInfo.stationName && !scheduledTrain.stopInfo.stopped) { stopStatus = "online"; stopLabel = "Na stacji" }
+      else if (scheduledTrain.currentStationName == this.stationInfo.stationName && scheduledTrain.stopInfo.stopped) { stopStatus = "stopped"; stopLabel = "Postój" }
       else if (scheduledTrain.currentStationName != this.stationInfo.stationName) { stopStatus = "arriving"; stopLabel = "W drodze" }
 
       return {
@@ -223,13 +223,11 @@ export default class StationCard extends styleMixin {
 }
 
 .station-card {
-  scroll-behavior: smooth;
-
-  font-size: calc(0.5rem + 0.4vw);
-  max-width: 850px;
+  font-size: calc(0.5rem + 0.35vw);
+  max-width: 800px;
 
   @include bigScreen {
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
 
   @include smallScreen {
@@ -269,7 +267,7 @@ export default class StationCard extends styleMixin {
     grid-template-areas: "main main" "icons icons" "dispatcher hours" "users spawns";
     grid-template-columns: repeat(2, minmax(0, 1fr));
     min-width: 200px;
-    max-height: 500px;
+    max-height: 600px;
 
     transform: translateY(0%);
 

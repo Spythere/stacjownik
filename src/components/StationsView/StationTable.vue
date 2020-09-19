@@ -126,7 +126,7 @@
                   /
                   <span
                     style="color:#bbb"
-                  >{{ station.scheduledTrains.filter(train => train.confirmed).length }}</span>
+                  >{{ station.scheduledTrains.filter(train => train.stopInfo.confirmed).length }}</span>
                 </span>
 
                 <span v-else>...</span>

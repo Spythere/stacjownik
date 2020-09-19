@@ -5,7 +5,7 @@ import JSONStationData from '@/data/stations.json';
 
 import Station from '@/scripts/interfaces/Station';
 import Train from '@/scripts/interfaces/Train';
-import Timetable from '@/scripts/interfaces/Timetable';
+import TrainStop from '@/scripts/interfaces/TrainStop';
 
 enum Status {
   Loading = 0,
@@ -80,6 +80,11 @@ const getStatusTimestamp = (stationStatus: any) => {
 
 const getOpenSpawns = (spawnString: string) => (spawnString ? spawnString.split(';').map(v => (v.split(',')[6] ? v.split(',')[6] : v.split(',')[0])) : '');
 const getTimestamp = (date: string) => (date ? new Date(date).getTime() : 0);
+const timestampToTime = (timestamp: number) =>
+  new Date(timestamp).toLocaleTimeString('pl-PL', {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 
 @Module
 export default class Store extends VuexModule {
@@ -135,41 +140,40 @@ export default class Store extends VuexModule {
         if (timetable && trainInfo) {
           timetableData = {};
 
-          const followingStops = timetable.stopPoints.reduce((acc, point) => {
-            const stopObj: any = {};
+          const followingStops: TrainStop[] = timetable.stopPoints.reduce((acc: TrainStop[], point) => {
+            const arrivalTimestamp = getTimestamp(point.arrivalTime);
+            const arrivalRealTimestamp = getTimestamp(point.arrivalRealTime);
 
-            // if (point.pointName.includes('strong') && !point.pointName.includes('Południowy')) {
-            //   stopObj.stopName = point.pointNameRAW;
-            //   stopObj.stopType = point.pointStopType;
-            // }
+            const departureTimestamp = getTimestamp(point.departureTime);
+            const departureRealTimestamp = getTimestamp(point.departureRealTime);
 
-            // if (point.pointNameRAW.includes('Południowy')) return acc;
-            // if (
-            //   !point.pointName.includes('strong') ||
-            //   !(point.pointNameRAW.includes('podg.') || JSONStationData.some(data => data.stationName.toLowerCase().includes(point.pointNameRAW.split(',')[0].toLowerCase())))
-            // )
-            //   return acc;
+            acc.push({
+              stopName: point.pointName,
+              stopNameRAW: point.pointNameRAW,
+              stopType: point.pointStopType,
+              mainStop: point.pointName.includes('strong'),
 
-            // stopObj.stopName = point.pointName.includes('strong') ? point.pointNameRAW : point.pointNameRAW.split(',')[0];
-            // stopObj.stopType = point.pointName.includes('strong') ? point.pointStopType : 'pt podg.';
+              arrivalLine: point.arrivalLine,
+              arrivalTimeString: timestampToTime(point.arrivalTime),
+              arrivalTimestamp: arrivalTimestamp,
+              arrivalRealTimeString: timestampToTime(point.arrivalRealTime),
+              arrivalRealTimestamp: arrivalRealTimestamp,
+              arrivalDelay: point.arrivalDelay,
 
-            stopObj.stopName = point.pointName;
-            stopObj.stopNameRAW = point.pointNameRAW;
-            stopObj.stopType = point.pointStopType;
+              departureLine: point.departureLine,
+              departureTimeString: timestampToTime(point.departureTime),
+              departureTimestamp: departureTimestamp,
+              departureRealTimeString: timestampToTime(point.departureRealTime),
+              departureRealTimestamp: departureRealTimestamp,
+              departureDelay: point.departureDelay,
 
-            stopObj.mainStop = point.pointName.includes('strong');
+              beginsHere: arrivalTimestamp == 0,
+              terminatesHere: departureTimestamp == 0,
 
-            stopObj.arrivalTime = getTimestamp(point.arrivalTime);
-            stopObj.departureTime = getTimestamp(point.departureTime);
-            stopObj.arrivalDelay = point.arrivalDelay;
-            stopObj.departureDelay = point.departureDelay;
-            stopObj.beginsHere = getTimestamp(point.arrivalTime) == 0 ? true : false;
-            stopObj.terminatesHere = getTimestamp(point.departureTime) == 0 ? true : false;
-            stopObj.confirmed = point.confirmed;
-            stopObj.stopped = point.isStopped;
-            stopObj.stopTime = point.pointStopTime;
-
-            acc.push(stopObj);
+              confirmed: point.confirmed,
+              stopped: point.isStopped,
+              stopTime: point.pointStopTime,
+            });
 
             return acc;
           }, []);
@@ -384,12 +388,12 @@ export default class Store extends VuexModule {
           const scheduledData = timetableData.followingStops[scheduledIndex];
 
           acc.push({
-            ...scheduledData,
             trainNo: timetableData.trainNo,
             driverName: timetableData.driverName,
             driverId: timetableData.driverId,
             currentStationName: timetableData.currentStationName,
             category: timetableData.category,
+            stopInfo: scheduledData,
           });
         }
 

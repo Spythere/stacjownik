@@ -1,3 +1,5 @@
+import TrainStop from '@/scripts/interfaces/TrainStop';
+
 export default interface Train {
   mass: number;
   length: number;
@@ -17,23 +19,7 @@ export default interface Train {
     timetableId: number;
     category: string;
     route: string;
-    followingStops: {
-      stopName: string;
-      stopNameRAW: string;
-      stopType: string;
-      mainStop: boolean;
-      arrivalLine?: string;
-      arrivalTime: number;
-      arrivalDelay: number;
-      departureLine?: string;
-      departureTime: number;
-      beginsHere: boolean;
-      terminatesHere: boolean;
-      departureDelay: number;
-      confirmed: boolean;
-      stopped: boolean;
-      stopTime: number;
-    }[];
+    followingStops: TrainStop[];
     TWR: boolean;
     SKR: boolean;
     routeDistance: number;

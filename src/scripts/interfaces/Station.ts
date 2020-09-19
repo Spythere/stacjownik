@@ -1,4 +1,5 @@
 import Train from '@/scripts/interfaces/Train';
+import TrainStop from '@/scripts/interfaces/TrainStop';
 
 export default interface Station {
   stationName: string;
@@ -32,18 +33,7 @@ export default interface Station {
     driverName: string;
     driverId: number;
     currentStationName: string;
-    stopName: string;
-    stopType: string;
-    arrivalLine?: string;
-    arrivalTime: number;
-    arrivalDelay: number;
-    departureLine?: string;
-    departureTime: number;
-    beginsHere: boolean;
-    terminatesHere: boolean;
-    departureDelay: number;
-    confirmed: boolean;
-    stopped: boolean;
-    stopTime: number;
+    category: string;
+    stopInfo: TrainStop;
   }[];
 }

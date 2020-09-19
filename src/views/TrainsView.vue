@@ -122,7 +122,7 @@ export default class TrainsView extends Vue {
 
 .body-wrapper {
   margin: 1rem auto;
-  max-width: 1200px;
+  max-width: 1300px;
 
   padding: 0 0.5rem;
 

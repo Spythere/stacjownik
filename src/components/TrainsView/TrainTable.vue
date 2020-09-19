@@ -2,129 +2,152 @@
   <div class="train-table">
     <div class="no-trains" v-if="computedTrains.length == 0">Ups! Brak pociągów do wyświetlenia :/</div>
 
-    <ul class="list">
-      <li class="item" v-for="(train, i) in computedTrains" :key="i">
-        <span class="info">
-          <div class="info-top">
-            <div class="info-category">
-              <span>
-                <strong>{{ train.timetableData.category }}</strong>
-                {{ train.trainNo }} |
-                <span
-                  style=" color: gold;"
-                >{{ train.timetableData.routeDistance }} km</span>
-              </span>
+    <ul class="train-list">
+      <li
+        class="train-item"
+        v-for="(train, i) in computedTrains"
+        :key="i"
+        :id="train.timetableData.timetableId"
+      >
+        <span class="train-info">
+          <span class="info">
+            <div class="info-top">
+              <div class="info-category">
+                <span>
+                  <strong>{{ train.timetableData.category }}</strong>
+                  {{ train.trainNo }} |
+                  <span
+                    style=" color: gold;"
+                  >{{ train.timetableData.routeDistance }} km</span>
+                </span>
 
-              <span>
-                <span class="warning twr" v-if="train.timetableData.TWR">TWR</span>
-                <span class="warning skr" v-if="train.timetableData.SKR">SKR</span>
-              </span>
-            </div>
+                <span>
+                  <span class="warning twr" v-if="train.timetableData.TWR">TWR</span>
+                  <span class="warning skr" v-if="train.timetableData.SKR">SKR</span>
+                </span>
+              </div>
 
-            <div class="info-route">
-              <a :href="'https://rj.td2.info.pl/train#' + train.trainNo + ';eu'" target="_blank">
+              <div class="info-route">
                 <strong>
                   {{
                   train.timetableData.route.replace("|", " - ")
                   }}
                 </strong>
-              </a>
+              </div>
+
+              <div class="info-stations">
+                <span v-if="train.timetableData.followingStops.length > 2">
+                  Przez:
+                  <span v-html="generateStopList(train.timetableData.followingStops)"></span>
+                </span>
+              </div>
             </div>
 
-            <div class="info-stations">
-              <span v-if="train.timetableData.followingStops.length > 2">
-                Przez:
-                <span v-html="generateStopList(train.timetableData.followingStops)"></span>
+            <div class="info-bottom">
+              <span
+                class="info-online"
+                :class="{'online': train.online}"
+              >{{train.online ? "ONLINE" : "OFFLINE"}}</span>
+
+              <button
+                class="button"
+                @click="changeScheduleShowState(train.timetableData.timetableId)"
+              >SZCZEGÓŁOWY ROZKŁAD</button>
+            </div>
+          </span>
+
+          <span class="driver">
+            <span class="driver-name">
+              <a
+                :href="'https://td2.info.pl/profile/?u=' + train.driverId"
+                target="_blank"
+              >{{ train.driverName }}</a>
+              <span style="color: #bbb; margin-left: 1em;">
+                {{
+                train.locoType
+                }}
+              </span>
+            </span>
+            <span class="driver-loco">
+              <img :src="train.locoURL" @error="onImageError" />
+            </span>
+          </span>
+
+          <span class="stats">
+            <div class="stats-general">
+              <span class="stat mass">
+                <img :src="massIcon" alt="icon-mass" />
+                {{ train.mass / 1000 }}t
+              </span>
+
+              <span class="stat speed">
+                <img :src="speedIcon" alt="icon-speed" />
+                {{ train.speed }} km/h
+              </span>
+
+              <span class="stat length">
+                <img :src="lengthIcon" alt="icon-length" />
+                {{ train.length }}m
               </span>
             </div>
-          </div>
 
-          <div class="info-bottom">
-            <span
-              class="info-online"
-              :class="{'online': train.online}"
-            >{{train.online ? "ONLINE" : "OFFLINE"}}</span>
-          </div>
-        </span>
-
-        <span class="driver">
-          <span class="driver-name">
-            <a
-              :href="'https://td2.info.pl/profile/?u=' + train.driverId"
-              target="_blank"
-            >{{ train.driverName }}</a>
-            <span style="color: #bbb; margin-left: 1em;">
-              {{
-              train.locoType
-              }}
-            </span>
+            <div class="stats-position">
+              <span class="stat station">
+                <div class="stat-icon">
+                  <img :src="sceneryIcon" alt="icon-scenery" />
+                </div>
+                {{ train.currentStationName || "---" }}
+              </span>
+              <span class="stat track">
+                <div class="stat-icon">
+                  <img :src="routeIcon" alt="icon-scenery" />
+                </div>
+                {{ train.connectedTrack || "---" }}
+              </span>
+              <span class="stat signal">
+                <div class="stat-icon">
+                  <img :src="signalIcon" alt="icon-scenery" />
+                </div>
+                {{ train.signal || "---" }}
+              </span>
+              <span class="stat distance">
+                <div class="stat-icon">
+                  <img :src="distanceIcon" alt="icon-scenery" />
+                </div>
+                {{ train.distance || "0" }}m
+              </span>
+            </div>
           </span>
-          <span class="driver-loco">
-            <img :src="train.locoURL" @error="onImageError" />
-          </span>
         </span>
 
-        <span class="stats">
-          <div class="stats-general">
-            <span class="stat mass">
-              <img :src="massIcon" alt="icon-mass" />
-              {{ train.mass / 1000 }}t
-            </span>
-
-            <span class="stat speed">
-              <img :src="speedIcon" alt="icon-speed" />
-              {{ train.speed }} km/h
-            </span>
-
-            <span class="stat length">
-              <img :src="lengthIcon" alt="icon-length" />
-              {{ train.length }}m
-            </span>
-          </div>
-
-          <div class="stats-position">
-            <span class="stat station">
-              <div class="stat-icon">
-                <img :src="sceneryIcon" alt="icon-scenery" />
-              </div>
-              {{ train.currentStationName || "---" }}
-            </span>
-            <span class="stat track">
-              <div class="stat-icon">
-                <img :src="routeIcon" alt="icon-scenery" />
-              </div>
-              {{ train.connectedTrack || "---" }}
-            </span>
-            <span class="stat signal">
-              <div class="stat-icon">
-                <img :src="signalIcon" alt="icon-scenery" />
-              </div>
-              {{ train.signal || "---" }}
-            </span>
-            <span class="stat distance">
-              <div class="stat-icon">
-                <img :src="distanceIcon" alt="icon-scenery" />
-              </div>
-              {{ train.distance || "0" }}m
-            </span>
-          </div>
-        </span>
+        <TrainSchedule
+          :followingStops="train.timetableData.followingStops"
+          :currentStationName="train.currentStationName"
+          @click="changeScheduleShowState(train.timetableData.timetableId)"
+          v-if="showSchedules.includes(train.timetableData.timetableId)"
+        />
       </li>
     </ul>
   </div>
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 
 const unknownTrainImage = require("@/assets/unknown.png");
 
 import Train from "@/scripts/interfaces/Train";
 import Station from "@/scripts/interfaces/Station";
 
-@Component
+import TrainSchedule from "@/components/TrainsView/TrainSchedule.vue";
+
+@Component({
+  components: { TrainSchedule }
+})
 export default class TrainTable extends Vue {
-  @Prop() readonly computedTrains!: Train[];
+  @Prop() computedTrains!: Train[];
+
+  showSchedules: number[] = [];
 
   speedIcon: string = require("@/assets/icon-speed.svg");
   massIcon: string = require("@/assets/icon-mass.svg");
@@ -134,6 +157,11 @@ export default class TrainTable extends Vue {
   sceneryIcon: string = require("@/assets/icon-scenery.svg");
   signalIcon: string = require("@/assets/icon-signal.svg");
   routeIcon: string = require("@/assets/icon-route.svg");
+
+  changeScheduleShowState(timetableId: number) {
+    if (this.showSchedules.includes(timetableId)) this.showSchedules.splice(this.showSchedules.indexOf(timetableId), 1)
+    else this.showSchedules.push(timetableId);
+  }
 
   onImageError(e: Event) {
     (e.target as HTMLImageElement).src = unknownTrainImage;
@@ -156,10 +184,6 @@ export default class TrainTable extends Vue {
 @import "../../styles/responsive.scss";
 @import "../../styles/variables.scss";
 
-.train-table {
-  font-size: calc(0.4rem + 0.5vw);
-}
-
 .no-trains {
   text-align: center;
   font-size: 1.5em;
@@ -170,26 +194,29 @@ export default class TrainTable extends Vue {
   background: #333;
 }
 
-.list {
-  overflow: auto;
+.train {
+  &-list {
+    overflow: auto;
 
-  @include smallScreen() {
-    width: 100%;
+    @include smallScreen() {
+      width: 100%;
+    }
+  }
+
+  &-item {
+    padding: 1rem;
+    margin-bottom: 1rem;
+
+    background-color: #383838;
+
+    cursor: pointer;
   }
 }
 
-.item {
+.train-info {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
-
-  background-color: #444;
-  padding: 1rem;
-
-  margin-bottom: 1em;
-
-  &:nth-child(even) {
-    background-color: #666;
-  }
+  font-size: calc(0.4rem + 0.5vw);
 
   @include smallScreen() {
     grid-template-columns: 1fr;
@@ -197,7 +224,10 @@ export default class TrainTable extends Vue {
 
     font-size: 0.8rem;
     gap: 0.4em 0;
-    // grid-template-columns: repeat(3, 1fr);
+  }
+
+  @include bigScreen() {
+    font-size: 1.1rem;
   }
 }
 
@@ -236,6 +266,19 @@ export default class TrainTable extends Vue {
 
     &.online {
       background-color: #009700;
+    }
+  }
+
+  &-bottom {
+    display: flex;
+    align-items: center;
+
+    button {
+      margin-left: 10px;
+      background: #144e75;
+      border-radius: 1em;
+      padding: 0.2em 0.5em;
+      font-size: 0.85em;
     }
   }
 }
