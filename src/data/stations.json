@@ -1,4 +1,5 @@
-[{
+[
+  {
     "stationName": "Blaszki",
     "stationURL": "https://td2.info.pl/scenerie/blaszki/",
     "stationLines": "",
@@ -1748,7 +1749,7 @@
   },
   {
     "stationName": "Hetmanice",
-    "stationURL": "https://td2.info.pl/dzial-trenerski/hetmanice-stacja-dla-poczatkujacych/",
+    "stationURL": "https://td2.info.pl/scenerie/hetmanice-stacja-dla-poczatkujacych/",
     "stationLines": "",
     "reqLevel": "0",
     "supportersOnly": "NIE",
@@ -1767,8 +1768,7 @@
       }
     },
     "default": false,
-    "nonPublic": false,
-    "unavailable": true
+    "nonPublic": false
   },
   {
     "stationName": "Starzynki",
@@ -1865,5 +1865,51 @@
     "nonPublic": false,
     "unavailable": true,
     "stops": ["Sroka, podg."]
+  },
+  {
+    "stationName": "Luzino",
+    "stationURL": "https://td2.info.pl/scenerie/luzino-6501/",
+    "stationLines": "",
+    "reqLevel": "3",
+    "supportersOnly": "NIE",
+    "signalType": "współczesna",
+    "controlType": "mechaniczne",
+    "SBL": "",
+    "twoWayBlock": "TAK",
+    "routes": {
+      "oneWay": {
+        "catenary": 2,
+        "noCatenary": 0
+      },
+      "twoWay": {
+        "catenary": 0,
+        "noCatenary": 0
+      }
+    },
+    "default": false,
+    "nonPublic": false
+  },
+  {
+    "stationName": "Zajączkowo",
+    "stationURL": "https://td2.info.pl/scenerie/zajaczkowo/",
+    "stationLines": "",
+    "reqLevel": "0",
+    "supportersOnly": "NIE",
+    "signalType": "kształtowa",
+    "controlType": "mechaniczne",
+    "SBL": "",
+    "twoWayBlock": "",
+    "routes": {
+      "oneWay": {
+        "catenary": 0,
+        "noCatenary": 2
+      },
+      "twoWay": {
+        "catenary": 0,
+        "noCatenary": 0
+      }
+    },
+    "default": false,
+    "nonPublic": false
   }
 ]

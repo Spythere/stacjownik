@@ -7,11 +7,12 @@
           @changeSearchedTrain="changeSearchedTrain"
           @changeSearchedDriver="changeSearchedDriver"
           :passedSearchedTrain="passedSearchedTrain"
+          :focusedTrain="focusedTrain"
         />
       </div>
 
       <TrainStats :trains="trains" />
-      <TrainTable :computedTrains="computedTrains" />
+      <TrainTable :computedTrains="computedTrains" @changeFocusedTrain="changeFocusedTrain" />
     </div>
   </section>
 </template>
@@ -44,8 +45,10 @@ export default class TrainsView extends Vue {
   @Prop() readonly passedSearchedTrain!: string;
 
   sorterActive: { id: string; dir: number } = { id: "timetable", dir: 1 };
+
   searchedTrain: string = "";
   searchedDriver: string = "";
+  focusedTrain: string = "";
 
   changeSearchedTrain(trainNo: string) {
     this.searchedTrain = trainNo;
@@ -53,6 +56,10 @@ export default class TrainsView extends Vue {
 
   changeSearchedDriver(name: string) {
     this.searchedDriver = name;
+  }
+
+  changeFocusedTrain(trainNo: string) {
+    this.focusedTrain = this.focusedTrain === trainNo ? "" : trainNo;
   }
 
   changeSorter(sorter: { id: string; dir: number }) {

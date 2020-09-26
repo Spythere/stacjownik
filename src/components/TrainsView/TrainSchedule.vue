@@ -1,5 +1,5 @@
 <template>
-  <div class="train-schedule">
+  <div class="train-schedule" @click="click">
     <div class="schedule-wrapper">
       <div class="schedule-bar"></div>
 
@@ -61,6 +61,10 @@ export default class TrainSchedule extends Vue {
 
   stylizeTime(timeString: string, delay: number) {
     return timeString + (delay != 0 ? " (" + (delay > 0 ? "+" : "") + delay.toString() + ")" : "");
+  }
+
+  click() {
+    this.$emit('click')
   }
 
 }

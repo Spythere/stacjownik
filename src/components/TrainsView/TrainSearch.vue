@@ -28,6 +28,7 @@ export default class extends Vue {
   searchedDriver = "";
 
   @Prop() readonly passedSearchedTrain!: string;
+  @Prop() readonly focusedTrain!: string;
   // @Prop() readonly passedSearchedDriver!: string;
 
   @Watch("searchedTrain")
@@ -46,6 +47,14 @@ export default class extends Vue {
       this.searchedTrain = val;
       this.searchedDriver = "";
     }
+  }
+
+  @Watch("focusedTrain")
+  onFocusedTrainChanged(val: string, oldVal: string) {
+    console.log(val);
+
+    this.searchedTrain = val;
+    this.searchedDriver = "";
   }
 
   mounted() {

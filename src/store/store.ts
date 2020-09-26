@@ -358,7 +358,7 @@ export default class Store extends VuexModule {
       const trainData = this.trainList.find(train => train.trainNo === updatedTrain.trainNo);
 
       if (trainData) acc.push({ ...trainData, ...updatedTrain });
-      else acc.push({ ...updatedTrain });
+      else acc.push({ ...updatedTrain   });
 
       return acc;
     }, [] as Train[]);

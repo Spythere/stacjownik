@@ -8,6 +8,7 @@
         v-for="(train, i) in computedTrains"
         :key="i"
         :id="train.timetableData.timetableId"
+        @click="() => {changeFocusedTrain(train.trainNo);}"
       >
         <span class="train-info">
           <span class="info">
@@ -49,10 +50,7 @@
                 :class="{'online': train.online}"
               >{{train.online ? "ONLINE" : "OFFLINE"}}</span>
 
-              <button
-                class="button"
-                @click="changeScheduleShowState(train.timetableData.timetableId)"
-              >SZCZEGÓŁOWY ROZKŁAD</button>
+              <button class="button">SZCZEGÓŁOWY ROZKŁAD</button>
             </div>
           </span>
 
@@ -124,7 +122,7 @@
           :followingStops="train.timetableData.followingStops"
           :currentStationName="train.currentStationName"
           @click="changeScheduleShowState(train.timetableData.timetableId)"
-          v-if="showSchedules.includes(train.timetableData.timetableId)"
+          v-if="showedSchedule == train.timetableData.timetableId"
         />
       </li>
     </ul>
@@ -147,7 +145,7 @@ import TrainSchedule from "@/components/TrainsView/TrainSchedule.vue";
 export default class TrainTable extends Vue {
   @Prop() computedTrains!: Train[];
 
-  showSchedules: number[] = [];
+  showedSchedule = 0;
 
   speedIcon: string = require("@/assets/icon-speed.svg");
   massIcon: string = require("@/assets/icon-mass.svg");
@@ -159,8 +157,7 @@ export default class TrainTable extends Vue {
   routeIcon: string = require("@/assets/icon-route.svg");
 
   changeScheduleShowState(timetableId: number) {
-    if (this.showSchedules.includes(timetableId)) this.showSchedules.splice(this.showSchedules.indexOf(timetableId), 1)
-    else this.showSchedules.push(timetableId);
+    this.showedSchedule = timetableId;
   }
 
   onImageError(e: Event) {
@@ -176,6 +173,10 @@ export default class TrainTable extends Vue {
         acc.push(`<span style='color: #ccc;'>${stop.stopName.includes("podg.") ? stop.stopName.split(",")[0] : stop.stopName}</span>`);
       return acc;
     }, []).join(" * ");
+  }
+
+  changeFocusedTrain(trainNo: number) {
+    this.$emit('changeFocusedTrain', trainNo.toString());
   }
 }
 </script>
