@@ -222,8 +222,11 @@ export default class StationCard extends styleMixin {
   margin: 0.5em 0;
 }
 
-.station-card {
-  font-size: calc(0.5rem + 0.35vw);
+.card {
+  padding: 2em;
+  text-align: center;
+
+  font-size: calc(0.5rem + 0.4vw);
   max-width: 800px;
 
   @include bigScreen {
@@ -234,11 +237,6 @@ export default class StationCard extends styleMixin {
     font-size: 0.8em;
     width: 100%;
   }
-}
-
-.card {
-  padding: 2em;
-  text-align: center;
 
   user-select: none;
   -moz-user-select: none;

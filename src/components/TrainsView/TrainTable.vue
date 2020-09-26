@@ -50,7 +50,10 @@
                 :class="{'online': train.online}"
               >{{train.online ? "ONLINE" : "OFFLINE"}}</span>
 
-              <button class="button">SZCZEGÓŁOWY ROZKŁAD</button>
+              <button
+                class="button"
+                @click="changeScheduleShowState(train.timetableData.timetableId)"
+              >ROZKŁAD JAZDY</button>
             </div>
           </span>
 
@@ -157,7 +160,7 @@ export default class TrainTable extends Vue {
   routeIcon: string = require("@/assets/icon-route.svg");
 
   changeScheduleShowState(timetableId: number) {
-    this.showedSchedule = timetableId;
+    this.showedSchedule = this.showedSchedule === timetableId ? 0 : timetableId;
   }
 
   onImageError(e: Event) {
@@ -176,7 +179,7 @@ export default class TrainTable extends Vue {
   }
 
   changeFocusedTrain(trainNo: number) {
-    this.$emit('changeFocusedTrain', trainNo.toString());
+    // this.$emit('changeFocusedTrain', trainNo.toString());
   }
 }
 </script>
@@ -276,10 +279,11 @@ export default class TrainTable extends Vue {
 
     button {
       margin-left: 10px;
-      background: #144e75;
-      border-radius: 1em;
+      border-radius: 0.7em;
       padding: 0.2em 0.5em;
       font-size: 0.85em;
+
+      border: 1px solid white;
     }
   }
 }
