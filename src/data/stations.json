@@ -1814,8 +1814,7 @@
       }
     },
     "default": false,
-    "nonPublic": false,
-    "unavailable": true
+    "nonPublic": false
   },
   {
     "stationName": "Skawce",
