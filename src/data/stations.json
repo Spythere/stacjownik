@@ -45,7 +45,7 @@
       }
     },
     "default": false,
-    "nonPublic": true,
+    "nonPublic": false,
     "stops": ["Borowe, podg.", "Wysoka, podg.", "Naprawa, podg."]
   },
   {
@@ -1868,7 +1868,7 @@
   {
     "stationName": "Luzino",
     "stationURL": "https://td2.info.pl/scenerie/luzino-6501/",
-    "stationLines": "",
+    "stationLines": "202",
     "reqLevel": "3",
     "supportersOnly": "NIE",
     "signalType": "współczesna",
@@ -1902,6 +1902,29 @@
       "oneWay": {
         "catenary": 0,
         "noCatenary": 2
+      },
+      "twoWay": {
+        "catenary": 0,
+        "noCatenary": 0
+      }
+    },
+    "default": false,
+    "nonPublic": false
+  },
+  {
+    "stationName": "Kudowa-Zdrój",
+    "stationURL": "https://td2.info.pl/scenerie/kudowa-zdroj-6616/",
+    "stationLines": "309",
+    "reqLevel": "4",
+    "supportersOnly": "NIE",
+    "signalType": "współczesna",
+    "controlType": "mechaniczne",
+    "SBL": "",
+    "twoWayBlock": "",
+    "routes": {
+      "oneWay": {
+        "catenary": 0,
+        "noCatenary": 1
       },
       "twoWay": {
         "catenary": 0,
