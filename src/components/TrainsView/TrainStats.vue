@@ -5,7 +5,9 @@
         class="stats-btn button"
         @click="toggleStats"
         v-if="trains.length > 0"
-      >STATYSTYKI RUCHU</button>
+      >
+        STATYSTYKI RUCHU
+      </button>
     </div>
 
     <transition name="stats-anim">
@@ -13,36 +15,47 @@
         <h2 class="stats-header">STATYSTYKI RUCHU</h2>
 
         <div class="stats-speed">
-          <div class="title stats-title">PRĘDKOŚCI POCIĄGÓW (MIN | ŚR | MAX) [km/h]</div>
-          <div class="stats-content">{{speedStats.min}} | {{speedStats.avg}} | {{speedStats.max}}</div>
+          <div class="title stats-title">
+            PRĘDKOŚCI POCIĄGÓW (MIN | ŚR | MAX) [km/h]
+          </div>
+          <div class="stats-content">
+            {{ speedStats.min }} | {{ speedStats.avg }} | {{ speedStats.max }}
+          </div>
         </div>
 
         <div class="stats-length">
-          <div class="title stats-title">DŁUGOŚCI ROZKŁADÓW (MIN | ŚR | MAX) [km]</div>
-          <div
-            class="stats-content"
-          >{{timetableStats.min}} | {{timetableStats.avg}} | {{timetableStats.max}}</div>
+          <div class="title stats-title">
+            DŁUGOŚCI ROZKŁADÓW (MIN | ŚR | MAX) [km]
+          </div>
+          <div class="stats-content">
+            {{ timetableStats.min }} | {{ timetableStats.avg }} |
+            {{ timetableStats.max }}
+          </div>
         </div>
 
         <div class="stats-categories">
           <div class="title stats-title">KATEGORIE RJ</div>
 
           <div class="category-list">
-            <span class="category" v-for="[key, value] of categoryList" :key="key">
-              <span class="category-type">{{key}}</span>
-              <span class="category-count">{{value}}</span>
+            <span
+              class="category"
+              v-for="[key, value] of categoryList"
+              :key="key"
+            >
+              <span class="category-type">{{ key }}</span>
+              <span class="category-count">{{ value }}</span>
             </span>
           </div>
 
           <div class="special-list">
             <span class="special twr">
               <span class="special-type">WYSOKIEGO RYZYKA</span>
-              <span class="special-count">{{specialTrainCount[0]}}</span>
+              <span class="special-count">{{ specialTrainCount[0] }}</span>
             </span>
 
             <span class="special skr">
               <span class="special-type">PRZEKROCZONA SKRAJNIA</span>
-              <span class="special-count">{{specialTrainCount[1]}}</span>
+              <span class="special-count">{{ specialTrainCount[1] }}</span>
             </span>
           </div>
         </div>
@@ -51,7 +64,9 @@
           <div class="title stats-title">NAJCZĘSTSZE JEDNOSTKI</div>
 
           <div class="loco-list stats-content">
-            <div class="loco-item" v-for="(loco,i) in locoList" :key="i">{{loco[0]}} | {{loco[1]}}</div>
+            <div class="loco-item" v-for="(loco, i) in locoList" :key="i">
+              {{ loco[0] }} | {{ loco[1] }}
+            </div>
           </div>
         </div>
       </div>
@@ -222,7 +237,7 @@ export default class TrainStats extends Vue {
   &-list {
     display: flex;
     flex-wrap: wrap;
-    font-size: 0.85em;
+    font-size: 0.95em;
   }
 
   margin-right: 0.4em;
@@ -235,7 +250,8 @@ export default class TrainStats extends Vue {
   }
 
   &-type {
-    background: #888;
+    background: rgb(88, 88, 88);
+    font-weight: 600;
   }
 
   &-count {

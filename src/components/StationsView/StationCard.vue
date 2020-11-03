@@ -5,18 +5,21 @@
         class="schedule-icon"
         :src="require('@/assets/icon-clock.svg')"
         alt="schedule-icon"
-        @click="() => cardMode = cardMode == 0 ? 1 : 0"
+        @click="() => (cardMode = cardMode == 0 ? 1 : 0)"
       />
-      <img :src="require('@/assets/icon-exit.svg')" alt="exit-icon" @click="exit" />
+      <img
+        :src="require('@/assets/icon-exit.svg')"
+        alt="exit-icon"
+        @click="exit"
+      />
     </div>
 
-    <div class="card-content" :class="{'offline': !stationInfo.online}">
+    <div class="card-content" :class="{ offline: !stationInfo.online }">
       <div class="main">
         <div class="main-content">
-          <span
-            class="main-level flex"
-            v-if="stationInfo.reqLevel > -1"
-          >{{ 2 > parseInt(stationInfo.reqLevel) ? "L" : stationInfo.reqLevel}}</span>
+          <span class="main-level flex" v-if="stationInfo.reqLevel > -1">{{
+            2 > parseInt(stationInfo.reqLevel) ? "L" : stationInfo.reqLevel
+          }}</span>
           <span class="main-general">
             <div class="main-name">
               <a
@@ -24,11 +27,12 @@
                 :href="stationInfo.stationURL"
                 target="_blank"
                 rel="noopener noreferrer"
-              >{{stationInfo.stationName}}</a>
+                >{{ stationInfo.stationName }}</a
+              >
 
-              <span v-else>{{stationInfo.stationName}}</span>
+              <span v-else>{{ stationInfo.stationName }}</span>
             </div>
-            <div class="main-hash">{{stationInfo.stationHash}}</div>
+            <div class="main-hash">{{ stationInfo.stationHash }}</div>
           </span>
         </div>
       </div>
@@ -80,30 +84,39 @@
       <div class="dispatcher">
         <div
           class="dispatcher-level flex"
-          :style="calculateExpStyle(stationInfo.dispatcherExp, stationInfo.dispatcherIsSupporter)"
-        >{{stationInfo.online ? computedDispatcherExp : ""}}</div>
+          :style="
+            calculateExpStyle(
+              stationInfo.dispatcherExp,
+              stationInfo.dispatcherIsSupporter
+            )
+          "
+        >
+          {{ stationInfo.online ? computedDispatcherExp : "" }}
+        </div>
         <div class="dispatcher-info">
           <div class="dispatcher-name">
             <a
-              :href="'https://td2.info.pl/profile/?u=' + stationInfo.dispatcherId"
+              :href="
+                'https://td2.info.pl/profile/?u=' + stationInfo.dispatcherId
+              "
               target="_blank"
               rel="noopener noreferrer"
-            >{{stationInfo.dispatcherName || "---"}}</a>
+              >{{ stationInfo.dispatcherName || "---" }}</a
+            >
           </div>
 
           <div class="dispatcher-rate">
             <img :src="require(`@/assets/icon-like.svg`)" alt="like-icon" />
-            <span>{{stationInfo.dispatcherRate}}</span>
+            <span>{{ stationInfo.dispatcherRate }}</span>
           </div>
         </div>
       </div>
 
       <div class="hours">
         <div class="hours-title title">STATUS</div>
-        <span
-          class="status"
-          :class="statusClasses(stationInfo.occupiedTo)"
-        >{{stationInfo.occupiedTo}}</span>
+        <span class="status" :class="statusClasses(stationInfo.occupiedTo)">{{
+          stationInfo.occupiedTo
+        }}</span>
       </div>
 
       <div class="spawns flex flex-column">
@@ -113,7 +126,8 @@
             class="spawn"
             v-for="(spawn, i) in stationInfo.spawnString"
             :key="spawn + stationInfo.dispatcherName + i"
-          >{{spawn}}</span>
+            >{{ spawn }}</span
+          >
 
           <span class="spawn" v-if="!stationInfo.spawnString">BRAK</span>
         </div>
@@ -129,24 +143,31 @@
             :key="train.trainNo + train.driverName"
           >
             <router-link
-              :to="{ name: 'TrainsView', params: { passedSearchedTrain: train.trainNo.toString()}}"
+              :to="{
+                name: 'TrainsView',
+                params: { passedSearchedTrain: train.trainNo.toString() },
+              }"
             >
-              <span>{{train.trainNo}}</span>
+              <span>{{ train.trainNo }}</span>
               |
-              <span>{{train.driverName}}</span>
+              <span>{{ train.driverName }}</span>
             </router-link>
           </div>
 
           <span
             class="user borderless"
-            v-if="!stationInfo.stationTrains || stationInfo.stationTrains.length == 0"
-          >BRAK</span>
+            v-if="
+              !stationInfo.stationTrains ||
+              stationInfo.stationTrains.length == 0
+            "
+            >BRAK</span
+          >
         </div>
       </div>
     </div>
 
     <StationTimetable
-      :class="{show: cardMode == 1}"
+      :class="{ show: cardMode == 1 }"
       :scheduledTrains="computedScheduledTrains"
       :stationName="stationInfo.stationName"
     />
@@ -213,9 +234,10 @@ export default class StationCard extends styleMixin {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import "../../styles/variables.scss";
 @import "../../styles/responsive.scss";
+
 .title {
   color: $accentCol;
   font-weight: 600;

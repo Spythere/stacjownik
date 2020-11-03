@@ -2,32 +2,46 @@
   <div class="station-timetable">
     <div class="timetable-wrapper">
       <div class="timetable-title title">
-        <div style="font-size: 1.5em;">{{stationName.toUpperCase()}}</div>
-        <div style="font-size: 0.7em;">AKTYWNE ROZKŁADY JAZDY</div>
+        <div style="font-size: 1.5em">{{ stationName.toUpperCase() }}</div>
+        <div style="font-size: 0.7em">AKTYWNE ROZKŁADY JAZDY</div>
       </div>
 
       <div class="timetable-content">
-        <div class="timetable-item" v-for="(scheduledTrain, i) in computedScheduledTrains" :key="i">
+        <div
+          class="timetable-item"
+          v-for="(scheduledTrain, i) in computedScheduledTrains"
+          :key="i"
+        >
           <span class="timetable-general">
             <span class="general-info">
               <router-link
-                :to="{ name: 'TrainsView', params: { passedSearchedTrain: scheduledTrain.trainNo.toString()}}"
+                :to="{
+                  name: 'TrainsView',
+                  params: {
+                    passedSearchedTrain: scheduledTrain.trainNo.toString(),
+                  },
+                }"
               >
                 <span>
-                  <strong>{{scheduledTrain.category}}</strong>
-                  {{scheduledTrain.trainNo}}
-                </span>
-              </router-link>|
+                  <strong>{{ scheduledTrain.category }}</strong>
+                  {{ scheduledTrain.trainNo }}
+                </span> </router-link
+              >|
               <span>
                 <a
-                  :href="'https://td2.info.pl/profile/?u=' + scheduledTrain.driverId"
+                  :href="
+                    'https://td2.info.pl/profile/?u=' + scheduledTrain.driverId
+                  "
                   target="_blank"
-                >{{ scheduledTrain.driverName }}</a>
+                  >{{ scheduledTrain.driverName }}</a
+                >
               </span>
             </span>
 
             <span class="general-status">
-              <span :class="scheduledTrain.stopStatus">{{scheduledTrain.stopLabel}}</span>
+              <span :class="scheduledTrain.stopStatus">{{
+                scheduledTrain.stopLabel
+              }}</span>
             </span>
           </span>
 
@@ -36,29 +50,33 @@
               <span
                 class="arrival-time begins"
                 v-if="scheduledTrain.stopInfo.beginsHere"
-              >ROZPOCZYNA BIEG</span>
-              <span
-                class="arrival-time"
-                v-else
-              >{{scheduledTrain.stopInfo.arrivalTimeString}} ({{scheduledTrain.stopInfo.arrivalDelay}})</span>
+                >ROZPOCZYNA BIEG</span
+              >
+              <span class="arrival-time" v-else
+                >{{ scheduledTrain.stopInfo.arrivalTimeString }} ({{
+                  scheduledTrain.stopInfo.arrivalDelay
+                }})</span
+              >
             </span>
 
             <span class="schedule-stop">
-              <span
-                class="stop-time"
-                v-if="scheduledTrain.stopInfo.stopTime"
-              >{{scheduledTrain.stopInfo.stopTime}} {{scheduledTrain.stopInfo.stopType}}</span>
+              <span class="stop-time" v-if="scheduledTrain.stopInfo.stopTime"
+                >{{ scheduledTrain.stopInfo.stopTime }}
+                {{ scheduledTrain.stopInfo.stopType }}</span
+              >
               <span class="stop-arrow arrow"></span>
             </span>
             <span class="schedule-departure">
               <span
                 class="departure-time terminates"
                 v-if="scheduledTrain.stopInfo.terminatesHere"
-              >KOŃCZY BIEG</span>
-              <span
-                class="departure-time"
-                v-else
-              >{{scheduledTrain.stopInfo.departureTimeString}} ({{scheduledTrain.stopInfo.departureDelay}})</span>
+                >KOŃCZY BIEG</span
+              >
+              <span class="departure-time" v-else
+                >{{ scheduledTrain.stopInfo.departureTimeString }} ({{
+                  scheduledTrain.stopInfo.departureDelay
+                }})</span
+              >
             </span>
           </span>
         </div>

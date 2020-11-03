@@ -1,6 +1,8 @@
 <template>
   <div class="train-table">
-    <div class="no-trains" v-if="computedTrains.length == 0">Ups! Brak pociągów do wyświetlenia :/</div>
+    <div class="no-trains" v-if="computedTrains.length == 0">
+      Ups! Brak pociągów do wyświetlenia :/
+    </div>
 
     <ul class="train-list">
       <li
@@ -8,7 +10,11 @@
         v-for="(train, i) in computedTrains"
         :key="i"
         :id="train.timetableData.timetableId"
-        @click="() => {changeFocusedTrain(train.trainNo);}"
+        @click="
+          () => {
+            changeFocusedTrain(train.trainNo);
+          }
+        "
       >
         <span class="train-info">
           <span class="info">
@@ -17,43 +23,52 @@
                 <span>
                   <strong>{{ train.timetableData.category }}</strong>
                   {{ train.trainNo }} |
-                  <span
-                    style=" color: gold;"
-                  >{{ train.timetableData.routeDistance }} km</span>
+                  <span style="color: gold"
+                    >{{ train.timetableData.routeDistance }} km</span
+                  >
                 </span>
 
                 <span>
-                  <span class="warning twr" v-if="train.timetableData.TWR">TWR</span>
-                  <span class="warning skr" v-if="train.timetableData.SKR">SKR</span>
+                  <span class="warning twr" v-if="train.timetableData.TWR"
+                    >TWR</span
+                  >
+                  <span class="warning skr" v-if="train.timetableData.SKR"
+                    >SKR</span
+                  >
                 </span>
               </div>
 
               <div class="info-route">
                 <strong>
-                  {{
-                  train.timetableData.route.replace("|", " - ")
-                  }}
+                  {{ train.timetableData.route.replace("|", " - ") }}
                 </strong>
               </div>
 
               <div class="info-stations">
                 <span v-if="train.timetableData.followingStops.length > 2">
                   Przez:
-                  <span v-html="generateStopList(train.timetableData.followingStops)"></span>
+                  <span
+                    v-html="
+                      generateStopList(train.timetableData.followingStops)
+                    "
+                  ></span>
                 </span>
               </div>
             </div>
 
             <div class="info-bottom">
-              <span
-                class="info-online"
-                :class="{'online': train.online}"
-              >{{train.online ? "ONLINE" : "OFFLINE"}}</span>
+              <span class="info-online" :class="{ online: train.online }">{{
+                train.online ? "ONLINE" : "OFFLINE"
+              }}</span>
 
               <button
                 class="button"
-                @click="changeScheduleShowState(train.timetableData.timetableId)"
-              >ROZKŁAD JAZDY</button>
+                @click="
+                  changeScheduleShowState(train.timetableData.timetableId)
+                "
+              >
+                ROZKŁAD JAZDY
+              </button>
             </div>
           </span>
 
@@ -62,11 +77,10 @@
               <a
                 :href="'https://td2.info.pl/profile/?u=' + train.driverId"
                 target="_blank"
-              >{{ train.driverName }}</a>
-              <span style="color: #bbb; margin-left: 1em;">
-                {{
-                train.locoType
-                }}
+                >{{ train.driverName }}</a
+              >
+              <span style="color: #bbb; margin-left: 1em">
+                {{ train.locoType }}
               </span>
             </span>
             <span class="driver-loco">
@@ -211,7 +225,7 @@ export default class TrainTable extends Vue {
     padding: 1rem;
     margin-bottom: 1rem;
 
-    background-color: #383838;
+    background-color: $primaryCol;
 
     cursor: pointer;
   }

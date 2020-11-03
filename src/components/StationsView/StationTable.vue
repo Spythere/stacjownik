@@ -4,11 +4,15 @@
       <table class="table">
         <thead class="table-head">
           <tr>
-            <th v-for="(head, i) in headTitles" :key="i" @click="() => changeSorter(i)">
+            <th
+              v-for="(head, i) in headTitles"
+              :key="i"
+              @click="() => changeSorter(i)"
+            >
               <span>
                 <div>
-                  <div>{{head[0]}}</div>
-                  <div v-if="head.length > 1">{{head[1]}}</div>
+                  <div>{{ head[0] }}</div>
+                  <div v-if="head.length > 1">{{ head[1] }}</div>
                 </div>
 
                 <img
@@ -26,36 +30,64 @@
           class="table-item"
           v-for="(station, i) in stations"
           :key="i + station.stationHash"
-          @click="() => {  setFocusedStation(station.stationName) }"
+          @click="
+            () => {
+              setFocusedStation(station.stationName);
+            }
+          "
         >
           <td
             class="item-station-name"
-            :class="{'default-station': station.default, 'online': station.online, 'station-unavailable': station.unavailable}"
-          >{{station.stationName}}</td>
+            :class="{
+              'default-station': station.default,
+              online: station.online,
+              'station-unavailable': station.unavailable,
+            }"
+          >
+            {{ station.stationName }}
+          </td>
 
           <td class="item-station-level">
             <span
               v-if="station.reqLevel"
               :style="calculateExpStyle(station.reqLevel)"
-            >{{ (station.reqLevel && station.reqLevel > -1) ? (parseInt(station.reqLevel) >= 2 ? station.reqLevel : "L") : "?" }}</span>
+              >{{
+                station.reqLevel && station.reqLevel > -1
+                  ? parseInt(station.reqLevel) >= 2
+                    ? station.reqLevel
+                    : "L"
+                  : "?"
+              }}</span
+            >
 
             <span v-else>?</span>
           </td>
 
           <td class="item-station-status">
-            <span class="status" :class="statusClasses(station.occupiedTo)">{{station.occupiedTo}}</span>
+            <span class="status" :class="statusClasses(station.occupiedTo)">{{
+              station.occupiedTo
+            }}</span>
           </td>
 
-          <td class="item-dispatcher-name">{{station.online ? station.dispatcherName : ""}}</td>
+          <td class="item-dispatcher-name">
+            {{ station.online ? station.dispatcherName : "" }}
+          </td>
           <td class="item-dispatcher-exp">
             <span
               v-if="station.online"
               :style="calculateExpStyle(station.dispatcherExp)"
-            >{{2 > station.dispatcherExp ? 'L' : station.dispatcherExp}}</span>
+              >{{
+                2 > station.dispatcherExp ? "L" : station.dispatcherExp
+              }}</span
+            >
           </td>
-          <td
-            class="item-users"
-          >{{station.online ? (station.currentUsers + "/" + station.maxUsers) : ""}}</td>
+          <td class="item-users">
+            {{
+              station.online
+                ? station.currentUsers + "/" + station.maxUsers
+                : ""
+            }}
+          </td>
           <td class="item-info">
             <img
               class="icon-info"
@@ -94,39 +126,59 @@
             <span
               v-if="station.routes && station.routes.twoWay.catenary > 0"
               class="track catenary"
-              :title="'Liczba zelektryfikowanych szlaków dwutorowych: ' + station.routes.twoWay.catenary"
-            >{{station.routes.twoWay.catenary}}</span>
+              :title="
+                'Liczba zelektryfikowanych szlaków dwutorowych: ' +
+                station.routes.twoWay.catenary
+              "
+              >{{ station.routes.twoWay.catenary }}</span
+            >
 
             <span
               v-if="station.routes && station.routes.twoWay.noCatenary > 0"
               class="track no-catenary"
-              :title="'Liczba niezelektryfikowanych szlaków dwutorowych: ' + station.routes.twoWay.noCatenary"
-            >{{station.routes.twoWay.noCatenary}}</span>
+              :title="
+                'Liczba niezelektryfikowanych szlaków dwutorowych: ' +
+                station.routes.twoWay.noCatenary
+              "
+              >{{ station.routes.twoWay.noCatenary }}</span
+            >
 
             <span class="separator"></span>
 
             <span
               v-if="station.routes && station.routes.oneWay.catenary > 0"
               class="track catenary"
-              :title="'Liczba zelektryfikowanych szlaków jednotorowych: ' + station.routes.oneWay.catenary"
-            >{{station.routes.oneWay.catenary}}</span>
+              :title="
+                'Liczba zelektryfikowanych szlaków jednotorowych: ' +
+                station.routes.oneWay.catenary
+              "
+              >{{ station.routes.oneWay.catenary }}</span
+            >
 
             <span
               v-if="station.routes && station.routes.oneWay.noCatenary > 0"
               class="track no-catenary"
-              :title="'Liczba niezelektryfikowanych szlaków jednotorowych: ' + station.routes.oneWay.noCatenary"
-            >{{station.routes.oneWay.noCatenary}}</span>
+              :title="
+                'Liczba niezelektryfikowanych szlaków jednotorowych: ' +
+                station.routes.oneWay.noCatenary
+              "
+              >{{ station.routes.oneWay.noCatenary }}</span
+            >
           </td>
 
           <td class="active-timetables">
             <transition name="change-anim" mode="out-in">
               <span :key="station.scheduledTrains.length">
                 <span v-if="station.scheduledTrains">
-                  <span style="color:#eee">{{ station.scheduledTrains.length}}</span>
+                  <span style="color: #eee">{{
+                    station.scheduledTrains.length
+                  }}</span>
                   /
-                  <span
-                    style="color:#bbb"
-                  >{{ station.scheduledTrains.filter(train => train.stopInfo.confirmed).length }}</span>
+                  <span style="color: #bbb">{{
+                    station.scheduledTrains.filter(
+                      (train) => train.stopInfo.confirmed
+                    ).length
+                  }}</span>
                 </span>
 
                 <span v-else>...</span>
@@ -136,7 +188,9 @@
         </tr>
       </table>
     </div>
-    <div class="no-stations" v-if="stations.length == 0">Ups! Brak stacji do wyświetlenia!</div>
+    <div class="no-stations" v-if="stations.length == 0">
+      Ups! Brak stacji do wyświetlenia!
+    </div>
   </section>
 </template>
 
@@ -182,7 +236,8 @@ export default class StationTable extends styleMixin {
 <style lang="scss" scoped>
 @import "../../styles/responsive.scss";
 @import "../../styles/variables.scss";
-@import "../../styles/global.scss";
+
+$rowCol: #4b4b4b;
 
 .change-anim {
   &-enter-active,
@@ -197,7 +252,7 @@ export default class StationTable extends styleMixin {
 }
 
 .station-table {
-  font-size: calc(0.5rem + 0.3vw);
+  font-size: calc(0.5rem + 0.35vw);
   overflow: auto;
   overflow-y: hidden;
 }
@@ -220,6 +275,7 @@ export default class StationTable extends styleMixin {
   &-wrapper {
     overflow: auto;
   }
+
   white-space: nowrap;
   border-collapse: collapse;
 
@@ -234,7 +290,7 @@ export default class StationTable extends styleMixin {
 
   &-head th {
     padding: 0.3rem;
-    background-color: #444;
+    background-color: $primaryCol;
     min-width: 120px;
 
     cursor: pointer;
@@ -254,16 +310,16 @@ export default class StationTable extends styleMixin {
   }
 
   &-item {
-    background-color: #5c5b5b;
+    background-color: $rowCol;
 
     &:nth-child(even) {
-      background-color: rgb(102, 101, 101);
+      background-color: lighten($rowCol, 5);
       color: white;
     }
 
     &:hover,
     &:focus {
-      background-color: #818181;
+      background-color: lighten($rowCol, 20);
     }
 
     & > td {

@@ -13,16 +13,20 @@
             <Clock />
             <div class="counter">
               <img src="@/assets/icon-dispatcher.svg" alt="icon dispatcher" />
-              <span>{{data.stationCount}}</span>
+              <span>{{ data.stationCount }}</span>
 
-              <span>{{data.trainCount}}</span>
+              <span>{{ data.trainCount }}</span>
               <img src="@/assets/icon-train.svg" alt="icon train" />
             </div>
           </span>
 
           <span class="header-links">
-            <router-link class="route" active-class="route-active" to="/" exact>SCENERIE</router-link>/
-            <router-link class="route" active-class="route-active" to="/trains">POCIĄGI</router-link>
+            <router-link class="route" active-class="route-active" to="/" exact
+              >SCENERIE</router-link
+            >/
+            <router-link class="route" active-class="route-active" to="/trains"
+              >POCIĄGI</router-link
+            >
           </span>
         </div>
       </header>
@@ -41,7 +45,9 @@
 
       <transition name="message-anim" mode="out-in">
         <span :key="data.dataConnectionStatus">
-          <div class="message loading" v-if="data.dataConnectionStatus == 0">Pobieranie danych...</div>
+          <div class="message loading" v-if="data.dataConnectionStatus == 0">
+            Pobieranie danych...
+          </div>
 
           <div class="message error" v-if="data.dataConnectionStatus == 1">
             <img :src="ErrorIcon" alt="Error" />
@@ -68,24 +74,10 @@ export default class App extends Vue {
   ErrorIcon = require("@/assets/icon-error.svg");
 
   @Action("synchronizeData") synchronizeData;
-
   @Getter("getAllData") data;
-
-  // @Getter("getOnlineInfo") onlineInfo;
-  // @Getter("getConnectionState") connState;
-
-  // @Action("initStations") initStations;
-
-  // @Action("fetchOnlineStations") fetchStations;
-  // @Action("fetchTrainsData") fetchTrainsData;
 
   mounted() {
     this.synchronizeData();
-    // this.initStations();
-    // this.fetchTrainsData();
-
-    // setInterval(this.fetchStations, 15000);
-    // setInterval(this.fetchTrainsData, 45000);
   }
 }
 </script>
@@ -94,6 +86,7 @@ export default class App extends Vue {
 @import "./styles/responsive.scss";
 @import "./styles/variables.scss";
 @import "./styles/global.scss";
+@import "./styles/scenery_status.scss";
 
 .view-anim {
   &-enter {
@@ -183,7 +176,7 @@ export default class App extends Vue {
 }
 
 .header {
-  background: #333;
+  background: $primaryCol;
   padding: 0.15em;
 
   border-radius: 0 0 0.7em 0.7em;
