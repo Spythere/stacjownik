@@ -264,7 +264,7 @@
     },
     "default": true,
     "nonPublic": false,
-    "stops": ["Głowno"]
+    "stops": ["Głowno, Domaniewice"]
   },
   {
     "stationName": "LCS Ozorków",
@@ -1933,5 +1933,29 @@
     },
     "default": false,
     "nonPublic": false
+  },
+  {
+    "stationName": "Ciechany",
+    "stationURL": "https://td2.info.pl/w-trakcie-prac/ciechany/",
+    "stationLines": "",
+    "reqLevel": "3",
+    "supportersOnly": "NIE",
+    "signalType": "współczesna",
+    "controlType": "SCS",
+    "SBL": "",
+    "twoWayBlock": "",
+    "routes": {
+      "oneWay": {
+        "catenary": 1,
+        "noCatenary": 0
+      },
+      "twoWay": {
+        "catenary": 0,
+        "noCatenary": 0
+      }
+    },
+    "default": false,
+    "nonPublic": false,
+    "stops": ["Pawonki"]
   }
 ]

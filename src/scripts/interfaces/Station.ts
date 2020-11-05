@@ -33,6 +33,7 @@ export default interface Station {
     driverName: string;
     driverId: number;
     currentStationName: string;
+    currentStationHash: string;
     category: string;
     stopInfo: TrainStop;
 

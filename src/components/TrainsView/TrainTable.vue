@@ -171,6 +171,7 @@ import Train from "@/scripts/interfaces/Train";
 import Station from "@/scripts/interfaces/Station";
 
 import TrainSchedule from "@/components/TrainsView/TrainSchedule.vue";
+import TrainStop from '@/scripts/interfaces/TrainStop';
 
 @Component({
   components: { TrainSchedule }
@@ -202,11 +203,10 @@ export default class TrainTable extends Vue {
 
   generateStopList(stops: any): string | undefined {
     if (!stops) return "";
-    return stops.reduce((acc, stop, i) => {
-
-      if (stop.stopType.includes("ph")) acc.push(`<strong>${stop.stopName}</strong>`);
-      else if (i > 0 && i < stops.length - 1 && !stop.stopName.includes("po."))
-        acc.push(`<span style='color: #ccc;'>${stop.stopName.includes("podg.") ? stop.stopName.split(",")[0] : stop.stopName}</span>`);
+    return stops.reduce((acc, stop: TrainStop, i) => {
+      if (stop.stopType.includes("ph")) acc.push(`<strong style='color:${stop.confirmed ? "springgreen" : "white"}'>${stop.stopName}</strong>`);
+      else if (i > 0 && i < stops.length - 1)
+        acc.push(`<span style='color:${stop.confirmed ? "springgreen" : "lightgray"}'>${stop.stopName}</span>`);
       return acc;
     }, []).join(" * ");
   }
@@ -360,6 +360,10 @@ export default class TrainTable extends Vue {
 }
 
 .stats {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+
   &-main {
     display: flex;
     margin-bottom: 1.5em;

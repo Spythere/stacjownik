@@ -183,6 +183,7 @@ export default class Store extends VuexModule {
             driverName: train.driverName,
             driverId: train.driverId,
             currentStationName: train.currentStationName,
+            currentStationHash: train.currentStationHash,
             timetableId: trainInfo.timetableId,
             category: trainInfo.trainCategoryCode,
             route: trainInfo.route,
@@ -253,6 +254,7 @@ export default class Store extends VuexModule {
                 driverId: train.driverId,
                 driverName: train.driverName,
                 currentStationName: train.station.stationName,
+                currentStationHash: train.station.stationHash,
                 connectedTrack: train.dataSceneryConnection,
                 locoType,
                 locoURL: getLocoURL(locoType),
@@ -375,11 +377,11 @@ export default class Store extends VuexModule {
           ? timetableData.followingStops.findIndex((stop: any) => {
               const stationName = station.stationName.toLowerCase();
               const stopName = stop.stopNameRAW.toLowerCase();
-
-              return (
+//stationName.includes('lcs') && 
+            return (
                 stationName.includes(stopName) ||
                 (stopName.includes('podg.') && stopName.split(', podg.')[0] && stationName.includes(stopName.split(', podg.')[0])) ||
-                (stationName.includes('lcs') && JSONStationData.some(data => data.stationName.includes(station.stationName) && data.stops && data.stops.includes(stop.stopNameRAW)))
+                (JSONStationData.some(data => data.stationName.includes(station.stationName) && data.stops && data.stops.includes(stop.stopNameRAW)))
               );
             })
           : -1;
@@ -401,6 +403,7 @@ export default class Store extends VuexModule {
             driverName: timetableData.driverName,
             driverId: timetableData.driverId,
             currentStationName: timetableData.currentStationName,
+            currentStationHash: timetableData.currentStationHash,
             category: timetableData.category,
             stopInfo,
             stopLabel,

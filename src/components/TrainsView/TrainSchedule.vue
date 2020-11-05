@@ -14,8 +14,12 @@
 
           <div
             class="stop-line arrival"
-            v-if="i > 0 && followingStops[i - 1].departureLine != stop.arrivalLine"
-          >{{ stop.arrivalLine }}</div>
+            v-if="
+              i > 0 && followingStops[i - 1].departureLine != stop.arrivalLine
+            "
+          >
+            {{ stop.arrivalLine }}
+          </div>
 
           <span class="stop-info">
             <div class="info-indicator"></div>
@@ -25,20 +29,35 @@
               <span
                 class="date-arrival"
                 v-if="!stop.beginsHere"
-                :class="{delayed: stop.arrivalDelay > 0, preponed: stop.arrivalDelay < 0}"
-              >p. {{stylizeTime(stop.arrivalRealTimeString, stop.arrivalDelay)}}</span>
+                :class="{
+                  delayed: stop.arrivalDelay > 0,
+                  preponed: stop.arrivalDelay < 0,
+                }"
+                >p.
+                {{
+                  stylizeTime(stop.arrivalRealTimeString, stop.arrivalDelay)
+                }}</span
+              >
 
               <span
                 class="date-stop"
                 v-if="stop.stopTime"
                 :class="stop.stopType.replace(', ', '-')"
-              >{{ stop.stopTime }} {{ stop.stopType }}</span>
+                >{{ stop.stopTime }} {{ stop.stopType }}</span
+              >
 
               <span
                 class="date-departure"
                 v-if="!stop.terminatesHere && stop.stopTime != 0"
-                :class="{delayed: stop.departureDelay > 0, preponed: stop.departureDelay < 0}"
-              >o. {{ stylizeTime(stop.departureRealTimeString, stop.departureDelay) }}</span>
+                :class="{
+                  delayed: stop.departureDelay > 0,
+                  preponed: stop.departureDelay < 0,
+                }"
+                >o.
+                {{
+                  stylizeTime(stop.departureRealTimeString, stop.departureDelay)
+                }}</span
+              >
             </span>
           </span>
 
@@ -185,7 +204,8 @@ li.schedule-item > .stop-info {
       }
 
       &.pt,
-      &.pm {
+      &.pm,
+      &.pt-pm {
         background: #252525;
       }
     }

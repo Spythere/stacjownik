@@ -11,6 +11,7 @@ export default interface Train {
   trainNo: number;
   driverName: string;
   currentStationName: string;
+  currentStationHash: string;
   locoURL: string;
   locoType: string;
   online: boolean;
