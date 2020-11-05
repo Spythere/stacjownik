@@ -19,27 +19,30 @@
 
 .tooltip {
   position: relative;
-  display: inline-block;
-
-  z-index: 5;
   
-  & > .content {
-    visibility: hidden;
-    width: 120px;
+  & > &-text {
+    display: inline-block;
+    width: 150px;
+
+    padding: .5rem .35rem;
     background-color: #830000;
-    color: #fff;
+    border-radius: .5rem;
+    
+    display: inline-block;
+    max-width: 150px;
+    
+    font-size: 1em;
     text-align: center;
-    padding: 5px 0;
-    border-radius: 6px;
-
-    font-size: 1rem;
-
+    color: #fff;
+    
     position: absolute;
-    bottom: 155%;
-    left: 50%;
-    margin-left: -60px;
-
+    z-index: 1;
+    visibility: hidden;
     opacity: 0;
+
+    left: 50%;
+    transform: translate(-50%, calc(-100% - 1rem));
+
     transition: opacity 0.3s;
 
     &::after {
@@ -50,11 +53,15 @@
       margin-left: -5px;
       border-width: 5px;
       border-style: solid;
-      border-color: #aa0000 transparent transparent transparent;
+      border-color: #830000 transparent transparent transparent;
     }
   }
 
-  &:hover > .content {
+  &:hover > &-text {
+    @include smallScreen() {
+      display: none;
+    }
+
     visibility: visible;
     opacity: 1;
   }
@@ -103,6 +110,8 @@ input {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+
+  -webkit-tap-highlight-color: transparent;
 }
 
 .default-station {

@@ -43,7 +43,7 @@
                   </strong>
                 </span>
 
-                <span class="info-route-arrow">
+                <span class="info-route-schedule tooltip">
                   <img
                     :src="
                       showedSchedule === train.timetableData.timetableId
@@ -52,6 +52,12 @@
                     "
                     alt="asc-arrow"
                   />
+
+                  <span>SRJP</span>
+
+                  <span class="tooltip-text">
+                    Wyświetl rozkład jazdy pociągu {{ train.trainNo }}
+                  </span>
                 </span>
               </div>
 
@@ -70,14 +76,20 @@
 
             <div class="info-bottom">
               <span
-                class="info-label user-badge tooltip"
-                :class="train.stopStatus"
-                :style="!train.online ? 'color: gray' : ''"
-                v-if="train.stopStatus"
+                class="info-label user-badge"
+                :class="train.stopStatus || 'disconnected'"
               >
-                {{ train.stopLabel }}
+                <span
+                  class="tooltip"
+                  :style="!train.online ? 'color: gray' : ''"
+                >
+                  <span v-if="train.stopStatus">{{ train.stopLabel }}</span>
+                  <span v-else>Sceneria offline</span>
 
-                <span class="content" v-if="!train.online">Pociąg offline</span>
+                  <span class="tooltip-text" v-if="!train.online">
+                    Pociąg offline
+                  </span>
+                </span>
               </span>
             </div>
           </span>
@@ -279,18 +291,41 @@ export default class TrainTable extends Vue {
   }
 
   &-route {
-    width: 100%;
-    font-size: 1.2em;
+    display: flex;
+    align-items: center;
 
-    &-arrow img {
-      border: 2px solid white;
+    font-size: 1.25em;
+    margin-bottom: 10px;
+
+    &-schedule {
+      margin-left: 10px;
+      padding: 0.15em 0.5em;
+
+      font-size: 0.75em;
+
+      background: #1085b3;
+      border-radius: 1em;
+
       vertical-align: middle;
+
+      img {
+        vertical-align: middle;
+        width: 1.2em;
+      }
+
+      .tooltip-text {
+        font-size: 0.9em;
+        background-color: #1085b3;
+
+        &::after {
+          border-color: #1085b3 transparent transparent transparent;
+        }
+      }
     }
   }
 
   &-stops {
-    margin-top: 0.35em;
-    margin-bottom: 1rem;
+    margin-bottom: 10px;
 
     font-size: 0.75em;
   }

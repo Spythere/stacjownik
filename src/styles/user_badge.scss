@@ -3,6 +3,7 @@ $departed: springgreen;
 $stopped: #ffa600;
 $online: gold;
 $terminated: red;
+$disconnected: slategray;
 
 .user-badge {
     border: 1px solid white;
@@ -44,5 +45,9 @@ $terminated: red;
 
     &.terminated {
         border: 1px solid $terminated;
+    }
+
+    &.disconnected {
+        border: 1px solid $disconnected;
     }
 }
