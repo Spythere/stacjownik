@@ -39,9 +39,7 @@
         </transition>
       </main>
 
-      <footer class="app-footer flex">
-        <span>&copy; Spythere 2020</span>
-      </footer>
+      <footer class="app-footer flex">&copy; Spythere 2020</footer>
 
       <transition name="message-anim" mode="out-in">
         <span :key="data.dataConnectionStatus">

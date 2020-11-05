@@ -12,7 +12,10 @@
       </div>
 
       <TrainStats :trains="trains" />
-      <TrainTable :computedTrains="computedTrains" @changeFocusedTrain="changeFocusedTrain" />
+      <TrainTable
+        :computedTrains="computedTrains"
+        @changeFocusedTrain="changeFocusedTrain"
+      />
     </div>
   </section>
 </template>

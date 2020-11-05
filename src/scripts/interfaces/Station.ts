@@ -35,5 +35,8 @@ export default interface Station {
     currentStationName: string;
     category: string;
     stopInfo: TrainStop;
+
+    stopLabel: string;
+    stopStatus: string;
   }[];
 }

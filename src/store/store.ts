@@ -370,7 +370,7 @@ export default class Store extends VuexModule {
   @Mutation
   private updateTimetableData(timetableList: any[]) {
     this.stationList = this.stationList.map(station => {
-      const scheduledTrains = timetableList.reduce((acc, timetableData: any) => {
+      const scheduledTrains: Station['scheduledTrains'] = timetableList.reduce((acc: Station['scheduledTrains'], timetableData: any) => {
         const scheduledIndex = timetableData
           ? timetableData.followingStops.findIndex((stop: any) => {
               const stationName = station.stationName.toLowerCase();
@@ -385,7 +385,16 @@ export default class Store extends VuexModule {
           : -1;
 
         if (scheduledIndex >= 0) {
-          const scheduledData = timetableData.followingStops[scheduledIndex];
+          const stopInfo = timetableData.followingStops[scheduledIndex];
+
+          let stopStatus = "";
+          let stopLabel = "";
+
+          if (stopInfo.terminatesHere && stopInfo.confirmed) { stopStatus = "terminated"; stopLabel = "Skończył bieg" }
+          else if (!stopInfo.terminatesHere && stopInfo.confirmed) { stopStatus = "departed"; stopLabel = "Odprawiony" }
+          else if (timetableData.currentStationName == station.stationName && !stopInfo.stopped) { stopStatus = "online"; stopLabel = "Na stacji" }
+          else if (timetableData.currentStationName == station.stationName && stopInfo.stopped) { stopStatus = "stopped"; stopLabel = "Postój" }
+          else if (timetableData.currentStationName != station.stationName) { stopStatus = "arriving"; stopLabel = "W drodze" }
 
           acc.push({
             trainNo: timetableData.trainNo,
@@ -393,7 +402,9 @@ export default class Store extends VuexModule {
             driverId: timetableData.driverId,
             currentStationName: timetableData.currentStationName,
             category: timetableData.category,
-            stopInfo: scheduledData,
+            stopInfo,
+            stopLabel,
+            stopStatus
           });
         }
 
@@ -406,7 +417,13 @@ export default class Store extends VuexModule {
     this.trainList = this.trainList.reduce((acc, train) => {
       const timetableData = timetableList.find(data => data && data.trainNo === train.trainNo);
 
-      if (timetableData) acc.push({ ...train, timetableData });
+      if (timetableData) {
+        const trainData = this.stationList
+          .find(station => station.stationName === train.currentStationName)?.scheduledTrains
+          .find(stationTrain => stationTrain.trainNo === train.trainNo);
+        
+        acc.push({ ...train, timetableData, stopStatus: trainData?.stopStatus || "", stopLabel: trainData?.stopLabel || "" });
+      }
 
       return acc;
     }, [] as Train[]);

@@ -25,8 +25,9 @@
                 <span>
                   <strong>{{ scheduledTrain.category }}</strong>
                   {{ scheduledTrain.trainNo }}
-                </span> </router-link
-              >|
+                </span>
+              </router-link>
+              |
               <span>
                 <a
                   :href="

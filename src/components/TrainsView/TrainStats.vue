@@ -200,7 +200,7 @@ export default class TrainStats extends Vue {
 .train-stats {
   padding: 0.3em 0;
   font-size: 1.1em;
-  z-index: 2;
+  z-index: 5;
 
   position: relative;
 }

@@ -21,7 +21,8 @@
           <span
             class="option-content"
             :class="option.section + (option.value ? ' checked' : '')"
-          >{{option.content}}</span>
+            >{{ option.content }}</span
+          >
         </label>
       </div>
     </div>
@@ -39,17 +40,24 @@
           @change="handleInput"
         />
 
-        <span class="slider-value">{{slider.value}}</span>
+        <span class="slider-value">{{ slider.value }}</span>
 
-        <div class="slider-content">{{slider.content}}</div>
+        <div class="slider-content">{{ slider.content }}</div>
       </div>
     </div>
 
     <div class="card-save">
-      <div class="option">
+      <div class="option save">
         <label class="option-label">
-          <input class="option-input" type="checkbox" v-model="saveOptions" @change="saveFilters" />
-          <span class="option-content save" :class="{'checked': saveOptions}">ZAPISZ FILTRY</span>
+          <input
+            class="option-input"
+            type="checkbox"
+            v-model="saveOptions"
+            @change="saveFilters"
+          />
+          <span class="option-content save" :class="{ checked: saveOptions }"
+            >ZAPISZ FILTRY</span
+          >
         </label>
       </div>
     </div>
@@ -161,7 +169,8 @@ export default class FilterCard extends Vue {
 
   background: #262a2e;
 
-  font-size: calc(0.75rem + 0.4vw);
+  font-size: calc(0.75rem + 0.45vw);
+
   box-shadow: 0 0 15px 5px #474747;
 
   @include smallScreen() {
@@ -175,12 +184,6 @@ export default class FilterCard extends Vue {
 }
 
 .card {
-  &-exit {
-    img {
-      width: 1.2em;
-    }
-  }
-
   &-title {
     font-size: 2em;
     font-weight: 700;
@@ -217,6 +220,12 @@ export default class FilterCard extends Vue {
       font-size: 0.9em;
     }
   }
+
+  &-exit {
+    img {
+      width: 2em;
+    }
+  }
 }
 
 .option {
@@ -247,6 +256,10 @@ export default class FilterCard extends Vue {
     position: relative;
 
     transition: all 0.2s;
+
+    &.save {
+      font-size: 0.8em;
+    }
 
     &:not(.checked) {
       background-color: #585858;

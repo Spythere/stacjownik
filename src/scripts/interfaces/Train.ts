@@ -24,4 +24,7 @@ export default interface Train {
     SKR: boolean;
     routeDistance: number;
   };
+
+  stopStatus: string;
+  stopLabel: string;
 }

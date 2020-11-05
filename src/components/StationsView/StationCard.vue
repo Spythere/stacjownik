@@ -137,7 +137,7 @@
         <h3 class="users-title title">GRACZE NA STACJI</h3>
         <div class="users-content">
           <div
-            class="user"
+            class="user-badge"
             :class="train.stopStatus"
             v-for="train in computedStationTrains"
             :key="train.trainNo + train.driverName"
@@ -168,7 +168,7 @@
 
     <StationTimetable
       :class="{ show: cardMode == 1 }"
-      :scheduledTrains="computedScheduledTrains"
+      :scheduledTrains="this.stationInfo.scheduledTrains"
       :stationName="stationInfo.stationName"
     />
   </section>
@@ -202,28 +202,9 @@ export default class StationCard extends styleMixin {
       : `${this.stationInfo.dispatcherExp}`;
   }
 
-  get computedScheduledTrains() {
-    return this.stationInfo.scheduledTrains.map(scheduledTrain => {
-      let stopStatus = "";
-      let stopLabel = "";
-
-      if (scheduledTrain.stopInfo.terminatesHere && scheduledTrain.stopInfo.confirmed) { stopStatus = "terminated"; stopLabel = "Skończył bieg" }
-      else if (!scheduledTrain.stopInfo.terminatesHere && scheduledTrain.stopInfo.confirmed) { stopStatus = "departed"; stopLabel = "Odprawiony" }
-      else if (scheduledTrain.currentStationName == this.stationInfo.stationName && !scheduledTrain.stopInfo.stopped) { stopStatus = "online"; stopLabel = "Na stacji" }
-      else if (scheduledTrain.currentStationName == this.stationInfo.stationName && scheduledTrain.stopInfo.stopped) { stopStatus = "stopped"; stopLabel = "Postój" }
-      else if (scheduledTrain.currentStationName != this.stationInfo.stationName) { stopStatus = "arriving"; stopLabel = "W drodze" }
-
-      return {
-        ...scheduledTrain,
-        stopStatus,
-        stopLabel
-      }
-    })
-  }
-
   get computedStationTrains() {
     return this.stationInfo.stationTrains.map(stationTrain => {
-      const scheduledData = this.computedScheduledTrains.find(scheduledTrain => scheduledTrain.trainNo === stationTrain.trainNo);
+      const scheduledData = this.stationInfo.scheduledTrains.find(scheduledTrain => scheduledTrain.trainNo === stationTrain.trainNo);
 
       return {
         ...stationTrain,
@@ -237,6 +218,7 @@ export default class StationCard extends styleMixin {
 <style lang="scss" scoped>
 @import "../../styles/variables.scss";
 @import "../../styles/responsive.scss";
+@import "../../styles/user_badge.scss";
 
 .title {
   color: $accentCol;
@@ -425,44 +407,6 @@ export default class StationCard extends styleMixin {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-
-    & > .user {
-      padding: 0.3rem;
-      margin: 0.3rem;
-      border: 1px solid white;
-      border-radius: 0.4em;
-
-      &.borderless {
-        border: none;
-        margin: 0;
-        padding: 0;
-      }
-
-      &.no-timetable {
-        border: 1px solid #aaa;
-
-        a {
-          color: #aaa;
-          pointer-events: none;
-        }
-      }
-
-      &.departed {
-        border: 1px solid lime;
-      }
-
-      &.stopped {
-        border: 1px solid #ffa600;
-      }
-
-      &.online {
-        border: 1px solid gold;
-      }
-
-      &.terminated {
-        border: 1px solid red;
-      }
-    }
   }
 }
 

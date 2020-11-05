@@ -1,0 +1,48 @@
+$no-timetable: #aaa;
+$departed: lime;
+$stopped: #ffa600;
+$online: gold;
+$terminated: red;
+
+.user-badge {
+    border: 1px solid white;
+    z-index: 4;
+
+    margin-top: 0.3rem;
+    margin-right: 0.3rem;
+
+    border-radius: 0.7em;
+    padding: 0.2em 0.5em;
+    font-size: 0.95em;
+
+    &.borderless {
+        border: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    &.no-timetable {
+        border: 1px solid $no-timetable;
+
+        a {
+            color: $no-timetable;
+            pointer-events: none;
+        }
+    }
+
+    &.departed {
+        border: 1px solid $departed;
+    }
+
+    &.stopped {
+        border: 1px solid $stopped;
+    }
+
+    &.online {
+        border: 1px solid $online;
+    }
+
+    &.terminated {
+        border: 1px solid $terminated;
+    }
+}
