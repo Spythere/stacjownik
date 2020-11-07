@@ -379,7 +379,8 @@ export default class Store extends VuexModule {
               const stopName = stop.stopNameRAW.toLowerCase();
 //stationName.includes('lcs') && 
             return (
-                stationName.includes(stopName) ||
+              stationName.includes(stopName) ||
+              stopName.includes(stationName) ||
                 (stopName.includes('podg.') && stopName.split(', podg.')[0] && stationName.includes(stopName.split(', podg.')[0])) ||
                 (JSONStationData.some(data => data.stationName.includes(station.stationName) && data.stops && data.stops.includes(stop.stopNameRAW)))
               );

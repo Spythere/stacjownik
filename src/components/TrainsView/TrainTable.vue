@@ -18,32 +18,26 @@
           >
             <div class="info-main">
               <div class="info-category">
-                <span>
-                  <strong>{{ train.timetableData.category }}</strong>
-                  {{ train.trainNo }} |
-                  <span style="color: gold">
-                    {{ train.timetableData.routeDistance }} km
-                  </span>
-                </span>
-
-                <span>
+                <div class="category-left">
                   <span class="warning twr" v-if="train.timetableData.TWR">
                     TWR
                   </span>
+
                   <span class="warning skr" v-if="train.timetableData.SKR">
                     SKR
                   </span>
-                </span>
-              </div>
 
-              <div class="info-route">
-                <span class="info-route-text">
-                  <strong>
-                    {{ train.timetableData.route.replace("|", " - ") }}
-                  </strong>
-                </span>
+                  <span>
+                    <strong>{{ train.timetableData.category }}</strong>
+                    {{ train.trainNo }} |
 
-                <span class="info-route-schedule tooltip">
+                    <span style="color: gold">
+                      {{ train.timetableData.routeDistance }} km
+                    </span>
+                  </span>
+                </div>
+
+                <div class="category-right tooltip">
                   <img
                     :src="
                       showedSchedule === train.timetableData.timetableId
@@ -56,8 +50,16 @@
                   <span>SRJP</span>
 
                   <span class="tooltip-text">
-                    Wyświetl rozkład jazdy pociągu {{ train.trainNo }}
+                    Szczegółowy rozkład jazdy pociągu {{ train.trainNo }}
                   </span>
+                </div>
+              </div>
+
+              <div class="info-route">
+                <span class="info-route-text">
+                  <strong>
+                    {{ train.timetableData.route.replace("|", " - ") }}
+                  </strong>
                 </span>
               </div>
 
@@ -84,7 +86,10 @@
                   :style="!train.online ? 'color: gray' : ''"
                 >
                   <span v-if="train.stopStatus">{{ train.stopLabel }}</span>
-                  <span v-else>Sceneria offline</span>
+                  <span v-else-if="train.currentStationName">
+                    Pociąg na złej stacji!
+                  </span>
+                  <span v-else>Sceneria offline!</span>
 
                   <span class="tooltip-text" v-if="!train.online">
                     Pociąg offline
@@ -217,7 +222,7 @@ export default class TrainTable extends Vue {
     if (!stops) return "";
     return stops.reduce((acc, stop: TrainStop, i) => {
       if (stop.stopType.includes("ph")) acc.push(`<strong style='color:${stop.confirmed ? "springgreen" : "white"}'>${stop.stopName}</strong>`);
-      else if (i > 0 && i < stops.length - 1)
+      else if (i > 0 && i < stops.length - 1 && !stop.stopNameRAW.includes("po."))
         acc.push(`<span style='color:${stop.confirmed ? "springgreen" : "lightgray"}'>${stop.stopName}</span>`);
       return acc;
     }, []).join(" * ");
@@ -246,6 +251,7 @@ export default class TrainTable extends Vue {
   &-list {
     @include smallScreen() {
       width: 100%;
+      overflow: hidden;
     }
   }
 
@@ -283,30 +289,26 @@ export default class TrainTable extends Vue {
   justify-content: space-between;
 
   &-category {
-    flex-grow: 2;
     font-size: 1.05em;
 
     display: flex;
     justify-content: space-between;
-  }
-
-  &-route {
-    display: flex;
     align-items: center;
 
-    font-size: 1.25em;
-    margin-bottom: 10px;
+    div {
+      display: flex;
+    }
 
-    &-schedule {
-      margin-left: 10px;
+    .category-right {
       padding: 0.15em 0.5em;
-
-      font-size: 0.75em;
 
       background: #1085b3;
       border-radius: 1em;
 
-      vertical-align: middle;
+      font-size: 0.9em;
+
+      -moz-user-select: none;
+      -webkit-user-select: none;
 
       img {
         vertical-align: middle;
@@ -322,6 +324,14 @@ export default class TrainTable extends Vue {
         }
       }
     }
+  }
+
+  &-route {
+    display: flex;
+    align-items: center;
+
+    font-size: 1.25em;
+    margin: 5px 0;
   }
 
   &-stops {
@@ -440,21 +450,24 @@ export default class TrainTable extends Vue {
 }
 
 .warning {
-  border-radius: 1em;
+  border-radius: 15px;
   padding: 0.1em 1.2em;
-  margin: 0 0.2em;
+  margin-right: 0.5em;
 
-  color: black;
+  display: flex;
+  align-items: center;
+
+  color: white;
+
   font-weight: bold;
-  font-size: 0.85em;
+  font-size: 0.7em;
 
   &.twr {
-    background-color: $twr;
+    border: 2px solid $twr;
   }
 
   &.skr {
-    background-color: $skr;
-    color: white;
+    border: 2px solid $skr;
   }
 }
 
