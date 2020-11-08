@@ -395,6 +395,7 @@ export default class Store extends VuexModule {
 
           if (stopInfo.terminatesHere && stopInfo.confirmed) { stopStatus = "terminated"; stopLabel = "Skończył bieg" }
           else if (!stopInfo.terminatesHere && stopInfo.confirmed) { stopStatus = "departed"; stopLabel = "Odprawiony" }
+          // else if (timetableData.currentStationName == station.stationName && stopInfo.beginsHere ) { stopStatus = "online"; stopLabel = "Podstawia się" }
           else if (timetableData.currentStationName == station.stationName && !stopInfo.stopped) { stopStatus = "online"; stopLabel = "Na stacji" }
           else if (timetableData.currentStationName == station.stationName && stopInfo.stopped) { stopStatus = "stopped"; stopLabel = "Postój" }
           else if (timetableData.currentStationName != station.stationName) { stopStatus = "arriving"; stopLabel = "W drodze" }

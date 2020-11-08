@@ -1957,5 +1957,28 @@
     "default": false,
     "nonPublic": false,
     "stops": ["Pawonki"]
+  },
+  {
+    "stationName": "Czermin",
+    "stationURL": "https://td2.info.pl/scenerie/czermin/",
+    "stationLines": "",
+    "reqLevel": "6",
+    "supportersOnly": "NIE",
+    "signalType": "współczesna",
+    "controlType": "SCS",
+    "SBL": "TAK (szlaki Łk i Fw)",
+    "twoWayBlock": "",
+    "routes": {
+      "oneWay": {
+        "catenary": 2,
+        "noCatenary": 0
+      },
+      "twoWay": {
+        "catenary": 2,
+        "noCatenary": 0
+      }
+    },
+    "default": false,
+    "nonPublic": true
   }
 ]
