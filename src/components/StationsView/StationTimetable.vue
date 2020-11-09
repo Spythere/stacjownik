@@ -162,9 +162,8 @@ export default class StationTimetable extends Vue {
 
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
-    gap: 0 1rem;
 
-    padding: 0 2rem;
+    padding: 0 1rem;
 
     @include smallScreen() {
       display: flex;
@@ -176,8 +175,9 @@ export default class StationTimetable extends Vue {
 
 .timetable {
   &-general {
-    padding: 0.3rem 0.5rem;
-    border: 1px solid white;
+    padding: 0.3rem 0.7rem;
+    border: 2px solid white;
+    border-radius: 10px;
 
     display: flex;
     align-items: center;
@@ -197,8 +197,8 @@ export default class StationTimetable extends Vue {
     }
 
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
-    font-size: 1.3em;
+    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+    font-size: 1.35em;
   }
 }
 
