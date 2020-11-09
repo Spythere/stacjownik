@@ -118,8 +118,6 @@ export default class TrainSorter extends Vue {
 .options-list {
   background: #333;
   border-radius: 0.5em;
-
-  margin: 0.3rem 0;
 }
 
 .selected {

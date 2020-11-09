@@ -71,7 +71,7 @@
     },
     "default": true,
     "nonPublic": false,
-    "stops": ["Gdańsk Główny"]
+    "stops": ["Gdańsk Główny", "Gdańsk Południowy"]
   },
   {
     "stationName": "Lębork",

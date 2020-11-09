@@ -4,7 +4,12 @@
       <div class="search-title title">Szukaj składu</div>
       <div class="search-box">
         <input class="search-input" v-model="searchedTrain" />
-        <img class="search-exit" :src="exitIcon" alt="exit-icon" @click="() => searchedTrain = ''" />
+        <img
+          class="search-exit"
+          :src="exitIcon"
+          alt="exit-icon"
+          @click="() => (searchedTrain = '')"
+        />
       </div>
     </span>
 
@@ -12,7 +17,12 @@
       <div class="search-title title">Szukaj maszynisty</div>
       <div class="search-box">
         <input class="search-input" v-model="searchedDriver" />
-        <img class="search-exit" :src="exitIcon" alt="exit-icon" @click="() => searchedDriver = ''" />
+        <img
+          class="search-exit"
+          :src="exitIcon"
+          alt="exit-icon"
+          @click="() => (searchedDriver = '')"
+        />
       </div>
     </span>
   </div>
