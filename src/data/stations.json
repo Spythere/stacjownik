@@ -264,7 +264,7 @@
     },
     "default": true,
     "nonPublic": false,
-    "stops": ["Głowno, Domaniewice"]
+    "stops": ["Głowno", "Domaniewice"]
   },
   {
     "stationName": "LCS Ozorków",

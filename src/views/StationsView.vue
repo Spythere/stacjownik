@@ -245,6 +245,7 @@ export default class StationsView extends Vue {
         this.focusedStationName = "";
       }
     });
+
   }
 
   closeCard() {

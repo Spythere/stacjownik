@@ -65,6 +65,9 @@ import { mapGetters, mapActions } from "vuex";
 
 import Clock from "@/components/App/Clock.vue";
 
+// import stationData from "@/data/stations.json";
+
+
 @Component({
   components: { Clock },
 })
@@ -76,6 +79,19 @@ export default class App extends Vue {
 
   mounted() {
     this.synchronizeData();
+
+    // stationData
+    //   .filter(data => data.stationName.length > 12 || (data.stops && data.stops.some(stop => stop.length > 12)))
+    //   .forEach(data => {
+    //     console.log(data.stationName, data.stationName.length);
+
+    //     data.stops?.forEach(stop => {
+    //       console.log(stop, stop.length);
+    //     })
+
+    //     console.log("-----");
+    //   });
+
   }
 }
 </script>

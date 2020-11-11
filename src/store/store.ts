@@ -372,7 +372,7 @@ export default class Store extends VuexModule {
   @Mutation
   private updateTimetableData(timetableList: any[]) {
     this.stationList = this.stationList.map(station => {
-      const scheduledTrains: Station['scheduledTrains'] = timetableList.reduce((acc: Station['scheduledTrains'], timetableData: any) => {
+      const scheduledTrains: Station['scheduledTrains'] = timetableList.reduce((acc: Station['scheduledTrains'], timetableData: any, index) => {
         const scheduledIndex = timetableData
           ? timetableData.followingStops.findIndex((stop: any) => {
               const stationName = station.stationName.toLowerCase();
@@ -386,19 +386,31 @@ export default class Store extends VuexModule {
               );
             })
           : -1;
-
+        
+        
         if (scheduledIndex >= 0) {
+          
           const stopInfo = timetableData.followingStops[scheduledIndex];
 
           let stopStatus = "";
           let stopLabel = "";
+          let nearestStop = "";
 
           if (stopInfo.terminatesHere && stopInfo.confirmed) { stopStatus = "terminated"; stopLabel = "Skończył bieg" }
           else if (!stopInfo.terminatesHere && stopInfo.confirmed) { stopStatus = "departed"; stopLabel = "Odprawiony" }
           // else if (timetableData.currentStationName == station.stationName && stopInfo.beginsHere ) { stopStatus = "online"; stopLabel = "Podstawia się" }
           else if (timetableData.currentStationName == station.stationName && !stopInfo.stopped) { stopStatus = "online"; stopLabel = "Na stacji" }
           else if (timetableData.currentStationName == station.stationName && stopInfo.stopped) { stopStatus = "stopped"; stopLabel = "Postój" }
-          else if (timetableData.currentStationName != station.stationName) { stopStatus = "arriving"; stopLabel = "W drodze" }
+          else if (timetableData.currentStationName != station.stationName) { stopStatus = "arriving"; stopLabel = "W drodze" }          
+          
+          for (let i = scheduledIndex + 1; i < timetableData.followingStops.length - 1; i++){    
+            const stop = timetableData.followingStops[i];
+            
+            if (stop.mainStop && stop.stopType.includes("ph")) {
+              nearestStop = stop.stopNameRAW;
+              break;
+            }
+          }
 
           acc.push({
             trainNo: timetableData.trainNo,
@@ -407,6 +419,9 @@ export default class Store extends VuexModule {
             currentStationName: timetableData.currentStationName,
             currentStationHash: timetableData.currentStationHash,
             category: timetableData.category,
+            beginsAt: timetableData.followingStops[0].stopNameRAW,
+            terminatesAt: timetableData.followingStops[timetableData.followingStops.length - 1].stopNameRAW,
+            nearestStop,
             stopInfo,
             stopLabel,
             stopStatus
