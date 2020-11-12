@@ -1,6 +1,9 @@
 <template>
   <div class="scenery-view">
-    <div class="scenery-offline" v-if="!stationInfo && dataStatus == 2">
+    <div
+      class="scenery-offline"
+      v-if="!stationInfo && dataStatus == 2 && currentPath === '/scenery'"
+    >
       Ups! Nie znaleziono danej stacji bądź jest ona offline!
       <button class="button">
         <a href="https://stacjownik-td2.web.app">Wróć na stronę główną</a>
@@ -270,6 +273,10 @@ export default class SceneryView extends styleMixin {
 
   activated() {
     this.timetableOnly = this.$route.query['timetable_only'] == "1" ? true : false;
+  }
+
+  get currentPath() {
+    return this.$route.path;
   }
 
   get dataLoaded() {
