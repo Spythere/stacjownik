@@ -46,7 +46,7 @@
     },
     "default": false,
     "nonPublic": false,
-    "stops": ["Borowe, podg.", "Wysoka, podg.", "Naprawa, podg."]
+    "stops": ["Borowe, podg.", "Wysoka, podg.", "Naprawa, podg.", "Borowe Towarowe"]
   },
   {
     "stationName": "LCS Gdańsk",

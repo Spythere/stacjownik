@@ -1,5 +1,5 @@
-import Train from '@/scripts/interfaces/Train';
-import TrainStop from '@/scripts/interfaces/TrainStop';
+import Train from './Train';
+import ScheduledTrain from './ScheduledTrain';
 
 export default interface Station {
   stationName: string;
@@ -24,24 +24,12 @@ export default interface Station {
     oneWay: { catenary: number; noCatenary: number };
     twoWay: { catenary: number; noCatenary: number };
   };
+  subStations: {
+    scheduledTrains: ScheduledTrain[],
+  }[];
   online: boolean;
   occupiedTo: string;
   statusTimestamp: number;
   stationTrains: Train[];
-  scheduledTrains: {
-    trainNo: number;
-    driverName: string;
-    driverId: number;
-    currentStationName: string;
-    currentStationHash: string;
-    category: string;
-    stopInfo: TrainStop;
-
-    terminatesAt: string;
-    beginsAt: string;
-    nearestStop: string;
-
-    stopLabel: string;
-    stopStatus: string;
-  }[];
+  scheduledTrains: ScheduledTrain[];
 }

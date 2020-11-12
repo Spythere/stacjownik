@@ -7,19 +7,17 @@
         alt="schedule-icon"
         @click="() => (cardMode = cardMode == 0 ? 1 : 0)"
       />
-      <img
-        :src="require('@/assets/icon-exit.svg')"
-        alt="exit-icon"
-        @click="exit"
-      />
+      <img :src="require('@/assets/icon-exit.svg')" alt="exit-icon" @click="exit" />
     </div>
 
     <div class="card-content" :class="{ offline: !stationInfo.online }">
       <div class="main">
         <div class="main-content">
-          <span class="main-level flex" v-if="stationInfo.reqLevel > -1">{{
+          <span class="main-level flex" v-if="stationInfo.reqLevel > -1">
+            {{
             2 > parseInt(stationInfo.reqLevel) ? "L" : stationInfo.reqLevel
-          }}</span>
+            }}
+          </span>
           <span class="main-general">
             <div class="main-name">
               <a
@@ -27,8 +25,7 @@
                 :href="stationInfo.stationURL"
                 target="_blank"
                 rel="noopener noreferrer"
-                >{{ stationInfo.stationName }}</a
-              >
+              >{{ stationInfo.stationName }}</a>
 
               <span v-else>{{ stationInfo.stationName }}</span>
             </div>
@@ -90,9 +87,7 @@
               stationInfo.dispatcherIsSupporter
             )
           "
-        >
-          {{ stationInfo.online ? computedDispatcherExp : "" }}
-        </div>
+        >{{ stationInfo.online ? computedDispatcherExp : "" }}</div>
         <div class="dispatcher-info">
           <div class="dispatcher-name">
             <a
@@ -101,8 +96,7 @@
               "
               target="_blank"
               rel="noopener noreferrer"
-              >{{ stationInfo.dispatcherName || "---" }}</a
-            >
+            >{{ stationInfo.dispatcherName || "---" }}</a>
           </div>
 
           <div class="dispatcher-rate">
@@ -114,9 +108,11 @@
 
       <div class="hours">
         <div class="hours-title title">STATUS</div>
-        <span class="status" :class="statusClasses(stationInfo.occupiedTo)">{{
+        <span class="status" :class="statusClasses(stationInfo.occupiedTo)">
+          {{
           stationInfo.occupiedTo
-        }}</span>
+          }}
+        </span>
       </div>
 
       <div class="spawns flex flex-column">
@@ -126,8 +122,7 @@
             class="spawn"
             v-for="(spawn, i) in stationInfo.spawnString"
             :key="spawn + stationInfo.dispatcherName + i"
-            >{{ spawn }}</span
-          >
+          >{{ spawn }}</span>
 
           <span class="spawn" v-if="!stationInfo.spawnString">BRAK</span>
         </div>
@@ -160,8 +155,7 @@
               !stationInfo.stationTrains ||
               stationInfo.stationTrains.length == 0
             "
-            >BRAK</span
-          >
+          >BRAK</span>
         </div>
       </div>
     </div>

@@ -4,6 +4,7 @@ import VueRouter, { RouteConfig } from 'vue-router';
 import StationsView from '../views/StationsView.vue';
 import TrainsView from '../views/TrainsView.vue';
 import TimetableView from '../views/TimetableView.vue';
+import SceneryView from '../views/SceneryView.vue';
 
 Vue.use(VueRouter);
 
@@ -23,6 +24,12 @@ const routes: Array<RouteConfig> = [
     path: '/timetable',
     name: 'TimetableView',
     component: TimetableView,
+    props: true
+  },
+  {
+    path: '/scenery',
+    name: "SceneryView",
+    component: SceneryView,
     props: true
   }
 ];

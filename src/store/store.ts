@@ -13,6 +13,21 @@ enum Status {
   Loaded = 2,
 }
 
+interface TimetableData {
+  trainNo: number;
+  driverName: string;
+  driverId: number;
+  currentStationName: string;
+  currentStationHash: string;
+  timetableId: number;
+  category: string;
+  route: string;
+  TWR: boolean;
+  SKR: boolean;
+  routeDistance: number;
+  followingStops: TrainStop[];
+}
+
 const URLs = {
   stations: 'https://api.td2.info.pl:9640/?method=getStationsOnline',
   trains: 'https://api.td2.info.pl:9640/?method=getTrainsOnline',
@@ -96,6 +111,7 @@ export default class Store extends VuexModule {
   //   private dataConnectionStatus: Status = Status.Loading;
 
   private dataConnectionStatus: Status = Status.Loading;
+  private timetableLoaded: Status = Status.Loading;
 
   private stationList: Station[] = [];
   private trainList: Train[] = [];
@@ -119,6 +135,14 @@ export default class Store extends VuexModule {
     return this.trainList;
   }
 
+  get getTimetableDataStatus() {
+    return this.timetableLoaded;
+  }
+
+  get getDataStatus() {
+    return this.dataConnectionStatus;
+  }
+
   //ACTIONS
   @Action
   async synchronizeData() {
@@ -135,10 +159,9 @@ export default class Store extends VuexModule {
         const timetable = await (await axios.get(timetableURL(train.trainNo))).data.message;
         const trainInfo = timetable.trainInfo;
 
-        let timetableData;
-
+        
         if (timetable && trainInfo) {
-          timetableData = {};
+          let timetableData!: TimetableData;
 
           const followingStops: TrainStop[] = timetable.stopPoints.reduce((acc: TrainStop[], point) => {
             const arrivalTimestamp = getTimestamp(point.arrivalTime);
@@ -192,9 +215,11 @@ export default class Store extends VuexModule {
             routeDistance: timetable.stopPoints[timetable.stopPoints.length - 1].pointDistance,
             followingStops,
           };
+
+          return timetableData;
         }
 
-        return timetableData;
+        return null;
       })
     );
   }
@@ -295,6 +320,7 @@ export default class Store extends VuexModule {
       statusTimestamp: -3,
       stationTrains: [],
       scheduledTrains: [],
+      subStations: [],
       ...stationData,
     }));
   }
@@ -303,15 +329,17 @@ export default class Store extends VuexModule {
   private updateOnlineStations(updatedStationList: any[]) {
     this.stationList = this.stationList.reduce((acc, station) => {
       const onlineStationData = updatedStationList.find(updatedStation => updatedStation.stationName === station.stationName);
-      const isRegistered = JSONStationData.some(data => data.stationName === station.stationName);
+      const registeredStation = JSONStationData.find(data => data.stationName === station.stationName);
+      const subStations = registeredStation?.stops && registeredStation.stops;
 
       if (onlineStationData)
         acc.push({
           ...station,
           ...onlineStationData,
+          subStations,
           online: true,
         });
-      else if (isRegistered)
+      else if (registeredStation)
         acc.push({
           ...station,
           stationProject: '',
@@ -329,6 +357,7 @@ export default class Store extends VuexModule {
           statusTimestamp: -3,
           stationTrains: [],
           scheduledTrains: [],
+          subStations: []
         });
 
       return acc;
@@ -370,7 +399,7 @@ export default class Store extends VuexModule {
   }
 
   @Mutation
-  private updateTimetableData(timetableList: any[]) {
+  private updateTimetableData(timetableList: TimetableData[]) {
     this.stationList = this.stationList.map(station => {
       const scheduledTrains: Station['scheduledTrains'] = timetableList.reduce((acc: Station['scheduledTrains'], timetableData: any, index) => {
         const scheduledIndex = timetableData
@@ -447,5 +476,7 @@ export default class Store extends VuexModule {
 
       return acc;
     }, [] as Train[]);
+
+    this.timetableLoaded = Status.Loaded;
   }
 }
