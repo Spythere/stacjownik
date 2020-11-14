@@ -200,74 +200,80 @@
           v-else-if="computedScheduledTrains.length == 0"
         >Brak aktywnych rozkładów!</span>
 
-        <div class="timetable-item" v-for="(scheduledTrain, i) in computedScheduledTrains" :key="i">
-          <span class="timetable-general">
-            <span class="general-info">
-              <router-link
-                :to="{
+        <transition-group name="list-anim">
+          <div
+            class="timetable-item"
+            v-for="(scheduledTrain, i) in computedScheduledTrains"
+            :key="i"
+          >
+            <span class="timetable-general">
+              <span class="general-info">
+                <router-link
+                  :to="{
                   name: 'TrainsView',
                   params: {
                     passedSearchedTrain: scheduledTrain.trainNo.toString(),
                   },
                 }"
-              >
+                >
+                  <span>
+                    <strong>{{ scheduledTrain.category }}</strong>
+                    {{ scheduledTrain.trainNo }}
+                  </span>
+                </router-link>|
                 <span>
-                  <strong>{{ scheduledTrain.category }}</strong>
-                  {{ scheduledTrain.trainNo }}
-                </span>
-              </router-link>|
-              <span>
-                <a
-                  :href="
+                  <a
+                    :href="
                     'https://td2.info.pl/profile/?u=' + scheduledTrain.driverId
                   "
-                  target="_blank"
-                >{{ scheduledTrain.driverName }}</a>
+                    target="_blank"
+                  >{{ scheduledTrain.driverName }}</a>
+                </span>
+
+                <div class="info-route">
+                  <strong>{{ scheduledTrain.beginsAt }} - {{ scheduledTrain.terminatesAt }}</strong>
+                </div>
               </span>
 
-              <div class="info-route">
-                <strong>{{ scheduledTrain.beginsAt }} - {{ scheduledTrain.terminatesAt }}</strong>
-              </div>
-            </span>
-
-            <span class="general-status">
-              <span :class="scheduledTrain.stopStatus">{{scheduledTrain.stopLabel}}</span>
-            </span>
-          </span>
-
-          <span class="timetable-schedule">
-            <span class="schedule-arrival">
-              <span class="arrival-time begins" v-if="scheduledTrain.stopInfo.beginsHere">
-                ROZPOCZYNA
-                <div>BIEG</div>
-              </span>
-              <span class="arrival-time" v-else>
-                {{ scheduledTrain.stopInfo.arrivalTimeString }} ({{
-                scheduledTrain.stopInfo.arrivalDelay
-                }})
+              <span class="general-status">
+                <span :class="scheduledTrain.stopStatus">{{scheduledTrain.stopLabel}}</span>
               </span>
             </span>
 
-            <span class="schedule-stop">
-              <span class="stop-time" v-if="scheduledTrain.stopInfo.stopTime">
-                {{ scheduledTrain.stopInfo.stopTime }}
-                {{ scheduledTrain.stopInfo.stopType }}
+            <span class="timetable-schedule">
+              <span class="schedule-arrival">
+                <span class="arrival-time begins" v-if="scheduledTrain.stopInfo.beginsHere">
+                  ROZPOCZYNA
+                  <div>BIEG</div>
+                </span>
+                <span class="arrival-time" v-else>
+                  {{ scheduledTrain.stopInfo.arrivalTimeString }} ({{
+                  scheduledTrain.stopInfo.arrivalDelay
+                  }})
+                </span>
               </span>
-              <span class="stop-arrow arrow"></span>
-            </span>
-            <span class="schedule-departure">
-              <span
-                class="departure-time terminates"
-                v-if="scheduledTrain.stopInfo.terminatesHere"
-              >KOŃCZY BIEG</span>
-              <span class="departure-time" v-else>
-                {{ scheduledTrain.stopInfo.departureTimeString }} ({{
-                scheduledTrain.stopInfo.departureDelay
-                }})
+
+              <span class="schedule-stop">
+                <span class="stop-time" v-if="scheduledTrain.stopInfo.stopTime">
+                  {{ scheduledTrain.stopInfo.stopTime }}
+                  {{ scheduledTrain.stopInfo.stopType }}
+                </span>
+                <span class="stop-arrow arrow"></span>
+              </span>
+              <span class="schedule-departure">
+                <span
+                  class="departure-time terminates"
+                  v-if="scheduledTrain.stopInfo.terminatesHere"
+                >KOŃCZY BIEG</span>
+                <span class="departure-time" v-else>
+                  {{ scheduledTrain.stopInfo.departureTimeString }} ({{
+                  scheduledTrain.stopInfo.departureDelay
+                  }})
+                </span>
               </span>
             </span>
-          </span>
-        </div>
+          </div>
+        </transition-group>
       </div>
     </div>
   </div>
@@ -407,6 +413,17 @@ export default class SceneryView extends styleMixin {
 @import "../styles/responsive.scss";
 @import "../styles/variables.scss";
 @import "../styles/user_badge.scss";
+
+.list-anim {
+  &-enter-active,
+  &-leave-active {
+    transition: all 250ms ease-out;
+  }
+  &-enter, &-leave-to /* .list-leave-active below version 2.1.8 */ {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
 
 h3 {
   margin: 0.5em 0;
