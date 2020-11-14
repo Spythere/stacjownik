@@ -6,12 +6,21 @@
     >
       Ups! Nie znaleziono danej stacji bądź jest ona offline!
       <button class="button">
-        <a href="https://stacjownik-td2.web.app">Wróć na stronę główną</a>
+        <router-link to="/">Wróć na stronę główną</router-link>
       </button>
     </div>
     <div class="scenery-wrapper" v-if="stationInfo">
       <div class="scenery-header">
-        <div class="station-name">{{ stationInfo.stationName }}</div>
+        <div class="station-name">
+          <a
+            v-if="stationInfo.stationURL"
+            :href="stationInfo.stationURL"
+            target="_blank"
+            rel="noopener noreferrer"
+          >{{ stationInfo.stationName }}</a>
+
+          <span v-else>{{ stationInfo.stationName }}</span>
+        </div>
         <div class="station-hash">#{{ stationInfo.stationHash }}</div>
       </div>
 
@@ -163,6 +172,27 @@
           </a>
         </h3>
 
+        <div class="select-box" v-if="stationInfo.checkpoints">
+          <div class="option-container">
+            <div class="option-selected" @click="toggleOptionList">
+              <span>{{ selectedOption }}</span>
+              <img :src="require('@/assets/icon-select.svg')" alt="icon-select" />
+            </div>
+
+            <ul class="option-list" :class="{ open: listOpen }">
+              <li
+                class="option-item"
+                v-for="(cp, i) in stationInfo.checkpoints"
+                :key="i"
+                @click="() => chooseOption(cp.checkpointName)"
+              >
+                <input type="option-radio" name="sort" />
+                <label :id="cp.checkpointName">{{ cp.checkpointName }}</label>
+              </li>
+            </ul>
+          </div>
+        </div>
+
         <span class="timetable-item loading" v-if="timetableDataStatus == 0">Ładowanie...</span>
 
         <span
@@ -254,25 +284,44 @@ import Station from "@/scripts/interfaces/Station";
 import Train from "@/scripts/interfaces/Train";
 
 import StationTimetable from "@/components/StationsView/StationTimetable.vue";
-
+import ScheduledTrain from "@/scripts/interfaces/ScheduledTrain";
 
 @Component
 export default class SceneryView extends styleMixin {
-  @Getter('getStationList') storeStationList!: Station[];
-  @Getter('getTimetableDataStatus') timetableDataStatus!: number;
-  @Getter('getDataStatus') dataStatus!: number;
+  @Getter("getStationList") storeStationList!: Station[];
+  @Getter("getTimetableDataStatus") timetableDataStatus!: number;
+  @Getter("getDataStatus") dataStatus!: number;
 
-  likeIcon: string = require('@/assets/icon-like.svg');
-  spawnIcon: string = require("@/assets/icon-spawn.svg")
-  timetableIcon: string = require("@/assets/icon-timetable.svg")
-  userIcon: string = require("@/assets/icon-user.svg")
+  likeIcon: string = require("@/assets/icon-like.svg");
+  spawnIcon: string = require("@/assets/icon-spawn.svg");
+  timetableIcon: string = require("@/assets/icon-timetable.svg");
+  userIcon: string = require("@/assets/icon-user.svg");
 
   viewIcon: string = require("@/assets/icon-view.svg");
+
+  listOpen: boolean = false;
+  selectedOption: string = "";
 
   timetableOnly: boolean = false;
 
   activated() {
-    this.timetableOnly = this.$route.query['timetable_only'] == "1" ? true : false;
+    this.timetableOnly =
+      this.$route.query["timetable_only"] == "1" ? true : false;
+
+    this.selectedOption = "";
+  }
+
+  toggleOptionList() {
+    this.listOpen = !this.listOpen;
+  }
+
+  closeOptionList() {
+    this.listOpen = false;
+  }
+
+  chooseOption(name: string) {
+    this.selectedOption = name;
+    this.closeOptionList();
   }
 
   get currentPath() {
@@ -290,12 +339,23 @@ export default class SceneryView extends styleMixin {
   get stationInfo(): Station | null {
     if (!this.$route.query.hash || !this.storeStationList) return null;
 
-    return this.storeStationList.find(station => station.stationHash === this.$route.query.hash.toString()) || null;
+    const info =
+      this.storeStationList.find(
+        (station) => station.stationHash === this.$route.query.hash.toString()
+      ) || null;
+
+    if (!info) return null;
+
+    if (!info.checkpoints) return info;
+
+    if (this.selectedOption == "")
+      this.selectedOption = info.checkpoints[0].checkpointName;
+
+    return info;
   }
 
   get computedDispatcherExp(): string {
     if (!this.stationInfo) return "";
-
 
     return this.stationInfo.dispatcherExp < 2
       ? "L"
@@ -305,23 +365,40 @@ export default class SceneryView extends styleMixin {
   get computedStationTrains() {
     if (!this.stationInfo) return null;
 
-    return this.stationInfo.stationTrains.map(stationTrain => {
-      const scheduledData = this.stationInfo?.scheduledTrains.find(scheduledTrain => scheduledTrain.trainNo === stationTrain.trainNo);
+    return this.stationInfo.stationTrains.map((stationTrain) => {
+      const scheduledData = this.stationInfo?.scheduledTrains.find(
+        (scheduledTrain) => scheduledTrain.trainNo === stationTrain.trainNo
+      );
 
       return {
         ...stationTrain,
-        stopStatus: scheduledData?.stopStatus || "no-timetable"
-      }
-    })
+        stopStatus: scheduledData?.stopStatus || "no-timetable",
+      };
+    });
   }
 
   get computedScheduledTrains() {
-    return this.stationInfo?.scheduledTrains.sort((a, b) => {
-      if (a.stopInfo.arrivalTimestamp > b.stopInfo.arrivalTimestamp) return 1;
-      else if ((a.stopInfo.arrivalTimestamp < b.stopInfo.arrivalTimestamp)) return -1;
+    if (!this.stationInfo) return [];
 
-      return a.stopInfo.departureTimestamp > b.stopInfo.departureTimestamp ? 1 : -1;
-    })
+    let scheduledTrains: ScheduledTrain[] | undefined;
+
+    if (this.stationInfo.checkpoints)
+      scheduledTrains = this.stationInfo.checkpoints.find(
+        (cp) => cp.checkpointName === this.selectedOption
+      )?.scheduledTrains;
+    else scheduledTrains = this.stationInfo.scheduledTrains;
+
+    return (
+      scheduledTrains?.sort((a, b) => {
+        if (a.stopInfo.arrivalTimestamp > b.stopInfo.arrivalTimestamp) return 1;
+        else if (a.stopInfo.arrivalTimestamp < b.stopInfo.arrivalTimestamp)
+          return -1;
+
+        return a.stopInfo.departureTimestamp > b.stopInfo.departureTimestamp
+          ? 1
+          : -1;
+      }) || []
+    );
   }
 }
 </script>
@@ -347,16 +424,97 @@ h3 {
   }
 }
 
+.select-box {
+  display: flex;
+  justify-content: center;
+}
+
+.option {
+  &-container {
+    position: relative;
+
+    input {
+      display: none;
+    }
+
+    label {
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+    }
+  }
+
+  &-item {
+    display: flex;
+    justify-content: center;
+
+    &:hover {
+      background-color: rgba(#868686, 0.85);
+    }
+
+    transition: background 150ms ease-in;
+  }
+
+  &-selected,
+  &-list {
+    background: #444;
+    border-radius: 0.5em;
+  }
+
+  &-selected {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 0.5rem 1rem;
+    min-width: 10em;
+    cursor: pointer;
+
+    span {
+      margin-right: 2rem;
+    }
+
+    img {
+      max-width: 0.75em;
+    }
+  }
+
+  &-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+
+    width: 100%;
+
+    z-index: 10;
+
+    background-color: rgba(#222, 0.95);
+    overflow: hidden;
+
+    max-height: 0;
+
+    &.open {
+      max-height: 250px;
+      opacity: 1;
+    }
+
+    transition: all 150ms ease-in;
+  }
+}
+
 .scenery {
   &-offline {
     align-self: center;
     font-size: 2em;
     text-align: center;
+    padding: 0 1em;
 
     color: $warningCol;
 
-    button {
-      margin: 1em auto;
+    display: inline-block;
+
+    .button {
+      margin: 1rem auto;
+      font-size: 0.85em;
     }
   }
 
@@ -674,6 +832,7 @@ h3 {
 
     .stop-time {
       font-size: 0.7em;
+      margin: 5px 0;
     }
   }
 }

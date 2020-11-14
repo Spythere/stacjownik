@@ -202,7 +202,14 @@ export default class StationTable extends styleMixin {
   @Prop() readonly changeSorter!: () => void;
 
   setScenery(sceneryHash: string) {
-    this.$router.push({ name: "SceneryView", query: { hash: sceneryHash } })
+    if (
+      this.stations.findIndex(
+        (station) => station.stationHash === sceneryHash && station.online
+      ) == -1
+    )
+      return;
+
+    this.$router.push({ name: "SceneryView", query: { hash: sceneryHash } });
   }
 
   icons: { ascSVG; descSVG } = { ascSVG, descSVG };

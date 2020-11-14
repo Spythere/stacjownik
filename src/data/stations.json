@@ -46,6 +46,7 @@
     },
     "default": false,
     "nonPublic": false,
+    "subStations": ["Borowe, podg.", "Wysoka, podg.", "Naprawa, podg.", "Borowe Towarowe"],
     "stops": ["Borowe, podg.", "Wysoka, podg.", "Naprawa, podg.", "Borowe Towarowe"]
   },
   {
@@ -71,7 +72,8 @@
     },
     "default": true,
     "nonPublic": false,
-    "stops": ["Gdańsk Główny", "Gdańsk Południowy"]
+    "subStations": ["Gdańsk Główny", "SKM Śródmieście", "Gdańsk Południowy"],
+    "stops": ["Gdańsk Główny"]
   },
   {
     "stationName": "Lębork",
@@ -143,7 +145,8 @@
       }
     },
     "default": true,
-    "nonPublic": false
+    "nonPublic": false,
+    "subStations": ["Parzęczewo", "Parzęczewo Miasto", "Parzęczewo gt"]
   },
   {
     "stationName": "Aleksandrów Kujawski",
@@ -264,7 +267,8 @@
     },
     "default": true,
     "nonPublic": false,
-    "stops": ["Głowno", "Domaniewice"]
+    "subStations": ["Głowno", "Domaniewice"],
+    "stops": ["Głowno"]
   },
   {
     "stationName": "LCS Ozorków",
@@ -289,6 +293,7 @@
     },
     "default": true,
     "nonPublic": false,
+    "subStations": ["Ozorków", "Chociszew"],
     "stops": ["Ozorków"]
   },
   {
@@ -314,6 +319,7 @@
     },
     "default": true,
     "nonPublic": false,
+    "subStations": ["Skrzynki", "Wykno"],
     "stops": ["Skrzynki"]
   },
   {
@@ -2048,6 +2054,29 @@
       }
     },
     "default": true,
+    "nonPublic": false
+  },
+  {
+     "stationName": "Strączki",
+    "stationURL": "https://td2.info.pl/scenerie/straczki/",
+    "stationLines": "",
+    "reqLevel": "4",
+    "supportersOnly": "NIE",
+    "signalType": "współczesna",
+    "controlType": "mechaniczne",
+    "SBL": "",
+    "twoWayBlock": "",
+    "routes": {
+      "oneWay": {
+        "catenary": 1,
+        "noCatenary": 0
+      },
+      "twoWay": {
+        "catenary": 1,
+        "noCatenary": 0
+      }
+    },
+    "default": false,
     "nonPublic": false
   }
 ]

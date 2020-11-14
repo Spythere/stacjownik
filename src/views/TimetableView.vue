@@ -1,7 +1,9 @@
 <template>
   <div class="timetable-view" v-if="stationInfo">
     <div class="timetable-wrapper">
-      <div class="timetable-title"><b>ODJAZDY</b></div>
+      <div class="timetable-title">
+        <b>ODJAZDY</b>
+      </div>
       <div class="timetable-header">
         <span>DO STACJI</span>
         <span>PRZEZ</span>
@@ -10,20 +12,12 @@
         <span>OPÓŹNIENIE</span>
       </div>
       <div class="timetable-body">
-        <div
-          class="timetable-item"
-          v-for="(timetable, i) in computedRows"
-          :key="i"
-        >
+        <div class="timetable-item" v-for="(timetable, i) in computedRows" :key="i">
           <div class="row-bar"></div>
           <div class="timetable-row">
             <span class="row-destination">
               <div class="letter-wrapper">
-                <div
-                  v-for="(letter, j) in timetable.destinationTable"
-                  :key="j"
-                  class="letter"
-                >
+                <div v-for="(letter, j) in timetable.destinationTable" :key="j" class="letter">
                   <transition name="roll-anim" mode="out-in">
                     <span :key="letter">{{ letter }}</span>
                   </transition>
@@ -31,11 +25,7 @@
               </div>
             </span>
             <span class="row-next" ref="next">
-              <div
-                v-for="(letter, j) in timetable.nearestStopTable"
-                :key="j"
-                class="letter"
-              >
+              <div v-for="(letter, j) in timetable.nearestStopTable" :key="j" class="letter">
                 <transition name="roll-anim" mode="out-in">
                   <span :key="letter">{{ letter }}</span>
                 </transition>
@@ -45,20 +35,16 @@
               <transition name="roll-anim" mode="out-in">
                 <span :key="timetable.number">
                   {{
-                    timetable.number
-                      ? `${timetable.category} ${timetable.number}`
-                      : ""
+                  timetable.number
+                  ? `${timetable.category} ${timetable.number}`
+                  : ""
                   }}
                 </span>
               </transition>
             </span>
             <span class="row-time">
               <div class="letter-wrapper">
-                <span
-                  class="letter"
-                  v-for="(num, i) in timetable.departureHoursTable"
-                  :key="i"
-                >
+                <span class="letter" v-for="(num, i) in timetable.departureHoursTable" :key="i">
                   <transition name="roll-anim" mode="out-in">
                     <span :key="num">{{ num }}</span>
                   </transition>
@@ -79,9 +65,9 @@
             </span>
             <span class="row-delay">
               <transition name="roll-anim" mode="out-in">
-                <span :key="timetable.delay">
-                  {{ timetable.delay > 0 ? `${timetable.delay} min` : "" }}
-                </span>
+                <span
+                  :key="timetable.delay"
+                >{{ timetable.delay > 0 ? `${timetable.delay} min` : "" }}</span>
               </transition>
             </span>
           </div>
@@ -92,7 +78,7 @@
     <!-- <div v-if="stationInfo.online">
       {{ stationInfo.stationName }}
     </div>
-    <div v-else>Stacja offline!</div> -->
+    <div v-else>Stacja offline!</div>-->
   </div>
 </template>
 
@@ -255,8 +241,6 @@ export default class TimetableView extends Vue {
 
       let destination = train.terminatesAt.toUpperCase();
       let nearestStop = train.nearestStop.toUpperCase();
-
-
 
 
       for (let name of filteredNames) {

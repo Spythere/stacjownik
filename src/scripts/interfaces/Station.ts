@@ -24,9 +24,10 @@ export default interface Station {
     oneWay: { catenary: number; noCatenary: number };
     twoWay: { catenary: number; noCatenary: number };
   };
-  subStations: {
+  checkpoints: {
+    checkpointName: string;
     scheduledTrains: ScheduledTrain[],
-  }[];
+  }[] | null;
   online: boolean;
   occupiedTo: string;
   statusTimestamp: number;
