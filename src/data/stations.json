@@ -2101,5 +2101,28 @@
     },
     "default": false,
     "nonPublic": false
+  },
+  {
+    "stationName": "Zgierz",
+    "stationURL": "https://td2.info.pl/scenerie/zgierz/",
+    "stationLines": "15,16",
+    "reqLevel": "12",
+    "supportersOnly": "TAK",
+    "signalType": "współczesna",
+    "controlType": "mechaniczne",
+    "SBL": "",
+    "twoWayBlock": "",
+    "routes": {
+      "oneWay": {
+        "catenary": 3,
+        "noCatenary": 0
+      },
+      "twoWay": {
+        "catenary": 1,
+        "noCatenary": 0
+      }
+    },
+    "default": false,
+    "nonPublic": false
   }
 ]

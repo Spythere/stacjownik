@@ -15,4 +15,5 @@ export default interface ScheduledTrain {
 
     stopLabel: string;
     stopStatus: string;
+    stopStatusID: number;
 }

@@ -396,6 +396,9 @@ export default class SceneryView extends styleMixin {
 
     return (
       scheduledTrains?.sort((a, b) => {
+        if (a.stopStatusID > b.stopStatusID) return 1;
+        else if (a.stopStatusID < b.stopStatusID) return -1;
+
         if (a.stopInfo.arrivalTimestamp > b.stopInfo.arrivalTimestamp) return 1;
         else if (a.stopInfo.arrivalTimestamp < b.stopInfo.arrivalTimestamp)
           return -1;
@@ -815,6 +818,11 @@ h3 {
   span.departed {
     color: lime;
     font-weight: bold;
+
+    &-away {
+      font-weight: bold;
+      color: rgb(0, 155, 0);
+    }
   }
 
   span.stopped {
