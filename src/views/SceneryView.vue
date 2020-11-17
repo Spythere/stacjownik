@@ -95,12 +95,12 @@ h3 {
 
     display: flex;
     justify-content: center;
-    align-items: flex-start;
 
     font-size: calc(0.5rem + 0.65vw);
 
     @include bigScreen() {
       font-size: 1.25rem;
+      align-items: flex-start;
     }
 
     @include smallScreen {

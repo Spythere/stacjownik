@@ -37,7 +37,7 @@
     >Brak aktywnych rozkładów!</span>
 
     <transition-group name="list-anim">
-      <div class="timetable-item" v-for="(scheduledTrain, i) in computedScheduledTrains" :key="i">
+      <div class="timetable-item" v-for="(scheduledTrain, i) in computedScheduledTrains" :key="i+1">
         <span class="timetable-general">
           <span class="general-info">
             <router-link
@@ -126,6 +126,13 @@ export default class SceneryTimetable extends Vue {
   listOpen: boolean = false;
   selectedOption: string = "";
 
+  mounted() {
+    if (!this.stationInfo.checkpoints) return;
+
+    if (this.selectedOption == "")
+      this.selectedOption = this.stationInfo.checkpoints[0].checkpointName;
+  }
+
   activated() {
     if (!this.stationInfo) return;
     if (!this.stationInfo.checkpoints) return;
@@ -205,9 +212,15 @@ h3 {
   &-leave-active {
     transition: all 250ms ease-out;
   }
-  &-enter, &-leave-to /* .list-leave-active below version 2.1.8 */ {
+
+  &-enter,
+  &-leave-to {
     opacity: 0;
-    transform: scale(0.95);
+    transform: scale(0.9);
+  }
+
+  &-move {
+    transition: transform 100ms;
   }
 }
 
@@ -420,7 +433,7 @@ h3 {
   }
 
   span.terminated {
-    color: red;
+    color: #e00000;
     font-weight: bold;
   }
 }

@@ -121,7 +121,8 @@
       }
     },
     "default": true,
-    "nonPublic": false
+    "nonPublic": false,
+    "subStations": ["Grabów Miasto", "Grabów Wieś"]
   },
   {
     "stationName": "Parzęczewo",

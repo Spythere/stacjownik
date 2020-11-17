@@ -21,12 +21,8 @@
           </span>
 
           <span class="header-links">
-            <router-link class="route" active-class="route-active" to="/" exact
-              >SCENERIE</router-link
-            >/
-            <router-link class="route" active-class="route-active" to="/trains"
-              >POCIĄGI</router-link
-            >
+            <router-link class="route" active-class="route-active" to="/" exact>SCENERIE</router-link>/
+            <router-link class="route" active-class="route-active" to="/trains">POCIĄGI</router-link>
           </span>
         </div>
       </header>
@@ -43,9 +39,7 @@
 
       <transition name="message-anim" mode="out-in">
         <span :key="data.dataConnectionStatus">
-          <div class="message loading" v-if="data.dataConnectionStatus == 0">
-            Pobieranie danych...
-          </div>
+          <div class="message loading" v-if="data.dataConnectionStatus == 0">Pobieranie danych...</div>
 
           <div class="message error" v-if="data.dataConnectionStatus == 1">
             <img :src="ErrorIcon" alt="Error" />
@@ -66,7 +60,6 @@ import { mapGetters, mapActions } from "vuex";
 import Clock from "@/components/App/Clock.vue";
 
 // import stationData from "@/data/stations.json";
-
 
 @Component({
   components: { Clock },
@@ -91,7 +84,6 @@ export default class App extends Vue {
 
     //     console.log("-----");
     //   });
-
   }
 }
 </script>
@@ -174,6 +166,8 @@ export default class App extends Vue {
   color: white;
 
   font-size: calc(1.1rem + 2.1vw);
+
+  overflow: hidden;
 
   @include smallScreen() {
     font-size: 2.5rem;
