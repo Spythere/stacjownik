@@ -17,9 +17,7 @@
             v-if="
               i > 0 && followingStops[i - 1].departureLine != stop.arrivalLine
             "
-          >
-            {{ stop.arrivalLine }}
-          </div>
+          >{{ stop.arrivalLine }}</div>
 
           <span class="stop-info">
             <div class="info-indicator"></div>
@@ -33,18 +31,18 @@
                   delayed: stop.arrivalDelay > 0,
                   preponed: stop.arrivalDelay < 0,
                 }"
-                >p.
-                {{
-                  stylizeTime(stop.arrivalRealTimeString, stop.arrivalDelay)
-                }}</span
               >
+                p.
+                {{
+                stylizeTime(stop.arrivalRealTimeString, stop.arrivalDelay)
+                }}
+              </span>
 
               <span
                 class="date-stop"
                 v-if="stop.stopTime"
                 :class="stop.stopType.replace(', ', '-')"
-                >{{ stop.stopTime }} {{ stop.stopType }}</span
-              >
+              >{{ stop.stopTime }} {{ stop.stopType }}</span>
 
               <span
                 class="date-departure"
@@ -53,11 +51,12 @@
                   delayed: stop.departureDelay > 0,
                   preponed: stop.departureDelay < 0,
                 }"
-                >o.
-                {{
-                  stylizeTime(stop.departureRealTimeString, stop.departureDelay)
-                }}</span
               >
+                o.
+                {{
+                stylizeTime(stop.departureRealTimeString, stop.departureDelay)
+                }}
+              </span>
             </span>
           </span>
 
@@ -79,13 +78,15 @@ export default class TrainSchedule extends Vue {
   @Prop() readonly currentStationName!: string;
 
   stylizeTime(timeString: string, delay: number) {
-    return timeString + (delay != 0 ? " (" + (delay > 0 ? "+" : "") + delay.toString() + ")" : "");
+    return (
+      timeString +
+      (delay != 0 ? " (" + (delay > 0 ? "+" : "") + delay.toString() + ")" : "")
+    );
   }
 
   click() {
-    this.$emit('click')
+    this.$emit("click");
   }
-
 }
 </script>
 

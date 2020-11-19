@@ -4,6 +4,7 @@
       <div class="timetable-title">
         <b>ODJAZDY</b>
       </div>
+
       <div class="timetable-header">
         <span>DO STACJI</span>
         <span>PRZEZ</span>
@@ -11,6 +12,7 @@
         <span>PLAN. ODJAZD</span>
         <span>OPÓŹNIENIE</span>
       </div>
+
       <div class="timetable-body">
         <div class="timetable-item" v-for="(timetable, i) in computedRows" :key="i">
           <div class="row-bar"></div>
@@ -24,6 +26,7 @@
                 </div>
               </div>
             </span>
+
             <span class="row-next" ref="next">
               <div v-for="(letter, j) in timetable.nearestStopTable" :key="j" class="letter">
                 <transition name="roll-anim" mode="out-in">
@@ -31,20 +34,28 @@
                 </transition>
               </div>
             </span>
+
             <span class="row-type">
-              <transition name="roll-anim" mode="out-in">
-                <span :key="timetable.number">
-                  {{
-                  timetable.number
-                  ? `${timetable.category} ${timetable.number}`
-                  : ""
-                  }}
+              <div class="letter-wrapper">
+                <span class="letter" v-for="(letter, j) in timetable.trainCategoryTable" :key="j">
+                  <transition name="roll-anim" mode="out-in">
+                    <span :key="letter">{{ letter }}</span>
+                  </transition>
                 </span>
-              </transition>
+              </div>
+
+              <div class="letter-wrapper">
+                <span class="letter" v-for="(num, j) in timetable.trainNumberTable" :key="j+3">
+                  <transition name="roll-anim" mode="out-in">
+                    <span :key="num">{{ num }}</span>
+                  </transition>
+                </span>
+              </div>
             </span>
+
             <span class="row-time">
               <div class="letter-wrapper">
-                <span class="letter" v-for="(num, i) in timetable.departureHoursTable" :key="i">
+                <span class="letter" v-for="(num, h) in timetable.departureHoursTable" :key="h">
                   <transition name="roll-anim" mode="out-in">
                     <span :key="num">{{ num }}</span>
                   </transition>
@@ -63,6 +74,7 @@
                 </span>
               </div>
             </span>
+
             <span class="row-delay">
               <transition name="roll-anim" mode="out-in">
                 <span
@@ -83,18 +95,17 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue } from "vue-property-decorator";
 import { Getter } from "vuex-class";
 import { Howl } from "howler";
 
 import Station from "@/scripts/interfaces/Station";
 import Timetable from "@/scripts/interfaces/Timetable";
 
-
 const sound = new Howl({
   src: require("@/assets/sound.wav"),
   loop: true,
-  autoplay: false
+  autoplay: false,
 });
 
 const filteredNames = [
@@ -107,44 +118,64 @@ const filteredNames = [
   ["BUCZ WILEŃSKI", "BUCZ WIL."],
   ["SZKLANA PORĘBA", "SZKLANA POR."],
   ["TARNOWO GÓRNE", "TARNOWO G."],
-]
+  ["BARGOWICE ZACHÓD", "BARGOWICE Z."],
+];
 
 let soundPlaying = false;
 
-const letterSet: string[] = Array.from(" -.,/AĄBCĆDEĘFGHIJKLŁMNŃOÓPRSŚTUWXYZŹŻ");
+const letterSet: string[] = Array.from(
+  " -.,/AĄBCĆDEĘFGHIJKLŁMNŃOÓPRSŚTUWXYZŹŻ"
+);
+
 const numberSet: string[] = Array.from(" 0123456789");
 
+const delaySet: string[] = [
+  "5 min",
+  "10 min",
+  "15 min",
+  "20 min",
+  "25 min",
+  "30 min",
+  "35 min",
+  "40 min",
+  "45 min",
+  "50 min",
+  "55 min",
+  "60 min",
+  ">60 min",
+];
+
+let globalID = 0;
 let letterSeekArray: {
   currentRowIndex: number;
   letterIndex: number;
   currentChar: string;
   finalChar: string;
-  main: boolean;
+  arrayName: string;
   numeric: boolean;
   id: number;
 }[] = [];
 
-let globalID = 0;
-
-
-let numberSeekArray: {
+let plateSeekArray: {
   currentRowIndex: number;
-  letterIndex: number;
-  currentChar: string;
-  finalChar: string;
+  currentPlate: string;
+  wantedPlate: string;
 }[] = [];
-
 
 let nextRefreshTime = 0;
 
 @Component
 export default class TimetableView extends Vue {
-  @Getter('getStationList') stationList!: Station[];
+  @Getter("getStationList") stationList!: Station[];
 
   get stationInfo(): Station | null {
     if (!this.$route.query.station) return null;
 
-    const info = this.stationList.find(station => station.stationName === this.$route.query.station.toString().replaceAll("_", " "));
+    const info = this.stationList.find(
+      (station) =>
+        station.stationName ===
+        this.$route.query.station.toString().replaceAll("_", " ")
+    );
 
     return info || null;
   }
@@ -162,27 +193,42 @@ export default class TimetableView extends Vue {
     departureMinutesTable: string[];
     departureMinutesString: string;
 
+    trainNumberTable: string[];
+    trainNumberString: string;
+
+    trainCategoryTable: string[];
+    trainCategoryString: string;
+
     category: string;
     number: number;
+
     delay: number;
+    delayPlate: string;
+
     departureTimestamp: number;
     arrivalTimestamp: number;
-
   }[] = [];
 
   deactivated() {
     for (let i = 0; i < this.timetableRows.length; i++) {
       const currentRow = this.timetableRows[i];
 
-      currentRow.destinationTable = currentRow.destinationTable.map(v => " ");
-      currentRow.nearestStopTable = currentRow.nearestStopTable.map(v => " ");
-      currentRow.departureHoursTable = currentRow.departureHoursTable.map(v => "0");
-      currentRow.departureMinutesTable = currentRow.departureMinutesTable.map(v => "0");
+      currentRow.destinationTable = currentRow.destinationTable.map((v) => " ");
+      currentRow.nearestStopTable = currentRow.nearestStopTable.map((v) => " ");
+      currentRow.departureHoursTable = currentRow.departureHoursTable.map(
+        (v) => "0"
+      );
+      currentRow.departureMinutesTable = currentRow.departureMinutesTable.map(
+        (v) => "0"
+      );
+
+      currentRow.trainNumberTable = currentRow.trainNumberTable.map((v) => "");
 
       currentRow.destinationString = "";
       currentRow.nearestStopString = "";
       currentRow.departureHoursString = "";
       currentRow.departureMinutesString = "";
+      currentRow.trainNumberString = "";
 
       currentRow.category = "";
       currentRow.number = 0;
@@ -192,11 +238,10 @@ export default class TimetableView extends Vue {
     }
 
     letterSeekArray.length = 0;
-
   }
 
   mounted() {
-    this.timetableRows = new Array(8).fill(0).map(row => ({
+    this.timetableRows = new Array(7).fill(0).map((row) => ({
       origin: new Array(13).fill(" "),
 
       destinationTable: new Array(13).fill(" "),
@@ -210,9 +255,19 @@ export default class TimetableView extends Vue {
 
       departureMinutesTable: new Array(2).fill("0"),
       departureMinutesString: "",
+
+      trainNumberTable: new Array(6).fill(" "),
+      trainNumberString: "",
+
+      trainCategoryTable: new Array(3).fill(" "),
+      trainCategoryString: "",
+
       category: "",
       number: 0,
+
       delay: 0,
+      delayPlate: "",
+
       departureTimestamp: 0,
       arrivalTimestamp: 0,
     }));
@@ -220,14 +275,37 @@ export default class TimetableView extends Vue {
     window.requestAnimationFrame(this.findNextLetters);
   }
 
+  addToSeek(
+    currentRowIndex: number,
+    letterIndex: number,
+    currentChar: string,
+    finalChar: string,
+    arrayName: string,
+    numeric: boolean
+  ) {
+    globalID++;
+
+    letterSeekArray.push({
+      currentRowIndex,
+      letterIndex,
+      currentChar,
+      finalChar,
+      arrayName,
+      numeric,
+      id: globalID,
+    });
+  }
 
   get computedRows(): any[] {
     if (!this.stationInfo) return this.timetableRows;
 
-    const scheduledTrains = this.stationInfo.scheduledTrains.filter(train => train.stopInfo.departureTimestamp !== 0).sort((a, b) => {
-      if (a.stopInfo.departureTimestamp >= b.stopInfo.departureTimestamp) return 1;
-      else return -1;
-    });
+    const scheduledTrains = this.stationInfo.scheduledTrains
+      .filter((train) => train.stopInfo.departureTimestamp !== 0)
+      .sort((a, b) => {
+        if (a.stopInfo.departureTimestamp >= b.stopInfo.departureTimestamp)
+          return 1;
+        else return -1;
+      });
 
     let currentRowIndex = 0;
     for (let train of scheduledTrains) {
@@ -236,106 +314,128 @@ export default class TimetableView extends Vue {
 
       const currentRow = this.timetableRows[currentRowIndex];
 
-      const departureHours = new Array(2).fill("0").map((num, i) => train.stopInfo.departureTimeString[i]);
-      const departureMinutes = new Array(2).fill("0").map((num, i) => train.stopInfo.departureTimeString[i + 3]);
+      const departureHours = new Array(2)
+        .fill("0")
+        .map((num, i) => train.stopInfo.departureTimeString[i]);
+
+      const departureMinutes = new Array(2)
+        .fill("0")
+        .map((num, i) => train.stopInfo.departureTimeString[i + 3]);
+
+      const trainNumberString = train.trainNo.toString();
 
       let destination = train.terminatesAt.toUpperCase();
       let nearestStop = train.nearestStop.toUpperCase();
 
-
       for (let name of filteredNames) {
-        if (name[0] === destination)
-          destination = name[1];
+        if (name[0] === destination) destination = name[1];
 
-        if (name[0] === nearestStop)
-          nearestStop = name[1];
+        if (name[0] === nearestStop) nearestStop = name[1];
       }
 
       if (currentRow.destinationString !== destination) {
         currentRow.destinationTable.forEach((letter, i) => {
-          letterSeekArray.push({
+          this.addToSeek(
             currentRowIndex,
-            letterIndex: i,
-            currentChar: (currentRow.destinationString.length == 0 && letter != " ") ? letterSet[Math.floor(Math.random() * letterSet.length)] : letter,
-            finalChar: destination[i] ? destination[i].toUpperCase() : " ",
-            main: true,
-            numeric: false,
-            id: globalID
-          })
-
-          globalID++;
-
-        })
+            i,
+            letter,
+            destination[i] ? destination[i].toUpperCase() : " ",
+            "destinationTable",
+            false
+          );
+        });
       }
 
       if (currentRow.nearestStopString !== nearestStop) {
-
         currentRow.nearestStopTable.forEach((letter, i) => {
-          letterSeekArray.push({
+          this.addToSeek(
             currentRowIndex,
-            letterIndex: i,
-            currentChar: (currentRow.nearestStopString.length == 0 && letter != " ") ? letterSet[Math.random() * letterSet.length] : letter,
-            finalChar: nearestStop[i] ? nearestStop[i].toUpperCase() : " ",
-            main: false,
-            numeric: false,
-            id: globalID
-          })
-
-          globalID++;
-
-        })
+            i,
+            letter,
+            nearestStop[i] ? nearestStop[i].toUpperCase() : " ",
+            "nearestStopTable",
+            false
+          );
+        });
       }
 
-      if (currentRow.departureHoursTable.toString() != departureHours.toString()) {
+      if (currentRow.departureHoursString != departureHours.toString()) {
         currentRow.departureHoursTable.forEach((num, i) => {
-          letterSeekArray.push({
+          this.addToSeek(
             currentRowIndex,
-            letterIndex: i,
-            currentChar: num,
-            finalChar: departureHours[i] ? departureHours[i] : "0",
-            main: true,
-            numeric: true,
-            id: globalID
-          })
-
-          globalID++;
-
-        })
+            i,
+            num,
+            departureHours[i] ? departureHours[i] : "0",
+            "departureHoursTable",
+            true
+          );
+        });
       }
 
       if (currentRow.departureMinutesString != departureMinutes.toString()) {
         currentRow.departureMinutesTable.forEach((num, i) => {
-          letterSeekArray.push({
+          this.addToSeek(
             currentRowIndex,
-            letterIndex: i,
-            currentChar: num,
-            finalChar: departureMinutes[i] ? departureMinutes[i] : "0",
-            main: false,
-            numeric: true,
-            id: globalID
-          })
-
-          globalID++;
-        })
-
+            i,
+            num,
+            departureMinutes[i] ? departureMinutes[i] : "0",
+            "departureMinutesTable",
+            true
+          );
+        });
       }
 
+      if (currentRow.trainNumberString != train.trainNo.toString()) {
+        currentRow.trainNumberTable.forEach((num, i) => {
+          this.addToSeek(
+            currentRowIndex,
+            i,
+            num,
+            trainNumberString[i] ? trainNumberString[i] : " ",
+            "trainNumberTable",
+            true
+          );
+        });
+      }
+
+      if (currentRow.trainCategoryString != train.category) {
+        currentRow.trainCategoryTable.forEach((letter, i) => {
+          this.addToSeek(
+            currentRowIndex,
+            i,
+            letter,
+            train.category[i] ? train.category[i] : " ",
+            "trainCategoryTable",
+            false
+          );
+        });
+      }
+
+      if (currentRow.delayPlate != currentRow.delay.toString()) {
+        plateSeekArray.push({
+          currentRowIndex,
+          currentPlate: currentRow.delayPlate,
+          wantedPlate: currentRow.delay > 0 ? currentRow.delay.toString() : "",
+        });
+      }
 
       currentRow.destinationString = destination;
       currentRow.nearestStopString = nearestStop;
 
-      // currentRow.nearestStop = currentRow.nearestStop.map((letter, i) => train.nearestStop[i] ? train.nearestStop[i].toUpperCase() : " ");
       currentRow.category = train.category;
       currentRow.number = train.trainNo;
 
       currentRow.departureMinutesString = departureMinutes.toString();
       currentRow.departureMinutesString = departureMinutes.toString();
 
-      // currentRow.departureHours = departureHours;
-      // currentRow.departureMinutes = departureMinutes;
+      currentRow.trainNumberString = trainNumberString;
+      currentRow.trainCategoryString = train.category;
+
       currentRow.arrivalTimestamp = train.stopInfo.arrivalTimestamp;
       currentRow.departureTimestamp = train.stopInfo.departureTimestamp;
-      currentRow.delay = train.stopInfo.arrivalDelay >= 0 ? train.stopInfo.arrivalDelay : 0;
+
+      currentRow.delay =
+        train.stopInfo.arrivalDelay >= 0 ? train.stopInfo.arrivalDelay : 0;
 
       currentRowIndex++;
     }
@@ -343,87 +443,121 @@ export default class TimetableView extends Vue {
     for (let i = currentRowIndex; i < this.timetableRows.length; i++) {
       const currentRow = this.timetableRows[i];
 
-      currentRow.destinationTable = currentRow.destinationTable.map(v => " ");
-      currentRow.nearestStopTable = currentRow.nearestStopTable.map(v => " ");
-      currentRow.departureHoursTable = currentRow.departureHoursTable.map(v => "0");
-      currentRow.departureMinutesTable = currentRow.departureMinutesTable.map(v => "0");
+      for (let propName in currentRow) {
+        let currentProp = currentRow[propName];
 
-      currentRow.destinationString = "";
-      currentRow.nearestStopString = "";
-      currentRow.departureHoursString = "";
-      currentRow.departureMinutesString = "";
+        switch (typeof currentProp) {
+          case "object":
+            currentProp = currentProp.map((v) => " ");
+            break;
 
-      currentRow.category = "";
-      currentRow.number = 0;
-      currentRow.arrivalTimestamp = 0;
-      currentRow.departureTimestamp = 0;
-      currentRow.delay = 0;
+          case "string":
+            currentProp = "";
+            break;
+
+          case "number":
+            currentProp = 0;
+            break;
+        }
+      }
     }
 
     return this.timetableRows;
   }
 
-  seekMainLetters(time) {
-    if (time > nextRefreshTime) {
-      for (let i = 0; i < letterSeekArray.length; i++) {
-        const wanted = letterSeekArray[i];
-        const currentSet = wanted.numeric ? numberSet : letterSet;
+  seekMainLetters() {
+    for (let i = 0; i < letterSeekArray.length; i++) {
+      const wanted = letterSeekArray[i];
+      const currentSet = wanted.numeric ? numberSet : letterSet;
 
-        if (wanted.currentChar === wanted.finalChar) {
-          letterSeekArray = letterSeekArray.filter(letter => letter.id !== wanted.id);
-          continue;
-        }
+      if (wanted.currentChar === wanted.finalChar) {
+        letterSeekArray = letterSeekArray.filter(
+          (letter) => letter.id !== wanted.id
+        );
 
-        const currentIndex = currentSet.findIndex(char => char === wanted.currentChar);
-        const nextIndex = currentIndex == currentSet.length - 1 ? 0 : currentIndex + 1;
-        const nextChar = currentSet[nextIndex];
-
-        if (!wanted.numeric) {
-          this.$set(
-            wanted.main ? this.timetableRows[wanted.currentRowIndex].destinationTable : this.timetableRows[wanted.currentRowIndex].nearestStopTable,
-            wanted.letterIndex,
-            currentSet[nextIndex]);
-        } else {
-          this.$set(wanted.main ? this.timetableRows[wanted.currentRowIndex].departureHoursTable : this.timetableRows[wanted.currentRowIndex].departureMinutesTable,
-            wanted.letterIndex,
-            nextChar);
-
-
-        }
-        // this.timetableRows[wanted.currentRowIndex].departureMinutes[wanted.letterIndex] = currentSet[nextIndex];
-
-        if (nextChar === wanted.finalChar) {
-          letterSeekArray = letterSeekArray.filter(letter => letter.id !== wanted.id);
-          continue;
-        }
-
-        letterSeekArray[i].currentChar = nextChar;
+        continue;
       }
 
+      const currentIndex = currentSet.findIndex(
+        (char) => char === wanted.currentChar
+      );
+      const nextIndex =
+        currentIndex == currentSet.length - 1 ? 0 : currentIndex + 1;
+      const nextChar = currentSet[nextIndex];
+
+      this.$set(
+        this.timetableRows[wanted.currentRowIndex][wanted.arrayName],
+        wanted.letterIndex,
+        currentSet[nextIndex]
+      );
+
+      if (nextChar === wanted.finalChar) {
+        letterSeekArray = letterSeekArray.filter(
+          (letter) => letter.id !== wanted.id
+        );
+
+        // console.log("Found!", letterSeekArray.length);
+
+        continue;
+      }
+
+      letterSeekArray[i].currentChar = nextChar;
     }
   }
 
+  seekDelayPlate() {
+    for (let i = 0; i < plateSeekArray.length; i++) {
+      const plate = plateSeekArray[i];
 
+      if (plate.currentPlate === plate.wantedPlate) {
+        plateSeekArray = plateSeekArray.filter(
+          (p) => plate.currentRowIndex === p.currentRowIndex
+        );
+
+        continue;
+      }
+
+      const currentIndex = delaySet.findIndex((p) => p === plate.currentPlate);
+
+      const nextIndex =
+        currentIndex == delaySet.length - 1 ? 0 : currentIndex + 1;
+
+      const nextPlate = delaySet[nextIndex];
+
+      this.timetableRows[plate.currentRowIndex].delayPlate =
+        delaySet[nextIndex];
+
+      if (nextPlate === plate.wantedPlate) {
+        plateSeekArray = plateSeekArray.filter(
+          (p) => plate.currentRowIndex === p.currentRowIndex
+        );
+
+        continue;
+      }
+    }
+  }
 
   findNextLetters(time) {
     if (time > nextRefreshTime) {
-      this.seekMainLetters(time);
+      this.seekMainLetters();
+      this.seekDelayPlate();
       // this.seekSideLetters(time);
 
       nextRefreshTime = time + 100;
     }
 
-
-    if (letterSeekArray.length > 0 && !soundPlaying) { sound.play(); soundPlaying = true; }
-    else if (letterSeekArray.length == 0) {
+    if (letterSeekArray.length > 0 && !soundPlaying) {
+      sound.play();
+      soundPlaying = true;
+    } else if (letterSeekArray.length == 0) {
       setTimeout(() => {
-        sound.stop(); soundPlaying = false;
+        sound.stop();
+        soundPlaying = false;
       }, 200);
     }
 
     requestAnimationFrame(this.findNextLetters);
   }
-
 }
 </script>
 
@@ -459,7 +593,7 @@ $bg: #111;
   &-header,
   &-row {
     display: grid;
-    grid-template-columns: 4fr 4fr 2fr 1fr 1fr;
+    grid-template-columns: 4fr 4fr 3fr 1fr 1fr;
   }
 
   &-header {
@@ -468,6 +602,7 @@ $bg: #111;
       justify-content: center;
       align-items: center;
     }
+
     text-align: center;
     font-size: 0.35em;
 
@@ -506,26 +641,28 @@ $bg: #111;
   display: flex;
 }
 
-.row-bar {
-  width: 100%;
-  height: 3px;
-  background: white;
-
-  margin-top: 0.5rem;
-}
-
 .row {
+  &-bar {
+    width: 100%;
+    height: 3px;
+    background: white;
+
+    margin-top: 0.5rem;
+  }
+
   &-type {
     text-align: center;
 
-    span {
-      display: inline-block;
-      width: 60%;
-      min-height: 40px;
-      line-height: 40px;
-
-      background: firebrick;
+    div {
+      margin: 0 0.5em;
     }
+
+    // span {
+    //   display: inline-block;
+    //   width: 60%;
+    //   min-height: 40px;
+    //   line-height: 40px;
+    // }
   }
 
   &-delay {
@@ -539,6 +676,12 @@ $bg: #111;
 
       background: #444;
     }
+  }
+}
+
+.type {
+  &-category {
+    background: red;
   }
 }
 
