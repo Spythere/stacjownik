@@ -399,10 +399,9 @@ export default class Store extends VuexModule {
           const stopName = stop.stopNameRAW.toLowerCase();
 
           if (stationName === stopName) return true;
-          if (stopName.includes(stationName)) return true;
-          if (stationName.includes(stopName)) return true;
-
-          if (stopName.includes('podg.') && stopName.split(', podg.')[0] && stationName.includes(stopName.split(', podg.')[0])) return true;
+          if (stopName.includes(stationName) && !stop.stopName.includes('po.') && !stop.stopName.includes('podg.')) return true;
+          if (stationName.includes(stopName) && !stop.stopName.includes('po.') && !stop.stopName.includes('podg.')) return true;
+          if (stopName.includes('podg.') && stopName.split(', podg.')[0] && stationName === stopName.split(', podg.')[0]) return true;
 
           if (JSONStationData.some(data => data.stationName.includes(station.stationName) && data.stops && data.stops.includes(stop.stopNameRAW))) return true;
 
@@ -444,12 +443,14 @@ export default class Store extends VuexModule {
           stopStatusID = 3;
         }
 
-        for (let i = stopInfoIndex; i < timetableData.followingStops.length - 1; i++) {
-          const stop = timetableData.followingStops[i];
+        if (stopInfoIndex < timetableData.followingStops.length - 2) {
+          for (let i = stopInfoIndex + 1; i < timetableData.followingStops.length - 1; i++) {
+            const stop = timetableData.followingStops[i];
 
-          if (stop.mainStop && stop.stopType.includes('ph')) {
-            nearestStop = stop.stopNameRAW;
-            break;
+            if (stop.mainStop && stop.stopType.includes('ph')) {
+              nearestStop = stop.stopNameRAW;
+              break;
+            }
           }
         }
 

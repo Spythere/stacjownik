@@ -1870,6 +1870,7 @@
     "default": false,
     "nonPublic": false,
     "unavailable": true,
+    "subStations": ["Sroka, podg.", "Sroka Południe, podg."],
     "stops": ["Sroka, podg."]
   },
   {

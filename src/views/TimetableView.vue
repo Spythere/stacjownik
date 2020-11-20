@@ -425,7 +425,7 @@ export default class TimetableView extends Vue {
       currentRow.category = train.category;
       currentRow.number = train.trainNo;
 
-      currentRow.departureMinutesString = departureMinutes.toString();
+      currentRow.departureHoursString = departureHours.toString();
       currentRow.departureMinutesString = departureMinutes.toString();
 
       currentRow.trainNumberString = trainNumberString;
@@ -545,6 +545,10 @@ export default class TimetableView extends Vue {
 
       nextRefreshTime = time + 100;
     }
+
+    // console.log(
+    //   letterSeekArray.length < 10 ? letterSeekArray : letterSeekArray.length
+    // );
 
     if (letterSeekArray.length > 0 && !soundPlaying) {
       sound.play();
