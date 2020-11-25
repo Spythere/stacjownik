@@ -1,17 +1,17 @@
 <template>
   <div class="app">
-    <div class="container">
-      <header class="header">
-        <div class="header-body">
-          <span class="header-brand">
+    <div class="app_container">
+      <header class="app_header">
+        <div class="header_body">
+          <span class="header_brand">
             <span>Stacj</span>
             <img src="@/assets/trainlogo.png" alt="trainlogo" />
             <span>wnik</span>
           </span>
 
-          <span class="header-info">
+          <span class="header_info">
             <Clock />
-            <div class="counter">
+            <div class="info_counter">
               <img src="@/assets/icon-dispatcher.svg" alt="icon dispatcher" />
               <span>{{ data.stationCount }}</span>
 
@@ -20,14 +20,14 @@
             </div>
           </span>
 
-          <span class="header-links">
+          <span class="header_links">
             <router-link class="route" active-class="route-active" to="/" exact>SCENERIE</router-link>/
             <router-link class="route" active-class="route-active" to="/trains">POCIĄGI</router-link>
           </span>
         </div>
       </header>
 
-      <main class="app-main">
+      <main class="app_main">
         <transition name="view-anim" mode="out-in">
           <keep-alive>
             <router-view />
@@ -35,16 +35,13 @@
         </transition>
       </main>
 
-      <footer class="app-footer flex">&copy; Spythere 2020</footer>
+      <footer class="app_footer flex">&copy; Spythere 2020</footer>
 
-      <transition name="message-anim" mode="out-in">
-        <span :key="data.dataConnectionStatus">
-          <div class="message loading" v-if="data.dataConnectionStatus == 0">Pobieranie danych...</div>
+      <transition name="warning-anim" mode="out-in" tag="div">
+        <span :key="data.dataConnectionStatus || -1" class="warning" :class="dataStatusClass">
+          <span v-if="data.dataConnectionStatus == 0">Pobieranie danych...</span>
 
-          <div class="message error" v-if="data.dataConnectionStatus == 1">
-            <img :src="ErrorIcon" alt="Error" />
-            Brak odpowiedzi ze strony serwera!
-          </div>
+          <span v-if="data.dataConnectionStatus == 1">Brak odpowiedzi ze strony serwera!</span>
         </span>
       </transition>
     </div>
@@ -59,31 +56,22 @@ import { mapGetters, mapActions } from "vuex";
 
 import Clock from "@/components/App/Clock.vue";
 
-// import stationData from "@/data/stations.json";
-
 @Component({
   components: { Clock },
 })
 export default class App extends Vue {
-  ErrorIcon = require("@/assets/icon-error.svg");
-
   @Action("synchronizeData") synchronizeData;
   @Getter("getAllData") data;
 
+  get dataStatusClass() {
+    if (this.data.dataConnectionStatus == 0) return "loading";
+    if (this.data.dataConnectionStatus == 1) return "error";
+
+    return "";
+  }
+
   mounted() {
     this.synchronizeData();
-
-    // stationData
-    //   .filter(data => data.stationName.length > 12 || (data.stops && data.stops.some(stop => stop.length > 12)))
-    //   .forEach(data => {
-    //     console.log(data.stationName, data.stationName.length);
-
-    //     data.stops?.forEach(stop => {
-    //       console.log(stop, stop.length);
-    //     })
-
-    //     console.log("-----");
-    //   });
   }
 }
 </script>
@@ -94,6 +82,7 @@ export default class App extends Vue {
 @import "./styles/global.scss";
 @import "./styles/scenery_status.scss";
 
+// VUE ROUTE CHANGE ANIMATION
 .view-anim {
   &-enter {
     opacity: 0.02;
@@ -110,22 +99,8 @@ export default class App extends Vue {
   }
 }
 
-.message {
-  &-anim {
-    &-enter-active,
-    &-leave-active {
-      transition: all $animDuration $animType;
-    }
-
-    &-enter {
-      transform: translateY(100%);
-    }
-
-    &-leave-to {
-      transform: translateY(0);
-    }
-  }
-
+// WARNING MESSAGE
+.warning {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -135,13 +110,9 @@ export default class App extends Vue {
 
   width: 100%;
 
-  font-size: calc(0.5rem + 0.5vw);
-  padding: 0.5rem;
+  font-size: calc(0.7rem + 0.5vw);
 
-  img {
-    width: 1.5em;
-    margin: 0 0.5em;
-  }
+  padding: 0.5em;
 
   &.loading {
     background: #cc8b21;
@@ -149,6 +120,19 @@ export default class App extends Vue {
 
   &.error {
     background: firebrick;
+  }
+
+  // WARNING SHOW & HIDE ANIMATION
+  &-anim {
+    &-enter-active,
+    &-leave-active {
+      transition: all $animDuration * 3 $animType;
+    }
+
+    &-enter,
+    &-leave-to {
+      opacity: 0;
+    }
   }
 }
 
@@ -161,6 +145,7 @@ export default class App extends Vue {
   }
 }
 
+// APP
 .app {
   background: $bgCol;
   color: white;
@@ -174,7 +159,8 @@ export default class App extends Vue {
   }
 }
 
-.container {
+// CONTAINER
+.app_container {
   display: grid;
   grid-template-rows: auto 1fr auto;
   grid-template-columns: minmax(0, 1fr);
@@ -183,7 +169,8 @@ export default class App extends Vue {
   min-height: 100vh;
 }
 
-.header {
+// HEADER
+.app_header {
   background: $primaryCol;
   padding: 0.15em;
 
@@ -191,39 +178,44 @@ export default class App extends Vue {
 
   display: flex;
   justify-content: center;
+}
 
-  &-brand {
-    width: 100%;
-    font-size: 1.1em;
+.header_brand {
+  width: 100%;
+  font-size: 1.1em;
 
-    text-align: center;
+  text-align: center;
 
-    img {
-      width: 0.8em;
-    }
-  }
-
-  &-info {
-    display: flex;
-    justify-content: space-between;
-
-    margin: 0 0.3em;
-    padding: 0.2em;
-    font-size: 0.35em;
-  }
-
-  &-links {
-    display: flex;
-    justify-content: center;
-
-    border-radius: 0.7em;
-
-    padding: 0.2em;
-    font-size: 0.35em;
+  img {
+    width: 0.8em;
   }
 }
 
-.counter {
+.header_info {
+  display: flex;
+  justify-content: space-between;
+
+  margin: 0 0.3em;
+  padding: 0.2em;
+  font-size: 0.35em;
+}
+
+.header_links {
+  display: flex;
+  justify-content: center;
+
+  border-radius: 0.7em;
+
+  padding: 0.2em;
+  font-size: 0.35em;
+}
+
+// MAIN
+.app_main {
+}
+
+// COUNTER
+.info_counter {
   display: flex;
   align-items: center;
   color: $accentCol;
@@ -239,7 +231,8 @@ export default class App extends Vue {
   }
 }
 
-footer {
+// FOOTER
+.app_footer {
   background: #111;
   padding: 0.3rem;
   color: white;

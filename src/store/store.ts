@@ -8,6 +8,7 @@ import Train from '@/scripts/interfaces/Train';
 import TrainStop from '@/scripts/interfaces/TrainStop';
 
 enum Status {
+  Initialized = -1,
   Loading = 0,
   Error = 1,
   Loaded = 2,
@@ -26,6 +27,7 @@ interface TimetableData {
   SKR: boolean;
   routeDistance: number;
   followingStops: TrainStop[];
+  followingSceneries: string[];
 }
 
 const URLs = {
@@ -105,10 +107,6 @@ const timestampToTime = (timestamp: number) =>
 export default class Store extends VuexModule {
   private trainCount: number = 0;
   private stationCount: number = 0;
-
-  //   private stationsConnectionStatus: Status = Status.Loading;
-  //   private trainsConnectionStatus: Status = Status.Loading;
-  //   private dataConnectionStatus: Status = Status.Loading;
 
   private dataConnectionStatus: Status = Status.Loading;
   private timetableLoaded: Status = Status.Loading;
@@ -211,6 +209,7 @@ export default class Store extends VuexModule {
         SKR: trainInfo.skr,
         routeDistance: timetable.stopPoints[timetable.stopPoints.length - 1].pointDistance,
         followingStops,
+        followingSceneries: trainInfo.sceneries,
       });
 
       return acc;
@@ -395,6 +394,8 @@ export default class Store extends VuexModule {
     this.stationList = this.stationList.map(station => {
       const stationName = station.stationName.toLowerCase();
       const scheduledTrains: Station['scheduledTrains'] = timetableList.reduce((acc: Station['scheduledTrains'], timetableData: TimetableData, index) => {
+        if (!timetableData.followingSceneries.includes(station.stationHash)) return acc;
+
         const stopInfoIndex = timetableData.followingStops.findIndex(stop => {
           const stopName = stop.stopNameRAW.toLowerCase();
 
