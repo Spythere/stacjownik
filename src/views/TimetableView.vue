@@ -25,11 +25,7 @@
         </div>
 
         <div class="timetable-body">
-          <div
-            class="timetable-item"
-            v-for="(timetable, i) in computedRows"
-            :key="timetable.trainNo"
-          >
+          <div class="timetable-item" v-for="timetable in computedRows" :key="timetable.trainNo">
             <div class="row-bar"></div>
             <div class="timetable-row">
               <span class="row-destination">
@@ -213,41 +209,45 @@ let nextRefreshTime = 0;
 export default class TimetableView extends Vue {
   @Getter("getStationList") stationList!: Station[];
 
+  maxRows = 5;
+
   options = {
     excludeCargo: { name: "Tylko pasażerskie", state: false },
     playSounds: { name: "Dźwięki", state: false },
   };
 
-  timetableRows: TimetableRow[] = new Array(6).fill(0).map((row) => ({
-    origin: new Array(13).fill(" "),
+  timetableRows: TimetableRow[] = new Array(this.maxRows)
+    .fill(0)
+    .map((row) => ({
+      origin: new Array(13).fill(" "),
 
-    destinationTable: new Array(13).fill(" "),
-    destinationString: "",
+      destinationTable: new Array(13).fill(" "),
+      destinationString: "",
 
-    nearestStopTable: new Array(13).fill(" "),
-    nearestStopString: "",
+      nearestStopTable: new Array(13).fill(" "),
+      nearestStopString: "",
 
-    departureHoursTable: new Array(2).fill(" "),
-    departureHoursString: "",
+      departureHoursTable: new Array(2).fill(" "),
+      departureHoursString: "",
 
-    departureMinutesTable: new Array(2).fill(" "),
-    departureMinutesString: "",
+      departureMinutesTable: new Array(2).fill(" "),
+      departureMinutesString: "",
 
-    trainNumberTable: new Array(6).fill(" "),
-    trainNumberString: "",
+      trainNumberTable: new Array(6).fill(" "),
+      trainNumberString: "",
 
-    trainCategoryTable: new Array(3).fill(" "),
-    trainCategoryString: "",
+      trainCategoryTable: new Array(3).fill(" "),
+      trainCategoryString: "",
 
-    category: "",
-    number: 0,
+      category: "",
+      number: 0,
 
-    delay: 0,
-    delayPlate: "",
+      delay: 0,
+      delayPlate: "",
 
-    departureTimestamp: 0,
-    arrivalTimestamp: 0,
-  }));
+      departureTimestamp: 0,
+      arrivalTimestamp: 0,
+    }));
 
   mounted() {
     window.requestAnimationFrame(this.findNextLetters);
@@ -261,57 +261,62 @@ export default class TimetableView extends Vue {
   /* Options */
   setOption(optionKey: string, optionValue: any) {
     this.$set(this.options[optionKey], "state", optionValue);
+
     // this.options[optionKey].state = optionValue;
   }
 
   /* ===== */
 
-  resetTimetable(indexFrom: number = 0) {
+  resetTimetable(indexFrom: number = 0, forceClear: boolean = false) {
+    if (indexFrom > this.maxRows - 1) return;
+
+    console.log("reset");
+
     for (let i = indexFrom; i < this.timetableRows.length; i++) {
       const currentRow = this.timetableRows[i];
 
       for (let propName in currentRow) {
-        let currentProp = currentRow[propName];
+        let propValue = currentRow[propName];
 
-        switch (typeof currentProp) {
+        switch (typeof propValue) {
           case "object":
-            currentProp = currentProp.map((v) => " ");
+            propValue = propValue.map((v) => " ");
+            this.addToSeek(i, propName, propValue, false);
+            this.$set(this.timetableRows[i], propName, propValue);
             break;
 
           case "string":
-            currentProp = "";
+            propValue = "";
+            this.$set(this.timetableRows[i], propName, propValue);
             break;
 
           case "number":
-            currentProp = 0;
+            propValue = 0;
+            this.$set(this.timetableRows[i], propName, propValue);
+
             break;
         }
-
-        this.$set(this.timetableRows[i], propName, currentProp);
       }
     }
   }
 
   addToSeek(
-    currentRow: TimetableRow,
     currentRowIndex: number,
     arrayName: string,
-    next: string,
+    next: string | string[],
     numeric: boolean
   ) {
-    globalID++;
+    // globalID++;
 
-    console.log(arrayName, currentRow[arrayName]);
-
-    currentRow[arrayName].forEach((char, i) => {
+    this.timetableRows[currentRowIndex][arrayName].forEach((letter, i) => {
       letterSeekArray.push({
         currentRowIndex,
         letterIndex: i,
-        currentChar: char,
-        finalChar: next[i] || (numeric ? "0" : " "),
+        currentChar: letter,
+        finalChar: next[i] ? next[i] : numeric ? "0" : " ",
         arrayName,
         numeric,
-        id: globalID,
+        id: ++globalID,
       });
     });
   }
@@ -328,40 +333,40 @@ export default class TimetableView extends Vue {
     return info || null;
   }
 
-  get computedRows(): TimetableRow[] {
-    if (!this.stationInfo) return this.timetableRows;
-    if (
-      !this.stationInfo.scheduledTrains ||
-      this.stationInfo.scheduledTrains.length == 0
-    )
-      return this.timetableRows;
+  updateRows(info: Station | null = this.stationInfo) {
+    if (!info) return;
+    if (info.scheduledTrains.length == 0) return;
 
-    const scheduledTrains = this.stationInfo.scheduledTrains
-      .filter(
-        (train) => {
-          if (train.stopInfo.departureTimestamp == 0) return false;
+    console.log("update");
 
-          if (!this.options.excludeCargo.state) return true;
+    const scheduledTrains = info.scheduledTrains
+      .filter((train) => {
+        if (train.stopInfo.departureTimestamp == 0) return false;
 
-          const trainNumberLength = train.trainNo.toString().length;
-
-          if (trainNumberLength === 4 || trainNumberLength === 5) return true;
-
+        if (this.options.excludeCargo.state) {
+          if (train.trainNo.toString().length === 5) return true;
           return false;
         }
 
-        // includesLetters(train.category.split("")[1], ["P", "I", "O"])
-      )
+        // if (!this.options.excludeCargo.state) return true;
+
+        // const trainNumberLength = train.trainNo.toString().length;
+
+        // if (trainNumberLength === 4 || trainNumberLength === 5) return true;
+
+        return true;
+      })
       .sort((a, b) => {
         if (a.stopInfo.departureTimestamp >= b.stopInfo.departureTimestamp)
           return 1;
-        else return -1;
+
+        return -1;
       });
 
     let currentRowIndex = 0;
     for (let train of scheduledTrains) {
       if (train.stopInfo.confirmed) continue;
-      if (currentRowIndex > this.timetableRows.length - 1) break;
+      if (currentRowIndex > this.maxRows - 1) break;
 
       const currentRow = this.timetableRows[currentRowIndex];
 
@@ -385,129 +390,49 @@ export default class TimetableView extends Vue {
       }
 
       if (currentRow.destinationString !== destination) {
-        this.addToSeek(
-          currentRow,
-          currentRowIndex,
-          "destinationTable",
-          destination,
-          false
-        );
+        console.log(destination);
 
-        // currentRow.destinationTable.forEach((letter, i) => {
-        //   this.addToSeek(
-        //     currentRowIndex,
-        //     i,
-        //     letter,
-        //     destination[i] ? destination[i].toUpperCase() : " ",
-        //     "destinationTable",
-        //     false
-        //   );
-        // });
+        this.addToSeek(currentRowIndex, "destinationTable", destination, false);
       }
 
       if (currentRow.nearestStopString !== nearestStop) {
-        this.addToSeek(
-          currentRow,
-          currentRowIndex,
-          "nearestStopTable",
-          nearestStop,
-          false
-        );
-
-        // currentRow.nearestStopTable.forEach((letter, i) => {
-        //   this.addToSeek(
-        //     currentRowIndex,
-        //     i,
-        //     letter,
-        //     nearestStop[i] ? nearestStop[i].toUpperCase() : " ",
-        //     "nearestStopTable",
-        //     false
-        //   );
-        // });
+        this.addToSeek(currentRowIndex, "nearestStopTable", nearestStop, false);
       }
 
       if (currentRow.departureHoursString != departureHours.toString()) {
         this.addToSeek(
-          currentRow,
           currentRowIndex,
           "departureHoursTable",
-          departureHours.toString(),
+          departureHours,
           true
         );
-
-        // currentRow.departureHoursTable.forEach((num, i) => {
-        //   this.addToSeek(
-        //     currentRowIndex,
-        //     i,
-        //     num,
-        //     departureHours[i] ? departureHours[i] : "0",
-        //     "departureHoursTable",
-        //     true
-        //   );
-        // });
       }
 
       if (currentRow.departureMinutesString != departureMinutes.toString()) {
         this.addToSeek(
-          currentRow,
           currentRowIndex,
           "departureMinutesTable",
-          departureMinutes.toString(),
+          departureMinutes,
           true
         );
-
-        // currentRow.departureMinutesTable.forEach((num, i) => {
-        //   this.addToSeek(
-        //     currentRowIndex,
-        //     i,
-        //     num,
-        //     departureMinutes[i] ? departureMinutes[i] : "0",
-        //     "departureMinutesTable",
-        //     true
-        //   );
-        // });
       }
 
       if (currentRow.trainNumberString != train.trainNo.toString()) {
         this.addToSeek(
-          currentRow,
           currentRowIndex,
           "trainNumberTable",
           trainNumberString,
           true
         );
-
-        // currentRow.trainNumberTable.forEach((num, i) => {
-        //   this.addToSeek(
-        //     currentRowIndex,
-        //     i,
-        //     num,
-        //     trainNumberString[i] ? trainNumberString[i] : " ",
-        //     "trainNumberTable",
-        //     true
-        //   );
-        // });
       }
 
       if (currentRow.trainCategoryString != train.category) {
         this.addToSeek(
-          currentRow,
           currentRowIndex,
           "trainCategoryTable",
           train.category,
           false
         );
-
-        // currentRow.trainCategoryTable.forEach((letter, i) => {
-        //   this.addToSeek(
-        //     currentRowIndex,
-        //     i,
-        //     letter,
-        //     train.category[i] ? train.category[i] : " ",
-        //     "trainCategoryTable",
-        //     false
-        //   );
-        // });
       }
 
       if (currentRow.delayPlate != currentRow.delay.toString()) {
@@ -540,6 +465,10 @@ export default class TimetableView extends Vue {
     }
 
     this.resetTimetable(currentRowIndex);
+  }
+
+  get computedRows(): TimetableRow[] {
+    this.updateRows();
 
     return this.timetableRows;
   }
@@ -549,6 +478,7 @@ export default class TimetableView extends Vue {
 
     for (let i = 0; i < letterSeekArray.length; i++) {
       const wanted = letterSeekArray[i];
+
       const currentSet = wanted.numeric ? numberSet : letterSet;
 
       if (wanted.currentChar === wanted.finalChar) {
@@ -621,10 +551,10 @@ export default class TimetableView extends Vue {
   findNextLetters(time) {
     if (time > nextRefreshTime) {
       this.seekMainLetters();
-      this.seekDelayPlate();
+      // this.seekDelayPlate();
       // this.seekSideLetters(time);
 
-      nextRefreshTime = time + 200;
+      nextRefreshTime = time + 140;
     }
 
     // console.log(
@@ -829,12 +759,13 @@ $bg: #111;
 
 .roll-anim-enter-active,
 .roll-anim-leave-active {
-  transition: transform 90ms;
+  transition: transform 70ms;
   will-change: transform;
 
   // opacity: 0;
 }
-.roll-anim-enter, .roll-anim-leave-to /* .list-leave-active below version 2.1.8 */ {
+.roll-anim-enter,
+.roll-anim-leave-to {
   transform: rotate3d(1, 0, 0, -90deg);
   // opacity: 0;
 }
