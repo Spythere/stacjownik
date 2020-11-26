@@ -1,5 +1,5 @@
 <template>
-  <div class="app">
+  <div class="app" ref="test">
     <div class="app_container">
       <header class="app_header">
         <div class="header_body">
@@ -35,15 +35,11 @@
         </transition>
       </main>
 
-      <footer class="app_footer flex">&copy; Spythere 2020</footer>
-
-      <transition name="warning-anim" mode="out-in" tag="div">
-        <span :key="data.dataConnectionStatus || -1" class="warning" :class="dataStatusClass">
-          <span v-if="data.dataConnectionStatus == 0">Pobieranie danych...</span>
-
-          <span v-if="data.dataConnectionStatus == 1">Brak odpowiedzi ze strony serwera!</span>
-        </span>
-      </transition>
+      <footer class="app_footer">
+        &copy;
+        <a href="https://td2.info.pl/profile/?u=20777" target="_blank">Spythere</a>
+        2020 | v{{VERSION}}
+      </footer>
     </div>
   </div>
 </template>
@@ -62,6 +58,8 @@ import Clock from "@/components/App/Clock.vue";
 export default class App extends Vue {
   @Action("synchronizeData") synchronizeData;
   @Getter("getAllData") data;
+
+  private VERSION = "1.3.2";
 
   get dataStatusClass() {
     if (this.data.dataConnectionStatus == 0) return "loading";
@@ -96,43 +94,6 @@ export default class App extends Vue {
   &-leave-active {
     transition: all $animDuration $animType;
     min-height: 100%;
-  }
-}
-
-// WARNING MESSAGE
-.warning {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  position: fixed;
-  bottom: 0;
-
-  width: 100%;
-
-  font-size: calc(0.7rem + 0.5vw);
-
-  padding: 0.5em;
-
-  &.loading {
-    background: #cc8b21;
-  }
-
-  &.error {
-    background: firebrick;
-  }
-
-  // WARNING SHOW & HIDE ANIMATION
-  &-anim {
-    &-enter-active,
-    &-leave-active {
-      transition: all $animDuration * 3 $animType;
-    }
-
-    &-enter,
-    &-leave-to {
-      opacity: 0;
-    }
   }
 }
 
@@ -210,10 +171,6 @@ export default class App extends Vue {
   font-size: 0.35em;
 }
 
-// MAIN
-.app_main {
-}
-
 // COUNTER
 .info_counter {
   display: flex;
@@ -233,21 +190,15 @@ export default class App extends Vue {
 
 // FOOTER
 .app_footer {
-  background: #111;
-  padding: 0.3rem;
-  color: white;
-  max-width: 100%;
   font-size: calc(0.5rem + 0.5vw);
+  max-width: 100%;
+  padding: 0.3rem;
 
-  flex-direction: column;
+  z-index: 10;
 
-  span {
-    margin: 0.2rem;
+  background: #111;
+  color: white;
 
-    &:nth-child(2) {
-      color: #888;
-      font-size: 0.95em;
-    }
-  }
+  text-align: center;
 }
 </style>

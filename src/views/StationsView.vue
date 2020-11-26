@@ -1,38 +1,48 @@
 <template>
-  <div class="stations-view">
-    <div class="stations-wrapper">
-      <div class="stations-body">
-        <div class="options">
-          <div class="options-actions">
+  <div class="stations_view" ref="view">
+    <div class="stations_wrapper">
+      <div class="stations_body">
+        <div class="body_bar">
+          <div class="bar_actions">
             <button
               class="action-btn"
               :class="{ open: filterCardOpen }"
               @click="() => toggleCardsState('filter')"
             >
-              <img
-                :src="require('@/assets/icon-filter2.svg')"
-                alt="icon-filter"
-              />
+              <img :src="require('@/assets/icon-filter2.svg')" alt="icon-filter" />
               <p>FILTRY</p>
             </button>
           </div>
+
+          <div class="bar_indicators">
+            <transition name="indicator-anim">
+              <span class="indicator_scenery-data" v-if="data.dataConnectionStatus < 2">
+                <img :src="trainIcon" alt="icon-train" />
+              </span>
+            </transition>
+
+            <transition name="indicator-anim">
+              <span class="indicator_timetable-data" v-if="data.timetableDataStatus < 2">
+                <img :src="timetableIcon" alt="icon-timetable" />
+              </span>
+            </transition>
+          </div>
         </div>
 
-        <StationTable
-          :stations="computedStations"
-          :sorterActive="sorterActive"
-          :setFocusedStation="setFocusedStation"
-          :changeSorter="changeSorter"
-        />
+        <div class="body_table">
+          <StationTable
+            :stations="computedStations"
+            :sorterActive="sorterActive"
+            :setFocusedStation="setFocusedStation"
+            :changeSorter="changeSorter"
+            ref="table"
+          />
+        </div>
       </div>
     </div>
 
     <transition name="card-anim">
-      <StationCard
-        v-if="focusedStationInfo"
-        :stationInfo="focusedStationInfo"
-        :exit="closeCard"
-      />
+      <StationCard v-if="focusedStationInfo" :stationInfo="focusedStationInfo" :exit="closeCard" />
     </transition>
 
     <transition name="card-anim">
@@ -93,6 +103,9 @@ const filterInitStates = {
 export default class StationsView extends Vue {
   STORAGE_KEY: string = "options_saved";
 
+  trainIcon: string = require("@/assets/icon-train.svg");
+  timetableIcon: string = require("@/assets/icon-timetable.svg");
+
   sorterActive: { index: number; dir: number } = { index: 0, dir: 1 };
   focusedStationName: string = "";
   filterCardOpen: boolean = false;
@@ -101,125 +114,7 @@ export default class StationsView extends Vue {
   inputs = inputData;
 
   @Getter("getStationList") stationList!: Station[];
-
-  toggleCardsState(name: string): void {
-    if (name == "filter") {
-      this.filterCardOpen = !this.filterCardOpen;
-    }
-  }
-
-  changeSorter(index: number) {
-    if (index > 5) return;
-
-    if (index == this.sorterActive.index) this.sorterActive.dir = -1 * this.sorterActive.dir;
-    else this.sorterActive.dir = 1;
-
-    this.sorterActive.index = index;
-  }
-
-  changeFilterValue(filter: { name: string; value: number }) {
-    this.filters[filter.name] = filter.value;
-  }
-
-  resetFilters() {
-    this.filters = { ...filterInitStates };
-  }
-
-  get computedStations() {
-    const dir: number = this.sorterActive.dir;
-    // const scheduledTrainList = this.scheduledTrains;
-
-    return this.stationList
-      .filter((station) => {
-        if (!station.reqLevel || station.reqLevel == "-1") return true;
-
-        if ((station.nonPublic || !station.reqLevel) && this.filters["nonPublic"]) return false;
-
-        if (station.online && station.occupiedTo == "KOŃCZY" && this.filters["ending"]) return false;
-
-        if (station.online && this.filters["occupied"]) return false;
-        if (!station.online && this.filters["free"]) return false;
-
-        if (station.default && this.filters["default"]) return false;
-        if (!station.default && this.filters["notDefault"]) return false;
-
-        if (parseInt(station.reqLevel) < this.filters["minLevel"]) return false;
-
-        if (
-          this.filters["no-1track"] &&
-          (station.routes.oneWay.catenary != 0 || station.routes.oneWay.noCatenary != 0)
-        )
-          return false;
-        if (
-          this.filters["no-2track"] &&
-          (station.routes.twoWay.catenary != 0 || station.routes.twoWay.noCatenary != 0)
-        )
-          return false;
-
-        if (station.routes.oneWay.catenary < this.filters["minOneWayCatenary"]) return false;
-        if (station.routes.oneWay.noCatenary < this.filters["minOneWay"]) return false;
-
-        if (station.routes.twoWay.catenary < this.filters["minTwoWayCatenary"]) return false;
-        if (station.routes.twoWay.noCatenary < this.filters["minTwoWay"]) return false;
-
-        if (this.filters[station.controlType]) return false;
-        if (this.filters[station.signalType]) return false;
-
-        if (this.filters["SPK"] && (station.controlType === "SPK" || station.controlType.includes("+SPK")))
-          return false;
-        if (this.filters["SCS"] && (station.controlType === "SCS" || station.controlType.includes("+SCS")))
-          return false;
-
-        if (
-          this.filters["SCS"] &&
-          this.filters["SPK"] &&
-          (station.controlType.includes("SPK") || station.controlType.includes("SCS"))
-        )
-          return false;
-
-        if (this.filters["mechaniczne"] && station.controlType.includes("mechaniczne")) return false;
-
-        if (this.filters["ręczne"] && station.controlType.includes("ręczne")) return false;
-
-        return true;
-      })
-      .sort((a, b) => {
-        switch (this.sorterActive.index) {
-          case 1:
-            if (parseInt(a.reqLevel) > parseInt(b.reqLevel)) return dir;
-            if (parseInt(a.reqLevel) < parseInt(b.reqLevel)) return -dir;
-            break;
-
-          case 2:
-            if (a.statusTimestamp > b.statusTimestamp) return dir;
-            if (a.statusTimestamp < b.statusTimestamp) return -dir;
-            break;
-
-          case 3:
-            if (a.dispatcherName.toLowerCase() > b.dispatcherName.toLowerCase()) return dir;
-            if (a.dispatcherName.toLowerCase() < b.dispatcherName.toLowerCase()) return -dir;
-            break;
-
-          case 4:
-            if (a.dispatcherExp > b.dispatcherExp) return dir;
-            if (a.dispatcherExp < b.dispatcherExp) return -dir;
-            break;
-
-          case 5:
-            if (a.currentUsers > b.currentUsers) return dir;
-            if (a.currentUsers < b.currentUsers) return -dir;
-            if (a.maxUsers > b.maxUsers) return dir;
-            if (a.maxUsers < b.maxUsers) return -dir;
-            break;
-
-          default:
-            break;
-        }
-
-        if (a.stationName.toLowerCase() >= b.stationName.toLowerCase()) return dir;
-        return -dir;
-      });
-  }
+  @Getter("getAllData") data;
 
   mounted() {
     const storage = window.localStorage;
@@ -246,6 +141,159 @@ export default class StationsView extends Vue {
       }
     });
 
+    console.log((this.$refs.table as Vue).$el.clientWidth);
+  }
+
+  toggleCardsState(name: string): void {
+    if (name == "filter") {
+      this.filterCardOpen = !this.filterCardOpen;
+    }
+  }
+
+  changeSorter(index: number) {
+    if (index > 5) return;
+
+    if (index == this.sorterActive.index)
+      this.sorterActive.dir = -1 * this.sorterActive.dir;
+    else this.sorterActive.dir = 1;
+
+    this.sorterActive.index = index;
+  }
+
+  changeFilterValue(filter: { name: string; value: number }) {
+    this.filters[filter.name] = filter.value;
+  }
+
+  resetFilters() {
+    this.filters = { ...filterInitStates };
+  }
+
+  get computedStations() {
+    const dir: number = this.sorterActive.dir;
+    // const scheduledTrainList = this.scheduledTrains;
+
+    return this.stationList
+      .filter((station) => {
+        if (!station.reqLevel || station.reqLevel == "-1") return true;
+
+        if (
+          (station.nonPublic || !station.reqLevel) &&
+          this.filters["nonPublic"]
+        )
+          return false;
+
+        if (
+          station.online &&
+          station.occupiedTo == "KOŃCZY" &&
+          this.filters["ending"]
+        )
+          return false;
+
+        if (station.online && this.filters["occupied"]) return false;
+        if (!station.online && this.filters["free"]) return false;
+
+        if (station.default && this.filters["default"]) return false;
+        if (!station.default && this.filters["notDefault"]) return false;
+
+        if (parseInt(station.reqLevel) < this.filters["minLevel"]) return false;
+
+        if (
+          this.filters["no-1track"] &&
+          (station.routes.oneWay.catenary != 0 ||
+            station.routes.oneWay.noCatenary != 0)
+        )
+          return false;
+        if (
+          this.filters["no-2track"] &&
+          (station.routes.twoWay.catenary != 0 ||
+            station.routes.twoWay.noCatenary != 0)
+        )
+          return false;
+
+        if (station.routes.oneWay.catenary < this.filters["minOneWayCatenary"])
+          return false;
+        if (station.routes.oneWay.noCatenary < this.filters["minOneWay"])
+          return false;
+
+        if (station.routes.twoWay.catenary < this.filters["minTwoWayCatenary"])
+          return false;
+        if (station.routes.twoWay.noCatenary < this.filters["minTwoWay"])
+          return false;
+
+        if (this.filters[station.controlType]) return false;
+        if (this.filters[station.signalType]) return false;
+
+        if (
+          this.filters["SPK"] &&
+          (station.controlType === "SPK" ||
+            station.controlType.includes("+SPK"))
+        )
+          return false;
+        if (
+          this.filters["SCS"] &&
+          (station.controlType === "SCS" ||
+            station.controlType.includes("+SCS"))
+        )
+          return false;
+
+        if (
+          this.filters["SCS"] &&
+          this.filters["SPK"] &&
+          (station.controlType.includes("SPK") ||
+            station.controlType.includes("SCS"))
+        )
+          return false;
+
+        if (
+          this.filters["mechaniczne"] &&
+          station.controlType.includes("mechaniczne")
+        )
+          return false;
+
+        if (this.filters["ręczne"] && station.controlType.includes("ręczne"))
+          return false;
+
+        return true;
+      })
+      .sort((a, b) => {
+        switch (this.sorterActive.index) {
+          case 1:
+            if (parseInt(a.reqLevel) > parseInt(b.reqLevel)) return dir;
+            if (parseInt(a.reqLevel) < parseInt(b.reqLevel)) return -dir;
+            break;
+
+          case 2:
+            if (a.statusTimestamp > b.statusTimestamp) return dir;
+            if (a.statusTimestamp < b.statusTimestamp) return -dir;
+            break;
+
+          case 3:
+            if (a.dispatcherName.toLowerCase() > b.dispatcherName.toLowerCase())
+              return dir;
+            if (a.dispatcherName.toLowerCase() < b.dispatcherName.toLowerCase())
+              return -dir;
+            break;
+
+          case 4:
+            if (a.dispatcherExp > b.dispatcherExp) return dir;
+            if (a.dispatcherExp < b.dispatcherExp) return -dir;
+            break;
+
+          case 5:
+            if (a.currentUsers > b.currentUsers) return dir;
+            if (a.currentUsers < b.currentUsers) return -dir;
+            if (a.maxUsers > b.maxUsers) return dir;
+            if (a.maxUsers < b.maxUsers) return -dir;
+            break;
+
+          default:
+            break;
+        }
+
+        if (a.stationName.toLowerCase() >= b.stationName.toLowerCase())
+          return dir;
+        return -dir;
+      });
   }
 
   closeCard() {
@@ -258,7 +306,9 @@ export default class StationsView extends Vue {
   }
 
   get focusedStationInfo() {
-    return this.computedStations.find((station) => station.stationName === this.focusedStationName);
+    return this.computedStations.find(
+      (station) => station.stationName === this.focusedStationName
+    );
   }
 }
 </script>
@@ -266,15 +316,6 @@ export default class StationsView extends Vue {
 <style lang="scss" scoped>
 @import "../styles/variables.scss";
 @import "../styles/responsive.scss";
-
-.stations-view {
-  position: relative;
-
-  padding: 1rem 0;
-  min-height: 100%;
-
-  font-size: calc(0.6rem + 0.9vw);
-}
 
 .card-anim {
   &-enter-active,
@@ -289,9 +330,69 @@ export default class StationsView extends Vue {
   }
 }
 
-.options {
-  &-actions {
+.indicator-anim {
+  &-enter-active,
+  &-leave-active {
+    transition: all 0.25s ease-in-out;
+  }
+
+  &-enter,
+  &-leave-to {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+
+.stations_view {
+  position: relative;
+
+  padding: 1rem 0;
+  min-height: 100%;
+
+  font-size: calc(0.6rem + 0.9vw);
+}
+
+.stations_wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.stations_body {
+  margin: 0 auto;
+  overflow: auto;
+
+  & > .body_bar {
     display: flex;
+    justify-content: space-between;
+  }
+}
+
+.bar_indicators {
+  display: flex;
+  align-items: flex-end;
+
+  & > span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 1.2em;
+    height: 1.2em;
+
+    margin-left: 0.5em;
+
+    background-color: #e68e00;
+    border-radius: 0.5em 0.5em 0 0;
+
+    & > img {
+      width: 0.9em;
+      animation: blinkAnim 2s ease-in-out infinite forwards;
+    }
+
+    @include smallScreen() {
+      width: 1.5em;
+      height: 1.5em;
+    }
   }
 }
 
@@ -332,26 +433,20 @@ export default class StationsView extends Vue {
   &.open {
     color: $accentCol;
   }
-}
 
-@include smallScreen {
-  .options {
-    display: flex;
-    justify-content: center;
-  }
-
-  .action-btn {
+  @include smallScreen() {
     font-size: 0.75rem;
   }
 }
 
-.stations-wrapper {
-  display: flex;
-  justify-content: center;
-}
+@keyframes blinkAnim {
+  0%,
+  100% {
+    opacity: 1;
+  }
 
-.stations-body {
-  margin: 0 auto;
-  overflow: auto;
+  50% {
+    opacity: 0;
+  }
 }
 </style>
