@@ -113,6 +113,7 @@ export default class Store extends VuexModule {
 
   private stationList: Station[] = [];
   private trainList: Train[] = [];
+  private spawnList: { spawnName: string; spawnLength: number }[] = [];
 
   //GETTERS
   get getAllData() {
@@ -122,7 +123,7 @@ export default class Store extends VuexModule {
       trainCount: this.trainCount,
       stationCount: this.stationCount,
       dataConnectionStatus: this.dataConnectionStatus,
-      timetableDataStatus: this.timetableLoaded
+      timetableDataStatus: this.timetableLoaded,
     };
   }
 

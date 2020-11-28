@@ -1970,7 +1970,7 @@
     "stationName": "Czermin",
     "stationURL": "https://td2.info.pl/scenerie/czermin/",
     "stationLines": "",
-    "reqLevel": "6",
+    "reqLevel": "8",
     "supportersOnly": "NIE",
     "signalType": "współczesna",
     "controlType": "SCS",
