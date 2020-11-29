@@ -970,7 +970,8 @@
       }
     },
     "default": false,
-    "nonPublic": false
+    "nonPublic": false,
+    "subStations": ["Bargowice", "Bargowice Zachód"]
   },
   {
     "stationName": "Szklana Poręba",
@@ -1987,7 +1988,7 @@
       }
     },
     "default": false,
-    "nonPublic": true
+    "nonPublic": false
   },
    {
     "stationName": "Rebrowo Dolne",
@@ -2121,6 +2122,29 @@
       },
       "twoWay": {
         "catenary": 1,
+        "noCatenary": 0
+      }
+    },
+    "default": false,
+    "nonPublic": false
+  },
+  {
+    "stationName": "Łebnino",
+    "stationURL": "https://td2.info.pl/scenerie/lebnino-4511/",
+    "stationLines": "15,16",
+    "reqLevel": "0",
+    "supportersOnly": "NIE",
+    "signalType": "kształtowa",
+    "controlType": "mechaniczne",
+    "SBL": "",
+    "twoWayBlock": "",
+    "routes": {
+      "oneWay": {
+        "catenary": 0,
+        "noCatenary": 1
+      },
+      "twoWay": {
+        "catenary": 0,
         "noCatenary": 0
       }
     },
