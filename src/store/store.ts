@@ -30,6 +30,8 @@ interface TimetableData {
   followingSceneries: string[];
 }
 
+// const devEnv = true;
+
 const URLs = {
   stations: 'https://api.td2.info.pl:9640/?method=getStationsOnline',
   trains: 'https://api.td2.info.pl:9640/?method=getTrainsOnline',
@@ -95,7 +97,19 @@ const getStatusTimestamp = (stationStatus: any) => {
   return -1;
 };
 
-const getOpenSpawns = (spawnString: string) => (spawnString ? spawnString.split(';').map(v => (v.split(',')[6] ? v.split(',')[6] : v.split(',')[0])) : '');
+const parseSpawns = (spawnString: string) => {
+  if (!spawnString) return [];
+  if (spawnString === 'NO_SPAWN') return [];
+
+  return spawnString.split(';').map(spawn => {
+    const spawnArray = spawn.split(',');
+    const spawnName = spawnArray[6] ? spawnArray[6] : spawnArray[0];
+    const spawnLength = parseInt(spawnArray[2]);
+
+    return { spawnName, spawnLength };
+  });
+};
+
 const getTimestamp = (date: string) => (date ? new Date(date).getTime() : 0);
 const timestampToTime = (timestamp: number) =>
   new Date(timestamp).toLocaleTimeString('pl-PL', {
@@ -113,7 +127,6 @@ export default class Store extends VuexModule {
 
   private stationList: Station[] = [];
   private trainList: Train[] = [];
-  private spawnList: { spawnName: string; spawnLength: number }[] = [];
 
   //GETTERS
   get getAllData() {
@@ -232,7 +245,6 @@ export default class Store extends VuexModule {
           const stationStatus = onlineDispatchersData.find(status => status[0] == station.stationHash && status[1] == 'eu');
 
           const statusLabel = getStatusLabel(stationStatus);
-          // let statusTimestamp = stationStatus ? stationStatus[3] : -1;
           const statusTimestamp = getStatusTimestamp(stationStatus);
 
           const stationTrains = onlineTrainsData.filter(train => train.region === 'eu' && train.isOnline && train.station.stationName === station.stationName);
@@ -242,7 +254,7 @@ export default class Store extends VuexModule {
             stationHash: station.stationHash,
             maxUsers: station.maxUsers,
             currentUsers: station.currentUsers,
-            spawnString: getOpenSpawns(station.spawnString),
+            spawns: parseSpawns(station.spawnString),
             dispatcherName: station.dispatcherName,
             dispatcherRate: station.dispatcherRate,
             dispatcherId: station.dispatcherId,
@@ -301,7 +313,6 @@ export default class Store extends VuexModule {
     this.stationList = JSONStationData.map(stationData => ({
       ...stationData,
       stationProject: '',
-      spawnString: '',
       stationHash: '',
       maxUsers: 0,
       currentUsers: 0,
@@ -315,6 +326,7 @@ export default class Store extends VuexModule {
       statusTimestamp: -3,
       stationTrains: [],
       scheduledTrains: [],
+      spawns: [],
       checkpoints: stationData.subStations ? stationData.subStations.map(sub => ({ checkpointName: sub, scheduledTrains: [] })) : null,
     }));
   }
@@ -335,7 +347,6 @@ export default class Store extends VuexModule {
         acc.push({
           ...station,
           stationProject: '',
-          spawnString: '',
           stationHash: '',
           maxUsers: 0,
           currentUsers: 0,

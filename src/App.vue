@@ -59,7 +59,7 @@ export default class App extends Vue {
   @Action("synchronizeData") synchronizeData;
   @Getter("getAllData") data;
 
-  private VERSION = "1.3.2";
+  private VERSION = "1.3.3";
 
   get dataStatusClass() {
     if (this.data.dataConnectionStatus == 0) return "loading";

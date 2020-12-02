@@ -28,7 +28,7 @@
         </span>
         <span class="spawns">
           <img :src="spawnIcon" alt="icon-spawn" />
-          <span>{{ stationInfo.spawnString.length }}</span>
+          <span>{{ stationInfo.spawns.length }}</span>
         </span>
         <span class="schedules">
           <img :src="timetableIcon" alt="icon-timetable" />
@@ -108,13 +108,25 @@
             GRACZE ONLINE
             <img :src="userIcon" alt="icon-user" />
           </h3>
-          <ul>
-            <li
-              class="user user-badge"
-              :class="train.stopStatus"
-              v-for="train in computedStationTrains"
-              :key="train.trainNo + train.driverName"
-            >
+
+          <div
+            v-for="(train, i) in computedStationTrains"
+            class="user"
+            :class="train.stopStatus"
+            :key="train.trainNo + i"
+            @click="() => navigateToTrain(train.trainNo)"
+          >
+            <span class="user_train">{{ train.trainNo }}</span>
+            <span class="user_name">{{ train.driverName}}</span>
+          </div>
+
+          <div
+            class="user offline"
+            v-if="!computedStationTrains || computedStationTrains.length == 0"
+          >BRAK AKTYWNYCH GRACZY</div>
+
+          <!-- <ul>
+            <li class="user user-badge">
               <router-link
                 :to="{
                     name: 'TrainsView',
@@ -134,22 +146,28 @@
                   !stationInfo.stationTrains ||
                   stationInfo.stationTrains.length == 0
                 "
-          >BRAK</span>
+          >BRAK</span>-->
         </div>
+
         <div class="spawn-list">
           <h3 class="spawn-header">
             OTWARTE SPAWNY
             <img :src="spawnIcon" alt="icon-spawn" />
           </h3>
 
-          <div>
-            <span
-              class="spawn"
-              v-for="(spawn, i) in stationInfo.spawnString"
-              :key="spawn + stationInfo.dispatcherName + i"
-            >{{ spawn }}</span>
-          </div>
-          <span class="spawn" v-if="!stationInfo.spawnString">BRAK</span>
+          <span
+            class="spawn"
+            v-for="(spawn, i) in stationInfo.spawns"
+            :key="spawn.spawnName + stationInfo.dispatcherName + i"
+          >
+            <span class="spawn_name">{{ spawn.spawnName }}</span>
+            <span class="spawn_length">{{ spawn.spawnLength }}</span>
+          </span>
+
+          <span
+            class="spawn none"
+            v-if="!stationInfo.spawns || stationInfo.spawns.length == 0"
+          >BRAK OTWARTYCH SPAWNÓW</span>
         </div>
       </div>
     </section>
@@ -186,6 +204,13 @@ export default class SceneryInfo extends styleMixin {
         ...stationTrain,
         stopStatus: scheduledData?.stopStatus || "no-timetable",
       };
+    });
+  }
+
+  navigateToTrain(trainNo: number) {
+    this.$router.push({
+      name: "TrainsView",
+      params: { passedSearchedTrain: trainNo.toString() },
     });
   }
 }
@@ -311,23 +336,83 @@ h3 {
   }
 }
 
-.user {
-  font-size: 0.85em;
+.user,
+.spawn {
+  font-weight: 600;
+  font-size: 0.9em;
+
+  display: inline-block;
+  padding: 0;
+
+  background: #585858;
+
+  margin: 0.25em;
+
+  span {
+    display: inline-block;
+    padding: 0.2em 0.4em;
+  }
 
   @include smallScreen() {
     font-size: 1em;
   }
 }
 
-.spawn,
+.user {
+  cursor: pointer;
+
+  &_train {
+    color: black;
+  }
+
+  &.no-timetable {
+    pointer-events: none;
+
+    & > .user_train {
+      background-color: $no-timetable;
+    }
+  }
+
+  &.departed > &_train {
+    background-color: $departed;
+  }
+
+  &.stopped > &_train {
+    background-color: $stopped;
+  }
+
+  &.online > &_train {
+    background-color: $online;
+  }
+
+  &.terminated > &_train {
+    background-color: $terminated;
+  }
+
+  &.disconnected > &_train {
+    background-color: $disconnected;
+  }
+
+  &.offline {
+    background: firebrick;
+    pointer-events: none;
+  }
+}
+
+.spawn {
+  &_length {
+    background: $accentCol;
+    color: black;
+  }
+}
+
+.spawn.none,
 .user.offline {
-  padding: 0.3em 0.4em;
-  background: #585858;
+  font-weight: 600;
 
-  margin-right: 0.5rem;
-  margin-top: 0.5rem;
+  padding: 0.2em 0.4em;
+  background: firebrick;
 
-  font-size: 0.8em;
   text-align: center;
 
   @include smallScreen() {
