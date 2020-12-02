@@ -1,5 +1,5 @@
 <template>
-  <div class="stations_view" ref="view">
+  <div class="stations_view">
     <div class="stations_wrapper">
       <div class="stations_body">
         <div class="body_bar">
@@ -35,7 +35,6 @@
             :sorterActive="sorterActive"
             :setFocusedStation="setFocusedStation"
             :changeSorter="changeSorter"
-            ref="table"
           />
         </div>
       </div>
@@ -140,8 +139,6 @@ export default class StationsView extends Vue {
         this.focusedStationName = "";
       }
     });
-
-    console.log((this.$refs.table as Vue).$el.clientWidth);
   }
 
   toggleCardsState(name: string): void {

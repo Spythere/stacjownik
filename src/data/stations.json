@@ -1850,9 +1850,9 @@
   },
   {
     "stationName": "Sroka",
-    "stationURL": "https://td2.info.pl/w-trakcie-prac/podg-sroka/",
+    "stationURL": "https://td2.info.pl/scenerie/sroka-projekt-1001/",
     "stationLines": "",
-    "reqLevel": "8",
+    "reqLevel": "7",
     "supportersOnly": "NIE",
     "signalType": "współczesna",
     "controlType": "SCS",
@@ -1870,7 +1870,6 @@
     },
     "default": false,
     "nonPublic": false,
-    "unavailable": true,
     "subStations": ["Sroka, podg.", "Sroka Południe, podg."],
     "stops": ["Sroka, podg."]
   },
