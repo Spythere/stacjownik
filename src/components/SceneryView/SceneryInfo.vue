@@ -117,36 +117,13 @@
             @click="() => navigateToTrain(train.trainNo)"
           >
             <span class="user_train">{{ train.trainNo }}</span>
-            <span class="user_name">{{ train.driverName}}</span>
+            <span class="user_name">{{ train.driverName }}</span>
           </div>
 
           <div
             class="user offline"
             v-if="!computedStationTrains || computedStationTrains.length == 0"
           >BRAK AKTYWNYCH GRACZY</div>
-
-          <!-- <ul>
-            <li class="user user-badge">
-              <router-link
-                :to="{
-                    name: 'TrainsView',
-                    params: { passedSearchedTrain: train.trainNo.toString() },
-                  }"
-              >
-                <span>{{ train.trainNo }}</span>
-                |
-                <span>{{ train.driverName }}</span>
-              </router-link>
-            </li>
-          </ul>
-
-          <span
-            class="user offline"
-            v-if="
-                  !stationInfo.stationTrains ||
-                  stationInfo.stationTrains.length == 0
-                "
-          >BRAK</span>-->
         </div>
 
         <div class="spawn-list">
@@ -161,7 +138,7 @@
             :key="spawn.spawnName + stationInfo.dispatcherName + i"
           >
             <span class="spawn_name">{{ spawn.spawnName }}</span>
-            <span class="spawn_length">{{ spawn.spawnLength }}</span>
+            <span class="spawn_length">{{ spawn.spawnLength }}m</span>
           </span>
 
           <span
@@ -363,6 +340,11 @@ h3 {
 
   &_train {
     color: black;
+    background-color: $no-timetable;
+
+    transition: background-color 200ms;
+    -ms-transition: background-color 200ms;
+    -webkit-transition: background-color 200ms;
   }
 
   &.no-timetable {
