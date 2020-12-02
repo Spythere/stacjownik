@@ -4,6 +4,7 @@ import ScheduledTrain from './ScheduledTrain';
 export default interface Station {
   stationName: string;
   stationHash: string;
+  stationURL: string;
 
   maxUsers: number;
   currentUsers: number;

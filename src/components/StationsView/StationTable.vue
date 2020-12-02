@@ -202,12 +202,16 @@ export default class StationTable extends styleMixin {
   @Prop() readonly changeSorter!: () => void;
 
   setScenery(sceneryHash: string) {
-    if (
-      this.stations.findIndex(
-        (station) => station.stationHash === sceneryHash && station.online
-      ) == -1
-    )
+    const station = this.stations.find(
+      (station) => station.stationHash === sceneryHash
+    );
+
+    if (!station) return;
+
+    if (!station.online) {
+      location.href = station.stationURL;
       return;
+    }
 
     this.$router.push({ name: "SceneryView", query: { hash: sceneryHash } });
   }
