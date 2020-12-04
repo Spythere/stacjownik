@@ -1,20 +1,26 @@
 <template>
-  <section class="station-table">
-    <div class="table-wrapper">
-      <table class="table">
-        <thead class="table-head">
+  <section class="station_table">
+    <div class="table_wrapper">
+      <table>
+        <thead>
           <tr>
             <th v-for="(head, i) in headTitles" :key="i" @click="() => changeSorter(i)">
-              <span>
-                <div>
-                  <div>{{ head[0] }}</div>
-                  <div v-if="head.length > 1">{{ head[1] }}</div>
+              <span class="header_wrapper">
+                <div class="header_item">
+                  <div v-if="head[0].includes('.svg')">
+                    <img :src="head[0]" alt="test" :title="head[1]" />
+                  </div>
+
+                  <div v-else>
+                    <div>{{ head[0] }}</div>
+                    <div v-if="head.length > 1">{{ head[1] }}</div>
+                  </div>
                 </div>
 
                 <img
                   class="sort-icon"
                   v-if="sorterActive.index == i"
-                  :src="sorterActive.dir == 1 ? icons.ascSVG : icons.descSVG"
+                  :src="sorterActive.dir == 1 ? ascIcon : descIcon"
                   alt
                 />
               </span>
@@ -22,158 +28,137 @@
           </tr>
         </thead>
 
-        <tr
-          class="table-item"
-          v-for="(station, i) in stations"
-          :key="i + station.stationHash"
-          @click="setScenery(station.stationHash)"
-        >
-          <td
-            class="item-station-name"
-            :class="{
+        <tbody>
+          <tr
+            class="station"
+            v-for="(station, i) in stations"
+            :key="i + station.stationHash"
+            @click="setScenery(station.stationHash)"
+          >
+            <td
+              class="station_name"
+              :class="{
               'default-station': station.default,
               online: station.online,
               'station-unavailable': station.unavailable,
             }"
-          >{{ station.stationName }}</td>
+            >{{ station.stationName }}</td>
 
-          <td class="item-station-level">
-            <span v-if="station.reqLevel" :style="calculateExpStyle(station.reqLevel)">
-              {{
-              station.reqLevel && station.reqLevel > -1
-              ? parseInt(station.reqLevel) >= 2
-              ? station.reqLevel
-              : "L"
-              : "?"
-              }}
-            </span>
+            <td class="station_level">
+              <span
+                v-if="station.reqLevel"
+                :style="calculateExpStyle(station.reqLevel)"
+              >{{ station.reqLevel && station.reqLevel > -1 ? parseInt(station.reqLevel) >= 2 ? station.reqLevel : "L" : "?" }}</span>
 
-            <span v-else>?</span>
-          </td>
+              <span v-else>?</span>
+            </td>
 
-          <td class="item-station-status">
-            <span class="status" :class="statusClasses(station.occupiedTo)">
-              {{
-              station.occupiedTo
-              }}
-            </span>
-          </td>
+            <td class="station_status">
+              <span
+                class="status"
+                :class="statusClasses(station.occupiedTo)"
+              >{{ station.occupiedTo}}</span>
+            </td>
 
-          <td class="item-dispatcher-name">{{ station.online ? station.dispatcherName : "" }}</td>
-          <td class="item-dispatcher-exp">
-            <span v-if="station.online" :style="calculateExpStyle(station.dispatcherExp)">
-              {{
-              2 > station.dispatcherExp ? "L" : station.dispatcherExp
-              }}
-            </span>
-          </td>
-          <td class="item-users">
-            {{
-            station.online
-            ? station.currentUsers + "/" + station.maxUsers
-            : ""
-            }}
-          </td>
-          <td class="item-info">
-            <img
-              class="icon-info"
-              v-if="station.controlType"
-              :src="require(`@/assets/icon-${station.controlType}.svg`)"
-              :alt="station.controlType"
-              :title="'Sterowanie ' + station.controlType"
-            />
+            <td class="station_dispatcher-name">{{ station.online ? station.dispatcherName : "" }}</td>
 
-            <img
-              class="icon-info"
-              v-if="station.signalType"
-              :src="require(`@/assets/icon-${station.signalType}.svg`)"
-              :alt="station.signalType"
-              :title="'Sygnalizacja ' + station.signalType"
-            />
+            <td class="station_dispatcher-exp">
+              <span
+                v-if="station.online"
+                :style="calculateExpStyle(station.dispatcherExp)"
+              >{{ 2 > station.dispatcherExp ? "L" : station.dispatcherExp }}</span>
+            </td>
 
-            <img
-              class="icon-info"
-              v-if="station.SBL && station.SBL !== ''"
-              :src="require(`@/assets/icon-SBL.svg`)"
-              alt="SBL"
-              title="Sceneria posiada SBL na przynajmniej jednym ze szlaków"
-            />
+            <td class="station_tracks twoway">
+              <span
+                v-if="station.routes && station.routes.twoWay.catenary > 0"
+                class="track catenary"
+                :title="`Liczba zelektryfikowanych szlaków dwutorowych: ${station.routes.twoWay.catenary}`"
+              >{{ station.routes.twoWay.catenary }}</span>
 
-            <img
-              class="icon-info"
-              v-if="!station.reqLevel || station.nonPublic"
-              :src="require(`@/assets/icon-lock.svg`)"
-              alt="non-public"
-              title="Sceneria niepubliczna"
-            />
-          </td>
+              <span
+                v-if="station.routes && station.routes.twoWay.noCatenary > 0"
+                class="track no-catenary"
+                :title="`Liczba niezelektryfikowanych szlaków dwutorowych: ${station.routes.twoWay.noCatenary}`"
+              >{{ station.routes.twoWay.noCatenary }}</span>
 
-          <td class="item-tracks twoway">
-            <span
-              v-if="station.routes && station.routes.twoWay.catenary > 0"
-              class="track catenary"
-              :title="
-                'Liczba zelektryfikowanych szlaków dwutorowych: ' +
-                station.routes.twoWay.catenary
-              "
-            >{{ station.routes.twoWay.catenary }}</span>
+              <span class="separator"></span>
 
-            <span
-              v-if="station.routes && station.routes.twoWay.noCatenary > 0"
-              class="track no-catenary"
-              :title="
-                'Liczba niezelektryfikowanych szlaków dwutorowych: ' +
-                station.routes.twoWay.noCatenary
-              "
-            >{{ station.routes.twoWay.noCatenary }}</span>
+              <span
+                v-if="station.routes && station.routes.oneWay.catenary > 0"
+                class="track catenary"
+                :title="`Liczba zelektryfikowanych szlaków jednotorowych: ${station.routes.oneWay.catenary}`"
+              >{{ station.routes.oneWay.catenary }}</span>
 
-            <span class="separator"></span>
+              <span
+                v-if="station.routes && station.routes.oneWay.noCatenary > 0"
+                class="track no-catenary"
+                :title="`Liczba niezelektryfikowanych szlaków jednotorowych: ${station.routes.oneWay.noCatenary}`"
+              >{{ station.routes.oneWay.noCatenary }}</span>
+            </td>
 
-            <span
-              v-if="station.routes && station.routes.oneWay.catenary > 0"
-              class="track catenary"
-              :title="
-                'Liczba zelektryfikowanych szlaków jednotorowych: ' +
-                station.routes.oneWay.catenary
-              "
-            >{{ station.routes.oneWay.catenary }}</span>
+            <td class="station_info">
+              <img
+                class="icon-info"
+                v-if="station.controlType"
+                :src="require(`@/assets/icon-${station.controlType}.svg`)"
+                :alt="station.controlType"
+                :title="'Sterowanie ' + station.controlType"
+              />
 
-            <span
-              v-if="station.routes && station.routes.oneWay.noCatenary > 0"
-              class="track no-catenary"
-              :title="
-                'Liczba niezelektryfikowanych szlaków jednotorowych: ' +
-                station.routes.oneWay.noCatenary
-              "
-            >{{ station.routes.oneWay.noCatenary }}</span>
-          </td>
+              <img
+                class="icon-info"
+                v-if="station.signalType"
+                :src="require(`@/assets/icon-${station.signalType}.svg`)"
+                :alt="station.signalType"
+                :title="'Sygnalizacja ' + station.signalType"
+              />
 
-          <td class="active-timetables">
-            <transition name="change-anim" mode="out-in">
-              <span :key="station.scheduledTrains.length">
-                <span v-if="station.scheduledTrains">
-                  <span style="color: #eee">
-                    {{
-                    station.scheduledTrains.length
-                    }}
-                  </span>
-                  /
-                  <span style="color: #bbb">
-                    {{
-                    station.scheduledTrains.filter(
-                    (train) => train.stopInfo.confirmed
-                    ).length
-                    }}
-                  </span>
-                </span>
+              <img
+                class="icon-info"
+                v-if="station.SBL && station.SBL !== ''"
+                :src="require(`@/assets/icon-SBL.svg`)"
+                alt="SBL"
+                title="Sceneria posiada SBL na przynajmniej jednym ze szlaków"
+              />
 
-                <span v-else>...</span>
+              <img
+                class="icon-info"
+                v-if="!station.reqLevel || station.nonPublic"
+                :src="require(`@/assets/icon-lock.svg`)"
+                alt="non-public"
+                title="Sceneria niepubliczna"
+              />
+            </td>
+
+            <td class="station_users">
+              <span>
+                <span class="highlight">{{ station.currentUsers }}</span>
+                /
+                <span>{{ station.maxUsers }}</span>
               </span>
-            </transition>
-          </td>
-        </tr>
+            </td>
+
+            <td class="station_spawns">
+              <span class="highlight">{{ station.spawns.length }}</span>
+            </td>
+
+            <td class="station_schedules">
+              <span class="highlight">{{station.scheduledTrains.length}} &nbsp;</span>
+              /
+              <span
+                style="color: #bbb"
+              >{{ station.scheduledTrains.filter(train => train.stopInfo.confirmed).length }}</span>
+            </td>
+            <!-- 
+            <td class="station_stats">
+              <div class="stats_wrapper"></div>
+            </td>-->
+          </tr>
+        </tbody>
       </table>
     </div>
+
     <div class="no-stations" v-if="stations.length == 0">Ups! Brak stacji do wyświetlenia!</div>
   </section>
 </template>
@@ -188,9 +173,6 @@ import styleMixin from "@/mixins/styleMixin";
 
 import Options from "@/components/StationsView/Options.vue";
 
-const ascSVG = require("@/assets/icon-arrow-asc.svg");
-const descSVG = require("@/assets/icon-arrow-desc.svg");
-
 @Component({
   components: { Options },
 })
@@ -200,6 +182,28 @@ export default class StationTable extends styleMixin {
 
   @Prop() readonly setFocusedStation!: () => void;
   @Prop() readonly changeSorter!: () => void;
+
+  likeIcon: string = require("@/assets/icon-like.svg");
+  spawnIcon: string = require("@/assets/icon-spawn.svg");
+  timetableIcon: string = require("@/assets/icon-timetable.svg");
+  userIcon: string = require("@/assets/icon-user.svg");
+  trainIcon: string = require("@/assets/icon-train.svg");
+
+  ascIcon: string = require("@/assets/icon-arrow-asc.svg");
+  descIcon: string = require("@/assets/icon-arrow-desc.svg");
+
+  headTitles: string[][] = [
+    ["Stacja"],
+    ["Min. poziom", "dyżurnego"],
+    ["Status"],
+    ["Dyżurny"],
+    ["Poziom", "dyżurnego"],
+    ["Szlaki", "2tor | 1tor"],
+    ["Informacje", "ogólne"],
+    [this.userIcon, "Mechanicy online"],
+    [this.spawnIcon, "Otwarte spawny"],
+    [this.timetableIcon, "Aktywne RJ"],
+  ];
 
   setScenery(sceneryHash: string) {
     const station = this.stations.find(
@@ -215,20 +219,6 @@ export default class StationTable extends styleMixin {
 
     this.$router.push({ name: "SceneryView", query: { hash: sceneryHash } });
   }
-
-  icons: { ascSVG; descSVG } = { ascSVG, descSVG };
-
-  headTitles: string[][] = [
-    ["Stacja"],
-    ["Min. poziom", "dyżurnego"],
-    ["Status"],
-    ["Dyżurny"],
-    ["Poziom", "dyżurnego"],
-    ["Maszyniści"],
-    ["Informacje", "ogólne"],
-    ["Szlaki", "2tor | 1tor"],
-    ["Aktywne RJ"],
-  ];
 }
 </script>
 
@@ -250,10 +240,125 @@ $rowCol: #4b4b4b;
   }
 }
 
-.station-table {
-  font-size: calc(0.5rem + 0.35vw);
+.highlight {
+  color: gold;
+}
+
+section.station_table {
   overflow: auto;
   overflow-y: hidden;
+  font-size: calc(0.55rem + 0.35vw);
+  font-weight: 500;
+
+  @include smallScreen() {
+    font-size: 0.6rem;
+  }
+}
+
+.table_wrapper {
+  overflow: auto;
+}
+
+table {
+  white-space: nowrap;
+  border-collapse: collapse;
+
+  thead th {
+    position: sticky;
+    top: 0;
+
+    min-width: 85px;
+
+    padding: 0.3rem;
+    background-color: $primaryCol;
+
+    cursor: pointer;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+
+    span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      img {
+        width: 1.5em;
+        vertical-align: middle;
+      }
+    }
+  }
+}
+
+tr.station {
+  background-color: $rowCol;
+
+  &:nth-child(even) {
+    background-color: lighten($rowCol, 5);
+    color: white;
+  }
+
+  &:hover,
+  &:focus {
+    background-color: lighten($rowCol, 20);
+  }
+
+  & > td {
+    padding: 0.3rem 1rem;
+    text-align: center;
+
+    cursor: pointer;
+
+    @include smallScreen() {
+      margin: 0;
+      padding: 0.1rem 0.5rem;
+    }
+  }
+}
+
+td.station {
+  &_level,
+  &_dispatcher-exp {
+    span {
+      display: block;
+
+      width: 2em;
+      height: 2em;
+      line-height: 2em;
+      margin: 0 auto;
+    }
+  }
+
+  &_level {
+    span {
+      background-color: #888;
+      border-radius: 50%;
+    }
+  }
+
+  &_info,
+  &_tracks {
+    img {
+      width: 2.2em;
+      margin: 0 0.2em;
+      vertical-align: middle;
+    }
+  }
+
+  &_tracks {
+    .no-catenary {
+      background-color: #939393;
+    }
+
+    .catenary {
+      background-color: #009dce;
+    }
+
+    .track {
+      margin: 0 0.3rem;
+      padding: 0.5em;
+    }
+  }
 }
 
 .separator {
@@ -268,118 +373,6 @@ $rowCol: #4b4b4b;
   margin: 1rem 0;
 
   background: #333;
-}
-
-.table {
-  &-wrapper {
-    overflow: auto;
-  }
-
-  white-space: nowrap;
-  border-collapse: collapse;
-
-  @include smallScreen() {
-    font-size: 0.6rem;
-  }
-
-  thead th {
-    position: sticky;
-    top: 0;
-  }
-
-  &-head th {
-    padding: 0.3rem;
-    background-color: $primaryCol;
-    min-width: 120px;
-
-    cursor: pointer;
-    user-select: none;
-    -moz-user-select: none;
-    -webkit-user-select: none;
-
-    span {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      & > img {
-        width: 1.5em;
-      }
-    }
-  }
-
-  &-item {
-    background-color: $rowCol;
-
-    &:nth-child(even) {
-      background-color: lighten($rowCol, 5);
-      color: white;
-    }
-
-    &:hover,
-    &:focus {
-      background-color: lighten($rowCol, 20);
-    }
-
-    & > td {
-      padding: 0.3rem 1rem;
-      margin: 0 3rem;
-      text-align: center;
-      vertical-align: middle;
-
-      cursor: pointer;
-
-      @include smallScreen() {
-        margin: 0;
-        padding: 0.1rem 0.5rem;
-      }
-    }
-  }
-}
-
-.item {
-  &-station-level,
-  &-dispatcher-exp {
-    span {
-      display: block;
-
-      width: 2em;
-      height: 2em;
-      line-height: 2em;
-      margin: 0 auto;
-    }
-  }
-
-  &-station-level {
-    span {
-      background-color: #888;
-      border-radius: 50%;
-    }
-  }
-
-  &-info,
-  &-tracks {
-    img {
-      width: 2.2em;
-      margin: 0 0.2em;
-      vertical-align: middle;
-    }
-  }
-
-  &-tracks {
-    .no-catenary {
-      background-color: #939393;
-    }
-
-    .catenary {
-      background-color: #009dce;
-    }
-
-    .track {
-      margin: 0 0.3rem;
-      padding: 0.5em;
-    }
-  }
 }
 
 .station-unavailable {

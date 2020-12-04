@@ -148,7 +148,7 @@ export default class StationsView extends Vue {
   }
 
   changeSorter(index: number) {
-    if (index > 5) return;
+    if (index > 4) return;
 
     if (index == this.sorterActive.index)
       this.sorterActive.dir = -1 * this.sorterActive.dir;
