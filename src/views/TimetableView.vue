@@ -324,13 +324,11 @@ export default class TimetableView extends Vue {
   get stationInfo(): Station | null {
     if (!this.$route.query.station) return null;
 
-    const info = this.stationList.find(
-      (station) =>
-        station.stationName ===
-        this.$route.query.station.toString().replaceAll("_", " ")
+    const station = this.stationList.find(
+      (station) => station.stationHash === this.$route.query.station
     );
 
-    return info || null;
+    return station || null;
   }
 
   updateRows(info: Station | null = this.stationInfo) {

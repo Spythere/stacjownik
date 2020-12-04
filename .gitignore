@@ -23,6 +23,10 @@ pnpm-debug.log*
 node_modules
 
 .gitignore
+
+#Firebase
 .firebase
+.firebaserc
+firebase.json
 
 .env
