@@ -21,8 +21,7 @@
           <span
             class="option-content"
             :class="option.section + (option.value ? ' checked' : '')"
-            >{{ option.content }}</span
-          >
+          >{{ option.content }}</span>
         </label>
       </div>
     </div>
@@ -49,21 +48,14 @@
     <div class="card-save">
       <div class="option save">
         <label class="option-label">
-          <input
-            class="option-input"
-            type="checkbox"
-            v-model="saveOptions"
-            @change="saveFilters"
-          />
-          <span class="option-content save" :class="{ checked: saveOptions }"
-            >ZAPISZ FILTRY</span
-          >
+          <input class="option-input" type="checkbox" v-model="saveOptions" @change="saveFilters" />
+          <span class="option-content save" :class="{ checked: saveOptions }">ZAPISZ FILTRY</span>
         </label>
       </div>
     </div>
 
     <div class="card-actions flex">
-      <button class="button" @click="reset">RESET FILTRÓW</button>
+      <button class="button" @click="resetFilters">RESET FILTRÓW</button>
       <button class="button" @click="exit">ZAMKNIJ FILTRY</button>
     </div>
   </section>
@@ -74,6 +66,8 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 
 import inputData from "@/data/options.json";
 
+import StorageManager from "@/scripts/storageManager";
+
 @Component
 export default class FilterCard extends Vue {
   inputs = { ...inputData };
@@ -83,10 +77,7 @@ export default class FilterCard extends Vue {
   @Prop() exit!: () => void;
 
   mounted() {
-    const storage = window.localStorage;
-
-    if (storage.getItem(this.STORAGE_KEY) === "true") this.saveOptions = true;
-    else this.saveOptions = false;
+    this.saveOptions = StorageManager.isRegistered(this.STORAGE_KEY);
   }
 
   handleChange(e: Event): void {
@@ -98,7 +89,7 @@ export default class FilterCard extends Vue {
     });
 
     if (this.saveOptions)
-      window.localStorage.setItem(target.name, target.checked + "");
+      StorageManager.setBooleanValue(target.name, target.checked);
   }
 
   handleInput(e: Event): void {
@@ -109,37 +100,41 @@ export default class FilterCard extends Vue {
     });
 
     if (this.saveOptions)
-      window.localStorage.setItem(target.name, target.value + "");
+      StorageManager.setStringValue(target.name, target.value);
   }
 
   saveFilters(): void {
-    const storage = window.localStorage;
+    if (!this.saveOptions) {
+      StorageManager.unregisterStorage(this.STORAGE_KEY);
 
-    if (this.saveOptions) {
-      this.inputs.options.forEach((option) =>
-        storage.setItem(option.name, option.value + "")
-      );
+      console.log(this.saveOptions);
 
-      this.inputs.sliders.forEach((slider) =>
-        storage.setItem(slider.name, slider.value + "")
-      );
+      return;
+    }
 
-      storage.setItem(this.STORAGE_KEY, "true");
-    } else storage.setItem(this.STORAGE_KEY, "false");
+    StorageManager.registerStorage(this.STORAGE_KEY);
+
+    this.inputs.options.forEach((option) =>
+      StorageManager.setBooleanValue(option.name, option.value)
+    );
+
+    this.inputs.sliders.forEach((slider) =>
+      StorageManager.setNumericValue(slider.name, slider.value)
+    );
   }
 
-  reset(): void {
+  resetFilters(): void {
     this.inputs.options.forEach((option) => {
       option.value = option.defaultValue;
-      window.localStorage.setItem(option.name, option.value + "");
+      StorageManager.setBooleanValue(option.name, option.value);
     });
 
     this.inputs.sliders.forEach((slider) => {
       slider.value = slider.defaultValue;
-      window.localStorage.setItem(slider.name, slider.value + "");
+      StorageManager.setNumericValue(slider.name, slider.value);
     });
 
-    this.$emit('resetFilters');
+    this.$emit("resetFilters");
   }
 
   closeCard(): void {
