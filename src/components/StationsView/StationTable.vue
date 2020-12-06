@@ -33,7 +33,7 @@
             class="station"
             v-for="(station, i) in stations"
             :key="i + station.stationHash"
-            @click="setScenery(station.stationHash)"
+            @click="() => setScenery(station.stationName)"
           >
             <td
               class="station_name"
@@ -131,7 +131,7 @@
               />
             </td>
 
-            <td class="station_users">
+            <td class="station_users" :class="{inactive: !station.online }">
               <span>
                 <span class="highlight">{{ station.currentUsers }}</span>
                 /
@@ -139,11 +139,11 @@
               </span>
             </td>
 
-            <td class="station_spawns">
+            <td class="station_spawns" :class="{inactive: !station.online }">
               <span class="highlight">{{ station.spawns.length }}</span>
             </td>
 
-            <td class="station_schedules">
+            <td class="station_schedules" :class="{inactive: !station.online }">
               <span class="highlight">{{station.scheduledTrains.length}} &nbsp;</span>
               /
               <span
@@ -205,19 +205,22 @@ export default class StationTable extends styleMixin {
     [this.timetableIcon, "Aktywne RJ"],
   ];
 
-  setScenery(sceneryHash: string) {
+  setScenery(name: string) {
     const station = this.stations.find(
-      (station) => station.stationHash === sceneryHash
+      (station) => station.stationName === name
     );
 
     if (!station) return;
 
     if (!station.online) {
-      location.href = station.stationURL;
+      window.location.href = station.stationURL;
       return;
     }
 
-    this.$router.push({ name: "SceneryView", query: { hash: sceneryHash } });
+    this.$router.push({
+      name: "SceneryView",
+      query: { hash: station.stationHash },
+    });
   }
 }
 </script>
@@ -263,13 +266,15 @@ table {
   white-space: nowrap;
   border-collapse: collapse;
 
+  min-width: 1000px;
+
   thead th {
     position: sticky;
     top: 0;
 
     min-width: 85px;
 
-    padding: 0.3rem;
+    padding: 0.5em;
     background-color: $primaryCol;
 
     cursor: pointer;
@@ -357,6 +362,14 @@ td.station {
     .track {
       margin: 0 0.3rem;
       padding: 0.5em;
+    }
+  }
+
+  &_users,
+  &_spawns,
+  &_schedules {
+    &.inactive {
+      opacity: 0.2;
     }
   }
 }

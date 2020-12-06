@@ -16,13 +16,21 @@
 
           <div class="bar_indicators">
             <transition name="indicator-anim">
-              <span class="indicator_scenery-data" v-if="data.dataConnectionStatus < 2">
+              <span
+                class="indicator_scenery-data"
+                v-if="data.dataConnectionStatus < 2"
+                :class="dataStatusClass"
+              >
                 <img :src="trainIcon" alt="icon-train" />
               </span>
             </transition>
 
             <transition name="indicator-anim">
-              <span class="indicator_timetable-data" v-if="data.timetableDataStatus < 2">
+              <span
+                class="indicator_timetable-data"
+                v-if="data.timetableDataStatus < 2"
+                :class="timetableDataStatusClass"
+              >
                 <img :src="timetableIcon" alt="icon-timetable" />
               </span>
             </transition>
@@ -114,6 +122,20 @@ export default class StationsView extends Vue {
 
   @Getter("getStationList") stationList!: Station[];
   @Getter("getAllData") data;
+
+  get dataStatusClass() {
+    if (this.data.dataConnectionStatus == 0) return "loading";
+    if (this.data.dataConnectionStatus == 1) return "error";
+
+    return "success";
+  }
+
+  get timetableDataStatusClass() {
+    if (this.data.timetableDataStatus == 0) return "loading";
+    if (this.data.timetableDataStatus == 1) return "error";
+
+    return "success";
+  }
 
   mounted() {
     const storage = window.localStorage;
@@ -368,7 +390,7 @@ export default class StationsView extends Vue {
   display: flex;
   align-items: flex-end;
 
-  & > span {
+  > span {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -378,8 +400,20 @@ export default class StationsView extends Vue {
 
     margin-left: 0.5em;
 
-    background-color: #e68e00;
+    // background-color: #e68e00;
     border-radius: 0.5em 0.5em 0 0;
+
+    &.loading {
+      background-color: $accentCol;
+    }
+
+    &.error {
+      background-color: $errorCol;
+    }
+
+    &.success {
+      background-color: $secondaryCol;
+    }
 
     & > img {
       width: 0.9em;

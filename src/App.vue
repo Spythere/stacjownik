@@ -61,13 +61,6 @@ export default class App extends Vue {
 
   private VERSION = "1.3.4";
 
-  get dataStatusClass() {
-    if (this.data.dataConnectionStatus == 0) return "loading";
-    if (this.data.dataConnectionStatus == 1) return "error";
-
-    return "";
-  }
-
   mounted() {
     this.synchronizeData();
   }
