@@ -1,5 +1,7 @@
 <template>
   <div class="stations_view">
+    <DonationModal :modalHidden="modalHidden" @toggleModal="toggleModal" />
+
     <div class="stations_wrapper">
       <div class="stations_body">
         <div class="body_bar">
@@ -11,6 +13,12 @@
             >
               <img :src="require('@/assets/icon-filter2.svg')" alt="icon-filter" />
               <p>FILTRY</p>
+            </button>
+
+            <button class="action-btn" @click="toggleModal">
+              <img :src="dolarIcon" alt="icon-dolar" />
+
+              <p>WESPRZYJ</p>
             </button>
           </div>
 
@@ -79,23 +87,29 @@ import StationTable from "@/components/StationsView/StationTable.vue";
 import StationCard from "@/components/StationsView/StationCard.vue";
 import FilterCard from "@/components/StationsView/FilterCard.vue";
 
+import DonationModal from "@/components/Global/DonationModal.vue";
+
 @Component({
   components: {
     StationCard,
     StationTable,
     FilterCard,
+    DonationModal,
   },
 })
 export default class StationsView extends Vue {
   STORAGE_KEY: string = "options_saved";
+  STORAGE_MODAL: string = "modal";
 
   trainIcon: string = require("@/assets/icon-train.svg");
   timetableIcon: string = require("@/assets/icon-timetable.svg");
+  dolarIcon: string = require("@/assets/icon-dolar.svg");
 
   filterManager: StationFilterManager = new StationFilterManager();
 
   focusedStationName: string = "";
   filterCardOpen: boolean = false;
+  modalHidden: boolean = false;
 
   inputs = inputData;
 
@@ -116,7 +130,18 @@ export default class StationsView extends Vue {
     return "success";
   }
 
-  initializeStorage() {
+  mounted() {
+    this.initializeOptionsStorage();
+    this.initializeModalStorage();
+
+    window.addEventListener("keydown", (e: KeyboardEvent) => {
+      if (e.keyCode == 27 && this.focusedStationName != "") {
+        this.focusedStationName = "";
+      }
+    });
+  }
+
+  initializeOptionsStorage() {
     if (!StorageManager.isRegistered(this.STORAGE_KEY)) return;
 
     this.inputs.options.forEach((option) => {
@@ -134,14 +159,20 @@ export default class StationsView extends Vue {
     });
   }
 
-  mounted() {
-    this.initializeStorage();
+  initializeModalStorage() {
+    if (StorageManager.isRegistered(`${this.STORAGE_MODAL}_hidden`))
+      this.modalHidden = StorageManager.getBooleanValue(
+        `${this.STORAGE_MODAL}_hidden`
+      );
+  }
 
-    window.addEventListener("keydown", (e: KeyboardEvent) => {
-      if (e.keyCode == 27 && this.focusedStationName != "") {
-        this.focusedStationName = "";
-      }
-    });
+  toggleModal() {
+    this.modalHidden = !this.modalHidden;
+
+    StorageManager.setBooleanValue(
+      `${this.STORAGE_MODAL}_hidden`,
+      this.modalHidden
+    );
   }
 
   toggleCardsState(name: string): void {
@@ -234,6 +265,14 @@ export default class StationsView extends Vue {
   & > .body_bar {
     display: flex;
     justify-content: space-between;
+  }
+}
+
+.bar_actions {
+  display: flex;
+
+  button {
+    margin-right: 0.5em;
   }
 }
 

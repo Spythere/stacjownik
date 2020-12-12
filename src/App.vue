@@ -1,5 +1,5 @@
 <template>
-  <div class="app" ref="test">
+  <div class="app">
     <div class="app_container">
       <header class="app_header">
         <div class="header_body">
@@ -51,9 +51,12 @@ import { Action, Getter } from "vuex-class";
 import { mapGetters, mapActions } from "vuex";
 
 import Clock from "@/components/App/Clock.vue";
+import Modal from "@/components/Global/Modal.vue";
+
+import axios from "axios";
 
 @Component({
-  components: { Clock },
+  components: { Clock, Modal },
 })
 export default class App extends Vue {
   @Action("synchronizeData") synchronizeData;
@@ -64,10 +67,10 @@ export default class App extends Vue {
   async mounted() {
     this.synchronizeData();
 
-    // const data = await (
-    //   await axios.get("https://stacjownik.herokuapp.com/api/getStationList")
-    // ).data;
-    // console.log(data);
+    const data = await (
+      await axios.get("http://stacjownik.eu-central-1.elasticbeanstalk.com")
+    ).data;
+    console.log(data);
   }
 }
 </script>
