@@ -1989,7 +1989,7 @@
     "default": false,
     "nonPublic": false
   },
-   {
+  {
     "stationName": "Rebrowo Dolne",
     "stationURL": "https://td2.info.pl/scenerie/rebrowo-dolne/",
     "stationLines": "",
@@ -2012,7 +2012,7 @@
     "default": false,
     "nonPublic": false
   },
-    {
+  {
     "stationName": "Lublinek",
     "stationURL": "https://td2.info.pl/scenerie/lublinek-projekt-lka/",
     "stationLines": "14",
@@ -2035,7 +2035,7 @@
     "default": true,
     "nonPublic": false
   },
-   {
+  {
     "stationName": "Stryków",
     "stationURL": "https://td2.info.pl/scenerie/strykow-projekt-lka/",
     "stationLines": "14",
@@ -2059,7 +2059,7 @@
     "nonPublic": false
   },
   {
-     "stationName": "Strączki",
+    "stationName": "Strączki",
     "stationURL": "https://td2.info.pl/scenerie/straczki/",
     "stationLines": "",
     "reqLevel": "4",
@@ -2081,8 +2081,8 @@
     "default": false,
     "nonPublic": false
   },
-   {
-     "stationName": "Niedoradz",
+  {
+    "stationName": "Niedoradz",
     "stationURL": "https://td2.info.pl/scenerie/niedoradz",
     "stationLines": "",
     "reqLevel": "0",
@@ -2130,7 +2130,7 @@
   {
     "stationName": "Łebnino",
     "stationURL": "https://td2.info.pl/scenerie/lebnino-4511/",
-    "stationLines": "15,16",
+    "stationLines": "",
     "reqLevel": "0",
     "supportersOnly": "NIE",
     "signalType": "kształtowa",
@@ -2144,6 +2144,29 @@
       },
       "twoWay": {
         "catenary": 0,
+        "noCatenary": 0
+      }
+    },
+    "default": false,
+    "nonPublic": false
+  },
+  {
+    "stationName": "Legno",
+    "stationURL": "https://td2.info.pl/scenerie/legno/",
+    "stationLines": "",
+    "reqLevel": "0",
+    "supportersOnly": "NIE",
+    "signalType": "współczesna",
+    "controlType": "SCS",
+    "SBL": "TAK (szlak Mr)",
+    "twoWayBlock": "TAK",
+    "routes": {
+      "oneWay": {
+        "catenary": 0,
+        "noCatenary": 0
+      },
+      "twoWay": {
+        "catenary": 2,
         "noCatenary": 0
       }
     },

@@ -61,8 +61,13 @@ export default class App extends Vue {
 
   private VERSION = "1.3.4";
 
-  mounted() {
+  async mounted() {
     this.synchronizeData();
+
+    // const data = await (
+    //   await axios.get("https://stacjownik.herokuapp.com/api/getStationList")
+    // ).data;
+    // console.log(data);
   }
 }
 </script>
