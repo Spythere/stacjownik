@@ -109,7 +109,7 @@ export default class StationsView extends Vue {
 
   focusedStationName: string = "";
   filterCardOpen: boolean = false;
-  modalHidden: boolean = false;
+  modalHidden: boolean = true;
 
   inputs = inputData;
 
@@ -132,7 +132,7 @@ export default class StationsView extends Vue {
 
   mounted() {
     this.initializeOptionsStorage();
-    this.initializeModalStorage();
+    // this.initializeModalStorage();
 
     window.addEventListener("keydown", (e: KeyboardEvent) => {
       if (e.keyCode == 27 && this.focusedStationName != "") {

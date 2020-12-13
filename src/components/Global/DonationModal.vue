@@ -1,45 +1,43 @@
 <template>
-  <transition name="modal-anim">
-    <div class="modal" v-if="!modalHidden">
-      <div class="modal_content">
-        <span class="modal_title">Grosza daj Stacjownikowi...</span>
-        <div class="modal_body">
-          <div class="modal_body-header">
-            Stacjownik to projekt całkowicie darmowy dla wszystkich.
-            Jednak jeśli chcesz go wesprzeć i pomóc w rozwoju strony oraz nowych funkcjonalności, które wykraczają poza darmowe możliwości
-            hostingu, na którym jest postawiony, zostaw złotówkę, nowigradzką koronę czy nawet rubla!
-          </div>
+  <div class="modal" v-if="!modalHidden">
+    <div class="modal_content">
+      <span class="modal_title">Grosza daj Stacjownikowi...</span>
+      <div class="modal_body">
+        <div class="modal_body-header">
+          Stacjownik to projekt całkowicie darmowy dla wszystkich.
+          Jednak jeśli chcesz go wesprzeć i pomóc w rozwoju strony oraz nowych funkcjonalności, które wykraczają poza darmowe możliwości
+          hostingu, na którym jest postawiony, zostaw złotówkę, nowigradzką koronę czy nawet rubla!
+        </div>
 
-          <div class="modal_payments">
-            <div>Płatności dokonasz korzystając z poniższych metod:</div>
-            <div class="payment">
-              <div>
-                <a target="_blank" href="https://paypal.me/spythere">
-                  <img :src="paypalIcon" alt="icon-paypal" />
-                  <span>PAYPAL</span>
-                </a>
-              </div>
-            </div>
-
-            <div class="payment">
-              <div>
-                <div class="payment_open" v-if="showNumber">94 1140 2004 0000 3502 7784 9203</div>
-                <div class="payment_closed" v-else @click="showNumber = true">
-                  <b>PRZELEW NA KONTO</b>
-                </div>
-              </div>
+        <div class="modal_payments">
+          <div>Płatności dokonasz korzystając z poniższych metod:</div>
+          <div class="payment">
+            <div>
+              <a target="_blank" href="https://paypal.me/spythere">
+                <img :src="paypalIcon" alt="icon-paypal" />
+                <span>PAYPAL</span>
+              </a>
             </div>
           </div>
 
-          <div>Wielkie dzięki i do zobaczenia na szlaku!</div>
-
-          <div class="modal_buttons">
-            <button class="button" @click="toggleModal">PRZYJĄŁEM!</button>
+          <div class="payment">
+            <div>
+              <div class="payment_open" v-if="showNumber">94 1140 2004 0000 3502 7784 9203</div>
+              <div class="payment_closed" v-else @click="showNumber = true">
+                <b>PRZELEW NA KONTO</b>
+              </div>
+            </div>
           </div>
+        </div>
+
+        <div>Wielkie dzięki i do zobaczenia na szlaku!</div>
+
+        <div class="modal_buttons">
+          <button class="button" @click="toggleModal">PRZYJĄŁEM!</button>
         </div>
       </div>
     </div>
-  </transition>
+  </div>
 </template>
 
 <script lang="ts">
@@ -58,18 +56,6 @@ export default class Modal extends Vue {
 
   toggleModal(type: string) {
     this.$emit("toggleModal");
-
-    // if (type == "permament") {
-    //   StorageManager.setBooleanValue(`${this.STORAGE_ID}_next`, true);
-    //   this.modalHidden = true;
-    // }
-  }
-
-  initStorage() {
-    // if (StorageManager.isRegistered(`${this.STORAGE_ID}_hide`))
-    //   this.modalHidden = StorageManager.getBooleanValue(
-    //     `${this.STORAGE_ID}_hide`
-    //   );
   }
 }
 </script>

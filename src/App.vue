@@ -53,8 +53,6 @@ import { mapGetters, mapActions } from "vuex";
 import Clock from "@/components/App/Clock.vue";
 import Modal from "@/components/Global/Modal.vue";
 
-import axios from "axios";
-
 @Component({
   components: { Clock, Modal },
 })
@@ -66,11 +64,6 @@ export default class App extends Vue {
 
   async mounted() {
     this.synchronizeData();
-
-    const data = await (
-      await axios.get("http://stacjownik.eu-central-1.elasticbeanstalk.com")
-    ).data;
-    console.log(data);
   }
 }
 </script>
