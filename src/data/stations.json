@@ -2172,5 +2172,98 @@
     },
     "default": false,
     "nonPublic": false
+  },
+  {
+    "stationName": "Buczek",
+    "stationURL": "https://td2.info.pl/scenerie/buczek/",
+    "stationLines": "",
+    "reqLevel": "0",
+    "supportersOnly": "NIE",
+    "signalType": "współczesna",
+    "controlType": "SCS",
+    "SBL": "TAK",
+    "twoWayBlock": "TAK",
+    "routes": {
+      "oneWay": {
+        "catenary": 0,
+        "noCatenary": 0
+      },
+      "twoWay": {
+        "catenary": 2,
+        "noCatenary": 0
+      }
+    },
+    "default": false,
+    "nonPublic": false
+  },
+  {
+    "stationName": "Dziewoszyce",
+    "stationURL": "https://td2.info.pl/scenerie/dziewoszyce/",
+    "stationLines": "",
+    "reqLevel": "4",
+    "supportersOnly": "NIE",
+    "signalType": "współczesna",
+    "controlType": "SPK",
+    "SBL": "",
+    "twoWayBlock": "TAK",
+    "routes": {
+      "oneWay": {
+        "catenary": 0,
+        "noCatenary": 0
+      },
+      "twoWay": {
+        "catenary": 2,
+        "noCatenary": 0
+      }
+    },
+    "default": false,
+    "nonPublic": false
+  },
+
+  {
+    "stationName": "Razemsko 2012",
+    "stationURL": "https://td2.info.pl/scenerie/razemsko-2012/",
+    "stationLines": "",
+    "reqLevel": "4",
+    "supportersOnly": "NIE",
+    "signalType": "mieszana",
+    "controlType": "mechaniczne",
+    "SBL": "",
+    "twoWayBlock": "",
+    "routes": {
+      "oneWay": {
+        "catenary": 0,
+        "noCatenary": 1
+      },
+      "twoWay": {
+        "catenary": 0,
+        "noCatenary": 1
+      }
+    },
+    "default": false,
+    "nonPublic": false
+  },
+  {
+    "stationName": "Buskowo Zdrój",
+    "stationURL": "https://td2.info.pl/scenerie/buskowo-zdroj/",
+    "stationLines": "",
+    "reqLevel": "4",
+    "supportersOnly": "NIE",
+    "signalType": "mieszana",
+    "controlType": "mechaniczne",
+    "SBL": "",
+    "twoWayBlock": "",
+    "routes": {
+      "oneWay": {
+        "catenary": 1,
+        "noCatenary": 0
+      },
+      "twoWay": {
+        "catenary": 0,
+        "noCatenary": 0
+      }
+    },
+    "default": false,
+    "nonPublic": false
   }
 ]

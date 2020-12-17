@@ -51,10 +51,9 @@ import { Action, Getter } from "vuex-class";
 import { mapGetters, mapActions } from "vuex";
 
 import Clock from "@/components/App/Clock.vue";
-import Modal from "@/components/Global/Modal.vue";
 
 @Component({
-  components: { Clock, Modal },
+  components: { Clock },
 })
 export default class App extends Vue {
   @Action("synchronizeData") synchronizeData;
