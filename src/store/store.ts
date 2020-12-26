@@ -1,7 +1,7 @@
 import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators';
 import axios from 'axios';
 
-import JSONStationData from '@/data/stations.json';
+import JSONStationData from '@/data/stationData.json';
 
 import Station from '@/scripts/interfaces/Station';
 import Train from '@/scripts/interfaces/Train';
@@ -310,9 +310,56 @@ export default class Store extends VuexModule {
   }
 
   @Mutation setJSONData() {
-    this.stationList = JSONStationData.map(stationData => ({
-      ...stationData,
-      stationProject: '',
+    /*  
+    0: stationName,
+    1: stationURL,
+    2: stationlines,
+    3: stationProject?,
+    4: reqLevel,
+    5: supportersOnly,
+    6: signalType,
+    7: controlType,
+    8: SBL,
+    9: two-way block,
+    10: routes, one-way, catenary,
+    11: routes, one-way, no catenary,
+    12: routes, two-way, catenary,
+    13: routes, two-way, no catenary,
+    14: subStations?,
+    15: stops?,
+    16: default,
+    17: nonPublic,
+    18: unavailable
+    */
+
+    this.stationList = JSONStationData.map(station => ({
+      stationName: station[0] as string,
+      stationURL: station[1] as string,
+      stationLines: station[2] as string,
+      stationProject: station[3] as string,
+      reqLevel: station[4] as string,
+      supportersOnly: station[5] as string,
+      signalType: station[6] as string,
+      controlType: station[7] as string,
+      SBL: station[8] as string,
+      TWB: station[9] as string,
+      routes: {
+        oneWay: {
+          catenary: station[10] as number,
+          noCatenary: station[11] as number,
+        },
+        twoWay: {
+          catenary: station[12] as number,
+          noCatenary: station[13] as number,
+        },
+      },
+      checkpoints: station[14] ? (station[14] as string[]).map(sub => ({ checkpointName: sub, scheduledTrains: [] })) : null,
+      stops: station[15] as string[],
+
+      default: station[16] as boolean,
+      nonPublic: station[17] as boolean,
+      unavailable: station[18] as boolean,
+
       stationHash: '',
       maxUsers: 0,
       currentUsers: 0,
@@ -327,7 +374,6 @@ export default class Store extends VuexModule {
       stationTrains: [],
       scheduledTrains: [],
       spawns: [],
-      checkpoints: stationData.subStations ? stationData.subStations.map(sub => ({ checkpointName: sub, scheduledTrains: [] })) : null,
     }));
   }
 
@@ -335,7 +381,7 @@ export default class Store extends VuexModule {
   private updateOnlineStations(updatedStationList: any[]) {
     this.stationList = this.stationList.reduce((acc, station) => {
       const onlineStationData = updatedStationList.find(updatedStation => updatedStation.stationName === station.stationName);
-      const registeredStation = JSONStationData.find(data => data.stationName === station.stationName);
+      const registeredStation = JSONStationData.find(data => data[0] === station.stationName);
 
       if (onlineStationData)
         acc.push({
@@ -417,7 +463,7 @@ export default class Store extends VuexModule {
           if (stationName.includes(stopName) && !stop.stopName.includes('po.') && !stop.stopName.includes('podg.')) return true;
           if (stopName.includes('podg.') && stopName.split(', podg.')[0] && stationName === stopName.split(', podg.')[0]) return true;
 
-          if (JSONStationData.some(data => data.stationName.includes(station.stationName) && data.stops && data.stops.includes(stop.stopNameRAW))) return true;
+          if (station.stops && station.stops.includes(stop.stopNameRAW)) return true;
 
           return false;
         });

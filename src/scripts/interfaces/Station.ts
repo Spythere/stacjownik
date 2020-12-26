@@ -23,10 +23,14 @@ export default interface Station {
   reqLevel: string;
   supportersOnly: string;
 
+  SBL: string;
+  TWB: string;
   signalType: string;
   controlType: string;
+
   default: boolean;
   nonPublic: boolean;
+  unavailable: boolean;
 
   routes: {
     oneWay: { catenary: number; noCatenary: number };
@@ -39,6 +43,8 @@ export default interface Station {
         scheduledTrains: ScheduledTrain[];
       }[]
     | null;
+
+  stops: string[] | null;
 
   online: boolean;
   occupiedTo: string;
