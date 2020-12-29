@@ -32,8 +32,6 @@ export default class StationFilterManager {
   filteredStationList(stationList: Station[]): Station[] {
     return stationList
       .filter(station => {
-        if (!station.reqLevel || station.reqLevel == '-1') return true;
-
         if ((station.nonPublic || !station.reqLevel) && this.filters['nonPublic']) return false;
 
         if (station.online && station.occupiedTo == 'KOŃCZY' && this.filters['ending']) return false;
