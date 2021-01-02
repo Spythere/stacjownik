@@ -38,7 +38,7 @@
       <footer class="app_footer">
         &copy;
         <a href="https://td2.info.pl/profile/?u=20777" target="_blank">Spythere</a>
-        2020 | v{{VERSION}}
+        2020-2021 | v{{VERSION}}
       </footer>
     </div>
   </div>
