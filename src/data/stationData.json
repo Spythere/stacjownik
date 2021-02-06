@@ -197,5 +197,6 @@
   ["Buskowo Zdrój", "https://td2.info.pl/scenerie/buskowo-zdroj/", "", null, "4", "NIE", "mieszana", "mechaniczne", "", "", 1, 0, 0, 0, null, null, false, false, false],
   ["Bełchów", "https://td2.info.pl/scenerie/belchow-projekt-lka/", "11", "ŁKA", "2", "NIE", "współczesna", "SPK", "", "TAK", 0, 0, 2, 0, null, null, false, false, false],
   ["Modlinków", "https://td2.info.pl/scenerie/podg-modlinkow/", "", null, "6", "NIE", "współczesna", "SPK", "", "TAK", 3, 0, 2, 0, null, null, false, false, false],
-  ["Arkadia Zdrój 2019", "https://td2.info.pl/scenerie/arkadia-zdroj-2016/", "", null, "", "NIE", "współczesna", "SCS", "TAK (szlak wewn.)", "TAK", 1, 0, 2, 0, null, null, false, false, false]
+  ["Arkadia Zdrój 2019", "https://td2.info.pl/scenerie/arkadia-zdroj-2016/", "", null, "", "NIE", "współczesna", "SCS", "TAK (szlak wewn.)", "TAK", 1, 0, 2, 0, null, null, false, false, false],
+  ["Łaskarzew", "https://td2.info.pl/scenerie/laskarzew-6516/", "7", null, "0", "NIE", "współczesna", "SPK", "", "TAK", 0, 0, 2, 0, null, null, false, false, false]
 ]

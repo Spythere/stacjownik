@@ -42,6 +42,7 @@ export default class StationFilterManager {
         if (station.default && this.filters['default']) return false;
         if (!station.default && this.filters['notDefault']) return false;
 
+        if (station.reqLevel == '-1') return true;
         if (parseInt(station.reqLevel) < this.filters['minLevel']) return false;
 
         if (this.filters['no-1track'] && (station.routes.oneWay.catenary != 0 || station.routes.oneWay.noCatenary != 0)) return false;

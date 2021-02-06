@@ -38,7 +38,7 @@
       <footer class="app_footer">
         &copy;
         <a href="https://td2.info.pl/profile/?u=20777" target="_blank">Spythere</a>
-        2020-2021 | v{{VERSION}}
+        2021 | v{{VERSION}}
       </footer>
     </div>
   </div>
@@ -59,7 +59,7 @@ export default class App extends Vue {
   @Action("synchronizeData") synchronizeData;
   @Getter("getAllData") data;
 
-  private VERSION = "1.3.5";
+  private VERSION = "1.3.6";
 
   async mounted() {
     this.synchronizeData();

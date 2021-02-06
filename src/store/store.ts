@@ -412,13 +412,11 @@ export default class Store extends VuexModule {
       return acc;
     }, [] as Station[]);
 
-    // Dodawanie do listy online potencjalnych scenerii niewpisanych do bazy
-    updatedStationList.forEach(updatedStation => {
-      const alreadyInList: any = this.stationList.some(station => station.stationName === updatedStation.stationName);
-
-      if (!alreadyInList) {
+    updatedStationList
+      .filter(uStation => !this.stationList.some(station => uStation.stationName === station.stationName))
+      .forEach(uStation => {
         this.stationList.push({
-          ...updatedStation,
+          ...uStation,
           scheduledTrains: [],
           stationTrains: [],
           subStations: [],
@@ -426,8 +424,26 @@ export default class Store extends VuexModule {
           reqLevel: '-1',
           nonPublic: true,
         });
-      }
-    });
+      });
+
+    // Dodawanie do listy online potencjalnych scenerii niewpisanych do bazy
+    // updatedStationList.forEach(updatedStation => {
+    //   const alreadyInList: any = this.stationList.some(station => station.stationName === updatedStation.stationName);
+
+    //   console.log(updatedStation, alreadyInList);
+
+    //   if (!alreadyInList) {
+    //     this.stationList.push({
+    //       ...updatedStation,
+    //       scheduledTrains: [],
+    //       stationTrains: [],
+    //       subStations: [],
+    //       online: true,
+    //       reqLevel: '-1',
+    //       nonPublic: true,
+    //     });
+    //   }
+    // });
 
     this.stationCount = this.stationList.filter(station => station.online).length;
     this.dataConnectionStatus = Status.Loaded;
@@ -573,15 +589,6 @@ export default class Store extends VuexModule {
                   stopLabel = 'W drodze';
                   stopStatusID = 3;
                 }
-
-                // for (let i = stopInfoIndex; i < data.followingStops.length - 1; i++){
-                //   const stop = data.followingStops[i];
-
-                //   if (stop.mainStop && stop.stopType.includes("ph")) {
-                //     nearestStop = stop.stopNameRAW;
-                //     break;
-                //   }
-                // }
 
                 checkpoint.scheduledTrains.push({
                   trainNo: data.trainNo,
