@@ -164,7 +164,6 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 
 import Station from "@/scripts/interfaces/Station";
@@ -253,9 +252,7 @@ section.station_table {
   font-size: calc(0.55rem + 0.35vw);
   font-weight: 500;
 
-  @include smallScreen() {
-    font-size: 0.6rem;
-  }
+  font-size: 1.2em;
 }
 
 .table_wrapper {

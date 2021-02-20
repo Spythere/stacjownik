@@ -22,7 +22,8 @@
 
           <span class="header_links">
             <router-link class="route" active-class="route-active" to="/" exact>SCENERIE</router-link>/
-            <router-link class="route" active-class="route-active" to="/trains">POCIĄGI</router-link>
+            <router-link class="route" active-class="route-active" to="/trains">POCIĄGI</router-link>/
+            <router-link class="route" active-class="route-active" to="/history">DZIENNIK</router-link>
           </span>
         </div>
       </header>
@@ -59,7 +60,7 @@ export default class App extends Vue {
   @Action("synchronizeData") synchronizeData;
   @Getter("getAllData") data;
 
-  private VERSION = "1.3.6";
+  private VERSION = "1.4a";
 
   async mounted() {
     this.synchronizeData();
@@ -104,12 +105,12 @@ export default class App extends Vue {
   background: $bgCol;
   color: white;
 
-  font-size: calc(1.1rem + 2.1vw);
-
   overflow: hidden;
 
-  @include smallScreen() {
-    font-size: 2.5rem;
+  font-size: calc(0.4rem + 0.4vw);
+
+  @include bigScreen {
+    font-size: 1rem;
   }
 }
 
@@ -132,11 +133,15 @@ export default class App extends Vue {
 
   display: flex;
   justify-content: center;
+
+  @include smallScreen() {
+    font-size: 1.2em;
+  }
 }
 
 .header_brand {
   width: 100%;
-  font-size: 1.1em;
+  font-size: 4.5em;
 
   text-align: center;
 
@@ -149,9 +154,14 @@ export default class App extends Vue {
   display: flex;
   justify-content: space-between;
 
+  font-size: 1.35em;
+
   margin: 0 0.3em;
   padding: 0.2em;
-  font-size: 0.35em;
+
+  @include smallScreen() {
+    font-size: 1.5em;
+  }
 }
 
 .header_links {
@@ -160,8 +170,12 @@ export default class App extends Vue {
 
   border-radius: 0.7em;
 
-  padding: 0.2em;
-  font-size: 0.35em;
+  font-size: 1.2em;
+  padding: 0.5em;
+
+  @include smallScreen() {
+    font-size: 1.4em;
+  }
 }
 
 // COUNTER
@@ -169,8 +183,6 @@ export default class App extends Vue {
   display: flex;
   align-items: center;
   color: $accentCol;
-
-  font-size: 1em;
 
   span {
     margin: 0 0.15em;

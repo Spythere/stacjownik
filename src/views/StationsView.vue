@@ -247,10 +247,10 @@ export default class StationsView extends Vue {
 .stations_view {
   position: relative;
 
+  font-size: 0.95em;
+
   padding: 1rem 0;
   min-height: 100%;
-
-  font-size: calc(0.6rem + 0.9vw);
 }
 
 .stations_wrapper {
@@ -270,6 +270,7 @@ export default class StationsView extends Vue {
 
 .bar_actions {
   display: flex;
+  font-size: 1.25em;
 
   button {
     margin-right: 0.5em;
@@ -285,13 +286,12 @@ export default class StationsView extends Vue {
     justify-content: center;
     align-items: center;
 
-    width: 1.2em;
-    height: 1.2em;
-
+    width: 2.5em;
+    height: 2.5em;
     margin-left: 0.5em;
 
     // background-color: #e68e00;
-    border-radius: 0.5em 0.5em 0 0;
+    border-radius: 1em 1em 0 0;
 
     &.loading {
       background-color: $accentCol;
@@ -306,13 +306,8 @@ export default class StationsView extends Vue {
     }
 
     & > img {
-      width: 0.9em;
+      width: 1.7em;
       animation: blinkAnim 2s ease-in-out infinite forwards;
-    }
-
-    @include smallScreen() {
-      width: 1.5em;
-      height: 1.5em;
     }
   }
 }
@@ -325,7 +320,7 @@ export default class StationsView extends Vue {
   border: none;
 
   color: #e0e0e0;
-  font-size: 0.65em;
+  font-size: 1em;
 
   padding: 0.3em;
 
@@ -356,7 +351,7 @@ export default class StationsView extends Vue {
   }
 
   @include smallScreen() {
-    font-size: 0.75rem;
+    font-size: 1.2em;
   }
 }
 

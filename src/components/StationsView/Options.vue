@@ -80,8 +80,6 @@ export default class Options extends Vue {
 }
 
 .options {
-  font-size: calc(0.6rem + 0.9vw);
-
   &-actions {
     display: flex;
   }
@@ -95,7 +93,7 @@ export default class Options extends Vue {
   border: none;
 
   color: #e0e0e0;
-  font-size: 0.75em;
+  font-size: 0.4em;
 
   padding: 0.3em;
 

@@ -96,7 +96,7 @@ h3 {
     display: flex;
     justify-content: center;
 
-    font-size: calc(0.5rem + 0.65vw);
+    font-size: 1.35em;
 
     @include bigScreen() {
       font-size: 1.25rem;

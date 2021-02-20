@@ -30,6 +30,11 @@ const routes: Array<RouteConfig> = [
     component: () => import('@/views/SceneryView.vue'),
     props: true,
   },
+  {
+    path: '/history',
+    name: 'HistoryView',
+    component: () => import('@/views/HistoryView.vue'),
+  },
 ];
 
 const router = new VueRouter({
