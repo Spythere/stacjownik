@@ -43,8 +43,6 @@
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 
-import StorageManager from "@/scripts/storageManager";
-
 @Component
 export default class Modal extends Vue {
   @Prop() modalHidden!: boolean;

@@ -1,5 +1,7 @@
 <template>
   <div class="app">
+    <UpdateModal :currentVersion="VERSION" @toggleUpdateModal="toggleUpdateModal" v-if="updateModalVisible" />
+
     <div class="app_container">
       <header class="app_header">
         <div class="header_body">
@@ -49,12 +51,13 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { Action, Getter } from "vuex-class";
 
-import { mapGetters, mapActions } from "vuex";
-
+import UpdateModal from "@/components/Global/UpdateModal.vue";
 import Clock from "@/components/App/Clock.vue";
 
+import StorageManager from "@/scripts/storageManager";
+
 @Component({
-  components: { Clock },
+  components: { Clock, UpdateModal },
 })
 export default class App extends Vue {
   @Action("synchronizeData") synchronizeData;
@@ -62,8 +65,27 @@ export default class App extends Vue {
 
   private VERSION = "1.4";
 
+  hasReleaseNotes = true;
+  updateModalVisible = true;
+
   async mounted() {
     this.synchronizeData();
+
+    if (StorageManager.getStringValue("version") != this.VERSION) {
+      StorageManager.setStringValue("version", this.VERSION);
+
+      if (this.hasReleaseNotes)
+        StorageManager.setBooleanValue("version_notes_read", false);
+    }
+
+    this.updateModalVisible = !StorageManager.getBooleanValue(
+      "version_notes_read"
+    );
+  }
+
+  toggleUpdateModal() {
+    this.updateModalVisible = !this.updateModalVisible;
+    StorageManager.setBooleanValue("version_notes_read", true);
   }
 }
 </script>
