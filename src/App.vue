@@ -60,7 +60,7 @@ export default class App extends Vue {
   @Action("synchronizeData") synchronizeData;
   @Getter("getAllData") data;
 
-  private VERSION = "1.4a";
+  private VERSION = "1.4";
 
   async mounted() {
     this.synchronizeData();
