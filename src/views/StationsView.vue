@@ -6,11 +6,7 @@
       <div class="stations_body">
         <div class="body_bar">
           <div class="bar_actions">
-            <button
-              class="action-btn"
-              :class="{ open: filterCardOpen }"
-              @click="() => toggleCardsState('filter')"
-            >
+            <button class="action-btn" :class="{ open: filterCardOpen }" @click="() => toggleCardsState('filter')">
               <img :src="require('@/assets/icon-filter2.svg')" alt="icon-filter" />
               <p>FILTRY</p>
             </button>
@@ -24,21 +20,13 @@
 
           <div class="bar_indicators">
             <transition name="indicator-anim">
-              <span
-                class="indicator_scenery-data"
-                v-if="data.dataConnectionStatus < 2"
-                :class="dataStatusClass"
-              >
+              <span class="indicator_scenery-data" v-if="data.dataConnectionStatus < 2" :class="dataStatusClass">
                 <img :src="trainIcon" alt="icon-train" />
               </span>
             </transition>
 
             <transition name="indicator-anim">
-              <span
-                class="indicator_timetable-data"
-                v-if="data.timetableDataStatus < 2"
-                :class="timetableDataStatusClass"
-              >
+              <span class="indicator_timetable-data" v-if="data.timetableDataStatus < 2" :class="timetableDataStatusClass">
                 <img :src="timetableIcon" alt="icon-timetable" />
               </span>
             </transition>
@@ -46,12 +34,7 @@
         </div>
 
         <div class="body_table">
-          <StationTable
-            :stations="computedStations"
-            :sorterActive="filterManager.getSorter()"
-            :setFocusedStation="setFocusedStation"
-            :changeSorter="changeSorter"
-          />
+          <StationTable :stations="computedStations" :sorterActive="filterManager.getSorter()" :setFocusedStation="setFocusedStation" :changeSorter="changeSorter" />
         </div>
       </div>
     </div>
@@ -61,12 +44,7 @@
     </transition>
 
     <transition name="card-anim">
-      <FilterCard
-        v-if="filterCardOpen"
-        :exit="() => toggleCardsState('filter')"
-        @changeFilterValue="changeFilterValue"
-        @resetFilters="resetFilters"
-      />
+      <FilterCard v-if="filterCardOpen" :exit="() => toggleCardsState('filter')" @changeFilterValue="changeFilterValue" @resetFilters="resetFilters" />
     </transition>
   </div>
 </template>
@@ -247,7 +225,7 @@ export default class StationsView extends Vue {
 .stations_view {
   position: relative;
 
-  font-size: 0.95em;
+  font-size: 0.9em;
 
   padding: 1rem 0;
   min-height: 100%;

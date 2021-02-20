@@ -3,19 +3,11 @@
     <div class="body-wrapper">
       <div class="options-wrapper">
         <TrainSorter :trainList="computedTrains" @changeSorter="changeSorter" />
-        <TrainSearch
-          @changeSearchedTrain="changeSearchedTrain"
-          @changeSearchedDriver="changeSearchedDriver"
-          :passedSearchedTrain="passedSearchedTrain"
-          :focusedTrain="focusedTrain"
-        />
+        <TrainSearch @changeSearchedTrain="changeSearchedTrain" @changeSearchedDriver="changeSearchedDriver" :passedSearchedTrain="passedSearchedTrain" :focusedTrain="focusedTrain" />
       </div>
 
       <TrainStats :trains="trains" />
-      <TrainTable
-        :computedTrains="computedTrains"
-        @changeFocusedTrain="changeFocusedTrain"
-      />
+      <TrainTable :computedTrains="computedTrains" @changeFocusedTrain="changeFocusedTrain" />
     </div>
   </section>
 </template>
@@ -79,8 +71,8 @@ export default class TrainsView extends Vue {
             : true) &&
           (this.searchedDriver.length > 0
             ? train.driverName
-              .toLowerCase()
-              .includes(this.searchedDriver.toLowerCase())
+                .toLowerCase()
+                .includes(this.searchedDriver.toLowerCase())
             : true)
       )
       .sort((a, b) => {
@@ -93,7 +85,8 @@ export default class TrainsView extends Vue {
           case "distance":
             if (!a.timetableData || !b.timetableData) return 0;
 
-            if (a.timetableData.routeDistance > b.timetableData.routeDistance) return this.sorterActive.dir;
+            if (a.timetableData.routeDistance > b.timetableData.routeDistance)
+              return this.sorterActive.dir;
             else return -this.sorterActive.dir;
             break;
 
@@ -135,8 +128,6 @@ export default class TrainsView extends Vue {
   max-width: 1300px;
 
   padding: 0 0.5rem;
-
-  font-size: calc(0.4rem + 0.4vw);
 }
 
 .options-wrapper {

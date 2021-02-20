@@ -55,8 +55,6 @@ export default class UpdateModal extends Vue {
   max-height: 95vh;
   overflow: auto;
 
-  font-size: 1.2em;
-
   transform: translate(-50%, -50%);
 
   background: rgba(black, 0.85);
@@ -65,13 +63,13 @@ export default class UpdateModal extends Vue {
   text-align: center;
 
   @include smallScreen() {
-    font-size: 1.2em;
+    font-size: 0.8em;
     width: 95%;
   }
 }
 
 .header {
-  font-size: 5em;
+  font-size: 4.5em;
 
   img {
     width: 0.8em;

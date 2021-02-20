@@ -16,7 +16,6 @@
             <div class="info_counter">
               <img src="@/assets/icon-dispatcher.svg" alt="icon dispatcher" />
               <span>{{ data.stationCount }}</span>
-
               <span>{{ data.trainCount }}</span>
               <img src="@/assets/icon-train.svg" alt="icon train" />
             </div>
@@ -129,10 +128,14 @@ export default class App extends Vue {
 
   overflow: hidden;
 
-  font-size: calc(0.4rem + 0.4vw);
+  font-size: calc(0.7rem + 0.2vw);
 
   @include bigScreen {
     font-size: 1rem;
+  }
+
+  @include smallScreen {
+    font-size: 0.65rem;
   }
 }
 
@@ -155,10 +158,6 @@ export default class App extends Vue {
 
   display: flex;
   justify-content: center;
-
-  @include smallScreen() {
-    font-size: 1.2em;
-  }
 }
 
 .header_brand {
@@ -180,10 +179,6 @@ export default class App extends Vue {
 
   margin: 0 0.3em;
   padding: 0.2em;
-
-  @include smallScreen() {
-    font-size: 1.5em;
-  }
 }
 
 .header_links {
@@ -192,12 +187,8 @@ export default class App extends Vue {
 
   border-radius: 0.7em;
 
-  font-size: 1.2em;
+  font-size: 1.35em;
   padding: 0.5em;
-
-  @include smallScreen() {
-    font-size: 1.4em;
-  }
 }
 
 // COUNTER
