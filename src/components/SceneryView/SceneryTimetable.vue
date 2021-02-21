@@ -16,12 +16,7 @@
         </div>
 
         <ul class="option-list" :class="{ open: listOpen }">
-          <li
-            class="option-item"
-            v-for="(cp, i) in stationInfo.checkpoints"
-            :key="i"
-            @click="() => chooseOption(cp.checkpointName)"
-          >
+          <li class="option-item" v-for="(cp, i) in stationInfo.checkpoints" :key="i" @click="() => chooseOption(cp.checkpointName)">
             <input type="option-radio" name="sort" />
             <label :id="cp.checkpointName">{{ cp.checkpointName }}</label>
           </li>
@@ -31,35 +26,27 @@
 
     <span class="timetable-item loading" v-if="dataStatus == 0">Ładowanie...</span>
 
-    <span
-      class="timetable-item empty"
-      v-else-if="computedScheduledTrains.length == 0"
-    >Brak aktywnych rozkładów!</span>
+    <span class="timetable-item empty" v-else-if="computedScheduledTrains.length == 0">Brak aktywnych rozkładów!</span>
 
     <transition-group name="list-anim">
       <div class="timetable-item" v-for="(scheduledTrain, i) in computedScheduledTrains" :key="i+1">
         <span class="timetable-general">
           <span class="general-info">
-            <router-link
-              :to="{
+            <router-link :to="{
                   name: 'TrainsView',
                   params: {
                     passedSearchedTrain: scheduledTrain.trainNo.toString(),
                   },
-                }"
-            >
+                }">
               <span>
                 <strong>{{ scheduledTrain.category }}</strong>
                 {{ scheduledTrain.trainNo }}
               </span>
             </router-link>|
             <span>
-              <a
-                :href="
+              <a :href="
                     'https://td2.info.pl/profile/?u=' + scheduledTrain.driverId
-                  "
-                target="_blank"
-              >{{ scheduledTrain.driverName }}</a>
+                  " target="_blank">{{ scheduledTrain.driverName }}</a>
             </span>
 
             <div class="info-route">
@@ -93,10 +80,7 @@
             <span class="stop-arrow arrow"></span>
           </span>
           <span class="schedule-departure">
-            <span
-              class="departure-time terminates"
-              v-if="scheduledTrain.stopInfo.terminatesHere"
-            >KOŃCZY BIEG</span>
+            <span class="departure-time terminates" v-if="scheduledTrain.stopInfo.terminatesHere">KOŃCZY BIEG</span>
             <span class="departure-time" v-else>
               {{ scheduledTrain.stopInfo.departureTimeString }} ({{
               scheduledTrain.stopInfo.departureDelay

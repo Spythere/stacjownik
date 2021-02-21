@@ -24,32 +24,32 @@
 
       <div class="list">
         <div class="list_wrapper">
-          <div class="list_loading" v-if="dataLoading">POBIERANIE DANYCH...</div>
-          <ul class="list_content" v-else-if="computedHistoryList.length != 0">
-            <li v-if="currentDispatcherFrom != -1" class="current">
-              <div class="dispatcher-name">{{ currentDispatcher }}</div>
-              <div class="dispatcher-date">
-                <span style="color: #bbb">{{ new Date(currentDispatcherFrom).toLocaleDateString('pl-PL') }}</span>
-                {{ new Date(currentDispatcherFrom).toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' })}}
-              </div>
-            </li>
-
-            <li v-for="(history, i) in computedHistoryList" :key="i">
-              <div class="dispatcher-name">{{history.dispatcherName }}</div>
-              <div class="dispatcher-date">
-                <div>
-                  <span style="color: #888">{{history.dispatcherFromDate }}</span>
-                  {{ history.dispatcherFromTime }}
+          <!-- <div class="list_loading" v-if="dataLoading">POBIERANIE DANYCH...</div> -->
+          <transition name="list-anim" :key="inputStationName" mode="out-in">
+            <ul class="list_content" v-if="!dataLoading && computedHistoryList.length != 0">
+              <li v-if="currentDispatcherFrom != -1" class="current">
+                <div class="dispatcher-name">{{ currentDispatcher }}</div>
+                <div class="dispatcher-date">
+                  <span style="color: #bbb">{{ new Date(currentDispatcherFrom).toLocaleDateString('pl-PL') }}</span>
+                  {{ new Date(currentDispatcherFrom).toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' })}}
                 </div>
-                <div>
-                  <span style="color: #888">{{ history.dispatcherToDate }}</span>
-                  {{ history.dispatcherToTime }}
+              </li>
+              <li v-for="(history, i) in computedHistoryList" :key="i">
+                <div class="dispatcher-name">{{history.dispatcherName }}</div>
+                <div class="dispatcher-date">
+                  <div>
+                    <span style="color: #888">{{history.dispatcherFromDate }}</span>
+                    {{ history.dispatcherFromTime }}
+                  </div>
+                  <div>
+                    <span style="color: #888">{{ history.dispatcherToDate }}</span>
+                    {{ history.dispatcherToTime }}
+                  </div>
                 </div>
-              </div>
-            </li>
-          </ul>
-
-          <div v-else-if="inputStationName != ''" class="list_no-info">BRAK ZEBRANYCH DANYCH O RUCHU!</div>
+              </li>
+            </ul>
+            <div v-if="!dataLoading && inputStationName != ''" class="list_no-info">BRAK ZEBRANYCH DANYCH O RUCHU!</div>
+          </transition>
         </div>
       </div>
     </div>
@@ -154,7 +154,7 @@ export default class HistoryView extends Vue {
 
 .history {
   &_view {
-    font-size: 1.5em;
+    font-size: 1.2em;
     display: flex;
   }
 
@@ -163,6 +163,23 @@ export default class HistoryView extends Vue {
     text-align: center;
 
     margin-top: 1em;
+  }
+}
+
+.list-anim {
+  &-enter-active,
+  &-leave-active {
+    transition: all 150ms ease-out;
+  }
+
+  &-enter,
+  &-leave-to {
+    opacity: 0.1;
+    transform: scale(0.95);
+  }
+
+  &-move {
+    transition: transform 100ms;
   }
 }
 
@@ -243,12 +260,19 @@ export default class HistoryView extends Vue {
     }
   }
 
+  &_content {
+    max-height: 550px;
+    overflow: auto;
+
+    padding: 0.2em 0.5em;
+  }
+
   &_content > li {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
 
     background: #222;
-    padding: 0.5em 0.8em;
+    padding: 0.3em 0.8em;
     margin: 0.3em 0;
 
     gap: 10em;
@@ -269,6 +293,9 @@ export default class HistoryView extends Vue {
       display: flex;
       justify-content: center;
       align-items: center;
+
+      font-size: 1.1em;
+      font-weight: 500;
     }
   }
 }
