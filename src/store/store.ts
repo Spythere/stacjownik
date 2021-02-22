@@ -477,7 +477,7 @@ export default class Store extends VuexModule {
           if (stationName === stopName) return true;
           if (stopName.includes(stationName) && !stop.stopName.includes('po.') && !stop.stopName.includes('podg.')) return true;
           if (stationName.includes(stopName) && !stop.stopName.includes('po.') && !stop.stopName.includes('podg.')) return true;
-          if (stopName.includes('podg.') && stopName.split(', podg.')[0] && stationName === stopName.split(', podg.')[0]) return true;
+          if (stopName.includes('podg.') && stopName.split(', podg.')[0] && stationName.includes(stopName.split(', podg.')[0])) return true;
 
           if (station.stops && station.stops.includes(stop.stopNameRAW)) return true;
 
