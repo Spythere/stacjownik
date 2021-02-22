@@ -8,9 +8,9 @@
 
       <div class="search-box">
         <div class="search-box_content">
-          <label>
-            <select v-model="inputStationName">
-              <option value disabled selected hidden>Wybierz scenerię</option>
+          <label :class="{ disabled: dataLoading }">
+            <select v-model="inputStationName" :disabled="dataLoading">
+              <option value disabled selected hidden>{{ dataLoading ? 'Pobieranie danych...' : 'Wybierz scenerię' }}</option>
               <option v-for="(station) in filteredStationList" :key="station" :value="station">{{ station }}</option>
             </select>
           </label>
@@ -25,17 +25,22 @@
       <div class="list">
         <div class="list_wrapper">
           <!-- <div class="list_loading" v-if="dataLoading">POBIERANIE DANYCH...</div> -->
-          <transition name="list-anim" :key="inputStationName" mode="out-in">
-            <ul class="list_content" v-if="!dataLoading && computedHistoryList.length != 0">
+          <transition name="list-anim" mode="out-in">
+            <ul class="list_content" v-if="!dataLoading && computedHistoryList.length != 0" :key="inputStationName">
               <li v-if="currentDispatcherFrom != -1" class="current">
-                <div class="dispatcher-name">{{ currentDispatcher }}</div>
+                <div class="dispatcher-name">
+                  <a :href="`https://td2.info.pl/profile/?u=${currentDispatcherId}`">{{ currentDispatcher}}</a>
+                </div>
                 <div class="dispatcher-date">
                   <span style="color: #bbb">{{ new Date(currentDispatcherFrom).toLocaleDateString('pl-PL') }}</span>
                   {{ new Date(currentDispatcherFrom).toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' })}}
                 </div>
               </li>
+
               <li v-for="(history, i) in computedHistoryList" :key="i">
-                <div class="dispatcher-name">{{history.dispatcherName }}</div>
+                <div class="dispatcher-name">
+                  <a :href="`https://td2.info.pl/profile/?u=${history.dispatcherId}`">{{ history.dispatcherName }}</a>
+                </div>
                 <div class="dispatcher-date">
                   <div>
                     <span style="color: #888">{{history.dispatcherFromDate }}</span>
@@ -48,7 +53,6 @@
                 </div>
               </li>
             </ul>
-            <div v-if="!dataLoading && inputStationName != ''" class="list_no-info">BRAK ZEBRANYCH DANYCH O RUCHU!</div>
           </transition>
         </div>
       </div>
@@ -69,12 +73,13 @@ interface ISceneryHistory {
   stationHash: string;
   stationName: string;
   currentDispatcher: string;
-  currentDispatcherId: string;
+  currentDispatcherId: number;
   currentDispatcherFrom: number;
   currentDispatcherTo: number;
   dispatcherHistory: {
     dispatcherName: string;
     dispatcherFrom: number;
+    dispatcherId: number;
     dispatcherTo: number;
   }[];
 }
@@ -83,12 +88,31 @@ interface ISceneryHistory {
 export default class HistoryView extends Vue {
   @Getter("getStationList") stationList!: Station[];
 
+  sceneryHistoryList: ISceneryHistory[] = [];
+
   currentSceneryHistory: ISceneryHistory["dispatcherHistory"] = [];
   currentDispatcher: string = "";
+  currentDispatcherId: number = 0;
   currentDispatcherFrom: number = -1;
 
   inputStationName = "";
-  dataLoading = false;
+  dataLoading = true;
+
+  async mounted() {
+    try {
+      const responseData: ISceneryHistory[] = await (
+        await axios.get(
+          "https://stacjownik.herokuapp.com/api/getSceneryHistory"
+        )
+      ).data;
+
+      this.sceneryHistoryList = responseData;
+    } catch (error) {
+      console.error(error);
+    }
+
+    this.dataLoading = false;
+  }
 
   @Watch("inputStationName")
   onInputChanged(val: string) {
@@ -96,55 +120,46 @@ export default class HistoryView extends Vue {
   }
 
   get filteredStationList() {
-    return this.stationList
+    return this.sceneryHistoryList
       .map((station) => station.stationName)
       .sort((a, b) => (a.toLowerCase() >= b.toLowerCase() ? 1 : -1));
   }
 
   get computedHistoryList() {
     return this.currentSceneryHistory
-      .map(({ dispatcherName, dispatcherFrom, dispatcherTo }) => ({
-        dispatcherName,
-        dispatcherFrom,
-        dispatcherTo,
-        dispatcherFromDate: new Date(dispatcherFrom).toLocaleDateString(
-          "pl-PL"
-        ),
-        dispatcherFromTime: new Date(dispatcherFrom).toLocaleTimeString(
-          "pl-PL",
-          { hour: "2-digit", minute: "2-digit" }
-        ),
-        dispatcherToDate: new Date(dispatcherTo).toLocaleDateString("pl-PL"),
-        dispatcherToTime: new Date(dispatcherTo).toLocaleTimeString("pl-PL", {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-      }))
+      .map(
+        ({ dispatcherName, dispatcherFrom, dispatcherTo, dispatcherId }) => ({
+          dispatcherName,
+          dispatcherFrom,
+          dispatcherTo,
+          dispatcherId,
+          dispatcherFromDate: new Date(dispatcherFrom).toLocaleDateString(
+            "pl-PL"
+          ),
+          dispatcherFromTime: new Date(
+            dispatcherFrom
+          ).toLocaleTimeString("pl-PL", { hour: "2-digit", minute: "2-digit" }),
+          dispatcherToDate: new Date(dispatcherTo).toLocaleDateString("pl-PL"),
+          dispatcherToTime: new Date(dispatcherTo).toLocaleTimeString("pl-PL", {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+        })
+      )
       .reverse();
   }
 
-  async itemSelected(itemName: string) {
-    this.dataLoading = true;
+  itemSelected(itemName: string) {
+    const selectedScenery = this.sceneryHistoryList.find(
+      (scenery) => scenery.stationName == itemName
+    );
 
-    try {
-      const responseData: ISceneryHistory = await (
-        await axios.get(
-          `https://stacjownik.herokuapp.com/api/getSceneryHistory?name=${itemName.replaceAll(
-            " ",
-            "_"
-          )}`
-        )
-      ).data;
+    if (!selectedScenery) return;
 
-      this.currentSceneryHistory = responseData.dispatcherHistory;
-      this.currentDispatcher = responseData.currentDispatcher;
-      this.currentDispatcherFrom = responseData.currentDispatcherFrom;
-    } catch (error) {
-      this.currentSceneryHistory = [];
-      this.currentDispatcher = "";
-      this.currentDispatcherFrom = -1;
-    }
-    this.dataLoading = false;
+    this.currentSceneryHistory = selectedScenery.dispatcherHistory;
+    this.currentDispatcher = selectedScenery.currentDispatcher;
+    this.currentDispatcherId = selectedScenery.currentDispatcherId;
+    this.currentDispatcherFrom = selectedScenery.currentDispatcherFrom;
   }
 }
 </script>
@@ -218,6 +233,10 @@ export default class HistoryView extends Vue {
 
   label {
     position: relative;
+
+    &.disabled::after {
+      color: gray;
+    }
 
     &::after {
       content: "<>";
