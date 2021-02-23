@@ -101,9 +101,7 @@ export default class HistoryView extends Vue {
   async mounted() {
     try {
       const responseData: ISceneryHistory[] = await (
-        await axios.get(
-          "https://stacjownik.herokuapp.com/api/getSceneryHistory"
-        )
+        await axios.get("https://stacjownik.herokuapp.com/api/getSceneryInfo")
       ).data;
 
       this.sceneryHistoryList = responseData;
