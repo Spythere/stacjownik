@@ -7,7 +7,8 @@
           :href="stationInfo.stationURL"
           target="_blank"
           rel="noopener noreferrer"
-        >{{ stationInfo.stationName }}</a>
+          >{{ stationInfo.stationName }}</a
+        >
 
         <span v-else>{{ stationInfo.stationName }}</span>
       </div>
@@ -33,11 +34,15 @@
         <span class="schedules">
           <img :src="timetableIcon" alt="icon-timetable" />
           <span v-if="stationInfo.scheduledTrains">
-            <span style="color: #eee">{{stationInfo.scheduledTrains.length}}</span>
+            <span style="color: #eee">{{
+              stationInfo.scheduledTrains.length
+            }}</span>
             /
-            <span
-              style="color: #bbb"
-            >{{ stationInfo.scheduledTrains.filter(train => train.stopInfo.confirmed).length }}</span>
+            <span style="color: #bbb">{{
+              stationInfo.scheduledTrains.filter(
+                (train) => train.stopInfo.confirmed
+              ).length
+            }}</span>
           </span>
         </span>
       </div>
@@ -84,22 +89,39 @@
           alt="icon-unavailable"
           title="Sceneria niedostępna"
         />
+
+        <img
+          v-if="stationInfo.stationLines && stationInfo.stationLines != ''"
+          :src="require('@/assets/icon-real.svg')"
+          alt="real"
+          title="Sceneria realna / półrealna"
+        />
       </div>
 
       <div class="info-dispatcher">
         <div>
           <span
             class="level"
-            :style="calculateExpStyle(stationInfo.dispatcherExp, stationInfo.dispatcherIsSupporter)"
-          >{{ stationInfo.dispatcherExp > 1 ? stationInfo.dispatcherExp : "L"}}</span>
+            :style="
+              calculateExpStyle(
+                stationInfo.dispatcherExp,
+                stationInfo.dispatcherIsSupporter
+              )
+            "
+          >
+            {{
+              stationInfo.dispatcherExp > 1 ? stationInfo.dispatcherExp : "L"
+            }}
+          </span>
 
           <span class="name">{{ stationInfo.dispatcherName }}</span>
         </div>
 
         <span
-          class="status"
+          class="status-badge"
           :class="statusClasses(stationInfo.occupiedTo)"
-        >{{ stationInfo.occupiedTo }}</span>
+          >{{ stationInfo.occupiedTo }}
+        </span>
       </div>
 
       <div class="info-lists">
@@ -123,7 +145,9 @@
           <div
             class="user offline"
             v-if="!computedStationTrains || computedStationTrains.length == 0"
-          >BRAK AKTYWNYCH GRACZY</div>
+          >
+            BRAK AKTYWNYCH GRACZY
+          </div>
         </div>
 
         <div class="spawn-list">
@@ -144,7 +168,8 @@
           <span
             class="spawn none"
             v-if="!stationInfo.spawns || stationInfo.spawns.length == 0"
-          >BRAK OTWARTYCH SPAWNÓW</span>
+            >BRAK OTWARTYCH SPAWNÓW</span
+          >
         </div>
       </div>
     </section>
@@ -264,6 +289,9 @@ h3 {
     img {
       width: 2.5em;
       margin: 0 0.5rem;
+
+      border: 2px solid #4e4e4e;
+      border-radius: 0.5em;
     }
   }
 

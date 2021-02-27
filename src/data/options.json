@@ -1,7 +1,9 @@
 {
-  "options": [{
-      "id": "is-default",
+  "options": [
+    {
+      "id": "default",
       "name": "default",
+      "iconName": "td2",
       "section": "access",
       "value": true,
       "defaultValue": true,
@@ -10,22 +12,35 @@
     {
       "id": "not-default",
       "name": "notDefault",
+      "iconName": "",
       "section": "access",
       "value": true,
       "defaultValue": true,
       "content": "POZA PACZKĄ"
     },
     {
-      "id": "non-public",
-      "name": "nonPublic",
+      "id": "real",
+      "name": "real",
+      "iconName": "lock",
       "section": "access",
       "value": true,
       "defaultValue": true,
-      "content": "NIEPUBLICZNA"
+      "content": "REALNA"
     },
+    {
+      "id": "fictional",
+      "name": "fictional",
+      "iconName": "user",
+      "section": "access",
+      "value": true,
+      "defaultValue": true,
+      "content": "FIKCYJNA"
+    },
+
     {
       "id": "SPK",
       "name": "SPK",
+      "iconName": "SPK",
       "section": "control",
       "value": true,
       "defaultValue": true,
@@ -34,6 +49,7 @@
     {
       "id": "SCS",
       "name": "SCS",
+      "iconName": "SCS",
       "section": "control",
       "value": true,
       "defaultValue": true,
@@ -42,6 +58,7 @@
     {
       "id": "by-hand",
       "name": "ręczne",
+      "iconName": "ręczne",
       "section": "control",
       "value": true,
       "defaultValue": true,
@@ -50,14 +67,17 @@
     {
       "id": "levers",
       "name": "mechaniczne",
+      "iconName": "mechaniczne",
       "section": "control",
       "value": true,
       "defaultValue": true,
       "content": "MECHANICZNE"
     },
+
     {
       "id": "modern",
       "name": "współczesna",
+      "iconName": "współczesna",
       "section": "signals",
       "value": true,
       "defaultValue": true,
@@ -66,6 +86,7 @@
     {
       "id": "semaphore",
       "name": "kształtowa",
+      "iconName": "kształtowa",
       "section": "signals",
       "value": true,
       "defaultValue": true,
@@ -74,6 +95,7 @@
     {
       "id": "mixed",
       "name": "mieszana",
+      "iconName": "mieszana",
       "section": "signals",
       "value": true,
       "defaultValue": true,
@@ -82,14 +104,18 @@
     {
       "id": "historic",
       "name": "historyczna",
+      "iconName": "historyczna",
       "section": "signals",
       "value": true,
       "defaultValue": true,
       "content": "HISTORYCZNA"
     },
+
     {
       "id": "free",
       "name": "free",
+      "iconName": "",
+
       "section": "status",
       "value": false,
       "defaultValue": false,
@@ -98,21 +124,16 @@
     {
       "id": "occupied",
       "name": "occupied",
+      "iconName": "",
+
       "section": "status",
       "value": true,
       "defaultValue": true,
       "content": "ZAJĘTA"
-    },
-    {
-      "id": "ending",
-      "name": "ending",
-      "section": "status",
-      "value": true,
-      "defaultValue": true,
-      "content": "KOŃCZY"
     }
   ],
-  "sliders": [{
+  "sliders": [
+    {
       "id": "min-level",
       "name": "minLevel",
       "minRange": 0,

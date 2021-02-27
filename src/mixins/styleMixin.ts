@@ -5,12 +5,12 @@ import Component from 'vue-class-component';
 @Component
 export default class styleMixin extends Vue {
   calculateExpStyle(exp: string | number, isSupporter: boolean = false): string {
-    const bgColor = exp > -1 ? (exp < 2 ? '#26B0D9' : `hsl(${-exp * 5 + 100},  65%, 50%)`) : '#888';
+    const bgColor = exp > -1 ? (exp < 2 ? '#26B0D9' : `hsl(${-exp * 5 + 100},  85%, 50%)`) : '#666';
 
-    const fontColor = exp > 15 ? 'white' : 'black';
-    const boxShadow = isSupporter ? `box-shadow: 0 0 10px 2px ${bgColor}` : '';
+    const fontColor = exp > 15 || exp == -1 ? 'white' : 'black';
+    const boxShadow = isSupporter ? `0 0 10px 2px ${bgColor}` : '';
 
-    return `backgroundColor: ${bgColor}; color: ${fontColor}; ${boxShadow};`;
+    return `backgroundColor: ${bgColor}; color: ${fontColor}; box-shadow: ${boxShadow};`;
   }
 
   statusClasses(occupiedTo: string) {

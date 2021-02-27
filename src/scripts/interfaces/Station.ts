@@ -21,7 +21,7 @@ export default interface Station {
   stationProject: string;
 
   reqLevel: string;
-  supportersOnly: string;
+  supportersOnly: boolean;
 
   SBL: string;
   TWB: string;

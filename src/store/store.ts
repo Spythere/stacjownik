@@ -266,7 +266,9 @@ export default class Store extends VuexModule {
           const statusLabel = getStatusLabel(stationStatus);
           const statusTimestamp = getStatusTimestamp(stationStatus);
 
-          const stationTrains = onlineTrainsData.filter(train => train.region === 'eu' && train.isOnline && train.station.stationName === station.stationName);
+          const stationTrains = onlineTrainsData.filter(
+            train => train.region === 'eu' && train.isOnline && train.station.stationName === station.stationName
+          );
 
           acc.push({
             stationName: station.stationName,
@@ -363,7 +365,7 @@ export default class Store extends VuexModule {
       stationLines: station[2] as string,
       stationProject: station[3] as string,
       reqLevel: station[4] as string,
-      supportersOnly: station[5] as string,
+      supportersOnly: station[5] == 'TAK',
       signalType: station[6] as string,
       controlType: station[7] as string,
       SBL: station[8] as string,
@@ -522,86 +524,89 @@ export default class Store extends VuexModule {
   private updateTimetableData(timetableList: ITimetableData[]) {
     this.stationList = this.stationList.map(station => {
       const stationName = station.stationName.toLowerCase();
-      const scheduledTrains: Station['scheduledTrains'] = timetableList.reduce((acc: Station['scheduledTrains'], timetableData: ITimetableData, index) => {
-        if (!timetableData.followingSceneries.includes(station.stationHash)) return acc;
+      const scheduledTrains: Station['scheduledTrains'] = timetableList.reduce(
+        (acc: Station['scheduledTrains'], timetableData: ITimetableData, index) => {
+          if (!timetableData.followingSceneries.includes(station.stationHash)) return acc;
 
-        const stopInfoIndex = timetableData.followingStops.findIndex(stop => {
-          const stopName = stop.stopNameRAW.toLowerCase();
+          const stopInfoIndex = timetableData.followingStops.findIndex(stop => {
+            const stopName = stop.stopNameRAW.toLowerCase();
 
-          if (stationName === stopName) return true;
-          if (stopName.includes(stationName) && !stop.stopName.includes('po.') && !stop.stopName.includes('podg.')) return true;
-          if (stationName.includes(stopName) && !stop.stopName.includes('po.') && !stop.stopName.includes('podg.')) return true;
-          if (stopName.includes('podg.') && stopName.split(', podg.')[0] && stationName.includes(stopName.split(', podg.')[0])) return true;
+            if (stationName === stopName) return true;
+            if (stopName.includes(stationName) && !stop.stopName.includes('po.') && !stop.stopName.includes('podg.')) return true;
+            if (stationName.includes(stopName) && !stop.stopName.includes('po.') && !stop.stopName.includes('podg.')) return true;
+            if (stopName.includes('podg.') && stopName.split(', podg.')[0] && stationName.includes(stopName.split(', podg.')[0])) return true;
 
-          if (station.stops && station.stops.includes(stop.stopNameRAW)) return true;
+            if (station.stops && station.stops.includes(stop.stopNameRAW)) return true;
 
-          return false;
-        });
+            return false;
+          });
 
-        if (stopInfoIndex == -1) return acc;
+          if (stopInfoIndex == -1) return acc;
 
-        const stopInfo = timetableData.followingStops[stopInfoIndex];
+          const stopInfo = timetableData.followingStops[stopInfoIndex];
 
-        let stopStatus = '';
-        let stopLabel = '';
-        let stopStatusID = 0;
-        let nearestStop = '';
+          let stopStatus = '';
+          let stopLabel = '';
+          let stopStatusID = 0;
+          let nearestStop = '';
 
-        if (stopInfo.terminatesHere && stopInfo.confirmed) {
-          stopStatus = 'terminated';
-          stopLabel = 'Skończył bieg';
-          stopStatusID = 5;
-        } else if (!stopInfo.terminatesHere && stopInfo.confirmed && timetableData.currentStationName == station.stationName) {
-          stopStatus = 'departed';
-          stopLabel = 'Odprawiony';
-          stopStatusID = 2;
-        } else if (!stopInfo.terminatesHere && stopInfo.confirmed && timetableData.currentStationName != station.stationName) {
-          stopStatus = 'departed-away';
-          stopLabel = 'Odjechał';
-          stopStatusID = 4;
-        } else if (timetableData.currentStationName == station.stationName && !stopInfo.stopped) {
-          stopStatus = 'online';
-          stopLabel = 'Na stacji';
-          stopStatusID = 0;
-        } else if (timetableData.currentStationName == station.stationName && stopInfo.stopped) {
-          stopStatus = 'stopped';
-          stopLabel = 'Postój';
-          stopStatusID = 1;
-        } else if (timetableData.currentStationName != station.stationName) {
-          stopStatus = 'arriving';
-          stopLabel = 'W drodze';
-          stopStatusID = 3;
-        }
+          if (stopInfo.terminatesHere && stopInfo.confirmed) {
+            stopStatus = 'terminated';
+            stopLabel = 'Skończył bieg';
+            stopStatusID = 5;
+          } else if (!stopInfo.terminatesHere && stopInfo.confirmed && timetableData.currentStationName == station.stationName) {
+            stopStatus = 'departed';
+            stopLabel = 'Odprawiony';
+            stopStatusID = 2;
+          } else if (!stopInfo.terminatesHere && stopInfo.confirmed && timetableData.currentStationName != station.stationName) {
+            stopStatus = 'departed-away';
+            stopLabel = 'Odjechał';
+            stopStatusID = 4;
+          } else if (timetableData.currentStationName == station.stationName && !stopInfo.stopped) {
+            stopStatus = 'online';
+            stopLabel = 'Na stacji';
+            stopStatusID = 0;
+          } else if (timetableData.currentStationName == station.stationName && stopInfo.stopped) {
+            stopStatus = 'stopped';
+            stopLabel = 'Postój';
+            stopStatusID = 1;
+          } else if (timetableData.currentStationName != station.stationName) {
+            stopStatus = 'arriving';
+            stopLabel = 'W drodze';
+            stopStatusID = 3;
+          }
 
-        if (stopInfoIndex < timetableData.followingStops.length - 2) {
-          for (let i = stopInfoIndex + 1; i < timetableData.followingStops.length - 1; i++) {
-            const stop = timetableData.followingStops[i];
+          if (stopInfoIndex < timetableData.followingStops.length - 2) {
+            for (let i = stopInfoIndex + 1; i < timetableData.followingStops.length - 1; i++) {
+              const stop = timetableData.followingStops[i];
 
-            if (stop.mainStop && stop.stopType.includes('ph')) {
-              nearestStop = stop.stopNameRAW;
-              break;
+              if (stop.mainStop && stop.stopType.includes('ph')) {
+                nearestStop = stop.stopNameRAW;
+                break;
+              }
             }
           }
-        }
 
-        acc.push({
-          trainNo: timetableData.trainNo,
-          driverName: timetableData.driverName,
-          driverId: timetableData.driverId,
-          currentStationName: timetableData.currentStationName,
-          currentStationHash: timetableData.currentStationHash,
-          category: timetableData.category,
-          beginsAt: timetableData.followingStops[0].stopNameRAW,
-          terminatesAt: timetableData.followingStops[timetableData.followingStops.length - 1].stopNameRAW,
-          nearestStop,
-          stopInfo,
-          stopLabel,
-          stopStatus,
-          stopStatusID,
-        });
+          acc.push({
+            trainNo: timetableData.trainNo,
+            driverName: timetableData.driverName,
+            driverId: timetableData.driverId,
+            currentStationName: timetableData.currentStationName,
+            currentStationHash: timetableData.currentStationHash,
+            category: timetableData.category,
+            beginsAt: timetableData.followingStops[0].stopNameRAW,
+            terminatesAt: timetableData.followingStops[timetableData.followingStops.length - 1].stopNameRAW,
+            nearestStop,
+            stopInfo,
+            stopLabel,
+            stopStatus,
+            stopStatusID,
+          });
 
-        return acc;
-      }, []);
+          return acc;
+        },
+        []
+      );
 
       if (station.checkpoints) {
         station.checkpoints.forEach(cp => (cp.scheduledTrains.length = 0));
@@ -673,7 +678,9 @@ export default class Store extends VuexModule {
       const timetableData = timetableList.find(data => data && data.trainNo === train.trainNo);
 
       if (timetableData) {
-        const trainData = this.stationList.find(station => station.stationName === train.currentStationName)?.scheduledTrains.find(stationTrain => stationTrain.trainNo === train.trainNo);
+        const trainData = this.stationList
+          .find(station => station.stationName === train.currentStationName)
+          ?.scheduledTrains.find(stationTrain => stationTrain.trainNo === train.trainNo);
 
         acc.push({ ...train, timetableData, stopStatus: trainData?.stopStatus || '', stopLabel: trainData?.stopLabel || '' });
       }

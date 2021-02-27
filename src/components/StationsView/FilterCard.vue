@@ -1,7 +1,7 @@
 <template>
-  <section class="filter-card">
+  <section class="card">
     <div class="card-exit" @click="exit">
-      <img :src="require('@/assets/icon-exit.svg')" alt="exit icon" />
+      <!-- <img :src="require('@/assets/icon-exit.svg')" alt="exit icon" /> -->
     </div>
 
     <div class="card-title flex">FILTRUJ STACJE</div>
@@ -21,7 +21,8 @@
           <span
             class="option-content"
             :class="option.section + (option.value ? ' checked' : '')"
-          >{{ option.content }}</span>
+            >{{ option.content }}</span
+          >
         </label>
       </div>
     </div>
@@ -46,10 +47,12 @@
     </div>
 
     <div class="card-save">
-      <div class="option save">
-        <label class="option-label">
-          <input class="option-input" type="checkbox" v-model="saveOptions" @change="saveFilters" />
-          <span class="option-content save" :class="{ checked: saveOptions }">ZAPISZ FILTRY</span>
+      <div class="option">
+        <label>
+          <input type="checkbox" v-model="saveOptions" @change="saveFilters" />
+          <span class="save" :class="{ checked: saveOptions }">
+            ZAPISZ FILTRY
+          </span>
         </label>
       </div>
     </div>
@@ -106,9 +109,6 @@ export default class FilterCard extends Vue {
   saveFilters(): void {
     if (!this.saveOptions) {
       StorageManager.unregisterStorage(this.STORAGE_KEY);
-
-      console.log(this.saveOptions);
-
       return;
     }
 
@@ -145,52 +145,31 @@ export default class FilterCard extends Vue {
 
 <style lang="scss" scoped>
 @import "../../styles/responsive";
-@import "../../styles/variables";
-
-.filter-card {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-
-  z-index: 3;
-
-  overflow: auto;
-  max-height: 95vh;
-
-  padding: 0.5em;
-  max-width: 600px;
-  width: 65%;
-
-  background: #262a2e;
-
-  font-size: 1.5em;
-
-  box-shadow: 0 0 15px 5px #474747;
-
-  @include smallScreen() {
-    width: 95%;
-  }
-
-  @include bigScreen {
-    font-size: 1.1rem;
-  }
-}
+@import "../../styles/card";
 
 .card {
+  font-size: 1.5em;
+
   &-title {
     font-size: 2em;
     font-weight: 700;
     color: $accentCol;
 
     margin: 0.5em 0;
-    margin-top: 1em;
+
+    text-align: center;
   }
 
   &-options {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(6em, 1fr));
-    padding: 0 1.5em;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-rows: repeat(4, 1fr);
+    gap: 0.5em;
+
+    @include smallScreen() {
+      grid-template-columns: repeat(auto-fit, minmax(6em, 1fr));
+      grid-template-rows: auto;
+    }
   }
 
   &-sliders {
@@ -202,6 +181,7 @@ export default class FilterCard extends Vue {
 
     button {
       margin: 0 0.3em;
+      border: 1px solid white;
     }
   }
 
@@ -210,8 +190,8 @@ export default class FilterCard extends Vue {
     justify-content: center;
 
     .option {
-      width: 30%;
-      font-size: 0.9em;
+      width: 7em;
+      font-size: 1.1em;
     }
   }
 
@@ -223,13 +203,11 @@ export default class FilterCard extends Vue {
 }
 
 .option {
-  margin: 0.3em;
-
-  &-input {
+  input {
     display: none;
   }
 
-  &-content {
+  span {
     user-select: none;
     -moz-user-select: none;
     -webkit-user-select: none;
@@ -239,21 +217,16 @@ export default class FilterCard extends Vue {
 
     cursor: pointer;
 
-    padding: 0.6em 0.5em;
-    border-radius: 0.4em;
+    padding: 0.45em 0.4em;
 
-    font-size: 0.65em;
-
-    background-color: #333;
+    font-size: 0.8em;
 
     display: inline-block;
     position: relative;
 
     transition: all 0.2s;
 
-    &.save {
-      font-size: 0.8em;
-    }
+    border-radius: 0.5em;
 
     &:not(.checked) {
       background-color: #585858;
@@ -313,7 +286,7 @@ export default class FilterCard extends Vue {
         width: 100%;
         height: 100%;
 
-        border-radius: inherit;
+        border-radius: 0.5em;
       }
     }
   }
@@ -321,8 +294,7 @@ export default class FilterCard extends Vue {
 
 .slider {
   display: flex;
-
-  padding: 0.5em;
+  margin: 1em 0;
 
   &-value {
     display: flex;
@@ -333,7 +305,6 @@ export default class FilterCard extends Vue {
     margin-right: 0.3em;
     padding: 0.1em 0.2em;
 
-    font-size: 1.1em;
     font-weight: 500;
 
     border-radius: 0.2em;
@@ -343,7 +314,7 @@ export default class FilterCard extends Vue {
     display: flex;
     align-items: center;
 
-    font-size: 0.75em;
+    font-size: 0.8em;
   }
 
   &-input {

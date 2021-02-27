@@ -4,7 +4,11 @@
       <table>
         <thead>
           <tr>
-            <th v-for="(head, i) in headTitles" :key="i" @click="() => changeSorter(i)">
+            <th
+              v-for="(head, i) in headTitles"
+              :key="i"
+              @click="() => changeSorter(i)"
+            >
               <span class="header_wrapper">
                 <div class="header_item">
                   <div v-if="head[0].includes('.svg')">
@@ -38,35 +42,51 @@
             <td
               class="station_name"
               :class="{
-              'default-station': station.default,
-              online: station.online,
-              'station-unavailable': station.unavailable,
-            }"
-            >{{ station.stationName }}</td>
+                'default-station': station.default,
+                online: station.online,
+                'station-unavailable': station.unavailable,
+              }"
+            >
+              {{ station.stationName }}
+            </td>
 
             <td class="station_level">
               <span
                 v-if="station.reqLevel"
                 :style="calculateExpStyle(station.reqLevel)"
-              >{{ station.reqLevel && station.reqLevel > -1 ? parseInt(station.reqLevel) >= 2 ? station.reqLevel : "L" : "?" }}</span>
+              >
+                {{
+                  station.reqLevel && station.reqLevel > -1
+                    ? parseInt(station.reqLevel) >= 2
+                      ? station.reqLevel
+                      : "L"
+                    : "?"
+                }}
+              </span>
 
               <span v-else>?</span>
             </td>
 
             <td class="station_status">
               <span
-                class="status"
+                class="status-badge"
                 :class="statusClasses(station.occupiedTo)"
-              >{{ station.occupiedTo}}</span>
+                >{{ station.occupiedTo }}</span
+              >
             </td>
 
-            <td class="station_dispatcher-name">{{ station.online ? station.dispatcherName : "" }}</td>
+            <td class="station_dispatcher-name">
+              {{ station.online ? station.dispatcherName : "" }}
+            </td>
 
             <td class="station_dispatcher-exp">
               <span
                 v-if="station.online"
                 :style="calculateExpStyle(station.dispatcherExp)"
-              >{{ 2 > station.dispatcherExp ? "L" : station.dispatcherExp }}</span>
+                >{{
+                  2 > station.dispatcherExp ? "L" : station.dispatcherExp
+                }}</span
+              >
             </td>
 
             <td class="station_tracks twoway">
@@ -74,13 +94,17 @@
                 v-if="station.routes && station.routes.twoWay.catenary > 0"
                 class="track catenary"
                 :title="`Liczba zelektryfikowanych szlaków dwutorowych: ${station.routes.twoWay.catenary}`"
-              >{{ station.routes.twoWay.catenary }}</span>
+              >
+                {{ station.routes.twoWay.catenary }}
+              </span>
 
               <span
                 v-if="station.routes && station.routes.twoWay.noCatenary > 0"
                 class="track no-catenary"
                 :title="`Liczba niezelektryfikowanych szlaków dwutorowych: ${station.routes.twoWay.noCatenary}`"
-              >{{ station.routes.twoWay.noCatenary }}</span>
+              >
+                {{ station.routes.twoWay.noCatenary }}
+              </span>
 
               <span class="separator"></span>
 
@@ -88,13 +112,17 @@
                 v-if="station.routes && station.routes.oneWay.catenary > 0"
                 class="track catenary"
                 :title="`Liczba zelektryfikowanych szlaków jednotorowych: ${station.routes.oneWay.catenary}`"
-              >{{ station.routes.oneWay.catenary }}</span>
+              >
+                {{ station.routes.oneWay.catenary }}
+              </span>
 
               <span
                 v-if="station.routes && station.routes.oneWay.noCatenary > 0"
                 class="track no-catenary"
                 :title="`Liczba niezelektryfikowanych szlaków jednotorowych: ${station.routes.oneWay.noCatenary}`"
-              >{{ station.routes.oneWay.noCatenary }}</span>
+              >
+                {{ station.routes.oneWay.noCatenary }}
+              </span>
             </td>
 
             <td class="station_info">
@@ -131,7 +159,7 @@
               />
             </td>
 
-            <td class="station_users" :class="{inactive: !station.online }">
+            <td class="station_users" :class="{ inactive: !station.online }">
               <span>
                 <span class="highlight">{{ station.currentUsers }}</span>
                 /
@@ -139,16 +167,23 @@
               </span>
             </td>
 
-            <td class="station_spawns" :class="{inactive: !station.online }">
+            <td class="station_spawns" :class="{ inactive: !station.online }">
               <span class="highlight">{{ station.spawns.length }}</span>
             </td>
 
-            <td class="station_schedules" :class="{inactive: !station.online }">
-              <span class="highlight">{{station.scheduledTrains.length}} &nbsp;</span>
+            <td
+              class="station_schedules"
+              :class="{ inactive: !station.online }"
+            >
+              <span class="highlight">
+                {{ station.scheduledTrains.length }} &nbsp;
+              </span>
               /
-              <span
-                style="color: #bbb"
-              >{{ station.scheduledTrains.filter(train => train.stopInfo.confirmed).length }}</span>
+              <span style="color: #bbb">{{
+                station.scheduledTrains.filter(
+                  (train) => train.stopInfo.confirmed
+                ).length
+              }}</span>
             </td>
             <!-- 
             <td class="station_stats">
@@ -159,7 +194,9 @@
       </table>
     </div>
 
-    <div class="no-stations" v-if="stations.length == 0">Ups! Brak stacji do wyświetlenia!</div>
+    <div class="no-stations" v-if="stations.length == 0">
+      Ups! Brak stacji do wyświetlenia!
+    </div>
   </section>
 </template>
 

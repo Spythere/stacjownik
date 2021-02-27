@@ -1,10 +1,12 @@
 import Station from '@/scripts/interfaces/Station';
+import Filter from '@/scripts/interfaces/Filter';
 
 export default class StationFilterManager {
-  private filterInitStates = {
+  private filterInitStates: Filter = {
     default: false,
     notDefault: false,
-    nonPublic: false,
+    real: false,
+    fictional: false,
     SPK: false,
     SCS: false,
     ręczne: false,
@@ -25,11 +27,11 @@ export default class StationFilterManager {
     ending: false,
   };
 
-  private filters = { ...this.filterInitStates };
+  private filters: Filter = { ...this.filterInitStates };
 
   private sorter: { index: number; dir: number } = { index: 0, dir: 1 };
 
-  filteredStationList(stationList: Station[]): Station[] {
+  private filteredStationList(stationList: Station[]): Station[] {
     return stationList
       .filter(station => {
         if ((station.nonPublic || !station.reqLevel) && this.filters['nonPublic']) return false;
@@ -41,6 +43,9 @@ export default class StationFilterManager {
 
         if (station.default && this.filters['default']) return false;
         if (!station.default && this.filters['notDefault']) return false;
+
+        if (this.filters['real'] && station.stationLines != '') return false;
+        if (this.filters['fictional'] && station.stationLines == '') return false;
 
         if (station.reqLevel == '-1') return true;
         if (parseInt(station.reqLevel) < this.filters['minLevel']) return false;
