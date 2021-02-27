@@ -26,7 +26,7 @@
         <div class="list_wrapper">
           <!-- <div class="list_loading" v-if="dataLoading">POBIERANIE DANYCH...</div> -->
           <transition name="list-anim" mode="out-in">
-            <ul class="list_content" v-if="!dataLoading && computedHistoryList.length != 0" :key="inputStationName">
+            <ul class="list_content" v-if="!dataLoading && !historyLoading && computedHistoryList.length != 0" :key="inputStationName">
               <li v-if="currentDispatcherFrom != -1" class="current">
                 <div class="dispatcher-name">
                   <a :href="`https://td2.info.pl/profile/?u=${currentDispatcherId}`">{{ currentDispatcher}}</a>
@@ -67,41 +67,30 @@ import { Component, Vue, Watch } from "vue-property-decorator";
 import { Getter } from "vuex-class";
 
 import Station from "@/scripts/interfaces/Station";
-
-interface ISceneryHistory {
-  _id: string;
-  stationHash: string;
-  stationName: string;
-  currentDispatcher: string;
-  currentDispatcherId: number;
-  currentDispatcherFrom: number;
-  currentDispatcherTo: number;
-  dispatcherHistory: {
-    dispatcherName: string;
-    dispatcherFrom: number;
-    dispatcherId: number;
-    dispatcherTo: number;
-  }[];
-}
+import ISceneryInfoData from "@/scripts/interfaces/ISceneryInfoData";
 
 @Component
 export default class HistoryView extends Vue {
   @Getter("getStationList") stationList!: Station[];
 
-  sceneryHistoryList: ISceneryHistory[] = [];
+  sceneryHistoryList: ISceneryInfoData[] = [];
+  currentSceneryHistory: ISceneryInfoData["dispatcherHistory"] = [];
 
-  currentSceneryHistory: ISceneryHistory["dispatcherHistory"] = [];
   currentDispatcher: string = "";
   currentDispatcherId: number = 0;
   currentDispatcherFrom: number = -1;
 
   inputStationName = "";
-  dataLoading = true;
+
+  dataLoading = true; /* Initial data */
+  historyLoading = false; /* History loaded after input is checked */
 
   async mounted() {
     try {
-      const responseData: ISceneryHistory[] = await (
-        await axios.get("https://stacjownik.herokuapp.com/api/getSceneryInfo")
+      const responseData: ISceneryInfoData[] = await (
+        await axios.get(
+          "https://stacjownik.herokuapp.com/api/getSceneryInfo?items=-1"
+        )
       ).data;
 
       this.sceneryHistoryList = responseData;
@@ -147,17 +136,25 @@ export default class HistoryView extends Vue {
       .reverse();
   }
 
-  itemSelected(itemName: string) {
-    const selectedScenery = this.sceneryHistoryList.find(
-      (scenery) => scenery.stationName == itemName
-    );
+  async itemSelected(itemName: string) {
+    try {
+      this.historyLoading = true;
 
-    if (!selectedScenery) return;
+      const selectedScenery: ISceneryInfoData = await (
+        await axios.get(
+          `https://stacjownik.herokuapp.com/api/getSceneryInfo?name=${itemName}&items=10`
+        )
+      ).data;
 
-    this.currentSceneryHistory = selectedScenery.dispatcherHistory;
-    this.currentDispatcher = selectedScenery.currentDispatcher;
-    this.currentDispatcherId = selectedScenery.currentDispatcherId;
-    this.currentDispatcherFrom = selectedScenery.currentDispatcherFrom;
+      this.currentSceneryHistory = selectedScenery.dispatcherHistory;
+      this.currentDispatcher = selectedScenery.currentDispatcher;
+      this.currentDispatcherId = selectedScenery.currentDispatcherId;
+      this.currentDispatcherFrom = selectedScenery.currentDispatcherFrom;
+    } catch (error) {
+      console.error(error);
+    }
+
+    this.historyLoading = false;
   }
 }
 </script>
@@ -278,7 +275,7 @@ export default class HistoryView extends Vue {
   }
 
   &_content {
-    max-height: 550px;
+    max-height: 600px;
     overflow: auto;
 
     padding: 0.2em 0.5em;

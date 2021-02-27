@@ -19,12 +19,6 @@ const routes: Array<RouteConfig> = [
     props: true,
   },
   {
-    path: '/timetable',
-    name: 'TimetableView',
-    component: () => import('@/views/TimetableView.vue'),
-    props: true,
-  },
-  {
     path: '/scenery',
     name: 'SceneryView',
     component: () => import('@/views/SceneryView.vue'),

@@ -14,7 +14,7 @@ enum Status {
   Loaded = 2,
 }
 
-interface TimetableData {
+interface ITimetableData {
   trainNo: number;
   driverName: string;
   driverId: number;
@@ -29,8 +29,6 @@ interface TimetableData {
   followingStops: TrainStop[];
   followingSceneries: string[];
 }
-
-// const devEnv = true;
 
 const URLs = {
   stations: 'https://api.td2.info.pl:9640/?method=getStationsOnline',
@@ -123,6 +121,7 @@ export default class Store extends VuexModule {
   private stationCount: number = 0;
 
   private dataConnectionStatus: Status = Status.Loading;
+  private sceneryDataStatus: Status = Status.Loading;
   private timetableLoaded: Status = Status.Loading;
 
   private stationList: Station[] = [];
@@ -155,11 +154,31 @@ export default class Store extends VuexModule {
   get getDataStatus() {
     return this.dataConnectionStatus;
   }
+  get getSceneryDataStatus() {
+    return this.sceneryDataStatus;
+  }
 
   //ACTIONS
   @Action
   async synchronizeData() {
-    this.context.commit('setJSONData');
+    // axios
+    //   .get(URLs.sceneryInfo)
+    //   .then(response => {
+    //     const data: ISceneryInfoData[] = response.data;
+
+    //     this.context.commit('setSceneryData', data);
+    //     this.context.commit('setSceneryDataStatus', Status.Loaded);
+
+    //     this.context.dispatch('fetchOnlineData');
+    //     setInterval(() => this.context.dispatch('fetchOnlineData'), 20000);
+    //   })
+    //   .catch(err => {
+    //     this.context.commit('setSceneryDataStatus', Status.Error);
+    //     console.error('Ups! Coś poszło nie tak!', err);
+    //   });
+
+    this.context.commit('setSceneryData');
+    this.context.commit('setSceneryDataStatus', Status.Loaded);
 
     this.context.dispatch('fetchOnlineData');
     setInterval(() => this.context.dispatch('fetchOnlineData'), 20000);
@@ -167,7 +186,7 @@ export default class Store extends VuexModule {
 
   @Action({ commit: 'updateTimetableData' })
   async fetchTimetableData() {
-    return this.trainList.reduce(async (acc: Promise<TimetableData[]>, train) => {
+    return this.trainList.reduce(async (acc: Promise<ITimetableData[]>, train) => {
       const timetable = await (await axios.get(timetableURL(train.trainNo))).data.message;
       const trainInfo = timetable.trainInfo;
 
@@ -309,7 +328,13 @@ export default class Store extends VuexModule {
     this.dataConnectionStatus = status;
   }
 
-  @Mutation setJSONData() {
+  @Mutation
+  private setSceneryDataStatus(status: Status) {
+    this.sceneryDataStatus = status;
+  }
+
+  @Mutation
+  private setSceneryData() {
     /*  
     0: stationName,
     1: stationURL,
@@ -377,6 +402,54 @@ export default class Store extends VuexModule {
     }));
   }
 
+  // @Mutation setSceneryData(data: ISceneryInfoData[]) {
+  //   this.sceneryData = data;
+
+  //   this.stationList = data.map(scenery => ({
+  //     stationName: scenery.stationName,
+  //     stationURL: scenery.stationURL,
+  //     stationLines: scenery.stationLines,
+  //     stationProject: scenery.stationProject,
+  //     reqLevel: scenery.reqLevel,
+  //     supportersOnly: scenery.supportersOnly,
+  //     signalType: scenery.signalType,
+  //     controlType: scenery.controlType,
+  //     SBL: scenery.SBL,
+  //     TWB: scenery.twoWayBlock,
+  //     routes: {
+  //       oneWay: {
+  //         catenary: scenery.routesOneWayCatenary,
+  //         noCatenary: scenery.routesOneWayOther,
+  //       },
+  //       twoWay: {
+  //         catenary: scenery.routesTwoWayCatenary,
+  //         noCatenary: scenery.routesToWayOther,
+  //       },
+  //     },
+  //     checkpoints: scenery.checkpoints.length ? scenery.checkpoints.map(cp => ({ checkpointName: cp, scheduledTrains: [] })) : null,
+  //     stops: scenery.stops,
+
+  //     default: scenery.default,
+  //     nonPublic: scenery.nonPublic,
+  //     unavailable: scenery.unavailable,
+
+  //     stationHash: '',
+  //     maxUsers: 0,
+  //     currentUsers: 0,
+  //     dispatcherName: '',
+  //     dispatcherRate: 0,
+  //     dispatcherExp: -1,
+  //     dispatcherId: 0,
+  //     dispatcherIsSupporter: false,
+  //     online: false,
+  //     occupiedTo: 'WOLNA',
+  //     statusTimestamp: -3,
+  //     stationTrains: [],
+  //     scheduledTrains: [],
+  //     spawns: [],
+  //   }));
+  // }
+
   @Mutation
   private updateOnlineStations(updatedStationList: any[]) {
     this.stationList = this.stationList.reduce((acc, station) => {
@@ -426,25 +499,6 @@ export default class Store extends VuexModule {
         });
       });
 
-    // Dodawanie do listy online potencjalnych scenerii niewpisanych do bazy
-    // updatedStationList.forEach(updatedStation => {
-    //   const alreadyInList: any = this.stationList.some(station => station.stationName === updatedStation.stationName);
-
-    //   console.log(updatedStation, alreadyInList);
-
-    //   if (!alreadyInList) {
-    //     this.stationList.push({
-    //       ...updatedStation,
-    //       scheduledTrains: [],
-    //       stationTrains: [],
-    //       subStations: [],
-    //       online: true,
-    //       reqLevel: '-1',
-    //       nonPublic: true,
-    //     });
-    //   }
-    // });
-
     this.stationCount = this.stationList.filter(station => station.online).length;
     this.dataConnectionStatus = Status.Loaded;
   }
@@ -465,10 +519,10 @@ export default class Store extends VuexModule {
   }
 
   @Mutation
-  private updateTimetableData(timetableList: TimetableData[]) {
+  private updateTimetableData(timetableList: ITimetableData[]) {
     this.stationList = this.stationList.map(station => {
       const stationName = station.stationName.toLowerCase();
-      const scheduledTrains: Station['scheduledTrains'] = timetableList.reduce((acc: Station['scheduledTrains'], timetableData: TimetableData, index) => {
+      const scheduledTrains: Station['scheduledTrains'] = timetableList.reduce((acc: Station['scheduledTrains'], timetableData: ITimetableData, index) => {
         if (!timetableData.followingSceneries.includes(station.stationHash)) return acc;
 
         const stopInfoIndex = timetableData.followingStops.findIndex(stop => {
