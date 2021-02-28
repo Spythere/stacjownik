@@ -80,16 +80,10 @@ export default class extends Vue {
 @import "../../styles/responsive.scss";
 
 .train-search {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-
   margin-bottom: 1rem;
 }
 
 .search {
-  padding-right: 1rem;
-
   &-box {
     position: relative;
 

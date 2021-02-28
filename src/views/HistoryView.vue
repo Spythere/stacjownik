@@ -3,15 +3,25 @@
     <div class="history_wrapper">
       <div class="header">
         <h2>DZIENNIK AKTYWNOŚCI SCENERII</h2>
-        <p style="color: #ccc;">Pokazuje dyżurnych, którzy ostatnio byli aktywni na wybranej scenerii</p>
+        <p style="color: #ccc">
+          Pokazuje dyżurnych, którzy ostatnio byli aktywni na wybranej scenerii
+        </p>
       </div>
 
       <div class="search-box">
         <div class="search-box_content">
           <label :class="{ disabled: dataLoading }">
             <select v-model="inputStationName" :disabled="dataLoading">
-              <option value disabled selected hidden>{{ dataLoading ? 'Pobieranie danych...' : 'Wybierz scenerię' }}</option>
-              <option v-for="(station) in filteredStationList" :key="station" :value="station">{{ station }}</option>
+              <option value disabled selected hidden>
+                {{ dataLoading ? "Pobieranie danych..." : "Wybierz scenerię" }}
+              </option>
+              <option
+                v-for="station in filteredStationList"
+                :key="station"
+                :value="station"
+              >
+                {{ station }}
+              </option>
             </select>
           </label>
         </div>
@@ -19,35 +29,63 @@
 
       <div class="disclaimer">
         <h4>Ta funkcjonalność jest w testach beta!</h4>
-        <p>Informacje pokazywane na ekranie mogą znikać, a ich zawartość może być fałszywa!</p>
+        <p>
+          Informacje pokazywane na ekranie mogą znikać, a ich zawartość może być
+          fałszywa!
+        </p>
       </div>
 
       <div class="list">
         <div class="list_wrapper">
           <!-- <div class="list_loading" v-if="dataLoading">POBIERANIE DANYCH...</div> -->
           <transition name="list-anim" mode="out-in">
-            <ul class="list_content" v-if="!dataLoading && !historyLoading && computedHistoryList.length != 0" :key="inputStationName">
+            <ul
+              class="list_content"
+              v-if="
+                !dataLoading &&
+                !historyLoading &&
+                computedHistoryList.length != 0
+              "
+              :key="inputStationName"
+            >
               <li v-if="currentDispatcherFrom != -1" class="current">
                 <div class="dispatcher-name">
-                  <a :href="`https://td2.info.pl/profile/?u=${currentDispatcherId}`">{{ currentDispatcher}}</a>
+                  <a
+                    :href="`https://td2.info.pl/profile/?u=${currentDispatcherId}`"
+                    >{{ currentDispatcher }}</a
+                  >
                 </div>
                 <div class="dispatcher-date">
-                  <span style="color: #bbb">{{ new Date(currentDispatcherFrom).toLocaleDateString('pl-PL') }}</span>
-                  {{ new Date(currentDispatcherFrom).toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' })}}
+                  <span style="color: #bbb">{{
+                    new Date(currentDispatcherFrom).toLocaleDateString("pl-PL")
+                  }}</span>
+                  {{
+                    new Date(currentDispatcherFrom).toLocaleTimeString(
+                      "pl-PL",
+                      { hour: "2-digit", minute: "2-digit" }
+                    )
+                  }}
                 </div>
               </li>
 
               <li v-for="(history, i) in computedHistoryList" :key="i">
                 <div class="dispatcher-name">
-                  <a :href="`https://td2.info.pl/profile/?u=${history.dispatcherId}`">{{ history.dispatcherName }}</a>
+                  <a
+                    :href="`https://td2.info.pl/profile/?u=${history.dispatcherId}`"
+                    >{{ history.dispatcherName }}</a
+                  >
                 </div>
                 <div class="dispatcher-date">
                   <div>
-                    <span style="color: #888">{{history.dispatcherFromDate }}</span>
+                    <span style="color: #888">{{
+                      history.dispatcherFromDate
+                    }}</span>
                     {{ history.dispatcherFromTime }}
                   </div>
                   <div>
-                    <span style="color: #888">{{ history.dispatcherToDate }}</span>
+                    <span style="color: #888">{{
+                      history.dispatcherToDate
+                    }}</span>
                     {{ history.dispatcherToTime }}
                   </div>
                 </div>

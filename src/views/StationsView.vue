@@ -6,8 +6,15 @@
       <div class="stations_body">
         <div class="body_bar">
           <div class="bar_actions">
-            <button class="action-btn" :class="{ open: filterCardOpen }" @click="() => toggleCardsState('filter')">
-              <img :src="require('@/assets/icon-filter2.svg')" alt="icon-filter" />
+            <button
+              class="action-btn"
+              :class="{ open: filterCardOpen }"
+              @click="() => toggleCardsState('filter')"
+            >
+              <img
+                :src="require('@/assets/icon-filter2.svg')"
+                alt="icon-filter"
+              />
               <p>FILTRY</p>
             </button>
 
@@ -20,13 +27,21 @@
 
           <div class="bar_indicators">
             <transition name="indicator-anim">
-              <span class="indicator_scenery-data" v-if="data.dataConnectionStatus < 2" :class="dataStatusClass">
+              <span
+                class="indicator_scenery-data"
+                v-if="data.dataConnectionStatus < 2"
+                :class="dataStatusClass"
+              >
                 <img :src="trainIcon" alt="icon-train" />
               </span>
             </transition>
 
             <transition name="indicator-anim">
-              <span class="indicator_timetable-data" v-if="data.timetableDataStatus < 2" :class="timetableDataStatusClass">
+              <span
+                class="indicator_timetable-data"
+                v-if="data.timetableDataStatus < 2"
+                :class="timetableDataStatusClass"
+              >
                 <img :src="timetableIcon" alt="icon-timetable" />
               </span>
             </transition>
@@ -34,17 +49,31 @@
         </div>
 
         <div class="body_table">
-          <StationTable :stations="computedStations" :sorterActive="filterManager.getSorter()" :setFocusedStation="setFocusedStation" :changeSorter="changeSorter" />
+          <StationTable
+            :stations="computedStations"
+            :sorterActive="filterManager.getSorter()"
+            :setFocusedStation="setFocusedStation"
+            :changeSorter="changeSorter"
+          />
         </div>
       </div>
     </div>
 
     <transition name="card-anim">
-      <StationCard v-if="focusedStationInfo" :stationInfo="focusedStationInfo" :exit="closeCard" />
+      <StationCard
+        v-if="focusedStationInfo"
+        :stationInfo="focusedStationInfo"
+        :exit="closeCard"
+      />
     </transition>
 
     <transition name="card-anim">
-      <FilterCard v-if="filterCardOpen" :exit="() => toggleCardsState('filter')" @changeFilterValue="changeFilterValue" @resetFilters="resetFilters" />
+      <FilterCard
+        v-if="filterCardOpen"
+        :exit="() => toggleCardsState('filter')"
+        @changeFilterValue="changeFilterValue"
+        @resetFilters="resetFilters"
+      />
     </transition>
   </div>
 </template>
@@ -54,7 +83,6 @@ import { Vue, Component } from "vue-property-decorator";
 import { Getter } from "vuex-class";
 
 import Station from "@/scripts/interfaces/Station";
-import Train from "@/scripts/interfaces/Train";
 
 import StorageManager from "@/scripts/storageManager";
 import StationFilterManager from "@/scripts/stationFilterManager";
@@ -172,7 +200,7 @@ export default class StationsView extends Vue {
   }
 
   get computedStations() {
-    return this.filterManager.filteredStationList(this.stationList);
+    return this.filterManager.getFilteredStationList(this.stationList);
   }
 
   closeCard() {

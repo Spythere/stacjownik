@@ -3,8 +3,16 @@
     <h3 class="timetable-header">
       <span>AKTYWNE ROZKŁADY JAZDY</span>
 
-      <a v-if="!timetableOnly" :href="currentURL + '&timetable_only=1'" target="_blank">
-        <img :src="viewIcon" alt="icon-view" title="Wyodrębnij rozkłady jazdy" />
+      <a
+        v-if="!timetableOnly"
+        :href="currentURL + '&timetable_only=1'"
+        target="_blank"
+      >
+        <img
+          :src="viewIcon"
+          alt="icon-view"
+          title="Wyodrębnij rozkłady jazdy"
+        />
       </a>
     </h3>
 
@@ -16,7 +24,12 @@
         </div>
 
         <ul class="option-list" :class="{ open: listOpen }">
-          <li class="option-item" v-for="(cp, i) in stationInfo.checkpoints" :key="i" @click="() => chooseOption(cp.checkpointName)">
+          <li
+            class="option-item"
+            v-for="(cp, i) in stationInfo.checkpoints"
+            :key="i"
+            @click="() => chooseOption(cp.checkpointName)"
+          >
             <input type="option-radio" name="sort" />
             <label :id="cp.checkpointName">{{ cp.checkpointName }}</label>
           </li>
@@ -24,50 +37,74 @@
       </div>
     </div>
 
-    <span class="timetable-item loading" v-if="dataStatus == 0">Ładowanie...</span>
+    <span class="timetable-item loading" v-if="dataStatus == 0"
+      >Ładowanie...</span
+    >
 
-    <span class="timetable-item empty" v-else-if="computedScheduledTrains.length == 0">Brak aktywnych rozkładów!</span>
+    <span
+      class="timetable-item empty"
+      v-else-if="computedScheduledTrains.length == 0"
+      >Brak aktywnych rozkładów!</span
+    >
 
     <transition-group name="list-anim">
-      <div class="timetable-item" v-for="(scheduledTrain, i) in computedScheduledTrains" :key="i+1">
+      <div
+        class="timetable-item"
+        v-for="(scheduledTrain, i) in computedScheduledTrains"
+        :key="i + 1"
+      >
         <span class="timetable-general">
           <span class="general-info">
-            <router-link :to="{
-                  name: 'TrainsView',
-                  params: {
-                    passedSearchedTrain: scheduledTrain.trainNo.toString(),
-                  },
-                }">
+            <router-link
+              :to="{
+                name: 'TrainsView',
+                params: {
+                  queryTrain: scheduledTrain.trainNo.toString(),
+                },
+              }"
+            >
               <span>
                 <strong>{{ scheduledTrain.category }}</strong>
                 {{ scheduledTrain.trainNo }}
-              </span>
-            </router-link>|
+              </span> </router-link
+            >|
             <span>
-              <a :href="
-                    'https://td2.info.pl/profile/?u=' + scheduledTrain.driverId
-                  " target="_blank">{{ scheduledTrain.driverName }}</a>
+              <a
+                :href="
+                  'https://td2.info.pl/profile/?u=' + scheduledTrain.driverId
+                "
+                target="_blank"
+                >{{ scheduledTrain.driverName }}</a
+              >
             </span>
 
             <div class="info-route">
-              <strong>{{ scheduledTrain.beginsAt }} - {{ scheduledTrain.terminatesAt }}</strong>
+              <strong
+                >{{ scheduledTrain.beginsAt }} -
+                {{ scheduledTrain.terminatesAt }}</strong
+              >
             </div>
           </span>
 
           <span class="general-status">
-            <span :class="scheduledTrain.stopStatus">{{scheduledTrain.stopLabel}}</span>
+            <span :class="scheduledTrain.stopStatus">{{
+              scheduledTrain.stopLabel
+            }}</span>
           </span>
         </span>
 
         <span class="timetable-schedule">
           <span class="schedule-arrival">
-            <span class="arrival-time begins" v-if="scheduledTrain.stopInfo.beginsHere">
+            <span
+              class="arrival-time begins"
+              v-if="scheduledTrain.stopInfo.beginsHere"
+            >
               ROZPOCZYNA
               <div>BIEG</div>
             </span>
             <span class="arrival-time" v-else>
               {{ scheduledTrain.stopInfo.arrivalTimeString }} ({{
-              scheduledTrain.stopInfo.arrivalDelay
+                scheduledTrain.stopInfo.arrivalDelay
               }})
             </span>
           </span>
@@ -80,10 +117,14 @@
             <span class="stop-arrow arrow"></span>
           </span>
           <span class="schedule-departure">
-            <span class="departure-time terminates" v-if="scheduledTrain.stopInfo.terminatesHere">KOŃCZY BIEG</span>
+            <span
+              class="departure-time terminates"
+              v-if="scheduledTrain.stopInfo.terminatesHere"
+              >KOŃCZY BIEG</span
+            >
             <span class="departure-time" v-else>
               {{ scheduledTrain.stopInfo.departureTimeString }} ({{
-              scheduledTrain.stopInfo.departureDelay
+                scheduledTrain.stopInfo.departureDelay
               }})
             </span>
           </span>

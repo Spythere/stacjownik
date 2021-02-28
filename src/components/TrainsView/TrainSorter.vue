@@ -2,8 +2,6 @@
   <div class="train-sorter">
     <div class="sorter-wrapper">
       <div class="sorter-box">
-        <div class="title">Sortuj według</div>
-
         <div class="selected" @click="toggleOptionList">
           <span>{{ sorterName }}</span>
           <img :src="require('@/assets/icon-select.svg')" alt="icon-select" />
@@ -88,10 +86,6 @@ export default class TrainSorter extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.title {
-  padding-left: 0.3em;
-}
-
 .sorter-wrapper {
   display: flex;
 

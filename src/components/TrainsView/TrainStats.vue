@@ -115,8 +115,11 @@ export default class TrainStats extends Vue {
     if (this.trains.length == 0) return { avg: "0", min: "0", max: "0" };
 
     const avg = (
-      this.trains.reduce((acc, train) => train.timetableData ? acc + train.timetableData.routeDistance : acc, 0) /
-      this.trains.length
+      this.trains.reduce(
+        (acc, train) =>
+          train.timetableData ? acc + train.timetableData.routeDistance : acc,
+        0
+      ) / this.trains.length
     ).toFixed(2);
 
     const minMax = this.trains.reduce((acc, train) => {
@@ -143,7 +146,9 @@ export default class TrainStats extends Vue {
 
       acc.set(
         train.timetableData.category,
-        acc.get(train.timetableData.category) ? acc.get(train.timetableData.category) + 1 : 1
+        acc.get(train.timetableData.category)
+          ? acc.get(train.timetableData.category) + 1
+          : 1
       );
 
       return acc;
@@ -172,8 +177,12 @@ export default class TrainStats extends Vue {
   }
 
   get specialTrainCount(): [number, number] {
-    const twrList = this.trains.filter((train) => train.timetableData && train.timetableData.TWR);
-    const skrList = this.trains.filter((train) => train.timetableData && train.timetableData.SKR);
+    const twrList = this.trains.filter(
+      (train) => train.timetableData && train.timetableData.TWR
+    );
+    const skrList = this.trains.filter(
+      (train) => train.timetableData && train.timetableData.SKR
+    );
 
     return [twrList.length, skrList.length];
   }
@@ -198,11 +207,14 @@ export default class TrainStats extends Vue {
 }
 
 .train-stats {
-  padding: 0.3em 0;
   font-size: 1.1em;
-  z-index: 5;
+  z-index: 10;
+
+  margin-bottom: 0.5em;
 
   position: relative;
+
+  outline: none;
 }
 
 .stats {
@@ -219,6 +231,7 @@ export default class TrainStats extends Vue {
     position: absolute;
     display: inline-block;
     max-width: 700px;
+    width: 100%;
 
     background: rgba(black, 0.85);
     border-radius: 0 1em 1em 1em;

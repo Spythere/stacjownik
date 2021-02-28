@@ -181,25 +181,21 @@ import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 
 const unknownTrainImage = require("@/assets/unknown.png");
 
-const ascSVG = require("@/assets/icon-arrow-asc.svg");
-const descSVG = require("@/assets/icon-arrow-desc.svg");
-
 import Train from "@/scripts/interfaces/Train";
-import Station from "@/scripts/interfaces/Station";
 
 import TrainSchedule from "@/components/TrainsView/TrainSchedule.vue";
-import TrainStop from '@/scripts/interfaces/TrainStop';
+import TrainStop from "@/scripts/interfaces/TrainStop";
 
 @Component({
-  components: { TrainSchedule }
+  components: { TrainSchedule },
 })
 export default class TrainTable extends Vue {
   @Prop() computedTrains!: Train[];
 
   showedSchedule = 0;
 
-  ascSVG = ascSVG;
-  descSVG = descSVG;
+  ascSVG = require("@/assets/icon-arrow-asc.svg");
+  descSVG = require("@/assets/icon-arrow-desc.svg");
 
   speedIcon: string = require("@/assets/icon-speed.svg");
   massIcon: string = require("@/assets/icon-mass.svg");
@@ -220,15 +216,29 @@ export default class TrainTable extends Vue {
 
   generateStopList(stops: any): string | undefined {
     if (!stops) return "";
-    return stops.reduce((acc, stop: TrainStop, i) => {
-      if (stop.stopType.includes("ph")) acc.push(`<strong style='color:${stop.confirmed ? "springgreen" : "white"}'>${stop.stopName}</strong>`);
-      else if (i > 0 && i < stops.length - 1 && !stop.stopNameRAW.includes("po."))
-        acc.push(`<span style='color:${stop.confirmed ? "springgreen" : "lightgray"}'>${stop.stopName}</span>`);
-      return acc;
-    }, []).join(" * ");
+    return stops
+      .reduce((acc, stop: TrainStop, i) => {
+        if (stop.stopType.includes("ph"))
+          acc.push(
+            `<strong style='color:${
+              stop.confirmed ? "springgreen" : "white"
+            }'>${stop.stopName}</strong>`
+          );
+        else if (
+          i > 0 &&
+          i < stops.length - 1 &&
+          !stop.stopNameRAW.includes("po.") &&
+          !stop.stopNameRAW.includes("SBL")
+        )
+          acc.push(
+            `<span style='color:${
+              stop.confirmed ? "springgreen" : "lightgray"
+            }'>${stop.stopName}</span>`
+          );
+        return acc;
+      }, [])
+      .join(" > ");
   }
-
-
 }
 </script>
 
@@ -249,6 +259,8 @@ export default class TrainTable extends Vue {
 
 .train {
   &-list {
+    font-size: 1.05em;
+
     @include smallScreen() {
       width: 100%;
       overflow: hidden;
@@ -266,13 +278,12 @@ export default class TrainTable extends Vue {
     & > .wrapper {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
-      font-size: calc(0.4rem + 0.5vw);
 
       @include smallScreen() {
         grid-template-columns: 1fr;
         grid-template-rows: repeat(3, minmax(100px, 1fr));
 
-        font-size: 0.8rem;
+        font-size: 1.1em;
         gap: 0.4em 0;
       }
 
@@ -305,7 +316,7 @@ export default class TrainTable extends Vue {
       background: #1085b3;
       border-radius: 1em;
 
-      font-size: 0.9em;
+      font-size: 0.85em;
 
       -moz-user-select: none;
       -webkit-user-select: none;
@@ -330,14 +341,14 @@ export default class TrainTable extends Vue {
     display: flex;
     align-items: center;
 
-    font-size: 1.25em;
+    font-size: 1.3em;
     margin: 5px 0;
   }
 
   &-stops {
     margin-bottom: 10px;
 
-    font-size: 0.75em;
+    font-size: 0.7em;
   }
 
   &-online {
@@ -374,23 +385,16 @@ export default class TrainTable extends Vue {
   justify-content: center;
   flex-wrap: wrap;
 
-  &-exp {
-    font-size: 1.4em;
-    padding: 0.3em 0.6em;
-
-    border-radius: 0.4em;
-
-    background-color: red;
-  }
-
   &-name {
     margin: 0 0.3em;
     font-weight: bold;
+    font-size: 1.1em;
   }
 
   &-type {
     color: #bbb;
-    margin-left: 1em;
+    margin-left: 0.5em;
+    font-size: 1.1em;
   }
 
   &-loco {
@@ -400,7 +404,7 @@ export default class TrainTable extends Vue {
 
   &-loco img {
     width: 13em;
-    max-width: 190px;
+    max-width: 200px;
   }
 }
 
@@ -432,8 +436,6 @@ export default class TrainTable extends Vue {
 
     margin-top: 1em;
     text-align: center;
-
-    font-size: 0.9em;
 
     p {
       color: #00cff3;

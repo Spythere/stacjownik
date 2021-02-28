@@ -1,13 +1,29 @@
 <template>
   <section class="trains-view">
     <div class="body-wrapper">
-      <div class="options-wrapper">
-        <TrainSorter :trainList="computedTrains" @changeSorter="changeSorter" />
-        <TrainSearch @changeSearchedTrain="changeSearchedTrain" @changeSearchedDriver="changeSearchedDriver" :passedSearchedTrain="passedSearchedTrain" :focusedTrain="focusedTrain" />
+      <!-- <TrainSorter :trainList="computedTrains" @changeSorter="changeSorter" />
+        <TrainSearch
+          @changeSearchedTrain="changeSearchedTrain"
+          @changeSearchedDriver="changeSearchedDriver"
+          :passedSearchedTrain="passedSearchedTrain"
+          :focusedTrain="focusedTrain"
+        /> -->
+
+      <div class="options-bar">
+        <TrainStats :trains="trains" class="test" />
+        <TrainOptions
+          :queryTrain="queryTrain"
+          :focusedTrain="focusedTrain"
+          @changeSorter="changeSorter"
+          @changeSearchedTrain="changeSearchedTrain"
+          @changeSearchedDriver="changeSearchedDriver"
+        />
       </div>
 
-      <TrainStats :trains="trains" />
-      <TrainTable :computedTrains="computedTrains" @changeFocusedTrain="changeFocusedTrain" />
+      <TrainTable
+        :computedTrains="computedTrains"
+        @changeFocusedTrain="changeFocusedTrain"
+      />
     </div>
   </section>
 </template>
@@ -15,31 +31,28 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
-import { Getter, Action } from "vuex-class";
+import { Getter } from "vuex-class";
 
-import Station from "@/scripts/interfaces/Station";
 import Train from "@/scripts/interfaces/Train";
 
-import TrainSorter from "@/components/TrainsView/TrainSorter.vue";
-import TrainSearch from "@/components/TrainsView/TrainSearch.vue";
 import TrainTable from "@/components/TrainsView/TrainTable.vue";
 import TrainStats from "@/components/TrainsView/TrainStats.vue";
-
-import axios from "axios";
+import TrainOptions from "@/components/TrainsView/TrainOptions.vue";
 
 @Component({
   components: {
-    TrainSorter,
     TrainTable,
     TrainStats,
-    TrainSearch,
+    TrainOptions,
   },
 })
 export default class TrainsView extends Vue {
   @Getter("getTrainList") trains!: Train[];
-  @Prop() readonly passedSearchedTrain!: string;
 
-  sorterActive: { id: string; dir: number } = { id: "timetable", dir: 1 };
+  // Passed in route as query parameters
+  @Prop() readonly queryTrain!: string;
+
+  sorterActive: { id: string; dir: number } = { id: "distance", dir: -1 };
 
   searchedTrain: string = "";
   searchedDriver: string = "";
@@ -128,15 +141,6 @@ export default class TrainsView extends Vue {
   max-width: 1300px;
 
   padding: 0 0.5rem;
-}
-
-.options-wrapper {
-  display: flex;
-  flex-wrap: wrap;
-
-  & > div {
-    margin-right: 1rem;
-  }
 }
 
 @include bigScreen() {

@@ -31,7 +31,7 @@ export default class StationFilterManager {
 
   private sorter: { index: number; dir: number } = { index: 0, dir: 1 };
 
-  private filteredStationList(stationList: Station[]): Station[] {
+  getFilteredStationList(stationList: Station[]): Station[] {
     return stationList
       .filter(station => {
         if ((station.nonPublic || !station.reqLevel) && this.filters['nonPublic']) return false;

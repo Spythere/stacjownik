@@ -1,6 +1,10 @@
 <template>
   <div class="app">
-    <UpdateModal :currentVersion="VERSION" @toggleUpdateModal="toggleUpdateModal" v-if="updateModalVisible" />
+    <UpdateModal
+      :currentVersion="VERSION"
+      @toggleUpdateModal="toggleUpdateModal"
+      v-if="updateModalVisible"
+    />
 
     <div class="app_container">
       <header class="app_header">
@@ -22,9 +26,15 @@
           </span>
 
           <span class="header_links">
-            <router-link class="route" active-class="route-active" to="/" exact>SCENERIE</router-link>/
-            <router-link class="route" active-class="route-active" to="/trains">POCIĄGI</router-link>/
-            <router-link class="route" active-class="route-active" to="/history">DZIENNIK</router-link>
+            <router-link class="route" active-class="route-active" to="/" exact
+              >SCENERIE</router-link
+            >/
+            <router-link class="route" active-class="route-active" to="/trains"
+              >POCIĄGI</router-link
+            >/
+            <router-link class="route" active-class="route-active" to="/history"
+              >DZIENNIK</router-link
+            >
           </span>
         </div>
       </header>
@@ -39,8 +49,10 @@
 
       <footer class="app_footer">
         &copy;
-        <a href="https://td2.info.pl/profile/?u=20777" target="_blank">Spythere</a>
-        2021 | v{{VERSION}}
+        <a href="https://td2.info.pl/profile/?u=20777" target="_blank">
+          Spythere
+        </a>
+        2021 | v{{ VERSION }}
       </footer>
     </div>
   </div>
