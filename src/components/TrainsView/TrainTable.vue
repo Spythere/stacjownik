@@ -341,7 +341,7 @@ export default class TrainTable extends Vue {
     display: flex;
     align-items: center;
 
-    font-size: 1.3em;
+    font-size: 1.15em;
     margin: 5px 0;
   }
 
