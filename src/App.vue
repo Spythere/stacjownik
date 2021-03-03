@@ -79,7 +79,7 @@ export default class App extends Vue {
   hasReleaseNotes = false;
   updateModalVisible = false;
 
-  async mounted() {
+  mounted() {
     this.synchronizeData();
 
     if (StorageManager.getStringValue("version") != this.VERSION) {
@@ -89,9 +89,9 @@ export default class App extends Vue {
         StorageManager.setBooleanValue("version_notes_read", false);
     }
 
-    this.updateModalVisible = !StorageManager.getBooleanValue(
-      "version_notes_read"
-    );
+    this.updateModalVisible =
+      this.hasReleaseNotes &&
+      !StorageManager.getBooleanValue("version_notes_read");
   }
 
   toggleUpdateModal() {
@@ -153,12 +153,27 @@ export default class App extends Vue {
 
 // CONTAINER
 .app_container {
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  grid-template-columns: minmax(0, 1fr);
+  // display: grid;
+  // grid-template-rows: auto 1fr auto;
+  // grid-template-columns: minmax(0, 1fr);
+
+  display: flex;
+  flex-flow: column;
 
   min-width: 0;
   min-height: 100vh;
+
+  header {
+    flex: 0 0 auto;
+  }
+
+  main {
+    flex: 1 1 auto;
+  }
+
+  footer {
+    flex: 0 1 0.2em;
+  }
 }
 
 // HEADER
@@ -166,41 +181,43 @@ export default class App extends Vue {
   background: $primaryCol;
   padding: 0.15em;
 
-  border-radius: 0 0 0.7em 0.7em;
+  border-radius: 0 0 1em 1em;
 
   display: flex;
   justify-content: center;
 }
 
-.header_brand {
-  width: 100%;
-  font-size: 4.5em;
+.header {
+  &_brand {
+    width: 100%;
+    font-size: 4.5em;
 
-  text-align: center;
+    text-align: center;
 
-  img {
-    width: 0.8em;
+    img {
+      width: 0.8em;
+    }
   }
-}
 
-.header_info {
-  display: flex;
-  justify-content: space-between;
+  &_info {
+    display: flex;
+    justify-content: space-between;
 
-  font-size: 1.35em;
+    font-size: 1.35em;
 
-  margin: 0 0.3em;
-  padding: 0.2em;
-}
+    margin: 0 0.3em;
+    padding: 0.2em;
+  }
 
-.header_links {
-  display: flex;
-  justify-content: center;
+  &_links {
+    display: flex;
+    justify-content: center;
 
-  border-radius: 0.7em;
+    border-radius: 0.7em;
 
-  font-size: 1.35em;
-  padding: 0.5em;
+    font-size: 1.35em;
+    padding: 0.5em;
+  }
 }
 
 // COUNTER
@@ -219,7 +236,7 @@ export default class App extends Vue {
 }
 
 // FOOTER
-.app_footer {
+footer.app_footer {
   font-size: calc(0.5rem + 0.5vw);
   max-width: 100%;
   padding: 0.3rem;

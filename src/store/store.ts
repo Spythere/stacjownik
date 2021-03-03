@@ -203,6 +203,8 @@ export default class Store extends VuexModule {
           stopName: point.pointName,
           stopNameRAW: point.pointNameRAW,
           stopType: point.pointStopType,
+          stopDistance: point.pointDistance,
+
           mainStop: point.pointName.includes('strong'),
 
           arrivalLine: point.arrivalLine,

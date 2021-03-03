@@ -2,6 +2,7 @@ export default interface TrainStop {
   stopName: string;
   stopNameRAW: string;
   stopType: string;
+  stopDistance: number;
   mainStop: boolean;
 
   arrivalLine: string;

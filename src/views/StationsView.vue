@@ -276,6 +276,13 @@ export default class StationsView extends Vue {
 
 .bar_actions {
   display: flex;
+
+  @include smallScreen() {
+    justify-content: center;
+  }
+
+  width: 100%;
+
   font-size: 1.25em;
 
   button {
@@ -354,10 +361,6 @@ export default class StationsView extends Vue {
 
   &.open {
     color: $accentCol;
-  }
-
-  @include smallScreen() {
-    font-size: 1.2em;
   }
 }
 

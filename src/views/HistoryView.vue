@@ -6,33 +6,35 @@
         <p style="color: #ccc">
           Pokazuje dyżurnych, którzy ostatnio byli aktywni na wybranej scenerii
         </p>
-      </div>
 
-      <div class="search-box">
-        <div class="search-box_content">
-          <label :class="{ disabled: dataLoading }">
-            <select v-model="inputStationName" :disabled="dataLoading">
-              <option value disabled selected hidden>
-                {{ dataLoading ? "Pobieranie danych..." : "Wybierz scenerię" }}
-              </option>
-              <option
-                v-for="station in filteredStationList"
-                :key="station"
-                :value="station"
-              >
-                {{ station }}
-              </option>
-            </select>
-          </label>
+        <div class="search-box">
+          <div class="search-box_content">
+            <label :class="{ disabled: dataLoading }">
+              <select v-model="inputStationName" :disabled="dataLoading">
+                <option value disabled selected hidden>
+                  {{
+                    dataLoading ? "Pobieranie danych..." : "Wybierz scenerię"
+                  }}
+                </option>
+                <option
+                  v-for="station in filteredStationList"
+                  :key="station"
+                  :value="station"
+                >
+                  {{ station }}
+                </option>
+              </select>
+            </label>
+          </div>
         </div>
-      </div>
 
-      <div class="disclaimer">
-        <h4>Ta funkcjonalność jest w testach beta!</h4>
-        <p>
-          Informacje pokazywane na ekranie mogą znikać, a ich zawartość może być
-          fałszywa!
-        </p>
+        <div class="disclaimer">
+          <h4>Ta funkcjonalność jest w testach beta!</h4>
+          <p>
+            Informacje pokazywane na ekranie mogą znikać, a ich zawartość może
+            być fałszywa!
+          </p>
+        </div>
       </div>
 
       <div class="list">
@@ -203,14 +205,14 @@ export default class HistoryView extends Vue {
 .history {
   &_view {
     font-size: 1.2em;
-    display: flex;
   }
 
   &_wrapper {
     width: 100%;
+    height: 100%;
     text-align: center;
 
-    margin-top: 1em;
+    margin-top: 0.5em;
   }
 }
 
@@ -313,7 +315,7 @@ export default class HistoryView extends Vue {
   }
 
   &_content {
-    max-height: 600px;
+    max-height: 75vh;
     overflow: auto;
 
     padding: 0.2em 0.5em;

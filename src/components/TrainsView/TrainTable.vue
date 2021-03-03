@@ -249,7 +249,7 @@ export default class TrainTable extends Vue {
 
 .no-trains {
   text-align: center;
-  font-size: 1.5em;
+  font-size: 1.35em;
 
   padding: 1rem;
   margin: 1rem 0;
@@ -259,8 +259,6 @@ export default class TrainTable extends Vue {
 
 .train {
   &-list {
-    font-size: 1.05em;
-
     @include smallScreen() {
       width: 100%;
       overflow: hidden;
@@ -283,7 +281,7 @@ export default class TrainTable extends Vue {
         grid-template-columns: 1fr;
         grid-template-rows: repeat(3, minmax(100px, 1fr));
 
-        font-size: 1.1em;
+        font-size: 1.25em;
         gap: 0.4em 0;
       }
 
@@ -348,7 +346,7 @@ export default class TrainTable extends Vue {
   &-stops {
     margin-bottom: 10px;
 
-    font-size: 0.7em;
+    font-size: 0.8em;
   }
 
   &-online {

@@ -148,7 +148,7 @@ export default class FilterCard extends Vue {
 @import "../../styles/card";
 
 .card {
-  font-size: 1.5em;
+  font-size: 1.45em;
 
   &-title {
     font-size: 2em;

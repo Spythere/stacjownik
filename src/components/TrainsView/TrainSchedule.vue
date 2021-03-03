@@ -17,10 +17,16 @@
             v-if="
               i > 0 && followingStops[i - 1].departureLine != stop.arrivalLine
             "
-          >{{ stop.arrivalLine }}</div>
+          >
+            {{ stop.arrivalLine }}
+          </div>
 
           <span class="stop-info">
             <div class="info-indicator"></div>
+
+            <span class="info-distance">
+              {{ Math.floor(stop.stopDistance) }}
+            </span>
 
             <span class="info-name" v-html="stop.stopName"></span>
             <span class="info-date">
@@ -28,13 +34,17 @@
                 class="date-arrival"
                 v-if="!stop.beginsHere"
                 :class="{
-                  delayed: stop.arrivalDelay > 0,
-                  preponed: stop.arrivalDelay < 0,
+                  delayed: stop.arrivalDelay > 0 && stop.confirmed,
+                  preponed: stop.arrivalDelay < 0 && stop.confirmed,
                 }"
               >
                 p.
                 {{
-                stylizeTime(stop.arrivalRealTimeString, stop.arrivalDelay)
+                  stylizeTime(
+                    stop.arrivalRealTimeString,
+                    stop.arrivalDelay,
+                    stop.confirmed
+                  )
                 }}
               </span>
 
@@ -42,19 +52,24 @@
                 class="date-stop"
                 v-if="stop.stopTime"
                 :class="stop.stopType.replace(', ', '-')"
-              >{{ stop.stopTime }} {{ stop.stopType }}</span>
+                >{{ stop.stopTime }} {{ stop.stopType }}</span
+              >
 
               <span
                 class="date-departure"
                 v-if="!stop.terminatesHere && stop.stopTime != 0"
                 :class="{
-                  delayed: stop.departureDelay > 0,
-                  preponed: stop.departureDelay < 0,
+                  delayed: stop.departureDelay > 0 && stop.confirmed,
+                  preponed: stop.departureDelay < 0 && stop.confirmed,
                 }"
               >
                 o.
                 {{
-                stylizeTime(stop.departureRealTimeString, stop.departureDelay)
+                  stylizeTime(
+                    stop.departureRealTimeString,
+                    stop.departureDelay,
+                    stop.confirmed
+                  )
                 }}
               </span>
             </span>
@@ -77,10 +92,12 @@ export default class TrainSchedule extends Vue {
   @Prop() readonly followingStops!: TrainStop[];
   @Prop() readonly currentStationName!: string;
 
-  stylizeTime(timeString: string, delay: number) {
+  stylizeTime(timeString: string, delay: number, confirmed: boolean) {
     return (
       timeString +
-      (delay != 0 ? " (" + (delay > 0 ? "+" : "") + delay.toString() + ")" : "")
+      (delay != 0 && confirmed
+        ? " (" + (delay > 0 ? "+" : "") + delay.toString() + ")"
+        : "")
     );
   }
 
@@ -95,14 +112,8 @@ export default class TrainSchedule extends Vue {
 
 .train-schedule {
   max-height: 600px;
-  overflow: auto;
-  margin-top: 1rem;
-
-  font-size: 1em;
-
-  @include smallScreen() {
-    font-size: 0.8em;
-  }
+  // overflow: auto;
+  margin-top: 2em;
 }
 
 .schedule-bar,
@@ -129,8 +140,7 @@ export default class TrainSchedule extends Vue {
 
 .schedule-wrapper {
   position: relative;
-  margin-top: 1rem;
-  margin-left: 0.5rem;
+  margin-left: 1.5em;
 }
 
 ul.schedule-list {
@@ -146,19 +156,19 @@ ul.schedule-list > li.schedule-item {
   padding: 0 0.5rem;
 
   &.confirmed {
-    & > .progress-bar,
-    & > .stop-info > .info-indicator {
+    .progress-bar,
+    .stop-info > .info-indicator {
       background: lime;
     }
   }
 
   &.stopped {
-    & > .progress-bar {
+    .progress-bar {
       background: lime;
       height: 50%;
     }
 
-    & > .stop-info > .info-indicator {
+    .stop-info > .info-indicator {
       background: orangered;
     }
   }
@@ -169,12 +179,25 @@ li.schedule-item > .stop-info {
 
   position: relative;
 
-  & > .info-indicator {
+  .info-distance {
+    position: absolute;
+
+    top: 50%;
+    left: -1.8rem;
+    transform: translate(-100%, -50%);
+
+    font-size: 0.8em;
+    color: #d6d6d6;
+  }
+
+  .info-indicator {
     position: absolute;
     z-index: 1;
 
     top: 50%;
     left: -1.5rem;
+
+    text-align: right;
 
     transform: translateY(-50%);
 
@@ -184,21 +207,21 @@ li.schedule-item > .stop-info {
     background: white;
   }
 
-  & > .info-name {
+  .info-name {
     background: rgb(0, 81, 187);
     padding: 0.3rem 0.5rem;
   }
 
-  & > .info-date {
+  .info-date {
     display: flex;
     align-items: center;
 
-    & > span {
+    span {
       background: #5c5c5c;
       padding: 0.3rem 0.5rem;
     }
 
-    & > .date-stop {
+    .date-stop {
       &.ph,
       &.ph-pm {
         background: #ce8d00;
@@ -211,8 +234,8 @@ li.schedule-item > .stop-info {
       }
     }
 
-    & > .date-arrival,
-    & > .date-departure {
+    .date-arrival,
+    .date-departure {
       &.delayed {
         background: rgb(250, 0, 0);
       }

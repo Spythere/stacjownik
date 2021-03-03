@@ -288,8 +288,6 @@ section.station_table {
   overflow-y: hidden;
   font-size: calc(0.55rem + 0.35vw);
   font-weight: 500;
-
-  font-size: 1.2em;
 }
 
 .table_wrapper {

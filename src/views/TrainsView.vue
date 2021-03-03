@@ -151,7 +151,7 @@ export default class TrainsView extends Vue {
 
 @include smallScreen {
   .body-wrapper {
-    font-size: 0.8rem;
+    // font-size: 0.8rem;
   }
 
   .options-wrapper {
