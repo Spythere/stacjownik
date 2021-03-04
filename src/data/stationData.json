@@ -2080,5 +2080,26 @@
     false,
     false,
     false
+  ],
+  [
+    "Stare Lipowo",
+    "https://td2.info.pl/scenerie/stare-lipowo/",
+    "",
+    null,
+    "",
+    "NIE",
+    "współczesna",
+    "SCS",
+    "TAK (Szlaki Dw, Pk, Pr-SL)",
+    "TAK",
+    0,
+    0,
+    4,
+    0,
+    ["Stare Lipowo", "Przęsy"],
+    null,
+    false,
+    false,
+    false
   ]
 ]

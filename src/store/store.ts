@@ -616,7 +616,7 @@ export default class Store extends VuexModule {
         for (let checkpoint of station.checkpoints) {
           timetableList.reduce((acc, data) => {
             data.followingStops
-              .filter(stop => stop.stopNameRAW === checkpoint.checkpointName)
+              .filter(stop => stop.stopNameRAW.toLowerCase() === checkpoint.checkpointName.toLowerCase())
               .forEach(stopInfo => {
                 // const stopInfo = data.followingStops[stopInfoIndex];
 
