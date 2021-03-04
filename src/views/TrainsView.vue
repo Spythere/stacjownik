@@ -93,7 +93,6 @@ export default class TrainsView extends Vue {
           case "mass":
             if (a.mass > b.mass) return this.sorterActive.dir;
             else return -this.sorterActive.dir;
-            break;
 
           case "distance":
             if (!a.timetableData || !b.timetableData) return 0;
@@ -101,22 +100,18 @@ export default class TrainsView extends Vue {
             if (a.timetableData.routeDistance > b.timetableData.routeDistance)
               return this.sorterActive.dir;
             else return -this.sorterActive.dir;
-            break;
 
           case "speed":
             if (a.speed > b.speed) return this.sorterActive.dir;
             else return -this.sorterActive.dir;
-            break;
 
           case "timetable":
             if (a.trainNo > b.trainNo) return this.sorterActive.dir;
             else return -this.sorterActive.dir;
-            break;
 
           case "length":
             if (a.length > b.length) return this.sorterActive.dir;
             else return -this.sorterActive.dir;
-            break;
 
           default:
             break;
@@ -141,19 +136,13 @@ export default class TrainsView extends Vue {
   max-width: 1300px;
 
   padding: 0 0.5rem;
-}
 
-@include bigScreen() {
-  .body-wrapper {
+  @include bigScreen() {
     font-size: 0.9rem;
   }
 }
 
 @include smallScreen {
-  .body-wrapper {
-    // font-size: 0.8rem;
-  }
-
   .options-wrapper {
     justify-content: center;
   }

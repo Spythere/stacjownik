@@ -76,7 +76,7 @@
               </div>
             </div>
 
-            <div class="info-bottom">
+            <!-- <div class="info-bottom">
               <span
                 class="info-label user-badge"
                 :class="train.stopStatus || 'disconnected'"
@@ -96,7 +96,7 @@
                   </span>
                 </span>
               </span>
-            </div>
+            </div> -->
           </span>
 
           <span class="driver">
@@ -114,7 +114,13 @@
             </span>
 
             <span class="driver-loco">
-              <img :src="train.locoURL" @error="onImageError" />
+              <img
+                v-if="!missingLocoImages.includes(train.locoURL)"
+                :src="train.locoURL"
+                @error="onImageError"
+              />
+
+              <img v-else :src="defaultLocoImage" alt="unknown-train" />
             </span>
           </span>
 
@@ -177,9 +183,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop, Watch } from "vue-property-decorator";
-
-const unknownTrainImage = require("@/assets/unknown.png");
+import { Vue, Component, Prop } from "vue-property-decorator";
 
 import Train from "@/scripts/interfaces/Train";
 
@@ -193,6 +197,10 @@ export default class TrainTable extends Vue {
   @Prop() computedTrains!: Train[];
 
   showedSchedule = 0;
+
+  missingLocoImages: string[] = [];
+
+  defaultLocoImage = require("@/assets/unknown.png");
 
   ascSVG = require("@/assets/icon-arrow-asc.svg");
   descSVG = require("@/assets/icon-arrow-desc.svg");
@@ -211,7 +219,8 @@ export default class TrainTable extends Vue {
   }
 
   onImageError(e: Event) {
-    (e.target as HTMLImageElement).src = unknownTrainImage;
+    const imageEl = e.target as HTMLImageElement;
+    this.missingLocoImages.push(imageEl.src);
   }
 
   generateStopList(stops: any): string | undefined {
@@ -266,7 +275,7 @@ export default class TrainTable extends Vue {
   }
 
   &-row {
-    padding: 1rem;
+    padding: 1em;
     margin-bottom: 1rem;
 
     background-color: $primaryCol;
@@ -281,7 +290,6 @@ export default class TrainTable extends Vue {
         grid-template-columns: 1fr;
         grid-template-rows: repeat(3, minmax(100px, 1fr));
 
-        font-size: 1.25em;
         gap: 0.4em 0;
       }
 
@@ -298,8 +306,6 @@ export default class TrainTable extends Vue {
   justify-content: space-between;
 
   &-category {
-    font-size: 1.05em;
-
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -313,8 +319,6 @@ export default class TrainTable extends Vue {
 
       background: #1085b3;
       border-radius: 1em;
-
-      font-size: 0.85em;
 
       -moz-user-select: none;
       -webkit-user-select: none;
@@ -450,24 +454,22 @@ export default class TrainTable extends Vue {
 }
 
 .warning {
-  border-radius: 15px;
-  padding: 0.1em 1.2em;
+  padding: 0.1em 0.8em;
   margin-right: 0.5em;
 
   display: flex;
   align-items: center;
-
-  color: white;
+  color: black;
 
   font-weight: bold;
-  font-size: 0.7em;
+  font-size: 0.85em;
 
   &.twr {
-    border: 2px solid $twr;
+    background: $twr;
   }
 
   &.skr {
-    border: 2px solid $skr;
+    background: $twr;
   }
 }
 

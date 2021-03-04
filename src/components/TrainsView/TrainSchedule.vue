@@ -8,7 +8,11 @@
           class="schedule-item"
           v-for="(stop, i) in followingStops"
           :key="i"
-          :class="{ confirmed: stop.confirmed, stopped: stop.stopped }"
+          :class="{
+            confirmed: stop.confirmed,
+            stopped: stop.stopped,
+            delayed: stop.departureDelay > 0,
+          }"
         >
           <div class="progress-bar"></div>
 
@@ -24,7 +28,7 @@
           <span class="stop-info">
             <div class="info-indicator"></div>
 
-            <span class="info-distance">
+            <span class="info-distance" v-if="stop.stopDistance">
               {{ Math.floor(stop.stopDistance) }}
             </span>
 
@@ -41,7 +45,9 @@
                 p.
                 {{
                   stylizeTime(
-                    stop.arrivalRealTimeString,
+                    stop.confirmed
+                      ? stop.arrivalRealTimeString
+                      : stop.arrivalTimeString,
                     stop.arrivalDelay,
                     stop.confirmed
                   )
@@ -52,8 +58,9 @@
                 class="date-stop"
                 v-if="stop.stopTime"
                 :class="stop.stopType.replace(', ', '-')"
-                >{{ stop.stopTime }} {{ stop.stopType }}</span
               >
+                {{ stop.stopTime }} {{ stop.stopType }}
+              </span>
 
               <span
                 class="date-departure"
@@ -66,7 +73,9 @@
                 o.
                 {{
                   stylizeTime(
-                    stop.departureRealTimeString,
+                    stop.confirmed
+                      ? stop.departureRealTimeString
+                      : stop.departureTimeString,
                     stop.departureDelay,
                     stop.confirmed
                   )
@@ -112,8 +121,9 @@ export default class TrainSchedule extends Vue {
 
 .train-schedule {
   max-height: 600px;
-  // overflow: auto;
   margin-top: 2em;
+
+  overflow-y: auto;
 }
 
 .schedule-bar,
@@ -140,7 +150,7 @@ export default class TrainSchedule extends Vue {
 
 .schedule-wrapper {
   position: relative;
-  margin-left: 1.5em;
+  margin-left: 2em;
 }
 
 ul.schedule-list {
@@ -178,13 +188,15 @@ li.schedule-item > .stop-info {
   display: flex;
 
   position: relative;
+  text-align: center;
 
   .info-distance {
     position: absolute;
 
     top: 50%;
-    left: -1.8rem;
     transform: translate(-100%, -50%);
+
+    margin-left: -1.7rem;
 
     font-size: 0.8em;
     color: #d6d6d6;
@@ -210,6 +222,9 @@ li.schedule-item > .stop-info {
   .info-name {
     background: rgb(0, 81, 187);
     padding: 0.3rem 0.5rem;
+
+    display: flex;
+    align-items: center;
   }
 
   .info-date {
@@ -227,11 +242,7 @@ li.schedule-item > .stop-info {
         background: #ce8d00;
       }
 
-      &.pt,
-      &.pm,
-      &.pt-pm {
-        background: #252525;
-      }
+      background: #252525;
     }
 
     .date-arrival,

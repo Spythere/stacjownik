@@ -28,7 +28,6 @@ import { Vue, Component } from "vue-property-decorator";
 import { Getter } from "vuex-class";
 
 import Station from "@/scripts/interfaces/Station";
-import Train from "@/scripts/interfaces/Train";
 
 import SceneryInfo from "@/components/SceneryView/SceneryInfo.vue";
 import SceneryTimetable from "@/components/SceneryView/SceneryTimetable.vue";

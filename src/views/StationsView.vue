@@ -60,14 +60,6 @@
     </div>
 
     <transition name="card-anim">
-      <StationCard
-        v-if="focusedStationInfo"
-        :stationInfo="focusedStationInfo"
-        :exit="closeCard"
-      />
-    </transition>
-
-    <transition name="card-anim">
       <FilterCard
         v-if="filterCardOpen"
         :exit="() => toggleCardsState('filter')"
@@ -90,14 +82,12 @@ import StationFilterManager from "@/scripts/stationFilterManager";
 import inputData from "@/data/options.json";
 
 import StationTable from "@/components/StationsView/StationTable.vue";
-import StationCard from "@/components/StationsView/StationCard.vue";
 import FilterCard from "@/components/StationsView/FilterCard.vue";
 
 import DonationModal from "@/components/Global/DonationModal.vue";
 
 @Component({
   components: {
-    StationCard,
     StationTable,
     FilterCard,
     DonationModal,

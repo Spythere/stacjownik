@@ -177,10 +177,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { Component, Prop } from "vue-property-decorator";
 
 import Station from "@/scripts/interfaces/Station";
-import Train from "@/scripts/interfaces/Train";
 
 import styleMixin from "@/mixins/styleMixin";
 
@@ -212,7 +211,7 @@ export default class SceneryInfo extends styleMixin {
   navigateToTrain(trainNo: number) {
     this.$router.push({
       name: "TrainsView",
-      params: { passedSearchedTrain: trainNo.toString() },
+      params: { queryTrain: trainNo.toString() },
     });
   }
 }
