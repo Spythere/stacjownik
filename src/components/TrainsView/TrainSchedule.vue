@@ -196,7 +196,7 @@ li.schedule-item > .stop-info {
     top: 50%;
     transform: translate(-100%, -50%);
 
-    margin-left: -1.7rem;
+    margin-left: -30px;
 
     font-size: 0.8em;
     color: #d6d6d6;

@@ -4,9 +4,11 @@
       <span class="modal_title">Grosza daj Stacjownikowi...</span>
       <div class="modal_body">
         <div class="modal_body-header">
-          Stacjownik to projekt całkowicie darmowy dla wszystkich.
-          Jednak jeśli chcesz go wesprzeć i pomóc w rozwoju strony oraz nowych funkcjonalności, które wykraczają poza darmowe możliwości
-          hostingu, na którym jest postawiony, zostaw złotówkę, nowigradzką koronę czy nawet rubla!
+          Stacjownik to projekt całkowicie darmowy dla wszystkich. Jednak jeśli
+          chcesz go wesprzeć i pomóc w rozwoju strony oraz nowych
+          funkcjonalności, które wykraczają poza darmowe możliwości hostingu, na
+          którym jest postawiony, zostaw złotówkę, nowigradzką koronę czy nawet
+          rubla!
         </div>
 
         <div class="modal_payments">
@@ -22,7 +24,9 @@
 
           <div class="payment">
             <div>
-              <div class="payment_open" v-if="showNumber">94 1140 2004 0000 3502 7784 9203</div>
+              <div class="payment_open" v-if="showNumber">
+                94 1140 2004 0000 3502 7784 9203
+              </div>
               <div class="payment_closed" v-else @click="showNumber = true">
                 <b>PRZELEW NA KONTO</b>
               </div>
@@ -65,20 +69,20 @@ export default class Modal extends Vue {
   z-index: 100;
 
   font-size: calc(1rem + 0.8vw);
-  padding: 0.3rem;
-
-  border-radius: 1em;
+  padding: 0.5rem;
 
   position: fixed;
   top: 50%;
   left: 50%;
 
   width: 65%;
-  max-width: 950px;
+  max-width: 750px;
 
   transform: translate(-50%, -50%);
 
   background: rgba(black, 0.85);
+  box-shadow: 0 0 20px 5px #1f1f1f;
+
   color: white;
 
   @include bigScreen() {
