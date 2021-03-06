@@ -191,7 +191,6 @@ export default class TrainStats extends Vue {
 
 <style lang="scss" scoped>
 @import "../../styles/responsive";
-@import "../../styles/variables";
 
 .stats-anim {
   &-enter-active,
@@ -233,7 +232,7 @@ export default class TrainStats extends Vue {
     max-width: 700px;
     width: 100%;
 
-    background: rgba(black, 0.85);
+    background: #222;
     border-radius: 0 1em 1em 1em;
 
     padding: 1rem;
@@ -263,7 +262,7 @@ export default class TrainStats extends Vue {
   }
 
   &-type {
-    background: rgb(88, 88, 88);
+    background: #585858;
     font-weight: 600;
   }
 
@@ -284,12 +283,14 @@ export default class TrainStats extends Vue {
   }
 
   &.twr > &-type {
-    background-color: $twr;
+    background-color: var(--clr-twr);
+
     color: black;
   }
 
   &.skr > &-type {
-    background-color: $skr;
+    background-color: var(--clr-skr);
+
     color: white;
   }
 }
@@ -302,14 +303,6 @@ export default class TrainStats extends Vue {
   color: black;
   font-weight: bold;
   font-size: 0.85em;
-
-  &.twr {
-    background-color: #ffc700;
-  }
-
-  &.skr {
-    background-color: #f00000;
-  }
 }
 
 @include smallScreen {

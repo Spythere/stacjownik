@@ -75,28 +75,6 @@
                 </span>
               </div>
             </div>
-
-            <!-- <div class="info-bottom">
-              <span
-                class="info-label user-badge"
-                :class="train.stopStatus || 'disconnected'"
-              >
-                <span
-                  class="tooltip"
-                  :style="!train.online ? 'color: gray' : ''"
-                >
-                  <span v-if="train.stopStatus">{{ train.stopLabel }}</span>
-                  <span v-else-if="train.currentStationName">
-                    Pociąg na złej stacji!
-                  </span>
-                  <span v-else>Sceneria offline!</span>
-
-                  <span class="tooltip-text" v-if="!train.online">
-                    Pociąg offline
-                  </span>
-                </span>
-              </span>
-            </div> -->
           </span>
 
           <span class="driver">
@@ -253,7 +231,6 @@ export default class TrainTable extends Vue {
 
 <style lang="scss" scoped>
 @import "../../styles/responsive.scss";
-@import "../../styles/variables.scss";
 @import "../../styles/user_badge.scss";
 
 .no-trains {
@@ -263,7 +240,7 @@ export default class TrainTable extends Vue {
   padding: 1rem;
   margin: 1rem 0;
 
-  background: #333;
+  background: var(--clr-bg);
 }
 
 .train {
@@ -278,7 +255,7 @@ export default class TrainTable extends Vue {
     padding: 1em;
     margin-bottom: 1rem;
 
-    background-color: $primaryCol;
+    background-color: var(--clr-secondary);
 
     cursor: pointer;
 
@@ -291,6 +268,8 @@ export default class TrainTable extends Vue {
         grid-template-rows: repeat(3, minmax(100px, 1fr));
 
         gap: 0.4em 0;
+
+        font-size: 1.1em;
       }
 
       @include bigScreen() {
@@ -310,6 +289,8 @@ export default class TrainTable extends Vue {
     justify-content: space-between;
     align-items: center;
 
+    font-size: 1.1em;
+
     div {
       display: flex;
     }
@@ -317,11 +298,12 @@ export default class TrainTable extends Vue {
     .category-right {
       padding: 0.15em 0.5em;
 
-      background: #1085b3;
+      background-color: var(--clr-accent);
       border-radius: 1em;
 
       -moz-user-select: none;
       -webkit-user-select: none;
+      user-select: none;
 
       img {
         vertical-align: middle;
@@ -330,10 +312,10 @@ export default class TrainTable extends Vue {
 
       .tooltip-text {
         font-size: 0.9em;
-        background-color: #1085b3;
+        background-color: var(--clr-accent);
 
         &::after {
-          border-color: #1085b3 transparent transparent transparent;
+          border-color: var(--clr-accent) transparent transparent transparent;
         }
       }
     }
@@ -343,27 +325,15 @@ export default class TrainTable extends Vue {
     display: flex;
     align-items: center;
 
-    font-size: 1.15em;
     margin: 5px 0;
+
+    font-size: 1.2em;
   }
 
   &-stops {
     margin-bottom: 10px;
 
-    font-size: 0.8em;
-  }
-
-  &-online {
-    background-color: #ce0000;
-
-    padding: 0.2em 0.7em;
-    font-size: 0.85em;
-
-    border-radius: 1em;
-
-    &.online {
-      background-color: #009700;
-    }
+    font-size: 0.9em;
   }
 
   &-bottom {
@@ -374,7 +344,6 @@ export default class TrainTable extends Vue {
       margin-left: 10px;
       border-radius: 0.7em;
       padding: 0.2em 0.5em;
-      font-size: 0.85em;
 
       border: 1px solid white;
     }
@@ -390,13 +359,11 @@ export default class TrainTable extends Vue {
   &-name {
     margin: 0 0.3em;
     font-weight: bold;
-    font-size: 1.1em;
   }
 
   &-type {
     color: #bbb;
     margin-left: 0.5em;
-    font-size: 1.1em;
   }
 
   &-loco {
@@ -440,7 +407,7 @@ export default class TrainTable extends Vue {
     text-align: center;
 
     p {
-      color: #00cff3;
+      color: var(--clr-accent);
     }
 
     & > span {
@@ -462,14 +429,13 @@ export default class TrainTable extends Vue {
   color: black;
 
   font-weight: bold;
-  font-size: 0.85em;
 
   &.twr {
-    background: $twr;
+    background: var(--clr-twr);
   }
 
   &.skr {
-    background: $twr;
+    background: var(--clr-skr);
   }
 }
 

@@ -1,41 +1,43 @@
 <template>
   <div class="train-schedule" @click="click">
     <div class="schedule-wrapper">
-      <div class="schedule-bar"></div>
-
-      <ul class="schedule-list">
+      <ul class="stop_list">
         <li
-          class="schedule-item"
           v-for="(stop, i) in followingStops"
           :key="i"
           :class="{
             confirmed: stop.confirmed,
             stopped: stop.stopped,
+            beginning: stop.beginsHere,
             delayed: stop.departureDelay > 0,
           }"
         >
-          <div class="progress-bar"></div>
-
+          <!-- <div class="progress-bar"></div> -->
+          <!-- 
           <div
-            class="stop-line arrival"
+            class="stop-line"
             v-if="
               i > 0 && followingStops[i - 1].departureLine != stop.arrivalLine
             "
           >
             {{ stop.arrivalLine }}
-          </div>
+          </div> -->
 
-          <span class="stop-info">
-            <div class="info-indicator"></div>
+          <span class="stop_info">
+            <div class="indicator"></div>
 
-            <span class="info-distance" v-if="stop.stopDistance">
+            <div class="progress-bar"></div>
+
+            <div class="stop-bar"></div>
+
+            <span class="distance" v-if="stop.stopDistance">
               {{ Math.floor(stop.stopDistance) }}
             </span>
 
-            <span class="info-name" v-html="stop.stopName"></span>
-            <span class="info-date">
+            <span class="stop-name" v-html="stop.stopName"></span>
+            <span class="stop-date">
               <span
-                class="date-arrival"
+                class="date arrival"
                 v-if="!stop.beginsHere"
                 :class="{
                   delayed: stop.arrivalDelay > 0 && stop.confirmed,
@@ -55,7 +57,7 @@
               </span>
 
               <span
-                class="date-stop"
+                class="date stop"
                 v-if="stop.stopTime"
                 :class="stop.stopType.replace(', ', '-')"
               >
@@ -63,7 +65,7 @@
               </span>
 
               <span
-                class="date-departure"
+                class="date departure"
                 v-if="!stop.terminatesHere && stop.stopTime != 0"
                 :class="{
                   delayed: stop.departureDelay > 0 && stop.confirmed,
@@ -84,7 +86,22 @@
             </span>
           </span>
 
-          <div class="stop-line departure">{{ stop.departureLine }}</div>
+          <div class="stop_line">
+            <div class="progress-bar"></div>
+
+            <span v-if="i < followingStops.length - 1">
+              <span
+                v-if="stop.departureLine == followingStops[i + 1].arrivalLine"
+              >
+                {{ stop.departureLine }}
+              </span>
+
+              <span v-else>
+                {{ stop.departureLine }} /
+                {{ followingStops[i + 1].arrivalLine }}
+              </span>
+            </span>
+          </div>
         </li>
       </ul>
     </div>
@@ -117,8 +134,6 @@ export default class TrainSchedule extends Vue {
 </script>
 
 <style lang="scss" scoped>
-@import "../../styles/responsive.scss";
-
 .train-schedule {
   max-height: 600px;
   margin-top: 2em;
@@ -126,129 +141,155 @@ export default class TrainSchedule extends Vue {
   overflow-y: auto;
 }
 
-.schedule-bar,
+.schedule-wrapper {
+  margin-left: 2.5rem;
+}
+
 .progress-bar {
   position: absolute;
-  z-index: 1;
-
-  width: 2px;
-  height: 100%;
 
   top: 0;
-  left: 0;
+  left: -1rem;
 
-  background: white;
-}
+  transform: translateX(-1px);
 
-.progress-bar {
   height: 100%;
-
-  top: 0;
-  left: calc(-0.5rem - 2px);
   width: 2px;
+
+  background-color: white;
 }
 
-.schedule-wrapper {
-  position: relative;
-  margin-left: 2em;
-}
-
-ul.schedule-list {
-  margin-left: 10px;
-}
-
-ul.schedule-list > li.schedule-item {
+ul.stop_list > li {
   position: relative;
 
   display: flex;
   flex-direction: column;
 
-  padding: 0 0.5rem;
+  padding: 0 0.5em;
 
   &.confirmed {
-    .progress-bar,
-    .stop-info > .info-indicator {
-      background: lime;
+    & > .stop_line > .progress-bar {
+      background-color: lime;
+    }
+
+    & > .stop_info > .progress-bar {
+      background-color: lime;
+    }
+
+    & > .stop_info > .indicator {
+      border-color: lime;
     }
   }
 
   &.stopped {
-    .progress-bar {
-      background: lime;
-      height: 50%;
-    }
+    & > .stop_info {
+      & > .indicator {
+        border-color: orangered;
+      }
 
-    .stop-info > .info-indicator {
-      background: orangered;
+      & > .stop-bar {
+        background: orangered;
+      }
     }
   }
-}
 
-li.schedule-item > .stop-info {
-  display: flex;
+  .stop_line {
+    font-size: 0.8em;
+    color: #ccc;
 
-  position: relative;
-  text-align: center;
+    padding: 0.35em 0;
 
-  .info-distance {
+    position: relative;
+
+    .line-segment {
+      color: white;
+      font-weight: 500;
+    }
+  }
+
+  .stop_info {
+    display: flex;
+
+    position: relative;
+    text-align: center;
+
+    padding: 0.15em 0;
+  }
+
+  .stop-bar {
+    position: absolute;
+    top: 0;
+    left: -1rem;
+
+    transform: translateX(-1px);
+
+    z-index: 2;
+
+    width: 2px;
+    height: 100%;
+  }
+
+  .distance {
     position: absolute;
 
     top: 50%;
     transform: translate(-100%, -50%);
 
-    margin-left: -30px;
+    margin-left: -1.75rem;
 
-    font-size: 0.8em;
+    font-size: 0.85em;
     color: #d6d6d6;
   }
 
-  .info-indicator {
+  .indicator {
     position: absolute;
-    z-index: 1;
+    z-index: 3;
 
     top: 50%;
-    left: -1.5rem;
+    left: -1rem;
+
+    transform: translate(-50%, -50%);
 
     text-align: right;
 
-    transform: translateY(-50%);
-
     width: 15px;
-    height: 2px;
+    height: 15px;
 
-    background: white;
+    background: var(--clr-secondary);
+    border: 2px solid white;
+    border-radius: 100%;
   }
 
-  .info-name {
-    background: rgb(0, 81, 187);
-    padding: 0.3rem 0.5rem;
+  .stop-name {
+    background: var(--clr-accent);
+    padding: 0.3em 0.5em;
 
     display: flex;
     align-items: center;
   }
 
-  .info-date {
+  .stop-date {
     display: flex;
     align-items: center;
 
-    span {
-      background: #5c5c5c;
-      padding: 0.3rem 0.5rem;
+    .date {
+      background: #494949;
+      padding: 0.3em 0.5em;
     }
 
-    .date-stop {
+    .stop {
       &.ph,
       &.ph-pm {
-        background: #ce8d00;
+        background: #db8e29;
       }
 
       background: #252525;
     }
 
-    .date-arrival,
-    .date-departure {
+    .arrival,
+    .departure {
       &.delayed {
-        background: rgb(250, 0, 0);
+        background: #f80334;
       }
 
       &.preponed {
@@ -256,14 +297,5 @@ li.schedule-item > .stop-info {
       }
     }
   }
-}
-
-li.schedule-item > .stop-line {
-  font-size: 0.8em;
-  color: #bbb;
-  padding: 0.3em 0;
-  margin: 0.2em 0;
-
-  transform: translateX(-0.8rem);
 }
 </style>
