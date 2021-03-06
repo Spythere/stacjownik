@@ -16,7 +16,9 @@
                 @click="() => chooseOption(option)"
               >
                 <input type="radio" name="sort" :id="option.id" />
-                <label :for="option.id">{{ option.content }}</label>
+                <label :for="option.id">
+                  {{ $t(`trains.option-${option.id}`) }}
+                </label>
               </li>
             </ul>
           </div>
@@ -27,7 +29,7 @@
         <div class="search-box">
           <input
             class="search-input"
-            placeholder="Szukaj nr pociągu..."
+            :placeholder="$t('trains.search-no')"
             v-model="searchedTrain"
           />
           <img
@@ -43,7 +45,7 @@
         <div class="search-box">
           <input
             class="search-input"
-            placeholder="Szukaj maszynisty..."
+            :placeholder="$t('trains.search-driver')"
             v-model="searchedDriver"
           />
           <img
@@ -70,7 +72,7 @@ export default class TrainOptions extends Vue {
   clickEventListener!: EventListener;
 
   sorterOptionsOpen = false;
-  currentSorterOption = "kilometraż";
+  currentSorterOption = this.$t("trains.option-distance");
 
   searchedTrain = "";
   searchedDriver = "";
@@ -112,7 +114,8 @@ export default class TrainOptions extends Vue {
 
   chooseOption(option: { id: string; content: string }) {
     this.$emit("changeSorter", { id: option.id, dir: -1 });
-    this.currentSorterOption = option.content;
+
+    this.currentSorterOption = this.$t(`trains.option-${option.id}`);
 
     this.closeSorterOptions();
   }

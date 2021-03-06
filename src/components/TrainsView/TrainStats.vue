@@ -6,17 +6,17 @@
         @click="toggleStats"
         v-if="trains.length > 0"
       >
-        STATYSTYKI RUCHU
+        {{ $t("trains.stats") }}
       </button>
     </div>
 
     <transition name="stats-anim">
       <div class="stats-body" v-if="statsOpen">
-        <h2 class="stats-header">STATYSTYKI RUCHU</h2>
+        <h2 class="stats-header">{{ $t("trains.stats") }}</h2>
 
         <div class="stats-speed">
           <div class="title stats-title">
-            PRĘDKOŚCI POCIĄGÓW (MIN | ŚR | MAX) [km/h]
+            {{ $t("trains.stats-speed") }}
           </div>
           <div class="stats-content">
             {{ speedStats.min }} | {{ speedStats.avg }} | {{ speedStats.max }}
@@ -25,7 +25,7 @@
 
         <div class="stats-length">
           <div class="title stats-title">
-            DŁUGOŚCI ROZKŁADÓW (MIN | ŚR | MAX) [km]
+            {{ $t("trains.stats-length") }}
           </div>
           <div class="stats-content">
             {{ timetableStats.min }} | {{ timetableStats.avg }} |
@@ -34,7 +34,9 @@
         </div>
 
         <div class="stats-categories">
-          <div class="title stats-title">KATEGORIE RJ</div>
+          <div class="title stats-title">
+            {{ $t("trains.stats-categories") }}
+          </div>
 
           <div class="category-list">
             <span
@@ -49,19 +51,23 @@
 
           <div class="special-list">
             <span class="special twr">
-              <span class="special-type">WYSOKIEGO RYZYKA</span>
+              <span class="special-type">{{
+                $t("trains.stats-special-twr")
+              }}</span>
               <span class="special-count">{{ specialTrainCount[0] }}</span>
             </span>
 
             <span class="special skr">
-              <span class="special-type">PRZEKROCZONA SKRAJNIA</span>
+              <span class="special-type">{{
+                $t("trains.stats-special-skr")
+              }}</span>
               <span class="special-count">{{ specialTrainCount[1] }}</span>
             </span>
           </div>
         </div>
 
         <div class="stats-locos">
-          <div class="title stats-title">NAJCZĘSTSZE JEDNOSTKI</div>
+          <div class="title stats-title">{{ $t("trains.stats-locos") }}</div>
 
           <div class="loco-list stats-content">
             <div class="loco-item" v-for="(loco, i) in locoList" :key="i">

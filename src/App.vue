@@ -27,13 +27,19 @@
 
           <span class="header_links">
             <router-link class="route" active-class="route-active" to="/" exact
-              >SCENERIE</router-link
+              >{{ $t("app.sceneries") }} </router-link
             >/
-            <router-link class="route" active-class="route-active" to="/trains"
-              >POCIĄGI</router-link
+            <router-link
+              class="route"
+              active-class="route-active"
+              to="/trains"
+              >{{ $t("app.trains") }}</router-link
             >/
-            <router-link class="route" active-class="route-active" to="/history"
-              >DZIENNIK</router-link
+            <router-link
+              class="route"
+              active-class="route-active"
+              to="/history"
+              >{{ $t("app.journal") }}</router-link
             >
           </span>
         </div>
@@ -81,6 +87,18 @@ export default class App extends Vue {
 
   mounted() {
     this.synchronizeData();
+
+    if (window.navigator.language) {
+      switch (window.navigator.language) {
+        case "pl-PL":
+          this.$i18n.locale = "pl";
+          break;
+        case "en-EN":
+        default:
+          this.$i18n.locale = "en";
+          break;
+      }
+    }
 
     if (StorageManager.getStringValue("version") != this.VERSION) {
       StorageManager.setStringValue("version", this.VERSION);

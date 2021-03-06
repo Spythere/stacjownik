@@ -15,13 +15,13 @@
                 :src="require('@/assets/icon-filter2.svg')"
                 alt="icon-filter"
               />
-              <p>FILTRY</p>
+              <p>{{ $t("options.filters") }}</p>
             </button>
 
             <button class="action-btn" @click="toggleModal">
               <img :src="dolarIcon" alt="icon-dolar" />
 
-              <p>WESPRZYJ</p>
+              <p>{{ $t("options.donate") }}</p>
             </button>
           </div>
 

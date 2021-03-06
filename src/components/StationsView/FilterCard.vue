@@ -21,7 +21,7 @@
           <span
             class="option-content"
             :class="option.section + (option.value ? ' checked' : '')"
-            >{{ option.content }}</span
+            >{{ $t(`filters.${option.id}`) }}</span
           >
         </label>
       </div>
@@ -42,7 +42,9 @@
 
         <span class="slider-value">{{ slider.value }}</span>
 
-        <div class="slider-content">{{ slider.content }}</div>
+        <div class="slider-content">
+          {{ $t(`filters.sliders.${slider.id}`) }}
+        </div>
       </div>
     </div>
 
@@ -51,15 +53,17 @@
         <label>
           <input type="checkbox" v-model="saveOptions" @change="saveFilters" />
           <span class="save" :class="{ checked: saveOptions }">
-            ZAPISZ FILTRY
+            {{ $t("filters.save") }}
           </span>
         </label>
       </div>
     </div>
 
     <div class="card-actions flex">
-      <button class="button" @click="resetFilters">RESET FILTRÓW</button>
-      <button class="button" @click="exit">ZAMKNIJ FILTRY</button>
+      <button class="button" @click="resetFilters">
+        {{ $t("filters.reset") }}
+      </button>
+      <button class="button" @click="exit">{{ $t("filters.close") }}</button>
     </div>
   </section>
 </template>

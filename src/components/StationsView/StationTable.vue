@@ -4,7 +4,56 @@
       <table>
         <thead>
           <tr>
+            <!-- <th v-html="$t('sceneries.station')"></th>
+            <th v-html="$t('sceneries.min-lvl')"></th>
+            <th v-html="$t('sceneries.status')"></th>
+            <th v-html="$t('sceneries.dispatcher')"></th>
+            <th v-html="$t('sceneries.dispatcher-lvl')"></th>
+            <th v-html="$t('sceneries.routes')"></th>
+            <th v-html="$t('sceneries.general')"></th>
+            <th v-html="$t('sceneries.drivers-online')"></th>
+            <th v-html="$t('sceneries.spawns')"></th>
+            <th v-html="$t('sceneries.timetables')"></th> -->
+
             <th
+              v-for="(id, i) in headIds"
+              :key="id"
+              @click="() => changeSorter(i)"
+            >
+              <span class="header_wrapper">
+                <div v-html="$t(`sceneries.${id}`)"></div>
+
+                <img
+                  class="sort-icon"
+                  v-if="sorterActive.index == i"
+                  :src="sorterActive.dir == 1 ? ascIcon : descIcon"
+                  alt
+                />
+              </span>
+            </th>
+
+            <th
+              v-for="(id, i) in headIconsIds"
+              :key="id"
+              @click="() => changeSorter(i + 7)"
+            >
+              <span class="header_wrapper">
+                <img
+                  :src="require(`@/assets/icon-${id}.svg`)"
+                  :alt="id"
+                  :title="$t(`sceneries.${id}s`)"
+                />
+
+                <img
+                  class="sort-icon"
+                  v-if="sorterActive.index == i + 7"
+                  :src="sorterActive.dir == 1 ? ascIcon : descIcon"
+                  alt
+                />
+              </span>
+            </th>
+
+            <!-- <th
               v-for="(head, i) in headTitles"
               :key="i"
               @click="() => changeSorter(i)"
@@ -28,7 +77,7 @@
                   alt
                 />
               </span>
-            </th>
+            </th> -->
           </tr>
         </thead>
 
@@ -204,7 +253,6 @@
 import { Component, Prop } from "vue-property-decorator";
 
 import Station from "@/scripts/interfaces/Station";
-
 import styleMixin from "@/mixins/styleMixin";
 
 import Options from "@/components/StationsView/Options.vue";
@@ -227,6 +275,18 @@ export default class StationTable extends styleMixin {
 
   ascIcon: string = require("@/assets/icon-arrow-asc.svg");
   descIcon: string = require("@/assets/icon-arrow-desc.svg");
+
+  headIds = [
+    "station",
+    "min-lvl",
+    "status",
+    "dispatcher",
+    "dispatcher-lvl",
+    "routes",
+    "general",
+  ];
+
+  headIconsIds = ["user", "spawn", "timetable"];
 
   headTitles: string[][] = [
     ["Stacja"],

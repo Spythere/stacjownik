@@ -1,0 +1,73 @@
+{
+  "app": {
+    "sceneries": "SCENERIES",
+    "trains": "TRAINS",
+    "journal": "JOURNAL"
+  },
+  "options": {
+    "filters": "FILTERS",
+    "donate": "DONATE"
+  },
+  "filters": {
+    "title": "STATION FILTER",
+    "default": "DEFAULT",
+    "not-default": "OTHER",
+    "real": "REAL",
+    "fictional": "FICTIONAL",
+    "SPK": "SPK",
+    "SCS": "SCS",
+    "manual": "MANUAL",
+    "mechanical": "MECHANICAL",
+    "modern": "MODERN",
+    "semaphores": "SEMAPHORES",
+    "mixed": "MIXED",
+    "historical": "HISTORICAL",
+    "free": "FREE",
+    "occupied": "OCCUPIED",
+    "sliders": {
+      "min-lvl": "MINIMUM REQUIRED DISPATCHER LEVEL",
+      "routes-1t-cat": "MINIMUM CATENARY SINGLE TRACK ROUTES",
+      "routes-1t-other": "MINIMUM OTHER SINGLE TRACK ROUTES",
+      "routes-2t-cat": "MINIMUM CATENARY DOUBLE TRACK ROUTES",
+      "routes-2t-other": "MINIMUM OTHER DOUBLE TRACK ROUTES"
+    },
+    "save": "SAVE FILTERS",
+    "reset": "RESET FILTERS",
+    "close": "CLOSE FILTERS"
+  },
+  "sceneries": {
+    "station": "Station",
+    "min-lvl": "Min. dispatcher <br> level",
+    "status": "Status",
+    "dispatcher": "Dispatcher",
+    "dispatcher-lvl": "Dispatcher <br> level",
+    "routes": "Routes <br> double | single",
+    "general": "General info",
+    "users": "Drivers online",
+    "spawns": "Spawns online",
+    "timetables": "Active timetables"
+  },
+  "trains": {
+    "stats": "TRAFFIC STATISTICS",
+    "stats-speed": "TRAINS SPEED (MIN | AVG | MAX) [km/h]",
+    "stats-length": "TIMETABLES LENGTH (MIN | AVG | MAX) [km]",
+    "stats-categories": "TIMETABLE CATEGORIES",
+    "stats-special-twr": "HIGH RISK",
+    "stats-special-skr": "EXCEEDED STRUCT. GAUGE",
+    "stats-locos": "MOST COMMON UNITS",
+    "option-mass": "mass",
+    "option-speed": "speed",
+    "option-length": "length",
+    "option-distance": "distance",
+    "option-timetable": "train no.",
+    "search-no": "Search for train no...",
+    "search-driver": "Search for driver...",
+    "detailed-timetable": "Detailed timetable for train no. "
+  },
+  "journal": {
+    "title": "SCENERY ACTIVITY JOURNAL",
+    "subtitle": "Shows all recent dispatchers on a selected scenery",
+    "disclaimer": "<b>This functionality is unfinished!</b> <br> Information shown here could be false or incorrect!",
+    "select": "Select a scenery"
+  }
+}
