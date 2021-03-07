@@ -4,17 +4,6 @@
       <table>
         <thead>
           <tr>
-            <!-- <th v-html="$t('sceneries.station')"></th>
-            <th v-html="$t('sceneries.min-lvl')"></th>
-            <th v-html="$t('sceneries.status')"></th>
-            <th v-html="$t('sceneries.dispatcher')"></th>
-            <th v-html="$t('sceneries.dispatcher-lvl')"></th>
-            <th v-html="$t('sceneries.routes')"></th>
-            <th v-html="$t('sceneries.general')"></th>
-            <th v-html="$t('sceneries.drivers-online')"></th>
-            <th v-html="$t('sceneries.spawns')"></th>
-            <th v-html="$t('sceneries.timetables')"></th> -->
-
             <th
               v-for="(id, i) in headIds"
               :key="id"
@@ -52,32 +41,6 @@
                 />
               </span>
             </th>
-
-            <!-- <th
-              v-for="(head, i) in headTitles"
-              :key="i"
-              @click="() => changeSorter(i)"
-            >
-              <span class="header_wrapper">
-                <div class="header_item">
-                  <div v-if="head[0].includes('.svg')">
-                    <img :src="head[0]" alt="test" :title="head[1]" />
-                  </div>
-
-                  <div v-else>
-                    <div>{{ head[0] }}</div>
-                    <div v-if="head.length > 1">{{ head[1] }}</div>
-                  </div>
-                </div>
-
-                <img
-                  class="sort-icon"
-                  v-if="sorterActive.index == i"
-                  :src="sorterActive.dir == 1 ? ascIcon : descIcon"
-                  alt
-                />
-              </span>
-            </th> -->
           </tr>
         </thead>
 
@@ -117,11 +80,9 @@
             </td>
 
             <td class="station_status">
-              <span
-                class="status-badge"
-                :class="statusClasses(station.occupiedTo)"
-                >{{ station.occupiedTo }}</span
-              >
+              <span class="status-badge" :class="station.statusID">{{
+                $t(`status.${station.statusID}`)
+              }}</span>
             </td>
 
             <td class="station_dispatcher-name">

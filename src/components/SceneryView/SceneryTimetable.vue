@@ -1,7 +1,7 @@
 <template>
   <div class="scenery-timetable">
     <h3 class="timetable-header">
-      <span>AKTYWNE ROZKŁADY JAZDY</span>
+      <span>{{ $t("scenery.timetables") }}</span>
 
       <a
         v-if="!timetableOnly"
@@ -37,15 +37,16 @@
       </div>
     </div>
 
-    <span class="timetable-item loading" v-if="dataStatus == 0"
-      >Ładowanie...</span
-    >
+    <span class="timetable-item loading" v-if="dataStatus == 0">{{
+      $t("app.loading")
+    }}</span>
 
     <span
       class="timetable-item empty"
       v-else-if="computedScheduledTrains.length == 0"
-      >Brak aktywnych rozkładów!</span
     >
+      {{ $t("scenery.no-timetables") }}
+    </span>
 
     <transition-group name="list-anim">
       <div
@@ -66,8 +67,9 @@
               <span>
                 <strong>{{ scheduledTrain.category }}</strong>
                 {{ scheduledTrain.trainNo }}
-              </span> </router-link
-            >|
+              </span>
+            </router-link>
+            |
             <span>
               <a
                 :href="
@@ -87,9 +89,9 @@
           </span>
 
           <span class="general-status">
-            <span :class="scheduledTrain.stopStatus">{{
-              scheduledTrain.stopLabel
-            }}</span>
+            <span :class="scheduledTrain.stopStatus"
+              >{{ $t(`timetables.${scheduledTrain.stopStatus}`) }}
+            </span>
           </span>
         </span>
 

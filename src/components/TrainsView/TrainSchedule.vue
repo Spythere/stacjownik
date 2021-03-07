@@ -12,17 +12,6 @@
             delayed: stop.departureDelay > 0,
           }"
         >
-          <!-- <div class="progress-bar"></div> -->
-          <!-- 
-          <div
-            class="stop-line"
-            v-if="
-              i > 0 && followingStops[i - 1].departureLine != stop.arrivalLine
-            "
-          >
-            {{ stop.arrivalLine }}
-          </div> -->
-
           <span class="stop_info">
             <div class="indicator"></div>
 

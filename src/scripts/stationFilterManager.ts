@@ -36,7 +36,7 @@ export default class StationFilterManager {
       .filter(station => {
         if ((station.nonPublic || !station.reqLevel) && this.filters['nonPublic']) return false;
 
-        if (station.online && station.occupiedTo == 'KOŃCZY' && this.filters['ending']) return false;
+        if (station.online && station.statusID == 'ending' && this.filters['ending']) return false;
 
         if (station.online && this.filters['occupied']) return false;
         if (!station.online && this.filters['free']) return false;

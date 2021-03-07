@@ -117,17 +117,15 @@
           <span class="name">{{ stationInfo.dispatcherName }}</span>
         </div>
 
-        <span
-          class="status-badge"
-          :class="statusClasses(stationInfo.occupiedTo)"
-          >{{ stationInfo.occupiedTo }}
-        </span>
+        <span class="status-badge" :class="stationInfo.statusID">{{
+          $t(`status.${stationInfo.statusID}`)
+        }}</span>
       </div>
 
       <div class="info-lists">
         <div class="user-list">
           <h3 class="user-header">
-            GRACZE ONLINE
+            {{ $t("scenery.users") }}
             <img :src="userIcon" alt="icon-user" />
           </h3>
 
@@ -146,13 +144,13 @@
             class="user offline"
             v-if="!computedStationTrains || computedStationTrains.length == 0"
           >
-            BRAK AKTYWNYCH GRACZY
+            {{ $t("scenery.no-users") }}
           </div>
         </div>
 
         <div class="spawn-list">
           <h3 class="spawn-header">
-            OTWARTE SPAWNY
+            {{ $t("scenery.spawns") }}
             <img :src="spawnIcon" alt="icon-spawn" />
           </h3>
 
@@ -168,7 +166,7 @@
           <span
             class="spawn none"
             v-if="!stationInfo.spawns || stationInfo.spawns.length == 0"
-            >BRAK OTWARTYCH SPAWNÓW</span
+            >{{ $t("scenery.no-spawns") }}</span
           >
         </div>
       </div>

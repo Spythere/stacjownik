@@ -4,9 +4,9 @@
       class="scenery-offline"
       v-if="!stationInfo && dataStatus == 2 && currentPath === '/scenery'"
     >
-      Ups! Nie znaleziono danej stacji bądź jest ona offline!
+      {{ $t("scenery.no-scenery") }}
       <button class="button">
-        <router-link to="/">Wróć na stronę główną</router-link>
+        <router-link to="/">{{ $t("scenery.return-btn") }}</router-link>
       </button>
     </div>
 
@@ -109,9 +109,9 @@ h3 {
 
   &-offline {
     align-self: center;
-    font-size: 2em;
+    font-size: 1.5em;
     text-align: center;
-    padding: 0 1em;
+    padding: 2em 1em;
 
     color: $warningCol;
 

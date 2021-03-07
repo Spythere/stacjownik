@@ -47,8 +47,9 @@ export default interface Station {
   stops: string[] | null;
 
   online: boolean;
-  occupiedTo: string;
+  // occupiedTo: string;
   statusTimestamp: number;
+  statusID: string;
 
   stationTrains: Train[];
   scheduledTrains: ScheduledTrain[];

@@ -39,6 +39,35 @@ const URLs = {
 const timetableURL = (trainNo: number) => `https://api.td2.info.pl:9640/?method=readFromSWDR&value=getTimetable%3B${trainNo}%3Beu`;
 const getLocoURL = (locoType: string) => `https://rj.td2.info.pl/dist/img/thumbnails/${locoType.includes('EN') ? locoType + 'rb' : locoType}.png`;
 
+const getStatusID = (stationStatus: any) => {
+  if (!stationStatus) return 'not-signed';
+
+  const statusCode = stationStatus[2];
+  const statusTimestamp = stationStatus[3];
+
+  switch (statusCode) {
+    case 0:
+      if (statusTimestamp - Date.now() > 21000000) return 'no-limit';
+
+      return 'online';
+
+    case 1:
+      return 'brb';
+
+    case 2:
+      if (statusTimestamp == 0) return 'ending';
+      break;
+
+    case 3:
+      return 'no-space';
+
+    default:
+      break;
+  }
+
+  return 'unavailable';
+};
+
 const getStatusLabel = (stationStatus: any) => {
   if (!stationStatus) return 'NIEZALOGOWANY';
 
@@ -265,8 +294,8 @@ export default class Store extends VuexModule {
 
           const stationStatus = onlineDispatchersData.find(status => status[0] == station.stationHash && status[1] == 'eu');
 
-          const statusLabel = getStatusLabel(stationStatus);
           const statusTimestamp = getStatusTimestamp(stationStatus);
+          const statusID = getStatusID(stationStatus);
 
           const stationTrains = onlineTrainsData.filter(
             train => train.region === 'eu' && train.isOnline && train.station.stationName === station.stationName
@@ -283,9 +312,9 @@ export default class Store extends VuexModule {
             dispatcherId: station.dispatcherId,
             dispatcherExp: station.dispatcherExp,
             dispatcherIsSupporter: station.dispatcherIsSupporter,
-            occupiedTo: statusLabel,
             stationTrains,
             statusTimestamp,
+            statusID,
           });
 
           return acc;
@@ -398,8 +427,8 @@ export default class Store extends VuexModule {
       dispatcherId: 0,
       dispatcherIsSupporter: false,
       online: false,
-      occupiedTo: 'WOLNA',
       statusTimestamp: -3,
+      statusID: 'free',
       stationTrains: [],
       scheduledTrains: [],
       spawns: [],
@@ -479,7 +508,7 @@ export default class Store extends VuexModule {
           dispatcherId: 0,
           dispatcherIsSupporter: false,
           online: false,
-          occupiedTo: 'WOLNA',
+          statusID: 'free',
           statusTimestamp: -3,
           stationTrains: [],
           scheduledTrains: [],

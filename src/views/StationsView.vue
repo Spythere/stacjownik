@@ -18,11 +18,11 @@
               <p>{{ $t("options.filters") }}</p>
             </button>
 
-            <button class="action-btn" @click="toggleModal">
+            <!-- <button class="action-btn" @click="toggleModal">
               <img :src="dolarIcon" alt="icon-dolar" />
 
               <p>{{ $t("options.donate") }}</p>
-            </button>
+            </button> -->
           </div>
 
           <div class="bar_indicators">

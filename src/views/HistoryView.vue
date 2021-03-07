@@ -2,9 +2,9 @@
   <div class="history_view">
     <div class="history_wrapper">
       <div class="header">
-        <h2>DZIENNIK AKTYWNOŚCI SCENERII</h2>
+        <h2>{{ $t("journal.title") }}</h2>
         <p style="color: #ccc">
-          Pokazuje dyżurnych, którzy ostatnio byli aktywni na wybranej scenerii
+          {{ $t("journal.subtitle") }}
         </p>
 
         <div class="search-box">
@@ -12,9 +12,7 @@
             <label :class="{ disabled: dataLoading }">
               <select v-model="inputStationName" :disabled="dataLoading">
                 <option value disabled selected hidden>
-                  {{
-                    dataLoading ? "Pobieranie danych..." : "Wybierz scenerię"
-                  }}
+                  {{ dataLoading ? $t("app.loading") : $t("journal.select") }}
                 </option>
                 <option
                   v-for="station in filteredStationList"
@@ -28,13 +26,7 @@
           </div>
         </div>
 
-        <div class="disclaimer">
-          <h4>Ta funkcjonalność jest w testach beta!</h4>
-          <p>
-            Informacje pokazywane na ekranie mogą znikać, a ich zawartość może
-            być fałszywa!
-          </p>
-        </div>
+        <div class="disclaimer" v-html="$t('journal.disclaimer')"></div>
       </div>
 
       <div class="list">

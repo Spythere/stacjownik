@@ -4,7 +4,7 @@
       <!-- <img :src="require('@/assets/icon-exit.svg')" alt="exit icon" /> -->
     </div>
 
-    <div class="card-title flex">FILTRUJ STACJE</div>
+    <div class="card-title flex">{{ $t("filters.title") }}</div>
 
     <div class="card-options">
       <div class="option" v-for="(option, i) in inputs.options" :key="i">

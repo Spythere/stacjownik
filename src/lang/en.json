@@ -2,7 +2,18 @@
   "app": {
     "sceneries": "SCENERIES",
     "trains": "TRAINS",
-    "journal": "JOURNAL"
+    "journal": "JOURNAL",
+    "loading": "Loading data..."
+  },
+  "descs": {},
+  "status": {
+    "free": "FREE",
+    "ending": "ENDING",
+    "not-signed": "NOT SIGNED IN",
+    "no-limit": "NO LIMIT",
+    "unavailable": "UNAVAILABLE",
+    "brb": "AFK",
+    "no-space": "NO SPACE"
   },
   "options": {
     "filters": "FILTERS",
@@ -48,6 +59,7 @@
     "timetables": "Active timetables"
   },
   "trains": {
+    "no-trains": "Oops! No trains online!",
     "stats": "TRAFFIC STATISTICS",
     "stats-speed": "TRAINS SPEED (MIN | AVG | MAX) [km/h]",
     "stats-length": "TIMETABLES LENGTH (MIN | AVG | MAX) [km]",
@@ -62,12 +74,31 @@
     "option-timetable": "train no.",
     "search-no": "Search for train no...",
     "search-driver": "Search for driver...",
-    "detailed-timetable": "Detailed timetable for train no. "
+    "detailed-timetable": "Detailed timetable for train no. ",
+    "via-title": "Via: "
   },
   "journal": {
     "title": "SCENERY ACTIVITY JOURNAL",
     "subtitle": "Shows all recent dispatchers on a selected scenery",
     "disclaimer": "<b>This functionality is unfinished!</b> <br> Information shown here could be false or incorrect!",
     "select": "Select a scenery"
+  },
+  "scenery": {
+    "users": "PLAYERS ONLINE",
+    "spawns": "OPEN SPAWNS",
+    "timetables": "ACTIVE TIMETABLES",
+    "no-timetables": "No active timetables!",
+    "no-users": "NO ACTIVE PLAYERS",
+    "no-spawns": "NO OPEN SPAWNS",
+    "no-scenery": "Oops! This scenery doesn't exist or is offline!",
+    "return-btn": "Return to main site"
+  },
+  "timetables": {
+    "online": "At station",
+    "departed": "Dispatched",
+    "departed-away": "Departed",
+    "arriving": "En route",
+    "stopped": "Stopped",
+    "terminated": "Terminated"
   }
 }

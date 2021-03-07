@@ -1,7 +1,7 @@
 <template>
   <div class="train-table">
     <div class="no-trains" v-if="computedTrains.length == 0">
-      Ups! Brak pociągów do wyświetlenia :/
+      {{ $t("trains.no-trains") }}
     </div>
 
     <ul class="train-list">
@@ -50,7 +50,7 @@
                   <span>SRJP</span>
 
                   <span class="tooltip-text">
-                    Szczegółowy rozkład jazdy pociągu {{ train.trainNo }}
+                    {{ $t("trains.detailed-timetable") }} {{ train.trainNo }}
                   </span>
                 </div>
               </div>
@@ -65,7 +65,7 @@
 
               <div class="info-stops">
                 <span v-if="train.timetableData.followingStops.length > 2">
-                  Przez:
+                  {{ $t("trains.via-title") }}
 
                   <span
                     v-html="
