@@ -30,6 +30,25 @@ interface ITimetableData {
   followingSceneries: string[];
 }
 
+interface IOnlineStationData {
+  dispatcherId: number;
+  dispatcherName: string;
+  dispatcherIsSupporter: boolean;
+  stationName: string;
+  stationHash: string;
+  region: string;
+  maxUsers: number;
+  currentUsers: number;
+  spawn: number;
+  lastSeen: number;
+  dispatcherExp: number;
+  nameFromHeader: string;
+  spawnString: string;
+  networkConnectionString: string;
+  isOnline: number;
+  dispatcherRate: number;
+}
+
 const URLs = {
   stations: 'https://api.td2.info.pl:9640/?method=getStationsOnline',
   trains: 'https://api.td2.info.pl:9640/?method=getTrainsOnline',
@@ -66,39 +85,6 @@ const getStatusID = (stationStatus: any) => {
   }
 
   return 'unavailable';
-};
-
-const getStatusLabel = (stationStatus: any) => {
-  if (!stationStatus) return 'NIEZALOGOWANY';
-
-  const statusCode = stationStatus[2];
-  const statusTimestamp = stationStatus[3];
-
-  switch (statusCode) {
-    case 0:
-      if (statusTimestamp - Date.now() > 21000000) return 'BEZ LIMITU';
-
-      return `DO ${new Date(statusTimestamp).toLocaleTimeString('en-US', {
-        hour12: false,
-        hour: '2-digit',
-        minute: '2-digit',
-      })}`;
-
-    case 1:
-      return 'Z/W';
-
-    case 2:
-      if (statusTimestamp == 0) return 'KOŃCZY';
-      break;
-
-    case 3:
-      return 'BRAK MIEJSCA';
-
-    default:
-      break;
-  }
-
-  return 'NIEDOSTĘPNY';
 };
 
 const getStatusTimestamp = (stationStatus: any) => {
@@ -138,7 +124,8 @@ const parseSpawns = (spawnString: string) => {
 };
 
 const getTimestamp = (date: string) => (date ? new Date(date).getTime() : 0);
-const timestampToTime = (timestamp: number) =>
+
+const timestampToString = (timestamp: number) =>
   new Date(timestamp).toLocaleTimeString('pl-PL', {
     hour: '2-digit',
     minute: '2-digit',
@@ -190,22 +177,6 @@ export default class Store extends VuexModule {
   //ACTIONS
   @Action
   async synchronizeData() {
-    // axios
-    //   .get(URLs.sceneryInfo)
-    //   .then(response => {
-    //     const data: ISceneryInfoData[] = response.data;
-
-    //     this.context.commit('setSceneryData', data);
-    //     this.context.commit('setSceneryDataStatus', Status.Loaded);
-
-    //     this.context.dispatch('fetchOnlineData');
-    //     setInterval(() => this.context.dispatch('fetchOnlineData'), 20000);
-    //   })
-    //   .catch(err => {
-    //     this.context.commit('setSceneryDataStatus', Status.Error);
-    //     console.error('Ups! Coś poszło nie tak!', err);
-    //   });
-
     this.context.commit('setSceneryData');
     this.context.commit('setSceneryDataStatus', Status.Loaded);
 
@@ -237,16 +208,16 @@ export default class Store extends VuexModule {
           mainStop: point.pointName.includes('strong'),
 
           arrivalLine: point.arrivalLine,
-          arrivalTimeString: timestampToTime(point.arrivalTime),
+          arrivalTimeString: timestampToString(point.arrivalTime),
           arrivalTimestamp: arrivalTimestamp,
-          arrivalRealTimeString: timestampToTime(point.arrivalRealTime),
+          arrivalRealTimeString: timestampToString(point.arrivalRealTime),
           arrivalRealTimestamp: arrivalRealTimestamp,
           arrivalDelay: point.arrivalDelay,
 
           departureLine: point.departureLine,
-          departureTimeString: timestampToTime(point.departureTime),
+          departureTimeString: timestampToString(point.departureTime),
           departureTimestamp: departureTimestamp,
-          departureRealTimeString: timestampToTime(point.departureRealTime),
+          departureRealTimeString: timestampToString(point.departureRealTime),
           departureRealTimestamp: departureRealTimestamp,
           departureDelay: point.departureDelay,
 
@@ -285,7 +256,7 @@ export default class Store extends VuexModule {
   async fetchOnlineData() {
     Promise.all([axios.get(URLs.stations), axios.get(URLs.trains), axios.get(URLs.dispatchers)])
       .then(async response => {
-        const onlineStationsData = response[0].data.message;
+        const onlineStationsData: IOnlineStationData[] = response[0].data.message;
         const onlineTrainsData = await response[1].data.message;
         const onlineDispatchersData = await response[2].data.message;
 
@@ -315,10 +286,11 @@ export default class Store extends VuexModule {
             stationTrains,
             statusTimestamp,
             statusID,
+            statusTimeString: timestampToString(statusTimestamp),
           });
 
           return acc;
-        }, []);
+        }, [] as any);
 
         let updatedTrainList = await Promise.all(
           onlineTrainsData
@@ -429,63 +401,16 @@ export default class Store extends VuexModule {
       online: false,
       statusTimestamp: -3,
       statusID: 'free',
+      statusTimeString: '',
       stationTrains: [],
       scheduledTrains: [],
       spawns: [],
     }));
   }
 
-  // @Mutation setSceneryData(data: ISceneryInfoData[]) {
-  //   this.sceneryData = data;
-
-  //   this.stationList = data.map(scenery => ({
-  //     stationName: scenery.stationName,
-  //     stationURL: scenery.stationURL,
-  //     stationLines: scenery.stationLines,
-  //     stationProject: scenery.stationProject,
-  //     reqLevel: scenery.reqLevel,
-  //     supportersOnly: scenery.supportersOnly,
-  //     signalType: scenery.signalType,
-  //     controlType: scenery.controlType,
-  //     SBL: scenery.SBL,
-  //     TWB: scenery.twoWayBlock,
-  //     routes: {
-  //       oneWay: {
-  //         catenary: scenery.routesOneWayCatenary,
-  //         noCatenary: scenery.routesOneWayOther,
-  //       },
-  //       twoWay: {
-  //         catenary: scenery.routesTwoWayCatenary,
-  //         noCatenary: scenery.routesToWayOther,
-  //       },
-  //     },
-  //     checkpoints: scenery.checkpoints.length ? scenery.checkpoints.map(cp => ({ checkpointName: cp, scheduledTrains: [] })) : null,
-  //     stops: scenery.stops,
-
-  //     default: scenery.default,
-  //     nonPublic: scenery.nonPublic,
-  //     unavailable: scenery.unavailable,
-
-  //     stationHash: '',
-  //     maxUsers: 0,
-  //     currentUsers: 0,
-  //     dispatcherName: '',
-  //     dispatcherRate: 0,
-  //     dispatcherExp: -1,
-  //     dispatcherId: 0,
-  //     dispatcherIsSupporter: false,
-  //     online: false,
-  //     occupiedTo: 'WOLNA',
-  //     statusTimestamp: -3,
-  //     stationTrains: [],
-  //     scheduledTrains: [],
-  //     spawns: [],
-  //   }));
-  // }
-
   @Mutation
   private updateOnlineStations(updatedStationList: any[]) {
-    this.stationList = this.stationList.reduce((acc, station) => {
+    this.stationList = this.stationList.reduce((acc: Station[], station) => {
       const onlineStationData = updatedStationList.find(updatedStation => updatedStation.stationName === station.stationName);
       const registeredStation = JSONStationData.find(data => data[0] === station.stationName);
 
@@ -510,6 +435,7 @@ export default class Store extends VuexModule {
           online: false,
           statusID: 'free',
           statusTimestamp: -3,
+          statusTimeString: '',
           stationTrains: [],
           scheduledTrains: [],
           checkpoints: null,

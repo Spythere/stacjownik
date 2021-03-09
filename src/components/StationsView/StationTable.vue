@@ -80,9 +80,12 @@
             </td>
 
             <td class="station_status">
-              <span class="status-badge" :class="station.statusID">{{
-                $t(`status.${station.statusID}`)
-              }}</span>
+              <span class="status-badge" :class="station.statusID"
+                >{{ $t(`status.${station.statusID}`) }}
+                {{
+                  station.statusID == "online" ? station.statusTimeString : ""
+                }}
+              </span>
             </td>
 
             <td class="station_dispatcher-name">

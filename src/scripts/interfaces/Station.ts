@@ -49,6 +49,7 @@ export default interface Station {
   online: boolean;
   // occupiedTo: string;
   statusTimestamp: number;
+  statusTimeString: string;
   statusID: string;
 
   stationTrains: Train[];

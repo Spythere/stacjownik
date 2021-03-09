@@ -3,10 +3,12 @@
     "sceneries": "SCENERIE",
     "trains": "POCIĄGI",
     "journal": "DZIENNIK",
-    "loading": "Pobieranie danych..."
+    "loading": "Pobieranie danych...",
+    "support": "Wspomóż projekt"
   },
   "descs": {},
   "status": {
+    "online": "DO ",
     "free": "WOLNA",
     "ending": "KOŃCZY",
     "not-signed": "NIEZALOGOWANY",
@@ -99,6 +101,8 @@
     "departed-away": "Odjechał",
     "arriving": "W drodze",
     "stopped": "Postój",
-    "terminated": "Skończył bieg"
+    "terminated": "Skończył bieg",
+    "begins": "ROZPOCZYNA <br /> BIEG",
+    "terminates": "KOŃCZY BIEG"
   }
 }

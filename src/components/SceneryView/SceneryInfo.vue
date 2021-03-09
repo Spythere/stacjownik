@@ -207,6 +207,8 @@ export default class SceneryInfo extends styleMixin {
   }
 
   navigateToTrain(trainNo: number) {
+    console.log(trainNo);
+
     this.$router.push({
       name: "TrainsView",
       params: { queryTrain: trainNo.toString() },

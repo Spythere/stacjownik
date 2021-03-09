@@ -10,9 +10,31 @@
       <header class="app_header">
         <div class="header_body">
           <span class="header_brand">
-            <span>Stacj</span>
-            <img src="@/assets/trainlogo.png" alt="trainlogo" />
-            <span>wnik</span>
+            <span>
+              <span>Stacj</span>
+              <img src="@/assets/trainlogo.png" alt="trainlogo" />
+              <span>wnik</span>
+            </span>
+
+            <span class="brand_lang">
+              <span
+                class="lang pl"
+                @click="changeLang('en')"
+                :class="{ current: currentLang == 'pl' }"
+                v-if="currentLang == 'pl'"
+              >
+                <img :src="iconPL" alt="icon-pl" />
+              </span>
+
+              <span
+                class="lang en"
+                @click="changeLang('pl')"
+                :class="{ current: currentLang == 'en' }"
+                v-if="currentLang == 'en'"
+              >
+                <img :src="iconEN" alt="icon-en" />
+              </span>
+            </span>
           </span>
 
           <span class="header_info">
@@ -27,20 +49,19 @@
 
           <span class="header_links">
             <router-link class="route" active-class="route-active" to="/" exact
-              >{{ $t("app.sceneries") }} </router-link
-            >/
-            <router-link
-              class="route"
-              active-class="route-active"
-              to="/trains"
-              >{{ $t("app.trains") }}</router-link
-            >/
-            <router-link
+              >{{ $t("app.sceneries") }}
+            </router-link>
+            /
+            <router-link class="route" active-class="route-active" to="/trains"
+              >{{ $t("app.trains") }}
+            </router-link>
+
+            <!-- <router-link
               class="route"
               active-class="route-active"
               to="/history"
               >{{ $t("app.journal") }}</router-link
-            >
+            > -->
           </span>
         </div>
       </header>
@@ -58,7 +79,11 @@
         <a href="https://td2.info.pl/profile/?u=20777" target="_blank">
           Spythere
         </a>
-        2021 | v{{ VERSION }}
+        2021 | v{{ VERSION }} | [<a
+          target="_blank"
+          href="https://paypal.me/spythere"
+          >{{ $t("app.support") }}!</a
+        >]
       </footer>
     </div>
   </div>
@@ -80,10 +105,15 @@ export default class App extends Vue {
   @Action("synchronizeData") synchronizeData;
   @Getter("getAllData") data;
 
-  private VERSION = "1.4.2";
+  private VERSION = "1.4.3";
 
   hasReleaseNotes = false;
   updateModalVisible = false;
+
+  currentLang = "pl";
+
+  iconEN = require("@/assets/icon-en.svg");
+  iconPL = require("@/assets/icon-pl.svg");
 
   mounted() {
     this.synchronizeData();
@@ -98,6 +128,8 @@ export default class App extends Vue {
           this.$i18n.locale = "en";
           break;
       }
+
+      this.currentLang = this.$i18n.locale;
     }
 
     if (StorageManager.getStringValue("version") != this.VERSION) {
@@ -110,6 +142,13 @@ export default class App extends Vue {
     this.updateModalVisible =
       this.hasReleaseNotes &&
       !StorageManager.getBooleanValue("version_notes_read");
+  }
+
+  changeLang(lang: string) {
+    this.$i18n.locale = lang;
+    this.currentLang = lang;
+
+    console.log("Switched to: " + lang);
   }
 
   toggleUpdateModal() {
@@ -178,7 +217,7 @@ export default class App extends Vue {
   }
 
   @include smallScreen {
-    font-size: 0.65rem;
+    font-size: 0.6rem;
   }
 }
 
@@ -220,6 +259,7 @@ export default class App extends Vue {
 
 .header {
   &_brand {
+    position: relative;
     width: 100%;
     font-size: 4.5em;
 
@@ -227,6 +267,19 @@ export default class App extends Vue {
 
     img {
       width: 0.8em;
+    }
+
+    .brand_lang {
+      position: absolute;
+      right: 0;
+
+      transform: translate(110%, -40%);
+
+      img {
+        width: 0.5em;
+      }
+
+      cursor: pointer;
     }
   }
 
@@ -268,7 +321,6 @@ export default class App extends Vue {
 
 // FOOTER
 footer.app_footer {
-  font-size: calc(0.5rem + 0.5vw);
   max-width: 100%;
   padding: 0.3rem;
 

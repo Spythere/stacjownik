@@ -243,8 +243,6 @@ export default class StationsView extends Vue {
 .stations_view {
   position: relative;
 
-  font-size: 0.9em;
-
   padding: 1rem 0;
   min-height: 100%;
 }
@@ -267,13 +265,9 @@ export default class StationsView extends Vue {
 .bar_actions {
   display: flex;
 
-  @include smallScreen() {
-    justify-content: center;
-  }
-
   width: 100%;
 
-  font-size: 1.25em;
+  font-size: 1.15em;
 
   button {
     margin-right: 0.5em;

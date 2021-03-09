@@ -3,12 +3,14 @@
     "sceneries": "SCENERIES",
     "trains": "TRAINS",
     "journal": "JOURNAL",
-    "loading": "Loading data..."
+    "loading": "Loading data...",
+    "support": "Support the project"
   },
   "descs": {},
   "status": {
+    "online": "UNTIL ",
     "free": "FREE",
-    "ending": "ENDING",
+    "ending": "ENDS SOON",
     "not-signed": "NOT SIGNED IN",
     "no-limit": "NO LIMIT",
     "unavailable": "UNAVAILABLE",
@@ -99,6 +101,8 @@
     "departed-away": "Departed",
     "arriving": "En route",
     "stopped": "Stopped",
-    "terminated": "Terminated"
+    "terminated": "Terminated",
+    "begins": "BEGINS HERE",
+    "terminates": "TERMINATES <br /> HERE"
   }
 }

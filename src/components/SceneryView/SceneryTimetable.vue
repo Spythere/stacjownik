@@ -100,9 +100,8 @@
             <span
               class="arrival-time begins"
               v-if="scheduledTrain.stopInfo.beginsHere"
+              v-html="$t('timetables.begins')"
             >
-              ROZPOCZYNA
-              <div>BIEG</div>
             </span>
             <span class="arrival-time" v-else>
               {{ scheduledTrain.stopInfo.arrivalTimeString }} ({{
@@ -122,8 +121,9 @@
             <span
               class="departure-time terminates"
               v-if="scheduledTrain.stopInfo.terminatesHere"
-              >KOŃCZY BIEG</span
+              v-html="$t('timetables.terminates')"
             >
+            </span>
             <span class="departure-time" v-else>
               {{ scheduledTrain.stopInfo.departureTimeString }} ({{
                 scheduledTrain.stopInfo.departureDelay

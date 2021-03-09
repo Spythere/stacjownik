@@ -333,7 +333,7 @@ export default class TrainTable extends Vue {
   &-stops {
     margin-bottom: 10px;
 
-    font-size: 0.9em;
+    font-size: 0.85em;
   }
 
   &-bottom {
