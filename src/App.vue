@@ -112,20 +112,22 @@ export default class App extends Vue {
 
   currentLang = "pl";
 
-  iconEN = require("@/assets/icon-en.svg");
+  iconEN = require("@/assets/icon-en.jpg");
   iconPL = require("@/assets/icon-pl.svg");
 
   mounted() {
     this.synchronizeData();
 
-    if (window.navigator.language) {
+    if (StorageManager.getStringValue("lang")) {
+      this.changeLang(StorageManager.getStringValue("lang"));
+    } else if (window.navigator.language) {
       switch (window.navigator.language) {
         case "pl-PL":
-          this.$i18n.locale = "pl";
+          this.changeLang("pl");
           break;
         case "en-EN":
         default:
-          this.$i18n.locale = "en";
+          this.changeLang("en");
           break;
       }
 
@@ -148,6 +150,7 @@ export default class App extends Vue {
     this.$i18n.locale = lang;
     this.currentLang = lang;
 
+    StorageManager.setStringValue("lang", lang);
     console.log("Switched to: " + lang);
   }
 
