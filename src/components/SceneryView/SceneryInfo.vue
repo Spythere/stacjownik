@@ -117,9 +117,12 @@
           <span class="name">{{ stationInfo.dispatcherName }}</span>
         </div>
 
-        <span class="status-badge" :class="stationInfo.statusID">{{
-          $t(`status.${stationInfo.statusID}`)
-        }}</span>
+        <span class="status-badge" :class="stationInfo.statusID"
+          >{{ $t(`status.${stationInfo.statusID}`) }}
+          {{
+            stationInfo.statusID == "online" ? stationInfo.statusTimeString : ""
+          }}</span
+        >
       </div>
 
       <div class="info-lists">
