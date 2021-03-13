@@ -4,6 +4,13 @@
     }
 }
 
+
+@mixin midScreen() {
+    @media only screen and (max-width: 950px) {
+        @content;
+    }
+}
+
 @mixin bigScreen() {
     @media only screen and (min-width: 2000px) {
         @content;

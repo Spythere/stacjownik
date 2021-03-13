@@ -24,7 +24,7 @@
               <p>{{ $t("options.donate") }}</p>
             </button> -->
           </div>
-
+          <!-- 
           <div class="bar_indicators">
             <transition name="indicator-anim">
               <span
@@ -45,7 +45,7 @@
                 <img :src="timetableIcon" alt="icon-timetable" />
               </span>
             </transition>
-          </div>
+          </div> -->
         </div>
 
         <div class="body_table">
@@ -243,7 +243,7 @@ export default class StationsView extends Vue {
 .stations_view {
   position: relative;
 
-  padding: 1rem 0;
+  padding: 1em 0;
   min-height: 100%;
 }
 
@@ -255,37 +255,25 @@ export default class StationsView extends Vue {
 .stations_body {
   margin: 0 auto;
   overflow: auto;
+}
 
-  & > .body_bar {
-    display: flex;
-    justify-content: space-between;
-  }
+.body_bar {
+  display: flex;
+  justify-content: space-between;
 }
 
 .bar_actions {
-  display: flex;
-
   width: 100%;
 
-  font-size: 1.15em;
-
-  button {
-    margin-right: 0.5em;
-  }
+  font-size: 1.1em;
 }
 
 .bar_indicators {
-  display: flex;
-  align-items: flex-end;
+  border: 1px solid red;
 
   > span {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    width: 2.5em;
-    height: 2.5em;
     margin-left: 0.5em;
+    padding: 0.5em 0.5em;
 
     // background-color: #e68e00;
     border-radius: 1em 1em 0 0;

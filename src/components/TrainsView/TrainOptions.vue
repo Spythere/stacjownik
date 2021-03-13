@@ -172,7 +172,7 @@ export default class TrainOptions extends Vue {
     width: 100%;
     margin: 0.5rem 0;
 
-    font-size: 1.15em;
+    font-size: 0.85rem;
   }
 }
 
@@ -263,8 +263,6 @@ export default class TrainOptions extends Vue {
 
     padding: 0.5rem 1rem;
     margin: 0;
-
-    font-size: 1em;
 
     min-width: 85%;
   }

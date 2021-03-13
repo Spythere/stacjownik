@@ -265,7 +265,7 @@ h3 {
     }
 
     label {
-      padding: 0.5rem 1rem;
+      padding: 0.5em 0.35em;
       cursor: pointer;
     }
   }
@@ -292,12 +292,12 @@ h3 {
     justify-content: space-between;
     align-items: center;
 
-    padding: 0.5rem 1rem;
+    padding: 0.35em 0.7em;
     min-width: 10em;
     cursor: pointer;
 
     span {
-      margin-right: 2rem;
+      margin-right: 2em;
     }
 
     img {
@@ -346,7 +346,7 @@ h3 {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
 
-    padding: 0 0.5rem;
+    padding: 0 0.35em;
 
     background: #555;
 

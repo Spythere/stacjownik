@@ -17,8 +17,8 @@
             @click="changeScheduleShowState(train.timetableData.timetableId)"
           >
             <div class="info-main">
-              <div class="info-category">
-                <div class="category-left">
+              <div class="info-top">
+                <div class="top-category">
                   <span class="warning twr" v-if="train.timetableData.TWR">
                     TWR
                   </span>
@@ -37,7 +37,7 @@
                   </span>
                 </div>
 
-                <div class="category-right tooltip">
+                <div class="top-timetable-btn tooltip">
                   <img
                     :src="
                       showedSchedule === train.timetableData.timetableId
@@ -235,10 +235,11 @@ export default class TrainTable extends Vue {
 
 .no-trains {
   text-align: center;
-  font-size: 1.35em;
 
-  padding: 1rem;
-  margin: 1rem 0;
+  padding: 1em;
+  margin: 1em 0;
+
+  font-size: 1.35em;
 
   background: var(--clr-bg);
 }
@@ -253,7 +254,7 @@ export default class TrainTable extends Vue {
 
   &-row {
     padding: 1em;
-    margin-bottom: 1rem;
+    margin-bottom: 1em;
 
     background-color: var(--clr-secondary);
 
@@ -263,17 +264,11 @@ export default class TrainTable extends Vue {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
 
-      @include smallScreen() {
+      @include midScreen() {
         grid-template-columns: 1fr;
         grid-template-rows: repeat(3, minmax(100px, 1fr));
 
         gap: 0.4em 0;
-
-        font-size: 1.1em;
-      }
-
-      @include bigScreen() {
-        font-size: 1.1rem;
       }
     }
   }
@@ -284,40 +279,13 @@ export default class TrainTable extends Vue {
   flex-direction: column;
   justify-content: space-between;
 
-  &-category {
+  &-top {
     display: flex;
     justify-content: space-between;
     align-items: center;
 
-    font-size: 1.1em;
-
     div {
       display: flex;
-    }
-
-    .category-right {
-      padding: 0.15em 0.5em;
-
-      background-color: var(--clr-accent);
-      border-radius: 1em;
-
-      -moz-user-select: none;
-      -webkit-user-select: none;
-      user-select: none;
-
-      img {
-        vertical-align: middle;
-        width: 1.2em;
-      }
-
-      .tooltip-text {
-        font-size: 0.9em;
-        background-color: var(--clr-accent);
-
-        &::after {
-          border-color: var(--clr-accent) transparent transparent transparent;
-        }
-      }
     }
   }
 
@@ -327,13 +295,17 @@ export default class TrainTable extends Vue {
 
     margin: 5px 0;
 
-    font-size: 1.2em;
+    font-size: 1.1em;
   }
 
   &-stops {
     margin-bottom: 10px;
 
-    font-size: 0.85em;
+    font-size: 0.7em;
+
+    @include smallScreen() {
+      font-size: 0.85em;
+    }
   }
 
   &-bottom {
@@ -372,7 +344,7 @@ export default class TrainTable extends Vue {
   }
 
   &-loco img {
-    width: 13em;
+    width: 200px;
     max-width: 200px;
   }
 }
@@ -381,6 +353,8 @@ export default class TrainTable extends Vue {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+
+  font-size: 0.95em;
 
   &-main {
     display: flex;
@@ -441,7 +415,7 @@ export default class TrainTable extends Vue {
 
 @include bigScreen() {
   .item {
-    font-size: 1rem;
+    font-size: 1em;
   }
 }
 

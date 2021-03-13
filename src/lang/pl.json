@@ -58,10 +58,11 @@
     "general": "Informacje <br> ogólne",
     "users": "Maszyniści online",
     "spawns": "Otwarte spawny",
-    "timetables": "Aktywne rozkłady jazdy"
+    "timetables": "Aktywne rozkłady jazdy",
+    "no-stations": "Brak stacji do wyświetlenia!"
   },
   "trains": {
-    "no-trains": "Ups! Brak pociągów online!",
+    "no-trains": "Brak pociągów online!",
     "stats": "STATYSTYKI RUCHU",
     "stats-speed": "PRĘDKOŚCI POCIĄGÓW (MIN | ŚR | MAX) [km/h]",
     "stats-length": "DŁUGOŚCI ROZKŁADÓW (MIN | ŚR | MAX) [km]",

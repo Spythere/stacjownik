@@ -98,6 +98,9 @@ import Clock from "@/components/App/Clock.vue";
 
 import StorageManager from "@/scripts/storageManager";
 
+import DataModule from "@/store/modules/DataModule";
+import { getModule } from "vuex-module-decorators";
+
 @Component({
   components: { Clock, UpdateModal },
 })
@@ -115,8 +118,18 @@ export default class App extends Vue {
   iconEN = require("@/assets/icon-en.jpg");
   iconPL = require("@/assets/icon-pl.svg");
 
+  dataStore: DataModule = getModule(DataModule);
+
+  get test() {
+    return this.dataStore.getTest;
+  }
+
   mounted() {
     this.synchronizeData();
+
+    setTimeout(() => {
+      this.dataStore.fetchTest();
+    }, 3000);
 
     if (StorageManager.getStringValue("lang")) {
       this.changeLang(StorageManager.getStringValue("lang"));
@@ -213,23 +226,19 @@ export default class App extends Vue {
 
   overflow: hidden;
 
-  font-size: calc(0.7rem + 0.2vw);
+  font-size: 1rem;
 
-  @include bigScreen {
-    font-size: 1rem;
+  @include midScreen() {
+    font-size: 0.95rem;
   }
 
-  @include smallScreen {
-    font-size: 0.6rem;
+  @include smallScreen() {
+    font-size: 0.7rem;
   }
 }
 
 // CONTAINER
 .app_container {
-  // display: grid;
-  // grid-template-rows: auto 1fr auto;
-  // grid-template-columns: minmax(0, 1fr);
-
   display: flex;
   flex-flow: column;
 
@@ -264,7 +273,7 @@ export default class App extends Vue {
   &_brand {
     position: relative;
     width: 100%;
-    font-size: 4.5em;
+    font-size: 4.25em;
 
     text-align: center;
 
@@ -276,10 +285,10 @@ export default class App extends Vue {
       position: absolute;
       right: 0;
 
-      transform: translate(110%, -40%);
+      transform: translate(110%, -35%);
 
       img {
-        width: 0.5em;
+        width: 0.6em;
       }
 
       cursor: pointer;
@@ -290,7 +299,7 @@ export default class App extends Vue {
     display: flex;
     justify-content: space-between;
 
-    font-size: 1.35em;
+    font-size: 1.25em;
 
     margin: 0 0.3em;
     padding: 0.2em;
@@ -302,7 +311,7 @@ export default class App extends Vue {
 
     border-radius: 0.7em;
 
-    font-size: 1.35em;
+    font-size: 1.25em;
     padding: 0.5em;
   }
 }
@@ -325,7 +334,7 @@ export default class App extends Vue {
 // FOOTER
 footer.app_footer {
   max-width: 100%;
-  padding: 0.3rem;
+  padding: 0.5em;
 
   z-index: 10;
 

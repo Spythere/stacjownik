@@ -346,7 +346,7 @@ h3 {
 .user,
 .spawn {
   font-weight: 600;
-  font-size: 0.9em;
+  font-size: 0.85em;
 
   display: inline-block;
   padding: 0;

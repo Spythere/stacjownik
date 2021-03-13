@@ -58,7 +58,8 @@
     "general": "General info",
     "users": "Drivers online",
     "spawns": "Spawns online",
-    "timetables": "Active timetables"
+    "timetables": "Active timetables",
+    "no-stations": "No stations to show here!"
   },
   "trains": {
     "no-trains": "Oops! No trains online!",

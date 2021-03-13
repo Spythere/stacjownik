@@ -212,7 +212,7 @@ export default class TrainStats extends Vue {
 }
 
 .train-stats {
-  font-size: 1.15em;
+  font-size: 0.9rem;
   z-index: 10;
 
   margin-bottom: 0.5em;

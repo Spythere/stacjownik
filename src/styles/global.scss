@@ -32,19 +32,31 @@ body {
 
 .tooltip {
   position: relative;
-  
+
+  background-color: var(--clr-accent);
+  padding: .1em .5em;
+  border-radius: 1em;
+
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   & > &-text {
     display: inline-block;
     width: 150px;
 
-    padding: .5rem .35rem;
-    background-color: #830000;
-    border-radius: .5rem;
+
+    font-size: 0.9em;
+
+    background-color: var(--clr-accent);
+
+    padding: .15em .5em;
+    border-radius: 1em;
     
     display: inline-block;
     max-width: 150px;
     
-    font-size: 1em;
     text-align: center;
     color: #fff;
     
@@ -66,7 +78,7 @@ body {
       margin-left: -5px;
       border-width: 5px;
       border-style: solid;
-      border-color: #830000 transparent transparent transparent;
+      border-color: var(--clr-accent) transparent transparent transparent;
     }
   }
 
@@ -137,10 +149,11 @@ input {
   border: none;
 
   color: #bdbdbd;
-  font-size: 0.9em;
+
+  font-size: 1em;
 
   outline: none;
-  padding: 0.35em;
+  padding: 0.35em 0.5em;
   cursor: pointer;
 
   transition: all 0.3s;

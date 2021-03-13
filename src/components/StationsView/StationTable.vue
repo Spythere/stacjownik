@@ -208,7 +208,7 @@
     </div>
 
     <div class="no-stations" v-if="stations.length == 0">
-      Ups! Brak stacji do wyświetlenia!
+      {{ $t("sceneries.no-stations") }}
     </div>
   </section>
 </template>
@@ -310,7 +310,6 @@ $rowCol: #4b4b4b;
 section.station_table {
   overflow: auto;
   overflow-y: hidden;
-  font-size: calc(0.55rem + 0.35vw);
   font-weight: 500;
 }
 
@@ -365,14 +364,14 @@ tr.station {
   }
 
   & > td {
-    padding: 0.3rem 1rem;
+    padding: 0.25em 1em;
     text-align: center;
 
     cursor: pointer;
 
     @include smallScreen() {
       margin: 0;
-      padding: 0.1rem 0.5rem;
+      padding: 0.1em 0.5em;
     }
   }
 }
@@ -416,8 +415,10 @@ td.station {
     }
 
     .track {
-      margin: 0 0.3rem;
-      padding: 0.5em;
+      margin: 0 0.3em;
+      padding: 0.35em 0.1em;
+      font-size: 1.05em;
+      white-space: pre-wrap;
     }
   }
 
@@ -438,8 +439,8 @@ td.station {
   text-align: center;
   font-size: 1.5em;
 
-  padding: 1rem;
-  margin: 1rem 0;
+  padding: 1em;
+  margin: 1em 0;
 
   background: #333;
 }

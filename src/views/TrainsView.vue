@@ -136,10 +136,6 @@ export default class TrainsView extends Vue {
   max-width: 1300px;
 
   padding: 0 0.5rem;
-
-  @include bigScreen() {
-    font-size: 0.9rem;
-  }
 }
 
 @include smallScreen {
