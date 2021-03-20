@@ -6,7 +6,32 @@
     "loading": "Pobieranie danych...",
     "support": "Wspomóż projekt"
   },
-  "descs": {},
+  "desc": {
+    "control-type": "Sterowanie: ",
+    "signals-type": "Sygnalizacja: ",
+    "SBL": "Sceneria posiada SBL na szlakach: ",
+    "default": "Sceneria dostępna domyślnie w paczce z grą",
+    "non-public": "Sceneria niepubliczna",
+    "unavailable": "Sceneria niedostępna",
+    "real": "Sceneria realna"
+  },
+  "signals": {
+    "współczesna": "współczesna",
+    "mieszana": "mieszana",
+    "kształtowa": "kształtowa",
+    "historyczna": "historyczna"
+  },
+  "controls": {
+    "SPK": "SPK",
+    "SCS": "SCS",
+    "SCS-SPK": "SCS/SPK",
+    "ręczne": "ręczne",
+    "ręczne+SPK": "ręczne + SPK",
+    "ręczne+SCS": "ręczne + SCS",
+    "mechaniczne": "mechaniczne",
+    "mechaniczne+SPK": "mechaniczne + SPK",
+    "mechaniczne+SCS": "mechaniczne + SCS"
+  },
   "status": {
     "online": "DO ",
     "free": "WOLNA",

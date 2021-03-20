@@ -52,49 +52,53 @@
           v-if="stationInfo.controlType"
           :src="require(`@/assets/icon-${stationInfo.controlType}.svg`)"
           :alt="stationInfo.controlType"
-          :title="'Sterowanie ' + stationInfo.controlType"
+          :title="
+            $t('desc.control-type') + $t(`controls.${stationInfo.controlType}`)
+          "
         />
 
         <img
           v-if="stationInfo.signalType"
           :src="require(`@/assets/icon-${stationInfo.signalType}.svg`)"
           :alt="stationInfo.signalType"
-          :title="'Sygnalizacja ' + stationInfo.signalType"
+          :title="
+            $t('desc.signals-type') + $t(`signals.${stationInfo.signalType}`)
+          "
         />
 
         <img
           v-if="stationInfo.SBL && stationInfo.SBL !== ''"
           :src="require(`@/assets/icon-SBL.svg`)"
           alt="SBL"
-          title="Sceneria posiada SBL na przynajmniej jednym ze szlaków"
+          :title="$t('desc.SBL') + `${stationInfo.SBL}`"
         />
 
         <img
           v-if="stationInfo.default"
           :src="require(`@/assets/icon-td2.svg`)"
           alt="default-pack"
-          title="Sceneria domyślnie dostępna w grze"
+          :title="$t('desc.default')"
         />
 
         <img
           v-if="stationInfo.nonPublic || !stationInfo.reqLevel"
           :src="require(`@/assets/icon-lock.svg`)"
           alt="non-public"
-          title="Sceneria niepubliczna"
+          :title="$t('desc.non-public')"
         />
 
         <img
           v-if="stationInfo.unavailable"
           :src="require(`@/assets/icon-unavailable.svg`)"
           alt="icon-unavailable"
-          title="Sceneria niedostępna"
+          :title="$t('desc.unavailable')"
         />
 
         <img
           v-if="stationInfo.stationLines && stationInfo.stationLines != ''"
           :src="require('@/assets/icon-real.svg')"
           alt="real"
-          title="Sceneria realna / półrealna"
+          :title="$t('desc.real')"
         />
       </div>
 
@@ -169,8 +173,8 @@
           <span
             class="spawn none"
             v-if="!stationInfo.spawns || stationInfo.spawns.length == 0"
-            >{{ $t("scenery.no-spawns") }}</span
-          >
+            >{{ $t("scenery.no-spawns") }}
+          </span>
         </div>
       </div>
     </section>

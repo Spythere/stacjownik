@@ -51,10 +51,6 @@ export default class SceneryView extends Vue {
     return this.$route.path;
   }
 
-  // get dataLoaded() {
-  //   return this.storeStationList ? true : false;
-  // }
-
   get stationInfo(): Station | null {
     if (!this.$route.query.hash || !this.storeStationList) return null;
 
@@ -89,8 +85,10 @@ export default class SceneryView extends Vue {
 
     display: inline-block;
 
+    font-size: 2em;
+
     .button {
-      margin: 1rem auto;
+      margin: 1em auto;
       font-size: 0.85em;
     }
   }

@@ -144,7 +144,10 @@
                 v-if="station.controlType"
                 :src="require(`@/assets/icon-${station.controlType}.svg`)"
                 :alt="station.controlType"
-                :title="'Sterowanie ' + station.controlType"
+                :title="
+                  $t('desc.control-type') +
+                  $t(`controls.${station.controlType}`)
+                "
               />
 
               <img
@@ -152,23 +155,29 @@
                 v-if="station.signalType"
                 :src="require(`@/assets/icon-${station.signalType}.svg`)"
                 :alt="station.signalType"
-                :title="'Sygnalizacja ' + station.signalType"
+                :title="
+                  $t('desc.signals-type') + $t(`signals.${station.signalType}`)
+                "
               />
-
               <img
-                class="icon-info"
                 v-if="station.SBL && station.SBL !== ''"
                 :src="require(`@/assets/icon-SBL.svg`)"
                 alt="SBL"
-                title="Sceneria posiada SBL na przynajmniej jednym ze szlaków"
+                :title="$t('desc.SBL') + `${station.SBL}`"
               />
 
               <img
-                class="icon-info"
-                v-if="!station.reqLevel || station.nonPublic"
+                v-if="station.nonPublic || !station.reqLevel"
                 :src="require(`@/assets/icon-lock.svg`)"
                 alt="non-public"
-                title="Sceneria niepubliczna"
+                :title="$t('desc.non-public')"
+              />
+
+              <img
+                v-if="station.unavailable"
+                :src="require(`@/assets/icon-unavailable.svg`)"
+                alt="icon-unavailable"
+                :title="$t('desc.unavailable')"
               />
             </td>
 

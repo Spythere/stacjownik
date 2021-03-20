@@ -87,9 +87,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator';
-
-import Station from "@/scripts/interfaces/Station";
+import { Component, Vue, Prop } from "vue-property-decorator";
 
 @Component
 export default class StationTimetable extends Vue {
@@ -99,10 +97,13 @@ export default class StationTimetable extends Vue {
   get computedScheduledTrains() {
     return this.scheduledTrains.sort((a, b) => {
       if (a.stopInfo.arrivalTimestamp > b.stopInfo.arrivalTimestamp) return 1;
-      else if ((a.stopInfo.arrivalTimestamp < b.stopInfo.arrivalTimestamp)) return -1;
+      else if (a.stopInfo.arrivalTimestamp < b.stopInfo.arrivalTimestamp)
+        return -1;
 
-      return a.stopInfo.departureTimestamp > b.stopInfo.departureTimestamp ? 1 : -1;
-    })
+      return a.stopInfo.departureTimestamp > b.stopInfo.departureTimestamp
+        ? 1
+        : -1;
+    });
   }
 }
 </script>

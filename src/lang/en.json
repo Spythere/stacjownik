@@ -6,7 +6,32 @@
     "loading": "Loading data...",
     "support": "Support the project"
   },
-  "descs": {},
+  "desc": {
+    "control-type": "Control type: ",
+    "signals-type": "Signals type:  ",
+    "SBL": "This scenery has automatic line blockade system on following routes: ",
+    "default": "This scenery is available by default",
+    "non-public": "This scenery is not public",
+    "unavailable": "This scenery is unavailable",
+    "real": "This scenery is real"
+  },
+  "signals": {
+    "współczesna": "modern",
+    "mieszana": "mixed",
+    "kształtowa": "mechanical",
+    "historyczna": "historyczna"
+  },
+  "controls": {
+    "SPK": "SPK",
+    "SCS": "SCS",
+    "SCS-SPK": "SCS/SPK",
+    "ręczne": "manual",
+    "ręczne+SPK": "manual + SPK",
+    "ręczne+SCS": "manual + SCS",
+    "mechaniczne": "levers (mechanical)",
+    "mechaniczne+SPK": "levers + SPK",
+    "mechaniczne+SCS": "levers + SCS"
+  },
   "status": {
     "online": "UNTIL ",
     "free": "FREE",
