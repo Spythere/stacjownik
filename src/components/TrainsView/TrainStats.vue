@@ -227,7 +227,7 @@ export default class TrainStats extends Vue {
   }
 
   &-header {
-    margin-bottom: 1rem;
+    margin-bottom: 0.85em;
   }
 
   &-body {
@@ -239,7 +239,7 @@ export default class TrainStats extends Vue {
     background: #222;
     border-radius: 0 1em 1em 1em;
 
-    padding: 1rem;
+    padding: 1em;
   }
 
   &-content {

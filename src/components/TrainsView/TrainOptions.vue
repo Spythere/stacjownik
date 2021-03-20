@@ -232,7 +232,7 @@ export default class TrainOptions extends Vue {
     justify-content: space-between;
     align-items: center;
 
-    padding: 0.25em 0.5em;
+    padding: 0.5em 0.5em;
     min-width: 200px;
 
     cursor: pointer;
