@@ -226,7 +226,7 @@ h3 {
   justify-content: center;
   align-items: center;
 
-  font-size: 1.2em;
+  font-size: 1.5em;
 
   img {
     width: 1.1em;
@@ -254,6 +254,8 @@ h3 {
 .select-box {
   display: flex;
   justify-content: center;
+
+  font-size: 1.2em;
 }
 
 .option {
@@ -341,10 +343,10 @@ h3 {
 
   &-item {
     margin: 1em auto;
-    font-size: 0.8em;
 
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+    gap: 0 0.5em;
 
     padding: 0 0.35em;
 
@@ -393,7 +395,6 @@ h3 {
     @include smallScreen() {
       width: 100%;
       margin: 0.7em 0;
-      font-size: 1.8em;
     }
   }
 }

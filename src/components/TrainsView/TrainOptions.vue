@@ -166,13 +166,11 @@ export default class TrainOptions extends Vue {
   background: #333;
   border-radius: 0.5em 0.5em 0 0;
 
-  margin-right: 0.5rem;
+  margin-right: 0.35em;
 
   @include smallScreen() {
     width: 100%;
-    margin: 0.5rem 0;
-
-    font-size: 0.85rem;
+    margin: 0.35em 0;
   }
 }
 
@@ -221,7 +219,7 @@ export default class TrainOptions extends Vue {
         }
 
         label {
-          padding: 0.5rem 1rem;
+          padding: 0.5em 1em;
           width: 100%;
           cursor: pointer;
         }
@@ -234,7 +232,7 @@ export default class TrainOptions extends Vue {
     justify-content: space-between;
     align-items: center;
 
-    padding: 0.5rem 0.5rem;
+    padding: 0.25em 0.5em;
     min-width: 200px;
 
     cursor: pointer;
@@ -261,7 +259,8 @@ export default class TrainOptions extends Vue {
   &-input {
     border: none;
 
-    padding: 0.5rem 1rem;
+    padding: 0.5em 0.5em;
+
     margin: 0;
 
     min-width: 85%;

@@ -72,44 +72,16 @@ export default class SceneryView extends Vue {
 @import "../styles/responsive.scss";
 @import "../styles/variables.scss";
 
-h3 {
-  margin: 0.5em 0;
-  padding: 0.3em;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  font-size: 1.2em;
-
-  img {
-    width: 1.1em;
-    margin-left: 0.5em;
-  }
-}
-
 .scenery {
   &-view {
     min-height: 100%;
 
     display: flex;
     justify-content: center;
-
-    font-size: 1.35em;
-
-    @include bigScreen() {
-      font-size: 1.25rem;
-      align-items: flex-start;
-    }
-
-    @include smallScreen {
-      font-size: calc(0.5rem + 1vw);
-    }
   }
 
   &-offline {
     align-self: center;
-    font-size: 1.5em;
     text-align: center;
     padding: 2em 1em;
 
@@ -125,10 +97,10 @@ h3 {
 
   &-wrapper {
     // background: #555;
-    max-width: 950px;
     width: 75%;
+    max-width: 950px;
 
-    @include smallScreen {
+    @include midScreen {
       width: 95%;
     }
 

@@ -212,7 +212,6 @@ export default class TrainStats extends Vue {
 }
 
 .train-stats {
-  font-size: 0.9rem;
   z-index: 10;
 
   margin-bottom: 0.5em;
@@ -224,7 +223,6 @@ export default class TrainStats extends Vue {
 
 .stats {
   &-btn {
-    font-size: 1em;
     padding: 0.5em;
   }
 
@@ -245,7 +243,6 @@ export default class TrainStats extends Vue {
   }
 
   &-content {
-    font-size: 1.1em;
     color: #ddd;
   }
 }
@@ -255,7 +252,6 @@ export default class TrainStats extends Vue {
   &-list {
     display: flex;
     flex-wrap: wrap;
-    font-size: 0.95em;
   }
 
   margin-right: 0.4em;
@@ -313,7 +309,7 @@ export default class TrainStats extends Vue {
 
 @include smallScreen {
   .button {
-    font-size: 0.85rem;
+    font-size: 1.2em;
   }
 
   .stats-body {
@@ -327,7 +323,7 @@ export default class TrainStats extends Vue {
   .btn-wrapper {
     display: flex;
     justify-content: center;
-    margin-top: 1rem;
+    margin-top: 1em;
   }
 }
 </style>

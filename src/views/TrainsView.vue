@@ -139,8 +139,8 @@ export default class TrainsView extends Vue {
 }
 
 @include smallScreen {
-  .options-wrapper {
-    justify-content: center;
+  .options-bar {
+    font-size: 1.15em;
   }
 }
 </style>

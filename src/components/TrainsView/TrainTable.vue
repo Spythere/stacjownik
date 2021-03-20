@@ -78,18 +78,19 @@
           </span>
 
           <span class="driver">
-            <span class="driver-name">
-              <a
-                :href="'https://td2.info.pl/profile/?u=' + train.driverId"
-                target="_blank"
-              >
-                {{ train.driverName }}
-              </a>
-            </span>
-
-            <span class="driver-type">
-              {{ train.locoType }}
-            </span>
+            <div class="driver-info">
+              <span class="driver-name">
+                <a
+                  :href="'https://td2.info.pl/profile/?u=' + train.driverId"
+                  target="_blank"
+                >
+                  {{ train.driverName }}
+                </a>
+              </span>
+              <span class="driver-type">
+                {{ train.locoType }}
+              </span>
+            </div>
 
             <span class="driver-loco">
               <img
@@ -262,14 +263,14 @@ export default class TrainTable extends Vue {
 
     & > .wrapper {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 
-      @include midScreen() {
-        grid-template-columns: 1fr;
-        grid-template-rows: repeat(3, minmax(100px, 1fr));
+      gap: 2em 0;
 
-        gap: 0.4em 0;
-      }
+      // @include midScreen() {
+      //   grid-template-columns: 1fr;
+      //   grid-template-rows: repeat(3, minmax(0, 1fr));
+      // }
     }
   }
 }
@@ -304,7 +305,7 @@ export default class TrainTable extends Vue {
     font-size: 0.7em;
 
     @include smallScreen() {
-      font-size: 0.85em;
+      font-size: 0.75em;
     }
   }
 
@@ -326,7 +327,13 @@ export default class TrainTable extends Vue {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-wrap: wrap;
+  flex-flow: column;
+
+  grid-row: span 2;
+
+  &-info {
+    margin-bottom: 1em;
+  }
 
   &-name {
     margin: 0 0.3em;
@@ -354,7 +361,10 @@ export default class TrainTable extends Vue {
   flex-direction: column;
   justify-content: space-around;
 
-  font-size: 0.95em;
+  font-size: 0.85em;
+
+  // grid-column: 1 / 3;
+  // grid-column: span 2;
 
   &-main {
     display: flex;

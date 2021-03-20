@@ -99,9 +99,9 @@
       </div>
 
       <div class="info-dispatcher">
-        <div>
+        <div class="dispatcher">
           <span
-            class="level"
+            class="dispatcher_level"
             :style="
               calculateExpStyle(
                 stationInfo.dispatcherExp,
@@ -114,7 +114,7 @@
             }}
           </span>
 
-          <span class="name">{{ stationInfo.dispatcherName }}</span>
+          <span class="dispatcher_name">{{ stationInfo.dispatcherName }}</span>
         </div>
 
         <span class="status-badge" :class="stationInfo.statusID"
@@ -233,7 +233,7 @@ h3 {
   justify-content: center;
   align-items: center;
 
-  font-size: 1.2em;
+  font-size: 1.5em;
 
   img {
     width: 1.1em;
@@ -243,29 +243,32 @@ h3 {
 
 .info {
   &-header {
-    padding: 1rem;
+    padding: 1em;
 
     & > .scenery-name {
-      font-size: 3em;
       font-weight: bold;
       color: $accentCol;
+
+      font-size: 4em;
 
       text-transform: uppercase;
     }
 
     & > .scenery-hash {
-      font-size: 1em;
       line-height: 0.8em;
       color: #aaa;
+
+      font-size: 1.5em;
     }
   }
 
   &-stats {
-    font-size: 1.3em;
     padding: 1rem 0;
 
     display: flex;
     justify-content: center;
+
+    font-size: 1.7em;
 
     & > span {
       display: flex;
@@ -286,11 +289,11 @@ h3 {
   }
 
   &-brief {
-    padding: 1rem 0;
+    padding: 1em 0;
 
     img {
-      width: 2.5em;
-      margin: 0 0.5rem;
+      width: 3.5em;
+      margin: 0 0.5em;
 
       border: 2px solid #4e4e4e;
       border-radius: 0.5em;
@@ -302,28 +305,29 @@ h3 {
     align-items: center;
     justify-content: center;
 
-    .level {
-      display: inline-block;
-      margin-right: 0.3em;
-      background: firebrick;
-
-      border-radius: 0.1em;
-
-      width: 1.5em;
-      height: 1.5em;
-      line-height: 1.5em;
+    .dispatcher {
       font-size: 2em;
-      font-weight: bold;
+
+      &_level {
+        display: inline-block;
+        margin-right: 0.3em;
+        background: firebrick;
+
+        border-radius: 0.1em;
+
+        width: 1.5em;
+        height: 1.5em;
+        line-height: 1.5em;
+        font-weight: bold;
+      }
+
+      &_name {
+        margin-right: 1em;
+      }
     }
 
-    .name {
-      font-size: 1.6em;
-      margin-right: 1em;
-    }
-
-    .status {
-      font-size: 1em;
-      border-radius: 1em;
+    .status-badge {
+      font-size: 1.2em;
     }
   }
 
@@ -346,7 +350,6 @@ h3 {
 .user,
 .spawn {
   font-weight: 600;
-  font-size: 0.85em;
 
   display: inline-block;
   padding: 0;
@@ -358,10 +361,6 @@ h3 {
   span {
     display: inline-block;
     padding: 0.2em 0.4em;
-  }
-
-  @include smallScreen() {
-    font-size: 1em;
   }
 }
 

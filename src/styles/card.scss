@@ -15,8 +15,8 @@
 
   box-shadow: 0 0 15px 5px #474747;
 
-  width: 75%;
-  max-width: 650px;
+  // width: 75%;
+  width: 650px;
   max-height: 95%;
 
   padding: 0.5em 1em;
@@ -26,9 +26,11 @@
     width: 95%;
   }
 
-  @include bigScreen {
-    font-size: 1.4rem;
-  }
+  // @include midScreen {
+  //   width: 85%;
+  // }
+
+
 
   &-exit {
     position: absolute;

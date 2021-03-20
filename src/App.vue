@@ -228,12 +228,8 @@ export default class App extends Vue {
 
   font-size: 1rem;
 
-  @include midScreen() {
-    font-size: 0.95rem;
-  }
-
   @include smallScreen() {
-    font-size: 0.7rem;
+    font-size: calc(0.35rem + 1vw);
   }
 }
 

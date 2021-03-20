@@ -154,10 +154,6 @@ export default class FilterCard extends Vue {
 .card {
   font-size: 1.25em;
 
-  @include smallScreen() {
-    font-size: 1.35em;
-  }
-
   &-title {
     font-size: 2em;
     font-weight: 700;
