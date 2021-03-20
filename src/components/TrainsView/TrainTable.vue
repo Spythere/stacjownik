@@ -265,6 +265,10 @@ export default class TrainTable extends Vue {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 
+      @include smallScreen() {
+        font-size: 1.3em;
+      }
+
       // @include midScreen() {
       //   grid-template-columns: 1fr;
       //   grid-template-rows: repeat(3, minmax(0, 1fr));
@@ -328,6 +332,8 @@ export default class TrainTable extends Vue {
   flex-flow: column;
 
   grid-row: span 2;
+
+  padding: 2em 0;
 
   &-info {
     margin-bottom: 1em;
