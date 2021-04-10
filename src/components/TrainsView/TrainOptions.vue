@@ -81,6 +81,13 @@ export default class TrainOptions extends Vue {
   @Prop() readonly queryTrain!: string;
   @Prop() readonly focusedTrain!: string;
 
+  mounted() {
+    if (this.queryTrain) {
+      this.searchedTrain = this.queryTrain;
+      this.searchedDriver = "";
+    }
+  }
+
   sorterOptions: { id: string; content: string }[] = [
     {
       id: "mass",

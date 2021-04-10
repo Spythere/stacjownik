@@ -229,7 +229,7 @@ export default class App extends Vue {
   font-size: 1rem;
 
   @include smallScreen() {
-    font-size: calc(0.35rem + 1vw);
+    font-size: calc(0.45rem + 1vw);
   }
 }
 

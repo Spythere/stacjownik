@@ -68,6 +68,8 @@ export default class SceneryView extends Vue {
 @import "../styles/responsive.scss";
 @import "../styles/variables.scss";
 
+$sceneryBgCol: #333;
+
 .scenery {
   &-view {
     min-height: 100%;
@@ -94,7 +96,6 @@ export default class SceneryView extends Vue {
   }
 
   &-wrapper {
-    // background: #555;
     width: 75%;
     max-width: 950px;
 
@@ -102,10 +103,7 @@ export default class SceneryView extends Vue {
       width: 95%;
     }
 
-    // max-height: 100vh;
-    // overflow: auto;
-
-    background: #333;
+    background: $sceneryBgCol;
     padding: 1em;
     margin: 1rem 0;
 

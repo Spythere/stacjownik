@@ -350,7 +350,7 @@ h3 {
 
     padding: 0 0.35em;
 
-    background: #555;
+    background: $bgLigtherCol;
 
     @include smallScreen() {
       display: flex;
@@ -361,7 +361,7 @@ h3 {
     &.loading,
     &.empty {
       padding: 1rem;
-      font-size: 1em;
+      font-size: 1.2em;
     }
 
     &.empty {
@@ -389,12 +389,12 @@ h3 {
 
   &-schedule {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
-    font-size: 1.2em;
+    grid-template-columns: repeat(auto-fit, minmax(30px, 1fr));
+    font-size: 1.3em;
 
     @include smallScreen() {
       width: 100%;
-      margin: 0.7em 0;
+      margin: 0.5em 0;
     }
   }
 }

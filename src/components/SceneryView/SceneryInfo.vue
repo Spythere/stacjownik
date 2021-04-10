@@ -21,16 +21,19 @@
           <img :src="likeIcon" alt="icon-like" />
           <span>{{ stationInfo.dispatcherRate }}</span>
         </span>
+
         <span class="users">
           <img :src="userIcon" alt="icon-user" />
           <span>{{ stationInfo.currentUsers }}</span>
           /
           <span>{{ stationInfo.maxUsers }}</span>
         </span>
+
         <span class="spawns">
           <img :src="spawnIcon" alt="icon-spawn" />
           <span>{{ stationInfo.spawns.length }}</span>
         </span>
+
         <span class="schedules">
           <img :src="timetableIcon" alt="icon-timetable" />
           <span v-if="stationInfo.scheduledTrains">
@@ -253,7 +256,7 @@ h3 {
       font-weight: bold;
       color: $accentCol;
 
-      font-size: 4em;
+      font-size: 3.5em;
 
       text-transform: uppercase;
     }
@@ -270,15 +273,16 @@ h3 {
     padding: 1rem 0;
 
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
 
-    font-size: 1.7em;
+    font-size: 1.65em;
 
     & > span {
       display: flex;
       align-items: center;
 
-      margin: 0 0.6em;
+      margin: 0.3em;
     }
 
     .likes,

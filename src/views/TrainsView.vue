@@ -73,7 +73,6 @@ export default class TrainsView extends Vue {
   changeSorter(sorter: { id: string; dir: number }) {
     this.sorterActive = sorter;
   }
-
   get computedTrains() {
     return this.trains
       .filter(
