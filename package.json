@@ -8,16 +8,16 @@
     "deploy": "npm run build && firebase deploy --only hosting"
   },
   "dependencies": {
-    "core-js": "^3.6.5",
+    "core-js": "^3.10.1",
     "dotenv": "^8.2.0",
     "firestore": "^1.1.6",
     "howler": "^2.2.1",
-    "vue": "^2.6.11",
-    "vue-class-component": "^7.2.5",
-    "vue-i18n": "^8.23.0",
+    "vue": "^2.6.12",
+    "vue-class-component": "^7.2.6",
+    "vue-i18n": "^8.24.3",
     "vue-property-decorator": "^8.4.2",
-    "vue-router": "^3.4.3",
-    "vuex": "^3.4.0"
+    "vue-router": "^3.5.1",
+    "vuex": "^3.6.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.4.0",
@@ -26,10 +26,10 @@
     "@vue/cli-plugin-vuex": "~4.4.0",
     "@vue/cli-service": "~4.4.0",
     "axios": "^0.21.1",
-    "sass": "^1.26.10",
+    "sass": "^1.32.9",
     "sass-loader": "^8.0.2",
-    "typescript": "^3.9.7",
-    "vue-template-compiler": "^2.6.11",
+    "typescript": "^3.9.9",
+    "vue-template-compiler": "^2.6.12",
     "vuex-class": "^0.3.2",
     "vuex-module-decorators": "^0.17.0"
   },
