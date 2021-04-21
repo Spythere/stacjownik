@@ -1,17 +1,7 @@
 <template>
   <div class="train-stats">
-    <div class="btn-wrapper">
-      <button
-        class="stats-btn button"
-        @click="toggleStats"
-        v-if="trains.length > 0"
-      >
-        {{ $t("trains.stats") }}
-      </button>
-    </div>
-
     <transition name="stats-anim">
-      <div class="stats-body" v-if="statsOpen">
+      <div class="stats-body" v-if="trainStatsOpen">
         <h2 class="stats-header">{{ $t("trains.stats") }}</h2>
 
         <div class="stats-speed">
@@ -88,12 +78,7 @@ import Train from "@/scripts/interfaces/Train";
 @Component
 export default class TrainStats extends Vue {
   @Prop() readonly trains!: Train[];
-
-  statsOpen: boolean = false;
-
-  toggleStats() {
-    this.statsOpen = !this.statsOpen;
-  }
+  @Prop() readonly trainStatsOpen!: boolean;
 
   get speedStats(): { avg: string; min: string; max: string } {
     if (this.trains.length == 0) return { avg: "0", min: "0", max: "0" };
@@ -217,6 +202,7 @@ export default class TrainStats extends Vue {
   margin-bottom: 0.5em;
 
   position: relative;
+  top: 0;
 
   outline: none;
 }

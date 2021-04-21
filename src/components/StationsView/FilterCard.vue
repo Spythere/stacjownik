@@ -60,10 +60,12 @@
     </div>
 
     <div class="card-actions flex">
-      <button class="button" @click="resetFilters">
+      <action-button class="outlined" @click.native="resetFilters">
         {{ $t("filters.reset") }}
-      </button>
-      <button class="button" @click="exit">{{ $t("filters.close") }}</button>
+      </action-button>
+      <action-button class="outlined" @click.native="exit">{{
+        $t("filters.close")
+      }}</action-button>
     </div>
   </section>
 </template>
@@ -74,8 +76,9 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 import inputData from "@/data/options.json";
 
 import StorageManager from "@/scripts/storageManager";
+import ActionButton from "../Global/ActionButton.vue";
 
-@Component
+@Component({ components: { ActionButton } })
 export default class FilterCard extends Vue {
   inputs = { ...inputData };
   saveOptions: boolean = false;
@@ -151,9 +154,13 @@ export default class FilterCard extends Vue {
 @import "../../styles/responsive";
 @import "../../styles/card";
 
-.card {
-  font-size: 1.25em;
+$accessCol: #e03b07;
+$controlCol: #0085ff;
+$signalCol: #bf7c00;
+$statusCol: #349b32;
+$saveCol: #28a826;
 
+.card {
   &-title {
     font-size: 2em;
     font-weight: 700;
@@ -171,7 +178,7 @@ export default class FilterCard extends Vue {
     gap: 0.5em;
 
     @include smallScreen() {
-      grid-template-columns: repeat(auto-fit, minmax(6em, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(8em, 1fr));
       grid-template-rows: auto;
     }
   }
@@ -185,8 +192,6 @@ export default class FilterCard extends Vue {
 
     button {
       margin: 0 0.3em;
-      border: 1px solid white;
-      font-size: 0.85em;
     }
   }
 
@@ -195,7 +200,6 @@ export default class FilterCard extends Vue {
     justify-content: center;
 
     .option {
-      width: 7em;
       font-size: 1.1em;
     }
   }
@@ -224,8 +228,6 @@ export default class FilterCard extends Vue {
 
     padding: 0.45em 0.4em;
 
-    font-size: 0.8em;
-
     display: inline-block;
     position: relative;
 
@@ -243,42 +245,42 @@ export default class FilterCard extends Vue {
 
     &.checked {
       &.access {
-        background-color: #e03b07;
+        background-color: $accessCol;
 
         &::before {
-          box-shadow: 0 0 6px 1px #e03b07;
+          box-shadow: 0 0 6px 1px $accessCol;
         }
       }
 
       &.control {
-        background-color: #0085ff;
+        background-color: $controlCol;
 
         &::before {
-          box-shadow: 0 0 6px 1px #0085ff;
+          box-shadow: 0 0 6px 1px $controlCol;
         }
       }
 
       &.signals {
-        background-color: #b000bf;
+        background-color: $signalCol;
 
         &::before {
-          box-shadow: 0 0 6px 1px #b000bf;
+          box-shadow: 0 0 6px 1px $signalCol;
         }
       }
 
       &.status {
-        background-color: #05b702;
+        background-color: $statusCol;
 
         &::before {
-          box-shadow: 0 0 6px 1px #05b702;
+          box-shadow: 0 0 6px 1px $statusCol;
         }
       }
 
       &.save {
-        background-color: #05b702;
+        background-color: $saveCol;
 
         &::before {
-          box-shadow: 0 0 6px 1px #05b702;
+          box-shadow: 0 0 6px 1px $saveCol;
         }
       }
 
@@ -310,16 +312,12 @@ export default class FilterCard extends Vue {
     margin-right: 0.3em;
     padding: 0.1em 0.2em;
 
-    font-weight: 500;
-
     border-radius: 0.2em;
   }
 
   &-content {
     display: flex;
     align-items: center;
-
-    font-size: 0.8em;
   }
 
   &-input {

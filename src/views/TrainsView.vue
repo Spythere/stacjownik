@@ -1,6 +1,6 @@
 <template>
   <section class="trains-view">
-    <div class="body-wrapper">
+    <div class="wrapper">
       <!-- <TrainSorter :trainList="computedTrains" @changeSorter="changeSorter" />
         <TrainSearch
           @changeSearchedTrain="changeSearchedTrain"
@@ -10,11 +10,17 @@
         /> -->
 
       <div class="options-bar">
-        <TrainStats :trains="trains" class="test" />
+        <div class="stats">
+          <action-button @click.native="toggleStats">
+            {{ $t("trains.stats") }}
+          </action-button>
+          <TrainStats :trains="trains" :trainStatsOpen="trainStatsOpen" />
+        </div>
+
         <TrainOptions
           :queryTrain="queryTrain"
           :focusedTrain="focusedTrain"
-          @changeSorter="changeSorter"
+          @change-sorter="changeSorter"
           @changeSearchedTrain="changeSearchedTrain"
           @changeSearchedDriver="changeSearchedDriver"
         />
@@ -30,7 +36,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Prop, Watch } from "vue-property-decorator";
 import { Getter } from "vuex-class";
 
 import Train from "@/scripts/interfaces/Train";
@@ -38,12 +44,14 @@ import Train from "@/scripts/interfaces/Train";
 import TrainTable from "@/components/TrainsView/TrainTable.vue";
 import TrainStats from "@/components/TrainsView/TrainStats.vue";
 import TrainOptions from "@/components/TrainsView/TrainOptions.vue";
+import ActionButton from "@/components/Global/ActionButton.vue";
 
 @Component({
   components: {
     TrainTable,
     TrainStats,
     TrainOptions,
+    ActionButton,
   },
 })
 export default class TrainsView extends Vue {
@@ -54,12 +62,20 @@ export default class TrainsView extends Vue {
 
   sorterActive: { id: string; dir: number } = { id: "distance", dir: -1 };
 
+  trainStatsOpen: boolean = false;
+
   searchedTrain: string = "";
   searchedDriver: string = "";
   focusedTrain: string = "";
 
+  toggleStats() {
+    this.trainStatsOpen = !this.trainStatsOpen;
+  }
+
   changeSearchedTrain(trainNo: string) {
     this.searchedTrain = trainNo;
+
+    console.log("train", trainNo);
   }
 
   changeSearchedDriver(name: string) {
@@ -73,6 +89,14 @@ export default class TrainsView extends Vue {
   changeSorter(sorter: { id: string; dir: number }) {
     this.sorterActive = sorter;
   }
+
+  // @Watch("queryTrain")
+  // onQueryTrainChanged(train: string) {
+  //   // this.searchedTrain = train;
+  //   this.changeSearchedTrain(train);
+  //   console.log(train);
+  // }
+
   get computedTrains() {
     return this.trains
       .filter(
@@ -130,16 +154,24 @@ export default class TrainsView extends Vue {
   position: relative;
 }
 
-.body-wrapper {
+.wrapper {
   margin: 1rem auto;
   max-width: 1300px;
 
-  padding: 0 0.5rem;
+  padding: 0 0.5em;
+}
+
+.options-bar button {
+  margin-bottom: 0.5em;
 }
 
 @include smallScreen {
   .options-bar {
-    font-size: 1.15em;
+    font-size: 1.25em;
+
+    button {
+      margin: 0 auto;
+    }
   }
 }
 </style>

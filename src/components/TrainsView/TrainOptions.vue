@@ -1,85 +1,89 @@
 <template>
   <div class="train-options">
     <div class="options_wrapper">
-      <div class="train-sorter option">
-        <div class="train-sorter_wrapper">
-          <div class="train-sorter_selected" @click="toggleSorterOptions">
-            <span>{{ currentSorterOption }}</span>
-            <img :src="descIcon" alt="icon-select" />
-          </div>
+      <select-box
+        :title="$t('trains.option-distance')"
+        :itemList="translatedSorterOptions"
+        @selected="changeSorter"
+      />
 
-          <div class="train-sorter_options">
-            <ul :class="{ open: sorterOptionsOpen }">
-              <li
-                v-for="(option, i) in sorterOptions"
-                :key="i"
-                @click="() => chooseOption(option)"
-              >
-                <input type="radio" name="sort" :id="option.id" />
-                <label :for="option.id">
-                  {{ $t(`trains.option-${option.id}`) }}
-                </label>
-              </li>
-            </ul>
-          </div>
-        </div>
+      <div class="search-box">
+        <input
+          class="search-input"
+          v-model="searchedTrain"
+          :placeholder="$t('trains.search-no')"
+        />
+
+        <img
+          class="search-exit"
+          :src="exitIcon"
+          alt="exit-icon"
+          @click="() => (searchedTrain = '')"
+        />
       </div>
 
-      <div class="train-search_train option">
-        <div class="search-box">
-          <input
-            class="search-input"
-            :placeholder="$t('trains.search-no')"
-            v-model="searchedTrain"
-          />
-          <img
-            class="search-exit"
-            :src="exitIcon"
-            alt="exit-icon"
-            @click="() => (searchedTrain = '')"
-          />
-        </div>
-      </div>
+      <div class="search-box">
+        <input
+          class="search-input"
+          v-model="searchedDriver"
+          :placeholder="$t('trains.search-driver')"
+        />
 
-      <div class="train-search_driver option">
-        <div class="search-box">
-          <input
-            class="search-input"
-            :placeholder="$t('trains.search-driver')"
-            v-model="searchedDriver"
-          />
-          <img
-            class="search-exit"
-            :src="exitIcon"
-            alt="exit-icon"
-            @click="() => (searchedDriver = '')"
-          />
-        </div>
+        <img
+          class="search-exit"
+          :src="exitIcon"
+          alt="exit-icon"
+          @click="() => (searchedDriver = '')"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch, Prop } from "vue-property-decorator";
+import { Component, Vue, Watch, Prop, Emit } from "vue-property-decorator";
+import SelectBox from "../Global/SelectBox.vue";
 
-@Component
+@Component({ components: { SelectBox } })
 export default class TrainOptions extends Vue {
-  ascIcon = require("@/assets/icon-arrow-asc.svg");
-  descIcon = require("@/assets/icon-arrow-desc.svg");
+  // Passed as component parameters
+  @Prop() readonly queryTrain!: string;
+  @Prop() readonly focusedTrain!: string;
+
   exitIcon = require("@/assets/icon-exit.svg");
-
-  clickEventListener!: EventListener;
-
-  sorterOptionsOpen = false;
-  currentSorterOption = this.$t("trains.option-distance");
 
   searchedTrain = "";
   searchedDriver = "";
 
-  // Passed as component parameters
-  @Prop() readonly queryTrain!: string;
-  @Prop() readonly focusedTrain!: string;
+  sorterOptions: { id: string; value: string }[] = [
+    {
+      id: "mass",
+      value: "masa",
+    },
+    {
+      id: "speed",
+      value: "prędkość",
+    },
+    {
+      id: "length",
+      value: "długość",
+    },
+    {
+      id: "distance",
+      value: "kilometraż",
+    },
+    {
+      id: "timetable",
+      value: "numer pociągu",
+    },
+  ];
+
+  get translatedSorterOptions() {
+    return this.sorterOptions.map((option) => ({
+      id: option.id,
+      value: this.$t(`trains.option-${option.id}`),
+    }));
+  }
 
   mounted() {
     if (this.queryTrain) {
@@ -88,67 +92,44 @@ export default class TrainOptions extends Vue {
     }
   }
 
-  sorterOptions: { id: string; content: string }[] = [
-    {
-      id: "mass",
-      content: "masa",
-    },
-    {
-      id: "speed",
-      content: "prędkość",
-    },
-    {
-      id: "length",
-      content: "długość",
-    },
-    {
-      id: "distance",
-      content: "kilometraż",
-    },
-    {
-      id: "timetable",
-      content: "numer pociągu",
-    },
-  ];
+  /* Emitters to TrainsView managing variables */
 
-  toggleSorterOptions() {
-    this.sorterOptionsOpen = !this.sorterOptionsOpen;
+  @Emit("changeSearchedTrain")
+  chooseTrain(train: string) {
+    return train;
   }
 
-  closeSorterOptions() {
-    this.sorterOptionsOpen = false;
+  @Emit("changeSearchedDriver")
+  chooseDriver(driverName: string) {
+    return driverName;
   }
 
-  chooseOption(option: { id: string; content: string }) {
-    this.$emit("changeSorter", { id: option.id, dir: -1 });
-
-    this.currentSorterOption = this.$t(`trains.option-${option.id}`);
-
-    this.closeSorterOptions();
+  @Emit()
+  changeSorter(optionID: string) {
+    return { id: optionID, dir: -1 };
   }
+
+  /* Watchers for search boxes */
 
   @Watch("searchedTrain")
-  onSearchedTrainChanged(train: string) {
-    this.$emit("changeSearchedTrain", train);
+  watchSearchedTrain(train: string) {
+    this.chooseTrain(train);
   }
 
   @Watch("searchedDriver")
-  onSearchedDriverChanged(driver: string) {
-    this.$emit("changeSearchedDriver", driver);
+  watchSearchedDriver(driver: string) {
+    this.chooseDriver(driver);
   }
+
+  /* Watcher for train no passed in link params */
 
   @Watch("queryTrain")
-  onQueryTrainChanged(train: string) {
-    if (train && train != "") {
-      this.searchedTrain = train;
-      this.searchedDriver = "";
-    }
-  }
+  onQueryTrainChanged(train: string | undefined) {
+    if (!train) return;
+    if (train == "") return;
+    console.log("query train changed", train);
 
-  @Watch("focusedTrain")
-  onFocusedTrainChanged(train: string) {
-    this.searchedTrain = train;
-    this.searchedDriver = "";
+    // this.chooseTrain(train);
   }
 }
 </script>
@@ -164,93 +145,14 @@ export default class TrainOptions extends Vue {
 
 .options_wrapper {
   display: flex;
+  align-items: center;
   flex-wrap: wrap;
 
   margin-bottom: 0.5em;
-}
-
-.option {
-  background: #333;
-  border-radius: 0.5em 0.5em 0 0;
-
-  margin-right: 0.35em;
 
   @include smallScreen() {
-    width: 100%;
-    margin: 0.35em 0;
-  }
-}
-
-.train-sorter {
-  user-select: none;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-
-  &_options {
-    position: relative;
-
-    ul {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-
-      transition: all 150ms ease-in;
-
-      z-index: 9;
-      overflow: hidden;
-
-      max-height: 0;
-
-      &.open {
-        max-height: 250px;
-        opacity: 1;
-      }
-
-      li {
-        display: flex;
-        transition: background 150ms ease-in;
-
-        background-color: rgba(#222, 0.95);
-
-        &:last-child {
-          border-radius: 0 0 0.5em 0.5em;
-        }
-
-        &:hover {
-          background-color: rgba(#868686, 0.85);
-        }
-
-        input {
-          display: none;
-        }
-
-        label {
-          padding: 0.5em 1em;
-          width: 100%;
-          cursor: pointer;
-        }
-      }
-    }
-  }
-
-  &_selected {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    padding: 0.5em 0.5em;
-    min-width: 200px;
-
-    cursor: pointer;
-
-    span {
-      margin-right: 1em;
-    }
-
-    img {
-      max-width: 2em;
-    }
+    justify-content: center;
+    flex-direction: column;
   }
 }
 
@@ -261,16 +163,19 @@ export default class TrainOptions extends Vue {
     background: #333;
     border-radius: 0.5em;
     min-width: 200px;
+
+    margin: 0.5em 0 0.5em 0.5em;
+
+    @include smallScreen() {
+      width: 85%;
+    }
   }
 
   &-input {
     border: none;
 
-    padding: 0.5em 0.5em;
-
-    margin: 0;
-
     min-width: 85%;
+    padding: 0.35em 0.5em;
   }
 
   &-exit {

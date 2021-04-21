@@ -1,109 +1,118 @@
 <template>
   <div class="select-box">
-    <div class="title">Sortuj według</div>
+    <div class="select-box_content">
+      <label>
+        <select v-model="selectedItem">
+          <option value disabled selected hidden>
+            {{ title }}
+          </option>
+          <option v-for="item in itemList" :key="item.id" :value="item.id">
+            {{ item.value }}
+          </option>
+        </select>
 
-    <div class="option-selected" @click="toggleOptionList">
-      <span>{{ selectedOption }}</span>
-      <img :src="require('@/assets/icon-select.svg')" alt="icon-select" />
-    </div>
-
-    <div class="option-container">
-      <ul class="option-list" :class="{ open: listOpen }">
-        <li
-          class="option-item"
-          v-for="(option, i) in sortOptionList"
-          :key="i"
-          @click="() => chooseOption(option)"
-        >
-          <input type="option-radio" name="sort" :id="option.id" />
-          <label :for="option.id">{{ option.content }}</label>
-        </li>
-      </ul>
+        <span> </span>
+      </label>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { Component, Vue, Prop, Watch, Emit } from "vue-property-decorator";
 
 @Component
 export default class SelectBox extends Vue {
-  @Prop() title!: string;
-  @Prop() optionList!: string[];
+  @Prop({ required: true }) title!: string;
+  @Prop({ required: true }) itemList!: { id: string | number; value: string }[];
 
-  selectedOption: string = "";
+  @Emit("selected")
+  onItemSelected() {
+    return this.selectedItem;
+  }
+
+  ascIcon = require("@/assets/icon-arrow-asc.svg");
+  descIcon = require("@/assets/icon-arrow-desc.svg");
+
+  selectedItem: string = "";
+
+  @Watch("selectedItem")
+  watchSelectedItem(item) {
+    this.onItemSelected();
+  }
 }
 </script>
 
 <style lang="scss" scoped>
-.option {
-  &-container {
+@import "../../styles/variables.scss";
+
+.select-box {
+  &_content {
     position: relative;
-
-    input {
-      display: none;
-    }
-
-    label {
-      padding: 0.5rem 1rem;
-      width: 100%;
-      cursor: pointer;
-    }
+    margin: 0.5em 0;
   }
 
-  &-item {
-    display: flex;
+  select {
+    border: none;
+    outline: none;
+    min-width: 10em;
 
-    &:hover {
-      background-color: rgba(#868686, 0.85);
-    }
-
-    transition: background 150ms ease-in;
-  }
-
-  &-selected,
-  &-list {
-    background: #333;
+    background-color: #333;
     border-radius: 0.5em;
-  }
 
-  &-selected {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    padding: 0.35em 0.5em;
 
-    padding: 0.5rem 1rem;
-    min-width: 150px;
+    font-size: 1em;
+    color: white;
+
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+
     cursor: pointer;
 
-    span {
-      margin-right: 2rem;
-    }
-
-    img {
-      max-width: 0.75em;
+    &:focus {
+      + span > img {
+        transform: rotate(180deg);
+      }
     }
   }
 
-  &-list {
+  label {
+    position: relative;
+  }
+
+  span {
+    $arrowCol: #d8d8d8;
+    $arrowWidth: 0.35em;
+
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 20%;
+    right: 0.25em;
 
-    z-index: 10;
+    pointer-events: none;
 
-    width: 100%;
-    background-color: rgba(#222, 0.95);
-    overflow: hidden;
+    &::before,
+    &::after {
+      content: "";
+      width: 0;
+      height: 0;
 
-    max-height: 0;
+      position: absolute;
+      right: 0.5em;
 
-    &.open {
-      max-height: 250px;
-      opacity: 1;
+      border-left: $arrowWidth solid transparent;
+      border-right: $arrowWidth solid transparent;
     }
 
-    transition: all 150ms ease-in;
+    &::before {
+      border-top: $arrowWidth solid $arrowCol;
+
+      transform: translateY(150%);
+    }
+
+    &::after {
+      border-bottom: $arrowWidth solid $arrowCol;
+    }
   }
 }
 </style>

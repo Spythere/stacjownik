@@ -1,4 +1,4 @@
-<template>
+git <template>
   <div class="app">
     <UpdateModal
       :currentVersion="VERSION"

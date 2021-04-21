@@ -7,24 +7,11 @@
           {{ $t("journal.subtitle") }}
         </p>
 
-        <div class="search-box">
-          <div class="search-box_content">
-            <label :class="{ disabled: dataLoading }">
-              <select v-model="inputStationName" :disabled="dataLoading">
-                <option value disabled selected hidden>
-                  {{ dataLoading ? $t("app.loading") : $t("journal.select") }}
-                </option>
-                <option
-                  v-for="station in filteredStationList"
-                  :key="station"
-                  :value="station"
-                >
-                  {{ station }}
-                </option>
-              </select>
-            </label>
-          </div>
-        </div>
+        <!-- <select-box
+          :itemList="filteredStationList"
+          :title="$t('journal.select')"
+          @itemSelected="itemSelected"
+        /> -->
 
         <div class="disclaimer" v-html="$t('journal.disclaimer')"></div>
       </div>
@@ -100,8 +87,9 @@ import { Getter } from "vuex-class";
 
 import Station from "@/scripts/interfaces/Station";
 import ISceneryInfoData from "@/scripts/interfaces/ISceneryInfoData";
+import SelectBox from "@/components/Global/SelectBox.vue";
 
-@Component
+@Component({ components: { SelectBox } })
 export default class HistoryView extends Vue {
   @Getter("getStationList") stationList!: Station[];
 
@@ -131,11 +119,6 @@ export default class HistoryView extends Vue {
     }
 
     this.dataLoading = false;
-  }
-
-  @Watch("inputStationName")
-  onInputChanged(val: string) {
-    this.itemSelected(val);
   }
 
   get filteredStationList() {

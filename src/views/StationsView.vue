@@ -1,30 +1,20 @@
 <template>
-  <div class="stations_view">
+  <div class="stations-view">
     <DonationModal :modalHidden="modalHidden" @toggleModal="toggleModal" />
 
-    <div class="stations_wrapper">
-      <div class="stations_body">
-        <div class="body_bar">
-          <div class="bar_actions">
-            <button
-              class="action-btn"
-              :class="{ open: filterCardOpen }"
-              @click="() => toggleCardsState('filter')"
-            >
-              <img
-                :src="require('@/assets/icon-filter2.svg')"
-                alt="icon-filter"
-              />
-              <p>{{ $t("options.filters") }}</p>
-            </button>
-
-            <!-- <button class="action-btn" @click="toggleModal">
-              <img :src="dolarIcon" alt="icon-dolar" />
-
-              <p>{{ $t("options.donate") }}</p>
-            </button> -->
-          </div>
-          <!-- 
+    <div class="wrapper">
+      <div class="body">
+        <div class="options-bar">
+          <action-button @click.native="() => toggleCardsState('filter')">
+            <img
+              class="button_icon"
+              :src="require('@/assets/icon-filter2.svg')"
+              alt="icon-filter"
+            />
+            <p>{{ $t("options.filters") }}</p>
+          </action-button>
+        </div>
+        <!-- 
           <div class="bar_indicators">
             <transition name="indicator-anim">
               <span
@@ -46,16 +36,13 @@
               </span>
             </transition>
           </div> -->
-        </div>
 
-        <div class="body_table">
-          <StationTable
-            :stations="computedStations"
-            :sorterActive="filterManager.getSorter()"
-            :setFocusedStation="setFocusedStation"
-            :changeSorter="changeSorter"
-          />
-        </div>
+        <StationTable
+          :stations="computedStations"
+          :sorterActive="filterManager.getSorter()"
+          :setFocusedStation="setFocusedStation"
+          :changeSorter="changeSorter"
+        />
       </div>
     </div>
 
@@ -83,14 +70,15 @@ import inputData from "@/data/options.json";
 
 import StationTable from "@/components/StationsView/StationTable.vue";
 import FilterCard from "@/components/StationsView/FilterCard.vue";
-
 import DonationModal from "@/components/Global/DonationModal.vue";
+import ActionButton from "@/components/Global/ActionButton.vue";
 
 @Component({
   components: {
     StationTable,
     FilterCard,
     DonationModal,
+    ActionButton,
   },
 })
 export default class StationsView extends Vue {
@@ -227,6 +215,17 @@ export default class StationsView extends Vue {
   }
 }
 
+@keyframes blinkAnim {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+}
+
 .indicator-anim {
   &-enter-active,
   &-leave-active {
@@ -240,110 +239,61 @@ export default class StationsView extends Vue {
   }
 }
 
-.stations_view {
+.stations-view {
   position: relative;
 
   padding: 1em 0;
   min-height: 100%;
 }
 
-.stations_wrapper {
+.wrapper {
   display: flex;
   justify-content: center;
+  padding: 0 0.5em;
 }
 
-.stations_body {
+.body {
   margin: 0 auto;
   overflow: auto;
 }
 
-.body_bar {
+.options-bar {
   display: flex;
-  justify-content: space-between;
+  margin-bottom: 0.5em;
 }
 
-.bar_actions {
-  width: 100%;
+// .bar_indicators {
+//   border: 1px solid red;
 
-  font-size: 1.1em;
-}
+//   & > span {
+//     margin-left: 0.5em;
+//     padding: 0.5em 0.5em;
 
-.bar_indicators {
-  border: 1px solid red;
+//     // background-color: #e68e00;
+//     border-radius: 1em 1em 0 0;
 
-  > span {
-    margin-left: 0.5em;
-    padding: 0.5em 0.5em;
+//     &.loading {
+//       background-color: $accentCol;
+//     }
 
-    // background-color: #e68e00;
-    border-radius: 1em 1em 0 0;
+//     &.error {
+//       background-color: $errorCol;
+//     }
 
-    &.loading {
-      background-color: $accentCol;
-    }
+//     &.success {
+//       background-color: $secondaryCol;
+//     }
 
-    &.error {
-      background-color: $errorCol;
-    }
+//     & > img {
+//       width: 1.7em;
+//       animation: blinkAnim 2s ease-in-out infinite forwards;
+//     }
+//   }
+// }
 
-    &.success {
-      background-color: $secondaryCol;
-    }
-
-    & > img {
-      width: 1.7em;
-      animation: blinkAnim 2s ease-in-out infinite forwards;
-    }
-  }
-}
-
-.action-btn {
-  display: flex;
-  align-items: center;
-
-  background: #333;
-  border: none;
-
-  color: #e0e0e0;
-  font-size: 1em;
-
-  padding: 0.3em;
-
-  outline: none;
-  cursor: pointer;
-
-  transition: all 0.3s;
-
-  img {
-    width: 1.3em;
-    margin-right: 0.2em;
-  }
-
-  p {
-    font-size: 1em;
-    overflow: hidden;
-
-    transition: max-width 0.35s ease-in-out;
-  }
-
-  &:hover {
-    color: $accentCol;
-    background: rgba(#e0e0e0, 0.4);
-  }
-
-  &.open {
-    color: $accentCol;
-  }
-}
-
-@keyframes blinkAnim {
-  0%,
-  100% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0;
+@include smallScreen {
+  .options-bar {
+    font-size: 1.2em;
   }
 }
 </style>
