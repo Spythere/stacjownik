@@ -12,6 +12,7 @@
       <div class="options-bar">
         <div class="stats">
           <action-button @click.native="toggleStats">
+            <img :src="statsIcon" :alt="$t('trains.stats')" />
             {{ $t("trains.stats") }}
           </action-button>
           <TrainStats :trains="trains" :trainStatsOpen="trainStatsOpen" />
@@ -59,6 +60,8 @@ export default class TrainsView extends Vue {
 
   // Passed in route as query parameters
   @Prop() readonly queryTrain!: string;
+
+  statsIcon = require("@/assets/icon-stats.svg");
 
   sorterActive: { id: string; dir: number } = { id: "distance", dir: -1 };
 

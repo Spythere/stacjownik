@@ -205,12 +205,12 @@ export default class StationsView extends Vue {
 .card-anim {
   &-enter-active,
   &-leave-active {
-    transition: all 0.25s ease-in-out;
+    transition: all $animDuration $animType;
   }
 
   &-enter,
   &-leave-to {
-    transform: translate(-45%, -50%);
+    transform: translate(-50%, -50%) scale(0.85);
     opacity: 0;
   }
 }

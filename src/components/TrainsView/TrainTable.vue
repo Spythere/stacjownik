@@ -10,6 +10,7 @@
         v-for="(train, i) in computedTrains"
         :key="i"
         :id="train.timetableData.timetableId"
+        :ref="train.timetableData.timetableId"
       >
         <span class="wrapper">
           <span
@@ -154,7 +155,7 @@
           :followingStops="train.timetableData.followingStops"
           :currentStationName="train.currentStationName"
           @click="changeScheduleShowState(train.timetableData.timetableId)"
-          v-if="showedSchedule == train.timetableData.timetableId"
+          v-show="showedSchedule == train.timetableData.timetableId"
         />
       </li>
     </ul>
@@ -193,8 +194,18 @@ export default class TrainTable extends Vue {
   signalIcon: string = require("@/assets/icon-signal.svg");
   routeIcon: string = require("@/assets/icon-route.svg");
 
+  focusOnTrain(timetableId: number) {
+    const currentEl: HTMLElement = this.$refs[timetableId][0];
+
+    currentEl.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+    });
+  }
+
   changeScheduleShowState(timetableId: number) {
     this.showedSchedule = this.showedSchedule === timetableId ? 0 : timetableId;
+    this.$nextTick(() => this.focusOnTrain(timetableId));
   }
 
   onImageError(e: Event) {
@@ -365,7 +376,7 @@ export default class TrainTable extends Vue {
   flex-direction: column;
   justify-content: space-around;
 
-  font-size: 0.85em;
+  font-size: 0.9em;
 
   // grid-column: 1 / 3;
   // grid-column: span 2;

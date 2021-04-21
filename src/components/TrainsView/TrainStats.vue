@@ -2,7 +2,10 @@
   <div class="train-stats">
     <transition name="stats-anim">
       <div class="stats-body" v-if="trainStatsOpen">
-        <h2 class="stats-header">{{ $t("trains.stats") }}</h2>
+        <h2 class="stats-header">
+          <img :src="statsIcon" :alt="$t('trains.stats')" />
+          {{ $t("trains.stats") }}
+        </h2>
 
         <div class="stats-speed">
           <div class="title stats-title">
@@ -79,6 +82,8 @@ import Train from "@/scripts/interfaces/Train";
 export default class TrainStats extends Vue {
   @Prop() readonly trains!: Train[];
   @Prop() readonly trainStatsOpen!: boolean;
+
+  statsIcon = require("@/assets/icon-stats.svg");
 
   get speedStats(): { avg: string; min: string; max: string } {
     if (this.trains.length == 0) return { avg: "0", min: "0", max: "0" };
@@ -213,7 +218,13 @@ export default class TrainStats extends Vue {
   }
 
   &-header {
+    display: flex;
     margin-bottom: 0.85em;
+
+    img {
+      vertical-align: middle;
+      margin-right: 0.35em;
+    }
   }
 
   &-body {

@@ -37,11 +37,11 @@ export default class ActionButton extends Vue {}
     border: 1px solid white;
   }
 
-  img.button_icon {
+  img {
     width: 1.25em;
     vertical-align: middle;
 
-    margin-right: 0.2em;
+    margin-right: 0.35em;
   }
 
   p {

@@ -226,7 +226,7 @@ $saveCol: #28a826;
 
     cursor: pointer;
 
-    padding: 0.45em 0.4em;
+    padding: 0.3em 0.4em;
 
     display: inline-block;
     position: relative;

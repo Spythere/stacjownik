@@ -98,7 +98,7 @@ export default class App extends Vue {
   @Action("synchronizeData") synchronizeData;
   @Getter("getAllData") data;
 
-  private VERSION = "1.4.4";
+  private VERSION = "1.4.5";
 
   hasReleaseNotes = false;
   updateModalVisible = false;
@@ -187,10 +187,7 @@ export default class App extends Vue {
 
 // VUE ROUTE CHANGE ANIMATION
 .view-anim {
-  &-enter {
-    opacity: 0.02;
-  }
-
+  &-enter,
   &-leave-to {
     opacity: 0.02;
   }
