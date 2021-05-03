@@ -4,14 +4,14 @@
       <span>{{ $t("scenery.timetables") }}</span>
 
       <a
-        v-if="!timetableOnly"
         :href="currentURL + '&timetable_only=1'"
+        v-if="!timetableOnly"
         target="_blank"
       >
         <img
           :src="viewIcon"
           alt="icon-view"
-          title="Wyodrębnij rozkłady jazdy"
+          :title="$t('timetables.timetable-only')"
         />
       </a>
     </h3>
@@ -182,7 +182,7 @@ export default class SceneryTimetable extends Vue {
   }
 
   get currentURL() {
-    return `${location.origin}/scenery?hash=${this.stationInfo?.stationHash}`;
+    return `${location.origin}${this.$route.fullPath}`;
   }
 
   get computedScheduledTrains() {

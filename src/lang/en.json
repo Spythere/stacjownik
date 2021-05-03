@@ -122,6 +122,7 @@
     "return-btn": "Return to main site"
   },
   "timetables": {
+    "timetable-only": "Switch to timetable-only view",
     "online": "At station",
     "departed": "Dispatched",
     "departed-away": "Departed",

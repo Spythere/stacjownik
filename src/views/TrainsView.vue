@@ -1,43 +1,32 @@
 <template>
   <section class="trains-view">
     <div class="wrapper">
-      <!-- <TrainSorter :trainList="computedTrains" @changeSorter="changeSorter" />
-        <TrainSearch
-          @changeSearchedTrain="changeSearchedTrain"
-          @changeSearchedDriver="changeSearchedDriver"
-          :passedSearchedTrain="passedSearchedTrain"
-          :focusedTrain="focusedTrain"
-        /> -->
-
       <div class="options-bar">
         <div class="stats">
           <action-button @click.native="toggleStats">
             <img :src="statsIcon" :alt="$t('trains.stats')" />
             {{ $t("trains.stats") }}
           </action-button>
+
           <TrainStats :trains="trains" :trainStatsOpen="trainStatsOpen" />
         </div>
 
         <TrainOptions
           :queryTrain="queryTrain"
-          :focusedTrain="focusedTrain"
           @change-sorter="changeSorter"
           @changeSearchedTrain="changeSearchedTrain"
           @changeSearchedDriver="changeSearchedDriver"
         />
       </div>
 
-      <TrainTable
-        :computedTrains="computedTrains"
-        @changeFocusedTrain="changeFocusedTrain"
-      />
+      <TrainTable :computedTrains="computedTrains" />
     </div>
   </section>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, Watch } from "vue-property-decorator";
+import { Component, Prop } from "vue-property-decorator";
 import { Getter } from "vuex-class";
 
 import Train from "@/scripts/interfaces/Train";
@@ -69,7 +58,6 @@ export default class TrainsView extends Vue {
 
   searchedTrain: string = "";
   searchedDriver: string = "";
-  focusedTrain: string = "";
 
   toggleStats() {
     this.trainStatsOpen = !this.trainStatsOpen;
@@ -77,28 +65,15 @@ export default class TrainsView extends Vue {
 
   changeSearchedTrain(trainNo: string) {
     this.searchedTrain = trainNo;
-
-    console.log("train", trainNo);
   }
 
   changeSearchedDriver(name: string) {
     this.searchedDriver = name;
   }
 
-  changeFocusedTrain(trainNo: string) {
-    this.focusedTrain = this.focusedTrain === trainNo ? "" : trainNo;
-  }
-
   changeSorter(sorter: { id: string; dir: number }) {
     this.sorterActive = sorter;
   }
-
-  // @Watch("queryTrain")
-  // onQueryTrainChanged(train: string) {
-  //   // this.searchedTrain = train;
-  //   this.changeSearchedTrain(train);
-  //   console.log(train);
-  // }
 
   get computedTrains() {
     return this.trains

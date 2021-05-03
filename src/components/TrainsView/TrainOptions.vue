@@ -48,7 +48,6 @@ import SelectBox from "../Global/SelectBox.vue";
 export default class TrainOptions extends Vue {
   // Passed as component parameters
   @Prop() readonly queryTrain!: string;
-  @Prop() readonly focusedTrain!: string;
 
   exitIcon = require("@/assets/icon-exit.svg");
 
@@ -127,9 +126,9 @@ export default class TrainOptions extends Vue {
   onQueryTrainChanged(train: string | undefined) {
     if (!train) return;
     if (train == "") return;
-    console.log("query train changed", train);
 
-    // this.chooseTrain(train);
+    this.searchedTrain = train;
+    this.searchedDriver = "";
   }
 }
 </script>

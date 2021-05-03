@@ -122,6 +122,7 @@
     "return-btn": "Wróć na stronę główną"
   },
   "timetables": {
+    "timetable-only": "Wyodrębnij rozkłady jazdy",
     "online": "Na stacji",
     "departed": "Odprawiony",
     "departed-away": "Odjechał",
