@@ -1,40 +1,40 @@
-import Vue from 'vue';
-import VueRouter, { RouteConfig } from 'vue-router';
+import Vue from "vue";
+import VueRouter, { RouteConfig } from "vue-router";
 
-import StationsView from '../views/StationsView.vue';
-import TrainsView from '../views/TrainsView.vue';
+import StationsView from "../views/StationsView.vue";
+import TrainsView from "../views/TrainsView.vue";
 
 Vue.use(VueRouter);
 
 const routes: Array<RouteConfig> = [
   {
-    path: '/',
-    name: 'StationsView',
-    component: StationsView,
+    path: "/",
+    name: "StationsView",
+    component: StationsView
   },
   {
-    path: '/trains',
-    name: 'TrainsView',
+    path: "/trains",
+    name: "TrainsView",
     component: TrainsView,
-    props: true,
+    props: true
   },
   {
-    path: '/scenery',
-    name: 'SceneryView',
-    component: () => import('@/views/SceneryView.vue'),
-    props: true,
+    path: "/scenery",
+    name: "SceneryView",
+    component: () => import("@/views/SceneryView.vue"),
+    props: true
   },
   {
-    path: '/history',
-    name: 'HistoryView',
-    component: () => import('@/views/HistoryView.vue'),
-  },
+    path: "/history",
+    name: "HistoryView",
+    component: () => import("@/views/HistoryView.vue")
+  }
 ];
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: "history",
   base: process.env.BASE_URL,
-  routes,
+  routes
 });
 
 export default router;

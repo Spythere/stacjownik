@@ -59,12 +59,13 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
+
 import { Getter } from "vuex-class";
 
 import Station from "@/scripts/interfaces/Station";
 
-import StorageManager from "@/scripts/storageManager";
-import StationFilterManager from "@/scripts/stationFilterManager";
+import StorageManager from "@/scripts/managers/storageManager";
+import StationFilterManager from "@/scripts/managers/stationFilterManager";
 
 import inputData from "@/data/options.json";
 
@@ -72,6 +73,8 @@ import StationTable from "@/components/StationsView/StationTable.vue";
 import FilterCard from "@/components/StationsView/FilterCard.vue";
 import DonationModal from "@/components/Global/DonationModal.vue";
 import ActionButton from "@/components/Global/ActionButton.vue";
+import { StoreData } from "@/scripts/interfaces/StoreData";
+import DataStatus from "@/scripts/enums/DataStatus";
 
 @Component({
   components: {
@@ -98,18 +101,18 @@ export default class StationsView extends Vue {
   inputs = inputData;
 
   @Getter("getStationList") stationList!: Station[];
-  @Getter("getAllData") data;
+  @Getter("getAllData") data!: StoreData;
 
   get dataStatusClass() {
-    if (this.data.dataConnectionStatus == 0) return "loading";
-    if (this.data.dataConnectionStatus == 1) return "error";
+    if (this.data.dataConnectionStatus == DataStatus.Loading) return "loading";
+    if (this.data.dataConnectionStatus == DataStatus.Error) return "error";
 
     return "success";
   }
 
   get timetableDataStatusClass() {
-    if (this.data.timetableDataStatus == 0) return "loading";
-    if (this.data.timetableDataStatus == 1) return "error";
+    if (this.data.timetableDataStatus == DataStatus.Loading) return "loading";
+    if (this.data.timetableDataStatus == DataStatus.Error) return "error";
 
     return "success";
   }
@@ -186,8 +189,7 @@ export default class StationsView extends Vue {
   }
 
   setFocusedStation(name: string) {
-    if (this.focusedStationName == name) this.focusedStationName = "";
-    else this.focusedStationName = name;
+    this.focusedStationName = this.focusedStationName == name ? "" : name;
   }
 
   get focusedStationInfo() {

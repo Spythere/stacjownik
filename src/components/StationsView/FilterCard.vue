@@ -75,7 +75,7 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 
 import inputData from "@/data/options.json";
 
-import StorageManager from "@/scripts/storageManager";
+import StorageManager from "@/scripts/managers/storageManager";
 import ActionButton from "../Global/ActionButton.vue";
 
 @Component({ components: { ActionButton } })

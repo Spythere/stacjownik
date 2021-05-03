@@ -281,14 +281,9 @@ export default class StationTable extends styleMixin {
 
     if (!station) return;
 
-    if (!station.online) {
-      window.location.href = station.stationURL;
-      return;
-    }
-
     this.$router.push({
       name: "SceneryView",
-      query: { hash: station.stationHash },
+      query: { station: station.stationName.replaceAll(" ", "_") },
     });
   }
 }

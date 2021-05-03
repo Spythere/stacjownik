@@ -12,11 +12,16 @@
 
         <span v-else>{{ stationInfo.stationName }}</span>
       </div>
-      <div class="scenery-hash">#{{ stationInfo.stationHash }}</div>
+      <div class="scenery-hash" v-if="stationInfo.stationHash">
+        #{{ stationInfo.stationHash }}
+      </div>
     </div>
 
     <section v-if="!timetableOnly">
-      <div class="info-stats">
+      <div
+        class="info-stats"
+        :class="!stationInfo.stationHash ? 'no-stats' : ''"
+      >
         <span class="likes">
           <img :src="likeIcon" alt="icon-like" />
           <span>{{ stationInfo.dispatcherRate }}</span>
@@ -106,7 +111,7 @@
       </div>
 
       <div class="info-dispatcher">
-        <div class="dispatcher">
+        <div class="dispatcher" v-if="stationInfo.stationHash">
           <span
             class="dispatcher_level"
             :style="
@@ -124,12 +129,12 @@
           <span class="dispatcher_name">{{ stationInfo.dispatcherName }}</span>
         </div>
 
-        <span class="status-badge" :class="stationInfo.statusID"
-          >{{ $t(`status.${stationInfo.statusID}`) }}
+        <span class="status-badge" :class="stationInfo.statusID">
+          {{ $t(`status.${stationInfo.statusID}`) }}
           {{
             stationInfo.statusID == "online" ? stationInfo.statusTimeString : ""
-          }}</span
-        >
+          }}
+        </span>
       </div>
 
       <div class="info-lists">
@@ -275,6 +280,10 @@ h3 {
     justify-content: center;
 
     font-size: 1.65em;
+
+    &.no-stats {
+      opacity: 0.5;
+    }
 
     & > span {
       display: flex;

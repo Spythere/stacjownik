@@ -118,7 +118,7 @@
     "no-timetables": "No active timetables!",
     "no-users": "NO ACTIVE PLAYERS",
     "no-spawns": "NO OPEN SPAWNS",
-    "no-scenery": "Oops! This scenery doesn't exist or is offline!",
+    "no-scenery": "Oops! This scenery doesn't exist!",
     "return-btn": "Return to main site"
   },
   "timetables": {

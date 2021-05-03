@@ -8,13 +8,8 @@ import Train from "@/scripts/interfaces/Train";
 import TrainStop from "@/scripts/interfaces/TrainStop";
 
 import utils from "@/scripts/utils/storeUtils";
-
-enum Status {
-  Initialized = -1,
-  Loading = 0,
-  Error = 1,
-  Loaded = 2
-}
+import DataStatus from "@/scripts/enums/DataStatus";
+import { StoreData } from "@/scripts/interfaces/StoreData";
 
 interface TimetableData {
   trainNo: number;
@@ -62,20 +57,22 @@ export default class Store extends VuexModule {
   private trainCount: number = 0;
   private stationCount: number = 0;
 
-  private dataConnectionStatus: Status = Status.Loading;
-  private sceneryDataStatus: Status = Status.Loading;
-  private timetableLoaded: Status = Status.Loading;
+  private dataConnectionStatus: DataStatus = DataStatus.Loading;
+  private sceneryDataStatus: DataStatus = DataStatus.Loading;
+  private timetableLoaded: DataStatus = DataStatus.Loading;
 
   private stationList: Station[] = [];
   private trainList: Train[] = [];
 
   //GETTERS
-  get getAllData() {
+  get getAllData(): StoreData {
     return {
       stationList: this.stationList,
       trainList: this.trainList,
-      trainCount: this.trainCount,
-      stationCount: this.stationCount,
+
+      activeTrainCount: this.trainCount,
+      activeStationCount: this.stationCount,
+
       dataConnectionStatus: this.dataConnectionStatus,
       timetableDataStatus: this.timetableLoaded
     };
@@ -104,7 +101,7 @@ export default class Store extends VuexModule {
   @Action
   async synchronizeData() {
     this.context.commit("setSceneryData");
-    this.context.commit("setSceneryDataStatus", Status.Loaded);
+    this.context.commit("setSceneryDataStatus", DataStatus.Loaded);
 
     this.context.dispatch("fetchOnlineData");
     setInterval(() => this.context.dispatch("fetchOnlineData"), 20000);
@@ -249,18 +246,18 @@ export default class Store extends VuexModule {
         this.context.dispatch("fetchTimetableData");
       })
       .catch(err => {
-        this.context.commit("setDataConnectionStatus", Status.Error);
+        this.context.commit("setDataConnectionStatus", DataStatus.Error);
       });
   }
 
   //MUTATIONS
   @Mutation
-  private setDataConnectionStatus(status: Status) {
+  private setDataConnectionStatus(status: DataStatus) {
     this.dataConnectionStatus = status;
   }
 
   @Mutation
-  private setSceneryDataStatus(status: Status) {
+  private setSceneryDataStatus(status: DataStatus) {
     this.sceneryDataStatus = status;
   }
 
@@ -385,7 +382,7 @@ export default class Store extends VuexModule {
       });
 
     this.stationCount = this.stationList.filter(station => station.online).length;
-    this.dataConnectionStatus = Status.Loaded;
+    this.dataConnectionStatus = DataStatus.Loaded;
   }
 
   @Mutation
@@ -400,7 +397,7 @@ export default class Store extends VuexModule {
     }, [] as Train[]);
 
     this.trainCount = this.trainList.filter(train => train.online).length;
-    this.dataConnectionStatus = Status.Loaded;
+    this.dataConnectionStatus = DataStatus.Loaded;
   }
 
   @Mutation
@@ -495,6 +492,6 @@ export default class Store extends VuexModule {
       return acc;
     }, [] as Train[]);
 
-    this.timetableLoaded = Status.Loaded;
+    this.timetableLoaded = DataStatus.Loaded;
   }
 }

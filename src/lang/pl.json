@@ -118,7 +118,7 @@
     "no-timetables": "Brak aktywnych rozkładów!",
     "no-users": "BRAK AKTYWNYCH GRACZY",
     "no-spawns": "BRAK OTWARTYCH SPAWNÓW",
-    "no-scenery": "Ups! Nie znaleziono danej stacji bądź jest ona offline!",
+    "no-scenery": "Ups! Ta sceneria nie istnieje!",
     "return-btn": "Wróć na stronę główną"
   },
   "timetables": {

@@ -41,8 +41,8 @@ git <template>
             <Clock />
             <div class="info_counter">
               <img src="@/assets/icon-dispatcher.svg" alt="icon dispatcher" />
-              <span>{{ data.stationCount }}</span>
-              <span>{{ data.trainCount }}</span>
+              <span>{{ data.activeStationCount }}</span>
+              <span>{{ data.activeTrainCount }}</span>
               <img src="@/assets/icon-train.svg" alt="icon train" />
             </div>
           </span>
@@ -89,14 +89,15 @@ import { Action, Getter } from "vuex-class";
 import UpdateModal from "@/components/Global/UpdateModal.vue";
 import Clock from "@/components/App/Clock.vue";
 
-import StorageManager from "@/scripts/storageManager";
+import StorageManager from "@/scripts/managers/storageManager";
+import { StoreData } from "./scripts/interfaces/StoreData";
 
 @Component({
   components: { Clock, UpdateModal },
 })
 export default class App extends Vue {
   @Action("synchronizeData") synchronizeData;
-  @Getter("getAllData") data;
+  @Getter("getAllData") data!: StoreData;
 
   private VERSION = "1.4.5";
 

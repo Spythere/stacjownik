@@ -2,12 +2,13 @@
   <div class="scenery-view">
     <div
       class="scenery-offline"
-      v-if="!stationInfo && dataStatus == 2 && currentPath === '/scenery'"
+      v-if="!stationInfo && isDataLoaded && isComponentVisible"
     >
       {{ $t("scenery.no-scenery") }}
-      <button class="button">
+
+      <action-button>
         <router-link to="/">{{ $t("scenery.return-btn") }}</router-link>
-      </button>
+      </action-button>
     </div>
 
     <div class="scenery-wrapper" v-if="stationInfo">
@@ -16,7 +17,7 @@
       <SceneryTimetable
         :stationInfo="stationInfo"
         :timetableOnly="timetableOnly"
-        :dataStatus="timetableDataStatus"
+        :dataStatus="data.timetableDataStatus"
       />
     </div>
   </div>
@@ -31,14 +32,15 @@ import Station from "@/scripts/interfaces/Station";
 
 import SceneryInfo from "@/components/SceneryView/SceneryInfo.vue";
 import SceneryTimetable from "@/components/SceneryView/SceneryTimetable.vue";
+import { StoreData } from "@/scripts/interfaces/StoreData";
+import DataStatus from "@/scripts/enums/DataStatus";
+import ActionButton from "@/components/Global/ActionButton.vue";
 
 @Component({
-  components: { SceneryInfo, SceneryTimetable },
+  components: { SceneryInfo, SceneryTimetable, ActionButton },
 })
 export default class SceneryView extends Vue {
-  @Getter("getStationList") storeStationList!: Station[];
-  @Getter("getTimetableDataStatus") timetableDataStatus!: number;
-  @Getter("getDataStatus") dataStatus!: number;
+  @Getter("getAllData") data!: StoreData;
 
   timetableOnly: boolean = false;
 
@@ -47,19 +49,22 @@ export default class SceneryView extends Vue {
       this.$route.query["timetable_only"] == "1" ? true : false;
   }
 
-  get currentPath() {
-    return this.$route.path;
+  get isComponentVisible() {
+    return this.$route.path === "/scenery";
   }
 
-  get stationInfo(): Station | null {
-    if (!this.$route.query.hash || !this.storeStationList) return null;
+  get isDataLoaded() {
+    return this.data.dataConnectionStatus == DataStatus.Loaded;
+  }
 
-    const info =
-      this.storeStationList.find(
-        (station) => station.stationHash === this.$route.query.hash.toString()
-      ) || null;
+  get stationInfo(): Station | undefined {
+    if (!this.$route.query.station) return;
 
-    return info;
+    return this.data.stationList.find(
+      (station) =>
+        station.stationName ===
+        this.$route.query.station.toString().replaceAll("_", " ")
+    );
   }
 }
 </script>
@@ -89,9 +94,8 @@ $sceneryBgCol: #333;
 
     font-size: 2em;
 
-    .button {
+    button {
       margin: 1em auto;
-      font-size: 0.85em;
     }
   }
 
