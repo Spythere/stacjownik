@@ -1,4 +1,4 @@
-import DataStatus from "../enums/DataStatus";
+import { DataStatus } from "../enums/DataStatus";
 import Station from "./Station";
 import Train from "./Train";
 

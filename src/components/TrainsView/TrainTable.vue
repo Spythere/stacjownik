@@ -1,7 +1,14 @@
 <template>
   <div class="train-table">
-    <div class="no-trains" v-if="computedTrains.length == 0">
+    <div class="no-trains" v-if="computedTrains.length == 0 && timetableLoaded">
       {{ $t("trains.no-trains") }}
+    </div>
+
+    <div
+      class="no-trains"
+      v-if="computedTrains.length == 0 && !timetableLoaded"
+    >
+      {{ $t("trains.loading") }}
     </div>
 
     <ul class="train-list">
@@ -9,14 +16,12 @@
         class="train-row"
         v-for="(train, i) in computedTrains"
         :key="i"
-        :id="train.timetableData.timetableId"
-        :ref="train.timetableData.timetableId"
+        :id="train.driverId + train.trainNo"
       >
+        <!-- :ref="train.timetableData.timetableId" -->
         <span class="wrapper">
-          <span
-            class="info"
-            @click="changeScheduleShowState(train.timetableData.timetableId)"
-          >
+          <span class="info" v-if="train.timetableData">
+            <!-- @click="changeScheduleShowState(train.timetableData.timetableId)" -->
             <div class="info-main">
               <div class="info-top">
                 <div class="top-category">
@@ -152,6 +157,7 @@
         </span>
 
         <TrainSchedule
+          v-if="train.timetableData"
           :followingStops="train.timetableData.followingStops"
           :currentStationName="train.currentStationName"
           @click="changeScheduleShowState(train.timetableData.timetableId)"
@@ -169,12 +175,14 @@ import Train from "@/scripts/interfaces/Train";
 
 import TrainSchedule from "@/components/TrainsView/TrainSchedule.vue";
 import TrainStop from "@/scripts/interfaces/TrainStop";
+import { DataStatus } from "@/scripts/enums/DataStatus";
 
 @Component({
   components: { TrainSchedule },
 })
 export default class TrainTable extends Vue {
   @Prop() computedTrains!: Train[];
+  @Prop() timetableDataStatus!: DataStatus;
 
   showedSchedule = 0;
 
@@ -193,6 +201,14 @@ export default class TrainTable extends Vue {
   sceneryIcon: string = require("@/assets/icon-scenery.svg");
   signalIcon: string = require("@/assets/icon-signal.svg");
   routeIcon: string = require("@/assets/icon-route.svg");
+
+  get timetableLoaded() {
+    return this.timetableDataStatus == DataStatus.Loaded;
+  }
+
+  get timetableError() {
+    return this.timetableDataStatus == DataStatus.Error;
+  }
 
   focusOnTrain(timetableId: number) {
     const currentEl: HTMLElement = this.$refs[timetableId][0];

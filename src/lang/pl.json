@@ -88,6 +88,7 @@
   },
   "trains": {
     "no-trains": "Brak pociągów online!",
+    "loading": "Pobieranie danych o pociągach...",
     "stats": "STATYSTYKI RUCHU",
     "stats-speed": "PRĘDKOŚCI POCIĄGÓW (MIN | ŚR | MAX) [km/h]",
     "stats-length": "DŁUGOŚCI ROZKŁADÓW (MIN | ŚR | MAX) [km]",

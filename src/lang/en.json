@@ -88,6 +88,7 @@
   },
   "trains": {
     "no-trains": "Oops! No trains online!",
+    "loading": "Loading train data...",
     "stats": "TRAFFIC STATISTICS",
     "stats-speed": "TRAINS SPEED (MIN | AVG | MAX) [km/h]",
     "stats-length": "TIMETABLES LENGTH (MIN | AVG | MAX) [km]",

@@ -8,7 +8,7 @@ import Train from "@/scripts/interfaces/Train";
 import TrainStop from "@/scripts/interfaces/TrainStop";
 
 import utils from "@/scripts/utils/storeUtils";
-import DataStatus from "@/scripts/enums/DataStatus";
+import { DataStatus } from "@/scripts/enums/DataStatus";
 import { StoreData } from "@/scripts/interfaces/StoreData";
 
 interface TimetableData {
@@ -59,7 +59,7 @@ export default class Store extends VuexModule {
 
   private dataConnectionStatus: DataStatus = DataStatus.Loading;
   private sceneryDataStatus: DataStatus = DataStatus.Loading;
-  private timetableLoaded: DataStatus = DataStatus.Loading;
+  private timetableDataStatus: DataStatus = DataStatus.Loading;
 
   private stationList: Station[] = [];
   private trainList: Train[] = [];
@@ -74,7 +74,7 @@ export default class Store extends VuexModule {
       activeStationCount: this.stationCount,
 
       dataConnectionStatus: this.dataConnectionStatus,
-      timetableDataStatus: this.timetableLoaded
+      timetableDataStatus: this.timetableDataStatus
     };
   }
 
@@ -87,12 +87,13 @@ export default class Store extends VuexModule {
   }
 
   get getTimetableDataStatus() {
-    return this.timetableLoaded;
+    return this.timetableDataStatus;
   }
 
   get getDataStatus() {
     return this.dataConnectionStatus;
   }
+
   get getSceneryDataStatus() {
     return this.sceneryDataStatus;
   }
@@ -481,17 +482,15 @@ export default class Store extends VuexModule {
     this.trainList = this.trainList.reduce((acc, train) => {
       const timetableData = timetableList.find(data => data && data.trainNo === train.trainNo);
 
-      if (timetableData) {
-        const trainData = this.stationList
-          .find(station => station.stationName === train.currentStationName)
-          ?.scheduledTrains.find(stationTrain => stationTrain.trainNo === train.trainNo);
+      const trainStopData = this.stationList
+        .find(station => station.stationName === train.currentStationName)
+        ?.scheduledTrains.find(stationTrain => stationTrain.trainNo === train.trainNo);
 
-        acc.push({ ...train, timetableData, stopStatus: trainData?.stopStatus || "", stopLabel: trainData?.stopLabel || "" });
-      }
+      acc.push({ ...train, timetableData, stopStatus: trainStopData?.stopStatus || "", stopLabel: trainStopData?.stopLabel || "" });
 
       return acc;
     }, [] as Train[]);
 
-    this.timetableLoaded = DataStatus.Loaded;
+    this.timetableDataStatus = DataStatus.Loaded;
   }
 }

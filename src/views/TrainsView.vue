@@ -19,7 +19,10 @@
         />
       </div>
 
-      <TrainTable :computedTrains="computedTrains" />
+      <TrainTable
+        :computedTrains="computedTrains"
+        :timetableDataStatus="timetableDataStatus"
+      />
     </div>
   </section>
 </template>
@@ -35,6 +38,7 @@ import TrainTable from "@/components/TrainsView/TrainTable.vue";
 import TrainStats from "@/components/TrainsView/TrainStats.vue";
 import TrainOptions from "@/components/TrainsView/TrainOptions.vue";
 import ActionButton from "@/components/Global/ActionButton.vue";
+import { DataStatus } from "@/scripts/enums/DataStatus";
 
 @Component({
   components: {
@@ -46,6 +50,7 @@ import ActionButton from "@/components/Global/ActionButton.vue";
 })
 export default class TrainsView extends Vue {
   @Getter("getTrainList") trains!: Train[];
+  @Getter("getTimetableDataStatus") timetableDataStatus!: DataStatus;
 
   // Passed in route as query parameters
   @Prop() readonly queryTrain!: string;
@@ -76,50 +81,54 @@ export default class TrainsView extends Vue {
   }
 
   get computedTrains() {
-    return this.trains
-      .filter(
-        (train) =>
-          train.timetableData &&
-          (this.searchedTrain.length > 0
-            ? train.trainNo.toString().includes(this.searchedTrain)
-            : true) &&
-          (this.searchedDriver.length > 0
-            ? train.driverName
-                .toLowerCase()
-                .includes(this.searchedDriver.toLowerCase())
-            : true)
-      )
-      .sort((a, b) => {
-        switch (this.sorterActive.id) {
-          case "mass":
-            if (a.mass > b.mass) return this.sorterActive.dir;
-            else return -this.sorterActive.dir;
+    return this.timetableDataStatus != DataStatus.Loaded
+      ? []
+      : this.trains
+          .filter(
+            (train) =>
+              train.online &&
+              (this.searchedTrain.length > 0
+                ? train.trainNo.toString().includes(this.searchedTrain)
+                : true) &&
+              (this.searchedDriver.length > 0
+                ? train.driverName
+                    .toLowerCase()
+                    .includes(this.searchedDriver.toLowerCase())
+                : true)
+          )
+          .sort((a, b) => {
+            switch (this.sorterActive.id) {
+              case "mass":
+                if (a.mass > b.mass) return this.sorterActive.dir;
+                return -this.sorterActive.dir;
 
-          case "distance":
-            if (!a.timetableData || !b.timetableData) return 0;
+              case "distance":
+                if (
+                  (a.timetableData?.routeDistance || -1) >
+                  (b.timetableData?.routeDistance || -1)
+                )
+                  return this.sorterActive.dir;
 
-            if (a.timetableData.routeDistance > b.timetableData.routeDistance)
-              return this.sorterActive.dir;
-            else return -this.sorterActive.dir;
+                return -this.sorterActive.dir;
 
-          case "speed":
-            if (a.speed > b.speed) return this.sorterActive.dir;
-            else return -this.sorterActive.dir;
+              case "speed":
+                if (a.speed > b.speed) return this.sorterActive.dir;
+                return -this.sorterActive.dir;
 
-          case "timetable":
-            if (a.trainNo > b.trainNo) return this.sorterActive.dir;
-            else return -this.sorterActive.dir;
+              case "timetable":
+                if (a.trainNo > b.trainNo) return this.sorterActive.dir;
+                return -this.sorterActive.dir;
 
-          case "length":
-            if (a.length > b.length) return this.sorterActive.dir;
-            else return -this.sorterActive.dir;
+              case "length":
+                if (a.length > b.length) return this.sorterActive.dir;
+                return -this.sorterActive.dir;
 
-          default:
-            break;
-        }
+              default:
+                break;
+            }
 
-        return 0;
-      });
+            return 0;
+          });
   }
 }
 </script>

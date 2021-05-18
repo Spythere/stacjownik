@@ -74,7 +74,7 @@ import FilterCard from "@/components/StationsView/FilterCard.vue";
 import DonationModal from "@/components/Global/DonationModal.vue";
 import ActionButton from "@/components/Global/ActionButton.vue";
 import { StoreData } from "@/scripts/interfaces/StoreData";
-import DataStatus from "@/scripts/enums/DataStatus";
+import { DataStatus } from "@/scripts/enums/DataStatus";
 
 @Component({
   components: {

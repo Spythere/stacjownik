@@ -33,7 +33,7 @@ import Station from "@/scripts/interfaces/Station";
 import SceneryInfo from "@/components/SceneryView/SceneryInfo.vue";
 import SceneryTimetable from "@/components/SceneryView/SceneryTimetable.vue";
 import { StoreData } from "@/scripts/interfaces/StoreData";
-import DataStatus from "@/scripts/enums/DataStatus";
+import { DataStatus } from "@/scripts/enums/DataStatus";
 import ActionButton from "@/components/Global/ActionButton.vue";
 
 @Component({
