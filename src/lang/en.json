@@ -104,7 +104,8 @@
     "search-no": "Search for train no...",
     "search-driver": "Search for driver...",
     "detailed-timetable": "Detailed timetable for train no. ",
-    "via-title": "Via: "
+    "via-title": "Via: ",
+    "no-timetable": "no current timetable"
   },
   "journal": {
     "title": "SCENERY ACTIVITY JOURNAL",

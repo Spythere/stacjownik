@@ -2,14 +2,7 @@
   <section class="trains-view">
     <div class="wrapper">
       <div class="options-bar">
-        <div class="stats">
-          <action-button @click.native="toggleStats">
-            <img :src="statsIcon" :alt="$t('trains.stats')" />
-            {{ $t("trains.stats") }}
-          </action-button>
-
-          <TrainStats :trains="trains" :trainStatsOpen="trainStatsOpen" />
-        </div>
+        <TrainStats :trains="trains" :trainStatsOpen="trainStatsOpen" />
 
         <TrainOptions
           :queryTrain="queryTrain"
@@ -63,10 +56,6 @@ export default class TrainsView extends Vue {
 
   searchedTrain: string = "";
   searchedDriver: string = "";
-
-  toggleStats() {
-    this.trainStatsOpen = !this.trainStatsOpen;
-  }
 
   changeSearchedTrain(trainNo: string) {
     this.searchedTrain = trainNo;
@@ -148,17 +137,9 @@ export default class TrainsView extends Vue {
   padding: 0 0.5em;
 }
 
-.options-bar button {
-  margin-bottom: 0.5em;
-}
-
 @include smallScreen {
   .options-bar {
     font-size: 1.25em;
-
-    button {
-      margin: 0 auto;
-    }
   }
 }
 </style>

@@ -1,6 +1,13 @@
 <template>
   <div class="train-stats">
-    <transition name="stats-anim">
+    <div class="stats_button">
+      <action-button @click.native="toggleStatsOpen">
+        <img :src="statsIcon" :alt="$t('trains.stats')" />
+        {{ $t("trains.stats") }}
+      </action-button>
+    </div>
+
+    <transition name="stats-anim" class="stats_wrapper" tag="div">
       <div class="stats-body" v-if="trainStatsOpen">
         <h2 class="stats-header">
           <img :src="statsIcon" :alt="$t('trains.stats')" />
@@ -74,14 +81,19 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { Component, Vue, Prop, Emit } from "vue-property-decorator";
+import ActionButton from "@/components/Global/ActionButton.vue";
 
 import Train from "@/scripts/interfaces/Train";
 
-@Component
+@Component({ components: { ActionButton } })
 export default class TrainStats extends Vue {
   @Prop() readonly trains!: Train[];
-  @Prop() readonly trainStatsOpen!: boolean;
+  trainStatsOpen = false;
+
+  toggleStatsOpen() {
+    this.trainStatsOpen = !this.trainStatsOpen;
+  }
 
   statsIcon = require("@/assets/icon-stats.svg");
 
@@ -202,19 +214,16 @@ export default class TrainStats extends Vue {
 }
 
 .train-stats {
-  z-index: 10;
-
-  margin-bottom: 0.5em;
-
   position: relative;
   top: 0;
-
-  outline: none;
+  z-index: 99;
 }
 
 .stats {
-  &-btn {
-    padding: 0.5em;
+  &_wrapper {
+    margin-bottom: 0.5em;
+
+    outline: none;
   }
 
   &-header {
@@ -305,22 +314,16 @@ export default class TrainStats extends Vue {
 }
 
 @include smallScreen {
-  .button {
-    font-size: 1.2em;
-  }
-
   .stats-body {
     display: block;
-
     width: 100%;
 
     border-radius: 0 0 1em 1em;
   }
 
-  .btn-wrapper {
+  .stats_button {
     display: flex;
     justify-content: center;
-    margin-top: 1em;
   }
 }
 </style>

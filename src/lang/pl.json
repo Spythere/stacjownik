@@ -104,7 +104,8 @@
     "search-no": "Szukaj nr pociągu...",
     "search-driver": "Szukaj maszynisty...",
     "detailed-timetable": "Szczegółowy rozkład jazdy pociągu ",
-    "via-title": "Przez: "
+    "via-title": "Przez: ",
+    "no-timetable": "brak rozkładu jazdy"
   },
   "journal": {
     "title": "DZIENNIK AKTYWNOŚCI SCENERII",

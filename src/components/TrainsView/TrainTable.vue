@@ -16,12 +16,103 @@
         class="train-row"
         v-for="(train, i) in computedTrains"
         :key="i"
-        :id="train.driverId + train.trainNo"
+        :ref="train.timetableData ? train.timetableData.timetableId : -1"
       >
-        <!-- :ref="train.timetableData.timetableId" -->
-        <span class="wrapper">
-          <span class="info" v-if="train.timetableData">
-            <!-- @click="changeScheduleShowState(train.timetableData.timetableId)" -->
+        <div class="wrapper no-timetable" v-if="!train.timetableData">
+          <span class="info">
+            <div class="info-main">
+              <div class="info-top">
+                <div class="top-category">
+                  <span>
+                    {{ train.trainNo }} |
+                    <span style="color: gold">
+                      {{ $t("trains.no-timetable") }}
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </span>
+
+          <span class="driver">
+            <div class="driver-info">
+              <span class="driver-name">
+                <a
+                  :href="'https://td2.info.pl/profile/?u=' + train.driverId"
+                  target="_blank"
+                >
+                  {{ train.driverName }}
+                </a>
+              </span>
+              <span class="driver-type">
+                {{ train.locoType }}
+              </span>
+            </div>
+
+            <span class="driver-loco">
+              <img
+                v-if="!missingLocoImages.includes(train.locoURL)"
+                :src="train.locoURL"
+                @error="onImageError"
+              />
+
+              <img v-else :src="defaultLocoImage" alt="unknown-train" />
+            </span>
+          </span>
+
+          <span class="stats">
+            <div class="stats-main">
+              <span class="mass">
+                <img :src="massIcon" alt="icon-mass" />
+                {{ train.mass / 1000 }}t
+              </span>
+
+              <span class="speed">
+                <img :src="speedIcon" alt="icon-speed" />
+                {{ train.speed }} km/h
+              </span>
+
+              <span class="length">
+                <img :src="lengthIcon" alt="icon-length" />
+                {{ train.length }}m
+              </span>
+            </div>
+
+            <div class="stats-position">
+              <span class="station">
+                <div class="stat-icon">
+                  <img :src="sceneryIcon" alt="icon-scenery" />
+                </div>
+                {{ train.currentStationName || "---" }}
+              </span>
+              <span class="track">
+                <div class="stat-icon">
+                  <img :src="routeIcon" alt="icon-scenery" />
+                </div>
+                {{ train.connectedTrack || "---" }}
+              </span>
+              <span class="signal">
+                <div class="stat-icon">
+                  <img :src="signalIcon" alt="icon-scenery" />
+                </div>
+                {{ train.signal || "---" }}
+              </span>
+              <span class="distance">
+                <div class="stat-icon">
+                  <img :src="distanceIcon" alt="icon-scenery" />
+                </div>
+                {{ train.distance || "0" }}m
+              </span>
+            </div>
+          </span>
+        </div>
+
+        <div
+          v-else
+          class="wrapper"
+          @click="changeScheduleShowState(train.timetableData.timetableId)"
+        >
+          <span class="info">
             <div class="info-main">
               <div class="info-top">
                 <div class="top-category">
@@ -154,7 +245,7 @@
               </span>
             </div>
           </span>
-        </span>
+        </div>
 
         <TrainSchedule
           v-if="train.timetableData"
@@ -210,18 +301,21 @@ export default class TrainTable extends Vue {
     return this.timetableDataStatus == DataStatus.Error;
   }
 
-  focusOnTrain(timetableId: number) {
-    const currentEl: HTMLElement = this.$refs[timetableId][0];
+  changeScheduleShowState(elementId: number) {
+    if (elementId < 0) return;
 
-    currentEl.scrollIntoView({
-      behavior: "smooth",
-      block: "nearest",
+    this.showedSchedule = this.showedSchedule == elementId ? 0 : elementId;
+
+    this.$nextTick(() => {
+      const currentEl: HTMLElement = this.$refs[elementId][0];
+
+      console.log(currentEl);
+
+      currentEl.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+      });
     });
-  }
-
-  changeScheduleShowState(timetableId: number) {
-    this.showedSchedule = this.showedSchedule === timetableId ? 0 : timetableId;
-    this.$nextTick(() => this.focusOnTrain(timetableId));
   }
 
   onImageError(e: Event) {
@@ -287,20 +381,16 @@ export default class TrainTable extends Vue {
     background-color: var(--clr-secondary);
 
     cursor: pointer;
+  }
+}
 
-    & > .wrapper {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+.wrapper {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-rows: 1fr;
 
-      @include smallScreen() {
-        font-size: 1.3em;
-      }
-
-      // @include midScreen() {
-      //   grid-template-columns: 1fr;
-      //   grid-template-rows: repeat(3, minmax(0, 1fr));
-      // }
-    }
+  @include smallScreen() {
+    font-size: 1.3em;
   }
 }
 
@@ -390,12 +480,9 @@ export default class TrainTable extends Vue {
 .stats {
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: space-between;
 
   font-size: 0.9em;
-
-  // grid-column: 1 / 3;
-  // grid-column: span 2;
 
   &-main {
     display: flex;
