@@ -448,9 +448,4 @@ td.station {
 
   background: #333;
 }
-
-.station-unavailable {
-  color: #ff1e1e;
-  font-weight: bold;
-}
 </style>
