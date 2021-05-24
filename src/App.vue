@@ -72,11 +72,11 @@ git <template>
         <a href="https://td2.info.pl/profile/?u=20777" target="_blank">
           Spythere
         </a>
-        2021 | v{{ VERSION }} | [<a
-          target="_blank"
-          href="https://paypal.me/spythere"
-          >{{ $t("app.support") }}!</a
-        >]
+        2021 | v{{ VERSION }} | [
+        <a target="_blank" href="https://paypal.me/spythere"
+          >{{ $t("app.support") }}!
+        </a>
+        ]
       </footer>
     </div>
   </div>
@@ -99,7 +99,7 @@ export default class App extends Vue {
   @Action("synchronizeData") synchronizeData;
   @Getter("getAllData") data!: StoreData;
 
-  private VERSION = "1.4.5";
+  private VERSION = "1.4.6";
 
   hasReleaseNotes = false;
   updateModalVisible = false;
