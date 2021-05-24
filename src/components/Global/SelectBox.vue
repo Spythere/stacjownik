@@ -70,10 +70,10 @@ export default class SelectBox extends Vue {
 
     cursor: pointer;
 
+    transition: all 0.3s;
+
     &:focus {
-      + span > img {
-        transform: rotate(180deg);
-      }
+      background: #5c5c5c;
     }
   }
 

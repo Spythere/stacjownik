@@ -56,9 +56,9 @@ export default class ActionButton extends Vue {}
     border: none;
   }
 
-  &:hover {
+  &:hover,
+  &:focus {
     color: $accentCol;
-
     background: #5c5c5c;
   }
 }

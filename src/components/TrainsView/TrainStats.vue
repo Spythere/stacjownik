@@ -81,7 +81,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Emit } from "vue-property-decorator";
+import { Component, Vue, Prop } from "vue-property-decorator";
 import ActionButton from "@/components/Global/ActionButton.vue";
 
 import Train from "@/scripts/interfaces/Train";
@@ -217,6 +217,10 @@ export default class TrainStats extends Vue {
   position: relative;
   top: 0;
   z-index: 99;
+
+  &:focus {
+    color: red;
+  }
 }
 
 .stats {
