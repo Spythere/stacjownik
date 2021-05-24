@@ -30,43 +30,29 @@ body {
 }
 
 
-.tooltip {
+.g-tooltip {
   position: relative;
 
-  background-color: var(--clr-accent);
-  padding: .1em .5em;
-  border-radius: 1em;
+  z-index: 10;
 
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  & > &-text {
-    display: inline-block;
-    width: 150px;
-
-
-    font-size: 0.9em;
-
-    background-color: var(--clr-accent);
-
-    padding: .15em .5em;
-    border-radius: 1em;
-    
-    display: inline-block;
-    max-width: 150px;
-    
-    text-align: center;
-    color: #fff;
-    
+  .content {
     position: absolute;
-    z-index: 1;
+    left: 50%;
+    top: 0;
+
+    transform: translate(-50%, -120%);
+
+    z-index: 10;
     visibility: hidden;
     opacity: 0;
 
-    left: 50%;
-    transform: translate(-50%, calc(-100% - 1rem));
+    min-width: 150px;
+
+    background-color: var(--clr-accent);
+    text-align: center;
+    
+    padding: 0.15em;
+    border-radius: .5em;
 
     transition: opacity 0.3s;
 
@@ -80,12 +66,21 @@ body {
       border-style: solid;
       border-color: var(--clr-accent) transparent transparent transparent;
     }
+
+    @include smallScreen() {
+      right: 0;
+      left: 0;
+
+      &::after {
+        left: 75%;
+      }
+    }
   }
 
-  &:hover > &-text {
-    @include smallScreen() {
-      display: none;
-    }
+  &:hover > .content {
+    // @include smallScreen() {
+    //   display: none;
+    // }
 
     visibility: visible;
     opacity: 1;

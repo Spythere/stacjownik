@@ -20,17 +20,13 @@
       >
         <div class="wrapper no-timetable" v-if="!train.timetableData">
           <span class="info">
-            <div class="info-main">
-              <div class="info-top">
-                <div class="top-category">
-                  <span>
-                    {{ train.trainNo }} |
-                    <span style="color: gold">
-                      {{ $t("trains.no-timetable") }}
-                    </span>
-                  </span>
-                </div>
-              </div>
+            <div class="info-category">
+              <span>
+                {{ train.trainNo }} |
+                <span style="color: gold">
+                  {{ $t("trains.no-timetable") }}
+                </span>
+              </span>
             </div>
           </span>
 
@@ -114,63 +110,58 @@
         >
           <span class="info">
             <div class="info-main">
-              <div class="info-top">
-                <div class="top-category">
-                  <span class="warning twr" v-if="train.timetableData.TWR">
-                    TWR
+              <span class="info-general">
+                <span class="warning twr" v-if="train.timetableData.TWR">
+                  TWR
+                </span>
+                <span class="warning skr" v-if="train.timetableData.SKR">
+                  SKR
+                </span>
+                <span>
+                  <strong>{{ train.timetableData.category }}</strong>
+                  {{ train.trainNo }} |
+                  <span style="color: gold">
+                    {{ train.timetableData.routeDistance }} km
                   </span>
+                </span>
+              </span>
 
-                  <span class="warning skr" v-if="train.timetableData.SKR">
-                    SKR
-                  </span>
+              <span class="info-srjp g-tooltip">
+                <span class="activator">
+                  SRJP
 
-                  <span>
-                    <strong>{{ train.timetableData.category }}</strong>
-                    {{ train.trainNo }} |
-
-                    <span style="color: gold">
-                      {{ train.timetableData.routeDistance }} km
-                    </span>
-                  </span>
-                </div>
-
-                <div class="top-timetable-btn tooltip">
                   <img
                     :src="
-                      showedSchedule === train.timetableData.timetableId
+                      showedSchedule == train.timetableData.timetableId
                         ? ascSVG
                         : descSVG
                     "
-                    alt="asc-arrow"
+                    alt="arrow-icon"
                   />
-
-                  <span>SRJP</span>
-
-                  <span class="tooltip-text">
-                    {{ $t("trains.detailed-timetable") }} {{ train.trainNo }}
-                  </span>
-                </div>
-              </div>
-
-              <div class="info-route">
-                <span class="info-route-text">
-                  <strong>
-                    {{ train.timetableData.route.replace("|", " - ") }}
-                  </strong>
                 </span>
-              </div>
 
-              <div class="info-stops">
-                <span v-if="train.timetableData.followingStops.length > 2">
-                  {{ $t("trains.via-title") }}
-
-                  <span
-                    v-html="
-                      generateStopList(train.timetableData.followingStops)
-                    "
-                  ></span>
+                <span class="content">
+                  {{ $t("trains.detailed-timetable") }} {{ train.trainNo }}
                 </span>
-              </div>
+              </span>
+            </div>
+
+            <div class="info-route">
+              <span class="info-route-text">
+                <strong>
+                  {{ train.timetableData.route.replace("|", " - ") }}
+                </strong>
+              </span>
+            </div>
+
+            <div class="info-stops">
+              <span v-if="train.timetableData.followingStops.length > 2">
+                {{ $t("trains.via-title") }}
+
+                <span
+                  v-html="generateStopList(train.timetableData.followingStops)"
+                ></span>
+              </span>
             </div>
           </span>
 
@@ -263,9 +254,9 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 
 import Train from "@/scripts/interfaces/Train";
+import TrainStop from "@/scripts/interfaces/TrainStop";
 
 import TrainSchedule from "@/components/TrainsView/TrainSchedule.vue";
-import TrainStop from "@/scripts/interfaces/TrainStop";
 import { DataStatus } from "@/scripts/enums/DataStatus";
 
 @Component({
@@ -308,8 +299,6 @@ export default class TrainTable extends Vue {
 
     this.$nextTick(() => {
       const currentEl: HTMLElement = this.$refs[elementId][0];
-
-      console.log(currentEl);
 
       currentEl.scrollIntoView({
         behavior: "smooth",
@@ -370,7 +359,7 @@ export default class TrainTable extends Vue {
   &-list {
     @include smallScreen() {
       width: 100%;
-      overflow: hidden;
+      // overflow-x: hidden;
     }
   }
 
@@ -386,7 +375,7 @@ export default class TrainTable extends Vue {
 
 .wrapper {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(20em, 1fr));
   grid-template-rows: 1fr;
 
   @include smallScreen() {
@@ -395,17 +384,18 @@ export default class TrainTable extends Vue {
 }
 
 .info {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-
-  &-top {
+  &-main {
     display: flex;
     justify-content: space-between;
     align-items: center;
 
-    div {
+    .info-srjp .activator {
       display: flex;
+      align-items: center;
+
+      background-color: var(--clr-accent);
+      border-radius: 0.5em;
+      padding: 0.1em 0.35em;
     }
   }
 
@@ -422,10 +412,6 @@ export default class TrainTable extends Vue {
     margin-bottom: 10px;
 
     font-size: 0.7em;
-
-    @include smallScreen() {
-      font-size: 0.75em;
-    }
   }
 
   &-bottom {
@@ -454,10 +440,11 @@ export default class TrainTable extends Vue {
 
   &-info {
     margin-bottom: 1em;
+    text-align: center;
+    word-wrap: break-word;
   }
 
   &-name {
-    margin: 0 0.3em;
     font-weight: bold;
   }
 

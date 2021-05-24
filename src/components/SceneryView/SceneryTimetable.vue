@@ -16,7 +16,7 @@
       </a>
     </h3>
 
-    <div class="select-box" v-if="stationInfo.checkpoints">
+    <!-- <div class="select-box" v-if="stationInfo.checkpoints">
       <div class="option-container">
         <div class="option-selected" @click="toggleOptionList">
           <span>{{ selectedOption }}</span>
@@ -35,7 +35,9 @@
           </li>
         </ul>
       </div>
-    </div>
+    </div> -->
+
+    <!-- <select-box></select-box> -->
 
     <span class="timetable-item loading" v-if="dataStatus == 0">{{
       $t("app.loading")
@@ -141,8 +143,9 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 
 import Station from "@/scripts/interfaces/Station";
 import ScheduledTrain from "@/scripts/interfaces/ScheduledTrain";
+import SelectBox from "../Global/SelectBox.vue";
 
-@Component
+@Component({ components: { SelectBox } })
 export default class SceneryTimetable extends Vue {
   @Prop() readonly stationInfo!: Station;
   @Prop() readonly timetableOnly!: boolean;

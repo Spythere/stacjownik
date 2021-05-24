@@ -92,7 +92,7 @@ $sceneryBgCol: #333;
 
     display: inline-block;
 
-    font-size: 2em;
+    font-size: 1.5em;
 
     button {
       margin: 1em auto;
