@@ -16,28 +16,18 @@
       </a>
     </h3>
 
-    <!-- <div class="select-box" v-if="stationInfo.checkpoints">
-      <div class="option-container">
-        <div class="option-selected" @click="toggleOptionList">
-          <span>{{ selectedOption }}</span>
-          <img :src="require('@/assets/icon-select.svg')" alt="icon-select" />
-        </div>
-
-        <ul class="option-list" :class="{ open: listOpen }">
-          <li
-            class="option-item"
-            v-for="(cp, i) in stationInfo.checkpoints"
-            :key="i"
-            @click="() => chooseOption(cp.checkpointName)"
-          >
-            <input type="option-radio" name="sort" />
-            <label :id="cp.checkpointName">{{ cp.checkpointName }}</label>
-          </li>
-        </ul>
-      </div>
-    </div> -->
-
-    <!-- <select-box></select-box> -->
+    <select-box
+      v-if="stationInfo && stationInfo.checkpoints"
+      :title="selectedOption"
+      :itemList="
+        stationInfo.checkpoints.map((cp, i) => ({
+          id: cp.checkpointName,
+          value: cp.checkpointName,
+        }))
+      "
+      bgColor="#444"
+      @selected="chooseOption"
+    ></select-box>
 
     <span class="timetable-item loading" v-if="dataStatus == 0">{{
       $t("app.loading")
@@ -156,32 +146,24 @@ export default class SceneryTimetable extends Vue {
   listOpen: boolean = false;
   selectedOption: string = "";
 
-  mounted() {
+  loadSelectedOption() {
+    if (!this.stationInfo) return;
     if (!this.stationInfo.checkpoints) return;
+    if (this.selectedOption != "") return;
 
-    if (this.selectedOption == "")
-      this.selectedOption = this.stationInfo.checkpoints[0].checkpointName;
+    this.selectedOption = this.stationInfo.checkpoints[0].checkpointName;
+  }
+
+  mounted() {
+    this.loadSelectedOption();
   }
 
   activated() {
-    if (!this.stationInfo) return;
-    if (!this.stationInfo.checkpoints) return;
-
-    if (this.selectedOption == "")
-      this.selectedOption = this.stationInfo.checkpoints[0].checkpointName;
-  }
-
-  toggleOptionList() {
-    this.listOpen = !this.listOpen;
-  }
-
-  closeOptionList() {
-    this.listOpen = false;
+    this.loadSelectedOption();
   }
 
   chooseOption(name: string) {
     this.selectedOption = name;
-    this.closeOptionList();
   }
 
   get currentURL() {
@@ -255,9 +237,6 @@ h3 {
 }
 
 .select-box {
-  display: flex;
-  justify-content: center;
-
   font-size: 1.2em;
 }
 

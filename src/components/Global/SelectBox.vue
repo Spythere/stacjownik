@@ -2,7 +2,10 @@
   <div class="select-box">
     <div class="select-box_content">
       <label>
-        <select v-model="selectedItem">
+        <select
+          v-model="selectedItem"
+          :style="bgColor ? 'background-color:' + bgColor : ''"
+        >
           <option value disabled selected hidden>
             {{ title }}
           </option>
@@ -10,8 +13,7 @@
             {{ item.value }}
           </option>
         </select>
-
-        <span> </span>
+        <span class="arrows"></span>
       </label>
     </div>
   </div>
@@ -24,6 +26,7 @@ import { Component, Vue, Prop, Watch, Emit } from "vue-property-decorator";
 export default class SelectBox extends Vue {
   @Prop({ required: true }) title!: string;
   @Prop({ required: true }) itemList!: { id: string | number; value: string }[];
+  @Prop() bgColor!: string;
 
   @Emit("selected")
   onItemSelected() {
@@ -47,19 +50,20 @@ export default class SelectBox extends Vue {
 
 .select-box {
   &_content {
+    // display: inline-block;
+
     position: relative;
-    margin: 0.5em 0;
+    margin: 0.5em auto;
   }
 
   select {
     border: none;
     outline: none;
-    min-width: 10em;
 
-    background-color: #333;
-    border-radius: 0.5em;
-
+    background: #333;
     padding: 0.35em 0.5em;
+    padding-right: 2em;
+    border-radius: 0.5em;
 
     font-size: 1em;
     color: white;
@@ -73,7 +77,13 @@ export default class SelectBox extends Vue {
     transition: all 0.3s;
 
     &:focus {
-      background: #5c5c5c;
+      // border: 1px solid red;
+
+      background: #777;
+
+      option {
+        background: #333;
+      }
     }
   }
 
@@ -81,13 +91,13 @@ export default class SelectBox extends Vue {
     position: relative;
   }
 
-  span {
+  .arrows {
     $arrowCol: #d8d8d8;
     $arrowWidth: 0.35em;
 
     position: absolute;
     top: 20%;
-    right: 0.25em;
+    // right: 0.25em;
 
     pointer-events: none;
 
