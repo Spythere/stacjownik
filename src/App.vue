@@ -153,7 +153,10 @@ export default class App extends Vue {
   }
 
   mounted() {
-    this.detectIEVersion();
+    if (this.detectIEVersion() != -1)
+      alert(
+        "Stacjownik nie wspiera reliktów przeszłości. Przesiądź się na nowszą przeglądarkę!"
+      );
 
     if (StorageManager.getStringValue("version") != this.VERSION) {
       StorageManager.setStringValue("version", this.VERSION);
@@ -179,7 +182,7 @@ export default class App extends Vue {
       if (re.exec(ua) != null) rv = parseFloat(RegExp.$1);
     }
 
-    console.log("IE version:", rv);
+    return rv;
   }
 }
 </script>
