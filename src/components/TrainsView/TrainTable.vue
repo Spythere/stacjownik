@@ -359,7 +359,6 @@ export default class TrainTable extends Vue {
   &-list {
     @include smallScreen() {
       width: 100%;
-      // overflow-x: hidden;
     }
   }
 
@@ -470,6 +469,8 @@ export default class TrainTable extends Vue {
   justify-content: space-between;
 
   font-size: 0.9em;
+
+  padding: 1em 0;
 
   &-main {
     display: flex;
