@@ -16,18 +16,19 @@
       </a>
     </h3>
 
-    <select-box
-      v-if="stationInfo && stationInfo.checkpoints"
-      :title="selectedOption"
-      :itemList="
-        stationInfo.checkpoints.map((cp, i) => ({
-          id: cp.checkpointName,
-          value: cp.checkpointName,
-        }))
-      "
-      bgColor="#444"
-      @selected="chooseOption"
-    ></select-box>
+    <div class="checkpoints">
+      <select-box
+        v-if="stationInfo && stationInfo.checkpoints"
+        :title="selectedOption"
+        :itemList="
+          stationInfo.checkpoints.map((cp, i) => ({
+            id: cp.checkpointName,
+            value: cp.checkpointName,
+          }))
+        "
+        @selected="chooseOption"
+      ></select-box>
+    </div>
 
     <span class="timetable-item loading" v-if="dataStatus == 0">{{
       $t("app.loading")
@@ -162,8 +163,8 @@ export default class SceneryTimetable extends Vue {
     this.loadSelectedOption();
   }
 
-  chooseOption(name: string) {
-    this.selectedOption = name;
+  chooseOption(item: { id: number | string; value: string }) {
+    this.selectedOption = item.value;
   }
 
   get currentURL() {
@@ -378,6 +379,15 @@ h3 {
       width: 100%;
       margin: 0.5em 0;
     }
+  }
+}
+
+.checkpoints {
+  display: flex;
+  justify-content: center;
+
+  & > div {
+    border: 1px solid white;
   }
 }
 

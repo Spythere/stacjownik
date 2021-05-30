@@ -4,6 +4,7 @@
       <select-box
         :title="$t('trains.option-distance')"
         :itemList="translatedSorterOptions"
+        :defaultItemIndex="3"
         @selected="changeSorter"
       />
 
@@ -104,8 +105,8 @@ export default class TrainOptions extends Vue {
   }
 
   @Emit()
-  changeSorter(optionID: string) {
-    return { id: optionID, dir: -1 };
+  changeSorter(item: { id: string | number; value: string }) {
+    return { id: item.id, dir: -1 };
   }
 
   /* Watchers for search boxes */
@@ -153,6 +154,10 @@ export default class TrainOptions extends Vue {
     justify-content: center;
     flex-direction: column;
   }
+}
+
+.select-box {
+  margin-top: 0.5em;
 }
 
 .search {

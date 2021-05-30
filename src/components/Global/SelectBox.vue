@@ -1,32 +1,49 @@
 <template>
   <div class="select-box">
     <div class="select-box_content">
-      <label>
-        <select
-          v-model="selectedItem"
-          :style="bgColor ? 'background-color:' + bgColor : ''"
-        >
-          <option value disabled selected hidden>
-            {{ title }}
-          </option>
-          <option v-for="item in itemList" :key="item.id" :value="item.id">
-            {{ item.value }}
-          </option>
-        </select>
-        <span class="arrows"></span>
-      </label>
+      <button class="selected" @click="toggleBox">
+        {{ selectedItemComp ? selectedItemComp.value : "" }}
+      </button>
+
+      <div class="options" v-if="boxVisible">
+        <div class="option" v-for="item in itemList" :key="item.id">
+          <label :for="item.id">
+            <input
+              type="button"
+              :id="item.id"
+              name="select-box"
+              @click="selectOption(item)"
+            />
+
+            <span :style="selectedItemComp.id == item.id ? 'color: gold;' : ''">
+              {{ item.value }}
+            </span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow">
+      <img :src="boxVisible ? ascIcon : descIcon" alt="arrow-icon" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Watch, Emit } from "vue-property-decorator";
+import { Component, Vue, Prop, Emit } from "vue-property-decorator";
 
 @Component
 export default class SelectBox extends Vue {
   @Prop({ required: true }) title!: string;
   @Prop({ required: true }) itemList!: { id: string | number; value: string }[];
+  @Prop({ default: 0 }) defaultItemIndex!: number;
   @Prop() bgColor!: string;
+
+  boxVisible = false;
+
+  test() {
+    console.log("test");
+  }
 
   @Emit("selected")
   onItemSelected() {
@@ -36,10 +53,21 @@ export default class SelectBox extends Vue {
   ascIcon = require("@/assets/icon-arrow-asc.svg");
   descIcon = require("@/assets/icon-arrow-desc.svg");
 
-  selectedItem: string = "";
+  selectedItem: { id: string | number; value: string } | null = null;
 
-  @Watch("selectedItem")
-  watchSelectedItem(item) {
+  get selectedItemComp() {
+    if (!this.selectedItem) return this.itemList[this.defaultItemIndex];
+
+    return this.itemList.find((item) => item.id === this.selectedItem?.id);
+  }
+
+  toggleBox() {
+    this.boxVisible = !this.boxVisible;
+  }
+
+  selectOption(item: { id: string | number; value: string }) {
+    this.selectedItem = item;
+    this.boxVisible = false;
     this.onItemSelected();
   }
 }
@@ -49,80 +77,100 @@ export default class SelectBox extends Vue {
 @import "../../styles/variables.scss";
 
 .select-box {
-  &_content {
-    // display: inline-block;
+  position: relative;
+}
 
-    position: relative;
-    margin: 0.5em auto;
+.arrow {
+  position: absolute;
+  top: 50%;
+  right: 0.5em;
+
+  img {
+    vertical-align: middle;
+    width: 1.35em;
   }
 
-  select {
-    border: none;
-    outline: none;
+  transform: translateY(-50%);
 
-    background: #333;
-    padding: 0.35em 0.5em;
-    padding-right: 2em;
-    border-radius: 0.5em;
+  pointer-events: none;
+}
 
-    font-size: 1em;
-    color: white;
+.select-box_content {
+  position: relative;
+  margin: 0 auto;
 
-    appearance: none;
-    -moz-appearance: none;
-    -webkit-appearance: none;
+  min-width: 10em;
 
-    cursor: pointer;
+  background: #333;
 
-    transition: all 0.3s;
+  text-align: center;
+}
 
-    &:focus {
-      // border: 1px solid red;
+.options {
+  position: absolute;
+  top: 100%;
+  left: 0;
 
-      background: #777;
+  z-index: 10;
 
-      option {
-        background: #333;
-      }
-    }
+  width: 100%;
+
+  margin-top: 0.25em;
+}
+
+button.selected {
+  background: #333;
+  color: white;
+
+  font-size: 1em;
+
+  padding: 0.35em 0.5em;
+  padding-right: 2em;
+
+  width: 100%;
+  cursor: pointer;
+
+  border: none;
+  outline: none;
+
+  text-align: left;
+
+  &:focus {
+    background: #555;
+  }
+}
+
+input {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: none;
+
+  &:focus + span {
+    color: $accentCol;
+    font-weight: bold;
+  }
+}
+
+label {
+  position: relative;
+
+  display: inline-block;
+  background: #333;
+
+  &:hover,
+  &:focus {
+    background: #555;
   }
 
-  label {
-    position: relative;
-  }
+  padding: 0.25em 0;
 
-  .arrows {
-    $arrowCol: #d8d8d8;
-    $arrowWidth: 0.35em;
+  width: 100%;
 
-    position: absolute;
-    top: 20%;
-    // right: 0.25em;
-
-    pointer-events: none;
-
-    &::before,
-    &::after {
-      content: "";
-      width: 0;
-      height: 0;
-
-      position: absolute;
-      right: 0.5em;
-
-      border-left: $arrowWidth solid transparent;
-      border-right: $arrowWidth solid transparent;
-    }
-
-    &::before {
-      border-top: $arrowWidth solid $arrowCol;
-
-      transform: translateY(150%);
-    }
-
-    &::after {
-      border-bottom: $arrowWidth solid $arrowCol;
-    }
-  }
+  cursor: pointer;
 }
 </style>
