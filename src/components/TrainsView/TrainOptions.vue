@@ -157,7 +157,7 @@ export default class TrainOptions extends Vue {
 }
 
 .select-box {
-  margin-top: 0.5em;
+  margin: 0.5em 0;
 }
 
 .search {

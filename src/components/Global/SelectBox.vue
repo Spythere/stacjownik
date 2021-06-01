@@ -34,10 +34,8 @@ import { Component, Vue, Prop, Emit } from "vue-property-decorator";
 
 @Component
 export default class SelectBox extends Vue {
-  @Prop({ required: true }) title!: string;
   @Prop({ required: true }) itemList!: { id: string | number; value: string }[];
   @Prop({ default: 0 }) defaultItemIndex!: number;
-  @Prop() bgColor!: string;
 
   boxVisible = false;
 
@@ -99,6 +97,8 @@ export default class SelectBox extends Vue {
   position: relative;
   margin: 0 auto;
 
+  height: 100%;
+
   min-width: 10em;
 
   background: #333;
@@ -110,6 +110,8 @@ export default class SelectBox extends Vue {
   position: absolute;
   top: 100%;
   left: 0;
+
+  height: auto;
 
   z-index: 10;
 
@@ -167,7 +169,7 @@ label {
     background: #555;
   }
 
-  padding: 0.25em 0;
+  padding: 0.75em 0;
 
   width: 100%;
 

@@ -19,7 +19,6 @@
     <div class="checkpoints">
       <select-box
         v-if="stationInfo && stationInfo.checkpoints"
-        :title="selectedOption"
         :itemList="
           stationInfo.checkpoints.map((cp, i) => ({
             id: cp.checkpointName,
