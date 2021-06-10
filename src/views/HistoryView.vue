@@ -86,15 +86,16 @@ import { Component, Vue, Watch } from "vue-property-decorator";
 import { Getter } from "vuex-class";
 
 import Station from "@/scripts/interfaces/Station";
-import ISceneryInfoData from "@/scripts/interfaces/ISceneryInfoData";
+import Scenery from "@/scripts/interfaces/Scenery";
+
 import SelectBox from "@/components/Global/SelectBox.vue";
 
 @Component({ components: { SelectBox } })
 export default class HistoryView extends Vue {
   @Getter("getStationList") stationList!: Station[];
 
-  sceneryHistoryList: ISceneryInfoData[] = [];
-  currentSceneryHistory: ISceneryInfoData["dispatcherHistory"] = [];
+  sceneryHistoryList: Scenery[] = [];
+  currentSceneryHistory: Scenery["dispatcherHistory"] = [];
 
   currentDispatcher: string = "";
   currentDispatcherId: number = 0;
@@ -107,7 +108,7 @@ export default class HistoryView extends Vue {
 
   async mounted() {
     try {
-      const responseData: ISceneryInfoData[] = await (
+      const responseData: Scenery[] = await (
         await axios.get(
           "https://stacjownik.herokuapp.com/api/getSceneryInfo?items=-1"
         )
@@ -138,9 +139,10 @@ export default class HistoryView extends Vue {
           dispatcherFromDate: new Date(dispatcherFrom).toLocaleDateString(
             "pl-PL"
           ),
-          dispatcherFromTime: new Date(
-            dispatcherFrom
-          ).toLocaleTimeString("pl-PL", { hour: "2-digit", minute: "2-digit" }),
+          dispatcherFromTime: new Date(dispatcherFrom).toLocaleTimeString(
+            "pl-PL",
+            { hour: "2-digit", minute: "2-digit" }
+          ),
           dispatcherToDate: new Date(dispatcherTo).toLocaleDateString("pl-PL"),
           dispatcherToTime: new Date(dispatcherTo).toLocaleTimeString("pl-PL", {
             hour: "2-digit",
@@ -155,7 +157,7 @@ export default class HistoryView extends Vue {
     try {
       this.historyLoading = true;
 
-      const selectedScenery: ISceneryInfoData = await (
+      const selectedScenery: Scenery = await (
         await axios.get(
           `https://stacjownik.herokuapp.com/api/getSceneryInfo?name=${itemName}&items=10`
         )
