@@ -391,12 +391,8 @@ h3 {
     -webkit-transition: background-color 200ms;
   }
 
-  &.no-timetable {
-    pointer-events: none;
-
-    & > .user_train {
-      background-color: $no-timetable;
-    }
+  &.no-timetable .user_train {
+    background-color: $no-timetable;
   }
 
   &.departed > &_train {

@@ -1,4 +1,4 @@
-import TrainStop from '@/scripts/interfaces/TrainStop';
+import TrainStop from "@/scripts/interfaces/TrainStop";
 
 export default interface Train {
   mass: number;
@@ -15,6 +15,8 @@ export default interface Train {
   locoURL: string;
   locoType: string;
   online: boolean;
+
+  cars: string[];
 
   timetableData?: {
     timetableId: number;

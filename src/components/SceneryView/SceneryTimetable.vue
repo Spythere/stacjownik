@@ -347,7 +347,7 @@ h3 {
     }
 
     &.empty {
-      color: $accentCol;
+      color: #bbb;
     }
   }
 

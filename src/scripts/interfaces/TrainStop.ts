@@ -5,17 +5,17 @@ export default interface TrainStop {
   stopDistance: number;
   mainStop: boolean;
 
-  arrivalLine: string;
-  arrivalTimeString: string;
+  arrivalLine: string | null;
+  arrivalTimeString: string | null;
   arrivalTimestamp: number;
-  arrivalRealTimeString: string;
+  arrivalRealTimeString: string | null;
   arrivalRealTimestamp: number;
   arrivalDelay: number;
 
-  departureLine: string;
-  departureTimeString: string;
+  departureLine: string | null;
+  departureTimeString: string | null;
   departureTimestamp: number;
-  departureRealTimeString: string;
+  departureRealTimeString: string | null;
   departureRealTimestamp: number;
   departureDelay: number;
 
@@ -25,5 +25,5 @@ export default interface TrainStop {
   terminatesHere: boolean;
   confirmed: boolean;
   stopped: boolean;
-  stopTime: number;
+  stopTime: number | null;
 }

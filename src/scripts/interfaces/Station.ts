@@ -1,5 +1,5 @@
-import Train from './Train';
-import ScheduledTrain from './ScheduledTrain';
+import Train from "./Train";
+import ScheduledTrain from "./ScheduledTrain";
 
 export default interface Station {
   stationName: string;
@@ -52,6 +52,9 @@ export default interface Station {
   statusTimeString: string;
   statusID: string;
 
-  stationTrains: Train[];
+  stationTrains: {
+    driverName: number;
+    trainNo: number;
+  }[];
   scheduledTrains: ScheduledTrain[];
 }

@@ -11,23 +11,42 @@ import utils from "@/scripts/utils/storeUtils";
 import { DataStatus } from "@/scripts/enums/DataStatus";
 import { StoreData } from "@/scripts/interfaces/StoreData";
 
-interface TimetableData {
-  trainNo: number;
-  driverName: string;
-  driverId: number;
-  currentStationName: string;
-  currentStationHash: string;
-  timetableId: number;
-  category: string;
-  route: string;
-  TWR: boolean;
-  SKR: boolean;
-  routeDistance: number;
-  followingStops: TrainStop[];
-  followingSceneries: string[];
+interface TimetableAPIData {
+  trainInfo: {
+    timetableId: number;
+    trainNo: number;
+    trainCategoryCode: string;
+    driverId: number;
+    driverName: string;
+    route: string;
+    twr: boolean;
+    skr: boolean;
+    sceneries: string[];
+  };
+
+  stopPoints: {
+    arrivalLine: string | null;
+    arrivalTime: string | null;
+    arrivalDelay: number;
+    arrivalRealTime: string | null;
+    pointDistance: number;
+    pointName: string;
+    pointNameRAW: string;
+    entryId: number;
+    pointId: number;
+    comments: string | null;
+    confirmed: boolean;
+    isStopped: boolean;
+    pointStopTime: number | null;
+    pointStopType: string;
+    departureLine: string | null;
+    departureTime: string | null;
+    departureDelay: number;
+    departureRealTime: string | null;
+  }[];
 }
 
-interface IOnlineStationData {
+interface StationAPIData {
   dispatcherId: number;
   dispatcherName: string;
   dispatcherIsSupporter: boolean;
@@ -45,6 +64,77 @@ interface IOnlineStationData {
   isOnline: number;
   dispatcherRate: number;
 }
+
+interface TrainAPIData {
+  trainNo: number;
+  driverId: number;
+  driverName: string;
+  driverIsSupporter: boolean;
+  station: StationAPIData;
+  dataSignal: string;
+  dataSceneryConnection: string;
+  dataDistance: number;
+  dataCon: string;
+  dataSpeed: number;
+  dataMass: number;
+  dataLength: number;
+  region: string;
+  isOnline: boolean;
+  lastSeen: number;
+}
+
+interface Timetable {
+  trainNo: number;
+  driverName: string;
+  driverId: number;
+  currentStationName: string;
+  currentStationHash: string;
+  timetableId: number;
+  category: string;
+  route: string;
+  TWR: boolean;
+  SKR: boolean;
+  routeDistance: number;
+  followingStops: TrainStop[];
+  followingSceneries: string[];
+}
+
+// interface OnlineStationData {
+//   dispatcherId: number;
+//   dispatcherName: string;
+//   dispatcherIsSupporter: boolean;
+//   stationName: string;
+//   stationHash: string;
+//   region: string;
+//   maxUsers: number;
+//   currentUsers: number;
+//   spawn: number;
+//   lastSeen: number;
+//   dispatcherExp: number;
+//   nameFromHeader: string;
+//   spawnString: string;
+//   networkConnectionString: string;
+//   isOnline: number;
+//   dispatcherRate: number;
+// }
+
+// interface TrainData {
+//   trainNo: number;
+//   driverId: number;
+//   driverName: string;
+//   driverIsSupporter: boolean;
+//   dataSignal: string;
+//   dataSceneryConnection: string;
+//   dataDistance: number;
+//   dataCon: string;
+//   dataSpeed: number;
+//   dataMass: number;
+//   dataLength: number;
+//   station: OnlineStationData;
+//   region: string;
+//   isOnline: number;
+//   lastSeen: number;
+// }
 
 const URLs = {
   stations: "https://api.td2.info.pl:9640/?method=getStationsOnline",
@@ -108,15 +198,95 @@ export default class Store extends VuexModule {
     setInterval(() => this.context.dispatch("fetchOnlineData"), 20000);
   }
 
+  // Fetching all station and train data from API
+  @Action
+  async fetchOnlineData() {
+    Promise.all([axios.get(URLs.stations), axios.get(URLs.trains), axios.get(URLs.dispatchers)])
+      .then(async response => {
+        const onlineStationsData: StationAPIData[] = response[0].data.message;
+        const onlineTrainsData: TrainAPIData[] = await response[1].data.message;
+        const onlineDispatchersData: string[][] = await response[2].data.message;
+
+        const updatedStationList = onlineStationsData.reduce((acc, station) => {
+          if (station.region !== "eu" || !station.isOnline) return acc;
+
+          const stationStatus = onlineDispatchersData.find((status: string[]) => status[0] == station.stationHash && status[1] == "eu");
+
+          const statusTimestamp = utils.getStatusTimestamp(stationStatus);
+          const statusID = utils.getStatusID(stationStatus);
+
+          const stationTrains = onlineTrainsData
+            .filter(train => train.region === "eu" && train.isOnline && train.station.stationName === station.stationName)
+            .map(train => ({ driverName: train.driverName, trainNo: train.trainNo }));
+
+          acc.push({
+            stationName: station.stationName,
+            stationHash: station.stationHash,
+            maxUsers: station.maxUsers,
+            currentUsers: station.currentUsers,
+            spawns: utils.parseSpawns(station.spawnString),
+            dispatcherName: station.dispatcherName,
+            dispatcherRate: station.dispatcherRate,
+            dispatcherId: station.dispatcherId,
+            dispatcherExp: station.dispatcherExp,
+            dispatcherIsSupporter: station.dispatcherIsSupporter,
+            stationTrains,
+            statusTimestamp,
+            statusID,
+            statusTimeString: utils.timestampToString(statusTimestamp)
+          });
+
+          return acc;
+        }, [] as any);
+
+        const updatedTrainList = await Promise.all(
+          onlineTrainsData
+            .filter(train => train.region === "eu")
+            .map(async train => {
+              const locoType = train.dataCon.split(";") ? train.dataCon.split(";")[0] : train.dataCon;
+
+              return {
+                trainNo: train.trainNo,
+                mass: train.dataMass,
+                length: train.dataLength,
+                speed: train.dataSpeed,
+                distance: train.dataDistance,
+                signal: train.dataSignal,
+                online: train.isOnline,
+                driverId: train.driverId,
+                driverName: train.driverName,
+                currentStationName: train.station.stationName,
+                currentStationHash: train.station.stationHash,
+                connectedTrack: train.dataSceneryConnection,
+                locoType,
+                locoURL: utils.getLocoURL(locoType),
+                cars: train.dataCon.split(";").filter((train, i) => i > 0) || []
+              };
+            })
+        );
+
+        this.context.commit("updateOnlineStations", updatedStationList);
+        this.context.commit("updateOnlineTrains", updatedTrainList);
+
+        this.context.dispatch("fetchTimetableData");
+      })
+      .catch(() => {
+        this.context.commit("setDataConnectionStatus", DataStatus.Error);
+      });
+  }
+
+  // Fetching timetable data from API basing on online trains
   @Action({ commit: "updateTimetableData" })
   async fetchTimetableData() {
-    return this.trainList.reduce(async (acc: Promise<TimetableData[]>, train) => {
-      const timetable = await (await axios.get(utils.timetableURL(train.trainNo))).data.message;
+    return this.trainList.reduce(async (acc: Promise<Timetable[]>, train: Train) => {
+      const timetable: TimetableAPIData = await (await axios.get(utils.timetableURL(train.trainNo))).data.message;
       const trainInfo = timetable.trainInfo;
 
       if (!timetable || !trainInfo) return acc;
 
       const followingStops: TrainStop[] = timetable.stopPoints.reduce((stopsAcc: TrainStop[], point) => {
+        if (point.pointNameRAW.toLowerCase().includes("sbl")) return stopsAcc;
+
         const arrivalTimestamp = utils.getTimestamp(point.arrivalTime);
         const arrivalRealTimestamp = utils.getTimestamp(point.arrivalRealTime);
 
@@ -132,16 +302,16 @@ export default class Store extends VuexModule {
           mainStop: point.pointName.includes("strong"),
 
           arrivalLine: point.arrivalLine,
-          arrivalTimeString: utils.timestampToString(point.arrivalTime),
+          arrivalTimeString: point.arrivalTime,
           arrivalTimestamp: arrivalTimestamp,
-          arrivalRealTimeString: utils.timestampToString(point.arrivalRealTime),
+          arrivalRealTimeString: point.arrivalRealTime,
           arrivalRealTimestamp: arrivalRealTimestamp,
           arrivalDelay: point.arrivalDelay,
 
           departureLine: point.departureLine,
-          departureTimeString: utils.timestampToString(point.departureTime),
+          departureTimeString: point.departureTime,
           departureTimestamp: departureTimestamp,
-          departureRealTimeString: utils.timestampToString(point.departureRealTime),
+          departureRealTimeString: point.departureRealTime,
           departureRealTimestamp: departureRealTimestamp,
           departureDelay: point.departureDelay,
 
@@ -174,81 +344,6 @@ export default class Store extends VuexModule {
 
       return acc;
     }, Promise.resolve([]));
-  }
-
-  @Action
-  async fetchOnlineData() {
-    Promise.all([axios.get(URLs.stations), axios.get(URLs.trains), axios.get(URLs.dispatchers)])
-      .then(async response => {
-        const onlineStationsData: IOnlineStationData[] = response[0].data.message;
-        const onlineTrainsData = await response[1].data.message;
-        const onlineDispatchersData = await response[2].data.message;
-
-        let updatedStationList = onlineStationsData.reduce((acc, station) => {
-          if (station.region !== "eu" || !station.isOnline) return acc;
-
-          const stationStatus = onlineDispatchersData.find(status => status[0] == station.stationHash && status[1] == "eu");
-
-          const statusTimestamp = utils.getStatusTimestamp(stationStatus);
-          const statusID = utils.getStatusID(stationStatus);
-
-          const stationTrains = onlineTrainsData.filter(
-            train => train.region === "eu" && train.isOnline && train.station.stationName === station.stationName
-          );
-
-          acc.push({
-            stationName: station.stationName,
-            stationHash: station.stationHash,
-            maxUsers: station.maxUsers,
-            currentUsers: station.currentUsers,
-            spawns: utils.parseSpawns(station.spawnString),
-            dispatcherName: station.dispatcherName,
-            dispatcherRate: station.dispatcherRate,
-            dispatcherId: station.dispatcherId,
-            dispatcherExp: station.dispatcherExp,
-            dispatcherIsSupporter: station.dispatcherIsSupporter,
-            stationTrains,
-            statusTimestamp,
-            statusID,
-            statusTimeString: utils.timestampToString(statusTimestamp)
-          });
-
-          return acc;
-        }, [] as any);
-
-        let updatedTrainList = await Promise.all(
-          onlineTrainsData
-            .filter(train => train.region === "eu")
-            .map(async train => {
-              const locoType = train.dataCon.split(";") ? train.dataCon.split(";")[0] : train.dataCon;
-
-              return {
-                trainNo: train.trainNo,
-                mass: train.dataMass,
-                length: train.dataLength,
-                speed: train.dataSpeed,
-                distance: train.dataDistance,
-                signal: train.dataSignal,
-                online: train.isOnline,
-                driverId: train.driverId,
-                driverName: train.driverName,
-                currentStationName: train.station.stationName,
-                currentStationHash: train.station.stationHash,
-                connectedTrack: train.dataSceneryConnection,
-                locoType,
-                locoURL: utils.getLocoURL(locoType)
-              };
-            })
-        );
-
-        this.context.commit("updateOnlineStations", updatedStationList);
-        this.context.commit("updateOnlineTrains", updatedTrainList);
-
-        this.context.dispatch("fetchTimetableData");
-      })
-      .catch(err => {
-        this.context.commit("setDataConnectionStatus", DataStatus.Error);
-      });
   }
 
   //MUTATIONS
@@ -336,7 +431,7 @@ export default class Store extends VuexModule {
   private updateOnlineStations(updatedStationList: any[]) {
     this.stationList = this.stationList.reduce((acc: Station[], station) => {
       const onlineStationData = updatedStationList.find(updatedStation => updatedStation.stationName === station.stationName);
-      const registeredStation = JSONStationData.find(data => data[0] === station.stationName);
+      const listedStationData = JSONStationData.find(data => data[0] === station.stationName);
 
       if (onlineStationData)
         acc.push({
@@ -344,7 +439,7 @@ export default class Store extends VuexModule {
           ...onlineStationData,
           online: true
         });
-      else if (registeredStation)
+      else if (listedStationData)
         acc.push({
           ...station,
           stationProject: "",
@@ -374,7 +469,7 @@ export default class Store extends VuexModule {
         this.stationList.push({
           ...uStation,
           scheduledTrains: [],
-          stationTrains: [],
+          stationTrains: uStation.stationTrains || [],
           subStations: [],
           online: true,
           reqLevel: "-1",
@@ -402,11 +497,11 @@ export default class Store extends VuexModule {
   }
 
   @Mutation
-  private updateTimetableData(timetableList: TimetableData[]) {
+  private updateTimetableData(timetableList: Timetable[]) {
     this.stationList = this.stationList.map(station => {
       const stationName = station.stationName.toLowerCase();
 
-      const scheduledTrains: Station["scheduledTrains"] = timetableList.reduce((acc: Station["scheduledTrains"], timetable: TimetableData, index) => {
+      const scheduledTrains: Station["scheduledTrains"] = timetableList.reduce((acc: Station["scheduledTrains"], timetable: Timetable, index) => {
         if (!timetable.followingSceneries.includes(station.stationHash)) return acc;
 
         const stopInfoIndex = timetable.followingStops.findIndex(stop => {

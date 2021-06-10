@@ -207,17 +207,17 @@
                 ).length
               }}</span>
             </td>
-            <!-- 
-            <td class="station_stats">
-              <div class="stats_wrapper"></div>
-            </td>-->
           </tr>
         </tbody>
       </table>
     </div>
 
-    <div class="no-stations" v-if="stations.length == 0">
+    <div class="no-stations" v-if="stations.length == 0 && isDataLoaded">
       {{ $t("sceneries.no-stations") }}
+    </div>
+
+    <div class="no-stations" v-else-if="!isDataLoaded">
+      {{ $t("app.loading") }}
     </div>
   </section>
 </template>
@@ -228,7 +228,11 @@ import { Component, Prop } from "vue-property-decorator";
 import Station from "@/scripts/interfaces/Station";
 import styleMixin from "@/mixins/styleMixin";
 
+import { Getter } from "vuex-class";
+
 import Options from "@/components/StationsView/Options.vue";
+import { StoreData } from "@/scripts/interfaces/StoreData";
+import { DataStatus } from "@/scripts/enums/DataStatus";
 
 @Component({
   components: { Options },
@@ -239,6 +243,8 @@ export default class StationTable extends styleMixin {
 
   @Prop() readonly setFocusedStation!: () => void;
   @Prop() readonly changeSorter!: () => void;
+
+  @Getter("getAllData") storeAPIData!: StoreData;
 
   likeIcon: string = require("@/assets/icon-like.svg");
   spawnIcon: string = require("@/assets/icon-spawn.svg");
@@ -285,6 +291,10 @@ export default class StationTable extends styleMixin {
       name: "SceneryView",
       query: { station: station.stationName.replaceAll(" ", "_") },
     });
+  }
+
+  get isDataLoaded() {
+    return this.storeAPIData.dataConnectionStatus == DataStatus.Loaded;
   }
 }
 </script>

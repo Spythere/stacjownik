@@ -69,7 +69,7 @@ const parseSpawns = (spawnString: string) => {
   });
 };
 
-const getTimestamp = (date: string) => (date ? new Date(date).getTime() : 0);
+const getTimestamp = (date: string | null) => (date ? new Date(date).getTime() : 0);
 
 const timestampToString = (timestamp: number) =>
   new Date(timestamp).toLocaleTimeString("pl-PL", {
