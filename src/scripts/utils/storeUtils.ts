@@ -71,11 +71,13 @@ const parseSpawns = (spawnString: string) => {
 
 const getTimestamp = (date: string | null) => (date ? new Date(date).getTime() : 0);
 
-const timestampToString = (timestamp: number) =>
-  new Date(timestamp).toLocaleTimeString("pl-PL", {
-    hour: "2-digit",
-    minute: "2-digit"
-  });
+const timestampToString = (timestamp: number | null) =>
+  timestamp
+    ? new Date(timestamp).toLocaleTimeString("pl-PL", {
+        hour: "2-digit",
+        minute: "2-digit"
+      })
+    : "";
 
 const getTrainStopStatus = (stopInfo: TrainStop, timetableData: { currentStationName: string }, station: Station) => {
   let stopStatus: string = "",

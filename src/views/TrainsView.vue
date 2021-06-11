@@ -15,6 +15,7 @@
       <TrainTable
         :computedTrains="computedTrains"
         :timetableDataStatus="timetableDataStatus"
+        :queryTrain="queryTrain"
       />
     </div>
   </section>

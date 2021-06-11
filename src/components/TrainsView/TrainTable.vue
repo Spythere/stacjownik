@@ -251,7 +251,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Vue, Component, Prop, Emit, Watch } from "vue-property-decorator";
 
 import Train from "@/scripts/interfaces/Train";
 import TrainStop from "@/scripts/interfaces/TrainStop";
@@ -265,6 +265,7 @@ import { DataStatus } from "@/scripts/enums/DataStatus";
 export default class TrainTable extends Vue {
   @Prop() computedTrains!: Train[];
   @Prop() timetableDataStatus!: DataStatus;
+  @Prop() queryTrain!: string;
 
   showedSchedule = 0;
 
@@ -307,6 +308,17 @@ export default class TrainTable extends Vue {
     });
   }
 
+  @Watch("queryTrain")
+  onSearchedTrainChange(trainNo: string) {
+    const timetableId = this.computedTrains.find(
+      (train) => train.trainNo == parseInt(trainNo)
+    )?.timetableData?.timetableId;
+
+    if (!timetableId) return;
+
+    this.changeScheduleShowState(timetableId);
+  }
+
   onImageError(e: Event) {
     const imageEl = e.target as HTMLImageElement;
     this.missingLocoImages.push(imageEl.src);
@@ -314,6 +326,7 @@ export default class TrainTable extends Vue {
 
   generateStopList(stops: any): string | undefined {
     if (!stops) return "";
+
     return stops
       .reduce((acc, stop: TrainStop, i) => {
         if (stop.stopType.includes("ph"))
@@ -455,11 +468,11 @@ export default class TrainTable extends Vue {
   &-loco {
     width: 100%;
     text-align: center;
-  }
 
-  &-loco img {
-    width: 200px;
-    max-width: 200px;
+    & img {
+      width: 200px;
+      max-width: 200px;
+    }
   }
 }
 

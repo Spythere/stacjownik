@@ -302,16 +302,16 @@ export default class Store extends VuexModule {
           mainStop: point.pointName.includes("strong"),
 
           arrivalLine: point.arrivalLine,
-          arrivalTimeString: point.arrivalTime,
+          arrivalTimeString: utils.timestampToString(arrivalTimestamp),
           arrivalTimestamp: arrivalTimestamp,
-          arrivalRealTimeString: point.arrivalRealTime,
+          arrivalRealTimeString: utils.timestampToString(arrivalRealTimestamp),
           arrivalRealTimestamp: arrivalRealTimestamp,
           arrivalDelay: point.arrivalDelay,
 
           departureLine: point.departureLine,
-          departureTimeString: point.departureTime,
+          departureTimeString: utils.timestampToString(departureTimestamp),
           departureTimestamp: departureTimestamp,
-          departureRealTimeString: point.departureRealTime,
+          departureRealTimeString: utils.timestampToString(departureRealTimestamp),
           departureRealTimestamp: departureRealTimestamp,
           departureDelay: point.departureDelay,
 
