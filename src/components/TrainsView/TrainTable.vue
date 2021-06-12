@@ -46,13 +46,7 @@
             </div>
 
             <span class="driver-loco">
-              <img
-                v-if="!missingLocoImages.includes(train.locoURL)"
-                :src="train.locoURL"
-                @error="onImageError"
-              />
-
-              <img v-else :src="defaultLocoImage" alt="unknown-train" />
+              <img :src="train.locoURL" @error="onImageError" />
             </span>
           </span>
 
@@ -175,19 +169,20 @@
                   {{ train.driverName }}
                 </a>
               </span>
+              &bull;
               <span class="driver-type">
                 {{ train.locoType }}
               </span>
+
+              <!-- <div>{{ train.cars.length }} wagonów</div> -->
             </div>
 
             <span class="driver-loco">
               <img
-                v-if="!missingLocoImages.includes(train.locoURL)"
+                class="train-image"
                 :src="train.locoURL"
                 @error="onImageError"
               />
-
-              <img v-else :src="defaultLocoImage" alt="unknown-train" />
             </span>
           </span>
 
@@ -238,20 +233,37 @@
           </span>
         </div>
 
-        <TrainSchedule
-          v-if="train.timetableData"
-          :followingStops="train.timetableData.followingStops"
-          :currentStationName="train.currentStationName"
-          @click="changeScheduleShowState(train.timetableData.timetableId)"
-          v-show="showedSchedule == train.timetableData.timetableId"
-        />
+        <div
+          class="train_extended-info"
+          v-if="
+            train.timetableData &&
+            showedSchedule == train.timetableData.timetableId
+          "
+        >
+          <div class="train_cars">
+            <span v-for="(car, i) in train.cars" :key="i">
+              <img
+                class="car-image"
+                :src="`https://rj.td2.info.pl/dist/img/thumbnails/${car}.png`"
+                alt="image-car"
+                @error="onImageError"
+              />
+            </span>
+          </div>
+
+          <TrainSchedule
+            :followingStops="train.timetableData.followingStops"
+            :currentStationName="train.currentStationName"
+            @click="changeScheduleShowState(train.timetableData.timetableId)"
+          />
+        </div>
       </li>
     </ul>
   </div>
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop, Emit, Watch } from "vue-property-decorator";
+import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 
 import Train from "@/scripts/interfaces/Train";
 import TrainStop from "@/scripts/interfaces/TrainStop";
@@ -268,8 +280,6 @@ export default class TrainTable extends Vue {
   @Prop() queryTrain!: string;
 
   showedSchedule = 0;
-
-  missingLocoImages: string[] = [];
 
   defaultLocoImage = require("@/assets/unknown.png");
 
@@ -321,7 +331,8 @@ export default class TrainTable extends Vue {
 
   onImageError(e: Event) {
     const imageEl = e.target as HTMLImageElement;
-    this.missingLocoImages.push(imageEl.src);
+
+    imageEl.src = this.defaultLocoImage;
   }
 
   generateStopList(stops: any): string | undefined {
@@ -368,6 +379,10 @@ export default class TrainTable extends Vue {
   background: var(--clr-bg);
 }
 
+img.train-image {
+  width: 12em;
+}
+
 .train {
   &-list {
     @include smallScreen() {
@@ -382,6 +397,13 @@ export default class TrainTable extends Vue {
     background-color: var(--clr-secondary);
 
     cursor: pointer;
+  }
+
+  &_cars {
+    display: flex;
+    align-items: center;
+
+    overflow: auto;
   }
 }
 
@@ -460,19 +482,9 @@ export default class TrainTable extends Vue {
     font-weight: bold;
   }
 
-  &-type {
-    color: #bbb;
-    margin-left: 0.5em;
-  }
-
   &-loco {
     width: 100%;
     text-align: center;
-
-    & img {
-      width: 200px;
-      max-width: 200px;
-    }
   }
 }
 

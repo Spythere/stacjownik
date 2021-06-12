@@ -119,6 +119,10 @@ export default class TrainSchedule extends Vue {
   click() {
     this.$emit("click");
   }
+
+  mounted() {
+    console.log("mounted");
+  }
 }
 </script>
 
