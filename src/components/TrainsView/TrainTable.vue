@@ -1,5 +1,9 @@
 <template>
   <div class="train-table">
+    <div class="traffic-warning" v-if="distanceLimitExceeded">
+      {{ $t("trains.distance-exceeded") }}
+    </div>
+
     <div class="no-trains" v-if="computedTrains.length == 0 && timetableLoaded">
       {{ $t("trains.no-trains") }}
     </div>
@@ -303,6 +307,15 @@ export default class TrainTable extends Vue {
     return this.timetableDataStatus == DataStatus.Error;
   }
 
+  get distanceLimitExceeded() {
+    return (
+      this.computedTrains.findIndex(
+        (train) =>
+          train.timetableData && train.timetableData.routeDistance > 200
+      ) != -1
+    );
+  }
+
   changeScheduleShowState(elementId: number) {
     if (elementId < 0) return;
 
@@ -383,6 +396,12 @@ img.train-image {
   width: 12em;
 }
 
+.traffic-warning {
+  padding: 1em 0.5em;
+  margin-bottom: 0.5em;
+  background: firebrick;
+}
+
 .train {
   &-list {
     @include smallScreen() {
@@ -395,7 +414,6 @@ img.train-image {
     margin-bottom: 1em;
 
     background-color: var(--clr-secondary);
-
     cursor: pointer;
   }
 
