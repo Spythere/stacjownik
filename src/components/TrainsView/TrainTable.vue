@@ -239,12 +239,10 @@
 
         <div
           class="train_extended-info"
-          v-if="
-            train.timetableData &&
-            showedSchedule == train.timetableData.timetableId
-          "
+          v-if="train.timetableData"
+          v-show="showedSchedule == train.timetableData.timetableId"
         >
-          <div class="train_cars">
+          <!-- <div class="train_cars">
             <span v-for="(car, i) in train.cars" :key="i">
               <img
                 class="car-image"
@@ -253,7 +251,7 @@
                 @error="onImageError"
               />
             </span>
-          </div>
+          </div> -->
 
           <TrainSchedule
             :followingStops="train.timetableData.followingStops"
@@ -449,6 +447,10 @@ img.train-image {
       border-radius: 0.5em;
       padding: 0.1em 0.35em;
     }
+  }
+
+  &-general {
+    display: flex;
   }
 
   &-route {
