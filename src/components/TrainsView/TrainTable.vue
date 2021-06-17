@@ -1,10 +1,16 @@
 <template>
   <div class="train-table">
-    <div class="traffic-warning" v-if="distanceLimitExceeded">
+    <div
+      class="traffic-warning"
+      v-if="distanceLimitExceeded"
+    >
       {{ $t("trains.distance-exceeded") }}
     </div>
 
-    <div class="no-trains" v-if="computedTrains.length == 0 && timetableLoaded">
+    <div
+      class="no-trains"
+      v-if="computedTrains.length == 0 && timetableLoaded"
+    >
       {{ $t("trains.no-trains") }}
     </div>
 
@@ -22,7 +28,10 @@
         :key="i"
         :ref="train.timetableData ? train.timetableData.timetableId : -1"
       >
-        <div class="wrapper no-timetable" v-if="!train.timetableData">
+        <div
+          class="wrapper no-timetable"
+          v-if="!train.timetableData"
+        >
           <span class="info">
             <div class="info-category">
               <span>
@@ -50,24 +59,36 @@
             </div>
 
             <span class="driver-loco">
-              <img :src="train.locoURL" @error="onImageError" />
+              <img
+                :src="train.locoURL"
+                @error="onImageError"
+              />
             </span>
           </span>
 
           <span class="stats">
             <div class="stats-main">
               <span class="mass">
-                <img :src="massIcon" alt="icon-mass" />
+                <img
+                  :src="massIcon"
+                  alt="icon-mass"
+                />
                 {{ train.mass / 1000 }}t
               </span>
 
               <span class="speed">
-                <img :src="speedIcon" alt="icon-speed" />
+                <img
+                  :src="speedIcon"
+                  alt="icon-speed"
+                />
                 {{ train.speed }} km/h
               </span>
 
               <span class="length">
-                <img :src="lengthIcon" alt="icon-length" />
+                <img
+                  :src="lengthIcon"
+                  alt="icon-length"
+                />
                 {{ train.length }}m
               </span>
             </div>
@@ -75,25 +96,37 @@
             <div class="stats-position">
               <span class="station">
                 <div class="stat-icon">
-                  <img :src="sceneryIcon" alt="icon-scenery" />
+                  <img
+                    :src="sceneryIcon"
+                    alt="icon-scenery"
+                  />
                 </div>
                 {{ train.currentStationName || "---" }}
               </span>
               <span class="track">
                 <div class="stat-icon">
-                  <img :src="routeIcon" alt="icon-scenery" />
+                  <img
+                    :src="routeIcon"
+                    alt="icon-scenery"
+                  />
                 </div>
                 {{ train.connectedTrack || "---" }}
               </span>
               <span class="signal">
                 <div class="stat-icon">
-                  <img :src="signalIcon" alt="icon-scenery" />
+                  <img
+                    :src="signalIcon"
+                    alt="icon-scenery"
+                  />
                 </div>
                 {{ train.signal || "---" }}
               </span>
               <span class="distance">
                 <div class="stat-icon">
-                  <img :src="distanceIcon" alt="icon-scenery" />
+                  <img
+                    :src="distanceIcon"
+                    alt="icon-scenery"
+                  />
                 </div>
                 {{ train.distance || "0" }}m
               </span>
@@ -109,10 +142,16 @@
           <span class="info">
             <div class="info-main">
               <span class="info-general">
-                <span class="warning twr" v-if="train.timetableData.TWR">
+                <span
+                  class="warning twr"
+                  v-if="train.timetableData.TWR"
+                >
                   TWR
                 </span>
-                <span class="warning skr" v-if="train.timetableData.SKR">
+                <span
+                  class="warning skr"
+                  v-if="train.timetableData.SKR"
+                >
                   SKR
                 </span>
                 <span>
@@ -156,9 +195,7 @@
               <span v-if="train.timetableData.followingStops.length > 2">
                 {{ $t("trains.via-title") }}
 
-                <span
-                  v-html="generateStopList(train.timetableData.followingStops)"
-                ></span>
+                <span v-html="generateStopList(train.timetableData.followingStops)"></span>
               </span>
             </div>
           </span>
@@ -190,7 +227,7 @@
             </span>
 
             <div class="driver-cars">
-              {{
+              <!-- {{
                 train.cars.length == 0
                   ? "EZT"
                   : `${train.cars.length} wagon${
@@ -200,24 +237,33 @@
                         ? ""
                         : "y"
                     }`
-              }}
+              }} -->
             </div>
           </span>
 
           <span class="stats">
             <div class="stats-main">
               <span class="mass">
-                <img :src="massIcon" alt="icon-mass" />
+                <img
+                  :src="massIcon"
+                  alt="icon-mass"
+                />
                 {{ train.mass / 1000 }}t
               </span>
 
               <span class="speed">
-                <img :src="speedIcon" alt="icon-speed" />
+                <img
+                  :src="speedIcon"
+                  alt="icon-speed"
+                />
                 {{ train.speed }} km/h
               </span>
 
               <span class="length">
-                <img :src="lengthIcon" alt="icon-length" />
+                <img
+                  :src="lengthIcon"
+                  alt="icon-length"
+                />
                 {{ train.length }}m
               </span>
             </div>
@@ -225,25 +271,37 @@
             <div class="stats-position">
               <span class="station">
                 <div class="stat-icon">
-                  <img :src="sceneryIcon" alt="icon-scenery" />
+                  <img
+                    :src="sceneryIcon"
+                    alt="icon-scenery"
+                  />
                 </div>
                 {{ train.currentStationName || "---" }}
               </span>
               <span class="track">
                 <div class="stat-icon">
-                  <img :src="routeIcon" alt="icon-scenery" />
+                  <img
+                    :src="routeIcon"
+                    alt="icon-scenery"
+                  />
                 </div>
                 {{ train.connectedTrack || "---" }}
               </span>
               <span class="signal">
                 <div class="stat-icon">
-                  <img :src="signalIcon" alt="icon-scenery" />
+                  <img
+                    :src="signalIcon"
+                    alt="icon-scenery"
+                  />
                 </div>
                 {{ train.signal || "---" }}
               </span>
               <span class="distance">
                 <div class="stat-icon">
-                  <img :src="distanceIcon" alt="icon-scenery" />
+                  <img
+                    :src="distanceIcon"
+                    alt="icon-scenery"
+                  />
                 </div>
                 {{ train.distance || "0" }}m
               </span>
