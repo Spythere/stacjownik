@@ -80,8 +80,10 @@
             </td>
 
             <td class="station_status">
-              <span class="status-badge" :class="station.statusID"
-                >{{ $t(`status.${station.statusID}`) }}
+              <span
+                class="status-badge"
+                :class="station.statusID"
+              >{{ $t(`status.${station.statusID}`) }}
                 {{
                   station.statusID == "online" ? station.statusTimeString : ""
                 }}
@@ -96,10 +98,9 @@
               <span
                 v-if="station.online"
                 :style="calculateExpStyle(station.dispatcherExp)"
-                >{{
+              >{{
                   2 > station.dispatcherExp ? "L" : station.dispatcherExp
-                }}</span
-              >
+                }}</span>
             </td>
 
             <td class="station_tracks twoway">
@@ -181,7 +182,10 @@
               />
             </td>
 
-            <td class="station_users" :class="{ inactive: !station.online }">
+            <td
+              class="station_users"
+              :class="{ inactive: !station.online }"
+            >
               <span>
                 <span class="highlight">{{ station.currentUsers }}</span>
                 /
@@ -189,7 +193,10 @@
               </span>
             </td>
 
-            <td class="station_spawns" :class="{ inactive: !station.online }">
+            <td
+              class="station_spawns"
+              :class="{ inactive: !station.online }"
+            >
               <span class="highlight">{{ station.spawns.length }}</span>
             </td>
 
@@ -212,11 +219,17 @@
       </table>
     </div>
 
-    <div class="no-stations" v-if="stations.length == 0 && isDataLoaded">
+    <div
+      class="no-stations"
+      v-if="stations.length == 0 && isDataLoaded"
+    >
       {{ $t("sceneries.no-stations") }}
     </div>
 
-    <div class="no-stations" v-else-if="!isDataLoaded">
+    <div
+      class="no-stations"
+      v-else-if="!isDataLoaded"
+    >
       {{ $t("app.loading") }}
     </div>
   </section>

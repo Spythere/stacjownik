@@ -188,6 +188,20 @@
                 @error="onImageError"
               />
             </span>
+
+            <div class="driver-cars">
+              {{
+                train.cars.length == 0
+                  ? "EZT"
+                  : `${train.cars.length} wagon${
+                      train.cars.length % 10 >= 5
+                        ? "ów"
+                        : train.cars.length == 1
+                        ? ""
+                        : "y"
+                    }`
+              }}
+            </div>
           </span>
 
           <span class="stats">
@@ -242,17 +256,6 @@
           v-if="train.timetableData"
           v-show="showedSchedule == train.timetableData.timetableId"
         >
-          <!-- <div class="train_cars">
-            <span v-for="(car, i) in train.cars" :key="i">
-              <img
-                class="car-image"
-                :src="`https://rj.td2.info.pl/dist/img/thumbnails/${car}.png`"
-                alt="image-car"
-                @error="onImageError"
-              />
-            </span>
-          </div> -->
-
           <TrainSchedule
             :followingStops="train.timetableData.followingStops"
             :currentStationName="train.currentStationName"
@@ -505,6 +508,10 @@ img.train-image {
   &-loco {
     width: 100%;
     text-align: center;
+  }
+
+  &-cars {
+    margin-top: 0.5em;
   }
 }
 
