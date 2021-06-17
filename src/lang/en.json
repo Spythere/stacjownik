@@ -107,7 +107,8 @@
     "detailed-timetable": "Detailed timetable for train no. ",
     "via-title": "Via: ",
     "no-timetable": "no current timetable",
-    "distance-exceeded": "Attention! Due to an internal error, timetables with route distance greater than 200km might be incorrect!"
+    "distance-exceeded": "Attention! Due to an internal error, timetables with route distance greater than 200km might be incorrect!",
+    "cars": "Cars"
   },
   "journal": {
     "title": "SCENERY ACTIVITY JOURNAL",

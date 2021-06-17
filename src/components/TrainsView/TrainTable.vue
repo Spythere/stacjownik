@@ -226,18 +226,11 @@
               />
             </span>
 
-            <div class="driver-cars">
-              <!-- {{
-                train.cars.length == 0
-                  ? "EZT"
-                  : `${train.cars.length} wagon${
-                      train.cars.length % 10 >= 5
-                        ? "ów"
-                        : train.cars.length == 1
-                        ? ""
-                        : "y"
-                    }`
-              }} -->
+            <div
+              class="driver-cars"
+              v-html="calculateCars(train.locoType, train.cars) "
+            >
+
             </div>
           </span>
 
@@ -424,14 +417,17 @@ export default class TrainTable extends Vue {
           !stop.stopNameRAW.includes("po.") &&
           !stop.stopNameRAW.includes("SBL")
         )
-          acc.push(
-            `<span style='color:${
-              stop.confirmed ? "springgreen" : "lightgray"
-            }'>${stop.stopName}</span>`
-          );
+          acc.push(`<span style='color:${ stop.confirmed ? "springgreen" : "lightgray" }'>${stop.stopName}</span>`);
         return acc;
       }, [])
       .join(" > ");
+  }
+
+  calculateCars(locoType: string, cars: string[]) {
+    if (cars.length == 0 && locoType.includes("EN")) return "EZT";
+    else if (cars.length == 0) return "LOK";
+
+    return `${this.$t("trains.cars")}: <span style='color:gold'> ${cars.length}</span>`;
   }
 }
 </script>

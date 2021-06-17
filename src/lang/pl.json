@@ -107,7 +107,8 @@
     "detailed-timetable": "Szczegółowy rozkład jazdy pociągu ",
     "via-title": "Przez: ",
     "no-timetable": "brak rozkładu jazdy",
-    "distance-exceeded": "Uwaga! Z powodu wewnętrznego błędu serwera TD2, rozkłady jazdy o kilometrażu powyżej 200km mogą być niepoprawne!"
+    "distance-exceeded": "Uwaga! Z powodu wewnętrznego błędu serwera TD2, rozkłady jazdy o kilometrażu powyżej 200km mogą być niepoprawne!",
+    "cars": "Wagony"
   },
   "journal": {
     "title": "DZIENNIK AKTYWNOŚCI SCENERII",
