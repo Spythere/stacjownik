@@ -1,6 +1,101 @@
 import Station from '@/scripts/interfaces/Station';
 import Filter from '@/scripts/interfaces/Filter';
 
+const sortStations = (a: Station, b: Station, sorter: { index: number; dir: number }) => {
+
+  switch (sorter.index) {
+    case 1:
+      const aLevel = a.reqLevel == "" ? -1 : parseInt(a.reqLevel);
+      const bLevel = b.reqLevel == "" ? -1 : parseInt(b.reqLevel);
+
+      if (aLevel > bLevel) return sorter.dir;
+      if (aLevel < bLevel) return -sorter.dir;
+
+      break;
+    case 2:
+      if (a.statusTimestamp > b.statusTimestamp) return sorter.dir;
+      if (a.statusTimestamp < b.statusTimestamp) return -sorter.dir;
+      break;
+
+    case 3:
+      if (a.dispatcherName.toLowerCase() > b.dispatcherName.toLowerCase()) return sorter.dir;
+      if (a.dispatcherName.toLowerCase() < b.dispatcherName.toLowerCase()) return -sorter.dir;
+      break;
+
+    case 4:
+      if (a.dispatcherExp > b.dispatcherExp) return sorter.dir;
+      if (a.dispatcherExp < b.dispatcherExp) return -sorter.dir;
+      break;
+
+    case 7:
+      if (a.currentUsers > b.currentUsers) return sorter.dir;
+      if (a.currentUsers < b.currentUsers) return -sorter.dir;
+      
+      if (a.maxUsers > b.maxUsers) return sorter.dir;
+      if (a.maxUsers < b.maxUsers) return -sorter.dir;
+      break;
+
+    case 8:
+      if (a.spawns > b.spawns) return sorter.dir;
+      if (a.spawns < b.spawns) return -sorter.dir;
+
+      break;
+
+    case 9:
+      if (a.scheduledTrains.length > b.scheduledTrains.length) return sorter.dir;
+      if (a.scheduledTrains.length < b.scheduledTrains.length) return -sorter.dir;
+
+    default:
+      break;
+  }
+
+  if (a.stationName.toLowerCase() >= b.stationName.toLowerCase()) return sorter.dir;
+
+  return -sorter.dir;
+}
+
+const filterStations = (station: Station, filters: Filter) => {
+  if ((station.nonPublic || !station.reqLevel) && filters['nonPublic']) return false;
+
+  if (station.online && station.statusID == 'ending' && filters['ending']) return false;
+
+  if (station.online && filters['occupied']) return false;
+  if (!station.online && filters['free']) return false;
+
+  if (station.default && filters['default']) return false;
+  if (!station.default && filters['notDefault']) return false;
+
+  if (filters['real'] && station.stationLines != '') return false;
+  if (filters['fictional'] && station.stationLines == '') return false;
+
+  if (station.reqLevel == '-1') return true;
+  if (parseInt(station.reqLevel) < filters['minLevel']) return false;
+
+  if (filters['no-1track'] && (station.routes.oneWay.catenary != 0 || station.routes.oneWay.noCatenary != 0)) return false;
+  if (filters['no-2track'] && (station.routes.twoWay.catenary != 0 || station.routes.twoWay.noCatenary != 0)) return false;
+
+  if (station.routes.oneWay.catenary < filters['minOneWayCatenary']) return false;
+  if (station.routes.oneWay.noCatenary < filters['minOneWay']) return false;
+
+  if (station.routes.twoWay.catenary < filters['minTwoWayCatenary']) return false;
+  if (station.routes.twoWay.noCatenary < filters['minTwoWay']) return false;
+
+  if (filters[station.controlType]) return false;
+  if (filters[station.signalType]) return false;
+
+  if (filters['SPK'] && (station.controlType === 'SPK' || station.controlType.includes('+SPK'))) return false;
+  if (filters['SCS'] && (station.controlType === 'SCS' || station.controlType.includes('+SCS'))) return false;
+  if (filters['SPE'] && (station.controlType === 'SPE' || station.controlType.includes('+SPE'))) return false;
+
+  if (filters['SCS'] && filters['SPK'] && (station.controlType.includes('SPK') || station.controlType.includes('SCS'))) return false;
+
+  if (filters['mechaniczne'] && station.controlType.includes('mechaniczne')) return false;
+
+  if (filters['ręczne'] && station.controlType.includes('ręczne')) return false;
+
+  return true;
+}
+
 export default class StationFilterManager {
   private filterInitStates: Filter = {
     default: false,
@@ -9,6 +104,7 @@ export default class StationFilterManager {
     fictional: false,
     SPK: false,
     SCS: false,
+    SPE: false,
     ręczne: false,
     mechaniczne: false,
     współczesna: false,
@@ -33,92 +129,8 @@ export default class StationFilterManager {
 
   getFilteredStationList(stationList: Station[]): Station[] {
     return stationList
-      .filter(station => {
-        if ((station.nonPublic || !station.reqLevel) && this.filters['nonPublic']) return false;
-
-        if (station.online && station.statusID == 'ending' && this.filters['ending']) return false;
-
-        if (station.online && this.filters['occupied']) return false;
-        if (!station.online && this.filters['free']) return false;
-
-        if (station.default && this.filters['default']) return false;
-        if (!station.default && this.filters['notDefault']) return false;
-
-        if (this.filters['real'] && station.stationLines != '') return false;
-        if (this.filters['fictional'] && station.stationLines == '') return false;
-
-        if (station.reqLevel == '-1') return true;
-        if (parseInt(station.reqLevel) < this.filters['minLevel']) return false;
-
-        if (this.filters['no-1track'] && (station.routes.oneWay.catenary != 0 || station.routes.oneWay.noCatenary != 0)) return false;
-        if (this.filters['no-2track'] && (station.routes.twoWay.catenary != 0 || station.routes.twoWay.noCatenary != 0)) return false;
-
-        if (station.routes.oneWay.catenary < this.filters['minOneWayCatenary']) return false;
-        if (station.routes.oneWay.noCatenary < this.filters['minOneWay']) return false;
-
-        if (station.routes.twoWay.catenary < this.filters['minTwoWayCatenary']) return false;
-        if (station.routes.twoWay.noCatenary < this.filters['minTwoWay']) return false;
-
-        if (this.filters[station.controlType]) return false;
-        if (this.filters[station.signalType]) return false;
-
-        if (this.filters['SPK'] && (station.controlType === 'SPK' || station.controlType.includes('+SPK'))) return false;
-        if (this.filters['SCS'] && (station.controlType === 'SCS' || station.controlType.includes('+SCS'))) return false;
-
-        if (this.filters['SCS'] && this.filters['SPK'] && (station.controlType.includes('SPK') || station.controlType.includes('SCS'))) return false;
-
-        if (this.filters['mechaniczne'] && station.controlType.includes('mechaniczne')) return false;
-
-        if (this.filters['ręczne'] && station.controlType.includes('ręczne')) return false;
-
-        return true;
-      })
-      .sort((a, b) => {
-        switch (this.sorter.index) {
-          case 1:
-            if (parseInt(a.reqLevel) > parseInt(b.reqLevel)) return this.sorter.dir;
-            if (parseInt(a.reqLevel) < parseInt(b.reqLevel)) return -this.sorter.dir;
-            break;
-
-          case 2:
-            if (a.statusTimestamp > b.statusTimestamp) return this.sorter.dir;
-            if (a.statusTimestamp < b.statusTimestamp) return -this.sorter.dir;
-            break;
-
-          case 3:
-            if (a.dispatcherName.toLowerCase() > b.dispatcherName.toLowerCase()) return this.sorter.dir;
-            if (a.dispatcherName.toLowerCase() < b.dispatcherName.toLowerCase()) return -this.sorter.dir;
-            break;
-
-          case 4:
-            if (a.dispatcherExp > b.dispatcherExp) return this.sorter.dir;
-            if (a.dispatcherExp < b.dispatcherExp) return -this.sorter.dir;
-            break;
-
-          case 7:
-            if (a.currentUsers > b.currentUsers) return this.sorter.dir;
-            if (a.currentUsers < b.currentUsers) return -this.sorter.dir;
-            if (a.maxUsers > b.maxUsers) return this.sorter.dir;
-            if (a.maxUsers < b.maxUsers) return -this.sorter.dir;
-            break;
-
-          case 8:
-            if (a.spawns > b.spawns) return this.sorter.dir;
-            if (a.spawns < b.spawns) return -this.sorter.dir;
-
-            break;
-
-          case 9:
-            if (a.scheduledTrains.length > b.scheduledTrains.length) return this.sorter.dir;
-            if (a.scheduledTrains.length < b.scheduledTrains.length) return -this.sorter.dir;
-
-          default:
-            break;
-        }
-
-        if (a.stationName.toLowerCase() >= b.stationName.toLowerCase()) return this.sorter.dir;
-        return -this.sorter.dir;
-      });
+      .filter(station => filterStations(station, this.filters))
+      .sort((a, b) => sortStations(a, b, this.sorter));
   }
 
   changeFilterValue(filter: { name: string; value: number }) {

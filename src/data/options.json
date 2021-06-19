@@ -55,6 +55,15 @@
       "defaultValue": true,
       "content": "SCS"
     },
+     {
+      "id": "SPE",
+      "name": "SPE",
+      "iconName": "SPE",
+      "section": "control",
+      "value": true,
+      "defaultValue": true,
+      "content": "SPE"
+    },
     {
       "id": "manual",
       "name": "ręczne",

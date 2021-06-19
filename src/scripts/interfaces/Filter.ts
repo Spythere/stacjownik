@@ -5,6 +5,7 @@ export default interface Filter {
   fictional: boolean;
   SPK: boolean;
   SCS: boolean;
+  SPE: boolean;
   ręczne: boolean;
   mechaniczne: boolean;
   współczesna: boolean;
