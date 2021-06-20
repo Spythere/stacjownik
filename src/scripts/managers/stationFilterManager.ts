@@ -69,7 +69,7 @@ const filterStations = (station: Station, filters: Filter) => {
 
   if (station.reqLevel == '-1') return true;
   if (parseInt(station.reqLevel) < filters['minLevel']) return false;
-  if (parseInt(station.reqLevel) >= filters['maxLevel']) return false;
+  if (parseInt(station.reqLevel) > filters['maxLevel']) return false;
 
   if (filters['no-1track'] && (station.routes.oneWay.catenary != 0 || station.routes.oneWay.noCatenary != 0)) return false;
   if (filters['no-2track'] && (station.routes.twoWay.catenary != 0 || station.routes.twoWay.noCatenary != 0)) return false;
