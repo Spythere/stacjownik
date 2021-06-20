@@ -1,6 +1,9 @@
 <template>
   <div class="stations-view">
-    <DonationModal :modalHidden="modalHidden" @toggleModal="toggleModal" />
+    <DonationModal
+      :modalHidden="modalHidden"
+      @toggleModal="toggleModal"
+    />
 
     <div class="wrapper">
       <div class="body">
@@ -13,29 +16,20 @@
             />
             <p>{{ $t("options.filters") }}</p>
           </action-button>
-        </div>
-        <!-- 
-          <div class="bar_indicators">
-            <transition name="indicator-anim">
-              <span
-                class="indicator_scenery-data"
-                v-if="data.dataConnectionStatus < 2"
-                :class="dataStatusClass"
-              >
-                <img :src="trainIcon" alt="icon-train" />
-              </span>
-            </transition>
 
-            <transition name="indicator-anim">
-              <span
-                class="indicator_timetable-data"
-                v-if="data.timetableDataStatus < 2"
-                :class="timetableDataStatusClass"
+          <div class="paypal-link">
+            <a
+              target="_blank"
+              href="https://paypal.me/spythere"
+            >
+              <img
+                src="https://img.shields.io/badge/PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white"
+                alt="PayPal image"
+                style="width: 7em"
               >
-                <img :src="timetableIcon" alt="icon-timetable" />
-              </span>
-            </transition>
-          </div> -->
+            </a>
+          </div>
+        </div>
 
         <StationTable
           :stations="computedStations"
@@ -255,47 +249,34 @@ export default class StationsView extends Vue {
 }
 
 .body {
-  margin: 0 auto;
-  overflow: auto;
+  max-width: 100%;
 }
 
 .options-bar {
   display: flex;
+
   margin-bottom: 0.5em;
 }
 
-// .bar_indicators {
-//   border: 1px solid red;
+.paypal-link {
+  flex-grow: 2;
+  text-align: right;
 
-//   & > span {
-//     margin-left: 0.5em;
-//     padding: 0.5em 0.5em;
+  img {
+    vertical-align: middle;
+    border-radius: 0.5em;
+    transition: box-shadow 150ms;
+  }
 
-//     // background-color: #e68e00;
-//     border-radius: 1em 1em 0 0;
-
-//     &.loading {
-//       background-color: $accentCol;
-//     }
-
-//     &.error {
-//       background-color: $errorCol;
-//     }
-
-//     &.success {
-//       background-color: $secondaryCol;
-//     }
-
-//     & > img {
-//       width: 1.7em;
-//       animation: blinkAnim 2s ease-in-out infinite forwards;
-//     }
-//   }
-// }
+  a:hover img,
+  a:focus img {
+    box-shadow: 0 0 10px 3px #0f62ce;
+  }
+}
 
 @include smallScreen {
   .options-bar {
-    font-size: 1.2em;
+    font-size: 1.1em;
   }
 }
 </style>

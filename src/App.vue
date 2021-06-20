@@ -20,6 +20,7 @@ git <template>
             </span>
 
             <span class="brand_lang">
+
               <span
                 class="lang pl"
                 @click="changeLang('en')"
@@ -100,13 +101,8 @@ git <template>
         >
           Spythere
         </a>
-        2021 | v{{ VERSION }} | [
-        <a
-          target="_blank"
-          href="https://paypal.me/spythere"
-        >{{ $t("app.support") }}!
-        </a>
-        ]
+        2021 | v{{ VERSION }}
+
       </footer>
     </div>
   </div>
@@ -378,5 +374,6 @@ footer.app_footer {
   color: white;
 
   text-align: center;
+  vertical-align: middle;
 }
 </style>
