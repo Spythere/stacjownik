@@ -1,13 +1,20 @@
 <template>
   <section class="card">
-    <div class="card-exit" @click="exit">
+    <div
+      class="card-exit"
+      @click="exit"
+    >
       <!-- <img :src="require('@/assets/icon-exit.svg')" alt="exit icon" /> -->
     </div>
 
     <div class="card-title flex">{{ $t("filters.title") }}</div>
 
     <div class="card-options">
-      <div class="option" v-for="(option, i) in inputs.options" :key="i">
+      <div
+        class="option"
+        v-for="(option, i) in inputs.options"
+        :key="i"
+      >
         <label class="option-label">
           <input
             class="option-input"
@@ -21,14 +28,17 @@
           <span
             class="option-content"
             :class="option.section + (option.value ? ' checked' : '')"
-            >{{ $t(`filters.${option.id}`) }}</span
-          >
+          >{{ $t(`filters.${option.id}`) }}</span>
         </label>
       </div>
     </div>
 
     <div class="card-sliders">
-      <div class="slider" v-for="(slider, i) in inputs.sliders" :key="i">
+      <div
+        class="slider"
+        v-for="(slider, i) in inputs.sliders"
+        :key="i"
+      >
         <input
           class="slider-input"
           type="range"
@@ -51,8 +61,15 @@
     <div class="card-save">
       <div class="option">
         <label>
-          <input type="checkbox" v-model="saveOptions" @change="saveFilters" />
-          <span class="save" :class="{ checked: saveOptions }">
+          <input
+            type="checkbox"
+            v-model="saveOptions"
+            @change="saveFilters"
+          />
+          <span
+            class="save"
+            :class="{ checked: saveOptions }"
+          >
             {{ $t("filters.save") }}
           </span>
         </label>
@@ -60,10 +77,16 @@
     </div>
 
     <div class="card-actions flex">
-      <action-button class="outlined" @click.native="resetFilters">
+      <action-button
+        class="outlined"
+        @click.native="resetFilters"
+      >
         {{ $t("filters.reset") }}
       </action-button>
-      <action-button class="outlined" @click.native="exit">{{
+      <action-button
+        class="outlined"
+        @click.native="exit"
+      >{{
         $t("filters.close")
       }}</action-button>
     </div>
@@ -301,23 +324,18 @@ $saveCol: #28a826;
 
 .slider {
   display: flex;
+  align-items: center;
+
   margin: 1em 0;
 
   &-value {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
     color: $accentCol;
-    margin-right: 0.3em;
+    margin-right: 0.5em;
     padding: 0.1em 0.2em;
-
-    border-radius: 0.2em;
   }
 
   &-content {
-    display: flex;
-    align-items: center;
+    flex-grow: 2;
   }
 
   &-input {

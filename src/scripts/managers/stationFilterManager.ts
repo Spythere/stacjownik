@@ -2,7 +2,6 @@ import Station from '@/scripts/interfaces/Station';
 import Filter from '@/scripts/interfaces/Filter';
 
 const sortStations = (a: Station, b: Station, sorter: { index: number; dir: number }) => {
-
   switch (sorter.index) {
     case 1:
       const aLevel = a.reqLevel == "" ? -1 : parseInt(a.reqLevel);
@@ -70,6 +69,7 @@ const filterStations = (station: Station, filters: Filter) => {
 
   if (station.reqLevel == '-1') return true;
   if (parseInt(station.reqLevel) < filters['minLevel']) return false;
+  if (parseInt(station.reqLevel) >= filters['maxLevel']) return false;
 
   if (filters['no-1track'] && (station.routes.oneWay.catenary != 0 || station.routes.oneWay.noCatenary != 0)) return false;
   if (filters['no-2track'] && (station.routes.twoWay.catenary != 0 || station.routes.twoWay.noCatenary != 0)) return false;
@@ -112,6 +112,7 @@ export default class StationFilterManager {
     historyczna: false,
     mieszana: false,
     minLevel: 0,
+    maxLevel: 20,
     minOneWayCatenary: 0,
     minOneWay: 0,
     minTwoWayCatenary: 0,

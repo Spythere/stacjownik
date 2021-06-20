@@ -65,7 +65,8 @@
     "free": "WOLNA",
     "occupied": "ZAJĘTA",
     "sliders": {
-      "min-lvl": "MINIMALNY WYMAGANY POZIOM DYŻURNEGO",
+      "min-lvl": "MIN. WYMAGANY POZIOM DYŻURNEGO",
+      "max-lvl": "MAKS. WYMAGANY POZIOM DYŻURNEGO",
       "routes-1t-cat": "SZLAKI JEDNOTOROWE ZELEKTR. (MINIMUM)",
       "routes-1t-other": "SZLAKI JEDNOTOROWE NIEZELEKTR. (MINIMUM)",
       "routes-2t-cat": "SZLAKI DWUTOROWE ZELEKTR. (MINIMUM)",

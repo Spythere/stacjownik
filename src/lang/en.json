@@ -65,11 +65,12 @@
     "free": "FREE",
     "occupied": "OCCUPIED",
     "sliders": {
-      "min-lvl": "MINIMUM REQUIRED DISPATCHER LEVEL",
-      "routes-1t-cat": "MINIMUM CATENARY SINGLE TRACK ROUTES",
-      "routes-1t-other": "MINIMUM OTHER SINGLE TRACK ROUTES",
-      "routes-2t-cat": "MINIMUM CATENARY DOUBLE TRACK ROUTES",
-      "routes-2t-other": "MINIMUM OTHER DOUBLE TRACK ROUTES"
+      "min-lvl": "MIN. REQUIRED DISPATCHER LEVEL",
+      "max-lvl": "MAX. REQUIRED DISPATCHER LEVEL",
+      "routes-1t-cat": "MIN. CATENARY SINGLE TRACK ROUTES",
+      "routes-1t-other": "MIN. OTHER SINGLE TRACK ROUTES",
+      "routes-2t-cat": "MIN. CATENARY DOUBLE TRACK ROUTES",
+      "routes-2t-other": "MIN. OTHER DOUBLE TRACK ROUTES"
     },
     "save": "SAVE FILTERS",
     "reset": "RESET FILTERS",

@@ -13,6 +13,7 @@ export default interface Filter {
   historyczna: boolean;
   mieszana: boolean;
   minLevel: number;
+  maxLevel: number;
   minOneWayCatenary: number;
   minOneWay: number;
   minTwoWayCatenary: number;
