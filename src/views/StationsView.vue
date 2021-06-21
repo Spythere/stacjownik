@@ -65,7 +65,6 @@ import inputData from "@/data/options.json";
 
 import StationTable from "@/components/StationsView/StationTable.vue";
 import FilterCard from "@/components/StationsView/FilterCard.vue";
-import DonationModal from "@/components/Global/DonationModal.vue";
 import ActionButton from "@/components/Global/ActionButton.vue";
 import { StoreData } from "@/scripts/interfaces/StoreData";
 import { DataStatus } from "@/scripts/enums/DataStatus";
@@ -74,7 +73,6 @@ import { DataStatus } from "@/scripts/enums/DataStatus";
   components: {
     StationTable,
     FilterCard,
-    DonationModal,
     ActionButton,
   },
 })
@@ -270,7 +268,7 @@ export default class StationsView extends Vue {
 
   a:hover img,
   a:focus img {
-    box-shadow: 0 0 10px 3px #0f62ce;
+    box-shadow: 0 0 10px 4px #04477e;
   }
 }
 
