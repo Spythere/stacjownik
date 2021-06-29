@@ -12,25 +12,18 @@
           <span class="header_brand">
             <span>
               <span>Stacj</span>
-              <img
-                src="@/assets/trainlogo.png"
-                alt="trainlogo"
-              />
+              <img src="@/assets/trainlogo.png" alt="trainlogo" />
               <span>wnik</span>
             </span>
 
             <span class="brand_lang">
-
               <span
                 class="lang pl"
                 @click="changeLang('en')"
                 :class="{ current: currentLang == 'pl' }"
                 v-if="currentLang == 'pl'"
               >
-                <img
-                  :src="iconPL"
-                  alt="icon-pl"
-                />
+                <img :src="iconPL" alt="icon-pl" />
               </span>
 
               <span
@@ -39,10 +32,7 @@
                 :class="{ current: currentLang == 'en' }"
                 v-if="currentLang == 'en'"
               >
-                <img
-                  :src="iconEN"
-                  alt="icon-en"
-                />
+                <img :src="iconEN" alt="icon-en" />
               </span>
             </span>
           </span>
@@ -50,63 +40,41 @@
           <span class="header_info">
             <Clock />
             <div class="info_counter">
-              <img
-                src="@/assets/icon-dispatcher.svg"
-                alt="icon dispatcher"
-              />
+              <img src="@/assets/icon-dispatcher.svg" alt="icon dispatcher" />
               <span>{{ data.activeStationCount }}</span>
               <span>{{ data.activeTrainCount }}</span>
-              <img
-                src="@/assets/icon-train.svg"
-                alt="icon train"
-              />
+              <img src="@/assets/icon-train.svg" alt="icon train" />
             </div>
           </span>
 
           <span class="header_links">
-            <router-link
-              class="route"
-              active-class="route-active"
-              to="/"
-              exact
-            >{{ $t("app.sceneries") }}
+            <router-link class="route" active-class="route-active" to="/" exact
+              >{{ $t("app.sceneries") }}
             </router-link>
             /
-            <router-link
-              class="route"
-              active-class="route-active"
-              to="/trains"
-            >{{ $t("app.trains") }}
+            <router-link class="route" active-class="route-active" to="/trains"
+              >{{ $t("app.trains") }}
             </router-link>
           </span>
         </div>
       </header>
 
       <main class="app_main">
-
         <router-view v-slot="{ Component }">
-          <transition
-            name="view-anim"
-            mode="out-in"
-          >
+          <transition name="view-anim" mode="out-in">
             <keep-alive>
               <component :is="Component" />
             </keep-alive>
           </transition>
-
         </router-view>
       </main>
 
       <footer class="app_footer">
         &copy;
-        <a
-          href="https://td2.info.pl/profile/?u=20777"
-          target="_blank"
-        >
+        <a href="https://td2.info.pl/profile/?u=20777" target="_blank">
           Spythere
         </a>
         2021 | v{{ VERSION }}
-
       </footer>
     </div>
   </div>
@@ -142,7 +110,7 @@ export default defineComponent({
   },
 
   data: () => ({
-    VERSION: "1.4.7",
+    VERSION: "1.4.8",
     updateModalVisible: false,
     hasReleaseNotes: false,
     currentLang: "pl",
