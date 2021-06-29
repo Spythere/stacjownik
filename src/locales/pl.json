@@ -113,8 +113,8 @@
     "cars": "Wagony",
     "EZT": "EZT",
     "SZT": "SZT",
-    "loco-electric": "Lok. elektryczna",
-    "loco-diesel": "Lok. spalinowa"
+    "loco-electric": "Elektrowóz",
+    "loco-diesel": "Spalinowóz"
   },
   "journal": {
     "title": "DZIENNIK AKTYWNOŚCI SCENERII",

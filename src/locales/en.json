@@ -113,8 +113,8 @@
     "cars": "Car count",
     "EZT": "EMU",
     "SZT": "DMU",
-    "loco-electric": "Electric loco",
-    "loco-diesel": "Diesel loco"
+    "loco-electric": "Electric locomotive",
+    "loco-diesel": "Diesel locomotive"
   },
   "journal": {
     "title": "SCENERY ACTIVITY JOURNAL",
