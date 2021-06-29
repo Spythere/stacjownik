@@ -169,9 +169,10 @@ export default defineComponent({
     const computedScheduledTrains = computed(() => {
       if (!props.stationInfo) return [];
 
-      let scheduledTrains = props.stationInfo.checkpoints?.find(
-        (cp) => cp.checkpointName === selectedCheckpoint.value
-      )?.scheduledTrains;
+      let scheduledTrains =
+        props.stationInfo.checkpoints?.find(
+          (cp) => cp.checkpointName === selectedCheckpoint.value
+        )?.scheduledTrains || props.stationInfo.scheduledTrains;
 
       // if (props.stationInfo.checkpoints)
       //   scheduledTrains = props.stationInfo.checkpoints.find(
