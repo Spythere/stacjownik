@@ -110,7 +110,11 @@
     "via-title": "Via: ",
     "no-timetable": "no current timetable",
     "distance-exceeded": "Attention! Due to an internal error, timetables with route distance greater than 200km might be incorrect!",
-    "cars": "Cars"
+    "cars": "Car count",
+    "EZT": "EMU",
+    "SZT": "DMU",
+    "loco-electric": "ELECTRIC LOCO",
+    "loco-diesel": "DIESEL LOCO"
   },
   "journal": {
     "title": "SCENERY ACTIVITY JOURNAL",

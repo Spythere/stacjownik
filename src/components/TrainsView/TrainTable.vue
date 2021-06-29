@@ -219,6 +219,10 @@
             </div>
 
             <span class="driver-loco">
+              <div class="driver-cars">
+                <span v-if="train.cars.length > 0">{{ $t("trains.cars") }}: <span class="count">{{ train.cars.length }}</span></span>
+                <span v-else>{{ displayLocoInfo(train.locoType) }}</span>
+              </div>
               <img
                 class="train-image"
                 :src="train.locoURL"
@@ -226,12 +230,6 @@
               />
             </span>
 
-            <div
-              class="driver-cars"
-              v-html="calculateCars(train.locoType, train.cars) "
-            >
-
-            </div>
           </span>
 
           <span class="stats">
@@ -454,13 +452,13 @@ export default defineComponent({
         .join(" > ");
     },
 
-    calculateCars(locoType: string, cars: string[]) {
-      if (cars.length == 0 && locoType.includes("EN")) return "EZT";
-      else if (cars.length == 0) return "LOK";
+    displayLocoInfo(locoType: string) {
+      if (locoType.includes("EN")) return `${this.$t("trains.EZT")}`;
+      if (locoType.includes("SN")) return `${this.$t("trains.SZT")}`;
+      if (locoType.startsWith("E")) return `${this.$t("trains.loco-electric")}`;
+      if (locoType.startsWith("S")) return `${this.$t("trains.loco-diesel")}`;
 
-      return `${this.$t("trains.cars")}: <span style='color:gold'> ${
-        cars.length
-      }</span>`;
+      return "";
     },
   },
 
@@ -611,7 +609,15 @@ img.train-image {
   }
 
   &-cars {
-    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    white-space: pre-wrap;
+    text-align: center;
+
+    color: #c5c5c5;
+
+    .count {
+      color: var(--clr-primary);
+    }
   }
 }
 

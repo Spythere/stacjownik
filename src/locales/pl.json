@@ -110,7 +110,11 @@
     "via-title": "Przez: ",
     "no-timetable": "brak rozkładu jazdy",
     "distance-exceeded": "Uwaga! Z powodu wewnętrznego błędu serwera TD2, rozkłady jazdy o kilometrażu powyżej 200km mogą być niepoprawne!",
-    "cars": "Wagony"
+    "cars": "Wagony",
+    "EZT": "EZT",
+    "SZT": "SZT",
+    "loco-electric": "Lok. elektryczna",
+    "loco-diesel": "Lok. spalinowa"
   },
   "journal": {
     "title": "DZIENNIK AKTYWNOŚCI SCENERII",
