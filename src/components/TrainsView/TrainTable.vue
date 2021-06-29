@@ -45,19 +45,22 @@
 
             <div class="info_timetable" v-else>
               <div class="timetable_general">
-                <span class="warning twr" v-if="train.timetableData.TWR">
-                  TWR
-                </span>
+                <span class="timetable_hero">
+                  <span class="timetable_warnings">
+                    <span class="warning twr" v-if="train.timetableData.TWR">
+                      TWR
+                    </span>
+                    <span class="warning skr" v-if="train.timetableData.SKR">
+                      SKR
+                    </span>
+                  </span>
 
-                <span class="warning skr" v-if="train.timetableData.SKR">
-                  SKR
-                </span>
-
-                <span>
-                  <strong>{{ train.timetableData.category }}</strong>
-                  {{ train.trainNo }} |
-                  <span style="color: gold">
-                    {{ train.timetableData.routeDistance }} km
+                  <span>
+                    <strong>{{ train.timetableData.category }}</strong>
+                    {{ train.trainNo }} |
+                    <span style="color: gold">
+                      {{ train.timetableData.routeDistance }} km
+                    </span>
                   </span>
                 </span>
 
@@ -423,6 +426,10 @@ img.train-image {
 
 .info {
   .timetable {
+    &_hero {
+      display: flex;
+    }
+
     &_general {
       display: flex;
       justify-content: space-between;
@@ -441,6 +448,8 @@ img.train-image {
       display: flex;
       align-items: center;
 
+      font-weight: bold;
+
       margin: 5px 0;
 
       font-size: 1.1em;
@@ -449,6 +458,26 @@ img.train-image {
     &_stops {
       margin-bottom: 10px;
       font-size: 0.7em;
+    }
+
+    &_warnings {
+      display: flex;
+      color: black;
+
+      .warning {
+        padding: 0.1em 0.65em;
+        margin-right: 0.35em;
+
+        font-weight: bold;
+
+        &.twr {
+          background: var(--clr-twr);
+        }
+
+        &.skr {
+          background: var(--clr-skr);
+        }
+      }
     }
   }
 }
@@ -534,25 +563,6 @@ img.train-image {
         width: 2em;
       }
     }
-  }
-}
-
-.warning {
-  padding: 0.1em 0.8em;
-  margin-right: 0.5em;
-
-  display: flex;
-  align-items: center;
-  color: black;
-
-  font-weight: bold;
-
-  &.twr {
-    background: var(--clr-twr);
-  }
-
-  &.skr {
-    background: var(--clr-skr);
   }
 }
 

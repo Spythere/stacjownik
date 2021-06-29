@@ -11,14 +11,8 @@
       </action-button>
     </div>
 
-    <div
-      class="scenery-wrapper"
-      v-if="stationInfo"
-    >
-      <SceneryInfo
-        :stationInfo="stationInfo"
-        :timetableOnly="timetableOnly"
-      />
+    <div class="scenery-wrapper" v-if="stationInfo">
+      <SceneryInfo :stationInfo="stationInfo" :timetableOnly="timetableOnly" />
 
       <SceneryTimetable
         :stationInfo="stationInfo"
