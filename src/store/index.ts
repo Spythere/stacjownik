@@ -342,7 +342,7 @@ export const store = createStore<State>({
         });
 
       state.stationCount = state.stationList.filter(station => station.online).length;
-      state.dataConnectionStatus = DataStatus.Loaded;
+      state.dataConnectionStatus = DataStatus.Loaded;      
     },
 
     UPDATE_TRAINS(state, updatedTrainList: any[]) {

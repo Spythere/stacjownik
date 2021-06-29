@@ -280,10 +280,9 @@ export default defineComponent({
       () => store.getters[GETTERS.dataStatus]
     );
 
-    const isDataLoaded = () =>
-      computed(() => {
-        dataConnectionStatus.value == DataStatus.Loaded;
-      });
+    const isDataLoaded = computed(() => {
+      return dataConnectionStatus.value == DataStatus.Loaded;
+    });
 
     return {
       isDataLoaded,
