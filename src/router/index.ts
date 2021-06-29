@@ -1,22 +1,19 @@
-import Vue from "vue";
-import VueRouter, { RouteConfig } from "vue-router";
+import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
 
-import StationsView from "../views/StationsView.vue";
-import TrainsView from "../views/TrainsView.vue";
+import StationsView from "@/views/StationsView.vue";
 
-Vue.use(VueRouter);
-
-const routes: Array<RouteConfig> = [
+const routes: Array<RouteRecordRaw> = [
   {
-    path: "/",
-    name: "StationsView",
+    path: '/',
+    name: 'StationsView',
     component: StationsView
   },
   {
     path: "/trains",
     name: "TrainsView",
-    component: TrainsView,
-    props: true
+    component:  () => import("@/views/TrainsView.vue"),
+    props: true,
+
   },
   {
     path: "/scenery",
@@ -24,17 +21,11 @@ const routes: Array<RouteConfig> = [
     component: () => import("@/views/SceneryView.vue"),
     props: true
   },
-  {
-    path: "/history",
-    name: "HistoryView",
-    component: () => import("@/views/HistoryView.vue")
-  }
-];
+]
 
-const router = new VueRouter({
-  mode: "history",
-  base: process.env.BASE_URL,
-  routes
-});
+const router = createRouter({
+  history: createWebHashHistory(),
+  routes,
+})
 
-export default router;
+export default router

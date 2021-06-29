@@ -122,6 +122,7 @@ export default class StationFilterManager {
     free: true,
     occupied: false,
     ending: false,
+    nonPublic: false
   };
 
   private filters: Filter = { ...this.filterInitStates };

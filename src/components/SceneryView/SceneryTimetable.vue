@@ -25,11 +25,14 @@
             value: cp.checkpointName,
           }))
         "
-        @selected="chooseOption"
+        @selected="selectCheckpoint"
       ></select-box>
     </div>
 
-    <span class="timetable-item loading" v-if="dataStatus == 0">{{
+    <span
+      class="timetable-item loading"
+      v-if="dataStatus == 0"
+    >{{
       $t("app.loading")
     }}</span>
 
@@ -48,14 +51,12 @@
       >
         <span class="timetable-general">
           <span class="general-info">
-            <router-link
-              :to="{
+            <router-link :to="{
                 name: 'TrainsView',
                 params: {
                   queryTrain: scheduledTrain.trainNo.toString(),
                 },
-              }"
-            >
+              }">
               <span>
                 <strong>{{ scheduledTrain.category }}</strong>
                 {{ scheduledTrain.trainNo }}
@@ -68,21 +69,17 @@
                   'https://td2.info.pl/profile/?u=' + scheduledTrain.driverId
                 "
                 target="_blank"
-                >{{ scheduledTrain.driverName }}</a
-              >
+              >{{ scheduledTrain.driverName }}</a>
             </span>
 
             <div class="info-route">
-              <strong
-                >{{ scheduledTrain.beginsAt }} -
-                {{ scheduledTrain.terminatesAt }}</strong
-              >
+              <strong>{{ scheduledTrain.beginsAt }} -
+                {{ scheduledTrain.terminatesAt }}</strong>
             </div>
           </span>
 
           <span class="general-status">
-            <span :class="scheduledTrain.stopStatus"
-              >{{ $t(`timetables.${scheduledTrain.stopStatus}`) }}
+            <span :class="scheduledTrain.stopStatus">{{ $t(`timetables.${scheduledTrain.stopStatus}`) }}
             </span>
           </span>
         </span>
@@ -95,7 +92,10 @@
               v-html="$t('timetables.begins')"
             >
             </span>
-            <span class="arrival-time" v-else>
+            <span
+              class="arrival-time"
+              v-else
+            >
               {{ scheduledTrain.stopInfo.arrivalTimeString }} ({{
                 scheduledTrain.stopInfo.arrivalDelay
               }})
@@ -103,7 +103,10 @@
           </span>
 
           <span class="schedule-stop">
-            <span class="stop-time" v-if="scheduledTrain.stopInfo.stopTime">
+            <span
+              class="stop-time"
+              v-if="scheduledTrain.stopInfo.stopTime"
+            >
               {{ scheduledTrain.stopInfo.stopTime }}
               {{ scheduledTrain.stopInfo.stopType }}
             </span>
@@ -116,7 +119,10 @@
               v-html="$t('timetables.terminates')"
             >
             </span>
-            <span class="departure-time" v-else>
+            <span
+              class="departure-time"
+              v-else
+            >
               {{ scheduledTrain.stopInfo.departureTimeString }} ({{
                 scheduledTrain.stopInfo.departureDelay
               }})
@@ -129,74 +135,96 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
-
 import Station from "@/scripts/interfaces/Station";
-import ScheduledTrain from "@/scripts/interfaces/ScheduledTrain";
 import SelectBox from "../Global/SelectBox.vue";
+import { computed, defineComponent, ref } from "@vue/runtime-core";
+import { useRoute } from "vue-router";
 
-@Component({ components: { SelectBox } })
-export default class SceneryTimetable extends Vue {
-  @Prop() readonly stationInfo!: Station;
-  @Prop() readonly timetableOnly!: boolean;
-  @Prop() readonly dataStatus!: number;
+export default defineComponent({
+  components: { SelectBox },
 
-  viewIcon: string = require("@/assets/icon-view.svg");
+  props: {
+    stationInfo: {
+      type: Object as () => Station,
+    },
+    timetableOnly: {
+      type: Boolean,
+    },
+    dataStatus: {
+      type: Number,
+    },
+  },
 
-  listOpen: boolean = false;
-  selectedOption: string = "";
+  data: () => ({
+    viewIcon: require("@/assets/icon-view.svg"),
+    listOpen: false,
+  }),
 
-  loadSelectedOption() {
-    if (!this.stationInfo) return;
-    if (!this.stationInfo.checkpoints) return;
-    if (this.selectedOption != "") return;
+  setup(props) {
+    const route = useRoute();
+    const currentURL = computed(() => `${location.origin}${route.fullPath}`);
 
-    this.selectedOption = this.stationInfo.checkpoints[0].checkpointName;
-  }
+    const selectedCheckpoint = ref("");
+
+    const computedScheduledTrains = computed(() => {
+      if (!props.stationInfo) return [];
+
+      let scheduledTrains = props.stationInfo.checkpoints?.find(
+        (cp) => cp.checkpointName === selectedCheckpoint.value
+      )?.scheduledTrains;
+
+      // if (props.stationInfo.checkpoints)
+      //   scheduledTrains = props.stationInfo.checkpoints.find(
+      //     (cp) => cp.checkpointName === selectedCheckpoint.value
+      //   )?.scheduledTrains;
+      // else scheduledTrains = props.stationInfo.scheduledTrains;
+
+      return (
+        scheduledTrains?.sort((a, b) => {
+          if (a.stopStatusID > b.stopStatusID) return 1;
+          else if (a.stopStatusID < b.stopStatusID) return -1;
+
+          if (a.stopInfo.arrivalTimestamp > b.stopInfo.arrivalTimestamp)
+            return 1;
+          else if (a.stopInfo.arrivalTimestamp < b.stopInfo.arrivalTimestamp)
+            return -1;
+
+          return a.stopInfo.departureTimestamp > b.stopInfo.departureTimestamp
+            ? 1
+            : -1;
+        }) || []
+      );
+    });
+
+    return {
+      currentURL,
+      selectedCheckpoint,
+      computedScheduledTrains,
+    };
+  },
+
+  methods: {
+    loadSelectedOption() {
+      if (!this.stationInfo) return;
+      if (!this.stationInfo.checkpoints) return;
+      if (this.selectedCheckpoint != "") return;
+
+      this.selectedCheckpoint = this.stationInfo.checkpoints[0].checkpointName;
+    },
+
+    selectCheckpoint(item: { id: number | string; value: string }) {
+      this.selectedCheckpoint = item.value;
+    },
+  },
 
   mounted() {
     this.loadSelectedOption();
-  }
+  },
 
   activated() {
     this.loadSelectedOption();
-  }
-
-  chooseOption(item: { id: number | string; value: string }) {
-    this.selectedOption = item.value;
-  }
-
-  get currentURL() {
-    return `${location.origin}${this.$route.fullPath}`;
-  }
-
-  get computedScheduledTrains() {
-    if (!this.stationInfo) return [];
-
-    let scheduledTrains: ScheduledTrain[] | undefined;
-
-    if (this.stationInfo.checkpoints)
-      scheduledTrains = this.stationInfo.checkpoints.find(
-        (cp) => cp.checkpointName === this.selectedOption
-      )?.scheduledTrains;
-    else scheduledTrains = this.stationInfo.scheduledTrains;
-
-    return (
-      scheduledTrains?.sort((a, b) => {
-        if (a.stopStatusID > b.stopStatusID) return 1;
-        else if (a.stopStatusID < b.stopStatusID) return -1;
-
-        if (a.stopInfo.arrivalTimestamp > b.stopInfo.arrivalTimestamp) return 1;
-        else if (a.stopInfo.arrivalTimestamp < b.stopInfo.arrivalTimestamp)
-          return -1;
-
-        return a.stopInfo.departureTimestamp > b.stopInfo.departureTimestamp
-          ? 1
-          : -1;
-      }) || []
-    );
-  }
-}
+  },
+});
 </script>
 
 <style lang="scss" scoped>

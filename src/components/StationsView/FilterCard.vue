@@ -1,5 +1,8 @@
 <template>
-  <section class="card">
+  <section
+    class="card"
+    v-if="showCard"
+  >
     <div
       class="card-exit"
       @click="exit"
@@ -79,13 +82,13 @@
     <div class="card-actions flex">
       <action-button
         class="outlined"
-        @click.native="resetFilters"
+        @click="resetFilters"
       >
         {{ $t("filters.reset") }}
       </action-button>
       <action-button
         class="outlined"
-        @click.native="exit"
+        @click="exit"
       >{{
         $t("filters.close")
       }}</action-button>
@@ -94,83 +97,85 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
-
 import inputData from "@/data/options.json";
 
 import StorageManager from "@/scripts/managers/storageManager";
+import { defineComponent } from "@vue/runtime-core";
 import ActionButton from "../Global/ActionButton.vue";
 
-@Component({ components: { ActionButton } })
-export default class FilterCard extends Vue {
-  inputs = { ...inputData };
-  saveOptions: boolean = false;
-  STORAGE_KEY: string = "options_saved";
+export default defineComponent({
+  components: { ActionButton },
+  props: ["showCard", "exit"],
 
-  @Prop() exit!: () => void;
+  data: () => ({
+    inputs: { ...inputData },
+    saveOptions: false,
+    STORAGE_KEY: "options_saved",
+  }),
 
   mounted() {
     this.saveOptions = StorageManager.isRegistered(this.STORAGE_KEY);
-  }
+  },
 
-  handleChange(e: Event): void {
-    const target = <HTMLInputElement>e.target;
+  methods: {
+    handleChange(e: Event) {
+      const target = e.target as HTMLInputElement;
 
-    this.$emit("changeFilterValue", {
-      name: target.name,
-      value: !target.checked,
-    });
+      this.$emit("changeFilterValue", {
+        name: target.name,
+        value: !target.checked,
+      });
+      if (this.saveOptions)
+        StorageManager.setBooleanValue(target.name, target.checked);
+    },
 
-    if (this.saveOptions)
-      StorageManager.setBooleanValue(target.name, target.checked);
-  }
+    handleInput(e: Event) {
+      const target = e.target as HTMLInputElement;
 
-  handleInput(e: Event): void {
-    const target = <HTMLInputElement>e.target;
-    this.$emit("changeFilterValue", {
-      name: target.name,
-      value: target.value,
-    });
+      this.$emit("changeFilterValue", {
+        name: target.name,
+        value: target.value,
+      });
+      if (this.saveOptions)
+        StorageManager.setStringValue(target.name, target.value);
+    },
 
-    if (this.saveOptions)
-      StorageManager.setStringValue(target.name, target.value);
-  }
+    saveFilters() {
+      if (!this.saveOptions) {
+        StorageManager.unregisterStorage(this.STORAGE_KEY);
+        return;
+      }
 
-  saveFilters(): void {
-    if (!this.saveOptions) {
-      StorageManager.unregisterStorage(this.STORAGE_KEY);
-      return;
-    }
+      StorageManager.registerStorage(this.STORAGE_KEY);
 
-    StorageManager.registerStorage(this.STORAGE_KEY);
+      this.inputs.options.forEach((option) =>
+        StorageManager.setBooleanValue(option.name, option.value)
+      );
 
-    this.inputs.options.forEach((option) =>
-      StorageManager.setBooleanValue(option.name, option.value)
-    );
+      this.inputs.sliders.forEach((slider) =>
+        StorageManager.setNumericValue(slider.name, slider.value)
+      );
+    },
 
-    this.inputs.sliders.forEach((slider) =>
-      StorageManager.setNumericValue(slider.name, slider.value)
-    );
-  }
+    resetFilters() {
+      this.inputs.options.forEach((option) => {
+        option.value = option.defaultValue;
+        StorageManager.setBooleanValue(option.name, option.value);
+      });
 
-  resetFilters(): void {
-    this.inputs.options.forEach((option) => {
-      option.value = option.defaultValue;
-      StorageManager.setBooleanValue(option.name, option.value);
-    });
+      this.inputs.sliders.forEach((slider) => {
+        slider.value = slider.defaultValue;
+        StorageManager.setNumericValue(slider.name, slider.value);
+      });
 
-    this.inputs.sliders.forEach((slider) => {
-      slider.value = slider.defaultValue;
-      StorageManager.setNumericValue(slider.name, slider.value);
-    });
+      this.$emit("resetFilters");
+    },
 
-    this.$emit("resetFilters");
-  }
-
-  closeCard(): void {
-    this.exit();
-  }
-}
+    closeCard() {
+      this.exit();
+    },
+  },
+});
 </script>
 
 <style lang="scss" scoped>

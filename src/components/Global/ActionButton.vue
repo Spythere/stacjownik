@@ -5,13 +5,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { defineComponent } from "vue";
 
-@Component
-export default class ActionButton extends Vue {}
+export default defineComponent({});
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import "../../styles/variables";
 @import "../../styles/responsive";
 
@@ -40,15 +39,12 @@ export default class ActionButton extends Vue {}
   img {
     width: 1.25em;
     vertical-align: middle;
-
     margin-right: 0.35em;
   }
 
   p {
     font-size: 1em;
     overflow: hidden;
-
-    transition: max-width 0.35s ease-in-out;
   }
 
   &.open {

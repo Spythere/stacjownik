@@ -42,96 +42,98 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch, Prop, Emit } from "vue-property-decorator";
+import { computed, defineComponent } from "vue";
+import { useI18n } from "vue-i18n";
 import SelectBox from "../Global/SelectBox.vue";
 
-@Component({ components: { SelectBox } })
-export default class TrainOptions extends Vue {
-  // Passed as component parameters
-  @Prop() readonly queryTrain!: string;
+export default defineComponent({
+  components: { SelectBox },
+  props: ["queryTrain"],
+  emits: ["changeSearchedTrain", "changeSearchedDriver", "changeSorter"],
 
-  exitIcon = require("@/assets/icon-exit.svg");
+  data: () => ({
+    exitIcon: require("@/assets/icon-exit.svg"),
+    searchedTrain: "",
+    searchedDriver: "",
+  }),
 
-  searchedTrain = "";
-  searchedDriver = "";
+  setup() {
+    const { t } = useI18n();
 
-  sorterOptions: { id: string; value: string }[] = [
-    {
-      id: "mass",
-      value: "masa",
-    },
-    {
-      id: "speed",
-      value: "prędkość",
-    },
-    {
-      id: "length",
-      value: "długość",
-    },
-    {
-      id: "distance",
-      value: "kilometraż",
-    },
-    {
-      id: "timetable",
-      value: "numer pociągu",
-    },
-  ];
+    const sorterOptions = [
+      {
+        id: "mass",
+        value: "masa",
+      },
+      {
+        id: "speed",
+        value: "prędkość",
+      },
+      {
+        id: "length",
+        value: "długość",
+      },
+      {
+        id: "distance",
+        value: "kilometraż",
+      },
+      {
+        id: "timetable",
+        value: "numer pociągu",
+      },
+    ];
 
-  get translatedSorterOptions() {
-    return this.sorterOptions.map((option) => ({
-      id: option.id,
-      value: this.$t(`trains.option-${option.id}`),
-    }));
-  }
+    const translatedSorterOptions = computed(() =>
+      sorterOptions.map(({ id }) => ({
+        id,
+        value: t(`trains.option-${id}`),
+      }))
+    );
+
+    return {
+      translatedSorterOptions,
+    };
+  },
 
   mounted() {
     if (this.queryTrain) {
       this.searchedTrain = this.queryTrain;
       this.searchedDriver = "";
     }
-  }
+  },
 
-  /* Emitters to TrainsView managing variables */
+  methods: {
+    chooseTrain(train: string) {
+      this.$emit("changeSearchedTrain", train);
+    },
 
-  @Emit("changeSearchedTrain")
-  chooseTrain(train: string) {
-    return train;
-  }
+    chooseDriver(driverName: string) {
+      this.$emit("changeSearchedDriver", driverName);
+    },
 
-  @Emit("changeSearchedDriver")
-  chooseDriver(driverName: string) {
-    return driverName;
-  }
+    changeSorter(item: { id: string | number; value: string }) {
+      this.$emit("changeSorter", { id: item.id, dir: -1 });
+    },
+  },
 
-  @Emit()
-  changeSorter(item: { id: string | number; value: string }) {
-    return { id: item.id, dir: -1 };
-  }
+  watch: {
+    searchedTrain(value: string) {
+      this.chooseTrain(value);
+    },
 
-  /* Watchers for search boxes */
+    searchedDriver(value: string) {
+      this.chooseDriver(value);
+    },
 
-  @Watch("searchedTrain")
-  watchSearchedTrain(train: string) {
-    this.chooseTrain(train);
-  }
+    queryTrain(train: string) {
+      if (!train) return;
+      if (train == "") return;
 
-  @Watch("searchedDriver")
-  watchSearchedDriver(driver: string) {
-    this.chooseDriver(driver);
-  }
-
-  /* Watcher for train no passed in link params */
-
-  @Watch("queryTrain")
-  onQueryTrainChanged(train: string | undefined) {
-    if (!train) return;
-    if (train == "") return;
-
-    this.searchedTrain = train;
-    this.searchedDriver = "";
-  }
-}
+      this.searchedTrain = train;
+      this.searchedDriver = "";
+    },
+  },
+});
 </script>
 
 <style lang="scss" scoped>

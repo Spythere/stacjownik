@@ -7,12 +7,14 @@
           :href="stationInfo.stationURL"
           target="_blank"
           rel="noopener noreferrer"
-          >{{ stationInfo.stationName }}</a
-        >
+        >{{ stationInfo.stationName }}</a>
 
         <span v-else>{{ stationInfo.stationName }}</span>
       </div>
-      <div class="scenery-hash" v-if="stationInfo.stationHash">
+      <div
+        class="scenery-hash"
+        v-if="stationInfo.stationHash"
+      >
         #{{ stationInfo.stationHash }}
       </div>
     </div>
@@ -23,24 +25,36 @@
         :class="!stationInfo.stationHash ? 'no-stats' : ''"
       >
         <span class="likes">
-          <img :src="likeIcon" alt="icon-like" />
+          <img
+            :src="likeIcon"
+            alt="icon-like"
+          />
           <span>{{ stationInfo.dispatcherRate }}</span>
         </span>
 
         <span class="users">
-          <img :src="userIcon" alt="icon-user" />
+          <img
+            :src="userIcon"
+            alt="icon-user"
+          />
           <span>{{ stationInfo.currentUsers }}</span>
           /
           <span>{{ stationInfo.maxUsers }}</span>
         </span>
 
         <span class="spawns">
-          <img :src="spawnIcon" alt="icon-spawn" />
+          <img
+            :src="spawnIcon"
+            alt="icon-spawn"
+          />
           <span>{{ stationInfo.spawns.length }}</span>
         </span>
 
         <span class="schedules">
-          <img :src="timetableIcon" alt="icon-timetable" />
+          <img
+            :src="timetableIcon"
+            alt="icon-timetable"
+          />
           <span v-if="stationInfo.scheduledTrains">
             <span style="color: #eee">{{
               stationInfo.scheduledTrains.length
@@ -111,7 +125,10 @@
       </div>
 
       <div class="info-dispatcher">
-        <div class="dispatcher" v-if="stationInfo.stationHash">
+        <div
+          class="dispatcher"
+          v-if="stationInfo.stationHash"
+        >
           <span
             class="dispatcher_level"
             :style="
@@ -129,7 +146,10 @@
           <span class="dispatcher_name">{{ stationInfo.dispatcherName }}</span>
         </div>
 
-        <span class="status-badge" :class="stationInfo.statusID">
+        <span
+          class="status-badge"
+          :class="stationInfo.statusID"
+        >
           {{ $t(`status.${stationInfo.statusID}`) }}
           {{
             stationInfo.statusID == "online" ? stationInfo.statusTimeString : ""
@@ -141,7 +161,10 @@
         <div class="user-list">
           <h3 class="user-header">
             {{ $t("scenery.users") }}
-            <img :src="userIcon" alt="icon-user" />
+            <img
+              :src="userIcon"
+              alt="icon-user"
+            />
           </h3>
 
           <div
@@ -166,7 +189,10 @@
         <div class="spawn-list">
           <h3 class="spawn-header">
             {{ $t("scenery.spawns") }}
-            <img :src="spawnIcon" alt="icon-spawn" />
+            <img
+              :src="spawnIcon"
+              alt="icon-spawn"
+            />
           </h3>
 
           <span
@@ -181,7 +207,7 @@
           <span
             class="spawn none"
             v-if="!stationInfo.spawns || stationInfo.spawns.length == 0"
-            >{{ $t("scenery.no-spawns") }}
+          >{{ $t("scenery.no-spawns") }}
           </span>
         </div>
       </div>
@@ -190,44 +216,56 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop } from "vue-property-decorator";
-
 import Station from "@/scripts/interfaces/Station";
-
 import styleMixin from "@/mixins/styleMixin";
+import { computed, defineComponent } from "@vue/runtime-core";
 
-@Component
-export default class SceneryInfo extends styleMixin {
-  @Prop() readonly stationInfo!: Station;
-  @Prop() readonly timetableOnly!: boolean;
+export default defineComponent({
+  props: {
+    stationInfo: {
+      type: Object as () => Station,
+    },
 
-  likeIcon: string = require("@/assets/icon-like.svg");
-  spawnIcon: string = require("@/assets/icon-spawn.svg");
-  timetableIcon: string = require("@/assets/icon-timetable.svg");
-  userIcon: string = require("@/assets/icon-user.svg");
+    timetableOnly: Boolean,
+  },
 
-  get computedStationTrains() {
-    if (!this.stationInfo) return null;
+  mixins: [styleMixin],
 
-    return this.stationInfo.stationTrains.map((stationTrain) => {
-      const scheduledData = this.stationInfo?.scheduledTrains.find(
-        (scheduledTrain) => scheduledTrain.trainNo === stationTrain.trainNo
-      );
+  data: () => ({
+    likeIcon: require("@/assets/icon-like.svg"),
+    spawnIcon: require("@/assets/icon-spawn.svg"),
+    timetableIcon: require("@/assets/icon-timetable.svg"),
+    userIcon: require("@/assets/icon-user.svg"),
+  }),
 
-      return {
-        ...stationTrain,
-        stopStatus: scheduledData?.stopStatus || "no-timetable",
-      };
+  setup(props) {
+    const computedStationTrains = computed(() => {
+      if (!props.stationInfo) return [];
+
+      return props.stationInfo.stationTrains.map((train) => {
+        const scheduledTrainStatus = props.stationInfo?.scheduledTrains.find(
+          (st) => st.trainNo === train.trainNo
+        );
+
+        return {
+          ...train,
+          stopStatus: scheduledTrainStatus?.stopStatus || "no-timetable",
+        };
+      });
     });
-  }
 
-  navigateToTrain(trainNo: number) {
-    this.$router.push({
-      name: "TrainsView",
-      params: { queryTrain: trainNo.toString() },
-    });
-  }
-}
+    return { computedStationTrains };
+  },
+
+  methods: {
+    navigateToTrain(trainNo: number) {
+      this.$router.push({
+        name: "TrainsView",
+        params: { queryTrain: trainNo.toString() },
+      });
+    },
+  },
+});
 </script>
 
 <style lang="scss" scoped>

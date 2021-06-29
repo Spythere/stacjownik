@@ -160,6 +160,7 @@
                   $t('desc.signals-type') + $t(`signals.${station.signalType}`)
                 "
               />
+
               <img
                 v-if="station.SBL && station.SBL !== ''"
                 :src="require(`@/assets/icon-SBL.svg`)"
@@ -236,80 +237,87 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop } from "vue-property-decorator";
-
-import Station from "@/scripts/interfaces/Station";
 import styleMixin from "@/mixins/styleMixin";
 
-import { Getter } from "vuex-class";
-
-import Options from "@/components/StationsView/Options.vue";
-import { StoreData } from "@/scripts/interfaces/StoreData";
 import { DataStatus } from "@/scripts/enums/DataStatus";
+import { computed, ComputedRef, defineComponent } from "@vue/runtime-core";
+import { useStore } from "@/store";
+import { GETTERS } from "@/constants/storeConstants";
+import Station from "@/scripts/interfaces/Station";
 
-@Component({
-  components: { Options },
-})
-export default class StationTable extends styleMixin {
-  @Prop() readonly stations!: Station[];
-  @Prop() readonly sorterActive!: number;
+export default defineComponent({
+  props: {
+    stations: {
+      type: Array as () => Station[],
+      required: true,
+    },
 
-  @Prop() readonly setFocusedStation!: () => void;
-  @Prop() readonly changeSorter!: () => void;
+    sorterActive: {
+      type: Object as () => { id: string; dir: number },
+      required: true,
+    },
 
-  @Getter("getAllData") storeAPIData!: StoreData;
+    setFocusedStation: Function,
+    changeSorter: Function,
+  },
 
-  likeIcon: string = require("@/assets/icon-like.svg");
-  spawnIcon: string = require("@/assets/icon-spawn.svg");
-  timetableIcon: string = require("@/assets/icon-timetable.svg");
-  userIcon: string = require("@/assets/icon-user.svg");
-  trainIcon: string = require("@/assets/icon-train.svg");
+  mixins: [styleMixin],
 
-  ascIcon: string = require("@/assets/icon-arrow-asc.svg");
-  descIcon: string = require("@/assets/icon-arrow-desc.svg");
+  data: () => ({
+    likeIcon: require("@/assets/icon-like.svg"),
+    spawnIcon: require("@/assets/icon-spawn.svg"),
+    timetableIcon: require("@/assets/icon-timetable.svg"),
+    userIcon: require("@/assets/icon-user.svg"),
+    trainIcon: require("@/assets/icon-train.svg"),
 
-  headIds = [
-    "station",
-    "min-lvl",
-    "status",
-    "dispatcher",
-    "dispatcher-lvl",
-    "routes",
-    "general",
-  ];
+    ascIcon: require("@/assets/icon-arrow-asc.svg"),
+    descIcon: require("@/assets/icon-arrow-desc.svg"),
 
-  headIconsIds = ["user", "spawn", "timetable"];
+    headIds: [
+      "station",
+      "min-lvl",
+      "status",
+      "dispatcher",
+      "dispatcher-lvl",
+      "routes",
+      "general",
+    ],
 
-  headTitles: string[][] = [
-    ["Stacja"],
-    ["Min. poziom", "dyżurnego"],
-    ["Status"],
-    ["Dyżurny"],
-    ["Poziom", "dyżurnego"],
-    ["Szlaki", "2tor | 1tor"],
-    ["Informacje", "ogólne"],
-    [this.userIcon, "Mechanicy online"],
-    [this.spawnIcon, "Otwarte spawny"],
-    [this.timetableIcon, "Aktywne RJ"],
-  ];
+    headIconsIds: ["user", "spawn", "timetable"],
+  }),
 
-  setScenery(name: string) {
-    const station = this.stations.find(
-      (station) => station.stationName === name
+  setup() {
+    const store = useStore();
+
+    const dataConnectionStatus: ComputedRef<DataStatus> = computed(
+      () => store.getters[GETTERS.dataStatus]
     );
 
-    if (!station) return;
+    const isDataLoaded = () =>
+      computed(() => {
+        dataConnectionStatus.value == DataStatus.Loaded;
+      });
 
-    this.$router.push({
-      name: "SceneryView",
-      query: { station: station.stationName.replaceAll(" ", "_") },
-    });
-  }
+    return {
+      isDataLoaded,
+    };
+  },
 
-  get isDataLoaded() {
-    return this.storeAPIData.dataConnectionStatus == DataStatus.Loaded;
-  }
-}
+  methods: {
+    setScenery(name: string) {
+      const station = this.stations.find(
+        (station) => station.stationName === name
+      );
+
+      if (!station) return;
+
+      this.$router.push({
+        name: "SceneryView",
+        query: { station: station.stationName.replaceAll(" ", "_") },
+      });
+    },
+  },
+});
 </script>
 
 <style lang="scss" scoped>
@@ -358,6 +366,7 @@ table {
 
     padding: 0.5em;
     background-color: $primaryCol;
+    white-space: pre-wrap;
 
     cursor: pointer;
     user-select: none;
@@ -442,8 +451,8 @@ td.station {
     }
 
     .track {
-      margin: 0 0.3em;
-      padding: 0.35em 0.1em;
+      margin: 0 0.35em;
+      padding: 0.35em;
       font-size: 1.05em;
       white-space: pre-wrap;
     }

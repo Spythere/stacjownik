@@ -1,5 +1,8 @@
 <template>
-  <div class="train-schedule" @click="click">
+  <div
+    class="train-schedule"
+    @click="this.$emit('click')"
+  >
     <div class="schedule-wrapper">
       <ul class="stop_list">
         <li
@@ -19,11 +22,17 @@
 
             <div class="stop-bar"></div>
 
-            <span class="distance" v-if="stop.stopDistance">
+            <span
+              class="distance"
+              v-if="stop.stopDistance"
+            >
               {{ Math.floor(stop.stopDistance) }}
             </span>
 
-            <span class="stop-name" v-html="stop.stopName"></span>
+            <span
+              class="stop-name"
+              v-html="stop.stopName"
+            ></span>
             <span class="stop-date">
               <span
                 class="date arrival"
@@ -79,9 +88,7 @@
             <div class="progress-bar"></div>
 
             <span v-if="i < followingStops.length - 1">
-              <span
-                v-if="stop.departureLine == followingStops[i + 1].arrivalLine"
-              >
+              <span v-if="stop.departureLine == followingStops[i + 1].arrivalLine">
                 {{ stop.departureLine }}
               </span>
 
@@ -98,32 +105,23 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { defineComponent } from "@vue/runtime-core";
 
-import TrainStop from "@/scripts/interfaces/TrainStop";
+export default defineComponent({
+  props: ["followingStops", "currentStationName"],
+  emits: ["click"],
 
-@Component
-export default class TrainSchedule extends Vue {
-  @Prop() readonly followingStops!: TrainStop[];
-  @Prop() readonly currentStationName!: string;
-
-  stylizeTime(timeString: string, delay: number, confirmed: boolean) {
-    return (
-      timeString +
-      (delay != 0 && confirmed
-        ? " (" + (delay > 0 ? "+" : "") + delay.toString() + ")"
-        : "")
-    );
-  }
-
-  click() {
-    this.$emit("click");
-  }
-
-  mounted() {
-    console.log("mounted");
-  }
-}
+  methods: {
+    stylizeTime(timeString: string, delay: number, confirmed: boolean) {
+      return (
+        timeString +
+        (delay != 0 && confirmed
+          ? " (" + (delay > 0 ? "+" : "") + delay.toString() + ")"
+          : "")
+      );
+    },
+  },
+});
 </script>
 
 <style lang="scss" scoped>

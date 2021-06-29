@@ -1,16 +1,29 @@
 <template>
   <div class="train-stats">
     <div class="stats_button">
-      <action-button @click.native="toggleStatsOpen">
-        <img :src="statsIcon" :alt="$t('trains.stats')" />
-        {{ $t("trains.stats") }}
+      <action-button @click="toggleStatsOpen">
+        <img
+          :src="statsIcon"
+          :alt="$t('trains.stats')"
+        />
+        <p class="xd">{{ $t("trains.stats") }}</p>
       </action-button>
     </div>
 
-    <transition name="stats-anim" class="stats_wrapper" tag="div">
-      <div class="stats-body" v-if="trainStatsOpen">
+    <transition
+      name="stats-anim"
+      class="stats_wrapper"
+      tag="div"
+    >
+      <div
+        class="stats-body"
+        v-if="trainStatsOpen"
+      >
         <h2 class="stats-header">
-          <img :src="statsIcon" :alt="$t('trains.stats')" />
+          <img
+            :src="statsIcon"
+            :alt="$t('trains.stats')"
+          />
           {{ $t("trains.stats") }}
         </h2>
 
@@ -70,7 +83,11 @@
           <div class="title stats-title">{{ $t("trains.stats-locos") }}</div>
 
           <div class="loco-list stats-content">
-            <div class="loco-item" v-for="(loco, i) in locoList" :key="i">
+            <div
+              class="loco-item"
+              v-for="(loco, i) in locoList"
+              :key="i"
+            >
               {{ loco[0] }} | {{ loco[1] }}
             </div>
           </div>
@@ -81,120 +98,145 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
 import ActionButton from "@/components/Global/ActionButton.vue";
 
 import Train from "@/scripts/interfaces/Train";
+import { computed, defineComponent } from "@vue/runtime-core";
 
-@Component({ components: { ActionButton } })
-export default class TrainStats extends Vue {
-  @Prop() readonly trains!: Train[];
-  trainStatsOpen = false;
+export default defineComponent({
+  components: { ActionButton },
+  props: {
+    trains: {
+      type: Array as () => Train[],
+      required: true,
+    },
+  },
 
-  toggleStatsOpen() {
-    this.trainStatsOpen = !this.trainStatsOpen;
-  }
+  data: () => ({
+    trainStatsOpen: false,
+    statsIcon: require("@/assets/icon-stats.svg"),
+  }),
 
-  statsIcon = require("@/assets/icon-stats.svg");
+  methods: {
+    toggleStatsOpen() {
+      this.trainStatsOpen = !this.trainStatsOpen;
+    },
+  },
 
-  get speedStats(): { avg: string; min: string; max: string } {
-    if (this.trains.length == 0) return { avg: "0", min: "0", max: "0" };
+  setup(props) {
+    const speedStats = computed(() => {
+      if (props.trains.length == 0) return { avg: "0", min: "0", max: "0" };
 
-    const avg = (
-      this.trains.reduce((acc, train) => acc + train.speed, 0) /
-      this.trains.length
-    ).toFixed(2);
+      const avg = (
+        props.trains.reduce((acc, train) => acc + train.speed, 0) /
+        props.trains.length
+      ).toFixed(2);
 
-    const minMax = this.trains.reduce((acc, train) => {
-      if (!train.timetableData) return acc;
+      const minMaxSpeed = props.trains.reduce((acc, train) => {
+        if (!train.timetableData) return acc;
 
-      acc[0] =
-        acc[0] === undefined || train.speed < acc[0] ? train.speed : acc[0];
+        acc[0] = !acc[0] || train.speed < acc[0] ? train.speed : acc[0];
 
-      acc[1] =
-        acc[1] === undefined || train.speed > acc[1] ? train.speed : acc[1];
-      return acc;
-    }, [] as any);
+        acc[1] = !acc[1] || train.speed > acc[1] ? train.speed : acc[1];
+        return acc;
+      }, [] as any);
 
-    return { avg, min: minMax[0].toString(), max: minMax[1].toString() };
-  }
+      return {
+        avg,
+        min: minMaxSpeed[0].toString(),
+        max: minMaxSpeed[1].toString(),
+      };
+    });
 
-  get timetableStats(): { avg: string; min: string; max: string } {
-    if (this.trains.length == 0) return { avg: "0", min: "0", max: "0" };
+    const timetableStats = computed(() => {
+      if (props.trains.length == 0) return { avg: "0", min: "0", max: "0" };
 
-    const avg = (
-      this.trains.reduce(
-        (acc, train) =>
-          train.timetableData ? acc + train.timetableData.routeDistance : acc,
-        0
-      ) / this.trains.length
-    ).toFixed(2);
+      const avg = (
+        props.trains.reduce(
+          (acc, train) =>
+            train.timetableData ? acc + train.timetableData.routeDistance : acc,
+          0
+        ) / props.trains.length
+      ).toFixed(2);
 
-    const minMax = this.trains.reduce((acc, train) => {
-      if (!train.timetableData) return acc;
+      const minMaxDistance = props.trains.reduce((acc, train) => {
+        if (!train.timetableData) return acc;
 
-      acc[0] =
-        acc[0] === undefined || train.timetableData.routeDistance < acc[0]
-          ? train.timetableData.routeDistance
-          : acc[0];
+        acc[0] =
+          !acc[0] || train.timetableData.routeDistance < acc[0]
+            ? train.timetableData.routeDistance
+            : acc[0];
 
-      acc[1] =
-        acc[1] === undefined || train.timetableData.routeDistance > acc[1]
-          ? train.timetableData.routeDistance
-          : acc[1];
-      return acc;
-    }, [] as any);
+        acc[1] =
+          !acc[1] || train.timetableData.routeDistance > acc[1]
+            ? train.timetableData.routeDistance
+            : acc[1];
+        return acc;
+      }, [] as any);
 
-    return { avg, min: minMax[0].toString(), max: minMax[1].toString() };
-  }
+      return {
+        avg,
+        min: minMaxDistance[0].toString(),
+        max: minMaxDistance[1].toString(),
+      };
+    });
 
-  get categoryList(): Map<string, number> {
-    const map = this.trains.reduce((acc, train) => {
-      if (!train.timetableData || !train.timetableData.category) return acc;
+    const categoryList = computed(() => {
+      const map = props.trains.reduce((acc, train) => {
+        if (!train.timetableData || !train.timetableData.category) return acc;
 
-      acc.set(
-        train.timetableData.category,
-        acc.get(train.timetableData.category)
-          ? acc.get(train.timetableData.category) + 1
-          : 1
+        acc.set(
+          train.timetableData.category,
+          acc.get(train.timetableData.category)
+            ? acc.get(train.timetableData.category) + 1
+            : 1
+        );
+
+        return acc;
+      }, new Map());
+
+      return new Map([...map.entries()].sort((a, b) => b[1] - a[1]));
+    });
+
+    const locoList = computed(() => {
+      const map: Map<string, number> = props.trains.reduce((acc, train) => {
+        if (!train.timetableData || !train.locoType) return acc;
+
+        acc.set(
+          train.locoType,
+          acc.get(train.locoType) ? acc.get(train.locoType) + 1 : 1
+        );
+
+        return acc;
+      }, new Map());
+
+      const sorted = [...map.entries()]
+        .sort((a, b) => b[1] - a[1])
+        .filter((v, i) => i < 3);
+
+      return sorted;
+    });
+
+    const specialTrainCount = computed(() => {
+      const twrList = props.trains.filter(
+        (train) => train.timetableData && train.timetableData.TWR
+      );
+      const skrList = props.trains.filter(
+        (train) => train.timetableData && train.timetableData.SKR
       );
 
-      return acc;
-    }, new Map());
+      return [twrList.length, skrList.length];
+    });
 
-    return new Map([...map.entries()].sort((a, b) => b[1] - a[1]));
-  }
-
-  get locoList(): any[] {
-    const map = this.trains.reduce((acc, train) => {
-      if (!train.timetableData || !train.locoType) return acc;
-
-      acc.set(
-        train.locoType,
-        acc.get(train.locoType) ? acc.get(train.locoType) + 1 : 1
-      );
-
-      return acc;
-    }, new Map());
-
-    const sorted = [...map.entries()]
-      .sort((a, b) => b[1] - a[1])
-      .filter((v, i) => i < 3);
-
-    return sorted;
-  }
-
-  get specialTrainCount(): [number, number] {
-    const twrList = this.trains.filter(
-      (train) => train.timetableData && train.timetableData.TWR
-    );
-    const skrList = this.trains.filter(
-      (train) => train.timetableData && train.timetableData.SKR
-    );
-
-    return [twrList.length, skrList.length];
-  }
-}
+    return {
+      speedStats,
+      timetableStats,
+      categoryList,
+      locoList,
+      specialTrainCount,
+    };
+  },
+});
 </script>
 
 <style lang="scss" scoped>
@@ -206,7 +248,7 @@ export default class TrainStats extends Vue {
     transition: all 150ms ease-out;
   }
 
-  &-enter,
+  &-enter-from,
   &-leave-to {
     opacity: 0;
     transform: translateY(30px);

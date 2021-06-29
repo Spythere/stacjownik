@@ -1,27 +1,28 @@
 <template>
-  <div class="clock">{{ formattedDate }}</div>
+  <div class="clock">{{ computedDate }}</div>
 </template>
 
 
 <script lang="ts">
-import Vue from "vue";
-export default Vue.extend({
+import { computed, defineComponent, ref } from "vue";
+export default defineComponent({
   name: "clock",
   data: () => ({
     timestamp: Date.now(),
   }),
-  computed: {
-    formattedDate() {
-      return new Date(this.timestamp).toLocaleString("pl-PL", {
+  setup() {
+      let timestamp = ref(Date.now());
+
+      const computedDate = computed(() => new Date(timestamp.value).toLocaleString("pl-PL", {
         hour: "2-digit",
         minute: "2-digit",
         second: "2-digit",
-      });
-    },
-  },
-  mounted() {
-    setInterval(() => (this.timestamp = Date.now()), 1000);
-  },
+      }));
+
+      setInterval(() => (timestamp.value = Date.now()), 1000);
+
+      return { computedDate }
+  }
 });
 </script>
 

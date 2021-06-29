@@ -2,11 +2,14 @@
   <section class="trains-view">
     <div class="wrapper">
       <div class="options-bar">
-        <TrainStats :trains="trains" :trainStatsOpen="trainStatsOpen" />
+        <TrainStats
+          :trains="trainList"
+          :trainStatsOpen="trainStatsOpen"
+        />
 
         <TrainOptions
           :queryTrain="queryTrain"
-          @change-sorter="changeSorter"
+          @changeSorter="changeSorter"
           @changeSearchedTrain="changeSearchedTrain"
           @changeSearchedDriver="changeSearchedDriver"
         />
@@ -14,7 +17,6 @@
 
       <TrainTable
         :computedTrains="computedTrains"
-        :timetableDataStatus="timetableDataStatus"
         :queryTrain="queryTrain"
       />
     </div>
@@ -22,105 +24,135 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
-import { Getter } from "vuex-class";
+import { computed, ComputedRef, defineComponent, ref } from "vue";
 
+import { DataStatus } from "@/scripts/enums/DataStatus";
 import Train from "@/scripts/interfaces/Train";
 
 import TrainTable from "@/components/TrainsView/TrainTable.vue";
 import TrainStats from "@/components/TrainsView/TrainStats.vue";
 import TrainOptions from "@/components/TrainsView/TrainOptions.vue";
-import ActionButton from "@/components/Global/ActionButton.vue";
-import { DataStatus } from "@/scripts/enums/DataStatus";
 
-@Component({
+import { useStore } from "@/store";
+import { GETTERS } from "@/constants/storeConstants";
+
+const filteredTrainList = (
+  trainList: Train[],
+  searchedTrain: string,
+  searchedDriver: string,
+  sorterActive: { id: string; dir: number }
+) => {
+  return trainList
+    .filter(
+      (train) =>
+        train.online &&
+        (searchedTrain.length > 0
+          ? train.trainNo.toString().includes(searchedTrain)
+          : true) &&
+        (searchedDriver.length > 0
+          ? train.driverName
+              .toLowerCase()
+              .includes(searchedDriver.toLowerCase())
+          : true)
+    )
+    .sort((a: Train, b: Train) => {
+      switch (sorterActive.id) {
+        case "mass":
+          if (a.mass > b.mass) return sorterActive.dir;
+          return -sorterActive.dir;
+
+        case "distance":
+          if (
+            (a.timetableData?.routeDistance || -1) >
+            (b.timetableData?.routeDistance || -1)
+          )
+            return sorterActive.dir;
+
+          return -sorterActive.dir;
+
+        case "speed":
+          if (a.speed > b.speed) return sorterActive.dir;
+          return -sorterActive.dir;
+
+        case "timetable":
+          if (a.trainNo > b.trainNo) return sorterActive.dir;
+          return -sorterActive.dir;
+
+        case "length":
+          if (a.length > b.length) return sorterActive.dir;
+          return -sorterActive.dir;
+
+        default:
+          break;
+      }
+
+      return 0;
+    });
+};
+
+export default defineComponent({
   components: {
     TrainTable,
     TrainStats,
     TrainOptions,
-    ActionButton,
   },
-})
-export default class TrainsView extends Vue {
-  @Getter("getTrainList") trains!: Train[];
-  @Getter("getTimetableDataStatus") timetableDataStatus!: DataStatus;
 
-  // Passed in route as query parameters
-  @Prop() readonly queryTrain!: string;
+  props: ["queryTrain"],
 
-  statsIcon = require("@/assets/icon-stats.svg");
+  data: () => ({
+    statsIcon: require("@/assets/icon-stats.svg"),
+    trainStatsOpen: false,
+  }),
 
-  sorterActive: { id: string; dir: number } = { id: "distance", dir: -1 };
+  setup() {
+    const store = useStore();
 
-  trainStatsOpen: boolean = false;
+    const trainList: ComputedRef<Train[]> = computed(
+      () => store.getters[GETTERS.trainList]
+    );
 
-  searchedTrain: string = "";
-  searchedDriver: string = "";
+    const timetableDataStatus: ComputedRef<DataStatus> = computed(
+      () => store.getters[GETTERS.timetableDataStatus]
+    );
 
-  changeSearchedTrain(trainNo: string) {
-    this.searchedTrain = trainNo;
-  }
+    const sorterActive = ref({ id: "distance", dir: -1 });
+    const searchedDriver = ref("");
+    const searchedTrain = ref("");
 
-  changeSearchedDriver(name: string) {
-    this.searchedDriver = name;
-  }
+    const computedTrains: ComputedRef<Train[]> = computed(() => {
+      if (timetableDataStatus.value != DataStatus.Loaded) return [];
 
-  changeSorter(sorter: { id: string; dir: number }) {
-    this.sorterActive = sorter;
-  }
+      return filteredTrainList(
+        trainList.value,
+        searchedTrain.value,
+        searchedDriver.value,
+        sorterActive.value
+      );
+    });
 
-  get computedTrains() {
-    return this.timetableDataStatus != DataStatus.Loaded
-      ? []
-      : this.trains
-          .filter(
-            (train) =>
-              train.online &&
-              (this.searchedTrain.length > 0
-                ? train.trainNo.toString().includes(this.searchedTrain)
-                : true) &&
-              (this.searchedDriver.length > 0
-                ? train.driverName
-                    .toLowerCase()
-                    .includes(this.searchedDriver.toLowerCase())
-                : true)
-          )
-          .sort((a, b) => {
-            switch (this.sorterActive.id) {
-              case "mass":
-                if (a.mass > b.mass) return this.sorterActive.dir;
-                return -this.sorterActive.dir;
+    return {
+      trainList,
+      computedTrains,
+      searchedTrain,
+      searchedDriver,
+      sorterActive,
+    };
+  },
 
-              case "distance":
-                if (
-                  (a.timetableData?.routeDistance || -1) >
-                  (b.timetableData?.routeDistance || -1)
-                )
-                  return this.sorterActive.dir;
+  methods: {
+    changeSearchedTrain(trainNo: string) {
+      this.searchedTrain = trainNo;
+    },
 
-                return -this.sorterActive.dir;
+    changeSearchedDriver(name: string) {
+      this.searchedDriver = name;
+    },
 
-              case "speed":
-                if (a.speed > b.speed) return this.sorterActive.dir;
-                return -this.sorterActive.dir;
-
-              case "timetable":
-                if (a.trainNo > b.trainNo) return this.sorterActive.dir;
-                return -this.sorterActive.dir;
-
-              case "length":
-                if (a.length > b.length) return this.sorterActive.dir;
-                return -this.sorterActive.dir;
-
-              default:
-                break;
-            }
-
-            return 0;
-          });
-  }
-}
+    changeSorter(sorter: { id: string; dir: number }) {
+      this.sorterActive = sorter;
+    },
+  },
+});
 </script>
 
 <style lang="scss" scoped>

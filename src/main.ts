@@ -1,28 +1,25 @@
-import Vue from 'vue';
-import App from './App.vue';
-import router from './router';
-import store from './store';
-import VueI18n from 'vue-i18n';
+import { createApp } from 'vue'
+import App from './App.vue'
+import router from './router'
+import { store, key } from './store'
 
-import enLang from '@/lang/en.json';
-import plLang from '@/lang/pl.json';
+import enLang from '@/locales/en.json';
+import plLang from '@/locales/pl.json';
 
-Vue.use(VueI18n);
+import { createI18n } from 'vue-i18n'
 
-const i18n = new VueI18n({
+const i18n = createI18n({
   locale: 'pl',
   fallbackLocale: 'pl',
   messages: {
     en: enLang,
     pl: plLang,
   },
-});
+  enableLegacy: false
+})
 
-Vue.config.productionTip = false;
-
-new Vue({
-  router,
-  store,
-  i18n,
-  render: h => h(App),
-}).$mount('#app');
+createApp(App)
+  .use(store, key)
+  .use(router)
+  .use(i18n)
+  .mount('#app')

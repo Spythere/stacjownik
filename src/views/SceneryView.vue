@@ -11,8 +11,14 @@
       </action-button>
     </div>
 
-    <div class="scenery-wrapper" v-if="stationInfo">
-      <SceneryInfo :stationInfo="stationInfo" :timetableOnly="timetableOnly" />
+    <div
+      class="scenery-wrapper"
+      v-if="stationInfo"
+    >
+      <SceneryInfo
+        :stationInfo="stationInfo"
+        :timetableOnly="timetableOnly"
+      />
 
       <SceneryTimetable
         :stationInfo="stationInfo"
@@ -24,49 +30,58 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
-
-import { Getter } from "vuex-class";
-
-import Station from "@/scripts/interfaces/Station";
+import { StoreData } from "@/scripts/interfaces/StoreData";
+import { DataStatus } from "@/scripts/enums/DataStatus";
 
 import SceneryInfo from "@/components/SceneryView/SceneryInfo.vue";
 import SceneryTimetable from "@/components/SceneryView/SceneryTimetable.vue";
-import { StoreData } from "@/scripts/interfaces/StoreData";
-import { DataStatus } from "@/scripts/enums/DataStatus";
 import ActionButton from "@/components/Global/ActionButton.vue";
 
-@Component({
+import { computed, ComputedRef, defineComponent } from "@vue/runtime-core";
+import { useStore } from "@/store";
+import { GETTERS } from "@/constants/storeConstants";
+import { useRoute } from "vue-router";
+
+export default defineComponent({
   components: { SceneryInfo, SceneryTimetable, ActionButton },
-})
-export default class SceneryView extends Vue {
-  @Getter("getAllData") data!: StoreData;
 
-  timetableOnly: boolean = false;
+  setup() {
+    const route = useRoute();
+    const store = useStore();
 
-  activated() {
-    this.timetableOnly =
-      this.$route.query["timetable_only"] == "1" ? true : false;
-  }
-
-  get isComponentVisible() {
-    return this.$route.path === "/scenery";
-  }
-
-  get isDataLoaded() {
-    return this.data.dataConnectionStatus == DataStatus.Loaded;
-  }
-
-  get stationInfo(): Station | undefined {
-    if (!this.$route.query.station) return;
-
-    return this.data.stationList.find(
-      (station) =>
-        station.stationName ===
-        this.$route.query.station.toString().replaceAll("_", " ")
+    const data: ComputedRef<StoreData> = computed(
+      () => store.getters[GETTERS.allData]
     );
-  }
-}
+
+    const timetableOnly = computed(() =>
+      route.query["timetable_only"] == "1" ? true : false
+    );
+
+    const isComponentVisible = computed(() => route.path === "/scenery");
+
+    const isDataLoaded = computed(
+      () => data.value.dataConnectionStatus === DataStatus.Loaded
+    );
+
+    const stationInfo = computed(() => {
+      if (!route.query.station) return;
+
+      return data.value.stationList.find(
+        (station) =>
+          station.stationName ===
+          route.query.station?.toString().replaceAll("_", " ")
+      );
+    });
+
+    return {
+      data,
+      timetableOnly,
+      isComponentVisible,
+      isDataLoaded,
+      stationInfo,
+    };
+  },
+});
 </script>
 
 <style lang="scss" scoped>

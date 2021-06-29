@@ -26,7 +26,7 @@
         class="train-row"
         v-for="(train, i) in computedTrains"
         :key="i"
-        :ref="train.timetableData ? train.timetableData.timetableId : -1"
+        :ref="train.timetableData && (el => { elList[train.timetableData.timetableId] = el })"
       >
         <div
           class="wrapper no-timetable"
@@ -319,117 +319,163 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop, Watch } from "vue-property-decorator";
-
 import Train from "@/scripts/interfaces/Train";
 import TrainStop from "@/scripts/interfaces/TrainStop";
 
 import TrainSchedule from "@/components/TrainsView/TrainSchedule.vue";
 import { DataStatus } from "@/scripts/enums/DataStatus";
+import {
+  computed,
+  ComputedRef,
+  defineComponent,
+  onBeforeUpdate,
+  Ref,
+  ref,
+} from "@vue/runtime-core";
+import { useStore } from "@/store";
+import { GETTERS } from "@/constants/storeConstants";
 
-@Component({
-  components: { TrainSchedule },
-})
-export default class TrainTable extends Vue {
-  @Prop() computedTrains!: Train[];
-  @Prop() timetableDataStatus!: DataStatus;
-  @Prop() queryTrain!: string;
+export default defineComponent({
+  components: {
+    TrainSchedule,
+  },
 
-  showedSchedule = 0;
+  props: {
+    computedTrains: {
+      type: Array as () => Train[],
+      required: true,
+    },
 
-  defaultLocoImage = require("@/assets/unknown.png");
+    queryTrain: {
+      type: String,
+      required: false,
+    },
+  },
 
-  ascSVG = require("@/assets/icon-arrow-asc.svg");
-  descSVG = require("@/assets/icon-arrow-desc.svg");
+  data: () => ({
+    showedSchedule: 0,
+    defaultLocoImage: require("@/assets/unknown.png"),
 
-  speedIcon: string = require("@/assets/icon-speed.svg");
-  massIcon: string = require("@/assets/icon-mass.svg");
-  lengthIcon: string = require("@/assets/icon-length.svg");
+    ascSVG: require("@/assets/icon-arrow-asc.svg"),
+    descSVG: require("@/assets/icon-arrow-desc.svg"),
 
-  distanceIcon: string = require("@/assets/icon-distance.svg");
-  sceneryIcon: string = require("@/assets/icon-scenery.svg");
-  signalIcon: string = require("@/assets/icon-signal.svg");
-  routeIcon: string = require("@/assets/icon-route.svg");
+    speedIcon: require("@/assets/icon-speed.svg"),
+    massIcon: require("@/assets/icon-mass.svg"),
+    lengthIcon: require("@/assets/icon-length.svg"),
 
-  get timetableLoaded() {
-    return this.timetableDataStatus == DataStatus.Loaded;
-  }
+    distanceIcon: require("@/assets/icon-distance.svg"),
+    sceneryIcon: require("@/assets/icon-scenery.svg"),
+    signalIcon: require("@/assets/icon-signal.svg"),
+    routeIcon: require("@/assets/icon-route.svg"),
+  }),
 
-  get timetableError() {
-    return this.timetableDataStatus == DataStatus.Error;
-  }
+  setup(props) {
+    const store = useStore();
+    const elList: Ref<HTMLElement[]> = ref([]);
 
-  get distanceLimitExceeded() {
-    return (
-      this.computedTrains.findIndex(
-        (train) =>
-          train.timetableData && train.timetableData.routeDistance > 200
-      ) != -1
-    );
-  }
-
-  changeScheduleShowState(elementId: number) {
-    if (elementId < 0) return;
-
-    this.showedSchedule = this.showedSchedule == elementId ? 0 : elementId;
-
-    this.$nextTick(() => {
-      const currentEl: HTMLElement = this.$refs[elementId][0];
-
-      currentEl.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest",
-      });
+    onBeforeUpdate(() => {
+      elList.value.length = 0;
     });
-  }
 
-  @Watch("queryTrain")
-  onSearchedTrainChange(trainNo: string) {
-    const timetableId = this.computedTrains.find(
-      (train) => train.trainNo == parseInt(trainNo)
-    )?.timetableData?.timetableId;
+    const timetableDataStatus: ComputedRef<DataStatus> = computed(
+      () => store.getters[GETTERS.timetableDataStatus]
+    );
 
-    if (!timetableId) return;
+    const timetableLoaded = computed(
+      () => timetableDataStatus.value === DataStatus.Loaded
+    );
+    const timetableError = computed(
+      () => timetableDataStatus.value === DataStatus.Error
+    );
 
-    this.changeScheduleShowState(timetableId);
-  }
+    const distanceLimitExceeded = computed(
+      () =>
+        props.computedTrains.findIndex(
+          ({ timetableData }) =>
+            timetableData && timetableData.routeDistance > 200
+        ) != -1
+    );
 
-  onImageError(e: Event) {
-    const imageEl = e.target as HTMLImageElement;
+    return {
+      timetableLoaded,
+      timetableError,
+      distanceLimitExceeded,
+      elList,
+    };
+  },
 
-    imageEl.src = this.defaultLocoImage;
-  }
+  methods: {
+    changeScheduleShowState(timetableId: number) {
+      if (timetableId < 0) return;
 
-  generateStopList(stops: any): string | undefined {
-    if (!stops) return "";
+      this.showedSchedule =
+        this.showedSchedule == timetableId ? 0 : timetableId;
 
-    return stops
-      .reduce((acc, stop: TrainStop, i) => {
-        if (stop.stopType.includes("ph"))
-          acc.push(
-            `<strong style='color:${
-              stop.confirmed ? "springgreen" : "white"
-            }'>${stop.stopName}</strong>`
-          );
-        else if (
-          i > 0 &&
-          i < stops.length - 1 &&
-          !stop.stopNameRAW.includes("po.") &&
-          !stop.stopNameRAW.includes("SBL")
-        )
-          acc.push(`<span style='color:${ stop.confirmed ? "springgreen" : "lightgray" }'>${stop.stopName}</span>`);
-        return acc;
-      }, [])
-      .join(" > ");
-  }
+      this.$nextTick(() => {
+        const currentEl: HTMLElement = this.elList[timetableId];
 
-  calculateCars(locoType: string, cars: string[]) {
-    if (cars.length == 0 && locoType.includes("EN")) return "EZT";
-    else if (cars.length == 0) return "LOK";
+        currentEl.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+        });
+      });
+    },
 
-    return `${this.$t("trains.cars")}: <span style='color:gold'> ${cars.length}</span>`;
-  }
-}
+    onImageError(e: Event) {
+      const imageEl = e.target as HTMLImageElement;
+
+      imageEl.src = this.defaultLocoImage;
+    },
+
+    generateStopList(stops: TrainStop[]): string | undefined {
+      if (!stops) return "";
+
+      return stops
+        .reduce((acc: string[], stop: TrainStop, i: number) => {
+          if (stop.stopType.includes("ph"))
+            acc.push(
+              `<strong style='color:${
+                stop.confirmed ? "springgreen" : "white"
+              }'>${stop.stopName}</strong>`
+            );
+          else if (
+            i > 0 &&
+            i < stops.length - 1 &&
+            !stop.stopNameRAW.includes("po.") &&
+            !stop.stopNameRAW.includes("SBL")
+          )
+            acc.push(
+              `<span style='color:${
+                stop.confirmed ? "springgreen" : "lightgray"
+              }'>${stop.stopName}</span>`
+            );
+          return acc;
+        }, [])
+        .join(" > ");
+    },
+
+    calculateCars(locoType: string, cars: string[]) {
+      if (cars.length == 0 && locoType.includes("EN")) return "EZT";
+      else if (cars.length == 0) return "LOK";
+
+      return `${this.$t("trains.cars")}: <span style='color:gold'> ${
+        cars.length
+      }</span>`;
+    },
+  },
+
+  watch: {
+    queryTrain(trainNo: string) {
+      const timetableId = this.computedTrains.find(
+        (train) => train.trainNo == parseInt(trainNo)
+      )?.timetableData?.timetableId;
+
+      if (!timetableId) return;
+
+      this.changeScheduleShowState(timetableId);
+    },
+  },
+});
 </script>
 
 <style lang="scss" scoped>

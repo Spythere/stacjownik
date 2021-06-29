@@ -3,12 +3,11 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { defineComponent } from "@vue/runtime-core";
 
-@Component
-export default class Loading extends Vue {
-  @Prop() readonly message!: string;
-}
+export default defineComponent({
+  props: ["message"],
+});
 </script>
 
 <style lang="scss" scoped>

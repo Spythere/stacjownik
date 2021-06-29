@@ -1,10 +1,10 @@
-git <template>
+<template>
   <div class="app">
-    <UpdateModal
+    <!-- <UpdateModal
       :currentVersion="VERSION"
       @toggleUpdateModal="toggleUpdateModal"
       v-if="updateModalVisible"
-    />
+    /> -->
 
     <div class="app_container">
       <header class="app_header">
@@ -83,14 +83,18 @@ git <template>
       </header>
 
       <main class="app_main">
-        <transition
-          name="view-anim"
-          mode="out-in"
-        >
-          <keep-alive>
-            <router-view />
-          </keep-alive>
-        </transition>
+
+        <router-view v-slot="{ Component }">
+          <transition
+            name="view-anim"
+            mode="out-in"
+          >
+            <keep-alive>
+              <component :is="Component" />
+            </keep-alive>
+          </transition>
+
+        </router-view>
       </main>
 
       <footer class="app_footer">
@@ -109,81 +113,49 @@ git <template>
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
-import { Action, Getter } from "vuex-class";
-
-import UpdateModal from "@/components/Global/UpdateModal.vue";
+// import UpdateModal from "@/components/Global/UpdateModal.vue";
 import Clock from "@/components/App/Clock.vue";
 
 import StorageManager from "@/scripts/managers/storageManager";
+import { computed, ComputedRef, defineComponent } from "vue";
+import { GETTERS } from "./constants/storeConstants";
 import { StoreData } from "./scripts/interfaces/StoreData";
+import { useStore } from "./store";
+// import { StoreData } from "./scripts/interfaces/StoreData";
 
-@Component({
-  components: { Clock, UpdateModal },
-})
-export default class App extends Vue {
-  @Action("synchronizeData") synchronizeData;
-  @Getter("getAllData") data!: StoreData;
+export default defineComponent({
+  components: {
+    Clock,
+  },
 
-  private VERSION = "1.4.7";
+  setup() {
+    const store = useStore();
+    store.dispatch("synchronizeData");
 
-  hasReleaseNotes = false;
-  updateModalVisible = false;
+    const data: ComputedRef<StoreData> = computed(
+      () => store.getters[GETTERS.allData]
+    );
 
-  currentLang = "pl";
+    return {
+      data,
+    };
+  },
 
-  iconEN = require("@/assets/icon-en.jpg");
-  iconPL = require("@/assets/icon-pl.svg");
+  data: () => ({
+    VERSION: "1.4.7",
+    updateModalVisible: false,
+    hasReleaseNotes: false,
+    currentLang: "pl",
 
-  toggleUpdateModal() {
-    this.updateModalVisible = !this.updateModalVisible;
-    StorageManager.setBooleanValue("version_notes_read", true);
-  }
-
-  changeLang(lang: string) {
-    this.$i18n.locale = lang;
-    this.currentLang = lang;
-
-    StorageManager.setStringValue("lang", lang);
-  }
-
-  loadLang() {
-    const storageLang = StorageManager.getStringValue("lang");
-
-    if (storageLang) {
-      this.changeLang(storageLang);
-      return;
-    }
-
-    if (!window.navigator.language) {
-      this.changeLang("pl");
-      return;
-    }
-
-    switch (window.navigator.language) {
-      case "pl-PL":
-        this.changeLang("pl");
-        break;
-      case "en-EN":
-      default:
-        this.changeLang("en");
-        break;
-    }
-
-    return;
-  }
+    iconEN: require("@/assets/icon-en.jpg"),
+    iconPL: require("@/assets/icon-pl.svg"),
+  }),
 
   created() {
     this.loadLang();
-    this.synchronizeData();
-  }
+  },
 
   mounted() {
-    if (this.detectIEVersion() != -1)
-      alert(
-        "Stacjownik nie wspiera reliktów przeszłości. Przesiądź się na nowszą przeglądarkę!"
-      );
-
     if (StorageManager.getStringValue("version") != this.VERSION) {
       StorageManager.setStringValue("version", this.VERSION);
 
@@ -194,186 +166,48 @@ export default class App extends Vue {
     this.updateModalVisible =
       this.hasReleaseNotes &&
       !StorageManager.getBooleanValue("version_notes_read");
-  }
+  },
 
-  detectIEVersion() {
-    var rv = -1;
-    if (navigator.appName == "Microsoft Internet Explorer") {
-      var ua = navigator.userAgent;
-      var re = new RegExp("MSIE ([0-9]{1,}[\\.0-9]{0,})");
-      if (re.exec(ua) != null) rv = parseFloat(RegExp.$1);
-    } else if (navigator.appName == "Netscape") {
-      var ua = navigator.userAgent;
-      var re = new RegExp("Trident/.*rv:([0-9]{1,}[\\.0-9]{0,})");
-      if (re.exec(ua) != null) rv = parseFloat(RegExp.$1);
-    }
+  methods: {
+    toggleUpdateModal() {
+      this.updateModalVisible = !this.updateModalVisible;
+      StorageManager.setBooleanValue("version_notes_read", true);
+    },
 
-    return rv;
-  }
-}
-</script>
+    changeLang(lang: string) {
+      this.$i18n.locale = lang;
+      this.currentLang = lang;
 
-<style lang="scss">
-@import "./styles/responsive.scss";
-@import "./styles/variables.scss";
-@import "./styles/global.scss";
-@import "./styles/scenery_status.scss";
+      StorageManager.setStringValue("lang", lang);
+    },
 
-:root {
-  --clr-primary: #ffc014;
-  --clr-secondary: #2f2f2f;
+    loadLang() {
+      const storageLang = StorageManager.getStringValue("lang");
 
-  --clr-bg: #333;
-
-  --clr-accent: #1085b3;
-  --clr-accent2: #ff3d5d;
-
-  --clr-skr: #ff5100;
-  --clr-twr: #ffbb00;
-}
-
-// VUE ROUTE CHANGE ANIMATION
-.view-anim {
-  &-enter,
-  &-leave-to {
-    opacity: 0.02;
-  }
-
-  &-enter-active,
-  &-leave-active {
-    transition: all $animDuration $animType;
-    min-height: 100%;
-  }
-}
-
-.route {
-  margin: 0 0.2em;
-
-  &-active {
-    color: $accentCol;
-    font-weight: bold;
-  }
-}
-
-// APP
-.app {
-  background: $bgCol;
-  color: white;
-
-  overflow: hidden;
-
-  font-size: 1rem;
-
-  @include smallScreen() {
-    font-size: calc(0.45rem + 1vw);
-  }
-}
-
-// CONTAINER
-.app_container {
-  display: flex;
-  flex-flow: column;
-
-  min-width: 0;
-  min-height: 100vh;
-
-  header {
-    flex: 0 0 auto;
-  }
-
-  main {
-    flex: 1 1 auto;
-  }
-
-  footer {
-    flex: 0 1 0.2em;
-  }
-}
-
-// HEADER
-.app_header {
-  background: $primaryCol;
-  padding: 0.15em;
-
-  border-radius: 0 0 1em 1em;
-
-  display: flex;
-  justify-content: center;
-}
-
-.header {
-  &_brand {
-    position: relative;
-    width: 100%;
-    font-size: 4.25em;
-
-    text-align: center;
-
-    img {
-      width: 0.8em;
-    }
-
-    .brand_lang {
-      position: absolute;
-      right: 0;
-
-      transform: translate(110%, -35%);
-
-      img {
-        width: 0.6em;
+      if (storageLang) {
+        this.changeLang(storageLang);
+        return;
       }
 
-      cursor: pointer;
-    }
-  }
+      if (!window.navigator.language) {
+        this.changeLang("pl");
+        return;
+      }
 
-  &_info {
-    display: flex;
-    justify-content: space-between;
+      switch (window.navigator.language) {
+        case "pl-PL":
+          this.changeLang("pl");
+          break;
+        case "en-EN":
+        default:
+          this.changeLang("en");
+          break;
+      }
 
-    font-size: 1.25em;
+      return;
+    },
+  },
+});
+</script>
 
-    margin: 0 0.3em;
-    padding: 0.2em;
-  }
-
-  &_links {
-    display: flex;
-    justify-content: center;
-
-    border-radius: 0.7em;
-
-    font-size: 1.25em;
-    padding: 0.5em;
-  }
-}
-
-// COUNTER
-.info_counter {
-  display: flex;
-  align-items: center;
-  color: $accentCol;
-
-  span {
-    margin: 0 0.15em;
-  }
-
-  img {
-    width: 1.35em;
-  }
-}
-
-// FOOTER
-footer.app_footer {
-  max-width: 100%;
-  padding: 0.5em;
-
-  z-index: 10;
-
-  background: #111;
-  color: white;
-
-  text-align: center;
-  vertical-align: middle;
-}
-</style>
+<style lang="scss" src="./App.scss"></style>

@@ -1,11 +1,12 @@
 export default interface Filter {
+  [key: string]: (boolean | number),
   default: boolean;
   notDefault: boolean;
   real: boolean;
   fictional: boolean;
-  SPK: boolean;
-  SCS: boolean;
-  SPE: boolean;
+  "SPK": boolean;
+  "SCS": boolean;
+  "SPE": boolean;
   ręczne: boolean;
   mechaniczne: boolean;
   współczesna: boolean;
@@ -23,4 +24,5 @@ export default interface Filter {
   free: boolean;
   occupied: boolean;
   ending: boolean;
+  nonPublic: boolean;
 }

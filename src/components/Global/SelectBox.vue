@@ -1,12 +1,22 @@
 <template>
   <div class="select-box">
     <div class="select-box_content">
-      <button class="selected" @click="toggleBox">
-        {{ selectedItemComp ? selectedItemComp.value : "" }}
+      <button
+        class="selected"
+        @click="toggleBox"
+      >
+        {{ computedSelectedItem.value }}
       </button>
 
-      <div class="options" v-if="boxVisible">
-        <div class="option" v-for="item in itemList" :key="item.id">
+      <div
+        class="options"
+        v-if="boxVisible"
+      >
+        <div
+          class="option"
+          v-for="item in itemList"
+          :key="item.id"
+        >
           <label :for="item.id">
             <input
               type="button"
@@ -15,7 +25,7 @@
               @click="selectOption(item)"
             />
 
-            <span :style="selectedItemComp.id == item.id ? 'color: gold;' : ''">
+            <span :style="computedSelectedItem.id == item.id ? 'color: gold;' : ''">
               {{ item.value }}
             </span>
           </label>
@@ -24,51 +34,79 @@
     </div>
 
     <div class="arrow">
-      <img :src="boxVisible ? ascIcon : descIcon" alt="arrow-icon" />
+      <img
+        :src="boxVisible ? ascIcon : descIcon"
+        alt="arrow-icon"
+      />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Emit } from "vue-property-decorator";
+import {
+  computed,
+  defineComponent,
+  defineEmit,
+  Ref,
+  ref,
+} from "@vue/runtime-core";
 
-@Component
-export default class SelectBox extends Vue {
-  @Prop({ required: true }) itemList!: { id: string | number; value: string }[];
-  @Prop({ default: 0 }) defaultItemIndex!: number;
-
-  boxVisible = false;
-
-  test() {
-    console.log("test");
-  }
-
-  @Emit("selected")
-  onItemSelected() {
-    return this.selectedItem;
-  }
-
-  ascIcon = require("@/assets/icon-arrow-asc.svg");
-  descIcon = require("@/assets/icon-arrow-desc.svg");
-
-  selectedItem: { id: string | number; value: string } | null = null;
-
-  get selectedItemComp() {
-    if (!this.selectedItem) return this.itemList[this.defaultItemIndex];
-
-    return this.itemList.find((item) => item.id === this.selectedItem?.id);
-  }
-
-  toggleBox() {
-    this.boxVisible = !this.boxVisible;
-  }
-
-  selectOption(item: { id: string | number; value: string }) {
-    this.selectedItem = item;
-    this.boxVisible = false;
-    this.onItemSelected();
-  }
+interface Item {
+  id: string | number;
+  value: string;
 }
+
+export default defineComponent({
+  emits: ["selected"],
+
+  props: {
+    itemList: {
+      type: Array as () => Item[],
+      required: true,
+    },
+
+    defaultItemIndex: {
+      type: Number,
+      default: 0,
+    },
+  },
+
+  data: () => ({
+    ascIcon: require("@/assets/icon-arrow-asc.svg"),
+    descIcon: require("@/assets/icon-arrow-desc.svg"),
+  }),
+
+  setup(props) {
+    let boxVisible = ref(false);
+    let selectedItem: Ref<Item> = ref(props.itemList[props.defaultItemIndex]);
+
+    const computedSelectedItem = computed(() => {
+      return (
+        props.itemList.find((item) => item.id === selectedItem.value.id) ||
+        props.itemList[props.defaultItemIndex]
+      );
+    });
+
+    return {
+      computedSelectedItem,
+      boxVisible,
+      selectedItem,
+    };
+  },
+
+  methods: {
+    selectOption(item: Item) {
+      this.selectedItem = item;
+      this.boxVisible = false;
+
+      this.$emit("selected", item);
+    },
+
+    toggleBox() {
+      this.boxVisible = !this.boxVisible;
+    },
+  },
+});
 </script>
 
 <style lang="scss" scoped>

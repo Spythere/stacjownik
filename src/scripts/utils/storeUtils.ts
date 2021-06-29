@@ -1,10 +1,9 @@
 import Station from "../interfaces/Station";
 import TrainStop from "../interfaces/TrainStop";
 
-const timetableURL = (trainNo: number) => `https://api.td2.info.pl:9640/?method=readFromSWDR&value=getTimetable%3B${trainNo}%3Beu`;
-const getLocoURL = (locoType: string) => `https://rj.td2.info.pl/dist/img/thumbnails/${locoType.includes("EN") ? locoType + "rb" : locoType}.png`;
+export const getLocoURL = (locoType: string): string => (`https://rj.td2.info.pl/dist/img/thumbnails/${locoType.includes("EN") ? locoType + "rb" : locoType}.png`)
 
-const getStatusID = (stationStatus: any) => {
+export const getStatusID = (stationStatus: any): string => {
   if (!stationStatus) return "not-signed";
 
   const statusCode = stationStatus[2];
@@ -33,7 +32,7 @@ const getStatusID = (stationStatus: any) => {
   return "unavailable";
 };
 
-const getStatusTimestamp = (stationStatus: any) => {
+export const getStatusTimestamp = (stationStatus: any): number => {
   if (!stationStatus) return -2;
 
   const statusCode = stationStatus[2];
@@ -56,7 +55,7 @@ const getStatusTimestamp = (stationStatus: any) => {
   return -1;
 };
 
-const parseSpawns = (spawnString: string) => {
+export const parseSpawns = (spawnString: string) => {
   if (!spawnString) return [];
   if (spawnString === "NO_SPAWN") return [];
 
@@ -69,9 +68,9 @@ const parseSpawns = (spawnString: string) => {
   });
 };
 
-const getTimestamp = (date: string | null) => (date ? new Date(date).getTime() : 0);
+export const getTimestamp = (date: string | null): number => (date ? new Date(date).getTime() : 0);
 
-const timestampToString = (timestamp: number | null) =>
+export const timestampToString = (timestamp: number | null): string =>
   timestamp
     ? new Date(timestamp).toLocaleTimeString("pl-PL", {
         hour: "2-digit",
@@ -79,10 +78,10 @@ const timestampToString = (timestamp: number | null) =>
       })
     : "";
 
-const getTrainStopStatus = (stopInfo: TrainStop, timetableData: { currentStationName: string }, station: Station) => {
-  let stopStatus: string = "",
-    stopLabel: string = "",
-    stopStatusID: number = -1;
+export const getTrainStopStatus = (stopInfo: TrainStop, timetableData: { currentStationName: string }, station: Station) => {
+  let stopStatus = "",
+    stopLabel = "",
+    stopStatusID = -1;
 
   if (stopInfo.terminatesHere && stopInfo.confirmed) {
     stopStatus = "terminated";
@@ -111,15 +110,4 @@ const getTrainStopStatus = (stopInfo: TrainStop, timetableData: { currentStation
   }
 
   return { stopStatus, stopLabel, stopStatusID };
-};
-
-export default {
-  timetableURL,
-  getLocoURL,
-  getStatusID,
-  parseSpawns,
-  getTimestamp,
-  timestampToString,
-  getStatusTimestamp,
-  getTrainStopStatus
 };
