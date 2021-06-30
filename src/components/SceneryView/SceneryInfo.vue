@@ -7,14 +7,12 @@
           :href="stationInfo.stationURL"
           target="_blank"
           rel="noopener noreferrer"
-        >{{ stationInfo.stationName }}</a>
+          >{{ stationInfo.stationName }}</a
+        >
 
         <span v-else>{{ stationInfo.stationName }}</span>
       </div>
-      <div
-        class="scenery-hash"
-        v-if="stationInfo.stationHash"
-      >
+      <div class="scenery-hash" v-if="stationInfo.stationHash">
         #{{ stationInfo.stationHash }}
       </div>
     </div>
@@ -25,36 +23,24 @@
         :class="!stationInfo.stationHash ? 'no-stats' : ''"
       >
         <span class="likes">
-          <img
-            :src="likeIcon"
-            alt="icon-like"
-          />
+          <img :src="likeIcon" alt="icon-like" />
           <span>{{ stationInfo.dispatcherRate }}</span>
         </span>
 
         <span class="users">
-          <img
-            :src="userIcon"
-            alt="icon-user"
-          />
+          <img :src="userIcon" alt="icon-user" />
           <span>{{ stationInfo.currentUsers }}</span>
           /
           <span>{{ stationInfo.maxUsers }}</span>
         </span>
 
         <span class="spawns">
-          <img
-            :src="spawnIcon"
-            alt="icon-spawn"
-          />
+          <img :src="spawnIcon" alt="icon-spawn" />
           <span>{{ stationInfo.spawns.length }}</span>
         </span>
 
         <span class="schedules">
-          <img
-            :src="timetableIcon"
-            alt="icon-timetable"
-          />
+          <img :src="timetableIcon" alt="icon-timetable" />
           <span v-if="stationInfo.scheduledTrains">
             <span style="color: #eee">{{
               stationInfo.scheduledTrains.length
@@ -90,45 +76,42 @@
 
         <img
           v-if="stationInfo.SBL && stationInfo.SBL !== ''"
-          :src="require(`@/assets/icon-SBL.svg`)"
+          :src="SBLIcon"
           alt="SBL"
           :title="$t('desc.SBL') + `${stationInfo.SBL}`"
         />
 
         <img
           v-if="stationInfo.default"
-          :src="require(`@/assets/icon-td2.svg`)"
+          :src="td2Icon"
           alt="default-pack"
           :title="$t('desc.default')"
         />
 
         <img
           v-if="stationInfo.nonPublic || !stationInfo.reqLevel"
-          :src="require(`@/assets/icon-lock.svg`)"
+          :src="lockIcon"
           alt="non-public"
           :title="$t('desc.non-public')"
         />
 
         <img
           v-if="stationInfo.unavailable"
-          :src="require(`@/assets/icon-unavailable.svg`)"
+          :src="unavailableIcon"
           alt="icon-unavailable"
           :title="$t('desc.unavailable')"
         />
 
         <img
           v-if="stationInfo.stationLines && stationInfo.stationLines != ''"
-          :src="require('@/assets/icon-real.svg')"
+          :src="realIcon"
           alt="real"
           :title="$t('desc.real')"
         />
       </div>
 
       <div class="info-dispatcher">
-        <div
-          class="dispatcher"
-          v-if="stationInfo.stationHash"
-        >
+        <div class="dispatcher" v-if="stationInfo.stationHash">
           <span
             class="dispatcher_level"
             :style="
@@ -146,10 +129,7 @@
           <span class="dispatcher_name">{{ stationInfo.dispatcherName }}</span>
         </div>
 
-        <span
-          class="status-badge"
-          :class="stationInfo.statusID"
-        >
+        <span class="status-badge" :class="stationInfo.statusID">
           {{ $t(`status.${stationInfo.statusID}`) }}
           {{
             stationInfo.statusID == "online" ? stationInfo.statusTimeString : ""
@@ -161,10 +141,7 @@
         <div class="user-list">
           <h3 class="user-header">
             {{ $t("scenery.users") }}
-            <img
-              :src="userIcon"
-              alt="icon-user"
-            />
+            <img :src="userIcon" alt="icon-user" />
           </h3>
 
           <div
@@ -189,10 +166,7 @@
         <div class="spawn-list">
           <h3 class="spawn-header">
             {{ $t("scenery.spawns") }}
-            <img
-              :src="spawnIcon"
-              alt="icon-spawn"
-            />
+            <img :src="spawnIcon" alt="icon-spawn" />
           </h3>
 
           <span
@@ -207,7 +181,7 @@
           <span
             class="spawn none"
             v-if="!stationInfo.spawns || stationInfo.spawns.length == 0"
-          >{{ $t("scenery.no-spawns") }}
+            >{{ $t("scenery.no-spawns") }}
           </span>
         </div>
       </div>
@@ -224,6 +198,7 @@ export default defineComponent({
   props: {
     stationInfo: {
       type: Object as () => Station,
+      default: {},
     },
 
     timetableOnly: Boolean,
@@ -236,6 +211,12 @@ export default defineComponent({
     spawnIcon: require("@/assets/icon-spawn.svg"),
     timetableIcon: require("@/assets/icon-timetable.svg"),
     userIcon: require("@/assets/icon-user.svg"),
+
+    SBLIcon: require("@/assets/icon-SBL.svg"),
+    td2Icon: require("@/assets/icon-td2.svg"),
+    lockIcon: require("@/assets/icon-lock.svg"),
+    unavailableIcon: require("@/assets/icon-unavailable.svg"),
+    realIcon: require("@/assets/icon-real.svg"),
   }),
 
   setup(props) {

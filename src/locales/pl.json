@@ -104,8 +104,8 @@
     "option-length": "długość",
     "option-distance": "kilometraż",
     "option-timetable": "numer pociągu",
-    "search-no": "Szukaj nr pociągu...",
-    "search-driver": "Szukaj maszynisty...",
+    "search-no": "Szukaj nr pociągu",
+    "search-driver": "Szukaj maszynisty",
     "detailed-timetable": "Szczegółowy rozkład jazdy pociągu ",
     "via-title": "Przez: ",
     "no-timetable": "brak rozkładu jazdy",
@@ -142,5 +142,9 @@
     "terminated": "Skończył bieg",
     "begins": "ROZPOCZYNA\nBIEG",
     "terminates": "KOŃCZY BIEG"
+  },
+  "history": {
+    "search-train": "Szukaj nr pociągu",
+    "search-driver": "Szukaj maszynisty"
   }
 }

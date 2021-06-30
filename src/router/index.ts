@@ -21,6 +21,15 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/views/SceneryView.vue"),
     props: true
   },
+  {
+    path: "/history",
+    name: "HistoryView",
+    component: () => import("@/views/HistoryView.vue"),
+  },
+  {
+    path: '/:catchAll(.*)',
+    redirect: "/"
+  }
 ]
 
 const router = createRouter({

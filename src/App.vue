@@ -81,7 +81,6 @@
 </template>
 
 <script lang="ts">
-// import UpdateModal from "@/components/Global/UpdateModal.vue";
 import Clock from "@/components/App/Clock.vue";
 
 import StorageManager from "@/scripts/managers/storageManager";
@@ -89,7 +88,6 @@ import { computed, ComputedRef, defineComponent } from "vue";
 import { GETTERS } from "./constants/storeConstants";
 import { StoreData } from "./scripts/interfaces/StoreData";
 import { useStore } from "./store";
-// import { StoreData } from "./scripts/interfaces/StoreData";
 
 export default defineComponent({
   components: {

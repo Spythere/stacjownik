@@ -142,5 +142,9 @@
     "terminated": "Terminated",
     "begins": "BEGINS HERE",
     "terminates": "TERMINATES\nHERE"
+  },
+  "history": {
+    "search-train": "Search by train number",
+    "search-driver": "Search by driver name"
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="stations-view">
+  <section class="stations-view">
     <div class="wrapper">
       <div class="body">
         <div class="options-bar">
@@ -13,15 +13,12 @@
           </action-button>
 
           <div class="paypal-link">
-            <a
-              target="_blank"
-              href="https://paypal.me/spythere"
-            >
+            <a target="_blank" href="https://paypal.me/spythere">
               <img
                 src="https://img.shields.io/badge/PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white"
                 alt="PayPal image"
                 style="width: 7em"
-              >
+              />
             </a>
           </div>
         </div>
@@ -43,7 +40,7 @@
         @resetFilters="resetFilters"
       />
     </transition>
-  </div>
+  </section>
 </template>
 
 <script lang="ts">
