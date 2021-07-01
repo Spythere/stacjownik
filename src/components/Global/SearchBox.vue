@@ -11,7 +11,7 @@
       class="search-exit"
       :src="exitIcon"
       alt="exit-icon"
-      @click="() => (compSearchedValue = '')"
+      @click="clearValue"
     />
   </div>
 </template>
@@ -23,6 +23,7 @@ export default defineComponent({
   data: () => ({
     exitIcon: require("@/assets/icon-exit.svg"),
   }),
+  emits: ["update:searchedValue", "clearValue"],
   props: {
     searchedValue: {
       type: String,
@@ -35,6 +36,9 @@ export default defineComponent({
     titleToTranslate: {
       type: String,
       required: true,
+    },
+    clearValue: {
+      type: Function,
     },
   },
 
@@ -50,6 +54,11 @@ export default defineComponent({
       );
     }
 
+    const clearValue = () => {
+      compSearchedValue.value = "";
+      emit("clearValue");
+    };
+
     const updateValue = (e) => {
       if (!props.updateOnInput && e.keyCode == 13)
         emit("update:searchedValue", compSearchedValue.value);
@@ -58,6 +67,7 @@ export default defineComponent({
     return {
       compSearchedValue,
       updateValue,
+      clearValue,
     };
   },
 });

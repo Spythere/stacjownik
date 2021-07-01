@@ -2,18 +2,31 @@
   <section class="history-view">
     <h2>Historia rozkładów jazdy</h2>
 
-    <div style="display: flex; justify-content: center; align-items: center">
+    <div
+      style="
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+      "
+    >
       <search-box
-        v-model:searchedValue="searchDriver"
+        v-model:searchedValue="searchedDriver"
         titleToTranslate="history.search-driver"
-        :updateOnInput="false"
+        @clearValue="clearDriver"
+        @keypress="keyPressed"
       ></search-box>
 
       <search-box
-        v-model:searchedValue="searchTrain"
+        v-model:searchedValue="searchedTrain"
         titleToTranslate="history.search-train"
-        :updateOnInput="false"
+        @clearValue="clearTrain"
+        @keypress="keyPressed"
       ></search-box>
+
+      <action-button @click="search" style="margin-left: 0.5em">
+        Szukaj
+      </action-button>
     </div>
 
     <div class="history_list">
@@ -27,8 +40,9 @@
                     !item.terminated ? navigateToTrain(item.trainNo) : null
                 "
                 style="cursor: pointer"
-                >{{ item.trainCategoryCode }} {{ item.trainNo }}</span
               >
+                {{ item.trainCategoryCode }} {{ item.trainNo }}
+              </span>
 
               <div>
                 <b>{{ item.route.replace("|", " - ") }}</b>
@@ -62,12 +76,17 @@
             </div>
 
             <div>
-              <b>Rozpoczęcie:</b>
-              {{ new Date(item.beginDate).toLocaleString() }}
+              <b>Stacje:</b>
+              {{ item.confirmedStopsCount }} /
+              {{ item.allStopsCount }}
             </div>
+
             <div>
-              <b>Zakończenie:</b> {{ new Date(item.endDate).toLocaleString() }}
+              <b>Rozpoczęcie:</b>
+              {{ localeDate(item.beginDate) }}
             </div>
+
+            <div><b>Zakończenie:</b> {{ localeDate(item.endDate) }}</div>
           </div>
         </li>
       </ul>
@@ -76,12 +95,15 @@
 </template>
 
 <script lang="ts">
-import SearchBox from "@/components/Global/SearchBox.vue";
+import { defineComponent, Ref, ref } from "vue";
 import axios from "axios";
-import { computed, defineComponent, Ref, ref } from "vue";
+
+import ActionButton from "@/components/Global/ActionButton.vue";
+import SearchBox from "@/components/Global/SearchBox.vue";
+import dateMixin from "@/mixins/dateMixin";
 
 const API_URL =
-  "https://stacjownik-api-m9z4k.ondigitalocean.app/api/getTimetables?count=15";
+  "https://stacjownik-api-m9z4k.ondigitalocean.app/api/getTimetables";
 
 interface APIResponse {
   errorMessage: string | null;
@@ -112,34 +134,44 @@ interface TimetableHistory {
   fulfilled: boolean;
 }
 
-async function fetchData(): Promise<TimetableHistory[] | null> {
+async function fetchData(props: {
+  searchedDriver?: string;
+  searchedTrain?: string;
+  maxCount?: number;
+}): Promise<TimetableHistory[] | null> {
+  const queries: string[] = [];
+
+  if (!props.searchedDriver && !props.searchedTrain) queries.push("count=15");
+  if (props.maxCount) queries.push(`count=${props.maxCount}`);
+  if (props.searchedDriver) queries.push(`driver=${props.searchedDriver}`);
+  if (props.searchedTrain) queries.push(`train=${props.searchedTrain}`);
+
   const responseData: APIResponse | null = await (
-    await axios.get(API_URL)
+    await axios.get(`${API_URL}?${queries.join("&")}`)
   ).data;
 
   return responseData?.response || null;
 }
 
 export default defineComponent({
-  components: { SearchBox },
+  components: { SearchBox, ActionButton },
+  mixins: [dateMixin],
   setup() {
-    // const historyList = computed(async () => await fetchData());
     const historyList: Ref<TimetableHistory[] | null> = ref([]);
-    const searchDriver = ref("");
-    const searchTrain = ref("");
+    const searchedDriver = ref("");
+    const searchedTrain = ref("");
+    const maxCount = ref(15);
 
     (async () => {
-      const response = await fetchData();
-
+      const response = await fetchData({});
       historyList.value = response;
-
-      console.log(response);
     })();
 
     return {
       historyList,
-      searchDriver,
-      searchTrain,
+      searchedDriver,
+      searchedTrain,
+      maxCount,
     };
   },
   methods: {
@@ -148,6 +180,29 @@ export default defineComponent({
         name: "TrainsView",
         params: { queryTrain: trainNo.toString() },
       });
+    },
+
+    clearDriver() {
+      this.searchedDriver = "";
+
+      this.search();
+    },
+
+    clearTrain() {
+      this.searchedTrain = "";
+
+      this.search();
+    },
+
+    async search() {
+      this.historyList = await fetchData({
+        searchedDriver: this.searchedDriver,
+        searchedTrain: this.searchedTrain,
+      });
+    },
+
+    keyPressed({ keyCode }) {
+      if (keyCode == 13) this.search();
     },
   },
 });
@@ -199,7 +254,7 @@ h3 {
 }
 
 ul {
-  width: 800px;
+  width: 1000px;
 }
 
 li {
