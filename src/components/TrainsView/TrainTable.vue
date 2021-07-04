@@ -21,10 +21,10 @@
         v-for="(train, i) in computedTrains"
         :key="i"
         :ref="
-          train.timetableData &&
-          ((el) => {
+          (el) => {
+            if (!train.timetableData) return;
             elList[train.timetableData.timetableId] = el;
-          })
+          }
         "
       >
         <div
@@ -169,7 +169,7 @@
           <TrainSchedule
             :followingStops="train.timetableData.followingStops"
             :currentStationName="train.currentStationName"
-            @click="changeScheduleShowState(train.timetableData.timetableId)"
+            @click="changeScheduleShowState(train.timetableData?.timetableId)"
           />
         </div>
       </li>
@@ -259,7 +259,7 @@ export default defineComponent({
 
   setup(props) {
     const store = useStore();
-    const elList: Ref<HTMLElement[]> = ref([]);
+    const elList: Ref<(HTMLElement | null)[]> = ref([]);
 
     onBeforeUpdate(() => {
       elList.value.length = 0;
@@ -293,16 +293,25 @@ export default defineComponent({
   },
 
   methods: {
+    focusOnTrain(trainNoStr: string) {
+      const timetableId = this.computedTrains.find(
+        (train) => train.trainNo == Number(trainNoStr)
+      )?.timetableData?.timetableId;
+
+      if (!timetableId) return;
+
+      this.changeScheduleShowState(timetableId);
+    },
+
     changeScheduleShowState(timetableId: number | undefined) {
       if (!timetableId || timetableId < 0) return;
 
       this.showedSchedule =
         this.showedSchedule == timetableId ? 0 : timetableId;
-
       this.$nextTick(() => {
-        const currentEl: HTMLElement = this.elList[timetableId];
+        const currentEl = this.elList[timetableId];
 
-        currentEl.scrollIntoView({
+        currentEl?.scrollIntoView({
           behavior: "smooth",
           block: "nearest",
         });
@@ -352,16 +361,8 @@ export default defineComponent({
     },
   },
 
-  watch: {
-    queryTrain(trainNo: string) {
-      const timetableId = this.computedTrains.find(
-        (train) => train.trainNo == parseInt(trainNo)
-      )?.timetableData?.timetableId;
-
-      if (!timetableId) return;
-
-      this.changeScheduleShowState(timetableId);
-    },
+  activated() {
+    if (this.queryTrain) this.focusOnTrain(this.queryTrain);
   },
 });
 </script>
@@ -388,7 +389,7 @@ img.train-image {
 .traffic-warning {
   padding: 1em 0.5em;
   margin-bottom: 0.5em;
-  background: firebrick;
+  background: var(--clr-warning);
 }
 
 .train {

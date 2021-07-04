@@ -2,10 +2,7 @@
   <section class="trains-view">
     <div class="wrapper">
       <div class="options-bar">
-        <TrainStats
-          :trains="trainList"
-          :trainStatsOpen="trainStatsOpen"
-        />
+        <TrainStats :trains="trainList" :trainStatsOpen="trainStatsOpen" />
 
         <TrainOptions
           :queryTrain="queryTrain"
@@ -15,10 +12,7 @@
         />
       </div>
 
-      <TrainTable
-        :computedTrains="computedTrains"
-        :queryTrain="queryTrain"
-      />
+      <TrainTable :computedTrains="computedTrains" :queryTrain="queryTrain" />
     </div>
   </section>
 </template>

@@ -30,77 +30,110 @@
     </div>
 
     <div class="history_list">
-      <transition-group name="list" tag="ul">
-        <li v-for="(item, i) in historyList" :key="i">
-          <div class="history_item-top">
-            <span>
-              <span
-                @click="
-                  () =>
-                    !item.terminated ? navigateToTrain(item.trainNo) : null
-                "
-                style="cursor: pointer"
-              >
-                {{ item.trainCategoryCode }} {{ item.trainNo }}
-              </span>
+      <div class="list_wrapper">
+        <transition name="warning" mode="out-in">
+          <div :key="historyDataStatus.status">
+            <div v-if="isDataLoading" class="history_warning">Ładowanie...</div>
 
-              <div>
-                <b>{{ item.route.replace("|", " - ") }}</b>
-              </div>
-            </span>
-
-            <span
-              class="history_item-status"
-              :class="{
-                fulfilled: item.fulfilled,
-                terminated: item.terminated && !item.fulfilled,
-                active: !item.terminated,
-              }"
+            <div
+              v-if="!isDataLoading && isDataError"
+              class="history_warning error"
             >
-              {{
-                !item.terminated
-                  ? "AKTYWNY"
-                  : item.fulfilled
-                  ? "WYPEŁNIONY"
-                  : "NIEWYPEŁNIONY"
-              }}
-            </span>
+              Wystąpił błąd!
+            </div>
+
+            <div
+              class="history_warning"
+              v-if="!isDataLoading && !isDataError && historyList.length == 0"
+            >
+              Brak wyników!
+            </div>
+
+            <ul v-if="!isDataLoading && !isDataError">
+              <li
+                v-for="(item, i) in historyList"
+                :key="item.timetableId"
+                :style="`--delay: ${i * 50}ms`"
+              >
+                <div class="history_item-top">
+                  <span>
+                    <span
+                      @click="
+                        navigateToTrain(!item.terminated ? item.trainNo : null)
+                      "
+                      style="cursor: pointer"
+                    >
+                      <b class="text--primary">{{ item.trainCategoryCode }}</b>
+                      {{ item.trainNo }}
+                    </span>
+
+                    <div>
+                      <b>{{ item.route.replace("|", " - ") }}</b>
+                    </div>
+                  </span>
+
+                  <span
+                    class="history_item-status"
+                    :class="{
+                      fulfilled: item.fulfilled,
+                      terminated: item.terminated && !item.fulfilled,
+                      active: !item.terminated,
+                    }"
+                  >
+                    {{
+                      !item.terminated
+                        ? "AKTYWNY"
+                        : item.fulfilled
+                        ? "WYPEŁNIONY"
+                        : "NIEWYPEŁNIONY"
+                    }}
+                  </span>
+                </div>
+
+                <div style="margin: 1em 0">
+                  <div>
+                    <b>Maszynista:</b>
+                    {{ item.driverName }}
+                  </div>
+                  <div>
+                    <b>Kilometraż:</b>
+                    {{ !item.fulfilled ? item.currentDistance + " /" : "" }}
+                    {{ item.routeDistance }} km
+                  </div>
+
+                  <div>
+                    <b>Stacje:</b>
+                    {{ item.confirmedStopsCount }} /
+                    {{ item.allStopsCount }}
+                  </div>
+
+                  <div>
+                    <b>Rozpoczęcie:</b>
+                    {{ localeDate(item.beginDate) }}
+                  </div>
+
+                  <div>
+                    <b>Zakończenie:</b>
+                    {{ localeDate(item.endDate) }}
+                  </div>
+                </div>
+              </li>
+            </ul>
           </div>
-
-          <div style="margin: 1em 0">
-            <div><b>Maszynista:</b> {{ item.driverName }}</div>
-            <div>
-              <b>Kilometraż:</b>
-              {{ !item.fulfilled ? item.currentDistance + " /" : "" }}
-              {{ item.routeDistance }} km
-            </div>
-
-            <div>
-              <b>Stacje:</b>
-              {{ item.confirmedStopsCount }} /
-              {{ item.allStopsCount }}
-            </div>
-
-            <div>
-              <b>Rozpoczęcie:</b>
-              {{ localeDate(item.beginDate) }}
-            </div>
-
-            <div><b>Zakończenie:</b> {{ localeDate(item.endDate) }}</div>
-          </div>
-        </li>
-      </transition-group>
+        </transition>
+      </div>
     </div>
   </section>
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref, ref } from "vue";
+import { computed, defineComponent, Ref, ref } from "vue";
 import axios from "axios";
 
 import ActionButton from "@/components/Global/ActionButton.vue";
 import SearchBox from "@/components/Global/SearchBox.vue";
 import dateMixin from "@/mixins/dateMixin";
+import { DataStatus } from "@/scripts/enums/DataStatus";
 
 const API_URL =
   "https://stacjownik-api-m9z4k.ondigitalocean.app/api/getTimetables";
@@ -134,49 +167,86 @@ interface TimetableHistory {
   fulfilled: boolean;
 }
 
-async function fetchData(props: {
-  searchedDriver?: string;
-  searchedTrain?: string;
-  maxCount?: number;
-}): Promise<TimetableHistory[] | null> {
-  const queries: string[] = [];
-
-  if (!props.searchedDriver && !props.searchedTrain) queries.push("count=15");
-  if (props.maxCount) queries.push(`count=${props.maxCount}`);
-  if (props.searchedDriver) queries.push(`driver=${props.searchedDriver}`);
-  if (props.searchedTrain) queries.push(`train=${props.searchedTrain}`);
-
-  const responseData: APIResponse | null = await (
-    await axios.get(`${API_URL}?${queries.join("&")}`)
-  ).data;
-
-  return responseData?.response || null;
-}
-
 export default defineComponent({
   components: { SearchBox, ActionButton },
   mixins: [dateMixin],
   setup() {
     const historyList: Ref<TimetableHistory[]> = ref([]);
+    const historyDataStatus: Ref<{ status: DataStatus; error: string | null }> =
+      ref({ status: DataStatus.Loading, error: null });
+
     const searchedDriver = ref("");
     const searchedTrain = ref("");
     const maxCount = ref(15);
 
-    (async () => {
-      const response = await fetchData({});
+    const fetchHistoryData = async (
+      props: {
+        searchedDriver?: string;
+        searchedTrain?: string;
+        maxCount?: number;
+      } = {}
+    ) => {
+      historyDataStatus.value.status = DataStatus.Loading;
 
-      if (response) historyList.value = response;
-    })();
+      const queries: string[] = [];
+
+      if (!props.searchedDriver && !props.searchedTrain)
+        queries.push("count=15");
+      if (props.maxCount) queries.push(`count=${props.maxCount}`);
+      if (props.searchedDriver) queries.push(`driver=${props.searchedDriver}`);
+      if (props.searchedTrain) queries.push(`train=${props.searchedTrain}`);
+
+      try {
+        const responseData: APIResponse | null = await (
+          await axios.get(`${API_URL}?${queries.join("&")}`)
+        ).data;
+
+        if (!responseData) {
+          historyDataStatus.value.status = DataStatus.Error;
+          historyDataStatus.value.error = "Brak danych!";
+          return;
+        }
+
+        if (responseData.errorMessage) {
+          historyDataStatus.value.status = DataStatus.Error;
+          historyDataStatus.value.error = responseData.errorMessage;
+
+          return;
+        }
+
+        if (!responseData.response) return;
+
+        // Response data exists
+        historyList.value = responseData.response;
+        historyDataStatus.value.status = DataStatus.Loaded;
+      } catch (error) {
+        historyDataStatus.value.status = DataStatus.Error;
+        historyDataStatus.value.error = "Ups! Coś poszło nie tak!";
+      }
+    };
+
+    // on created
+    fetchHistoryData();
 
     return {
       historyList,
       searchedDriver,
       searchedTrain,
       maxCount,
+      fetchHistoryData,
+      historyDataStatus,
+      isDataLoading: computed(
+        () => historyDataStatus.value.status === DataStatus.Loading
+      ),
+      isDataError: computed(
+        () => historyDataStatus.value.status === DataStatus.Error
+      ),
     };
   },
   methods: {
-    navigateToTrain(trainNo: number) {
+    navigateToTrain(trainNo: number | null) {
+      if (!trainNo) return;
+
       this.$router.push({
         name: "TrainsView",
         params: { queryTrain: trainNo.toString() },
@@ -196,12 +266,10 @@ export default defineComponent({
     },
 
     async search() {
-      const response = await fetchData({
+      this.fetchHistoryData({
         searchedDriver: this.searchedDriver,
         searchedTrain: this.searchedTrain,
       });
-
-      if (response) this.historyList = response;
     },
 
     keyPressed({ keyCode }) {
@@ -212,8 +280,22 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.warning {
+  &-enter-from,
+  &-leave-to {
+    opacity: 0;
+  }
+
+  &-enter-active {
+    transition: all 100ms ease-out;
+  }
+
+  &-leave-active {
+    transition: all 100ms ease-out 100ms;
+  }
+}
+
 .history-view {
-  /* min-height: 100vh; */
   height: 100%;
 
   padding: 2em;
@@ -222,10 +304,6 @@ export default defineComponent({
 h2 {
   text-align: center;
   margin-bottom: 1rem;
-}
-
-h3 {
-  text-align: center;
 }
 
 .history_list {
@@ -256,30 +334,23 @@ h3 {
   }
 }
 
-ul {
+.history_warning {
+  text-align: center;
+  font-size: 1.3em;
+
+  &.error {
+    background-color: var(--clr-error);
+  }
+}
+
+.list_wrapper {
   width: 1000px;
 }
 
-li {
+li,
+.history_warning {
   background: #202020;
   padding: 1em;
   margin: 1em 0;
-}
-
-.list-enter-active,
-.list-leave-active {
-  transition: all 350ms ease;
-}
-
-.list-enter-from,
-.list-leave-to {
-  opacity: 0;
-  transform: scale(0.95);
-  /* transform: translateX(30px); */
-}
-
-.list-enter-to,
-.list-leave-from {
-  opacity: 1;
 }
 </style>
