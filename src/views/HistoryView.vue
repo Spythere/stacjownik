@@ -30,8 +30,8 @@
     </div>
 
     <div class="history_list">
-      <ul v-if="historyList">
-        <li v-for="item in historyList" :key="item.timetableId">
+      <transition-group name="list" tag="ul">
+        <li v-for="(item, i) in historyList" :key="i">
           <div class="history_item-top">
             <span>
               <span
@@ -89,7 +89,7 @@
             <div><b>Zakończenie:</b> {{ localeDate(item.endDate) }}</div>
           </div>
         </li>
-      </ul>
+      </transition-group>
     </div>
   </section>
 </template>
@@ -157,14 +157,15 @@ export default defineComponent({
   components: { SearchBox, ActionButton },
   mixins: [dateMixin],
   setup() {
-    const historyList: Ref<TimetableHistory[] | null> = ref([]);
+    const historyList: Ref<TimetableHistory[]> = ref([]);
     const searchedDriver = ref("");
     const searchedTrain = ref("");
     const maxCount = ref(15);
 
     (async () => {
       const response = await fetchData({});
-      historyList.value = response;
+
+      if (response) historyList.value = response;
     })();
 
     return {
@@ -195,10 +196,12 @@ export default defineComponent({
     },
 
     async search() {
-      this.historyList = await fetchData({
+      const response = await fetchData({
         searchedDriver: this.searchedDriver,
         searchedTrain: this.searchedTrain,
       });
+
+      if (response) this.historyList = response;
     },
 
     keyPressed({ keyCode }) {
@@ -261,5 +264,22 @@ li {
   background: #202020;
   padding: 1em;
   margin: 1em 0;
+}
+
+.list-enter-active,
+.list-leave-active {
+  transition: all 350ms ease;
+}
+
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: scale(0.95);
+  /* transform: translateX(30px); */
+}
+
+.list-enter-to,
+.list-leave-from {
+  opacity: 1;
 }
 </style>
