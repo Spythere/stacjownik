@@ -1,55 +1,46 @@
 <template>
   <div class="select-box">
     <div class="select-box_content">
-      <button
-        class="selected"
-        @click="toggleBox"
-      >
+      <button class="selected" @click="toggleBox">
         {{ computedSelectedItem.value }}
       </button>
 
-      <div
-        class="options"
-        v-if="boxVisible"
+      <transition
+        name="expand"
+        @enter="expandEnter"
+        @after-enter="expandAfterEnter"
+        @leave="expandLeave"
       >
-        <div
-          class="option"
-          v-for="item in itemList"
-          :key="item.id"
-        >
-          <label :for="item.id">
-            <input
-              type="button"
-              :id="item.id"
-              name="select-box"
-              @click="selectOption(item)"
-            />
-
-            <span :style="computedSelectedItem.id == item.id ? 'color: gold;' : ''">
-              {{ item.value }}
-            </span>
-          </label>
-        </div>
-      </div>
+        <ul class="options" v-show="listOpen" :ref="(el) => (listRef = el)">
+          <li class="option" v-for="item in itemList" :key="item.id">
+            <label :for="item.id">
+              <input
+                type="button"
+                :id="item.id"
+                name="select-box"
+                @click="selectOption(item)"
+              />
+              <span
+                :style="
+                  computedSelectedItem.id == item.id ? 'color: gold;' : ''
+                "
+              >
+                {{ item.value }}
+              </span>
+            </label>
+          </li>
+        </ul>
+      </transition>
     </div>
 
     <div class="arrow">
-      <img
-        :src="boxVisible ? ascIcon : descIcon"
-        alt="arrow-icon"
-      />
+      <img :src="listOpen ? ascIcon : descIcon" alt="arrow-icon" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import {
-  computed,
-  defineComponent,
-  defineEmit,
-  Ref,
-  ref,
-} from "@vue/runtime-core";
+import { computed, defineComponent, Ref, ref } from "@vue/runtime-core";
 
 interface Item {
   id: string | number;
@@ -77,7 +68,9 @@ export default defineComponent({
   }),
 
   setup(props) {
-    let boxVisible = ref(false);
+    let listRef: Ref<Element | null> = ref(null);
+
+    let listOpen = ref(false);
     let selectedItem: Ref<Item> = ref(props.itemList[props.defaultItemIndex]);
 
     const computedSelectedItem = computed(() => {
@@ -87,23 +80,53 @@ export default defineComponent({
       );
     });
 
+    const computedHeight = computed(() =>
+      listRef.value ? getComputedStyle(listRef.value).height : 0
+    );
+
     return {
       computedSelectedItem,
-      boxVisible,
+      listOpen,
       selectedItem,
+      listRef,
+      computedHeight,
     };
   },
 
   methods: {
     selectOption(item: Item) {
       this.selectedItem = item;
-      this.boxVisible = false;
+      this.listOpen = false;
 
       this.$emit("selected", item);
     },
 
     toggleBox() {
-      this.boxVisible = !this.boxVisible;
+      this.listOpen = !this.listOpen;
+    },
+
+    expandEnter(el: HTMLElement) {
+      el.style.height = "auto";
+
+      const currentHeight = getComputedStyle(el).height;
+
+      el.style.height = "0";
+
+      setTimeout(() => {
+        el.style.height = currentHeight;
+      }, 50);
+    },
+
+    expandAfterEnter(el: HTMLElement) {
+      el.style.height = "auto";
+    },
+
+    expandLeave(el: HTMLElement) {
+      el.style.height = getComputedStyle(el).height;
+
+      setTimeout(() => {
+        el.style.height = "0";
+      }, 50);
     },
   },
 });
@@ -111,6 +134,14 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import "../../styles/variables.scss";
+
+.expand {
+  &-enter-active,
+  &-leave-active {
+    transition: height 250ms ease-in-out;
+    overflow: hidden;
+  }
+}
 
 .select-box {
   position: relative;

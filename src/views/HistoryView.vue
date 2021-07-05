@@ -222,6 +222,8 @@ export default defineComponent({
       } catch (error) {
         historyDataStatus.value.status = DataStatus.Error;
         historyDataStatus.value.error = "Ups! Coś poszło nie tak!";
+
+        
       }
     };
 
