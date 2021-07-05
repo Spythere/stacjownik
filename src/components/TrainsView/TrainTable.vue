@@ -168,7 +168,6 @@
         >
           <TrainSchedule
             :followingStops="train.timetableData.followingStops"
-            :currentStationName="train.currentStationName"
             @click="changeScheduleShowState(train.timetableData?.timetableId)"
           />
         </div>

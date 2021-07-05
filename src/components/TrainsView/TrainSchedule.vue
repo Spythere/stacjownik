@@ -1,19 +1,11 @@
 <template>
-  <div
-    class="train-schedule"
-    @click="this.$emit('click')"
-  >
+  <div class="train-schedule" @click="toggleShowState">
     <div class="schedule-wrapper">
       <ul class="stop_list">
         <li
           v-for="(stop, i) in followingStops"
           :key="i"
-          :class="{
-            confirmed: stop.confirmed,
-            stopped: stop.stopped,
-            beginning: stop.beginsHere,
-            delayed: stop.departureDelay > 0,
-          }"
+          :class="addClasses(stop, i)"
         >
           <span class="stop_info">
             <div class="indicator"></div>
@@ -22,17 +14,11 @@
 
             <div class="stop-bar"></div>
 
-            <span
-              class="distance"
-              v-if="stop.stopDistance"
-            >
+            <span class="distance" v-if="stop.stopDistance">
               {{ Math.floor(stop.stopDistance) }}
             </span>
 
-            <span
-              class="stop-name"
-              v-html="stop.stopName"
-            ></span>
+            <span class="stop-name" v-html="stop.stopName"></span>
             <span class="stop-date">
               <span
                 class="date arrival"
@@ -46,8 +32,8 @@
                 {{
                   stylizeTime(
                     stop.confirmed
-                      ? stop.arrivalRealTimeString
-                      : stop.arrivalTimeString,
+                      ? stop.arrivalRealTimeString || ""
+                      : stop.arrivalTimeString || "",
                     stop.arrivalDelay,
                     stop.confirmed
                   )
@@ -74,8 +60,8 @@
                 {{
                   stylizeTime(
                     stop.confirmed
-                      ? stop.departureRealTimeString
-                      : stop.departureTimeString,
+                      ? stop.departureRealTimeString || ""
+                      : stop.departureTimeString || "",
                     stop.departureDelay,
                     stop.confirmed
                   )
@@ -88,7 +74,9 @@
             <div class="progress-bar"></div>
 
             <span v-if="i < followingStops.length - 1">
-              <span v-if="stop.departureLine == followingStops[i + 1].arrivalLine">
+              <span
+                v-if="stop.departureLine == followingStops[i + 1].arrivalLine"
+              >
                 {{ stop.departureLine }}
               </span>
 
@@ -105,10 +93,16 @@
 </template>
 
 <script lang="ts">
+import TrainStop from "@/scripts/interfaces/TrainStop";
 import { defineComponent } from "@vue/runtime-core";
 
 export default defineComponent({
-  props: ["followingStops", "currentStationName"],
+  props: {
+    followingStops: {
+      type: Array as () => TrainStop[],
+      required: true,
+    },
+  },
   emits: ["click"],
 
   methods: {
@@ -120,11 +114,38 @@ export default defineComponent({
           : "")
       );
     },
+
+    toggleShowState() {
+      this.$emit("click");
+    },
+
+    addClasses(stop: TrainStop, index: number) {
+      return {
+        confirmed: stop.confirmed,
+        stopped: stop.stopped,
+        beginning: stop.beginsHere,
+        delayed: stop.departureDelay > 0,
+        "minor-stop":
+          this.followingStops[index - 1]?.confirmed &&
+          stop.stopNameRAW.includes("po"),
+        "last-confirmed":
+          stop.confirmed && !this.followingStops[index + 1]?.confirmed,
+      };
+    },
   },
 });
 </script>
 
 <style lang="scss" scoped>
+@keyframes blink {
+  from {
+    background-color: white;
+  }
+  to {
+    background-color: lime;
+  }
+}
+
 .train-schedule {
   max-height: 600px;
   margin-top: 2em;
@@ -157,6 +178,22 @@ ul.stop_list > li {
   flex-direction: column;
 
   padding: 0 0.5em;
+
+  &.minor-stop {
+    .stop_info > .progress-bar {
+      animation: 0.5s ease-in-out alternate infinite blink;
+    }
+
+    .stop_line > .progress-bar {
+      animation: 0.5s ease-in-out alternate infinite blink;
+    }
+  }
+
+  &.last-confirmed {
+    & > .stop_line > .progress-bar {
+      animation: 0.5s ease-in-out alternate infinite blink;
+    }
+  }
 
   &.confirmed {
     & > .stop_line > .progress-bar {
