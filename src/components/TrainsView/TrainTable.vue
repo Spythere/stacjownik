@@ -163,8 +163,10 @@
 
         <div
           class="train_extended-info"
-          v-if="train.timetableData"
-          v-show="showedSchedule == train.timetableData.timetableId"
+          v-if="
+            train.timetableData &&
+            showedSchedule == train.timetableData.timetableId
+          "
         >
           <TrainSchedule
             :followingStops="train.timetableData.followingStops"
@@ -439,7 +441,7 @@ img.train-image {
       display: flex;
       align-items: center;
 
-      background-color: var(--clr-accent);
+      background-color: #22a8d1;
       border-radius: 0.5em;
       padding: 0.1em 0.35em;
     }

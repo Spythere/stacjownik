@@ -94,7 +94,7 @@
 
 <script lang="ts">
 import TrainStop from "@/scripts/interfaces/TrainStop";
-import { defineComponent } from "@vue/runtime-core";
+import { computed, defineComponent } from "@vue/runtime-core";
 
 export default defineComponent({
   props: {
@@ -104,6 +104,38 @@ export default defineComponent({
     },
   },
   emits: ["click"],
+
+  setup(props) {
+    return {
+      lastConfirmed: computed(() => {
+        return props.followingStops.findIndex(
+          (stop, i, stops) =>
+            stop.confirmed && !stops[i + 1]?.confirmed && !stops[i + 1]?.stopped
+        );
+      }),
+      activeMinorStops: computed(() => {
+        const lastMajorConfirmed = props.followingStops.findIndex(
+          (stop, i, stops) => stop.confirmed && !stops[i + 1]?.confirmed
+        );
+
+        const activeMinorStopList: number[] = [];
+        if (lastMajorConfirmed + 1 >= props.followingStops.length)
+          return activeMinorStopList;
+
+        for (
+          let i = lastMajorConfirmed + 1;
+          i < props.followingStops.length;
+          i++
+        ) {
+          if (props.followingStops[i].stopNameRAW.includes("po."))
+            activeMinorStopList.push(i);
+          else break;
+        }
+
+        return activeMinorStopList;
+      }),
+    };
+  },
 
   methods: {
     stylizeTime(timeString: string, delay: number, confirmed: boolean) {
@@ -125,11 +157,10 @@ export default defineComponent({
         stopped: stop.stopped,
         beginning: stop.beginsHere,
         delayed: stop.departureDelay > 0,
-        "minor-stop":
-          this.followingStops[index - 1]?.confirmed &&
-          stop.stopNameRAW.includes("po"),
-        "last-confirmed":
-          stop.confirmed && !this.followingStops[index + 1]?.confirmed,
+        [stop.stopType.replaceAll(", ", "-")]:
+          stop.stopType.match(new RegExp("ph|pm|pt")) && !stop.confirmed,
+        "minor-stop-active": this.activeMinorStops.includes(index),
+        "last-confirmed": index == this.lastConfirmed,
       };
     },
   },
@@ -137,12 +168,24 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+$barClr: #d4d4d4;
+$confirmedClr: #18d818;
+$stoppedClr: #ff4500;
+$haltClr: #48c5eb;
+
+$preponedClr: #008b00;
+$delayedClr: #e93f3f;
+$dateClr: #525151;
+$stopExchangeClr: #db8e29;
+$stopDefaultClr: #252525;
+$stopNameClr: #22a8d1;
+
 @keyframes blink {
   from {
-    background-color: white;
+    background-color: $barClr;
   }
   to {
-    background-color: lime;
+    background-color: $confirmedClr;
   }
 }
 
@@ -159,16 +202,19 @@ export default defineComponent({
 
 .progress-bar {
   position: absolute;
+  z-index: 10;
 
-  top: 0;
-  left: -1rem;
+  top: -1px;
+  /* left: -1rem; */
+  left: -17px;
 
-  transform: translateX(-1px);
+  /* transform: translate(-1px, -1px); */
+  /* transform: translateX(-4spx, -1px); */
 
   height: 100%;
-  width: 2px;
+  width: 3px;
 
-  background-color: white;
+  background-color: $barClr;
 }
 
 ul.stop_list > li {
@@ -179,7 +225,15 @@ ul.stop_list > li {
 
   padding: 0 0.5em;
 
-  &.minor-stop {
+  &[class*="ph"] > .stop_info > .indicator {
+    border-color: $stopExchangeClr;
+  }
+
+  &[class*="pt"] > .stop_info > .indicator {
+    border-color: #818181;
+  }
+
+  &.minor-stop-active {
     .stop_info > .progress-bar {
       animation: 0.5s ease-in-out alternate infinite blink;
     }
@@ -190,33 +244,35 @@ ul.stop_list > li {
   }
 
   &.last-confirmed {
-    & > .stop_line > .progress-bar {
+    .stop_line > .progress-bar {
       animation: 0.5s ease-in-out alternate infinite blink;
     }
   }
 
   &.confirmed {
-    & > .stop_line > .progress-bar {
-      background-color: lime;
+    .stop_info {
+      > .progress-bar {
+        background-color: $confirmedClr;
+      }
+
+      > .indicator {
+        border-color: $confirmedClr;
+      }
     }
 
-    & > .stop_info > .progress-bar {
-      background-color: lime;
-    }
-
-    & > .stop_info > .indicator {
-      border-color: lime;
+    .stop_line > .progress-bar {
+      background-color: $confirmedClr;
     }
   }
 
   &.stopped {
-    & > .stop_info {
-      & > .indicator {
-        border-color: orangered;
+    .stop_info {
+      > .indicator {
+        border-color: $stoppedClr;
       }
 
-      & > .stop-bar {
-        background: orangered;
+      > .stop-bar {
+        background: $stoppedClr;
       }
     }
   }
@@ -230,7 +286,7 @@ ul.stop_list > li {
     position: relative;
 
     .line-segment {
-      color: white;
+      color: $barClr;
       font-weight: 500;
     }
   }
@@ -249,11 +305,11 @@ ul.stop_list > li {
     top: 0;
     left: -1rem;
 
-    transform: translateX(-1px);
+    transform: translate(-1px, -1px);
 
-    z-index: 2;
+    z-index: 10;
 
-    width: 2px;
+    width: 3px;
     height: 100%;
   }
 
@@ -271,12 +327,12 @@ ul.stop_list > li {
 
   .indicator {
     position: absolute;
-    z-index: 3;
+    z-index: 11;
 
     top: 50%;
     left: -1rem;
 
-    transform: translate(-50%, -50%);
+    transform: translate(-47%, -50%);
 
     text-align: right;
 
@@ -284,12 +340,12 @@ ul.stop_list > li {
     height: 15px;
 
     background: var(--clr-secondary);
-    border: 2px solid white;
+    border: 3px solid $barClr;
     border-radius: 100%;
   }
 
   .stop-name {
-    background: var(--clr-accent);
+    background: $stopNameClr;
     padding: 0.3em 0.5em;
 
     display: flex;
@@ -301,27 +357,28 @@ ul.stop_list > li {
     align-items: center;
 
     .date {
-      background: #494949;
+      background: $dateClr;
       padding: 0.3em 0.5em;
     }
 
     .stop {
       &.ph,
-      &.ph-pm {
-        background: #db8e29;
+      &.ph-pm,
+      &.pm {
+        background: $stopExchangeClr;
       }
 
-      background: #252525;
+      background: $stopDefaultClr;
     }
 
     .arrival,
     .departure {
       &.delayed {
-        background: #f80334;
+        background: $delayedClr;
       }
 
       &.preponed {
-        background: rgb(0, 139, 0);
+        background: $preponedClr;
       }
     }
   }
