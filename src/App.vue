@@ -89,6 +89,8 @@ import { GETTERS } from "./constants/storeConstants";
 import { StoreData } from "./scripts/interfaces/StoreData";
 import { useStore } from "./store";
 
+import packageInfo from ".././package.json";
+
 export default defineComponent({
   components: {
     Clock,
@@ -108,7 +110,7 @@ export default defineComponent({
   },
 
   data: () => ({
-    VERSION: "1.4.8",
+    VERSION: packageInfo.version,
     updateModalVisible: false,
     hasReleaseNotes: false,
     currentLang: "pl",
