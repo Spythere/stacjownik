@@ -9,6 +9,7 @@ export default interface Filter {
   "SPE": boolean;
   ręczne: boolean;
   mechaniczne: boolean;
+  "SBL": boolean;
   współczesna: boolean;
   kształtowa: boolean;
   historyczna: boolean;
@@ -21,6 +22,7 @@ export default interface Filter {
   minTwoWay: number;
   'no-1track': boolean;
   'no-2track': boolean;
+  'include-selected': boolean;
   free: boolean;
   occupied: boolean;
   ending: boolean;

@@ -54,44 +54,48 @@ const sortStations = (a: Station, b: Station, sorter: { index: number; dir: numb
 }
 
 const filterStations = (station: Station, filters: Filter) => {
-  if ((station.nonPublic || !station.reqLevel) && filters['nonPublic']) return false;
+  const returnMode = false;
 
-  if (station.online && station.statusID == 'ending' && filters['ending']) return false;
+  if ((station.nonPublic || !station.reqLevel) && filters['nonPublic']) return returnMode;
 
-  if (station.online && filters['occupied']) return false;
-  if (!station.online && filters['free']) return false;
+  if (station.online && station.statusID == 'ending' && filters['ending']) return returnMode;
 
-  if (station.default && filters['default']) return false;
-  if (!station.default && filters['notDefault']) return false;
+  if (station.online && filters['occupied']) return returnMode;
+  if (!station.online && filters['free']) return returnMode;
 
-  if (filters['real'] && station.stationLines != '') return false;
-  if (filters['fictional'] && station.stationLines == '') return false;
+  if (station.default && filters['default']) return returnMode;
+  if (!station.default && filters['notDefault']) return returnMode;
+
+  if (filters['real'] && station.stationLines != '') return returnMode;
+  if (filters['fictional'] && station.stationLines == '') return returnMode;
 
   if (station.reqLevel == '-1') return true;
-  if (parseInt(station.reqLevel) < filters['minLevel']) return false;
-  if (parseInt(station.reqLevel) > filters['maxLevel']) return false;
+  if (parseInt(station.reqLevel) < filters['minLevel']) return returnMode;
+  if (parseInt(station.reqLevel) > filters['maxLevel']) return returnMode;
 
-  if (filters['no-1track'] && (station.routes.oneWay.catenary != 0 || station.routes.oneWay.noCatenary != 0)) return false;
-  if (filters['no-2track'] && (station.routes.twoWay.catenary != 0 || station.routes.twoWay.noCatenary != 0)) return false;
+  if (filters['no-1track'] && (station.routes.oneWay.catenary != 0 || station.routes.oneWay.noCatenary != 0)) return returnMode;
+  if (filters['no-2track'] && (station.routes.twoWay.catenary != 0 || station.routes.twoWay.noCatenary != 0)) return returnMode;
 
-  if (station.routes.oneWay.catenary < filters['minOneWayCatenary']) return false;
-  if (station.routes.oneWay.noCatenary < filters['minOneWay']) return false;
+  if (station.routes.oneWay.catenary < filters['minOneWayCatenary']) return returnMode;
+  if (station.routes.oneWay.noCatenary < filters['minOneWay']) return returnMode;
 
-  if (station.routes.twoWay.catenary < filters['minTwoWayCatenary']) return false;
-  if (station.routes.twoWay.noCatenary < filters['minTwoWay']) return false;
+  if (station.routes.twoWay.catenary < filters['minTwoWayCatenary']) return returnMode;
+  if (station.routes.twoWay.noCatenary < filters['minTwoWay']) return returnMode;
 
-  if (filters[station.controlType]) return false;
-  if (filters[station.signalType]) return false;
+  if (filters[station.controlType]) return returnMode;
+  if (filters[station.signalType]) return returnMode;
 
-  if (filters['SPK'] && (station.controlType === 'SPK' || station.controlType.includes('+SPK'))) return false;
-  if (filters['SCS'] && (station.controlType === 'SCS' || station.controlType.includes('+SCS'))) return false;
-  if (filters['SPE'] && (station.controlType === 'SPE' || station.controlType.includes('+SPE'))) return false;
+  if (filters['SPK'] && (station.controlType === 'SPK' || station.controlType.includes('+SPK'))) return returnMode;
+  if (filters['SCS'] && (station.controlType === 'SCS' || station.controlType.includes('+SCS'))) return returnMode;
+  if (filters['SPE'] && (station.controlType === 'SPE' || station.controlType.includes('+SPE'))) return returnMode;
 
-  if (filters['SCS'] && filters['SPK'] && (station.controlType.includes('SPK') || station.controlType.includes('SCS'))) return false;
+  if (filters['SCS'] && filters['SPK'] && (station.controlType.includes('SPK') || station.controlType.includes('SCS'))) return returnMode;
 
-  if (filters['mechaniczne'] && station.controlType.includes('mechaniczne')) return false;
+  if (filters['mechaniczne'] && station.controlType.includes('mechaniczne')) return returnMode;
 
-  if (filters['ręczne'] && station.controlType.includes('ręczne')) return false;
+  if (filters['ręczne'] && station.controlType.includes('ręczne')) return returnMode;
+
+  if (filters['SBL'] && station.SBL) return returnMode;
 
   return true;
 }
@@ -111,12 +115,14 @@ export default class StationFilterManager {
     kształtowa: false,
     historyczna: false,
     mieszana: false,
+    SBL: false,
     minLevel: 0,
     maxLevel: 20,
     minOneWayCatenary: 0,
     minOneWay: 0,
     minTwoWayCatenary: 0,
     minTwoWay: 0,
+    'include-selected': false,
     'no-1track': false,
     'no-2track': false,
     free: true,
@@ -141,6 +147,24 @@ export default class StationFilterManager {
 
   resetFilters() {
     this.filters = { ...this.filterInitStates };
+  }
+
+  invertFilters() {
+    Object.keys(this.filters).forEach(prop => {
+      if(typeof this.filters[prop] !== "boolean") return;      
+
+      this.filters[prop] = !this.filters[prop];
+      
+    })
+    
+    // for(let prop in this.filters) {
+    //   if(typeof prop !== "boolean") continue;
+
+    //   this.filters[prop] = !this.filterInitStates[prop];
+
+    //   console.log("inverted!");
+      
+    // }
   }
 
   changeSorter(index: number) {

@@ -4,11 +4,7 @@
       <div class="body">
         <div class="options-bar">
           <action-button @click="() => toggleCardsState('filter')">
-            <img
-              class="button_icon"
-              :src="require('@/assets/icon-filter2.svg')"
-              alt="icon-filter"
-            />
+            <img class="button_icon" :src="filterIcon" alt="icon-filter" />
             <p>{{ $t("options.filters") }}</p>
           </action-button>
 
@@ -37,6 +33,7 @@
         :showCard="filterCardOpen"
         :exit="() => toggleCardsState('filter')"
         @changeFilterValue="changeFilterValue"
+        @invertFilters="invertFilters"
         @resetFilters="resetFilters"
       />
     </transition>
@@ -52,8 +49,9 @@ import StationFilterManager from "@/scripts/managers/stationFilterManager";
 import inputData from "@/data/options.json";
 
 import StationTable from "@/components/StationsView/StationTable.vue";
-import FilterCard from "@/components/StationsView/FilterCard.vue";
+import FilterCard from "@/components/StationsView/StationFilterCard.vue";
 import ActionButton from "@/components/Global/ActionButton.vue";
+
 import { StoreData } from "@/scripts/interfaces/StoreData";
 import { DataStatus } from "@/scripts/enums/DataStatus";
 import { computed, ComputedRef, defineComponent, reactive } from "vue";
@@ -70,6 +68,7 @@ export default defineComponent({
     trainIcon: require("@/assets/icon-train.svg"),
     timetableIcon: require("@/assets/icon-timetable.svg"),
     dolarIcon: require("@/assets/icon-dolar.svg"),
+    filterIcon: require("@/assets/icon-filter2.svg"),
     filterCardOpen: false,
     modalHidden: true,
     STORAGE_KEY: "options_saved",
@@ -147,6 +146,9 @@ export default defineComponent({
     },
     resetFilters() {
       this.filterManager.resetFilters();
+    },
+    invertFilters() {
+      this.filterManager.invertFilters();
     },
     closeCard() {
       this.focusedStationName = "";

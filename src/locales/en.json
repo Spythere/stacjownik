@@ -58,6 +58,7 @@
     "SPE": "SPE",
     "manual": "MANUAL",
     "mechanical": "MECHANICAL",
+    "SBL": "SBL",
     "modern": "MODERN",
     "semaphores": "SEMAPHORES",
     "mixed": "MIXED",
@@ -72,6 +73,7 @@
       "routes-2t-cat": "MIN. CATENARY DOUBLE TRACK ROUTES",
       "routes-2t-other": "MIN. OTHER DOUBLE TRACK ROUTES"
     },
+    "include-selected": "INCLUDE SELECTED",
     "save": "SAVE FILTERS",
     "reset": "RESET FILTERS",
     "close": "CLOSE FILTERS"

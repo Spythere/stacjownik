@@ -1,6 +1,5 @@
 {
-  "options": [
-    {
+  "options": [{
       "id": "default",
       "name": "default",
       "iconName": "td2",
@@ -49,7 +48,7 @@
       "value": true,
       "defaultValue": true
     },
-     {
+    {
       "id": "SPE",
       "name": "SPE",
       "iconName": "SPE",
@@ -73,7 +72,14 @@
       "value": true,
       "defaultValue": true
     },
-
+    {
+      "id": "SBL",
+      "name": "SBL",
+      "iconName": "SBL",
+      "section": "routes",
+      "value": true,
+      "defaultValue": true
+    },
     {
       "id": "modern",
       "name": "współczesna",
@@ -126,8 +132,7 @@
       "defaultValue": true
     }
   ],
-  "sliders": [
-    {
+  "sliders": [{
       "id": "min-lvl",
       "name": "minLevel",
       "minRange": 0,
@@ -175,5 +180,20 @@
       "value": 0,
       "defaultValue": 0
     }
-  ]
+  ],
+  "modes": [{
+    "id": "include-selected",
+    "name": "include-selected",
+    "iconName": "",
+    "section": "mode",
+    "value": true,
+    "defaultValue": true
+  }, {
+    "id": "save",
+    "name": "save",
+    "iconName": "",
+    "section": "mode",
+    "value": true,
+    "defaultValue": true
+  }]
 }

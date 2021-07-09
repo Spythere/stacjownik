@@ -1,47 +1,26 @@
 <template>
-  <section
-    class="card"
-    v-if="showCard"
-  >
-    <div
-      class="card-exit"
-      @click="exit"
-    >
+  <section class="card" v-if="showCard">
+    <div class="card_exit" @click="exit">
       <!-- <img :src="require('@/assets/icon-exit.svg')" alt="exit icon" /> -->
     </div>
 
-    <div class="card-title flex">{{ $t("filters.title") }}</div>
+    <div class="card_title flex">{{ $t("filters.title") }}</div>
 
-    <div class="card-options">
-      <div
-        class="option"
+    <section class="card_options">
+      <filter-option
         v-for="(option, i) in inputs.options"
+        :option="option"
         :key="i"
-      >
-        <label class="option-label">
-          <input
-            class="option-input"
-            type="checkbox"
-            :name="option.name"
-            :defaultValue="option.defaultValue"
-            :id="option.id"
-            v-model="option.value"
-            @change="handleChange"
-          />
-          <span
-            class="option-content"
-            :class="option.section + (option.value ? ' checked' : '')"
-          >{{ $t(`filters.${option.id}`) }}</span>
-        </label>
-      </div>
-    </div>
+        @optionChange="handleChange"
+      />
+    </section>
 
-    <div class="card-sliders">
-      <div
-        class="slider"
-        v-for="(slider, i) in inputs.sliders"
-        :key="i"
-      >
+    <!-- <section class="card_modes">
+      <filter-option :option="inputs.modes[0]" @optionChange="invertFilters" />
+    </section> -->
+
+    <section class="card_sliders">
+      <div class="slider" v-for="(slider, i) in inputs.sliders" :key="i">
         <input
           class="slider-input"
           type="range"
@@ -59,40 +38,37 @@
           {{ $t(`filters.sliders.${slider.id}`) }}
         </div>
       </div>
-    </div>
+    </section>
 
-    <div class="card-save">
-      <div class="option">
+    <section class="card_save">
+      <filter-option
+        @optionChange="saveFilters"
+        :option="{
+          id: 'save',
+          name: 'save',
+          section: 'mode',
+          value: saveOptions,
+          defaultValue: true,
+        }"
+      />
+      <!-- <div class="option">
         <label>
-          <input
-            type="checkbox"
-            v-model="saveOptions"
-            @change="saveFilters"
-          />
-          <span
-            class="save"
-            :class="{ checked: saveOptions }"
-          >
+          <input type="checkbox" v-model="saveOptions" @change="saveFilters" />
+          <span class="save" :class="{ checked: saveOptions }">
             {{ $t("filters.save") }}
           </span>
         </label>
-      </div>
-    </div>
+      </div> -->
+    </section>
 
-    <div class="card-actions flex">
-      <action-button
-        class="outlined"
-        @click="resetFilters"
-      >
+    <section class="card_actions flex">
+      <action-button class="outlined" @click="resetFilters">
         {{ $t("filters.reset") }}
       </action-button>
-      <action-button
-        class="outlined"
-        @click="exit"
-      >{{
+      <action-button class="outlined" @click="exit">{{
         $t("filters.close")
       }}</action-button>
-    </div>
+    </section>
   </section>
 </template>
 
@@ -102,10 +78,12 @@ import inputData from "@/data/options.json";
 import StorageManager from "@/scripts/managers/storageManager";
 import { defineComponent } from "@vue/runtime-core";
 import ActionButton from "../Global/ActionButton.vue";
+import FilterOption from "./FilterOption.vue";
 
 export default defineComponent({
-  components: { ActionButton },
+  components: { ActionButton, FilterOption },
   props: ["showCard", "exit"],
+  emits: ["changeFilterValue", "invertFilters", "resetFilters"],
 
   data: () => ({
     inputs: { ...inputData },
@@ -118,15 +96,14 @@ export default defineComponent({
   },
 
   methods: {
-    handleChange(e: Event) {
-      const target = e.target as HTMLInputElement;
-
+    handleChange(change: { name: string; value: boolean }) {
       this.$emit("changeFilterValue", {
-        name: target.name,
-        value: !target.checked,
+        name: change.name,
+        value: !change.value,
       });
+
       if (this.saveOptions)
-        StorageManager.setBooleanValue(target.name, target.checked);
+        StorageManager.setBooleanValue(change.name, change.value);
     },
 
     handleInput(e: Event) {
@@ -140,7 +117,18 @@ export default defineComponent({
         StorageManager.setStringValue(target.name, target.value);
     },
 
-    saveFilters() {
+    invertFilters() {
+      this.inputs.options.forEach((option) => {
+        option.value = !option.value;
+        StorageManager.setBooleanValue(option.name, option.value);
+      });
+
+      this.$emit("invertFilters");
+    },
+
+    saveFilters(change: { value }) {
+      this.saveOptions = change.value;
+
       if (!this.saveOptions) {
         StorageManager.unregisterStorage(this.STORAGE_KEY);
         return;
@@ -182,14 +170,12 @@ export default defineComponent({
 @import "../../styles/responsive";
 @import "../../styles/card";
 
-$accessCol: #e03b07;
-$controlCol: #0085ff;
-$signalCol: #bf7c00;
-$statusCol: #349b32;
-$saveCol: #28a826;
-
 .card {
-  &-title {
+  > section {
+    margin-top: 1em;
+  }
+
+  &_title {
     font-size: 2em;
     font-weight: 700;
     color: $accentCol;
@@ -199,7 +185,7 @@ $saveCol: #28a826;
     text-align: center;
   }
 
-  &-options {
+  &_options {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     grid-template-rows: repeat(4, 1fr);
@@ -211,19 +197,20 @@ $saveCol: #28a826;
     }
   }
 
-  &-sliders {
-    margin-top: 1em;
-  }
+  &_modes {
+    display: flex;
+    justify-content: center;
 
-  &-actions {
-    margin-top: 0.7em;
-
-    button {
-      margin: 0 0.3em;
+    .option {
+      margin: 0 1em;
     }
   }
 
-  &-save {
+  &_actions button {
+    margin: 0 0.3em;
+  }
+
+  &_save {
     display: flex;
     justify-content: center;
 
@@ -232,97 +219,9 @@ $saveCol: #28a826;
     }
   }
 
-  &-exit {
+  &_exit {
     img {
       width: 2em;
-    }
-  }
-}
-
-.option {
-  input {
-    display: none;
-  }
-
-  span {
-    user-select: none;
-    -moz-user-select: none;
-    -webkit-user-select: none;
-
-    width: 100%;
-    text-align: center;
-
-    cursor: pointer;
-
-    padding: 0.5em 0.55em;
-
-    display: inline-block;
-    position: relative;
-
-    transition: all 0.2s;
-
-    border-radius: 0.5em;
-
-    &:not(.checked) {
-      background-color: #585858;
-
-      &::before {
-        box-shadow: none;
-      }
-    }
-
-    &.checked {
-      &.access {
-        background-color: $accessCol;
-
-        &::before {
-          box-shadow: 0 0 6px 1px $accessCol;
-        }
-      }
-
-      &.control {
-        background-color: $controlCol;
-
-        &::before {
-          box-shadow: 0 0 6px 1px $controlCol;
-        }
-      }
-
-      &.signals {
-        background-color: $signalCol;
-
-        &::before {
-          box-shadow: 0 0 6px 1px $signalCol;
-        }
-      }
-
-      &.status {
-        background-color: $statusCol;
-
-        &::before {
-          box-shadow: 0 0 6px 1px $statusCol;
-        }
-      }
-
-      &.save {
-        background-color: $saveCol;
-
-        &::before {
-          box-shadow: 0 0 6px 1px $saveCol;
-        }
-      }
-
-      &::before {
-        position: absolute;
-        content: "";
-        top: 0;
-        left: 0;
-
-        width: 100%;
-        height: 100%;
-
-        border-radius: 0.5em;
-      }
     }
   }
 }

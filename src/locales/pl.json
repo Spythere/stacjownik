@@ -57,6 +57,7 @@
     "SCS": "SCS",
     "SPE": "SPE",
     "manual": "RĘCZNE",
+    "SBL": "SBL",
     "mechanical": "MECHANICZNE",
     "modern": "WSPÓŁCZESNA",
     "semaphores": "KSZTAŁTOWA",
@@ -72,6 +73,7 @@
       "routes-2t-cat": "SZLAKI DWUTOROWE ZELEKTR. (MINIMUM)",
       "routes-2t-other": "SZLAKI DWUTOROWE NIEZELEKTR. (MINIMUM)"
     },
+    "include-selected": "POKAŻ ZAZNACZONE",
     "save": "ZAPISZ FILTRY",
     "reset": "RESETUJ FILTRY",
     "close": "ZAMKNIJ FILTRY"

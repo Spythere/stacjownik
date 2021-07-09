@@ -68,8 +68,8 @@
                 :style="calculateExpStyle(station.reqLevel)"
               >
                 {{
-                  station.reqLevel && station.reqLevel > -1
-                    ? parseInt(station.reqLevel) >= 2
+                  station.reqLevel && Number(station.reqLevel) > -1
+                    ? Number(station.reqLevel) >= 2
                       ? station.reqLevel
                       : "L"
                     : "?"
@@ -162,21 +162,21 @@
 
               <img
                 v-if="station.SBL && station.SBL !== ''"
-                :src="require(`@/assets/icon-SBL.svg`)"
+                :src="SBLIcon"
                 alt="SBL"
                 :title="$t('desc.SBL') + `${station.SBL}`"
               />
 
               <img
                 v-if="station.nonPublic || !station.reqLevel"
-                :src="require(`@/assets/icon-lock.svg`)"
+                :src="lockIcon"
                 alt="non-public"
                 :title="$t('desc.non-public')"
               />
 
               <img
                 v-if="station.unavailable"
-                :src="require(`@/assets/icon-unavailable.svg`)"
+                :src="unavailableIcon"
                 alt="icon-unavailable"
                 :title="$t('desc.unavailable')"
               />
@@ -240,12 +240,12 @@ export default defineComponent({
     },
 
     sorterActive: {
-      type: Object as () => { id: string; dir: number },
+      type: Object as () => { index: number; dir: number },
       required: true,
     },
 
-    setFocusedStation: Function,
-    changeSorter: Function,
+    setFocusedStation: { type: Function, required: true },
+    changeSorter: { type: Function, required: true },
   },
 
   mixins: [styleMixin],
@@ -256,6 +256,9 @@ export default defineComponent({
     timetableIcon: require("@/assets/icon-timetable.svg"),
     userIcon: require("@/assets/icon-user.svg"),
     trainIcon: require("@/assets/icon-train.svg"),
+    SBLIcon: require("@/assets/icon-SBL.svg"),
+    lockIcon: require("@/assets/icon-lock.svg"),
+    unavailableIcon: require("@/assets/icon-unavailable.svg"),
 
     ascIcon: require("@/assets/icon-arrow-asc.svg"),
     descIcon: require("@/assets/icon-arrow-desc.svg"),
