@@ -5,6 +5,7 @@
         <li
           v-for="(stop, i) in followingStops"
           :key="i"
+          class="stop"
           :class="addClasses(stop, i)"
         >
           <span class="stop_info">
@@ -70,20 +71,18 @@
             </span>
           </span>
 
-          <div class="stop_line">
+          <div class="stop_line" v-if="i < followingStops.length - 1">
             <div class="progress-bar"></div>
 
-            <span v-if="i < followingStops.length - 1">
-              <span
-                v-if="stop.departureLine == followingStops[i + 1].arrivalLine"
-              >
-                {{ stop.departureLine }}
-              </span>
+            <span
+              v-if="stop.departureLine == followingStops[i + 1].arrivalLine"
+            >
+              {{ stop.departureLine }}
+            </span>
 
-              <span v-else>
-                {{ stop.departureLine }} /
-                {{ followingStops[i + 1].arrivalLine }}
-              </span>
+            <span v-else>
+              {{ stop.departureLine }} /
+              {{ followingStops[i + 1].arrivalLine }}
             </span>
           </div>
         </li>
@@ -155,12 +154,15 @@ export default defineComponent({
       return {
         confirmed: stop.confirmed,
         stopped: stop.stopped,
-        beginning: stop.beginsHere,
+        begin: stop.beginsHere,
+        end: stop.terminatesHere,
         delayed: stop.departureDelay > 0,
         [stop.stopType.replaceAll(", ", "-")]:
-          stop.stopType.match(new RegExp("ph|pm|pt")) && !stop.confirmed,
+          stop.stopType.match(new RegExp("ph|pm|pt")) &&
+          !stop.confirmed &&
+          !stop.beginsHere,
         "minor-stop-active": this.activeMinorStops.includes(index),
-        "last-confirmed": index == this.lastConfirmed,
+        "last-confirmed": index == this.lastConfirmed && !stop.terminatesHere,
       };
     },
   },
@@ -168,9 +170,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-$barClr: #d4d4d4;
+$barClr: #b1b1b1;
 $confirmedClr: #18d818;
-$stoppedClr: #ff4500;
+$stoppedClr: #f55f31;
 $haltClr: #48c5eb;
 
 $preponedClr: #008b00;
@@ -217,7 +219,7 @@ $stopNameClr: #22a8d1;
   background-color: $barClr;
 }
 
-ul.stop_list > li {
+ul.stop_list > li.stop {
   position: relative;
 
   display: flex;
@@ -226,11 +228,31 @@ ul.stop_list > li {
   padding: 0 0.5em;
 
   &[class*="ph"] > .stop_info > .indicator {
-    border-color: $stopExchangeClr;
+    border-color: $stopNameClr;
   }
 
   &[class*="pt"] > .stop_info > .indicator {
     border-color: #818181;
+  }
+
+  &.begin {
+    .stop_info > .indicator {
+      border-color: lightgreen;
+    }
+
+    .stop_info > .progress-bar {
+      background: lightgreen;
+    }
+  }
+
+  &.end {
+    .stop_info > .indicator {
+      border-color: salmon;
+    }
+
+    .stop_info > .progress-bar {
+      background: salmon;
+    }
   }
 
   &.minor-stop-active {
@@ -303,9 +325,7 @@ ul.stop_list > li {
   .stop-bar {
     position: absolute;
     top: 0;
-    left: -1rem;
-
-    transform: translate(-1px, -1px);
+    left: -17px;
 
     z-index: 10;
 
