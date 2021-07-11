@@ -5,15 +5,15 @@
         {{ computedSelectedItem.value }}
       </button>
 
-      <transition
-        name="expand"
-        @enter="expandEnter"
-        @after-enter="expandAfterEnter"
-        @leave="expandLeave"
-      >
-        <ul class="options" v-show="listOpen" :ref="(el) => (listRef = el)">
-          <li class="option" v-for="item in itemList" :key="item.id">
-            <label :for="item.id">
+      <ul class="options" :ref="(el) => (listRef = el)">
+        <li class="option" v-for="(item, i) in itemList" :key="item.id">
+          <transition
+            name="unfold"
+            :style="`
+            --delay-in: ${i * 55}ms; 
+            --delay-out: ${(itemList.length - 1 - i) * 55}ms`"
+          >
+            <label :for="item.id" v-if="listOpen">
               <input
                 type="button"
                 :id="item.id"
@@ -28,9 +28,9 @@
                 {{ item.value }}
               </span>
             </label>
-          </li>
-        </ul>
-      </transition>
+          </transition>
+        </li>
+      </ul>
     </div>
 
     <div class="arrow">
@@ -83,20 +83,12 @@ export default defineComponent({
       );
     });
 
-    const computedHeight = computed(() =>
-      listRef.value ? getComputedStyle(listRef.value).height : 0
-    );
-
-    const buttonFocused = computed(() => document.activeElement);
-
     return {
       computedSelectedItem,
       listOpen,
       selectedItem,
       listRef,
       buttonRef,
-      computedHeight,
-      buttonFocused,
       activeEl,
     };
   },
@@ -109,39 +101,15 @@ export default defineComponent({
       this.$emit("selected", item);
     },
 
-    toggleBox() {
+    toggleBox(e: Event) {
       this.listOpen = !this.listOpen;
+
+      if (!this.listOpen) (e.target as HTMLButtonElement).blur();
     },
 
     clickedOutside() {
       this.listOpen = false;
       this.buttonRef?.blur();
-    },
-
-    expandEnter(el: HTMLElement) {
-      el.style.height = "auto";
-
-      const currentHeight = getComputedStyle(el).height;
-
-      el.style.height = "0";
-
-      setTimeout(() => {
-        el.style.height = currentHeight;
-      }, 50);
-    },
-
-    expandAfterEnter(el: HTMLElement) {
-      el.style.height = "auto";
-    },
-
-    expandLeave(el: HTMLElement) {
-      el.style.height = getComputedStyle(el).height;
-
-      getComputedStyle(el);
-
-      setTimeout(() => {
-        el.style.height = "0";
-      }, 50);
     },
   },
 });
@@ -150,11 +118,24 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import "../../styles/variables.scss";
 
-.expand {
+.unfold {
+  &-enter-from,
+  &-leave-to {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.85);
+  }
+
   &-enter-active,
   &-leave-active {
-    transition: height 150ms ease-out;
-    overflow: hidden;
+    transition: all 110ms ease-out;
+  }
+
+  &-enter-active {
+    transition-delay: var(--delay-in);
+  }
+
+  &-leave-active {
+    transition-delay: var(--delay-out);
   }
 }
 
@@ -175,31 +156,6 @@ export default defineComponent({
   transform: translateY(-50%);
 
   pointer-events: none;
-}
-
-.select-box_content {
-  position: relative;
-  margin: 0 auto;
-
-  height: 100%;
-
-  min-width: 10em;
-
-  text-align: center;
-}
-
-.options {
-  position: absolute;
-  top: 100%;
-  left: 0;
-
-  height: auto;
-
-  z-index: 10;
-
-  width: 100%;
-
-  margin-top: 0.25em;
 }
 
 button.selected {
@@ -224,37 +180,68 @@ button.selected {
   }
 }
 
-input {
-  position: absolute;
-  top: 0;
-  left: 0;
+.select-box_content {
+  position: relative;
+  margin: 0 auto;
 
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  border: none;
+  height: 100%;
 
-  &:focus + span {
-    color: $accentCol;
-    font-weight: bold;
-  }
+  min-width: 10em;
+
+  text-align: center;
 }
 
-label {
-  position: relative;
+ul.options {
+  position: absolute;
+  top: 100%;
+  left: 0;
 
-  display: inline-block;
-  background-color: hsla(0, 0%, 0%, 0.85);
+  height: auto;
 
-  &:hover,
-  &:focus {
-    background-color: hsla(0, 0%, 20%, 0.85);
-  }
-
-  padding: 0.75em 0;
+  z-index: 10;
 
   width: 100%;
 
-  cursor: pointer;
+  margin-top: 0.25em;
+}
+
+li.option {
+  input {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: none;
+
+    &:focus + span {
+      color: $accentCol;
+      font-weight: bold;
+    }
+  }
+
+  &:last-child label {
+    border-radius: 0 0 1em 1em;
+  }
+
+  label {
+    position: relative;
+
+    display: inline-block;
+    background-color: hsla(0, 0%, 15%, 0.95);
+
+    &:hover,
+    &:focus {
+      background-color: hsla(0, 0%, 20%, 0.95);
+    }
+
+    padding: 0.75em 0;
+
+    width: 100%;
+
+    cursor: pointer;
+  }
 }
 </style>
