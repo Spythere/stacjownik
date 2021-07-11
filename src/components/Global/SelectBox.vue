@@ -1,5 +1,5 @@
 <template>
-  <div class="select-box">
+  <div class="select-box" v-click-outside="clickedOutside">
     <div class="select-box_content">
       <button class="selected" @click="toggleBox">
         {{ computedSelectedItem.value }}
@@ -69,6 +69,9 @@ export default defineComponent({
 
   setup(props) {
     let listRef: Ref<Element | null> = ref(null);
+    let buttonRef: Ref<HTMLButtonElement | null> = ref(null);
+
+    let activeEl: Ref<Element | null> = ref(document.activeElement);
 
     let listOpen = ref(false);
     let selectedItem: Ref<Item> = ref(props.itemList[props.defaultItemIndex]);
@@ -84,12 +87,17 @@ export default defineComponent({
       listRef.value ? getComputedStyle(listRef.value).height : 0
     );
 
+    const buttonFocused = computed(() => document.activeElement);
+
     return {
       computedSelectedItem,
       listOpen,
       selectedItem,
       listRef,
+      buttonRef,
       computedHeight,
+      buttonFocused,
+      activeEl,
     };
   },
 
@@ -103,6 +111,11 @@ export default defineComponent({
 
     toggleBox() {
       this.listOpen = !this.listOpen;
+    },
+
+    clickedOutside() {
+      this.listOpen = false;
+      this.buttonRef?.blur();
     },
 
     expandEnter(el: HTMLElement) {
@@ -124,6 +137,8 @@ export default defineComponent({
     expandLeave(el: HTMLElement) {
       el.style.height = getComputedStyle(el).height;
 
+      getComputedStyle(el);
+
       setTimeout(() => {
         el.style.height = "0";
       }, 50);
@@ -138,7 +153,7 @@ export default defineComponent({
 .expand {
   &-enter-active,
   &-leave-active {
-    transition: height 250ms ease-in-out;
+    transition: height 150ms ease-out;
     overflow: hidden;
   }
 }
@@ -169,8 +184,6 @@ export default defineComponent({
   height: 100%;
 
   min-width: 10em;
-
-  background: #333;
 
   text-align: center;
 }
@@ -231,11 +244,11 @@ label {
   position: relative;
 
   display: inline-block;
-  background: #333;
+  background-color: hsla(0, 0%, 0%, 0.85);
 
   &:hover,
   &:focus {
-    background: #555;
+    background-color: hsla(0, 0%, 20%, 0.85);
   }
 
   padding: 0.75em 0;

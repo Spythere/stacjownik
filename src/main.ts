@@ -1,4 +1,4 @@
-import { createApp } from 'vue'
+import { createApp, Directive } from 'vue'
 import App from './App.vue'
 import router from './router'
 import { store, key } from './store'
@@ -18,8 +18,22 @@ const i18n = createI18n({
   enableLegacy: false
 })
 
+const clickOutsideDirective: Directive = {
+  beforeMount(el, binding) {
+
+    el.clickOutsideEvent = (event: Event) => {
+      if (!(el == event.target || el.contains(event.target))) {
+        binding.value();
+      }
+    };
+
+    document.addEventListener("click", el.clickOutsideEvent);
+  },
+}
+
 createApp(App)
   .use(store, key)
   .use(router)
   .use(i18n)
+  .directive('click-outside', clickOutsideDirective)
   .mount('#app')
