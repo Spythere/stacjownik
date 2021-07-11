@@ -22,6 +22,8 @@
         :key="i"
         :ref="
           (el) => {
+            observer.observe(el);
+
             if (!train.timetableData) return;
             elList[train.timetableData.timetableId] = el;
           }
@@ -264,32 +266,40 @@ export default defineComponent({
 
     onBeforeUpdate(() => {
       elList.value.length = 0;
+      observer.disconnect();
     });
 
     const timetableDataStatus: ComputedRef<DataStatus> = computed(
       () => store.getters[GETTERS.timetableDataStatus]
     );
 
-    const timetableLoaded = computed(
-      () => timetableDataStatus.value === DataStatus.Loaded
-    );
-    const timetableError = computed(
-      () => timetableDataStatus.value === DataStatus.Error
-    );
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          (entry.target as HTMLElement).classList.add("visible");
+          return;
+        }
 
-    const distanceLimitExceeded = computed(
-      () =>
-        props.computedTrains.findIndex(
-          ({ timetableData }) =>
-            timetableData && timetableData.routeDistance > 200
-        ) != -1
-    );
+        (entry.target as HTMLElement).classList.remove("visible");
+      });
+    });
 
     return {
-      timetableLoaded,
-      timetableError,
-      distanceLimitExceeded,
       elList,
+      observer,
+      timetableLoaded: computed(
+        () => timetableDataStatus.value === DataStatus.Loaded
+      ),
+      timetableError: computed(
+        () => timetableDataStatus.value === DataStatus.Error
+      ),
+      distanceLimitExceeded: computed(
+        () =>
+          props.computedTrains.findIndex(
+            ({ timetableData }) =>
+              timetableData && timetableData.routeDistance > 200
+          ) != -1
+      ),
     };
   },
 

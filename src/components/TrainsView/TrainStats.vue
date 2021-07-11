@@ -2,28 +2,15 @@
   <div class="train-stats">
     <div class="stats_button">
       <action-button @click="toggleStatsOpen">
-        <img
-          :src="statsIcon"
-          :alt="$t('trains.stats')"
-        />
-        <p class="xd">{{ $t("trains.stats") }}</p>
+        <img :src="statsIcon" :alt="$t('trains.stats')" />
+        <p>{{ $t("trains.stats") }}</p>
       </action-button>
     </div>
 
-    <transition
-      name="stats-anim"
-      class="stats_wrapper"
-      tag="div"
-    >
-      <div
-        class="stats-body"
-        v-if="trainStatsOpen"
-      >
+    <transition name="stats-anim" class="stats_wrapper" tag="div">
+      <div class="stats-body" v-if="trainStatsOpen">
         <h2 class="stats-header">
-          <img
-            :src="statsIcon"
-            :alt="$t('trains.stats')"
-          />
+          <img :src="statsIcon" :alt="$t('trains.stats')" />
           {{ $t("trains.stats") }}
         </h2>
 
@@ -83,11 +70,7 @@
           <div class="title stats-title">{{ $t("trains.stats-locos") }}</div>
 
           <div class="loco-list stats-content">
-            <div
-              class="loco-item"
-              v-for="(loco, i) in locoList"
-              :key="i"
-            >
+            <div class="loco-item" v-for="(loco, i) in locoList" :key="i">
               {{ loco[0] }} | {{ loco[1] }}
             </div>
           </div>
@@ -259,16 +242,11 @@ export default defineComponent({
   position: relative;
   top: 0;
   z-index: 99;
-
-  &:focus {
-    color: red;
-  }
 }
 
 .stats {
   &_wrapper {
     margin-bottom: 0.5em;
-
     outline: none;
   }
 
