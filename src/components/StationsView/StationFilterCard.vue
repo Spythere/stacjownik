@@ -1,57 +1,60 @@
 <template>
-  <section class="card" v-if="showCard">
-    <div class="card_exit" @click="exit">
-      <!-- <img :src="require('@/assets/icon-exit.svg')" alt="exit icon" /> -->
+  <section class="filter-card" v-click-outside="closeCard">
+    <div class="card_btn">
+      <action-button @click="toggleCard">
+        <img class="button_icon" :src="filterIcon" alt="icon-filter" />
+        <p>{{ $t("options.filters") }}</p>
+      </action-button>
     </div>
 
-    <div class="card_title flex">{{ $t("filters.title") }}</div>
+    <transition name="card-anim">
+      <div class="card_content card" v-if="isVisible">
+        <div class="card_exit" @click="closeCard"></div>
 
-    <section class="card_options">
-      <filter-option
-        v-for="(option, i) in inputs.options"
-        :option="option"
-        :key="i"
-        @optionChange="handleChange"
-      />
-    </section>
+        <div class="card_title flex">{{ $t("filters.title") }}</div>
 
-    <!-- <section class="card_modes">
-      <filter-option :option="inputs.modes[0]" @optionChange="invertFilters" />
-    </section> -->
+        <section class="card_options">
+          <filter-option
+            v-for="(option, i) in inputs.options"
+            :option="option"
+            :key="i"
+            @optionChange="handleChange"
+          />
+        </section>
 
-    <section class="card_sliders">
-      <div class="slider" v-for="(slider, i) in inputs.sliders" :key="i">
-        <input
-          class="slider-input"
-          type="range"
-          :name="slider.name"
-          :id="slider.id"
-          :min="slider.minRange"
-          :max="slider.maxRange"
-          v-model="slider.value"
-          @change="handleInput"
-        />
+        <section class="card_sliders">
+          <div class="slider" v-for="(slider, i) in inputs.sliders" :key="i">
+            <input
+              class="slider-input"
+              type="range"
+              :name="slider.name"
+              :id="slider.id"
+              :min="slider.minRange"
+              :max="slider.maxRange"
+              v-model="slider.value"
+              @change="handleInput"
+            />
 
-        <span class="slider-value">{{ slider.value }}</span>
+            <span class="slider-value">{{ slider.value }}</span>
 
-        <div class="slider-content">
-          {{ $t(`filters.sliders.${slider.id}`) }}
-        </div>
-      </div>
-    </section>
+            <div class="slider-content">
+              {{ $t(`filters.sliders.${slider.id}`) }}
+            </div>
+          </div>
+        </section>
 
-    <section class="card_save">
-      <filter-option
-        @optionChange="saveFilters"
-        :option="{
-          id: 'save',
-          name: 'save',
-          section: 'mode',
-          value: saveOptions,
-          defaultValue: true,
-        }"
-      />
-      <!-- <div class="option">
+        <section class="card_save">
+          <filter-option
+            @optionChange="saveFilters"
+            :option="{
+              id: 'save',
+              name: 'save',
+              section: 'mode',
+              value: saveOptions,
+              defaultValue: true,
+            }"
+          />
+          <!-- <div class="option">
         <label>
           <input type="checkbox" v-model="saveOptions" @change="saveFilters" />
           <span class="save" :class="{ checked: saveOptions }">
@@ -59,16 +62,18 @@
           </span>
         </label>
       </div> -->
-    </section>
+        </section>
 
-    <section class="card_actions flex">
-      <action-button class="outlined" @click="resetFilters">
-        {{ $t("filters.reset") }}
-      </action-button>
-      <action-button class="outlined" @click="exit">{{
-        $t("filters.close")
-      }}</action-button>
-    </section>
+        <section class="card_actions flex">
+          <action-button class="outlined" @click="resetFilters">
+            {{ $t("filters.reset") }}
+          </action-button>
+          <action-button class="outlined" @click="closeCard">{{
+            $t("filters.close")
+          }}</action-button>
+        </section>
+      </div>
+    </transition>
   </section>
 </template>
 
@@ -82,13 +87,15 @@ import FilterOption from "./FilterOption.vue";
 
 export default defineComponent({
   components: { ActionButton, FilterOption },
-  props: ["showCard", "exit"],
   emits: ["changeFilterValue", "invertFilters", "resetFilters"],
 
   data: () => ({
+    filterIcon: require("@/assets/icon-filter2.svg"),
+
     inputs: { ...inputData },
     saveOptions: false,
     STORAGE_KEY: "options_saved",
+    isVisible: false,
   }),
 
   mounted() {
@@ -160,7 +167,11 @@ export default defineComponent({
     },
 
     closeCard() {
-      this.exit();
+      this.isVisible = false;
+    },
+
+    toggleCard() {
+      this.isVisible = !this.isVisible;
     },
   },
 });
@@ -169,6 +180,19 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import "../../styles/responsive";
 @import "../../styles/card";
+
+.card-anim {
+  &-enter-active,
+  &-leave-active {
+    transition: all $animDuration $animType;
+  }
+
+  &-enter-from,
+  &-leave-to {
+    transform: translate(-50%, -50%) scale(0.85);
+    opacity: 0;
+  }
+}
 
 .card {
   > section {

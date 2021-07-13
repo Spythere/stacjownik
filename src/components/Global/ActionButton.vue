@@ -1,6 +1,8 @@
 <template>
   <button class="action-btn">
-    <slot></slot>
+    <div class="button_content">
+      <slot></slot>
+    </div>
   </button>
 </template>
 
@@ -15,9 +17,6 @@ export default defineComponent({});
 @import "../../styles/responsive";
 
 .action-btn {
-  display: flex;
-  align-items: center;
-
   background: #333;
   border: none;
 
@@ -57,5 +56,10 @@ export default defineComponent({});
     color: $accentCol;
     background: #5c5c5c;
   }
+}
+
+.button_content {
+  display: flex;
+  align-items: center;
 }
 </style>

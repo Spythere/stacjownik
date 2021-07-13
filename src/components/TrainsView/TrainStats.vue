@@ -1,11 +1,9 @@
 <template>
-  <div class="train-stats">
-    <div class="stats_button">
-      <action-button @click="toggleStatsOpen">
-        <img :src="statsIcon" :alt="$t('trains.stats')" />
-        <p>{{ $t("trains.stats") }}</p>
-      </action-button>
-    </div>
+  <div class="train-stats" v-click-outside="closeStats">
+    <action-button class="stats_button" @click="toggleStatsOpen">
+      <img :src="statsIcon" :alt="$t('trains.stats')" />
+      <p>{{ $t("trains.stats") }}</p>
+    </action-button>
 
     <transition name="stats-anim" class="stats_wrapper" tag="div">
       <div class="stats-body" v-if="trainStatsOpen">
@@ -103,6 +101,10 @@ export default defineComponent({
   methods: {
     toggleStatsOpen() {
       this.trainStatsOpen = !this.trainStatsOpen;
+    },
+
+    closeStats() {
+      this.trainStatsOpen = false;
     },
   },
 
@@ -266,6 +268,9 @@ export default defineComponent({
     max-width: 700px;
     width: 100%;
 
+    top: 100%;
+    left: 0;
+
     background: #222;
     border-radius: 0 1em 1em 1em;
 
@@ -346,8 +351,7 @@ export default defineComponent({
   }
 
   .stats_button {
-    display: flex;
-    justify-content: center;
+    margin: 0 auto;
   }
 }
 </style>

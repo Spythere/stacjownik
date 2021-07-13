@@ -3,10 +3,13 @@
     <div class="wrapper">
       <div class="body">
         <div class="options-bar">
-          <action-button @click="() => toggleCardsState('filter')">
-            <img class="button_icon" :src="filterIcon" alt="icon-filter" />
-            <p>{{ $t("options.filters") }}</p>
-          </action-button>
+          <FilterCard
+            :showCard="filterCardOpen"
+            :exit="closeCard"
+            @changeFilterValue="changeFilterValue"
+            @invertFilters="invertFilters"
+            @resetFilters="resetFilters"
+          />
 
           <div class="paypal-link">
             <a target="_blank" href="https://paypal.me/spythere">
@@ -27,16 +30,6 @@
         />
       </div>
     </div>
-
-    <transition name="card-anim">
-      <FilterCard
-        :showCard="filterCardOpen"
-        :exit="() => toggleCardsState('filter')"
-        @changeFilterValue="changeFilterValue"
-        @invertFilters="invertFilters"
-        @resetFilters="resetFilters"
-      />
-    </transition>
   </section>
 </template>
 
@@ -68,7 +61,6 @@ export default defineComponent({
     trainIcon: require("@/assets/icon-train.svg"),
     timetableIcon: require("@/assets/icon-timetable.svg"),
     dolarIcon: require("@/assets/icon-dolar.svg"),
-    filterIcon: require("@/assets/icon-filter2.svg"),
     filterCardOpen: false,
     modalHidden: true,
     STORAGE_KEY: "options_saved",
@@ -151,7 +143,7 @@ export default defineComponent({
       this.filterManager.invertFilters();
     },
     closeCard() {
-      this.focusedStationName = "";
+      this.filterCardOpen = false;
     },
     setFocusedStation(name: string) {
       this.focusedStationName = this.focusedStationName == name ? "" : name;
@@ -163,19 +155,6 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import "../styles/variables.scss";
 @import "../styles/responsive.scss";
-
-.card-anim {
-  &-enter-active,
-  &-leave-active {
-    transition: all $animDuration $animType;
-  }
-
-  &-enter-from,
-  &-leave-to {
-    transform: translate(-50%, -50%) scale(0.85);
-    opacity: 0;
-  }
-}
 
 @keyframes blinkAnim {
   0%,

@@ -20,7 +20,8 @@ const i18n = createI18n({
 
 const clickOutsideDirective: Directive = {
   beforeMount(el, binding) {
-
+    console.log("before mount");
+    
     el.clickOutsideEvent = (event: Event) => {
       if (!(el == event.target || el.contains(event.target))) {
         binding.value();
