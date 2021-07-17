@@ -92,7 +92,7 @@
     "no-stations": "Brak stacji do wyświetlenia!"
   },
   "trains": {
-    "no-trains": "Brak pociągów online!",
+    "no-trains": "Brak pociągów do wyświetlenia!",
     "loading": "Pobieranie danych o pociągach...",
     "stats": "STATYSTYKI RUCHU",
     "stats-speed": "PRĘDKOŚCI POCIĄGÓW (MIN, ŚR, MAX) [km/h]",

@@ -92,7 +92,7 @@
     "no-stations": "No stations to show here!"
   },
   "trains": {
-    "no-trains": "Oops! No trains online!",
+    "no-trains": "No trains to show here!",
     "loading": "Loading train data...",
     "stats": "TRAFFIC STATISTICS",
     "stats-speed": "TRAINS SPEED (MIN, AVG, MAX) [km/h]",

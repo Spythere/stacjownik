@@ -22,8 +22,6 @@
         :key="i"
         :ref="
           (el) => {
-            observer.observe(el);
-
             if (!train.timetableData) return;
             elList[train.timetableData.timetableId] = el;
           }
@@ -163,18 +161,18 @@
           </span>
         </div>
 
-        <div
-          class="train_extended-info"
-          v-if="
-            train.timetableData &&
-            showedSchedule == train.timetableData.timetableId
-          "
+        <transition
+          name="unfold"
+          @enter="enter"
+          @afterEnter="afterEnter"
+          @leave="leave"
         >
           <TrainSchedule
+            v-if="showedSchedule === train.timetableData?.timetableId"
             :followingStops="train.timetableData.followingStops"
             @click="changeScheduleShowState(train.timetableData?.timetableId)"
           />
-        </div>
+        </transition>
       </li>
     </ul>
   </div>
@@ -264,29 +262,28 @@ export default defineComponent({
     const store = useStore();
     const elList: Ref<(HTMLElement | null)[]> = ref([]);
 
-    onBeforeUpdate(() => {
-      elList.value.length = 0;
-      observer.disconnect();
-    });
+    // onBeforeUpdate(() => {
+    //   elList.value.length = 0;
+    //   observer.disconnect();
+    // });
 
     const timetableDataStatus: ComputedRef<DataStatus> = computed(
       () => store.getters[GETTERS.timetableDataStatus]
     );
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          (entry.target as HTMLElement).classList.add("visible");
-          return;
-        }
+    // const observer = new IntersectionObserver((entries) => {
+    //   entries.forEach((entry) => {
+    //     if (entry.isIntersecting) {
+    //       (entry.target as HTMLElement).classList.add("visible");
+    //       return;
+    //     }
 
-        (entry.target as HTMLElement).classList.remove("visible");
-      });
-    });
+    //     (entry.target as HTMLElement).classList.remove("visible");
+    //   });
+    // });
 
     return {
       elList,
-      observer,
       timetableLoaded: computed(
         () => timetableDataStatus.value === DataStatus.Loaded
       ),
@@ -304,6 +301,29 @@ export default defineComponent({
   },
 
   methods: {
+    enter(el: HTMLElement) {
+      const maxHeight = getComputedStyle(el).height;
+
+      el.style.height = "0px";
+
+      getComputedStyle(el);
+
+      setTimeout(() => {
+        el.style.height = maxHeight;
+      }, 10);
+    },
+
+    afterEnter(el: HTMLElement) {
+      el.style.height = "auto";
+    },
+
+    leave(el: HTMLElement) {
+      el.style.height = getComputedStyle(el).height;
+
+      setTimeout(() => {
+        el.style.height = "0px";
+      }, 10);
+    },
     focusOnTrain(trainNoStr: string) {
       const timetableId = this.computedTrains.find(
         (train) => train.trainNo == Number(trainNoStr)
@@ -319,14 +339,15 @@ export default defineComponent({
 
       this.showedSchedule =
         this.showedSchedule == timetableId ? 0 : timetableId;
-      this.$nextTick(() => {
+
+      setTimeout(() => {
         const currentEl = this.elList[timetableId];
 
         currentEl?.scrollIntoView({
           behavior: "smooth",
-          block: "nearest",
+          block: this.showedSchedule == 0 ? "nearest" : "center",
         });
-      });
+      }, 175);
     },
 
     onImageError(e: Event) {
@@ -381,6 +402,14 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import "../../styles/responsive.scss";
 @import "../../styles/user_badge.scss";
+
+.unfold {
+  &-leave-active,
+  &-enter-active {
+    transition: all 150ms ease-out;
+    overflow: hidden;
+  }
+}
 
 .no-trains {
   text-align: center;
