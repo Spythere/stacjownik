@@ -350,8 +350,9 @@ export default defineComponent({
     border-radius: 0 0 1em 1em;
   }
 
-  .stats_button {
-    margin: 0 auto;
+  .train-stats {
+    display: flex;
+    justify-content: center;
   }
 }
 </style>
