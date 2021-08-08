@@ -136,7 +136,7 @@ import dateMixin from "@/mixins/dateMixin";
 import { DataStatus } from "@/scripts/enums/DataStatus";
 
 const API_URL =
-  "https://stacjownik-api-m9z4k.ondigitalocean.app/api/getTimetables";
+  "https://stacjownik-api-n5re2.ondigitalocean.app/api/getTimetables";
 
 interface APIResponse {
   errorMessage: string | null;
@@ -222,8 +222,6 @@ export default defineComponent({
       } catch (error) {
         historyDataStatus.value.status = DataStatus.Error;
         historyDataStatus.value.error = "Ups! Coś poszło nie tak!";
-
-        
       }
     };
 

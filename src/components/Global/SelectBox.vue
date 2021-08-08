@@ -1,5 +1,5 @@
 <template>
-  <div class="select-box" v-click-outside="clickedOutside">
+  <div class="select-box">
     <div class="select-box_content">
       <button class="selected" @click="toggleBox">
         {{ computedSelectedItem.value }}
