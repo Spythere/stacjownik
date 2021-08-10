@@ -146,7 +146,7 @@
     "terminates": "TERMINATES\nHERE"
   },
   "history": {
-    "search-train": "Search by train number",
-    "search-driver": "Search by driver name"
+    "search-train": "Search for train no.",
+    "search-driver": "Search for driver name..."
   }
 }

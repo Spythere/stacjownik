@@ -194,4 +194,8 @@ ul {
   &--primary {
     color: var(--clr-primary);
   }
+
+  &--grayed {
+    color: #ccc;
+  }
 }

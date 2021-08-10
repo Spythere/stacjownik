@@ -82,7 +82,7 @@ export default defineComponent({
 
     background: #333;
     border-radius: 0.5em;
-    min-width: 200px;
+    min-width: 220px;
 
     margin: 0.5em 0 0.5em 0.5em;
 

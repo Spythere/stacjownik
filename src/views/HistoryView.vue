@@ -2,14 +2,7 @@
   <section class="history-view">
     <h2>Historia rozkładów jazdy</h2>
 
-    <div
-      style="
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-wrap: wrap;
-      "
-    >
+    <div class="history_search">
       <search-box
         v-model:searchedValue="searchedDriver"
         titleToTranslate="history.search-driver"
@@ -24,7 +17,7 @@
         @keypress="keyPressed"
       ></search-box>
 
-      <action-button @click="search" style="margin-left: 0.5em">
+      <action-button class="search-button" @click="search">
         Szukaj
       </action-button>
     </div>
@@ -70,6 +63,10 @@
                     <div>
                       <b>{{ item.route.replace("|", " - ") }}</b>
                     </div>
+
+                    <div class="text--grayed">
+                      {{ item.sceneriesString.replaceAll("%", " - ") }}
+                    </div>
                   </span>
 
                   <span
@@ -113,7 +110,12 @@
                   </div>
 
                   <div>
-                    <b>Zakończenie:</b>
+                    <b>Zakończenie (planowe):</b>
+                    {{ localeDate(item.scheduledEndDate) }}
+                  </div>
+
+                  <div v-if="item.terminated">
+                    <b>Zakończenie (rzeczywiste):</b>
                     {{ localeDate(item.endDate) }}
                   </div>
                 </div>
@@ -135,8 +137,11 @@ import SearchBox from "@/components/Global/SearchBox.vue";
 import dateMixin from "@/mixins/dateMixin";
 import { DataStatus } from "@/scripts/enums/DataStatus";
 
-const API_URL =
-  "https://stacjownik-api-n5re2.ondigitalocean.app/api/getTimetables";
+const PROD_MODE = false;
+
+const API_URL = PROD_MODE
+  ? "https://stacjownik-api-n5re2.ondigitalocean.app/api/getTimetables"
+  : "http://localhost:3001/api/getTimetables";
 
 interface APIResponse {
   errorMessage: string | null;
@@ -152,7 +157,7 @@ interface TimetableHistory {
   route: string;
   twr: number;
   skr: number;
-  sceneries: string[];
+  sceneriesString: string;
 
   routeDistance: number;
   currentDistance: number;
@@ -162,6 +167,9 @@ interface TimetableHistory {
 
   beginDate: string;
   endDate: string;
+
+  scheduledBeginDate: string;
+  scheduledEndDate: string;
 
   terminated: boolean;
   fulfilled: boolean;
@@ -280,6 +288,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import "../styles/responsive.scss";
+
 .warning {
   &-enter-from,
   &-leave-to {
@@ -334,6 +344,17 @@ h2 {
   }
 }
 
+.history_search {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.search-button {
+  margin-left: 0.5em;
+}
+
 .history_warning {
   text-align: center;
   font-size: 1.3em;
@@ -352,5 +373,16 @@ li,
   background: #202020;
   padding: 1em;
   margin: 1em 0;
+}
+
+@include smallScreen() {
+  .history_search {
+    flex-direction: column;
+  }
+
+  .search-button {
+    margin-left: 0;
+    margin-top: 0.5em;
+  }
 }
 </style>
