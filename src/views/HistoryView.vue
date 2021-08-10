@@ -137,7 +137,7 @@ import SearchBox from "@/components/Global/SearchBox.vue";
 import dateMixin from "@/mixins/dateMixin";
 import { DataStatus } from "@/scripts/enums/DataStatus";
 
-const PROD_MODE = false;
+const PROD_MODE = true;
 
 const API_URL = PROD_MODE
   ? "https://stacjownik-api-n5re2.ondigitalocean.app/api/getTimetables"
