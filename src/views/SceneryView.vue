@@ -57,15 +57,13 @@ export default defineComponent({
       () => data.value.dataConnectionStatus === DataStatus.Loaded
     );
 
-    const stationInfo = computed(() => {
-      if (!route.query.station) return;
-
-      return data.value.stationList.find(
+    const stationInfo = computed(() =>
+      data.value.stationList.find(
         (station) =>
           station.stationName ===
-          route.query.station?.toString().replaceAll("_", " ")
-      );
-    });
+          route.query.station?.toString().replace(/_/g, " ")
+      )
+    );
 
     return {
       data,
