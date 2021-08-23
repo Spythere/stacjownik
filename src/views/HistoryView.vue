@@ -140,7 +140,7 @@ import { DataStatus } from "@/scripts/enums/DataStatus";
 const PROD_MODE = true;
 
 const API_URL = PROD_MODE
-  ? "https://stacjownik-api-n5re2.ondigitalocean.app/api/getTimetables"
+  ? "https://stacjownik-api-7xmt4.ondigitalocean.app/api/getTimetables"
   : "http://localhost:3001/api/getTimetables";
 
 interface APIResponse {
