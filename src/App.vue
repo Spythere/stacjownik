@@ -157,22 +157,29 @@ export default defineComponent({
         return;
       }
 
-      if (!window.navigator.language) {
-        this.changeLang("pl");
+      if (!window.navigator.language) return;
+
+      const naviLanguage = window.navigator.language.toString();
+
+      if (naviLanguage.includes("en")) {
+        this.changeLang("en");
         return;
       }
 
-      switch (window.navigator.language) {
-        case "pl-PL":
-          this.changeLang("pl");
-          break;
-        case "en-EN":
-        default:
-          this.changeLang("en");
-          break;
-      }
+      // if (naviLanguage.includes("pl")) {
+      //   this.changeLang("pl");
+      //   return;
+      // }
 
-      return;
+      // switch (window.navigator.language) {
+      //   case "pl-PL":
+      //     this.changeLang("pl");
+      //     break;
+      //   case "en-EN":
+      //   default:
+      //     this.changeLang("en");
+      //     break;
+      // }
     },
   },
 });
