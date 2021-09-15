@@ -138,12 +138,16 @@ export default defineComponent({
     const timetableStats = computed(() => {
       if (props.trains.length == 0) return { avg: "0", min: "0", max: "0" };
 
+      const activeTrainsLength = props.trains.filter(
+        (train) => train.timetableData
+      ).length;
+
       const avg = (
         props.trains.reduce(
           (acc, train) =>
             train.timetableData ? acc + train.timetableData.routeDistance : acc,
           0
-        ) / props.trains.length
+        ) / activeTrainsLength
       ).toFixed(2);
 
       const minMaxDistance = props.trains.reduce((acc, train) => {
