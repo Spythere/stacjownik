@@ -29,10 +29,7 @@
       ></select-box>
     </div>
 
-    <span
-      class="timetable-item loading"
-      v-if="dataStatus == 0"
-    >{{
+    <span class="timetable-item loading" v-if="dataStatus == 0">{{
       $t("app.loading")
     }}</span>
 
@@ -51,12 +48,14 @@
       >
         <span class="timetable-general">
           <span class="general-info">
-            <router-link :to="{
+            <router-link
+              :to="{
                 name: 'TrainsView',
                 params: {
-                  queryTrain: scheduledTrain.trainNo.toString(),
+                  train: scheduledTrain.trainNo.toString(),
                 },
-              }">
+              }"
+            >
               <span>
                 <strong>{{ scheduledTrain.category }}</strong>
                 {{ scheduledTrain.trainNo }}
@@ -69,17 +68,21 @@
                   'https://td2.info.pl/profile/?u=' + scheduledTrain.driverId
                 "
                 target="_blank"
-              >{{ scheduledTrain.driverName }}</a>
+                >{{ scheduledTrain.driverName }}</a
+              >
             </span>
 
             <div class="info-route">
-              <strong>{{ scheduledTrain.beginsAt }} -
-                {{ scheduledTrain.terminatesAt }}</strong>
+              <strong
+                >{{ scheduledTrain.beginsAt }} -
+                {{ scheduledTrain.terminatesAt }}</strong
+              >
             </div>
           </span>
 
           <span class="general-status">
-            <span :class="scheduledTrain.stopStatus">{{ $t(`timetables.${scheduledTrain.stopStatus}`) }}
+            <span :class="scheduledTrain.stopStatus"
+              >{{ $t(`timetables.${scheduledTrain.stopStatus}`) }}
             </span>
           </span>
         </span>
@@ -92,10 +95,7 @@
               v-html="$t('timetables.begins')"
             >
             </span>
-            <span
-              class="arrival-time"
-              v-else
-            >
+            <span class="arrival-time" v-else>
               {{ scheduledTrain.stopInfo.arrivalTimeString }} ({{
                 scheduledTrain.stopInfo.arrivalDelay
               }})
@@ -103,10 +103,7 @@
           </span>
 
           <span class="schedule-stop">
-            <span
-              class="stop-time"
-              v-if="scheduledTrain.stopInfo.stopTime"
-            >
+            <span class="stop-time" v-if="scheduledTrain.stopInfo.stopTime">
               {{ scheduledTrain.stopInfo.stopTime }}
               {{ scheduledTrain.stopInfo.stopType }}
             </span>
@@ -119,10 +116,7 @@
               v-html="$t('timetables.terminates')"
             >
             </span>
-            <span
-              class="departure-time"
-              v-else
-            >
+            <span class="departure-time" v-else>
               {{ scheduledTrain.stopInfo.departureTimeString }} ({{
                 scheduledTrain.stopInfo.departureDelay
               }})

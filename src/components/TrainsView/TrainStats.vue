@@ -112,12 +112,14 @@ export default defineComponent({
     const speedStats = computed(() => {
       if (props.trains.length == 0) return { avg: "0", min: "0", max: "0" };
 
+      const trainList = props.trains.filter((train) => train.timetableData);
+
       const avg = (
-        props.trains.reduce((acc, train) => acc + train.speed, 0) /
-        props.trains.length
+        trainList.reduce((acc, train) => acc + train.speed, 0) /
+        trainList.length
       ).toFixed(2);
 
-      const minMaxSpeed = props.trains.reduce((acc, train) => {
+      const minMaxSpeed = trainList.reduce((acc, train) => {
         if (!train.timetableData) return acc;
 
         acc[0] = !acc[0] || train.speed < acc[0] ? train.speed : acc[0];
@@ -206,6 +208,7 @@ export default defineComponent({
       const twrList = props.trains.filter(
         (train) => train.timetableData && train.timetableData.TWR
       );
+
       const skrList = props.trains.filter(
         (train) => train.timetableData && train.timetableData.SKR
       );

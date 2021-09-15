@@ -5,14 +5,14 @@
         <TrainStats :trains="trainList" :trainStatsOpen="trainStatsOpen" />
 
         <TrainOptions
-          :queryTrain="queryTrain"
+          :queryTrain="train"
           @changeSorter="changeSorter"
           @changeSearchedTrain="changeSearchedTrain"
           @changeSearchedDriver="changeSearchedDriver"
         />
       </div>
 
-      <TrainTable :computedTrains="computedTrains" :queryTrain="queryTrain" />
+      <TrainTable :computedTrains="computedTrains" :queryTrain="train" />
     </div>
   </section>
 </template>
@@ -91,11 +91,12 @@ export default defineComponent({
     TrainOptions,
   },
 
-  props: ["queryTrain"],
+  props: ["train"],
 
   data: () => ({
     statsIcon: require("@/assets/icon-stats.svg"),
     trainStatsOpen: false,
+    queryTrain: "",
   }),
 
   setup() {
