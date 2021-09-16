@@ -169,7 +169,7 @@
         >
           <TrainSchedule
             v-if="showedSchedule === train.timetableData?.timetableId"
-            :followingStops="train.timetableData.followingStops"
+            :followingStops="train.timetableData?.followingStops"
             @click="changeScheduleShowState(train.timetableData?.timetableId)"
           />
         </transition>
@@ -188,8 +188,10 @@ import {
   computed,
   ComputedRef,
   defineComponent,
+  reactive,
   Ref,
   ref,
+  watch,
 } from "@vue/runtime-core";
 import { useStore } from "@/store";
 import { GETTERS } from "@/constants/storeConstants";
@@ -270,6 +272,20 @@ export default defineComponent({
       () => store.getters[GETTERS.timetableDataStatus]
     );
 
+    const queryTimetable = computed(
+      () =>
+        props.computedTrains.find(
+          (train) => train.trainNo === Number(props.queryTrain)
+        )?.timetableData
+    );
+
+    // watch(
+    //   () => queryTimetable.value,
+    //   (val, prevVal) => {
+
+    //   }
+    // );
+
     // const observer = new IntersectionObserver((entries) => {
     //   entries.forEach((entry) => {
     //     if (entry.isIntersecting) {
@@ -283,6 +299,7 @@ export default defineComponent({
 
     return {
       elList,
+      queryTimetable,
       timetableLoaded: computed(
         () => timetableDataStatus.value === DataStatus.Loaded
       ),
@@ -298,6 +315,14 @@ export default defineComponent({
       ),
     };
   },
+
+  // watch: {
+  //   queryTimetable(timetable: Train["timetableData"]) {
+  //     if (!timetable || !this.queryTrain) return;
+
+  //     this.focusOnTrain(this.queryTrain);
+  //   },
+  // },
 
   methods: {
     enter(el: HTMLElement) {
@@ -323,6 +348,7 @@ export default defineComponent({
         el.style.height = "0px";
       }, 10);
     },
+
     focusOnTrain(trainNoStr: string) {
       const timetableId = this.computedTrains.find(
         (train) => train.trainNo == Number(trainNoStr)
@@ -346,7 +372,7 @@ export default defineComponent({
           behavior: "smooth",
           block: this.showedSchedule == 0 ? "nearest" : "center",
         });
-      }, 175);
+      }, 200);
     },
 
     onImageError(e: Event) {

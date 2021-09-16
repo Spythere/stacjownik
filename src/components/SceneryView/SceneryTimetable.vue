@@ -51,7 +51,7 @@
             <router-link
               :to="{
                 name: 'TrainsView',
-                params: {
+                query: {
                   train: scheduledTrain.trainNo.toString(),
                 },
               }"

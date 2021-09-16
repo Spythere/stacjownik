@@ -257,7 +257,7 @@ export default defineComponent({
 
       this.$router.push({
         name: "TrainsView",
-        params: { train: trainNo.toString() },
+        query: { train: trainNo.toString() },
       });
     },
 
