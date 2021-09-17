@@ -188,10 +188,8 @@ import {
   computed,
   ComputedRef,
   defineComponent,
-  reactive,
   Ref,
   ref,
-  watch,
 } from "@vue/runtime-core";
 import { useStore } from "@/store";
 import { GETTERS } from "@/constants/storeConstants";
@@ -263,39 +261,17 @@ export default defineComponent({
     const store = useStore();
     const elList: Ref<(HTMLElement | null)[]> = ref([]);
 
-    // onBeforeUpdate(() => {
-    //   elList.value.length = 0;
-    //   observer.disconnect();
-    // });
-
     const timetableDataStatus: ComputedRef<DataStatus> = computed(
       () => store.getters[GETTERS.timetableDataStatus]
     );
 
-    const queryTimetable = computed(
-      () =>
-        props.computedTrains.find(
-          (train) => train.trainNo === Number(props.queryTrain)
-        )?.timetableData
-    );
+    const queryTimetable = computed(() => {
+      const q = props.computedTrains.find(
+        (train) => train.trainNo === Number(props.queryTrain)
+      )?.timetableData;
 
-    // watch(
-    //   () => queryTimetable.value,
-    //   (val, prevVal) => {
-
-    //   }
-    // );
-
-    // const observer = new IntersectionObserver((entries) => {
-    //   entries.forEach((entry) => {
-    //     if (entry.isIntersecting) {
-    //       (entry.target as HTMLElement).classList.add("visible");
-    //       return;
-    //     }
-
-    //     (entry.target as HTMLElement).classList.remove("visible");
-    //   });
-    // });
+      return q;
+    });
 
     return {
       elList,
@@ -315,14 +291,6 @@ export default defineComponent({
       ),
     };
   },
-
-  // watch: {
-  //   queryTimetable(timetable: Train["timetableData"]) {
-  //     if (!timetable || !this.queryTrain) return;
-
-  //     this.focusOnTrain(this.queryTrain);
-  //   },
-  // },
 
   methods: {
     enter(el: HTMLElement) {
