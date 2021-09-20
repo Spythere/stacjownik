@@ -13,7 +13,7 @@
     "default": "Sceneria dostępna domyślnie w paczce z grą",
     "non-public": "Sceneria niepubliczna",
     "unavailable": "Sceneria niedostępna",
-    "real": "Sceneria realna"
+    "real": "Sceneria z realnymi liniami kolejowymi: "
   },
   "signals": {
     "współczesna": "współczesna",

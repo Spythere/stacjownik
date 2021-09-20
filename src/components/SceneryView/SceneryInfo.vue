@@ -105,8 +105,8 @@
         <img
           v-if="stationInfo.stationLines && stationInfo.stationLines != ''"
           :src="realIcon"
-          alt="real"
-          :title="$t('desc.real')"
+          alt="real-scenery"
+          :title="`${$t('desc.real')} ${stationInfo.stationLines}`"
         />
       </div>
 

@@ -13,7 +13,7 @@
     "default": "This scenery is available by default",
     "non-public": "This scenery is not public",
     "unavailable": "This scenery is unavailable",
-    "real": "This scenery is real"
+    "real": "Scenery with real lines: "
   },
   "signals": {
     "współczesna": "modern",
