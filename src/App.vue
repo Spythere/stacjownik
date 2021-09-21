@@ -104,8 +104,13 @@ export default defineComponent({
       () => store.getters[GETTERS.allData]
     );
 
+    const currentRegion: ComputedRef<string> = computed(
+      () => store.getters[GETTERS.currentRegion]
+    );
+
     return {
       data,
+      currentRegion,
     };
   },
 
@@ -148,6 +153,12 @@ export default defineComponent({
 
       StorageManager.setStringValue("lang", lang);
     },
+
+    // changeRegion(region: string = "eu") {
+    //   this.$store.commit(MUTATIONS.SET_REGION, region);
+    //   this.$store.dispatch(ACTIONS.fetchOnlineData);
+
+    // },
 
     loadLang() {
       const storageLang = StorageManager.getStringValue("lang");

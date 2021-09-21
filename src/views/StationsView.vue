@@ -11,6 +11,14 @@
             @resetFilters="resetFilters"
           />
 
+          <!-- <action-button>PL1</action-button> -->
+
+          <!-- <select-box
+            style="margin-left: 0.5em"
+            :itemList="regions"
+            @selected="selectRegion"
+          ></select-box> -->
+
           <div class="paypal-link">
             <a target="_blank" href="https://paypal.me/spythere">
               <img
@@ -43,19 +51,19 @@ import inputData from "@/data/options.json";
 
 import StationTable from "@/components/StationsView/StationTable.vue";
 import FilterCard from "@/components/StationsView/StationFilterCard.vue";
-import ActionButton from "@/components/Global/ActionButton.vue";
+import SelectBox from "@/components/Global/SelectBox.vue";
 
 import { StoreData } from "@/scripts/interfaces/StoreData";
 import { DataStatus } from "@/scripts/enums/DataStatus";
 import { computed, ComputedRef, defineComponent, reactive } from "vue";
 import { useStore } from "@/store";
-import { GETTERS } from "@/constants/storeConstants";
+import { ACTIONS, GETTERS, MUTATIONS } from "@/constants/storeConstants";
 
 export default defineComponent({
   components: {
     StationTable,
     FilterCard,
-    ActionButton,
+    SelectBox,
   },
   data: () => ({
     trainIcon: require("@/assets/icon-train.svg"),
@@ -65,7 +73,19 @@ export default defineComponent({
     modalHidden: true,
     STORAGE_KEY: "options_saved",
     inputs: inputData,
+
+    regions: [
+      {
+        id: "eu",
+        value: "PL1",
+      },
+      {
+        id: "ru",
+        value: "ENG",
+      },
+    ],
   }),
+
   setup() {
     const store = useStore();
     const filterManager = reactive(new StationFilterManager());
@@ -148,6 +168,10 @@ export default defineComponent({
     setFocusedStation(name: string) {
       this.focusedStationName = this.focusedStationName == name ? "" : name;
     },
+    selectRegion(region: { id: string; value: string }) {
+      this.$store.commit(MUTATIONS.SET_REGION, region.id);
+      this.$store.dispatch(ACTIONS.fetchOnlineData);
+    },
   },
 });
 </script>
@@ -199,6 +223,7 @@ export default defineComponent({
 
 .options-bar {
   display: flex;
+  align-items: center;
 
   margin-bottom: 0.5em;
 }

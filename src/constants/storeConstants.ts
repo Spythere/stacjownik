@@ -8,6 +8,7 @@ export const MUTATIONS = {
     SET_SCENERY_DATA: "SET_SCENERY_DATA",
     SET_SCENERY_DATA_STATUS: "SET_SCENERY_DATA_STATUS",
     SET_DATA_CONNECTION_STATUS: "SET_DATA_CONNECTION_STATUS",
+    SET_REGION: "SET_REGION",
     UPDATE_STATIONS: "UPDATE_STATIONS",
     UPDATE_TRAINS: "UPDATE_TRAINS",
     UPDATE_TIMETABLES: "UPDATE_TIMETABLES"
@@ -19,5 +20,6 @@ export const GETTERS = {
     allData: "allData",
     timetableDataStatus: "timetableDataStatus",
     sceneryDataStatus: "sceneryDataStatus", 
-    dataStatus: "dataStatus"
+    dataStatus: "dataStatus",
+    currentRegion: "currentRegion"
 }

@@ -24,11 +24,11 @@ import { DataStatus } from "@/scripts/enums/DataStatus";
 import { getLocoURL, getStatusID, getStatusTimestamp, getTimestamp, getTrainStopStatus, parseSpawns, timestampToString } from "@/scripts/utils/storeUtils";
 import { URLs } from '@/scripts/utils/apiURLs';
 
-
 export interface State {
   stationList: Station[],
   trainList: Train[],
-
+  
+  region: string;
   trainCount: number;
   stationCount: number;
 
@@ -45,6 +45,8 @@ export const store = createStore<State>({
   state: () => ({
     stationList: [],
     trainList: [],
+
+    region: "eu",
     
     trainCount: 0,
     stationCount: 0,
@@ -71,7 +73,8 @@ export const store = createStore<State>({
     }),
     timetableDataStatus: (state): DataStatus => state.timetableDataStatus,
     sceneryDataStatus: (state): DataStatus => state.sceneryDataStatus,
-    dataStatus: (state): DataStatus => state.dataConnectionStatus
+    dataStatus: (state): DataStatus => state.dataConnectionStatus,
+    currentRegion: (state): string => state.region
   },
 
   actions: {
@@ -84,7 +87,6 @@ export const store = createStore<State>({
       dispatch(ACTIONS.fetchOnlineData);
 
       setInterval(() => dispatch(ACTIONS.fetchOnlineData), 30000);
-      
     },
 
     async fetchOnlineData({ commit, dispatch }) {      
@@ -95,15 +97,15 @@ export const store = createStore<State>({
           const onlineDispatchersData: string[][] = await response[2].data.message;
 
           const updatedStationList = onlineStationsData.reduce((acc, station) => {
-            if (station.region !== "eu" || !station.isOnline) return acc;
+            if (station.region !== this.state.region || !station.isOnline) return acc;
 
-            const stationStatus = onlineDispatchersData.find((status: string[]) => status[0] == station.stationHash && status[1] == "eu");
+            const stationStatus = onlineDispatchersData.find((status: string[]) => status[0] == station.stationHash && status[1] == this.state.region);
 
             const statusTimestamp = getStatusTimestamp(stationStatus);
             const statusID = getStatusID(stationStatus);
 
             const stationTrains = onlineTrainsData
-              .filter(train => train.region === "eu" && train.isOnline && train.station.stationName === station.stationName)
+              .filter(train => train.region === this.state.region && train.isOnline && train.station.stationName === station.stationName)
               .map(train => ({ driverName: train.driverName, trainNo: train.trainNo }));
 
             acc.push({
@@ -128,7 +130,7 @@ export const store = createStore<State>({
 
           const updatedTrainList = await Promise.all(
             onlineTrainsData
-              .filter(train => train.region === "eu")
+              .filter(train => train.region === this.state.region)
               .map(async train => {
                 const locoType = train.dataCon.split(";") ? train.dataCon.split(";")[0] : train.dataCon;
 
@@ -290,6 +292,10 @@ export const store = createStore<State>({
 
     SET_DATA_CONNECTION_STATUS(state, status: DataStatus) {
       state.dataConnectionStatus = status;
+    },
+
+    SET_REGION(state, region: string) {
+      state.region = region;
     },
 
     UPDATE_STATIONS(state, updatedStationList: any[]) {
