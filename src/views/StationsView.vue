@@ -9,6 +9,7 @@
             @changeFilterValue="changeFilterValue"
             @invertFilters="invertFilters"
             @resetFilters="resetFilters"
+            ref="filterCardRef"
           />
 
           <div class="paypal-link">

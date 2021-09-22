@@ -97,8 +97,7 @@ import { ACTIONS, GETTERS, MUTATIONS } from "@/constants/storeConstants";
 import inputData from "@/data/options.json";
 
 import StorageManager from "@/scripts/managers/storageManager";
-import { useStore } from "@/store";
-import { computed, ComputedRef, defineComponent } from "@vue/runtime-core";
+import { defineComponent, inject, provide, ref } from "@vue/runtime-core";
 import ActionButton from "../Global/ActionButton.vue";
 import FilterOption from "./FilterOption.vue";
 
@@ -112,10 +111,17 @@ export default defineComponent({
     inputs: { ...inputData },
     saveOptions: false,
     STORAGE_KEY: "options_saved",
-    isVisible: false,
 
     currentRegion: { id: "", value: "" },
   }),
+
+  setup() {
+    const isVisible = inject("isFilterCardVisible");
+
+    return {
+      isVisible,
+    };
+  },
 
   mounted() {
     this.saveOptions = StorageManager.isRegistered(this.STORAGE_KEY);

@@ -1,4 +1,4 @@
-import { createApp, Directive } from 'vue'
+import { createApp, Directive, ref } from 'vue'
 import App from './App.vue'
 import router from './router'
 import { store, key } from './store'
@@ -35,5 +35,6 @@ createApp(App)
   .use(store, key)
   .use(router)
   .use(i18n)
+  .provide('isFilterCardVisible', ref(false))
   .directive('click-outside', clickOutsideDirective)
   .mount('#app')

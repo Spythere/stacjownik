@@ -41,7 +41,9 @@
             <Clock />
 
             <div class="info_counter">
-              <span class="region">{{ currentRegion.value }}</span>
+              <span class="region" @click="openFilterCard">
+                {{ currentRegion.value }}
+              </span>
 
               <img src="@/assets/icon-dispatcher.svg" alt="icon dispatcher" />
               <span>{{ data.activeStationCount }}</span>
@@ -87,7 +89,14 @@
 import Clock from "@/components/App/Clock.vue";
 
 import StorageManager from "@/scripts/managers/storageManager";
-import { computed, ComputedRef, defineComponent } from "vue";
+import {
+  computed,
+  ComputedRef,
+  defineComponent,
+  inject,
+  provide,
+  ref,
+} from "vue";
 import { GETTERS } from "./constants/storeConstants";
 import { StoreData } from "./scripts/interfaces/StoreData";
 import { useStore } from "./store";
@@ -111,9 +120,18 @@ export default defineComponent({
       () => store.getters[GETTERS.currentRegion]
     );
 
+    const isFilterCardVisible = ref(false);
+
+    provide("isFilterCardVisible", isFilterCardVisible);
+
     return {
       data,
       currentRegion,
+      isFilterCardVisible,
+
+      openFilterCard() {
+        isFilterCardVisible.value = true;
+      },
     };
   },
 
