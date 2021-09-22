@@ -13,6 +13,29 @@
 
         <div class="card_title flex">{{ $t("filters.title") }}</div>
 
+        <section class="card_regions">
+          <span
+            v-for="region in inputs.regions"
+            :key="region.id"
+            :class="`region-${region.id}`"
+          >
+            <label>
+              <input
+                type="radio"
+                name="region"
+                :id="region.id"
+                :value="region"
+                v-model="currentRegion"
+                @change="handleChangeRegion"
+              />
+
+              <span :class="{ checked: currentRegion.id === region.id }">
+                {{ region.value }}
+              </span>
+            </label>
+          </span>
+        </section>
+
         <section class="card_options">
           <filter-option
             v-for="(option, i) in inputs.options"
@@ -54,14 +77,6 @@
               defaultValue: true,
             }"
           />
-          <!-- <div class="option">
-        <label>
-          <input type="checkbox" v-model="saveOptions" @change="saveFilters" />
-          <span class="save" :class="{ checked: saveOptions }">
-            {{ $t("filters.save") }}
-          </span>
-        </label>
-      </div> -->
         </section>
 
         <section class="card_actions flex">
@@ -78,10 +93,12 @@
 </template>
 
 <script lang="ts">
+import { ACTIONS, GETTERS, MUTATIONS } from "@/constants/storeConstants";
 import inputData from "@/data/options.json";
 
 import StorageManager from "@/scripts/managers/storageManager";
-import { defineComponent } from "@vue/runtime-core";
+import { useStore } from "@/store";
+import { computed, ComputedRef, defineComponent } from "@vue/runtime-core";
 import ActionButton from "../Global/ActionButton.vue";
 import FilterOption from "./FilterOption.vue";
 
@@ -96,10 +113,14 @@ export default defineComponent({
     saveOptions: false,
     STORAGE_KEY: "options_saved",
     isVisible: false,
+
+    currentRegion: { id: "", value: "" },
   }),
 
   mounted() {
     this.saveOptions = StorageManager.isRegistered(this.STORAGE_KEY);
+
+    this.currentRegion = this.$store.getters[GETTERS.currentRegion];
   },
 
   methods: {
@@ -120,8 +141,14 @@ export default defineComponent({
         name: target.name,
         value: target.value,
       });
+
       if (this.saveOptions)
         StorageManager.setStringValue(target.name, target.value);
+    },
+
+    handleChangeRegion() {
+      this.$store.commit(MUTATIONS.SET_REGION, this.currentRegion);
+      this.$store.dispatch(ACTIONS.fetchOnlineData);
     },
 
     invertFilters() {
@@ -218,6 +245,28 @@ export default defineComponent({
     @include smallScreen() {
       grid-template-columns: repeat(auto-fit, minmax(8em, 1fr));
       grid-template-rows: auto;
+    }
+  }
+
+  &_regions {
+    display: flex;
+    justify-content: center;
+
+    label > input {
+      display: none;
+    }
+
+    label > span {
+      padding: 0.25em 0.5em;
+      margin: 0 0.25em;
+
+      cursor: pointer;
+
+      background-color: gray;
+
+      &.checked {
+        background-color: seagreen;
+      }
     }
   }
 

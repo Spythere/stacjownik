@@ -213,11 +213,11 @@
       </table>
     </div>
 
-    <div class="no-stations" v-if="stations.length == 0 && isDataLoaded">
+    <div class="no-stations" v-if="isDataLoaded && stations.length == 0">
       {{ $t("sceneries.no-stations") }}
     </div>
 
-    <div class="no-stations" v-else-if="!isDataLoaded">
+    <div class="no-stations" v-if="!isDataLoaded">
       {{ $t("app.loading") }}
     </div>
   </section>

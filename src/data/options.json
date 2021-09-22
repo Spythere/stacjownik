@@ -195,5 +195,25 @@
     "section": "mode",
     "value": true,
     "defaultValue": true
+  }],
+  "regions": [{
+    "id": "eu",
+    "value": "PL1"
+  },
+  {
+    "id": "eu2",
+    "value": "PL2"
+  },
+  {
+    "id": "de",
+    "value": "DE"
+  },
+  {
+    "id": "cze",
+    "value": "CZE"
+  },
+  {
+    "id": "ru",
+    "value": "ENG"
   }]
 }

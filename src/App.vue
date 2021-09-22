@@ -39,7 +39,10 @@
 
           <span class="header_info">
             <Clock />
+
             <div class="info_counter">
+              <span class="region">{{ currentRegion.value }}</span>
+
               <img src="@/assets/icon-dispatcher.svg" alt="icon dispatcher" />
               <span>{{ data.activeStationCount }}</span>
               <span>{{ data.activeTrainCount }}</span>
@@ -104,7 +107,7 @@ export default defineComponent({
       () => store.getters[GETTERS.allData]
     );
 
-    const currentRegion: ComputedRef<string> = computed(
+    const currentRegion: ComputedRef<{ id: string; value: string }> = computed(
       () => store.getters[GETTERS.currentRegion]
     );
 
@@ -153,12 +156,6 @@ export default defineComponent({
 
       StorageManager.setStringValue("lang", lang);
     },
-
-    // changeRegion(region: string = "eu") {
-    //   this.$store.commit(MUTATIONS.SET_REGION, region);
-    //   this.$store.dispatch(ACTIONS.fetchOnlineData);
-
-    // },
 
     loadLang() {
       const storageLang = StorageManager.getStringValue("lang");

@@ -124,6 +124,7 @@
 .info_counter {
   display: flex;
   align-items: center;
+  
   color: $accentCol;
 
   span {
@@ -132,6 +133,10 @@
 
   img {
     width: 1.35em;
+  }
+
+  & > .region {
+    color: paleturquoise;
   }
 }
 
