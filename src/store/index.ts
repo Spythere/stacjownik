@@ -90,7 +90,7 @@ export const store = createStore<State>({
     },
 
     async fetchOnlineData({ commit, dispatch }) {
-      // commit(MUTATIONS.SET_DATA_CONNECTION_STATUS, DataStatus.Loading);
+      commit(MUTATIONS.SET_DATA_CONNECTION_STATUS, DataStatus.Loading);
 
       Promise.all([axios.get(URLs.stations), axios.get(URLs.trains), axios.get(URLs.dispatchers)])
         .then(async response => {
@@ -297,6 +297,10 @@ export const store = createStore<State>({
       state.dataConnectionStatus = status;
     },
 
+    SET_TIMETABLE_DATA_STATUS(state, status: DataStatus) {
+      state.timetableDataStatus = status;
+    },
+
     SET_REGION(state, region: { id: string; value: string }) {
       state.region = region;
     },
@@ -457,7 +461,7 @@ export const store = createStore<State>({
         return acc;
       }, [] as Train[]);
 
-      state.timetableDataStatus = DataStatus.Loaded;
+      state.timetableDataStatus = DataStatus.Loaded;      
     }
   }
 })

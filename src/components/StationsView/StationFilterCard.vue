@@ -14,26 +14,28 @@
         <div class="card_title flex">{{ $t("filters.title") }}</div>
 
         <section class="card_regions">
-          <span
-            v-for="region in inputs.regions"
-            :key="region.id"
-            :class="`region-${region.id}`"
-          >
-            <label>
-              <input
-                type="radio"
-                name="region"
-                :id="region.id"
-                :value="region"
-                v-model="currentRegion"
-                @change="handleChangeRegion"
-              />
+          <div class="regions_content">
+            <span
+              v-for="region in inputs.regions"
+              :key="region.id"
+              :class="`region-${region.id}`"
+            >
+              <label>
+                <input
+                  type="radio"
+                  name="region"
+                  :id="region.id"
+                  :value="region"
+                  v-model="currentRegion"
+                  @change="handleChangeRegion"
+                />
 
-              <span :class="{ checked: currentRegion.id === region.id }">
-                {{ region.value }}
-              </span>
-            </label>
-          </span>
+                <span :class="{ checked: currentRegion.id === region.id }">
+                  {{ region.value }}
+                </span>
+              </label>
+            </span>
+          </div>
         </section>
 
         <section class="card_options">
@@ -97,7 +99,7 @@ import { ACTIONS, GETTERS, MUTATIONS } from "@/constants/storeConstants";
 import inputData from "@/data/options.json";
 
 import StorageManager from "@/scripts/managers/storageManager";
-import { defineComponent, inject, provide, ref } from "@vue/runtime-core";
+import { defineComponent, inject } from "@vue/runtime-core";
 import ActionButton from "../Global/ActionButton.vue";
 import FilterOption from "./FilterOption.vue";
 
@@ -155,6 +157,8 @@ export default defineComponent({
     handleChangeRegion() {
       this.$store.commit(MUTATIONS.SET_REGION, this.currentRegion);
       this.$store.dispatch(ACTIONS.fetchOnlineData);
+
+      this.closeCard();
     },
 
     invertFilters() {

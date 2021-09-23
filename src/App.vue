@@ -89,14 +89,7 @@
 import Clock from "@/components/App/Clock.vue";
 
 import StorageManager from "@/scripts/managers/storageManager";
-import {
-  computed,
-  ComputedRef,
-  defineComponent,
-  inject,
-  provide,
-  ref,
-} from "vue";
+import { computed, ComputedRef, defineComponent, provide, ref } from "vue";
 import { GETTERS } from "./constants/storeConstants";
 import { StoreData } from "./scripts/interfaces/StoreData";
 import { useStore } from "./store";
@@ -191,21 +184,6 @@ export default defineComponent({
         this.changeLang("en");
         return;
       }
-
-      // if (naviLanguage.includes("pl")) {
-      //   this.changeLang("pl");
-      //   return;
-      // }
-
-      // switch (window.navigator.language) {
-      //   case "pl-PL":
-      //     this.changeLang("pl");
-      //     break;
-      //   case "en-EN":
-      //   default:
-      //     this.changeLang("en");
-      //     break;
-      // }
     },
   },
 });

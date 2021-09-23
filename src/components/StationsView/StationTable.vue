@@ -80,8 +80,8 @@
             </td>
 
             <td class="station_status">
-              <span class="status-badge" :class="station.statusID"
-                >{{ $t(`status.${station.statusID}`) }}
+              <span class="status-badge" :class="station.statusID">
+                {{ $t(`status.${station.statusID}`) }}
                 {{
                   station.statusID == "online" ? station.statusTimeString : ""
                 }}
@@ -96,10 +96,9 @@
               <span
                 v-if="station.online"
                 :style="calculateExpStyle(station.dispatcherExp)"
-                >{{
-                  2 > station.dispatcherExp ? "L" : station.dispatcherExp
-                }}</span
               >
+                {{ 2 > station.dispatcherExp ? "L" : station.dispatcherExp }}
+              </span>
             </td>
 
             <td class="station_tracks twoway">
@@ -198,15 +197,19 @@
               class="station_schedules"
               :class="{ inactive: !station.online }"
             >
-              <span class="highlight">
-                {{ station.scheduledTrains.length }}
+              <span>
+                <span class="highlight">
+                  {{ station.scheduledTrains.length }}
+                </span>
+                /
+                <span style="color: #bbb">
+                  {{
+                    station.scheduledTrains.filter(
+                      (train) => train.stopInfo.confirmed
+                    ).length
+                  }}
+                </span>
               </span>
-              /
-              <span style="color: #bbb">{{
-                station.scheduledTrains.filter(
-                  (train) => train.stopInfo.confirmed
-                ).length
-              }}</span>
             </td>
           </tr>
         </tbody>
@@ -217,7 +220,7 @@
       {{ $t("sceneries.no-stations") }}
     </div>
 
-    <div class="no-stations" v-if="!isDataLoaded">
+    <div class="no-stations" v-if="!isDataLoaded && stations.length == 0">
       {{ $t("app.loading") }}
     </div>
   </section>
