@@ -10,6 +10,8 @@
     "control-type": "Sterowanie: ",
     "signals-type": "Sygnalizacja: ",
     "SBL": "Sceneria posiada SBL na szlakach: ",
+    "TWB-all": "Sceneria posiada blokadę dwukierunkową na wszystkich szlakach",
+    "TWB-routes": "Sceneria posiada blokadę dwukierunkową na szlakach: ",
     "default": "Sceneria dostępna domyślnie w paczce z grą",
     "non-public": "Sceneria niepubliczna",
     "unavailable": "Sceneria niedostępna",

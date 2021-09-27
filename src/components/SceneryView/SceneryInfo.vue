@@ -77,35 +77,46 @@
         <img
           v-if="stationInfo.SBL && stationInfo.SBL !== ''"
           :src="SBLIcon"
-          alt="SBL"
+          :alt="$t('desc.SBL') + `${stationInfo.SBL}`"
           :title="$t('desc.SBL') + `${stationInfo.SBL}`"
+        />
+
+        <img
+          v-if="stationInfo.TWB && stationInfo.TWB !== ''"
+          :src="TWBIcon"
+          alt="two way route blockade"
+          :title="`${
+            stationInfo.TWB === 'TAK'
+              ? $t('desc.TWB-all')
+              : $t('desc.TWB-routes') + stationInfo.TWB
+          }`"
         />
 
         <img
           v-if="stationInfo.default"
           :src="td2Icon"
-          alt="default-pack"
+          alt="default scenery"
           :title="$t('desc.default')"
         />
 
         <img
           v-if="stationInfo.nonPublic || !stationInfo.reqLevel"
           :src="lockIcon"
-          alt="non-public"
+          alt="non public scenery"
           :title="$t('desc.non-public')"
         />
 
         <img
           v-if="stationInfo.unavailable"
           :src="unavailableIcon"
-          alt="icon-unavailable"
+          alt="icon unavailable"
           :title="$t('desc.unavailable')"
         />
 
         <img
           v-if="stationInfo.stationLines && stationInfo.stationLines != ''"
           :src="realIcon"
-          alt="real-scenery"
+          alt="real scenery"
           :title="`${$t('desc.real')} ${stationInfo.stationLines}`"
         />
       </div>
@@ -213,6 +224,7 @@ export default defineComponent({
     userIcon: require("@/assets/icon-user.svg"),
 
     SBLIcon: require("@/assets/icon-SBL.svg"),
+    TWBIcon: require("@/assets/icon-2way-block.svg"),
     td2Icon: require("@/assets/icon-td2.svg"),
     lockIcon: require("@/assets/icon-lock.svg"),
     unavailableIcon: require("@/assets/icon-unavailable.svg"),

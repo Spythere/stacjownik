@@ -10,6 +10,8 @@
     "control-type": "Control type: ",
     "signals-type": "Signals type:  ",
     "SBL": "This scenery has automatic line blockade system on following routes: ",
+    "TWB-all": "This scenery has two-way route blockade on all routes",
+    "TWB-routes": "This scenery has two-way route blockade on following routes: ",
     "default": "This scenery is available by default",
     "non-public": "This scenery is not public",
     "unavailable": "This scenery is unavailable",
