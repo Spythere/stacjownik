@@ -22,6 +22,8 @@ pnpm-debug.log*
 *.sw?
 node_modules
 
+*.log
+
 .gitignore
 
 #Firebase
