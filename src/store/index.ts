@@ -382,12 +382,12 @@ export const store = createStore<State>({
           const stopInfoIndex = timetable.followingStops.findIndex(stop => {
             const stopName = stop.stopNameRAW.toLowerCase();
 
-            if (stationName === stopName) return true;
+            if (stationName === stopName) return true;  
             if (stopName.includes(stationName) && !stop.stopName.includes("po.") && !stop.stopName.includes("podg.")) return true;
             if (stationName.includes(stopName) && !stop.stopName.includes("po.") && !stop.stopName.includes("podg.")) return true;
             if (stopName.includes("podg.") && stopName.split(", podg.")[0] && stationName.includes(stopName.split(", podg.")[0])) return true;
 
-            if (station.stops && station.stops.includes(stop.stopNameRAW)) return true;
+            // if (station.stops && station.stops.includes(stop.stopNameRAW)) return true;
 
             return false;
           });
