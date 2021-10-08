@@ -334,7 +334,6 @@ export const store = createStore<State>({
             statusTimeString: "",
             stationTrains: [],
             scheduledTrains: [],
-            checkpoints: null
           });
 
         return acc;

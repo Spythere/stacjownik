@@ -199,3 +199,20 @@ ul {
     color: #ccc;
   }
 }
+
+.btn {
+  &--text {
+    background: none;
+    color: white;
+    font-size: 1em;
+
+    cursor: pointer;
+
+    transition: color 0.3s;
+
+
+    &:hover, &:focus {
+      color: $accentCol;
+    }
+  }
+}

@@ -16,17 +16,19 @@
       </a>
     </h3>
 
-    <div class="checkpoints">
-      <select-box
-        v-if="stationInfo && stationInfo.checkpoints"
-        :itemList="
-          stationInfo.checkpoints.map((cp, i) => ({
-            id: cp.checkpointName,
-            value: cp.checkpointName,
-          }))
-        "
-        @selected="selectCheckpoint"
-      ></select-box>
+    <div
+      class="checkpoints"
+      v-if="stationInfo && stationInfo.online && stationInfo.checkpoints"
+    >
+      <button
+        class="checkpoint_item btn--text"
+        :class="{ current: selectedCheckpoint === cp.checkpointName }"
+        v-for="cp in stationInfo.checkpoints"
+        :key="cp.checkpointName"
+        @click="selectCheckpoint(cp)"
+      >
+        {{ cp.checkpointName }}
+      </button>
     </div>
 
     <span class="timetable-item loading" v-if="dataStatus == 0">{{
@@ -207,8 +209,8 @@ export default defineComponent({
       this.selectedCheckpoint = this.stationInfo.checkpoints[0].checkpointName;
     },
 
-    selectCheckpoint(item: { id: number | string; value: string }) {
-      this.selectedCheckpoint = item.value;
+    selectCheckpoint(cp: { checkpointName: string }) {
+      this.selectedCheckpoint = cp.checkpointName;
     },
   },
 
@@ -408,8 +410,21 @@ h3 {
   display: flex;
   justify-content: center;
 
-  & > div {
-    border: 1px solid white;
+  flex-wrap: wrap;
+
+  font-size: 1.2em;
+
+  > .checkpoint_item {
+    &.current {
+      font-weight: bold;
+      color: $accentCol;
+    }
+
+    &:not(:last-child)::after {
+      margin: 0 0.5em;
+      content: "•";
+      color: white;
+    }
   }
 }
 
