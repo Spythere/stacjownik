@@ -1,4 +1,3 @@
-import Train from "./Train";
 import ScheduledTrain from "./ScheduledTrain";
 
 export default interface Station {
@@ -37,12 +36,10 @@ export default interface Station {
     twoWay: { catenary: number; noCatenary: number };
   };
 
-  checkpoints:
-    | {
-        checkpointName: string;
-        scheduledTrains: ScheduledTrain[];
-      }[]
-    | null;
+  checkpoints: {
+    checkpointName: string;
+    scheduledTrains: ScheduledTrain[];
+  }[];
 
   stops: string[] | null;
 

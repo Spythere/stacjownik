@@ -18,7 +18,11 @@
 
     <div
       class="checkpoints"
-      v-if="stationInfo && stationInfo.online && stationInfo.checkpoints"
+      v-if="
+        stationInfo &&
+        stationInfo.scheduledTrains.length > 0 &&
+        stationInfo.checkpoints
+      "
     >
       <button
         class="checkpoint_item btn--text"
@@ -31,9 +35,9 @@
       </button>
     </div>
 
-    <span class="timetable-item loading" v-if="dataStatus == 0">{{
-      $t("app.loading")
-    }}</span>
+    <span class="timetable-item loading" v-if="dataStatus == 0">
+      {{ $t("app.loading") }}
+    </span>
 
     <span
       class="timetable-item empty"
@@ -203,7 +207,7 @@ export default defineComponent({
   methods: {
     loadSelectedOption() {
       if (!this.stationInfo) return;
-      if (!this.stationInfo.checkpoints) return;
+      if (this.stationInfo.checkpoints.length == 0) return;
       if (this.selectedCheckpoint != "") return;
 
       this.selectedCheckpoint = this.stationInfo.checkpoints[0].checkpointName;

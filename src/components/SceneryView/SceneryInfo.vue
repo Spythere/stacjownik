@@ -41,7 +41,7 @@
 
         <span class="schedules">
           <img :src="timetableIcon" alt="icon-timetable" />
-          <span v-if="stationInfo.scheduledTrains">
+          <span>
             <span style="color: #eee">{{
               stationInfo.scheduledTrains.length
             }}</span>
