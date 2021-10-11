@@ -25,7 +25,13 @@
     <div class="history_list">
       <div class="list_wrapper">
         <transition name="warning" mode="out-in">
-          <div :key="historyDataStatus.status">
+          <div class="history_warning">
+            Usługa czasowo wyłączona!
+            <div>
+              <router-link to="/">[Powrót na stronę główną]</router-link>
+            </div>
+          </div>
+          <!-- <div :key="historyDataStatus.status">
             <div v-if="isDataLoading" class="history_warning">Ładowanie...</div>
 
             <div
@@ -121,7 +127,7 @@
                 </div>
               </li>
             </ul>
-          </div>
+          </div> -->
         </transition>
       </div>
     </div>
