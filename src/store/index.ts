@@ -386,7 +386,7 @@ export const store = createStore<State>({
             if (stationName.includes(stopName) && !stop.stopName.includes("po.") && !stop.stopName.includes("podg.")) return true;
             if (stopName.includes("podg.") && stopName.split(", podg.")[0] && stationName.includes(stopName.split(", podg.")[0])) return true;
 
-            if (station.checkpoints && station.checkpoints.length > 0 && station.checkpoints[0].checkpointName)
+            if (station.checkpoints.length > 0 && station.checkpoints.some(cp => cp.checkpointName.includes(stop.stopNameRAW))) return true;
 
             // if (station.stops && station.stops.includes(stop.stopNameRAW)) return true;
 
