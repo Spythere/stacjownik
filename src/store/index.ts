@@ -264,12 +264,11 @@ export const store = createStore<State>({
             noCatenary: station[13] as number
           }
         },
-        checkpoints: station[14] ? (station[14] as string[]).map(sub => ({ checkpointName: sub, scheduledTrains: [] })) : [],
-        stops: station[15] as string[],
+        checkpoints: station[14] ? (station[14] as string).split(";").map(sub => ({ checkpointName: sub, scheduledTrains: [] })) : [],
 
-        default: station[16] as boolean,
-        nonPublic: station[17] as boolean,
-        unavailable: station[18] as boolean,
+        default: station[15] as boolean,
+        nonPublic: station[16] as boolean,
+        unavailable: station[17] as boolean,
 
         stationHash: "",
         maxUsers: 0,
