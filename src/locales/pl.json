@@ -50,11 +50,17 @@
     "donate": "WESPRZYJ"
   },
   "filters": {
+    "endingStatus": "KOŃCZY",
+    "afkStatus": "Z/W",
+    "noSpaceStatus":"BRAK MIEJSCA",
+    "unavailableStatus": "NIEDOSTĘPNY",
+
     "title": "FILTRUJ STACJE",
     "default": "DOMYŚLNA",
     "not-default": "POZA PACZKĄ",
     "real": "REALNA",
     "fictional": "FIKCYJNA",
+    "unavailable": "NIEDOSTĘPNA",
     "SPK": "SPK",
     "SCS": "SCS",
     "SPE": "SPE",

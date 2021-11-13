@@ -50,11 +50,18 @@
     "donate": "DONATE"
   },
   "filters": {
+    "endingStatus": "ENDS SOON",
+    "afkStatus": "AFK",
+    "noSpaceStatus":"NO SPACE",
+    "unavailableStatus": "UNAVAILABLE",
+
     "title": "STATION FILTER",
     "default": "DEFAULT",
     "not-default": "OTHER",
     "real": "REAL",
     "fictional": "FICTIONAL",
+    "unavailable": "UNSUPPORTED",
+
     "SPK": "SPK",
     "SCS": "SCS",
     "SPE": "SPE",

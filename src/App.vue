@@ -168,6 +168,10 @@ export default defineComponent({
       StorageManager.setStringValue("lang", lang);
     },
 
+    updateToNewest() {
+      //   to do
+    },
+
     loadLang() {
       const storageLang = StorageManager.getStringValue("lang");
 

@@ -29,7 +29,7 @@ const sortStations = (a: Station, b: Station, sorter: { index: number; dir: numb
     case 7:
       if (a.currentUsers > b.currentUsers) return sorter.dir;
       if (a.currentUsers < b.currentUsers) return -sorter.dir;
-      
+
       if (a.maxUsers > b.maxUsers) return sorter.dir;
       if (a.maxUsers < b.maxUsers) return -sorter.dir;
       break;
@@ -60,8 +60,14 @@ const filterStations = (station: Station, filters: Filter) => {
 
   if (station.online && station.statusID == 'ending' && filters['ending']) return returnMode;
 
+  if (station.statusID == 'ending' && filters['endingStatus']) return returnMode;
+  if (station.statusID == 'not-signed' && filters['unavailableStatus']) return returnMode;
+  if (station.statusID == 'brb' && filters['afkStatus']) return returnMode;
+  if (station.statusID == 'no-space' && filters['noSpaceStatus']) return returnMode;
+
   if (station.online && filters['occupied']) return returnMode;
   if (!station.online && filters['free']) return returnMode;
+  if (station.unavailable && filters['unavailable']) return returnMode;
 
   if (station.default && filters['default']) return returnMode;
   if (!station.default && filters['notDefault']) return returnMode;
@@ -97,6 +103,7 @@ const filterStations = (station: Station, filters: Filter) => {
 
   if (filters['SBL'] && station.SBL) return returnMode;
 
+
   return true;
 }
 
@@ -128,7 +135,13 @@ export default class StationFilterManager {
     free: true,
     occupied: false,
     ending: false,
-    nonPublic: false
+    nonPublic: false,
+    unavailable: true,
+    afkStatus: false,
+    endingStatus: false,
+    noSpaceStatus: false,
+    unavailableStatus: false,
+    unsignedStatus: false
   };
 
   private filters: Filter = { ...this.filterInitStates };
@@ -151,19 +164,19 @@ export default class StationFilterManager {
 
   invertFilters() {
     Object.keys(this.filters).forEach(prop => {
-      if(typeof this.filters[prop] !== "boolean") return;      
+      if (typeof this.filters[prop] !== "boolean") return;
 
       this.filters[prop] = !this.filters[prop];
-      
+
     })
-    
+
     // for(let prop in this.filters) {
     //   if(typeof prop !== "boolean") continue;
 
     //   this.filters[prop] = !this.filterInitStates[prop];
 
     //   console.log("inverted!");
-      
+
     // }
   }
 

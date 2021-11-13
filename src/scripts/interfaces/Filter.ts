@@ -25,6 +25,12 @@ export default interface Filter {
   'include-selected': boolean;
   free: boolean;
   occupied: boolean;
-  ending: boolean;
   nonPublic: boolean;
+  unavailable: boolean;
+
+  endingStatus: boolean;
+  afkStatus: boolean;
+  noSpaceStatus: boolean;
+  unavailableStatus: boolean;
+  unsignedStatus: boolean;
 }
