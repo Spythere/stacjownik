@@ -138,43 +138,7 @@
       "section": "status",
       "value": true,
       "defaultValue": true
-    },
-    {
-      "id": "endingStatus",
-      "name": "ending-status",
-      "iconName": "",
-
-      "section": "status",
-      "value": true,
-      "defaultValue": true
-    },
-    {
-      "id": "afkStatus",
-      "name": "afk-status",
-      "iconName": "",
-
-      "section": "status",
-      "value": true,
-      "defaultValue": true
-    },
-    {
-     "id": "noSpaceStatus",
-     "name": "no-space-status",
-     "iconName": "",
-
-     "section": "status",
-     "value": true,
-     "defaultValue": true
-   },
-   {
-    "id": "unavailableStatus",
-    "name": "unavailable-status",
-    "iconName": "",
-
-    "section": "status",
-    "value": true,
-    "defaultValue": true
-   }
+    }
   ],
   "sliders": [{
       "id": "min-lvl",

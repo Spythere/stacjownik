@@ -33,4 +33,6 @@ export default interface Filter {
   noSpaceStatus: boolean;
   unavailableStatus: boolean;
   unsignedStatus: boolean;
+
+  onlineToTimestamp: number;
 }

@@ -153,6 +153,8 @@ export default defineComponent({
     this.updateModalVisible =
       this.hasReleaseNotes &&
       !StorageManager.getBooleanValue("version_notes_read");
+
+    this.updateToNewestVersion();
   },
 
   methods: {
@@ -168,8 +170,14 @@ export default defineComponent({
       StorageManager.setStringValue("lang", lang);
     },
 
-    updateToNewest() {
+    updateToNewestVersion() {
       //   to do
+      if (!StorageManager.isRegistered("unavailable-status")) {
+        StorageManager.setBooleanValue("unavailable-status", true);
+        StorageManager.setBooleanValue("ending-status", true);
+        StorageManager.setBooleanValue("no-space-status", true);
+        StorageManager.setBooleanValue("afk-status", true);
+      }
     },
 
     loadLang() {

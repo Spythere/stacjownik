@@ -3,7 +3,7 @@
     <div class="card_btn">
       <action-button @click="toggleCard">
         <img class="button_icon" :src="filterIcon" alt="icon-filter" />
-        <p>{{ $t("options.filters") }}</p>
+        <p>{{ $t('options.filters') }}</p>
       </action-button>
     </div>
 
@@ -11,15 +11,11 @@
       <div class="card_content card" v-if="isVisible">
         <div class="card_exit" @click="closeCard"></div>
 
-        <div class="card_title flex">{{ $t("filters.title") }}</div>
+        <div class="card_title flex">{{ $t('filters.title') }}</div>
 
         <section class="card_regions">
           <div class="regions_content">
-            <span
-              v-for="region in inputs.regions"
-              :key="region.id"
-              :class="`region-${region.id}`"
-            >
+            <span v-for="region in inputs.regions" :key="region.id" :class="`region-${region.id}`">
               <label>
                 <input
                   type="radio"
@@ -39,13 +35,17 @@
         </section>
 
         <section class="card_options">
-          <filter-option
-            v-for="(option, i) in inputs.options"
-            :option="option"
-            :key="i"
-            @optionChange="handleChange"
-          />
+          <filter-option v-for="(option, i) in inputs.options" :option="option" :key="i" @optionChange="handleChange" />
         </section>
+        <!-- 
+        <section class="card_timestamp" style="text-align: center">
+          <div>POKAZUJ SCENERIE DOSTĘPNE MINIMUM DO GODZINY:</div>
+          <span class="clock">
+            <button @click="subHour">-</button>
+            <span>{{ minimumTimeString }}</span>
+            <button @click="addHour">+</button>
+          </span>
+        </section> -->
 
         <section class="card_sliders">
           <div class="slider" v-for="(slider, i) in inputs.sliders" :key="i">
@@ -83,11 +83,9 @@
 
         <section class="card_actions flex">
           <action-button class="outlined" @click="resetFilters">
-            {{ $t("filters.reset") }}
+            {{ $t('filters.reset') }}
           </action-button>
-          <action-button class="outlined" @click="closeCard">{{
-            $t("filters.close")
-          }}</action-button>
+          <action-button class="outlined" @click="closeCard">{{ $t('filters.close') }}</action-button>
         </section>
       </div>
     </transition>
@@ -95,33 +93,76 @@
 </template>
 
 <script lang="ts">
-import { ACTIONS, GETTERS, MUTATIONS } from "@/constants/storeConstants";
-import inputData from "@/data/options.json";
+import { defineComponent, inject, ref } from '@vue/runtime-core';
 
-import StorageManager from "@/scripts/managers/storageManager";
-import { defineComponent, inject } from "@vue/runtime-core";
-import ActionButton from "../Global/ActionButton.vue";
-import FilterOption from "./FilterOption.vue";
+import { ACTIONS, GETTERS, MUTATIONS } from '@/constants/storeConstants';
+import inputData from '@/data/options.json';
+
+import StorageManager from '@/scripts/managers/storageManager';
+import ActionButton from '../Global/ActionButton.vue';
+import FilterOption from './FilterOption.vue';
+
+/* 
+Do JSONa
+    {
+      "id": "endingStatus",
+      "name": "endingStatus",
+      "iconName": "",
+
+      "section": "status",
+      "value": true,
+      "defaultValue": true
+    },
+    {
+      "id": "afkStatus",
+      "name": "afkStatus",
+      "iconName": "",
+
+      "section": "status",
+      "value": true,
+      "defaultValue": true
+    },
+    {
+     "id": "noSpaceStatus",
+     "name": "noSpaceStatus",
+     "iconName": "",
+
+     "section": "status",
+     "value": true,
+     "defaultValue": true
+   },
+   {
+    "id": "unavailableStatus",
+    "name": "unavailableStatus",
+    "iconName": "",
+
+    "section": "status",
+    "value": true,
+    "defaultValue": true
+   }
+*/
 
 export default defineComponent({
   components: { ActionButton, FilterOption },
-  emits: ["changeFilterValue", "invertFilters", "resetFilters"],
+  emits: ['changeFilterValue', 'invertFilters', 'resetFilters'],
 
   data: () => ({
-    filterIcon: require("@/assets/icon-filter2.svg"),
+    filterIcon: require('@/assets/icon-filter2.svg'),
 
     inputs: { ...inputData },
     saveOptions: false,
-    STORAGE_KEY: "options_saved",
+    STORAGE_KEY: 'options_saved',
 
-    currentRegion: { id: "", value: "" },
+    currentRegion: { id: '', value: '' },
   }),
 
   setup() {
-    const isVisible = inject("isFilterCardVisible");
+    const isVisible = inject('isFilterCardVisible');
 
     return {
       isVisible,
+
+      minimumTimeString: ref('BEZ LIMITU'),
     };
   },
 
@@ -133,25 +174,23 @@ export default defineComponent({
 
   methods: {
     handleChange(change: { name: string; value: boolean }) {
-      this.$emit("changeFilterValue", {
+      this.$emit('changeFilterValue', {
         name: change.name,
         value: !change.value,
       });
 
-      if (this.saveOptions)
-        StorageManager.setBooleanValue(change.name, change.value);
+      if (this.saveOptions) StorageManager.setBooleanValue(change.name, change.value);
     },
 
     handleInput(e: Event) {
       const target = e.target as HTMLInputElement;
 
-      this.$emit("changeFilterValue", {
+      this.$emit('changeFilterValue', {
         name: target.name,
         value: target.value,
       });
 
-      if (this.saveOptions)
-        StorageManager.setStringValue(target.name, target.value);
+      if (this.saveOptions) StorageManager.setStringValue(target.name, target.value);
     },
 
     handleChangeRegion() {
@@ -161,13 +200,73 @@ export default defineComponent({
       this.closeCard();
     },
 
+    subHour() {
+      if (this.minimumTimeString == 'BEZ LIMITU') {
+        const prevHour = new Date().getHours() + 7;
+
+        this.minimumTimeString = `${prevHour < 10 ? '0' : ''}${prevHour}:00`;
+
+        const prevDate = new Date();
+        prevDate.setHours(prevHour, 0, 0);
+
+        this.$emit('changeFilterValue', {
+          name: 'onlineToTimestamp',
+          value: prevDate.getTime(),
+        });
+        return;
+      }
+
+      const prevHour = Number(this.minimumTimeString.split(':')[0]) - 1;
+
+      if (prevHour < new Date().getHours() + 1) return;
+
+      this.minimumTimeString = `${prevHour < 10 ? '0' : ''}${prevHour}:00`;
+
+      const prevDate = new Date();
+      prevDate.setHours(prevHour, 0, 0);
+
+      console.log(prevDate);
+
+      this.$emit('changeFilterValue', {
+        name: 'onlineToTimestamp',
+        value: prevDate.getTime(),
+      });
+    },
+
+    addHour() {
+      if (this.minimumTimeString == 'BEZ LIMITU') return;
+
+      const nextHour = Number(this.minimumTimeString.split(':')[0]) + 1;
+
+      if (nextHour > new Date().getHours() + 7) {
+        this.minimumTimeString = 'BEZ LIMITU';
+
+        this.$emit('changeFilterValue', {
+          name: 'onlineToTimestamp',
+          value: -1,
+        });
+
+        return;
+      }
+
+      this.minimumTimeString = `${nextHour < 10 ? '0' : ''}${nextHour}:00`;
+
+      const nextDate = new Date();
+      nextDate.setHours(nextHour, 0, 0);
+
+      this.$emit('changeFilterValue', {
+        name: 'onlineToTimestamp',
+        value: nextDate.getTime(),
+      });
+    },
+
     invertFilters() {
       this.inputs.options.forEach((option) => {
         option.value = !option.value;
         StorageManager.setBooleanValue(option.name, option.value);
       });
 
-      this.$emit("invertFilters");
+      this.$emit('invertFilters');
     },
 
     saveFilters(change: { value }) {
@@ -180,13 +279,9 @@ export default defineComponent({
 
       StorageManager.registerStorage(this.STORAGE_KEY);
 
-      this.inputs.options.forEach((option) =>
-        StorageManager.setBooleanValue(option.name, option.value)
-      );
+      this.inputs.options.forEach((option) => StorageManager.setBooleanValue(option.name, option.value));
 
-      this.inputs.sliders.forEach((slider) =>
-        StorageManager.setNumericValue(slider.name, slider.value)
-      );
+      this.inputs.sliders.forEach((slider) => StorageManager.setNumericValue(slider.name, slider.value));
     },
 
     resetFilters() {
@@ -200,7 +295,7 @@ export default defineComponent({
         StorageManager.setNumericValue(slider.name, slider.value);
       });
 
-      this.$emit("resetFilters");
+      this.$emit('resetFilters');
     },
 
     closeCard() {
@@ -215,8 +310,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import "../../styles/responsive";
-@import "../../styles/card";
+@import '../../styles/responsive';
+@import '../../styles/card';
 
 .card-anim {
   &-enter-active,
@@ -233,7 +328,7 @@ export default defineComponent({
 
 .card {
   > section {
-    margin-top: 1em;
+    margin: 0.5em 0;
   }
 
   &_title {
@@ -280,6 +375,46 @@ export default defineComponent({
     }
   }
 
+  &_timestamp {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    .clock {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      padding: 0.15em 0;
+      font-size: 1.15em;
+
+      color: $accentCol;
+      font-weight: bold;
+    }
+
+    span {
+      min-width: 100px;
+    }
+
+    button {
+      border: none;
+      outline: none;
+      background: none;
+      padding: 0 0.45em;
+
+      cursor: pointer;
+
+      color: white;
+
+      font-size: 1.35em;
+
+      &:focus,
+      &:hover {
+        color: $accentCol;
+      }
+    }
+  }
+
   &_modes {
     display: flex;
     justify-content: center;
@@ -313,7 +448,7 @@ export default defineComponent({
   display: flex;
   align-items: center;
 
-  margin: 1em 0;
+  margin-bottom: 1em;
 
   &-value {
     color: $accentCol;

@@ -60,8 +60,10 @@ const filterStations = (station: Station, filters: Filter) => {
 
   if (station.online && station.statusID == 'ending' && filters['ending']) return returnMode;
 
+  if (filters['onlineToTimestamp'] != -1 && station.online && station.statusTimestamp <= filters['onlineToTimestamp']) return returnMode;
+
   if (station.statusID == 'ending' && filters['endingStatus']) return returnMode;
-  if (station.statusID == 'not-signed' && filters['unavailableStatus']) return returnMode;
+  if ((station.statusID == 'not-signed' || station.statusID == 'unavailable') && filters['unavailableStatus']) return returnMode;
   if (station.statusID == 'brb' && filters['afkStatus']) return returnMode;
   if (station.statusID == 'no-space' && filters['noSpaceStatus']) return returnMode;
 
@@ -141,7 +143,9 @@ export default class StationFilterManager {
     endingStatus: false,
     noSpaceStatus: false,
     unavailableStatus: false,
-    unsignedStatus: false
+    unsignedStatus: false,
+
+    onlineToTimestamp: -1
   };
 
   private filters: Filter = { ...this.filterInitStates };
