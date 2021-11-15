@@ -32,6 +32,14 @@
       "defaultValue": true
     },
     {
+     "id": "non-public",
+     "name": "nonPublic",
+     "iconName": "user",
+     "section": "access",
+     "value": true,
+     "defaultValue": true
+    },
+    {
       "id": "unavailable",
       "name": "unavailable",
       "iconName": "user",
@@ -138,7 +146,43 @@
       "section": "status",
       "value": true,
       "defaultValue": true
-    }
+    },
+     {
+      "id": "endingStatus",
+      "name": "endingStatus",
+      "iconName": "",
+
+      "section": "status",
+      "value": true,
+      "defaultValue": true
+    },
+    {
+      "id": "afkStatus",
+      "name": "afkStatus",
+      "iconName": "",
+
+      "section": "status",
+      "value": true,
+      "defaultValue": true
+    },
+    {
+     "id": "noSpaceStatus",
+     "name": "noSpaceStatus",
+     "iconName": "",
+
+     "section": "status",
+     "value": true,
+     "defaultValue": true
+   },
+   {
+    "id": "unavailableStatus",
+    "name": "unavailableStatus",
+    "iconName": "",
+
+    "section": "status",
+    "value": true,
+    "defaultValue": true
+   }
   ],
   "sliders": [{
       "id": "min-lvl",

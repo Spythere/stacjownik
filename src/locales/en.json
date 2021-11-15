@@ -61,6 +61,7 @@
     "real": "REAL",
     "fictional": "FICTIONAL",
     "unavailable": "UNSUPPORTED",
+    "non-public": "NON-PUBLIC",
 
     "SPK": "SPK",
     "SCS": "SCS",
@@ -82,6 +83,10 @@
       "routes-2t-cat": "MIN. CATENARY DOUBLE TRACK ROUTES",
       "routes-2t-other": "MIN. OTHER DOUBLE TRACK ROUTES"
     },
+    "minimum-hours-title": "SHOW ONLY SCENERIES UNTIL:",
+    "now": "NOW",
+    "hour": "h",
+    "no-limit": "NO LIMIT",
     "include-selected": "INCLUDE SELECTED",
     "save": "SAVE FILTERS",
     "reset": "RESET FILTERS",

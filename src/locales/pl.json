@@ -61,6 +61,8 @@
     "real": "REALNA",
     "fictional": "FIKCYJNA",
     "unavailable": "NIEDOSTĘPNA",
+    "non-public": "NIEPUBLICZNA",
+
     "SPK": "SPK",
     "SCS": "SCS",
     "SPE": "SPE",
@@ -81,6 +83,10 @@
       "routes-2t-cat": "SZLAKI DWUTOROWE ZELEKTR. (MINIMUM)",
       "routes-2t-other": "SZLAKI DWUTOROWE NIEZELEKTR. (MINIMUM)"
     },
+    "minimum-hours-title": "POKAŻ TYLKO SCENERIE DOSTĘPNE MINIMUM DO:",
+    "now": "TERAZ",
+    "hour": " godz.",
+    "no-limit": "BEZ LIMITU",
     "include-selected": "POKAŻ ZAZNACZONE",
     "save": "ZAPISZ FILTRY",
     "reset": "RESETUJ FILTRY",

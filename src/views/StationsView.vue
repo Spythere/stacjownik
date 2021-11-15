@@ -35,22 +35,22 @@
 </template>
 
 <script lang="ts">
-import Station from "@/scripts/interfaces/Station";
+import Station from '@/scripts/interfaces/Station';
 
-import StorageManager from "@/scripts/managers/storageManager";
-import StationFilterManager from "@/scripts/managers/stationFilterManager";
+import StorageManager from '@/scripts/managers/storageManager';
+import StationFilterManager from '@/scripts/managers/stationFilterManager';
 
-import inputData from "@/data/options.json";
+import inputData from '@/data/options.json';
 
-import StationTable from "@/components/StationsView/StationTable.vue";
-import FilterCard from "@/components/StationsView/StationFilterCard.vue";
-import SelectBox from "@/components/Global/SelectBox.vue";
+import StationTable from '@/components/StationsView/StationTable.vue';
+import FilterCard from '@/components/StationsView/StationFilterCard.vue';
+import SelectBox from '@/components/Global/SelectBox.vue';
 
-import { StoreData } from "@/scripts/interfaces/StoreData";
-import { DataStatus } from "@/scripts/enums/DataStatus";
-import { computed, ComputedRef, defineComponent, reactive } from "vue";
-import { useStore } from "@/store";
-import { GETTERS } from "@/constants/storeConstants";
+import { StoreData } from '@/scripts/interfaces/StoreData';
+import { DataStatus } from '@/scripts/enums/DataStatus';
+import { computed, ComputedRef, defineComponent, reactive } from 'vue';
+import { useStore } from '@/store';
+import { GETTERS } from '@/constants/storeConstants';
 
 export default defineComponent({
   components: {
@@ -59,22 +59,22 @@ export default defineComponent({
     SelectBox,
   },
   data: () => ({
-    trainIcon: require("@/assets/icon-train.svg"),
-    timetableIcon: require("@/assets/icon-timetable.svg"),
-    dolarIcon: require("@/assets/icon-dolar.svg"),
+    trainIcon: require('@/assets/icon-train.svg'),
+    timetableIcon: require('@/assets/icon-timetable.svg'),
+    dolarIcon: require('@/assets/icon-dolar.svg'),
     filterCardOpen: false,
     modalHidden: true,
-    STORAGE_KEY: "options_saved",
+    STORAGE_KEY: 'options_saved',
     inputs: inputData,
 
     regions: [
       {
-        id: "eu",
-        value: "PL1",
+        id: 'eu',
+        value: 'PL1',
       },
       {
-        id: "ru",
-        value: "ENG",
+        id: 'ru',
+        value: 'ENG',
       },
     ],
   }),
@@ -82,36 +82,28 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const filterManager = reactive(new StationFilterManager());
-    const focusedStationName = "";
+    const focusedStationName = '';
 
-    const data: ComputedRef<StoreData> = computed(
-      () => store.getters[GETTERS.allData]
-    );
+    const data: ComputedRef<StoreData> = computed(() => store.getters[GETTERS.allData]);
 
     const computedStations: ComputedRef<Station[]> = computed(() => {
-      return filterManager.getFilteredStationList(
-        store.getters[GETTERS.stationList]
-      );
+      return filterManager.getFilteredStationList(store.getters[GETTERS.stationList]);
     });
 
     const getStatusClass = computed(() => {
-      if (data.value.dataConnectionStatus == DataStatus.Loading)
-        return "loading";
-      if (data.value.dataConnectionStatus == DataStatus.Error) return "error";
-      return "success";
+      if (data.value.dataConnectionStatus == DataStatus.Loading) return 'loading';
+      if (data.value.dataConnectionStatus == DataStatus.Error) return 'error';
+      return 'success';
     });
 
     const timetableDataStatusClass = computed(() => {
-      if (data.value.timetableDataStatus == DataStatus.Loading)
-        return "loading";
-      if (data.value.timetableDataStatus == DataStatus.Error) return "error";
-      return "success";
+      if (data.value.timetableDataStatus == DataStatus.Loading) return 'loading';
+      if (data.value.timetableDataStatus == DataStatus.Error) return 'error';
+      return 'success';
     });
 
     const focusedStationInfo = computed(() =>
-      computedStations.value.find(
-        (station) => station.stationName === focusedStationName
-      )
+      computedStations.value.find((station) => station.stationName === focusedStationName)
     );
 
     return {
@@ -126,11 +118,15 @@ export default defineComponent({
   },
   mounted() {
     if (!StorageManager.isRegistered(this.STORAGE_KEY)) return;
+
+    this.filterManager.checkFilters();
+
     this.inputs.options.forEach((option) => {
       const value = StorageManager.getBooleanValue(option.name);
       this.changeFilterValue({ name: option.name, value: value ? 0 : 1 });
       option.value = value;
     });
+
     this.inputs.sliders.forEach((slider) => {
       const value = StorageManager.getNumericValue(slider.name);
       this.changeFilterValue({ name: slider.name, value });
@@ -139,7 +135,7 @@ export default defineComponent({
   },
   methods: {
     toggleCardsState(name: string): void {
-      if (name == "filter") {
+      if (name == 'filter') {
         this.filterCardOpen = !this.filterCardOpen;
       }
     },
@@ -159,15 +155,15 @@ export default defineComponent({
       this.filterCardOpen = false;
     },
     setFocusedStation(name: string) {
-      this.focusedStationName = this.focusedStationName == name ? "" : name;
+      this.focusedStationName = this.focusedStationName == name ? '' : name;
     },
   },
 });
 </script>
 
 <style lang="scss" scoped>
-@import "../styles/variables.scss";
-@import "../styles/responsive.scss";
+@import '../styles/variables.scss';
+@import '../styles/responsive.scss';
 
 @keyframes blinkAnim {
   0%,

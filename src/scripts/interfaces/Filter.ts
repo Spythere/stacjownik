@@ -34,5 +34,5 @@ export default interface Filter {
   unavailableStatus: boolean;
   unsignedStatus: boolean;
 
-  onlineToTimestamp: number;
+  onlineFromHours: number;
 }

@@ -37,15 +37,21 @@
         <section class="card_options">
           <filter-option v-for="(option, i) in inputs.options" :option="option" :key="i" @optionChange="handleChange" />
         </section>
-        <!-- 
+
         <section class="card_timestamp" style="text-align: center">
-          <div>POKAZUJ SCENERIE DOSTĘPNE MINIMUM DO GODZINY:</div>
+          <div>{{ $t('filters.minimum-hours-title') }}</div>
           <span class="clock">
             <button @click="subHour">-</button>
-            <span>{{ minimumTimeString }}</span>
+            <span>{{
+              minimumHours == 0
+                ? $t('filters.now')
+                : minimumHours < 8
+                ? minimumHours + $t('filters.hour')
+                : $t('filters.no-limit')
+            }}</span>
             <button @click="addHour">+</button>
           </span>
-        </section> -->
+        </section>
 
         <section class="card_sliders">
           <div class="slider" v-for="(slider, i) in inputs.sliders" :key="i">
@@ -102,46 +108,6 @@ import StorageManager from '@/scripts/managers/storageManager';
 import ActionButton from '../Global/ActionButton.vue';
 import FilterOption from './FilterOption.vue';
 
-/* 
-Do JSONa
-    {
-      "id": "endingStatus",
-      "name": "endingStatus",
-      "iconName": "",
-
-      "section": "status",
-      "value": true,
-      "defaultValue": true
-    },
-    {
-      "id": "afkStatus",
-      "name": "afkStatus",
-      "iconName": "",
-
-      "section": "status",
-      "value": true,
-      "defaultValue": true
-    },
-    {
-     "id": "noSpaceStatus",
-     "name": "noSpaceStatus",
-     "iconName": "",
-
-     "section": "status",
-     "value": true,
-     "defaultValue": true
-   },
-   {
-    "id": "unavailableStatus",
-    "name": "unavailableStatus",
-    "iconName": "",
-
-    "section": "status",
-    "value": true,
-    "defaultValue": true
-   }
-*/
-
 export default defineComponent({
   components: { ActionButton, FilterOption },
   emits: ['changeFilterValue', 'invertFilters', 'resetFilters'],
@@ -153,6 +119,8 @@ export default defineComponent({
     saveOptions: false,
     STORAGE_KEY: 'options_saved',
 
+    minimumHours: 0,
+
     currentRegion: { id: '', value: '' },
   }),
 
@@ -161,13 +129,17 @@ export default defineComponent({
 
     return {
       isVisible,
-
-      minimumTimeString: ref('BEZ LIMITU'),
     };
   },
 
   mounted() {
     this.saveOptions = StorageManager.isRegistered(this.STORAGE_KEY);
+
+    if (StorageManager.isRegistered('onlineFromHours') && this.saveOptions) {
+      this.minimumHours = StorageManager.getNumericValue('onlineFromHours');
+
+      this.changeNumericFilterValue('onlineFromHours', this.minimumHours);
+    }
 
     this.currentRegion = this.$store.getters[GETTERS.currentRegion];
   },
@@ -200,64 +172,25 @@ export default defineComponent({
       this.closeCard();
     },
 
-    subHour() {
-      if (this.minimumTimeString == 'BEZ LIMITU') {
-        const prevHour = new Date().getHours() + 7;
-
-        this.minimumTimeString = `${prevHour < 10 ? '0' : ''}${prevHour}:00`;
-
-        const prevDate = new Date();
-        prevDate.setHours(prevHour, 0, 0);
-
-        this.$emit('changeFilterValue', {
-          name: 'onlineToTimestamp',
-          value: prevDate.getTime(),
-        });
-        return;
-      }
-
-      const prevHour = Number(this.minimumTimeString.split(':')[0]) - 1;
-
-      if (prevHour < new Date().getHours() + 1) return;
-
-      this.minimumTimeString = `${prevHour < 10 ? '0' : ''}${prevHour}:00`;
-
-      const prevDate = new Date();
-      prevDate.setHours(prevHour, 0, 0);
-
-      console.log(prevDate);
-
+    changeNumericFilterValue(name: string, value: number, saveToStorage = false) {
       this.$emit('changeFilterValue', {
-        name: 'onlineToTimestamp',
-        value: prevDate.getTime(),
+        name,
+        value,
       });
+
+      if (this.saveOptions && saveToStorage) StorageManager.setNumericValue(name, value);
+    },
+
+    subHour() {
+      this.minimumHours = this.minimumHours < 1 ? 8 : this.minimumHours - 1;
+
+      this.changeNumericFilterValue('onlineFromHours', this.minimumHours, true);
     },
 
     addHour() {
-      if (this.minimumTimeString == 'BEZ LIMITU') return;
+      this.minimumHours = this.minimumHours > 7 ? 0 : this.minimumHours + 1;
 
-      const nextHour = Number(this.minimumTimeString.split(':')[0]) + 1;
-
-      if (nextHour > new Date().getHours() + 7) {
-        this.minimumTimeString = 'BEZ LIMITU';
-
-        this.$emit('changeFilterValue', {
-          name: 'onlineToTimestamp',
-          value: -1,
-        });
-
-        return;
-      }
-
-      this.minimumTimeString = `${nextHour < 10 ? '0' : ''}${nextHour}:00`;
-
-      const nextDate = new Date();
-      nextDate.setHours(nextHour, 0, 0);
-
-      this.$emit('changeFilterValue', {
-        name: 'onlineToTimestamp',
-        value: nextDate.getTime(),
-      });
+      this.changeNumericFilterValue('onlineFromHours', this.minimumHours, true);
     },
 
     invertFilters() {
@@ -294,6 +227,8 @@ export default defineComponent({
         slider.value = slider.defaultValue;
         StorageManager.setNumericValue(slider.name, slider.value);
       });
+
+      this.minimumHours = 0;
 
       this.$emit('resetFilters');
     },

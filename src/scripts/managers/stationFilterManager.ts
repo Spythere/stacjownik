@@ -1,5 +1,6 @@
 import Station from '@/scripts/interfaces/Station';
 import Filter from '@/scripts/interfaces/Filter';
+import StorageManager from './storageManager';
 
 const sortStations = (a: Station, b: Station, sorter: { index: number; dir: number }) => {
   switch (sorter.index) {
@@ -60,7 +61,14 @@ const filterStations = (station: Station, filters: Filter) => {
 
   if (station.online && station.statusID == 'ending' && filters['ending']) return returnMode;
 
-  if (filters['onlineToTimestamp'] != -1 && station.online && station.statusTimestamp <= filters['onlineToTimestamp']) return returnMode;
+  if (station.online
+    && station.statusTimestamp != 0
+    && filters['onlineFromHours'] < 8
+    && station.statusTimestamp <= Date.now() + filters['onlineFromHours'] * 3600000)
+    return returnMode;
+
+  if (filters['onlineFromHours'] > 0 && station.statusTimestamp == 0) return returnMode;
+  if (filters['onlineFromHours'] == 8 && station.statusID != 'no-limit') return returnMode;
 
   if (station.statusID == 'ending' && filters['endingStatus']) return returnMode;
   if ((station.statusID == 'not-signed' || station.statusID == 'unavailable') && filters['unavailableStatus']) return returnMode;
@@ -105,7 +113,6 @@ const filterStations = (station: Station, filters: Filter) => {
 
   if (filters['SBL'] && station.SBL) return returnMode;
 
-
   return true;
 }
 
@@ -145,12 +152,28 @@ export default class StationFilterManager {
     unavailableStatus: false,
     unsignedStatus: false,
 
-    onlineToTimestamp: -1
+    onlineFromHours: 0
   };
 
   private filters: Filter = { ...this.filterInitStates };
 
   private sorter: { index: number; dir: number } = { index: 0, dir: 1 };
+
+  checkFilters() {
+    if (!StorageManager.isRegistered("options_saved")) return;
+
+    Object.keys(this.filterInitStates).forEach(filterKey => {
+      if (StorageManager.isRegistered(filterKey)) return;
+
+      const filterType = typeof this.filterInitStates[filterKey];
+
+      if (filterType === "boolean")
+        StorageManager.setBooleanValue(filterKey, !this.filterInitStates[filterKey] as boolean);
+
+      if (filterType === "number")
+        StorageManager.setNumericValue(filterKey, this.filterInitStates[filterKey] as number);
+    });
+  }
 
   getFilteredStationList(stationList: Station[]): Station[] {
     return stationList
