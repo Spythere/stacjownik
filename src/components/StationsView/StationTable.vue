@@ -4,11 +4,7 @@
       <table>
         <thead>
           <tr>
-            <th
-              v-for="(id, i) in headIds"
-              :key="id"
-              @click="() => changeSorter(i)"
-            >
+            <th v-for="(id, i) in headIds" :key="id" @click="() => changeSorter(i)">
               <span class="header_wrapper">
                 <div v-html="$t(`sceneries.${id}`)"></div>
 
@@ -21,17 +17,9 @@
               </span>
             </th>
 
-            <th
-              v-for="(id, i) in headIconsIds"
-              :key="id"
-              @click="() => changeSorter(i + 7)"
-            >
+            <th v-for="(id, i) in headIconsIds" :key="id" @click="() => changeSorter(i + 7)">
               <span class="header_wrapper">
-                <img
-                  :src="require(`@/assets/icon-${id}.svg`)"
-                  :alt="id"
-                  :title="$t(`sceneries.${id}s`)"
-                />
+                <img :src="require(`@/assets/icon-${id}.svg`)" :alt="id" :title="$t(`sceneries.${id}s`)" />
 
                 <img
                   class="sort-icon"
@@ -63,16 +51,13 @@
             </td>
 
             <td class="station_level">
-              <span
-                v-if="station.reqLevel"
-                :style="calculateExpStyle(station.reqLevel)"
-              >
+              <span v-if="station.reqLevel" :style="calculateExpStyle(station.reqLevel, station.supportersOnly)">
                 {{
                   station.reqLevel && Number(station.reqLevel) > -1
                     ? Number(station.reqLevel) >= 2
                       ? station.reqLevel
-                      : "L"
-                    : "?"
+                      : 'L'
+                    : '?'
                 }}
               </span>
 
@@ -82,22 +67,20 @@
             <td class="station_status">
               <span class="status-badge" :class="station.statusID">
                 {{ $t(`status.${station.statusID}`) }}
-                {{
-                  station.statusID == "online" ? station.statusTimeString : ""
-                }}
+                {{ station.statusID == 'online' ? station.statusTimeString : '' }}
               </span>
             </td>
 
             <td class="station_dispatcher-name">
-              {{ station.online ? station.dispatcherName : "" }}
+              {{ station.online ? station.dispatcherName : '' }}
             </td>
 
             <td class="station_dispatcher-exp">
               <span
                 v-if="station.online"
-                :style="calculateExpStyle(station.dispatcherExp)"
+                :style="calculateExpStyle(station.dispatcherExp, station.dispatcherIsSupporter)"
               >
-                {{ 2 > station.dispatcherExp ? "L" : station.dispatcherExp }}
+                {{ 2 > station.dispatcherExp ? 'L' : station.dispatcherExp }}
               </span>
             </td>
 
@@ -143,10 +126,7 @@
                 v-if="station.controlType"
                 :src="require(`@/assets/icon-${station.controlType}.svg`)"
                 :alt="station.controlType"
-                :title="
-                  $t('desc.control-type') +
-                  $t(`controls.${station.controlType}`)
-                "
+                :title="$t('desc.control-type') + $t(`controls.${station.controlType}`)"
               />
 
               <img
@@ -154,9 +134,7 @@
                 v-if="station.signalType"
                 :src="require(`@/assets/icon-${station.signalType}.svg`)"
                 :alt="station.signalType"
-                :title="
-                  $t('desc.signals-type') + $t(`signals.${station.signalType}`)
-                "
+                :title="$t('desc.signals-type') + $t(`signals.${station.signalType}`)"
               />
 
               <img
@@ -193,21 +171,14 @@
               <span class="highlight">{{ station.spawns.length }}</span>
             </td>
 
-            <td
-              class="station_schedules"
-              :class="{ inactive: !station.online }"
-            >
+            <td class="station_schedules" :class="{ inactive: !station.online }">
               <span>
                 <span class="highlight">
                   {{ station.scheduledTrains.length }}
                 </span>
                 /
                 <span style="color: #bbb">
-                  {{
-                    station.scheduledTrains.filter(
-                      (train) => train.stopInfo.confirmed
-                    ).length
-                  }}
+                  {{ station.scheduledTrains.filter((train) => train.stopInfo.confirmed).length }}
                 </span>
               </span>
             </td>
@@ -217,23 +188,23 @@
     </div>
 
     <div class="no-stations" v-if="isDataLoaded && stations.length == 0">
-      {{ $t("sceneries.no-stations") }}
+      {{ $t('sceneries.no-stations') }}
     </div>
 
     <div class="no-stations" v-if="!isDataLoaded && stations.length == 0">
-      {{ $t("app.loading") }}
+      {{ $t('app.loading') }}
     </div>
   </section>
 </template>
 
 <script lang="ts">
-import styleMixin from "@/mixins/styleMixin";
+import styleMixin from '@/mixins/styleMixin';
 
-import { DataStatus } from "@/scripts/enums/DataStatus";
-import { computed, ComputedRef, defineComponent } from "@vue/runtime-core";
-import { useStore } from "@/store";
-import { GETTERS } from "@/constants/storeConstants";
-import Station from "@/scripts/interfaces/Station";
+import { DataStatus } from '@/scripts/enums/DataStatus';
+import { computed, ComputedRef, defineComponent } from '@vue/runtime-core';
+import { useStore } from '@/store';
+import { GETTERS } from '@/constants/storeConstants';
+import Station from '@/scripts/interfaces/Station';
 
 export default defineComponent({
   props: {
@@ -254,37 +225,27 @@ export default defineComponent({
   mixins: [styleMixin],
 
   data: () => ({
-    likeIcon: require("@/assets/icon-like.svg"),
-    spawnIcon: require("@/assets/icon-spawn.svg"),
-    timetableIcon: require("@/assets/icon-timetable.svg"),
-    userIcon: require("@/assets/icon-user.svg"),
-    trainIcon: require("@/assets/icon-train.svg"),
-    SBLIcon: require("@/assets/icon-SBL.svg"),
-    lockIcon: require("@/assets/icon-lock.svg"),
-    unavailableIcon: require("@/assets/icon-unavailable.svg"),
+    likeIcon: require('@/assets/icon-like.svg'),
+    spawnIcon: require('@/assets/icon-spawn.svg'),
+    timetableIcon: require('@/assets/icon-timetable.svg'),
+    userIcon: require('@/assets/icon-user.svg'),
+    trainIcon: require('@/assets/icon-train.svg'),
+    SBLIcon: require('@/assets/icon-SBL.svg'),
+    lockIcon: require('@/assets/icon-lock.svg'),
+    unavailableIcon: require('@/assets/icon-unavailable.svg'),
 
-    ascIcon: require("@/assets/icon-arrow-asc.svg"),
-    descIcon: require("@/assets/icon-arrow-desc.svg"),
+    ascIcon: require('@/assets/icon-arrow-asc.svg'),
+    descIcon: require('@/assets/icon-arrow-desc.svg'),
 
-    headIds: [
-      "station",
-      "min-lvl",
-      "status",
-      "dispatcher",
-      "dispatcher-lvl",
-      "routes",
-      "general",
-    ],
+    headIds: ['station', 'min-lvl', 'status', 'dispatcher', 'dispatcher-lvl', 'routes', 'general'],
 
-    headIconsIds: ["user", "spawn", "timetable"],
+    headIconsIds: ['user', 'spawn', 'timetable'],
   }),
 
   setup() {
     const store = useStore();
 
-    const dataConnectionStatus: ComputedRef<DataStatus> = computed(
-      () => store.getters[GETTERS.dataStatus]
-    );
+    const dataConnectionStatus: ComputedRef<DataStatus> = computed(() => store.getters[GETTERS.dataStatus]);
 
     const isDataLoaded = computed(() => {
       return dataConnectionStatus.value == DataStatus.Loaded;
@@ -297,15 +258,13 @@ export default defineComponent({
 
   methods: {
     setScenery(name: string) {
-      const station = this.stations.find(
-        (station) => station.stationName === name
-      );
+      const station = this.stations.find((station) => station.stationName === name);
 
       if (!station) return;
 
       this.$router.push({
-        name: "SceneryView",
-        query: { station: station.stationName.replaceAll(" ", "_") },
+        name: 'SceneryView',
+        query: { station: station.stationName.replaceAll(' ', '_') },
       });
     },
   },
@@ -313,8 +272,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import "../../styles/responsive.scss";
-@import "../../styles/variables.scss";
+@import '../../styles/responsive.scss';
+@import '../../styles/variables.scss';
 
 $rowCol: #4b4b4b;
 

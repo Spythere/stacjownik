@@ -62,12 +62,12 @@ const filterStations = (station: Station, filters: Filter) => {
   if (station.online && station.statusID == 'ending' && filters['ending']) return returnMode;
 
   if (station.online
-    && station.statusTimestamp != 0
+    && station.statusTimestamp > 0
     && filters['onlineFromHours'] < 8
     && station.statusTimestamp <= Date.now() + filters['onlineFromHours'] * 3600000)
     return returnMode;
 
-  if (filters['onlineFromHours'] > 0 && station.statusTimestamp == 0) return returnMode;
+  if (filters['onlineFromHours'] > 0 && station.statusTimestamp <= 0) return returnMode;
   if (filters['onlineFromHours'] == 8 && station.statusID != 'no-limit') return returnMode;
 
   if (station.statusID == 'ending' && filters['endingStatus']) return returnMode;
