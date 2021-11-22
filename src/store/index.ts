@@ -332,7 +332,6 @@ export const store = createStore<State>({
         else if (listedStationData)
           acc.push({
             ...station,
-            stationProject: "",
             stationHash: "",
             maxUsers: 0,
             currentUsers: 0,

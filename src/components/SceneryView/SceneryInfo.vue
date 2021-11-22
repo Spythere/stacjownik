@@ -2,26 +2,21 @@
   <div class="scenery-info">
     <div class="info-header">
       <div class="scenery-name">
-        <a
-          v-if="stationInfo.stationURL"
-          :href="stationInfo.stationURL"
-          target="_blank"
-          rel="noopener noreferrer"
-          >{{ stationInfo.stationName }}</a
-        >
+        <div v-if="stationInfo.stationProject" style="color: salmon; font-size: 0.6em; line-height: 0.7em;">
+          {{ stationInfo.stationProject }}
+        </div>
+
+        <a v-if="stationInfo.stationURL" :href="stationInfo.stationURL" target="_blank" rel="noopener noreferrer">{{
+          stationInfo.stationName
+        }}</a>
 
         <span v-else>{{ stationInfo.stationName }}</span>
       </div>
-      <div class="scenery-hash" v-if="stationInfo.stationHash">
-        #{{ stationInfo.stationHash }}
-      </div>
+      <div class="scenery-hash" v-if="stationInfo.stationHash">#{{ stationInfo.stationHash }}</div>
     </div>
 
     <section v-if="!timetableOnly">
-      <div
-        class="info-stats"
-        :class="!stationInfo.stationHash ? 'no-stats' : ''"
-      >
+      <div class="info-stats" :class="!stationInfo.stationHash ? 'no-stats' : ''">
         <span class="likes">
           <img :src="likeIcon" alt="icon-like" />
           <span>{{ stationInfo.dispatcherRate }}</span>
@@ -42,14 +37,10 @@
         <span class="schedules">
           <img :src="timetableIcon" alt="icon-timetable" />
           <span>
-            <span style="color: #eee">{{
-              stationInfo.scheduledTrains.length
-            }}</span>
+            <span style="color: #eee">{{ stationInfo.scheduledTrains.length }}</span>
             /
             <span style="color: #bbb">{{
-              stationInfo.scheduledTrains.filter(
-                (train) => train.stopInfo.confirmed
-              ).length
+              stationInfo.scheduledTrains.filter((train) => train.stopInfo.confirmed).length
             }}</span>
           </span>
         </span>
@@ -60,18 +51,14 @@
           v-if="stationInfo.controlType"
           :src="require(`@/assets/icon-${stationInfo.controlType}.svg`)"
           :alt="stationInfo.controlType"
-          :title="
-            $t('desc.control-type') + $t(`controls.${stationInfo.controlType}`)
-          "
+          :title="$t('desc.control-type') + $t(`controls.${stationInfo.controlType}`)"
         />
 
         <img
           v-if="stationInfo.signalType"
           :src="require(`@/assets/icon-${stationInfo.signalType}.svg`)"
           :alt="stationInfo.signalType"
-          :title="
-            $t('desc.signals-type') + $t(`signals.${stationInfo.signalType}`)
-          "
+          :title="$t('desc.signals-type') + $t(`signals.${stationInfo.signalType}`)"
         />
 
         <img
@@ -85,19 +72,10 @@
           v-if="stationInfo.TWB && stationInfo.TWB !== ''"
           :src="TWBIcon"
           alt="two way route blockade"
-          :title="`${
-            stationInfo.TWB === 'TAK'
-              ? $t('desc.TWB-all')
-              : $t('desc.TWB-routes') + stationInfo.TWB
-          }`"
+          :title="`${stationInfo.TWB === 'TAK' ? $t('desc.TWB-all') : $t('desc.TWB-routes') + stationInfo.TWB}`"
         />
 
-        <img
-          v-if="stationInfo.default"
-          :src="td2Icon"
-          alt="default scenery"
-          :title="$t('desc.default')"
-        />
+        <img v-if="stationInfo.default" :src="td2Icon" alt="default scenery" :title="$t('desc.default')" />
 
         <img
           v-if="stationInfo.nonPublic || !stationInfo.reqLevel"
@@ -125,16 +103,9 @@
         <div class="dispatcher" v-if="stationInfo.stationHash">
           <span
             class="dispatcher_level"
-            :style="
-              calculateExpStyle(
-                stationInfo.dispatcherExp,
-                stationInfo.dispatcherIsSupporter
-              )
-            "
+            :style="calculateExpStyle(stationInfo.dispatcherExp, stationInfo.dispatcherIsSupporter)"
           >
-            {{
-              stationInfo.dispatcherExp > 1 ? stationInfo.dispatcherExp : "L"
-            }}
+            {{ stationInfo.dispatcherExp > 1 ? stationInfo.dispatcherExp : 'L' }}
           </span>
 
           <span class="dispatcher_name">{{ stationInfo.dispatcherName }}</span>
@@ -142,16 +113,14 @@
 
         <span class="status-badge" :class="stationInfo.statusID">
           {{ $t(`status.${stationInfo.statusID}`) }}
-          {{
-            stationInfo.statusID == "online" ? stationInfo.statusTimeString : ""
-          }}
+          {{ stationInfo.statusID == 'online' ? stationInfo.statusTimeString : '' }}
         </span>
       </div>
 
       <div class="info-lists">
         <div class="user-list">
           <h3 class="user-header">
-            {{ $t("scenery.users") }}
+            {{ $t('scenery.users') }}
             <img :src="userIcon" alt="icon-user" />
           </h3>
 
@@ -166,17 +135,14 @@
             <span class="user_name">{{ train.driverName }}</span>
           </div>
 
-          <div
-            class="user offline"
-            v-if="!computedStationTrains || computedStationTrains.length == 0"
-          >
-            {{ $t("scenery.no-users") }}
+          <div class="user offline" v-if="!computedStationTrains || computedStationTrains.length == 0">
+            {{ $t('scenery.no-users') }}
           </div>
         </div>
 
         <div class="spawn-list">
           <h3 class="spawn-header">
-            {{ $t("scenery.spawns") }}
+            {{ $t('scenery.spawns') }}
             <img :src="spawnIcon" alt="icon-spawn" />
           </h3>
 
@@ -189,10 +155,8 @@
             <span class="spawn_length">{{ spawn.spawnLength }}m</span>
           </span>
 
-          <span
-            class="spawn none"
-            v-if="!stationInfo.spawns || stationInfo.spawns.length == 0"
-            >{{ $t("scenery.no-spawns") }}
+          <span class="spawn none" v-if="!stationInfo.spawns || stationInfo.spawns.length == 0"
+            >{{ $t('scenery.no-spawns') }}
           </span>
         </div>
       </div>
@@ -201,9 +165,9 @@
 </template>
 
 <script lang="ts">
-import Station from "@/scripts/interfaces/Station";
-import styleMixin from "@/mixins/styleMixin";
-import { computed, defineComponent } from "@vue/runtime-core";
+import Station from '@/scripts/interfaces/Station';
+import styleMixin from '@/mixins/styleMixin';
+import { computed, defineComponent } from '@vue/runtime-core';
 
 export default defineComponent({
   props: {
@@ -218,17 +182,17 @@ export default defineComponent({
   mixins: [styleMixin],
 
   data: () => ({
-    likeIcon: require("@/assets/icon-like.svg"),
-    spawnIcon: require("@/assets/icon-spawn.svg"),
-    timetableIcon: require("@/assets/icon-timetable.svg"),
-    userIcon: require("@/assets/icon-user.svg"),
+    likeIcon: require('@/assets/icon-like.svg'),
+    spawnIcon: require('@/assets/icon-spawn.svg'),
+    timetableIcon: require('@/assets/icon-timetable.svg'),
+    userIcon: require('@/assets/icon-user.svg'),
 
-    SBLIcon: require("@/assets/icon-SBL.svg"),
-    TWBIcon: require("@/assets/icon-2way-block.svg"),
-    td2Icon: require("@/assets/icon-td2.svg"),
-    lockIcon: require("@/assets/icon-lock.svg"),
-    unavailableIcon: require("@/assets/icon-unavailable.svg"),
-    realIcon: require("@/assets/icon-real.svg"),
+    SBLIcon: require('@/assets/icon-SBL.svg'),
+    TWBIcon: require('@/assets/icon-2way-block.svg'),
+    td2Icon: require('@/assets/icon-td2.svg'),
+    lockIcon: require('@/assets/icon-lock.svg'),
+    unavailableIcon: require('@/assets/icon-unavailable.svg'),
+    realIcon: require('@/assets/icon-real.svg'),
   }),
 
   setup(props) {
@@ -236,13 +200,11 @@ export default defineComponent({
       if (!props.stationInfo) return [];
 
       return props.stationInfo.stationTrains.map((train) => {
-        const scheduledTrainStatus = props.stationInfo?.scheduledTrains.find(
-          (st) => st.trainNo === train.trainNo
-        );
+        const scheduledTrainStatus = props.stationInfo?.scheduledTrains.find((st) => st.trainNo === train.trainNo);
 
         return {
           ...train,
-          stopStatus: scheduledTrainStatus?.stopStatus || "no-timetable",
+          stopStatus: scheduledTrainStatus?.stopStatus || 'no-timetable',
         };
       });
     });
@@ -253,7 +215,7 @@ export default defineComponent({
   methods: {
     navigateToTrain(trainNo: number) {
       this.$router.push({
-        name: "TrainsView",
+        name: 'TrainsView',
         query: { train: trainNo.toString() },
       });
     },
@@ -262,9 +224,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import "../../styles/responsive.scss";
-@import "../../styles/user_badge.scss";
-@import "../../styles/variables.scss";
+@import '../../styles/responsive.scss';
+@import '../../styles/user_badge.scss';
+@import '../../styles/variables.scss';
 
 h3 {
   margin: 0.5em 0;

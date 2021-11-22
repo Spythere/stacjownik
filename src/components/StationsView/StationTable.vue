@@ -47,6 +47,7 @@
                 'station-unavailable': station.unavailable,
               }"
             >
+              <b v-if="station.stationProject" style="color: salmon;">{{ station.stationProject }}</b>
               {{ station.stationName }}
             </td>
 
