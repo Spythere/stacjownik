@@ -184,14 +184,30 @@ export const store = createStore<State>({
 
         if (!timetable || !trainInfo) return acc;
 
+        let lastArrivalLine = "";
+
         const followingStops: TrainStop[] = timetable.stopPoints.reduce((stopsAcc: TrainStop[], point) => {
-          if (point.pointNameRAW.toLowerCase().includes("sbl")) return stopsAcc;
+          if (point.pointNameRAW.toLowerCase().includes("sbl")) {
+            if (point.arrivalLine && !point.arrivalLine.toLocaleLowerCase().includes("sbl"))
+              lastArrivalLine = point.arrivalLine;
+
+            if (point.departureLine && !point.departureLine.toLocaleLowerCase().includes("sbl")) {
+              stopsAcc[stopsAcc.length - 1].departureLine = point.departureLine
+            }
+
+            return stopsAcc;
+          }
 
           const arrivalTimestamp = getTimestamp(point.arrivalTime);
           const arrivalRealTimestamp = getTimestamp(point.arrivalRealTime);
 
           const departureTimestamp = getTimestamp(point.departureTime);
           const departureRealTimestamp = getTimestamp(point.departureRealTime);
+
+          let arrivalLine = lastArrivalLine || point.arrivalLine;
+
+          if (lastArrivalLine != "")
+            lastArrivalLine = "";
 
           stopsAcc.push({
             stopName: point.pointName,
@@ -201,7 +217,7 @@ export const store = createStore<State>({
 
             mainStop: point.pointName.includes("strong"),
 
-            arrivalLine: point.arrivalLine,
+            arrivalLine,
             arrivalTimeString: timestampToString(arrivalTimestamp),
             arrivalTimestamp: arrivalTimestamp,
             arrivalRealTimeString: timestampToString(arrivalRealTimestamp),
