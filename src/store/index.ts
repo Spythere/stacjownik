@@ -179,7 +179,7 @@ export const store = createStore<State>({
 
     async fetchTimetableData({ commit }) {
       const reducedList = this.state.trainList.reduce(async (acc: Promise<Timetable[]>, train: Train) => {
-        const timetable: TimetableAPIData = await (await axios.get(URLs.getTimetableURL(train.trainNo))).data.message;
+        const timetable: TimetableAPIData = await (await axios.get(URLs.getTimetableURL(train.trainNo, this.state.region.id))).data.message;
         const trainInfo = timetable.trainInfo;
 
         if (!timetable || !trainInfo) return acc;

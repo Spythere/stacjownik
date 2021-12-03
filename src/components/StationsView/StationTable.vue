@@ -206,6 +206,7 @@ import { computed, ComputedRef, defineComponent } from '@vue/runtime-core';
 import { useStore } from '@/store';
 import { GETTERS } from '@/constants/storeConstants';
 import Station from '@/scripts/interfaces/Station';
+import Train from '@/scripts/interfaces/Train';
 
 export default defineComponent({
   props: {

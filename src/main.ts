@@ -20,7 +20,7 @@ const i18n = createI18n({
 
 const clickOutsideDirective: Directive = {
   beforeMount(el, binding) {
-    
+
     el.clickOutsideEvent = (event: Event) => {
       if (!(el == event.target || el.contains(event.target))) {
         binding.value();
