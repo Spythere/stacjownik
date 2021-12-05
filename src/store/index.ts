@@ -92,7 +92,10 @@ export const store = createStore<State>({
 
       dispatch(ACTIONS.fetchOnlineData);
 
-      setInterval(() => dispatch(ACTIONS.fetchOnlineData), 30000);
+
+      const randIntervalTime = Math.floor(Math.random() * 5000) + 25000;
+
+      setInterval(() => dispatch(ACTIONS.fetchOnlineData), randIntervalTime);
     },
 
     async fetchOnlineData({ commit, dispatch }) {
