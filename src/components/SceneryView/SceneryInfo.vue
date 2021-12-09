@@ -97,6 +97,13 @@
           alt="real scenery"
           :title="`${$t('desc.real')} ${stationInfo.stationLines}`"
         />
+
+        <img
+          v-if="Number(stationInfo.reqLevel) < 0"
+          :src="unknownIcon"
+          alt="icon-unknown"
+          :title="$t('desc.unknown')"
+        />
       </div>
 
       <div class="info-dispatcher">
@@ -192,6 +199,8 @@ export default defineComponent({
     td2Icon: require('@/assets/icon-td2.svg'),
     lockIcon: require('@/assets/icon-lock.svg'),
     unavailableIcon: require('@/assets/icon-unavailable.svg'),
+    unknownIcon: require('@/assets/icon-unknown.svg'),
+
     realIcon: require('@/assets/icon-real.svg'),
   }),
 

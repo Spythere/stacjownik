@@ -14,6 +14,7 @@
     "TWB-routes": "This scenery has two-way route blockade on following routes: ",
     "default": "This scenery is available by default",
     "non-public": "This scenery is not public",
+    "unknown": "This scenery isn't recognizable right now",
     "unavailable": "This scenery is unavailable",
     "real": "Scenery with real lines: "
   },

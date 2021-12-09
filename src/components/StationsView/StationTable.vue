@@ -53,13 +53,7 @@
 
             <td class="station_level">
               <span v-if="station.reqLevel" :style="calculateExpStyle(station.reqLevel, station.supportersOnly)">
-                {{
-                  station.reqLevel && Number(station.reqLevel) > -1
-                    ? Number(station.reqLevel) >= 2
-                      ? station.reqLevel
-                      : 'L'
-                    : '?'
-                }}
+                {{ Number(station.reqLevel) > -1 ? (Number(station.reqLevel) >= 2 ? station.reqLevel : 'L') : '?' }}
               </span>
 
               <span v-else>?</span>
@@ -146,7 +140,7 @@
               />
 
               <img
-                v-if="station.nonPublic || !station.reqLevel"
+                v-if="station.nonPublic && Number(station.reqLevel) > -1"
                 :src="lockIcon"
                 alt="non-public"
                 :title="$t('desc.non-public')"
@@ -157,6 +151,13 @@
                 :src="unavailableIcon"
                 alt="icon-unavailable"
                 :title="$t('desc.unavailable')"
+              />
+
+              <img
+                v-if="Number(station.reqLevel) < 0"
+                :src="unknownIcon"
+                alt="icon-unknown"
+                :title="$t('desc.unknown')"
               />
             </td>
 
@@ -206,7 +207,6 @@ import { computed, ComputedRef, defineComponent } from '@vue/runtime-core';
 import { useStore } from '@/store';
 import { GETTERS } from '@/constants/storeConstants';
 import Station from '@/scripts/interfaces/Station';
-import Train from '@/scripts/interfaces/Train';
 
 export default defineComponent({
   props: {
@@ -235,6 +235,7 @@ export default defineComponent({
     SBLIcon: require('@/assets/icon-SBL.svg'),
     lockIcon: require('@/assets/icon-lock.svg'),
     unavailableIcon: require('@/assets/icon-unavailable.svg'),
+    unknownIcon: require('@/assets/icon-unknown.svg'),
 
     ascIcon: require('@/assets/icon-arrow-asc.svg'),
     descIcon: require('@/assets/icon-arrow-desc.svg'),
