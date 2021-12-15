@@ -7,12 +7,23 @@
     /> -->
 
     <div class="app_container">
+      <!-- <div class="wip-alert">
+        <img class="icon-error" :src="iconError" alt="error" />
+        <h2>Stacjownik tymczasowo nieaktywny!</h2>
+        <p>Absolutny zakaz wjazdu!</p>
+      </div> -->
       <header class="app_header">
         <div class="header_body">
           <span class="header_brand">
             <span>
-              <span>Stacj</span>
-              <img src="@/assets/trainlogo.png" alt="trainlogo" />
+              <span>
+                <span>S</span>
+              </span>
+              <span>tacj</span>
+              <span class="train-logo">
+                <img class="logo-image" src="@/assets/trainlogo.png" alt="trainlogo" />
+                <img class="logo-cap" src="@/assets/christmas-cap.svg" alt="" />
+              </span>
               <span>wnik</span>
             </span>
 
@@ -53,13 +64,9 @@
           </span>
 
           <span class="header_links">
-            <router-link class="route" active-class="route-active" to="/" exact
-              >{{ $t("app.sceneries") }}
-            </router-link>
+            <router-link class="route" active-class="route-active" to="/" exact>{{ $t('app.sceneries') }} </router-link>
             /
-            <router-link class="route" active-class="route-active" to="/trains"
-              >{{ $t("app.trains") }}
-            </router-link>
+            <router-link class="route" active-class="route-active" to="/trains">{{ $t('app.trains') }} </router-link>
           </span>
         </div>
       </header>
@@ -86,15 +93,15 @@
 </template>
 
 <script lang="ts">
-import Clock from "@/components/App/Clock.vue";
+import Clock from '@/components/App/Clock.vue';
 
-import StorageManager from "@/scripts/managers/storageManager";
-import { computed, ComputedRef, defineComponent, provide, ref } from "vue";
-import { GETTERS } from "./constants/storeConstants";
-import { StoreData } from "./scripts/interfaces/StoreData";
-import { useStore } from "./store";
+import StorageManager from '@/scripts/managers/storageManager';
+import { computed, ComputedRef, defineComponent, provide, ref } from 'vue';
+import { GETTERS } from './constants/storeConstants';
+import { StoreData } from './scripts/interfaces/StoreData';
+import { useStore } from './store';
 
-import packageInfo from ".././package.json";
+import packageInfo from '.././package.json';
 
 export default defineComponent({
   components: {
@@ -103,11 +110,9 @@ export default defineComponent({
 
   setup() {
     const store = useStore();
-    store.dispatch("synchronizeData");
+    store.dispatch('synchronizeData');
 
-    const data: ComputedRef<StoreData> = computed(
-      () => store.getters[GETTERS.allData]
-    );
+    const data: ComputedRef<StoreData> = computed(() => store.getters[GETTERS.allData]);
 
     const currentRegion: ComputedRef<{ id: string; value: string }> = computed(
       () => store.getters[GETTERS.currentRegion]
@@ -115,7 +120,7 @@ export default defineComponent({
 
     const isFilterCardVisible = ref(false);
 
-    provide("isFilterCardVisible", isFilterCardVisible);
+    provide('isFilterCardVisible', isFilterCardVisible);
 
     return {
       data,
@@ -132,10 +137,12 @@ export default defineComponent({
     VERSION: packageInfo.version,
     updateModalVisible: false,
     hasReleaseNotes: false,
-    currentLang: "pl",
+    currentLang: 'pl',
 
-    iconEN: require("@/assets/icon-en.jpg"),
-    iconPL: require("@/assets/icon-pl.svg"),
+    iconEN: require('@/assets/icon-en.jpg'),
+    iconPL: require('@/assets/icon-pl.svg'),
+    iconError: require('@/assets/icon-error.svg'),
+    svgChristmasCap: require('@/assets/christmas-cap.svg'),
   }),
 
   created() {
@@ -143,16 +150,13 @@ export default defineComponent({
   },
 
   mounted() {
-    if (StorageManager.getStringValue("version") != this.VERSION) {
-      StorageManager.setStringValue("version", this.VERSION);
+    if (StorageManager.getStringValue('version') != this.VERSION) {
+      StorageManager.setStringValue('version', this.VERSION);
 
-      if (this.hasReleaseNotes)
-        StorageManager.setBooleanValue("version_notes_read", false);
+      if (this.hasReleaseNotes) StorageManager.setBooleanValue('version_notes_read', false);
     }
 
-    this.updateModalVisible =
-      this.hasReleaseNotes &&
-      !StorageManager.getBooleanValue("version_notes_read");
+    this.updateModalVisible = this.hasReleaseNotes && !StorageManager.getBooleanValue('version_notes_read');
 
     this.updateToNewestVersion();
   },
@@ -160,28 +164,28 @@ export default defineComponent({
   methods: {
     toggleUpdateModal() {
       this.updateModalVisible = !this.updateModalVisible;
-      StorageManager.setBooleanValue("version_notes_read", true);
+      StorageManager.setBooleanValue('version_notes_read', true);
     },
 
     changeLang(lang: string) {
       this.$i18n.locale = lang;
       this.currentLang = lang;
 
-      StorageManager.setStringValue("lang", lang);
+      StorageManager.setStringValue('lang', lang);
     },
 
     updateToNewestVersion() {
       //   to do
-      if (!StorageManager.isRegistered("unavailable-status")) {
-        StorageManager.setBooleanValue("unavailable-status", true);
-        StorageManager.setBooleanValue("ending-status", true);
-        StorageManager.setBooleanValue("no-space-status", true);
-        StorageManager.setBooleanValue("afk-status", true);
+      if (!StorageManager.isRegistered('unavailable-status')) {
+        StorageManager.setBooleanValue('unavailable-status', true);
+        StorageManager.setBooleanValue('ending-status', true);
+        StorageManager.setBooleanValue('no-space-status', true);
+        StorageManager.setBooleanValue('afk-status', true);
       }
     },
 
     loadLang() {
-      const storageLang = StorageManager.getStringValue("lang");
+      const storageLang = StorageManager.getStringValue('lang');
 
       if (storageLang) {
         this.changeLang(storageLang);
@@ -192,8 +196,8 @@ export default defineComponent({
 
       const naviLanguage = window.navigator.language.toString();
 
-      if (naviLanguage.includes("en")) {
-        this.changeLang("en");
+      if (naviLanguage.includes('en')) {
+        this.changeLang('en');
         return;
       }
     },
