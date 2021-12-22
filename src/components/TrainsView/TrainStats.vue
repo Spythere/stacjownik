@@ -82,7 +82,7 @@
 import ActionButton from "@/components/Global/ActionButton.vue";
 
 import Train from "@/scripts/interfaces/Train";
-import { computed, defineComponent } from "@vue/runtime-core";
+import { computed, defineComponent, inject } from "@vue/runtime-core";
 
 export default defineComponent({
   components: { ActionButton },
@@ -220,12 +220,16 @@ export default defineComponent({
       return [twrList.length, skrList.length];
     });
 
+    /* Inject list from TrainsView for category filter */
+    const chosenTrainCategories = inject("chosenTrainCategories") as string[];
+
     return {
       speedStats,
       timetableStats,
       categoryList,
       locoList,
       specialTrainCount,
+      chosenTrainCategories
     };
   },
 });
@@ -288,6 +292,10 @@ export default defineComponent({
     color: #ddd;
   }
 }
+
+/* .category {
+  cursor: pointer;
+} */
 
 .category,
 .special {

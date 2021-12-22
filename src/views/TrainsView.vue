@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, ref } from "vue";
+import { computed, ComputedRef, defineComponent, provide, reactive, ref } from "vue";
 
 import { DataStatus } from "@/scripts/enums/DataStatus";
 import Train from "@/scripts/interfaces/Train";
@@ -125,12 +125,17 @@ export default defineComponent({
       );
     });
 
+    /* Provide list for TrainStats category filter */
+    const chosenTrainCategories = reactive([] as string[]);
+    provide('chosenTrainCategories', chosenTrainCategories);
+
     return {
       trainList,
       computedTrains,
       searchedTrain,
       searchedDriver,
       sorterActive,
+      chosenTrainCategories
     };
   },
 
