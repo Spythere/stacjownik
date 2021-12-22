@@ -23,6 +23,7 @@ import { DataStatus } from "@/scripts/enums/DataStatus";
 
 import { getLocoURL, getStatusID, getStatusTimestamp, getTimestamp, getTrainStopStatus, parseSpawns, timestampToString } from "@/scripts/utils/storeUtils";
 import { URLs } from '@/scripts/utils/apiURLs';
+import StorageManager from '@/scripts/managers/storageManager';
 
 export interface State {
   stationList: Station[],
@@ -85,7 +86,19 @@ export const store = createStore<State>({
     async synchronizeData({ commit, dispatch, state }) {
       if (state.listenerLaunched) return;
 
-      const sceneryData = await (await axios.get(URLs.sceneryData + "?time=" + Date.now())).data;
+      const queryTime = Date.now();
+      const nextRefreshDate = new Date();
+      nextRefreshDate.setDate(nextRefreshDate.getUTCDate() + 1);
+      nextRefreshDate.setHours(8, 0, 0, 0);
+
+      let sceneryDataQuery = URLs.sceneryData;
+      if (!StorageManager.isRegistered("nextSceneryDataRefreshTime") || StorageManager.isRegistered("nextSceneryDataRefreshTime")
+        && queryTime >= StorageManager.getNumericValue("nextSceneryDataRefreshTime")) {
+        StorageManager.setNumericValue("nextSceneryDataRefreshTime", nextRefreshDate.getTime());
+        sceneryDataQuery += "?time=" + queryTime;
+      }
+
+      const sceneryData = await (await axios.get(sceneryDataQuery)).data;
 
       commit(MUTATIONS.SET_SCENERY_DATA, sceneryData);
       commit(MUTATIONS.SET_SCENERY_DATA_STATUS, DataStatus.Loaded);
