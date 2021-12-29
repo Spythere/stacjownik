@@ -102,6 +102,7 @@ import { StoreData } from './scripts/interfaces/StoreData';
 import { useStore } from './store';
 
 import packageInfo from '.././package.json';
+import axios from 'axios';
 
 export default defineComponent({
   components: {
@@ -149,7 +150,7 @@ export default defineComponent({
     this.loadLang();
   },
 
-  mounted() {
+  async mounted() {
     if (StorageManager.getStringValue('version') != this.VERSION) {
       StorageManager.setStringValue('version', this.VERSION);
 
@@ -158,7 +159,7 @@ export default defineComponent({
 
     this.updateModalVisible = this.hasReleaseNotes && !StorageManager.getBooleanValue('version_notes_read');
 
-    this.updateToNewestVersion();
+    this.updateToNewestVersion();  
   },
 
   methods: {

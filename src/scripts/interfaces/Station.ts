@@ -19,7 +19,7 @@ export default interface Station {
   stationLines: string;
   stationProject: string;
 
-  reqLevel: string;
+  reqLevel: number;
   supportersOnly: boolean;
 
   SBL: string;

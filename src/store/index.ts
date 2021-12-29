@@ -42,6 +42,28 @@ export interface State {
   listenerLaunched: boolean;
 }
 
+interface SceneryData {
+  id: number;
+  name: string;
+  url: string;
+  project_lines: string;
+  project_name: string;
+  req_level?: number;
+  supporters_only: boolean;
+  signal_type: string;
+  control_type: string;
+  sbl_routes: string;
+  twb_routes: string;
+  track_oneway_e: number;
+  track_oneway_ne: number;
+  track_twoway_e: number;
+  track_twoway_ne: number;
+  checkpoints?: string;
+  is_default: boolean;
+  is_nonpublic: boolean;
+  is_unavailable: boolean;
+}
+
 export const key: InjectionKey<Store<State>> = Symbol()
 
 export const store = createStore<State>({
@@ -107,8 +129,14 @@ export const store = createStore<State>({
       }
 
       const sceneryData = await (await axios.get(sceneryDataQuery)).data;
+      // const sceneryData = await (await axios.get(sceneryDataQuery)).data;
 
-      commit(MUTATIONS.SET_SCENERY_DATA, sceneryData);
+      const sceneryData2 = await (await axios.get('http://127.0.0.1:8000/data')).data;
+      console.log(sceneryData2);
+      
+
+
+      commit(MUTATIONS.SET_SCENERY_DATA, sceneryData2);
       commit(MUTATIONS.SET_SCENERY_DATA_STATUS, DataStatus.Loaded);
 
       dispatch(ACTIONS.fetchOnlineData);
@@ -121,8 +149,6 @@ export const store = createStore<State>({
 
     async fetchOnlineData({ commit, dispatch }) {
       commit(MUTATIONS.SET_DATA_CONNECTION_STATUS, DataStatus.Loading);
-
-
 
       Promise.all([axios.get(URLs.stations), axios.get(URLs.trains), axios.get(URLs.dispatchers)])
         .then(async response => {
@@ -291,35 +317,37 @@ export const store = createStore<State>({
   },
 
   mutations: {
-    SET_SCENERY_DATA(state, data: any[][]) {
-      state.sceneryData = [...data];
+    SET_SCENERY_DATA(state, data: SceneryData[]) {
+      // state.sceneryData = [...data];
+      console.log('Data:', data);
+      
 
-      state.stationList = data.map(station => ({
-        stationName: station[0] as string,
-        stationURL: station[1] as string,
-        stationLines: station[2] as string,
-        stationProject: station[3] as string,
-        reqLevel: station[4] as string,
-        supportersOnly: station[5] == "TAK",
-        signalType: station[6] as string,
-        controlType: station[7] as string,
-        SBL: station[8] as string,
-        TWB: station[9] as string,
+      state.stationList = data.map(scenery => ({
+        stationName: scenery.name,
+        stationURL: scenery.url,
+        stationLines: scenery.project_lines,
+        stationProject: scenery.project_name,
+        reqLevel: scenery.req_level === undefined ? -1 : scenery.req_level,
+        supportersOnly: scenery.supporters_only,
+        signalType: scenery.signal_type,
+        controlType: scenery.control_type,
+        SBL: scenery.sbl_routes,
+        TWB: scenery.twb_routes,
         routes: {
           oneWay: {
-            catenary: station[10] as number,
-            noCatenary: station[11] as number
+            catenary: scenery.track_oneway_e,
+            noCatenary: scenery.track_oneway_ne
           },
           twoWay: {
-            catenary: station[12] as number,
-            noCatenary: station[13] as number
+            catenary: scenery.track_twoway_e,
+            noCatenary: scenery.track_twoway_ne
           }
         },
-        checkpoints: station[14] ? (station[14] as string).split(";").map(sub => ({ checkpointName: sub, scheduledTrains: [] })) : [],
+        checkpoints: scenery.checkpoints ? scenery.checkpoints.split(";").map(sub => ({ checkpointName: sub, scheduledTrains: [] })) : [],
 
-        default: station[15] as boolean,
-        nonPublic: station[16] as boolean,
-        unavailable: station[17] as boolean,
+        default: scenery.is_default,
+        nonPublic: scenery.is_nonpublic,
+        unavailable: scenery.is_unavailable,
 
         stationHash: "",
         maxUsers: 0,
@@ -337,6 +365,50 @@ export const store = createStore<State>({
         scheduledTrains: [],
         spawns: []
       }));
+
+      // state.stationList = data.map(station => ({
+      //   stationName: station[0] as string,
+      //   stationURL: station[1] as string,
+      //   stationLines: station[2] as string,
+      //   stationProject: station[3] as string,
+      //   reqLevel: station[4] as string,
+      //   supportersOnly: station[5] == "TAK",
+      //   signalType: station[6] as string,
+      //   controlType: station[7] as string,
+      //   SBL: station[8] as string,
+      //   TWB: station[9] as string,
+      //   routes: {
+      //     oneWay: {
+      //       catenary: station[10] as number,
+      //       noCatenary: station[11] as number
+      //     },
+      //     twoWay: {
+      //       catenary: station[12] as number,
+      //       noCatenary: station[13] as number
+      //     }
+      //   },
+      //   checkpoints: station[14] ? (station[14] as string).split(";").map(sub => ({ checkpointName: sub, scheduledTrains: [] })) : [],
+
+      //   default: station[15] as boolean,
+      //   nonPublic: station[16] as boolean,
+      //   unavailable: station[17] as boolean,
+
+      //   stationHash: "",
+      //   maxUsers: 0,
+      //   currentUsers: 0,
+      //   dispatcherName: "",
+      //   dispatcherRate: 0,
+      //   dispatcherExp: -1,
+      //   dispatcherId: 0,
+      //   dispatcherIsSupporter: false,
+      //   online: false,
+      //   statusTimestamp: -3,
+      //   statusID: "free",
+      //   statusTimeString: "",
+      //   stationTrains: [],
+      //   scheduledTrains: [],
+      //   spawns: []
+      // }));
 
 
     },
@@ -361,7 +433,7 @@ export const store = createStore<State>({
 
       state.stationList = state.stationList.reduce((acc: Station[], station) => {
         const onlineStationData = updatedStationList.find(updatedStation => updatedStation.stationName === station.stationName);
-        const listedStationData = state.sceneryData.find(data => data[0] === station.stationName);
+        const listedStationData = state.stationList.find(data => data.stationName === station.stationName);
 
         if (onlineStationData)
           acc.push({
@@ -400,7 +472,7 @@ export const store = createStore<State>({
             stationTrains: uStation.stationTrains || [],
             subStations: [],
             online: true,
-            reqLevel: "-1",
+            reqLevel: -1,
             nonPublic: true
           });
         });

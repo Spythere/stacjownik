@@ -52,11 +52,9 @@
             </td>
 
             <td class="station_level">
-              <span v-if="station.reqLevel" :style="calculateExpStyle(station.reqLevel, station.supportersOnly)">
-                {{ Number(station.reqLevel) > -1 ? (Number(station.reqLevel) >= 2 ? station.reqLevel : 'L') : '?' }}
+              <span  :style="calculateExpStyle(station.reqLevel, station.supportersOnly)">
+                {{ station.reqLevel > -1 ? (station.reqLevel >= 2 ? station.reqLevel : 'L') : '?' }}
               </span>
-
-              <span v-else>?</span>
             </td>
 
             <td class="station_status">
@@ -140,7 +138,7 @@
               />
 
               <img
-                v-if="station.nonPublic && Number(station.reqLevel) > -1"
+                v-if="station.nonPublic && station.reqLevel > -1"
                 :src="lockIcon"
                 alt="non-public"
                 :title="$t('desc.non-public')"
@@ -154,7 +152,7 @@
               />
 
               <img
-                v-if="Number(station.reqLevel) < 0"
+                v-if="station.reqLevel < 0"
                 :src="unknownIcon"
                 alt="icon-unknown"
                 :title="$t('desc.unknown')"

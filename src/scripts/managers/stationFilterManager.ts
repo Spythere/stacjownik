@@ -5,11 +5,8 @@ import StorageManager from './storageManager';
 const sortStations = (a: Station, b: Station, sorter: { index: number; dir: number }) => {
   switch (sorter.index) {
     case 1:
-      const aLevel = a.reqLevel == "" ? -1 : parseInt(a.reqLevel);
-      const bLevel = b.reqLevel == "" ? -1 : parseInt(b.reqLevel);
-
-      if (aLevel > bLevel) return sorter.dir;
-      if (aLevel < bLevel) return -sorter.dir;
+      if (a.reqLevel > b.reqLevel) return sorter.dir;
+      if (a.reqLevel < b.reqLevel) return -sorter.dir;
 
       break;
     case 2:
@@ -85,9 +82,9 @@ const filterStations = (station: Station, filters: Filter) => {
   if (filters['real'] && station.stationLines != '') return returnMode;
   if (filters['fictional'] && station.stationLines == '') return returnMode;
 
-  if (station.reqLevel == '-1') return true;
-  if (parseInt(station.reqLevel) < filters['minLevel']) return returnMode;
-  if (parseInt(station.reqLevel) > filters['maxLevel']) return returnMode;
+  if (station.reqLevel == -1) return true;
+  if (station.reqLevel < filters['minLevel']) return returnMode;
+  if (station.reqLevel > filters['maxLevel']) return returnMode;
 
   if (filters['no-1track'] && (station.routes.oneWay.catenary != 0 || station.routes.oneWay.noCatenary != 0)) return returnMode;
   if (filters['no-2track'] && (station.routes.twoWay.catenary != 0 || station.routes.twoWay.noCatenary != 0)) return returnMode;

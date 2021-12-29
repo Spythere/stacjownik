@@ -99,7 +99,7 @@
         />
 
         <img
-          v-if="Number(stationInfo.reqLevel) < 0"
+          v-if="stationInfo.reqLevel < 0"
           :src="unknownIcon"
           alt="icon-unknown"
           :title="$t('desc.unknown')"
