@@ -1,6 +1,6 @@
 {
   "name": "stacjownik",
-  "version": "1.4.95",
+  "version": "1.4.96",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
