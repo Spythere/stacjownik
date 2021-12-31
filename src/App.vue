@@ -21,8 +21,7 @@
               </span>
               <span>tacj</span>
               <span class="train-logo">
-                <img class="logo-image" src="@/assets/trainlogo.png" alt="trainlogo" />
-                <img class="logo-cap" src="@/assets/christmas-cap.svg" alt="" />
+                <img class="logo-image" src="@/assets/stacjownik-logo.svg" alt="stacjownik logo" />
               </span>
               <span>wnik</span>
             </span>
