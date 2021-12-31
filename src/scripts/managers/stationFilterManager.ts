@@ -5,48 +5,48 @@ import StorageManager from './storageManager';
 const sortStations = (a: Station, b: Station, sorter: { index: number; dir: number }) => {
   switch (sorter.index) {
     case 1:
-      if (a.reqLevel > b.reqLevel) return sorter.dir;
-      if (a.reqLevel < b.reqLevel) return -sorter.dir;
+      if ((a.generalInfo?.reqLevel || -1 ) > (b.generalInfo?.reqLevel || -1)) return sorter.dir;
+      if ((a.generalInfo?.reqLevel || -1) < (b.generalInfo?.reqLevel || -1)) return -sorter.dir;
 
       break;
     case 2:
-      if (a.statusTimestamp > b.statusTimestamp) return sorter.dir;
-      if (a.statusTimestamp < b.statusTimestamp) return -sorter.dir;
+      if ((a.onlineInfo?.statusTimestamp || 0) > (b.onlineInfo?.statusTimestamp || 0)) return sorter.dir;
+      if ((a.onlineInfo?.statusTimestamp || 0) < (b.onlineInfo?.statusTimestamp || 0)) return -sorter.dir;
       break;
 
     case 3:
-      if (a.dispatcherName.toLowerCase() > b.dispatcherName.toLowerCase()) return sorter.dir;
-      if (a.dispatcherName.toLowerCase() < b.dispatcherName.toLowerCase()) return -sorter.dir;
+      if ((a.onlineInfo?.dispatcherName.toLowerCase() || "") > (b.onlineInfo?.dispatcherName.toLowerCase() || "")) return sorter.dir;
+      if ((a.onlineInfo?.dispatcherName.toLowerCase() || "") < (b.onlineInfo?.dispatcherName.toLowerCase() || "")) return -sorter.dir;
       break;
 
     case 4:
-      if (a.dispatcherExp > b.dispatcherExp) return sorter.dir;
-      if (a.dispatcherExp < b.dispatcherExp) return -sorter.dir;
+      if ((a.onlineInfo?.dispatcherExp || 0) > (b.onlineInfo?.dispatcherExp || 0)) return sorter.dir;
+      if ((a.onlineInfo?.dispatcherExp || 0) < (b.onlineInfo?.dispatcherExp || 0)) return -sorter.dir;
       break;
 
     case 7:
-      if (a.currentUsers > b.currentUsers) return sorter.dir;
-      if (a.currentUsers < b.currentUsers) return -sorter.dir;
+      if ((a.onlineInfo?.currentUsers || 0) > (b.onlineInfo?.currentUsers || 0)) return sorter.dir;
+      if ((a.onlineInfo?.currentUsers || 0) < (b.onlineInfo?.currentUsers || 0)) return -sorter.dir;
 
-      if (a.maxUsers > b.maxUsers) return sorter.dir;
-      if (a.maxUsers < b.maxUsers) return -sorter.dir;
+      if ((a.onlineInfo?.maxUsers || 0) > (b.onlineInfo?.maxUsers || 0)) return sorter.dir;
+      if ((a.onlineInfo?.maxUsers || 0) < (b.onlineInfo?.maxUsers || 0)) return -sorter.dir;
       break;
 
     case 8:
-      if (a.spawns > b.spawns) return sorter.dir;
-      if (a.spawns < b.spawns) return -sorter.dir;
+      if ((a.onlineInfo?.spawns.length || 0) > (b.onlineInfo?.spawns.length || 0)) return sorter.dir;
+      if ((a.onlineInfo?.spawns.length || 0) < (b.onlineInfo?.spawns.length || 0)) return -sorter.dir;
 
       break;
 
     case 9:
-      if (a.scheduledTrains.length > b.scheduledTrains.length) return sorter.dir;
-      if (a.scheduledTrains.length < b.scheduledTrains.length) return -sorter.dir;
+      if ((a.onlineInfo?.scheduledTrains?.length || 0) > (b.onlineInfo?.scheduledTrains?.length || 0)) return sorter.dir;
+      if ((a.onlineInfo?.scheduledTrains?.length || 0) < (b.onlineInfo?.scheduledTrains?.length || 0)) return -sorter.dir;
 
     default:
       break;
   }
 
-  if (a.stationName.toLowerCase() >= b.stationName.toLowerCase()) return sorter.dir;
+  if (a.name.toLowerCase() >= b.name.toLowerCase()) return sorter.dir;
 
   return -sorter.dir;
 }
@@ -54,61 +54,63 @@ const sortStations = (a: Station, b: Station, sorter: { index: number; dir: numb
 const filterStations = (station: Station, filters: Filter) => {
   const returnMode = false;
 
-  if ((station.nonPublic || !station.reqLevel) && filters['nonPublic']) return returnMode;
+  if ((station.generalInfo?.nonPublic || !station.generalInfo) && filters['nonPublic']) return returnMode;
 
-  if (station.online && station.statusID == 'ending' && filters['ending']) return returnMode;
+  if (station.onlineInfo?.statusID == 'ending' && filters['ending']) return returnMode;
 
-  if (station.online
-    && station.statusTimestamp > 0
+  if (station.onlineInfo
+    && station.onlineInfo.statusTimestamp > 0
     && filters['onlineFromHours'] < 8
-    && station.statusTimestamp <= Date.now() + filters['onlineFromHours'] * 3600000)
+    && station.onlineInfo.statusTimestamp <= Date.now() + filters['onlineFromHours'] * 3600000)
     return returnMode;
 
-  if (filters['onlineFromHours'] > 0 && station.statusTimestamp <= 0) return returnMode;
-  if (filters['onlineFromHours'] == 8 && station.statusID != 'no-limit') return returnMode;
+  if (filters['onlineFromHours'] > 0 && station.onlineInfo && station.onlineInfo.statusTimestamp <= 0) return returnMode;
+  if (filters['onlineFromHours'] == 8 && station.onlineInfo?.statusID != 'no-limit') return returnMode;
 
-  if (station.statusID == 'ending' && filters['endingStatus']) return returnMode;
-  if ((station.statusID == 'not-signed' || station.statusID == 'unavailable') && filters['unavailableStatus']) return returnMode;
-  if (station.statusID == 'brb' && filters['afkStatus']) return returnMode;
-  if (station.statusID == 'no-space' && filters['noSpaceStatus']) return returnMode;
+  if (station.onlineInfo?.statusID == 'ending' && filters['endingStatus']) return returnMode;
+  if ((station.onlineInfo?.statusID == 'not-signed' || station.onlineInfo?.statusID == 'unavailable') && filters['unavailableStatus']) return returnMode;
+  if (station.onlineInfo?.statusID == 'brb' && filters['afkStatus']) return returnMode;
+  if (station.onlineInfo?.statusID == 'no-space' && filters['noSpaceStatus']) return returnMode;
 
-  if (station.online && filters['occupied']) return returnMode;
-  if (!station.online && filters['free']) return returnMode;
-  if (station.unavailable && filters['unavailable']) return returnMode;
+  if (station.onlineInfo && filters['occupied']) return returnMode;
+  if (!station.onlineInfo && filters['free']) return returnMode;
+  if (station.generalInfo?.unavailable && filters['unavailable']) return returnMode;
 
-  if (station.default && filters['default']) return returnMode;
-  if (!station.default && filters['notDefault']) return returnMode;
+  if (station.generalInfo) {
+    if (station.generalInfo.default && filters['default']) return returnMode;
+    if (!station.generalInfo.default && filters['notDefault']) return returnMode;
 
-  if (filters['real'] && station.stationLines != '') return returnMode;
-  if (filters['fictional'] && station.stationLines == '') return returnMode;
+    if (filters['real'] && station.generalInfo.lines != '') return returnMode;
+    if (filters['fictional'] && station.generalInfo.lines == '') return returnMode;
 
-  if (station.reqLevel == -1) return true;
-  if (station.reqLevel < filters['minLevel']) return returnMode;
-  if (station.reqLevel > filters['maxLevel']) return returnMode;
+    if (station.generalInfo.reqLevel == -1) return true;
+    if (station.generalInfo.reqLevel < filters['minLevel']) return returnMode;
+    if (station.generalInfo.reqLevel > filters['maxLevel']) return returnMode;
 
-  if (filters['no-1track'] && (station.routes.oneWay.catenary != 0 || station.routes.oneWay.noCatenary != 0)) return returnMode;
-  if (filters['no-2track'] && (station.routes.twoWay.catenary != 0 || station.routes.twoWay.noCatenary != 0)) return returnMode;
+    if (filters['no-1track'] && (station.generalInfo.routes.oneWay.catenary != 0 || station.generalInfo.routes.oneWay.noCatenary != 0)) return returnMode;
+    if (filters['no-2track'] && (station.generalInfo.routes.twoWay.catenary != 0 || station.generalInfo.routes.twoWay.noCatenary != 0)) return returnMode;
 
-  if (station.routes.oneWay.catenary < filters['minOneWayCatenary']) return returnMode;
-  if (station.routes.oneWay.noCatenary < filters['minOneWay']) return returnMode;
+    if (station.generalInfo.routes.oneWay.catenary < filters['minOneWayCatenary']) return returnMode;
+    if (station.generalInfo.routes.oneWay.noCatenary < filters['minOneWay']) return returnMode;
 
-  if (station.routes.twoWay.catenary < filters['minTwoWayCatenary']) return returnMode;
-  if (station.routes.twoWay.noCatenary < filters['minTwoWay']) return returnMode;
+    if (station.generalInfo.routes.twoWay.catenary < filters['minTwoWayCatenary']) return returnMode;
+    if (station.generalInfo.routes.twoWay.noCatenary < filters['minTwoWay']) return returnMode;
 
-  if (filters[station.controlType]) return returnMode;
-  if (filters[station.signalType]) return returnMode;
+    if (filters[station.generalInfo.controlType]) return returnMode;
+    if (filters[station.generalInfo.signalType]) return returnMode;
 
-  if (filters['SPK'] && (station.controlType === 'SPK' || station.controlType.includes('+SPK'))) return returnMode;
-  if (filters['SCS'] && (station.controlType === 'SCS' || station.controlType.includes('+SCS'))) return returnMode;
-  if (filters['SPE'] && (station.controlType === 'SPE' || station.controlType.includes('+SPE'))) return returnMode;
+    if (filters['SPK'] && (station.generalInfo.controlType === 'SPK' || station.generalInfo.controlType.includes('+SPK'))) return returnMode;
+    if (filters['SCS'] && (station.generalInfo.controlType === 'SCS' || station.generalInfo.controlType.includes('+SCS'))) return returnMode;
+    if (filters['SPE'] && (station.generalInfo.controlType === 'SPE' || station.generalInfo.controlType.includes('+SPE'))) return returnMode;
 
-  if (filters['SCS'] && filters['SPK'] && (station.controlType.includes('SPK') || station.controlType.includes('SCS'))) return returnMode;
+    if (filters['SCS'] && filters['SPK'] && (station.generalInfo.controlType.includes('SPK') || station.generalInfo.controlType.includes('SCS'))) return returnMode;
 
-  if (filters['mechaniczne'] && station.controlType.includes('mechaniczne')) return returnMode;
+    if (filters['mechaniczne'] && station.generalInfo.controlType.includes('mechaniczne')) return returnMode;
 
-  if (filters['ręczne'] && station.controlType.includes('ręczne')) return returnMode;
+    if (filters['ręczne'] && station.generalInfo.controlType.includes('ręczne')) return returnMode;
 
-  if (filters['SBL'] && station.SBL) return returnMode;
+    if (filters['SBL'] && station.generalInfo.SBL) return returnMode;
+  }
 
   return true;
 }

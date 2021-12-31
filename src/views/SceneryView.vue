@@ -12,10 +12,10 @@
     </div>
 
     <div class="scenery-wrapper" v-if="stationInfo">
-      <SceneryInfo :stationInfo="stationInfo" :timetableOnly="timetableOnly" />
+      <SceneryInfo :station="stationInfo" :timetableOnly="timetableOnly" />
 
       <SceneryTimetable
-        :stationInfo="stationInfo"
+        :station="stationInfo"
         :timetableOnly="timetableOnly"
         :dataStatus="data.timetableDataStatus"
       />
@@ -60,7 +60,7 @@ export default defineComponent({
     const stationInfo = computed(() =>
       data.value.stationList.find(
         (station) =>
-          station.stationName ===
+          station.name ===
           route.query.station?.toString().replace(/_/g, " ")
       )
     );

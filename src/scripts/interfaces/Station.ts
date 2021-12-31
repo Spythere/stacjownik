@@ -1,57 +1,96 @@
 import ScheduledTrain from "./ScheduledTrain";
 
 export default interface Station {
-  stationName: string;
-  stationHash: string;
-  stationURL: string;
+  name: string;
 
-  maxUsers: number;
-  currentUsers: number;
+  generalInfo?: {
+    name: string;
+    url: string;
 
-  spawns: { spawnName: string; spawnLength: number }[];
+    reqLevel: number;
+    supportersOnly: boolean;
 
-  dispatcherRate: number;
-  dispatcherName: string;
-  dispatcherExp: number;
-  dispatcherId: number;
-  dispatcherIsSupporter: boolean;
+    lines: string;
+    project: string;
 
-  stationLines: string;
-  stationProject: string;
+    SBL: string;
+    TWB: string;
+    signalType: string;
+    controlType: string;
 
-  reqLevel: number;
-  supportersOnly: boolean;
+    default: boolean;
+    nonPublic: boolean;
+    unavailable: boolean;
 
-  SBL: string;
-  TWB: string;
-  signalType: string;
-  controlType: string;
+    routes: {
+      oneWay: { catenary: number; noCatenary: number };
+      twoWay: { catenary: number; noCatenary: number };
+    };
 
-  default: boolean;
-  nonPublic: boolean;
-  unavailable: boolean;
-
-  routes: {
-    oneWay: { catenary: number; noCatenary: number };
-    twoWay: { catenary: number; noCatenary: number };
+    checkpoints: {
+      checkpointName: string;
+      scheduledTrains: ScheduledTrain[];
+    }[];
   };
+  
+  onlineInfo?: {
+    hash: string;
+    name: string;
 
-  checkpoints: {
-    checkpointName: string;
-    scheduledTrains: ScheduledTrain[];
-  }[];
+    maxUsers: number;
+    currentUsers: number;
+
+    spawns: { spawnName: string; spawnLength: number }[];    
+    dispatcherRate: number;
+    dispatcherName: string;
+    dispatcherExp: number;
+    dispatcherId: number;
+    dispatcherIsSupporter: boolean;
+    
+    statusTimestamp: number;
+    statusTimeString: string;
+    statusID: string;
+  
+    stationTrains?: {
+      driverName: string;
+      trainNo: number;
+      stopStatus?: string;
+    }[];
+  
+    scheduledTrains?: ScheduledTrain[];
+  }
+
+  // stationName: string;
+  // stationHash: string;
+  // stationURL: string;
+
+  // maxUsers: number;
+  // currentUsers: number;
 
 
-  online: boolean;
-  statusTimestamp: number;
-  statusTimeString: string;
-  statusID: string;
+  // stationLines: string;
+  // stationProject: string;
 
-  stationTrains: {
-    driverName: number;
-    trainNo: number;
-    stopStatus?: string;
-  }[];
+  // reqLevel: number;
+  // supportersOnly: boolean;
 
-  scheduledTrains: ScheduledTrain[];
+  // SBL: string;
+  // TWB: string;
+  // signalType: string;
+  // controlType: string;
+
+  // default: boolean;
+  // nonPublic: boolean;
+  // unavailable: boolean;
+
+  // routes: {
+  //   oneWay: { catenary: number; noCatenary: number };
+  //   twoWay: { catenary: number; noCatenary: number };
+  // };
+
+  // checkpoints: {
+  //   checkpointName: string;
+  //   scheduledTrains: ScheduledTrain[];
+  // }[];
+
 }

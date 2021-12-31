@@ -24,6 +24,7 @@ import { DataStatus } from "@/scripts/enums/DataStatus";
 import { getLocoURL, getStatusID, getStatusTimestamp, getTimestamp, getTrainStopStatus, parseSpawns, timestampToString } from "@/scripts/utils/storeUtils";
 import { URLs } from '@/scripts/utils/apiURLs';
 import StorageManager from '@/scripts/managers/storageManager';
+import ScheduledTrain from '@/scripts/interfaces/ScheduledTrain';
 
 export interface State {
   stationList: Station[],
@@ -42,27 +43,31 @@ export interface State {
   listenerLaunched: boolean;
 }
 
-interface SceneryData {
-  id: number;
-  name: string;
-  url: string;
-  project_lines: string;
-  project_name: string;
-  req_level?: number;
-  supporters_only: boolean;
-  signal_type: string;
-  control_type: string;
-  sbl_routes: string;
-  twb_routes: string;
-  track_oneway_e: number;
-  track_oneway_ne: number;
-  track_twoway_e: number;
-  track_twoway_ne: number;
-  checkpoints?: string;
-  is_default: boolean;
-  is_nonpublic: boolean;
-  is_unavailable: boolean;
-}
+
+// interface SceneryData {
+//   id: number;
+//   name: string;
+//   url: string;
+//   project_lines: string;
+//   project_name: string;
+//   req_level?: number;
+//   supporters_only: boolean;
+//   signal_type: string;
+//   control_type: string;
+//   sbl_routes: string;
+//   twb_routes: string;
+//   track_oneway_e: number;
+//   track_oneway_ne: number;
+//   track_twoway_e: number;
+//   track_twoway_ne: number;
+//   checkpoints?: string;
+//   is_default: boolean;
+//   is_nonpublic: boolean;
+//   is_unavailable: boolean;
+// }
+type StationJSONData = [string, string, string, string, string, string, string, string, string, string, number, number, number, number, string | null, boolean, boolean, boolean];
+
+// const initStationData = (initData: any[][])
 
 export const key: InjectionKey<Store<State>> = Symbol()
 
@@ -109,7 +114,7 @@ export const store = createStore<State>({
       if (state.listenerLaunched) return;
 
       const queryDate = new Date();
-     
+
       const nextRefreshDate = new Date();
 
       if (queryDate.getHours() < 8)
@@ -128,8 +133,7 @@ export const store = createStore<State>({
         sceneryDataQuery += "?time=" + queryDate.getTime();
       }
 
-      const sceneryData = await (await axios.get(sceneryDataQuery)).data;
-      // const sceneryData = await (await axios.get(sceneryDataQuery)).data;
+      const sceneryData: StationJSONData = await (await axios.get(sceneryDataQuery)).data;
 
       commit(MUTATIONS.SET_SCENERY_DATA, sceneryData);
       commit(MUTATIONS.SET_SCENERY_DATA_STATUS, DataStatus.Loaded);
@@ -152,7 +156,7 @@ export const store = createStore<State>({
           const onlineDispatchersData: string[][] = await response[2].data.message;
 
 
-          const updatedStationList = onlineStationsData.reduce((acc, station) => {
+          const updatedStationList: Station['onlineInfo'][] = onlineStationsData.reduce((acc, station) => {
             if (station.region !== this.state.region.id || !station.isOnline) return acc;
 
             const stationStatus = onlineDispatchersData.find((status: string[]) => status[0] == station.stationHash && status[1] == this.state.region.id);
@@ -165,8 +169,8 @@ export const store = createStore<State>({
               .map(train => ({ driverName: train.driverName, trainNo: train.trainNo }));
 
             acc.push({
-              stationName: station.stationName,
-              stationHash: station.stationHash,
+              name: station.stationName,
+              hash: station.stationHash,
               maxUsers: station.maxUsers,
               currentUsers: station.currentUsers,
               spawns: parseSpawns(station.spawnString),
@@ -178,11 +182,11 @@ export const store = createStore<State>({
               stationTrains,
               statusTimestamp,
               statusID,
-              statusTimeString: timestampToString(statusTimestamp)
+              statusTimeString: timestampToString(statusTimestamp),
             });
 
             return acc;
-          }, [] as any);
+          }, [] as Station['onlineInfo'][]);
 
           const updatedTrainList = await Promise.all(
             onlineTrainsData
@@ -312,7 +316,7 @@ export const store = createStore<State>({
   },
 
   mutations: {
-    SET_SCENERY_DATA(state, data: any[][]) {
+    SET_SCENERY_DATA(state, data: StationJSONData[]) {
       // state.sceneryData = [...data];
 
       // state.stationList = data.map(scenery => ({
@@ -359,48 +363,37 @@ export const store = createStore<State>({
       //   spawns: []
       // }));
 
+
       state.stationList = data.map(station => ({
-        stationName: station[0] as string,
-        stationURL: station[1] as string,
-        stationLines: station[2] as string,
-        stationProject: station[3] as string,
-        reqLevel: Number(station[4] as string),
-        supportersOnly: station[5] == "TAK",
-        signalType: station[6] as string,
-        controlType: station[7] as string,
-        SBL: station[8] as string,
-        TWB: station[9] as string,
-        routes: {
-          oneWay: {
-            catenary: station[10] as number,
-            noCatenary: station[11] as number
+        name: station[0],
+
+        generalInfo: {
+          name: station[0],
+          url: station[1],
+          lines: station[2],
+          project: station[3],
+          reqLevel: station[4] == "" ? -1 : Number(station[4]),
+          supportersOnly: station[5] == "TAK",
+          signalType: station[6],
+          controlType: station[7],
+          SBL: station[8],
+          TWB: station[9],
+          routes: {
+            oneWay: {
+              catenary: station[10],
+              noCatenary: station[11]
+            },
+            twoWay: {
+              catenary: station[12],
+              noCatenary: station[13]
+            }
           },
-          twoWay: {
-            catenary: station[12] as number,
-            noCatenary: station[13] as number
-          }
-        },
-        checkpoints: station[14] ? (station[14] as string).split(";").map(sub => ({ checkpointName: sub, scheduledTrains: [] })) : [],
+          checkpoints: station[14] ? (station[14]).split(";").map(sub => ({ checkpointName: sub, scheduledTrains: [] })) : [],
 
-        default: station[15] as boolean,
-        nonPublic: station[16] as boolean,
-        unavailable: station[17] as boolean,
-
-        stationHash: "",
-        maxUsers: 0,
-        currentUsers: 0,
-        dispatcherName: "",
-        dispatcherRate: 0,
-        dispatcherExp: -1,
-        dispatcherId: 0,
-        dispatcherIsSupporter: false,
-        online: false,
-        statusTimestamp: -3,
-        statusID: "free",
-        statusTimeString: "",
-        stationTrains: [],
-        scheduledTrains: [],
-        spawns: []
+          default: station[15],
+          nonPublic: station[16],
+          unavailable: station[17],
+        }
       }));
 
 
@@ -422,55 +415,45 @@ export const store = createStore<State>({
       state.region = region;
     },
 
-    UPDATE_STATIONS(state, updatedStationList: any[]) {
+    UPDATE_STATIONS(state, updatedStationList: Station['onlineInfo'][]) {
 
       state.stationList = state.stationList.reduce((acc: Station[], station) => {
-        const onlineStationData = updatedStationList.find(updatedStation => updatedStation.stationName === station.stationName);
-        const listedStationData = state.stationList.find(data => data.stationName === station.stationName);
+        const onlineStationData = updatedStationList.find(updatedStation => updatedStation?.name === station.name);
+        const listedStationData = state.stationList.find(data => data.name === station.name);
 
         if (onlineStationData)
           acc.push({
-            ...station,
-            ...onlineStationData,
-            online: true
+            name: station.name,
+            generalInfo: station.generalInfo,
+            onlineInfo: onlineStationData,
           });
         else if (listedStationData)
           acc.push({
             ...station,
-            stationHash: "",
-            maxUsers: 0,
-            currentUsers: 0,
-            dispatcherName: "",
-            dispatcherRate: 0,
-            dispatcherExp: -1,
-            dispatcherId: 0,
-            dispatcherIsSupporter: false,
-            online: false,
-            statusID: "free",
-            statusTimestamp: -3,
-            statusTimeString: "",
-            stationTrains: [],
-            scheduledTrains: []
+            onlineInfo: undefined
           });
 
         return acc;
       }, [] as Station[]);
 
       updatedStationList
-        .filter(uStation => !state.stationList.some(station => uStation.stationName === station.stationName))
+        .filter(uStation => !state.stationList.some(station => uStation?.name === station.name))
         .forEach(uStation => {
+          if (!uStation) return;
+
           state.stationList.push({
-            ...uStation,
-            scheduledTrains: [],
-            stationTrains: uStation.stationTrains || [],
-            subStations: [],
-            online: true,
-            reqLevel: -1,
-            nonPublic: true
+            name: uStation.name,
+
+            onlineInfo: {
+              ...uStation,
+              scheduledTrains: [],
+              stationTrains: uStation.stationTrains || []
+            },
+            generalInfo: undefined
           });
         });
 
-      state.stationCount = state.stationList.filter(station => station.online).length;
+      state.stationCount = state.stationList.filter(station => station.onlineInfo).length;
       state.dataConnectionStatus = DataStatus.Loaded;
     },
 
@@ -490,10 +473,10 @@ export const store = createStore<State>({
 
     UPDATE_TIMETABLES(state, timetableList: Timetable[]) {
       state.stationList = state.stationList.map(station => {
-        const stationName = station.stationName.toLowerCase();
+        const stationName = station.name.toLowerCase();
 
-        const scheduledTrains: Station["scheduledTrains"] = timetableList.reduce((acc: Station["scheduledTrains"], timetable: Timetable) => {
-          if (!timetable.followingSceneries.includes(station.stationHash)) return acc;
+        const scheduledTrains: ScheduledTrain[] = timetableList.reduce((acc: ScheduledTrain[], timetable: Timetable) => {
+          if (!timetable.followingSceneries.includes(station.onlineInfo?.hash || "")) return acc;
 
           const stopInfoIndex = timetable.followingStops.findIndex(stop => {
             const stopName = stop.stopNameRAW.toLowerCase();
@@ -504,9 +487,12 @@ export const store = createStore<State>({
             if (stationName.includes(stopName) && !stop.stopName.includes("po.") && !stop.stopName.includes("podg.")) return true;
             if (stopName.includes("podg.") && stopName.split(", podg.")[0] && stationName.includes(stopName.split(", podg.")[0])) return true;
 
-            if (station.checkpoints && station.checkpoints.length > 0 && station.checkpoints.some(cp => cp.checkpointName.toLowerCase().includes(stop.stopNameRAW.toLowerCase()))) return true;
-
-            // if (station.stops && station.stops.includes(stop.stopNameRAW)) return true;
+            if (station.generalInfo
+              && station.generalInfo.checkpoints
+              && station.generalInfo.checkpoints.length > 0
+              && station.generalInfo.checkpoints.some(cp => cp.checkpointName.toLowerCase().includes(stop.stopNameRAW.toLowerCase())))
+              
+              return true;
 
             return false;
           });
@@ -535,10 +521,10 @@ export const store = createStore<State>({
           return acc;
         }, []);
 
-        if (station.checkpoints) {
-          station.checkpoints.forEach(cp => (cp.scheduledTrains.length = 0));
+        if (station.generalInfo && station.generalInfo.checkpoints.length > 0) {
+          station.generalInfo.checkpoints.forEach(cp => (cp.scheduledTrains.length = 0));
 
-          for (const checkpoint of station.checkpoints) {
+          for (const checkpoint of station.generalInfo.checkpoints) {
             timetableList.forEach(timetable => {
               timetable.followingStops
                 .filter(trainStop => trainStop.stopNameRAW.toLowerCase() === checkpoint.checkpointName.toLowerCase())
@@ -565,15 +551,22 @@ export const store = createStore<State>({
           }
         }
 
-        return { ...station, scheduledTrains };
+
+        return {
+          ...station,
+          onlineInfo: station.onlineInfo ? {
+            ...station.onlineInfo,
+            scheduledTrains
+          } : undefined
+         };
       });
 
       state.trainList = state.trainList.reduce((acc, train) => {
         const timetableData = timetableList.find(data => data && data.trainNo === train.trainNo);
 
         const trainStopData = state.stationList
-          .find(station => station.stationName === train.currentStationName)
-          ?.scheduledTrains.find(stationTrain => stationTrain.trainNo === train.trainNo);
+          .find(station => station.name === train.currentStationName)
+          ?.onlineInfo?.scheduledTrains?.find(stationTrain => stationTrain.trainNo === train.trainNo);
 
         acc.push({ ...train, timetableData, stopStatus: trainStopData?.stopStatus || "", stopLabel: trainStopData?.stopLabel || "" });
 

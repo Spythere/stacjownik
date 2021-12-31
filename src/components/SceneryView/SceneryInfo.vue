@@ -2,125 +2,128 @@
   <div class="scenery-info">
     <div class="info-header">
       <div class="scenery-name">
-        <div v-if="stationInfo.stationProject" style="color: salmon; font-size: 0.6em; line-height: 0.7em;">
-          {{ stationInfo.stationProject }}
+        <div v-if="station.generalInfo?.project" style="color: salmon; font-size: 0.6em; line-height: 0.7em;">
+          {{ station.generalInfo.project }}
         </div>
 
-        <a v-if="stationInfo.stationURL" :href="stationInfo.stationURL" target="_blank" rel="noopener noreferrer">{{
-          stationInfo.stationName
+        <a v-if="station.generalInfo?.url" :href="station.generalInfo.url" target="_blank" rel="noopener noreferrer">{{
+          station.name
         }}</a>
 
-        <span v-else>{{ stationInfo.stationName }}</span>
+        <span v-else>{{ station.name }}</span>
       </div>
-      <div class="scenery-hash" v-if="stationInfo.stationHash">#{{ stationInfo.stationHash }}</div>
+      <div class="scenery-hash" v-if="station.onlineInfo?.hash">#{{ station.onlineInfo.hash }}</div>
     </div>
 
     <section v-if="!timetableOnly">
-      <div class="info-stats" :class="!stationInfo.stationHash ? 'no-stats' : ''">
+      <div class="info-stats" :class="!station.onlineInfo ? 'no-stats' : ''">
         <span class="likes">
           <img :src="likeIcon" alt="icon-like" />
-          <span>{{ stationInfo.dispatcherRate }}</span>
+          <span>{{ station.onlineInfo?.dispatcherRate || '0' }}</span>
         </span>
 
         <span class="users">
           <img :src="userIcon" alt="icon-user" />
-          <span>{{ stationInfo.currentUsers }}</span>
+          <span>{{ station.onlineInfo?.currentUsers || '0' }}</span>
           /
-          <span>{{ stationInfo.maxUsers }}</span>
+          <span>{{ station.onlineInfo?.maxUsers || '0' }}</span>
         </span>
 
         <span class="spawns">
           <img :src="spawnIcon" alt="icon-spawn" />
-          <span>{{ stationInfo.spawns.length }}</span>
+          <span>{{ station.onlineInfo?.spawns.length || '0' }}</span>
         </span>
 
         <span class="schedules">
           <img :src="timetableIcon" alt="icon-timetable" />
           <span>
-            <span style="color: #eee">{{ stationInfo.scheduledTrains.length }}</span>
+            <span style="color: #eee">{{ station.onlineInfo?.scheduledTrains?.length || '0' }}</span>
             /
-            <span style="color: #bbb">{{
-              stationInfo.scheduledTrains.filter((train) => train.stopInfo.confirmed).length
-            }}</span>
+            <span style="color: #bbb"
+              >{{ station.onlineInfo?.scheduledTrains?.filter((train) => train.stopInfo.confirmed).length || '0' }}
+            </span>
           </span>
         </span>
       </div>
 
       <div class="info-brief">
         <img
-          v-if="stationInfo.controlType"
-          :src="require(`@/assets/icon-${stationInfo.controlType}.svg`)"
-          :alt="stationInfo.controlType"
-          :title="$t('desc.control-type') + $t(`controls.${stationInfo.controlType}`)"
+          v-if="station.generalInfo?.controlType"
+          :src="require(`@/assets/icon-${station.generalInfo.controlType}.svg`)"
+          :alt="station.generalInfo.controlType"
+          :title="$t('desc.control-type') + $t(`controls.${station.generalInfo.controlType}`)"
         />
 
         <img
-          v-if="stationInfo.signalType"
-          :src="require(`@/assets/icon-${stationInfo.signalType}.svg`)"
-          :alt="stationInfo.signalType"
-          :title="$t('desc.signals-type') + $t(`signals.${stationInfo.signalType}`)"
+          v-if="station.generalInfo?.signalType"
+          :src="require(`@/assets/icon-${station.generalInfo.signalType}.svg`)"
+          :alt="station.generalInfo.signalType"
+          :title="$t('desc.signals-type') + $t(`signals.${station.generalInfo.signalType}`)"
         />
 
         <img
-          v-if="stationInfo.SBL && stationInfo.SBL !== ''"
+          v-if="station.generalInfo && station.generalInfo.SBL !== ''"
           :src="SBLIcon"
-          :alt="$t('desc.SBL') + `${stationInfo.SBL}`"
-          :title="$t('desc.SBL') + `${stationInfo.SBL}`"
+          :alt="$t('desc.SBL') + `${station.generalInfo.SBL}`"
+          :title="$t('desc.SBL') + `${station.generalInfo.SBL}`"
         />
 
         <img
-          v-if="stationInfo.TWB && stationInfo.TWB !== ''"
+          v-if="station.generalInfo && station.generalInfo.TWB !== ''"
           :src="TWBIcon"
           alt="two way route blockade"
-          :title="`${stationInfo.TWB === 'TAK' ? $t('desc.TWB-all') : $t('desc.TWB-routes') + stationInfo.TWB}`"
+          :title="
+            `${
+              station.generalInfo.TWB === 'TAK' ? $t('desc.TWB-all') : $t('desc.TWB-routes') + station.generalInfo.TWB
+            }`
+          "
         />
 
-        <img v-if="stationInfo.default" :src="td2Icon" alt="default scenery" :title="$t('desc.default')" />
+        <img v-if="station.generalInfo?.default" :src="td2Icon" alt="default scenery" :title="$t('desc.default')" />
 
         <img
-          v-if="stationInfo.nonPublic || !stationInfo.reqLevel"
+          v-if="station.generalInfo?.nonPublic || !station.generalInfo?.reqLevel"
           :src="lockIcon"
           alt="non public scenery"
           :title="$t('desc.non-public')"
         />
 
         <img
-          v-if="stationInfo.unavailable"
+          v-if="station.generalInfo?.unavailable"
           :src="unavailableIcon"
           alt="icon unavailable"
           :title="$t('desc.unavailable')"
         />
 
         <img
-          v-if="stationInfo.stationLines && stationInfo.stationLines != ''"
+          v-if="station.generalInfo && station.generalInfo.lines != ''"
           :src="realIcon"
           alt="real scenery"
-          :title="`${$t('desc.real')} ${stationInfo.stationLines}`"
+          :title="`${$t('desc.real')} ${station.generalInfo.lines}`"
         />
 
-        <img
-          v-if="stationInfo.reqLevel < 0"
-          :src="unknownIcon"
-          alt="icon-unknown"
-          :title="$t('desc.unknown')"
-        />
+        <img v-if="!station.generalInfo" :src="unknownIcon" alt="icon-unknown" :title="$t('desc.unknown')" />
       </div>
 
       <div class="info-dispatcher">
-        <div class="dispatcher" v-if="stationInfo.stationHash">
+        <div class="dispatcher" v-if="station.onlineInfo">
           <span
             class="dispatcher_level"
-            :style="calculateExpStyle(stationInfo.dispatcherExp, stationInfo.dispatcherIsSupporter)"
+            :style="calculateExpStyle(station.onlineInfo.dispatcherExp, station.onlineInfo.dispatcherIsSupporter)"
           >
-            {{ stationInfo.dispatcherExp > 1 ? stationInfo.dispatcherExp : 'L' }}
+            {{ station.onlineInfo.dispatcherExp > 1 ? station.onlineInfo.dispatcherExp : 'L' }}
           </span>
 
-          <span class="dispatcher_name">{{ stationInfo.dispatcherName }}</span>
+          <span class="dispatcher_name">{{ station.onlineInfo.dispatcherName }}</span>
         </div>
 
-        <span class="status-badge" :class="stationInfo.statusID">
-          {{ $t(`status.${stationInfo.statusID}`) }}
-          {{ stationInfo.statusID == 'online' ? stationInfo.statusTimeString : '' }}
+        <span class="status-badge" v-if="station.onlineInfo" :class="station.onlineInfo.statusID">
+          {{ $t(`status.${station.onlineInfo.statusID}`) }}
+          {{ station.onlineInfo.statusID == 'online' ? station.onlineInfo.statusTimeString : '' }}
+        </span>
+
+        <span class="status-badge free" v-else>
+          {{ $t('status.free') }}
         </span>
       </div>
 
@@ -153,16 +156,18 @@
             <img :src="spawnIcon" alt="icon-spawn" />
           </h3>
 
-          <span
-            class="spawn"
-            v-for="(spawn, i) in stationInfo.spawns"
-            :key="spawn.spawnName + stationInfo.dispatcherName + i"
-          >
-            <span class="spawn_name">{{ spawn.spawnName }}</span>
-            <span class="spawn_length">{{ spawn.spawnLength }}m</span>
+          <span v-if="station.onlineInfo">
+            <span
+              class="spawn"
+              v-for="(spawn, i) in station.onlineInfo.spawns"
+              :key="spawn.spawnName + station.onlineInfo?.dispatcherName + i"
+            >
+              <span class="spawn_name">{{ spawn.spawnName }}</span>
+              <span class="spawn_length">{{ spawn.spawnLength }}m</span>
+            </span>
           </span>
 
-          <span class="spawn none" v-if="!stationInfo.spawns || stationInfo.spawns.length == 0"
+          <span class="spawn none" v-if="!station.onlineInfo || station.onlineInfo.spawns.length == 0"
             >{{ $t('scenery.no-spawns') }}
           </span>
         </div>
@@ -178,7 +183,7 @@ import { computed, defineComponent } from '@vue/runtime-core';
 
 export default defineComponent({
   props: {
-    stationInfo: {
+    station: {
       type: Object as () => Station,
       default: {},
     },
@@ -206,10 +211,14 @@ export default defineComponent({
 
   setup(props) {
     const computedStationTrains = computed(() => {
-      if (!props.stationInfo) return [];
+      if (!props.station) return [];
+      if (!props.station.onlineInfo) return [];
+      if (!props.station.onlineInfo.stationTrains) return [];
 
-      return props.stationInfo.stationTrains.map((train) => {
-        const scheduledTrainStatus = props.stationInfo?.scheduledTrains.find((st) => st.trainNo === train.trainNo);
+      return props.station.onlineInfo.stationTrains.map((train) => {
+        const scheduledTrainStatus = props.station.onlineInfo?.scheduledTrains?.find(
+          (st) => st.trainNo === train.trainNo
+        );
 
         return {
           ...train,

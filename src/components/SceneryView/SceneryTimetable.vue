@@ -19,16 +19,15 @@
     <div
       class="checkpoints"
       v-if="
-        stationInfo &&
-        stationInfo.scheduledTrains.length > 0 &&
-        stationInfo.checkpoints
+        station &&
+        station.generalInfo?.checkpoints
       "
     >
       <button
+        v-for="cp in station.generalInfo.checkpoints"
+        :key="cp.checkpointName"
         class="checkpoint_item btn--text"
         :class="{ current: selectedCheckpoint === cp.checkpointName }"
-        v-for="cp in stationInfo.checkpoints"
-        :key="cp.checkpointName"
         @click="selectCheckpoint(cp)"
       >
         {{ cp.checkpointName }}
@@ -144,7 +143,7 @@ export default defineComponent({
   components: { SelectBox },
 
   props: {
-    stationInfo: {
+    station: {
       type: Object as () => Station,
     },
     timetableOnly: {
@@ -167,18 +166,18 @@ export default defineComponent({
     const selectedCheckpoint = ref("");
 
     const computedScheduledTrains = computed(() => {
-      if (!props.stationInfo) return [];
+      if (!props.station) return [];
 
       let scheduledTrains =
-        props.stationInfo.checkpoints?.find(
+        props.station.generalInfo?.checkpoints.find(
           (cp) => cp.checkpointName === selectedCheckpoint.value
-        )?.scheduledTrains || props.stationInfo.scheduledTrains;
+        )?.scheduledTrains || props.station.onlineInfo?.scheduledTrains || [];
 
-      // if (props.stationInfo.checkpoints)
-      //   scheduledTrains = props.stationInfo.checkpoints.find(
+      // if (props.station.checkpoints)
+      //   scheduledTrains = props.station.checkpoints.find(
       //     (cp) => cp.checkpointName === selectedCheckpoint.value
       //   )?.scheduledTrains;
-      // else scheduledTrains = props.stationInfo.scheduledTrains;
+      // else scheduledTrains = props.station.scheduledTrains;
 
       return (
         scheduledTrains?.sort((a, b) => {
@@ -206,11 +205,14 @@ export default defineComponent({
 
   methods: {
     loadSelectedOption() {
-      if (!this.stationInfo) return;
-      if (this.stationInfo.checkpoints.length == 0) return;
+      if (!this.station) return;
+      if(!this.station.generalInfo) return;
+      if(!this.station.generalInfo.checkpoints) return;
+      if (this.station.generalInfo.checkpoints.length == 0) return;
+
       if (this.selectedCheckpoint != "") return;
 
-      this.selectedCheckpoint = this.stationInfo.checkpoints[0].checkpointName;
+      this.selectedCheckpoint = this.station.generalInfo.checkpoints[0].checkpointName;
     },
 
     selectCheckpoint(cp: { checkpointName: string }) {

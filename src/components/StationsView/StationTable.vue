@@ -36,149 +36,157 @@
           <tr
             class="station"
             v-for="(station, i) in stations"
-            :key="i + station.stationHash"
-            @click="() => setScenery(station.stationName)"
+            :key="i + station.name"
+            @click="() => setScenery(station.name)"
           >
             <td
               class="station_name"
               :class="{
-                'default-station': station.default,
-                online: station.online,
-                'station-unavailable': station.unavailable,
+                'default-station': station.generalInfo?.default,
+                online: station.onlineInfo,
+                'station-unavailable': station.generalInfo?.unavailable,
               }"
             >
-              <b v-if="station.stationProject" style="color: salmon;">{{ station.stationProject }}</b>
-              {{ station.stationName }}
+              <b v-if="station.generalInfo?.project" style="color: salmon;">{{ station.generalInfo.project }}</b>
+              {{ station.name }}
             </td>
 
-            <td class="station_level">
-              <span  :style="calculateExpStyle(station.reqLevel, station.supportersOnly)">
-                {{ station.reqLevel > -1 ? (station.reqLevel >= 2 ? station.reqLevel : 'L') : '?' }}
+            <td class="station_level" >
+              <span v-if="station.generalInfo">
+                <span :style="calculateExpStyle(station.generalInfo.reqLevel, station.generalInfo.supportersOnly)">
+                  {{ station.generalInfo.reqLevel > -1 ? (station.generalInfo.reqLevel >= 2 ? station.generalInfo.reqLevel : 'L') : '?' }}
+                </span>
               </span>
+              
+              <span v-else>?</span>
             </td>
 
-            <td class="station_status">
-              <span class="status-badge" :class="station.statusID">
-                {{ $t(`status.${station.statusID}`) }}
-                {{ station.statusID == 'online' ? station.statusTimeString : '' }}
+            <td class="station_status" >
+              <span class="status-badge" :class="station.onlineInfo.statusID" v-if="station.onlineInfo">
+                {{ $t(`status.${station.onlineInfo.statusID}`) }}
+                {{ station.onlineInfo.statusID == 'online' ? station.onlineInfo.statusTimeString : '' }}
+              </span>
+
+              <span class="status-badge free" v-else>
+                {{ $t('status.free') }}
               </span>
             </td>
 
             <td class="station_dispatcher-name">
-              {{ station.online ? station.dispatcherName : '' }}
+              {{ station.onlineInfo ? station.onlineInfo.dispatcherName : '' }}
             </td>
 
             <td class="station_dispatcher-exp">
               <span
-                v-if="station.online"
-                :style="calculateExpStyle(station.dispatcherExp, station.dispatcherIsSupporter)"
+                v-if="station.onlineInfo"
+                :style="calculateExpStyle(station.onlineInfo.dispatcherExp, station.onlineInfo.dispatcherIsSupporter)"
               >
-                {{ 2 > station.dispatcherExp ? 'L' : station.dispatcherExp }}
+                {{ 2 > station.onlineInfo.dispatcherExp ? 'L' : station.onlineInfo.dispatcherExp }}
               </span>
             </td>
 
             <td class="station_tracks twoway">
               <span
-                v-if="station.routes && station.routes.twoWay.catenary > 0"
+                v-if="station.generalInfo && station.generalInfo.routes.twoWay.catenary > 0"
                 class="track catenary"
-                :title="`Liczba zelektryfikowanych szlaków dwutorowych: ${station.routes.twoWay.catenary}`"
+                :title="`Liczba zelektryfikowanych szlaków dwutorowych: ${station.generalInfo.routes.twoWay.catenary}`"
               >
-                {{ station.routes.twoWay.catenary }}
+                {{ station.generalInfo.routes.twoWay.catenary }}
               </span>
 
               <span
-                v-if="station.routes && station.routes.twoWay.noCatenary > 0"
+                v-if="station.generalInfo && station.generalInfo.routes.twoWay.noCatenary > 0"
                 class="track no-catenary"
-                :title="`Liczba niezelektryfikowanych szlaków dwutorowych: ${station.routes.twoWay.noCatenary}`"
+                :title="`Liczba niezelektryfikowanych szlaków dwutorowych: ${station.generalInfo.routes.twoWay.noCatenary}`"
               >
-                {{ station.routes.twoWay.noCatenary }}
+                {{ station.generalInfo.routes.twoWay.noCatenary }}
               </span>
 
               <span class="separator"></span>
 
               <span
-                v-if="station.routes && station.routes.oneWay.catenary > 0"
+                v-if="station.generalInfo && station.generalInfo.routes.oneWay.catenary > 0"
                 class="track catenary"
-                :title="`Liczba zelektryfikowanych szlaków jednotorowych: ${station.routes.oneWay.catenary}`"
+                :title="`Liczba zelektryfikowanych szlaków jednotorowych: ${station.generalInfo.routes.oneWay.catenary}`"
               >
-                {{ station.routes.oneWay.catenary }}
+                {{ station.generalInfo.routes.oneWay.catenary }}
               </span>
 
               <span
-                v-if="station.routes && station.routes.oneWay.noCatenary > 0"
+                v-if="station.generalInfo && station.generalInfo.routes.oneWay.noCatenary > 0"
                 class="track no-catenary"
-                :title="`Liczba niezelektryfikowanych szlaków jednotorowych: ${station.routes.oneWay.noCatenary}`"
+                :title="`Liczba niezelektryfikowanych szlaków jednotorowych: ${station.generalInfo.routes.oneWay.noCatenary}`"
               >
-                {{ station.routes.oneWay.noCatenary }}
+                {{ station.generalInfo.routes.oneWay.noCatenary }}
               </span>
             </td>
 
             <td class="station_info">
               <img
                 class="icon-info"
-                v-if="station.controlType"
-                :src="require(`@/assets/icon-${station.controlType}.svg`)"
-                :alt="station.controlType"
-                :title="$t('desc.control-type') + $t(`controls.${station.controlType}`)"
+                v-if="station.generalInfo?.controlType"
+                :src="require(`@/assets/icon-${station.generalInfo.controlType}.svg`)"
+                :alt="station.generalInfo.controlType"
+                :title="$t('desc.control-type') + $t(`controls.${station.generalInfo.controlType}`)"
               />
 
               <img
                 class="icon-info"
-                v-if="station.signalType"
-                :src="require(`@/assets/icon-${station.signalType}.svg`)"
-                :alt="station.signalType"
-                :title="$t('desc.signals-type') + $t(`signals.${station.signalType}`)"
+                v-if="station.generalInfo?.signalType"
+                :src="require(`@/assets/icon-${station.generalInfo.signalType}.svg`)"
+                :alt="station.generalInfo.signalType"
+                :title="$t('desc.signals-type') + $t(`signals.${station.generalInfo.signalType}`)"
               />
 
               <img
-                v-if="station.SBL && station.SBL !== ''"
+                v-if="station.generalInfo?.SBL && station.generalInfo?.SBL !== ''"
                 :src="SBLIcon"
                 alt="SBL"
-                :title="$t('desc.SBL') + `${station.SBL}`"
+                :title="$t('desc.SBL') + `${station.generalInfo.SBL}`"
               />
 
               <img
-                v-if="station.nonPublic && station.reqLevel > -1"
+                v-if="station.generalInfo?.nonPublic && station.generalInfo?.reqLevel > -1"
                 :src="lockIcon"
                 alt="non-public"
                 :title="$t('desc.non-public')"
               />
 
               <img
-                v-if="station.unavailable"
+                v-if="station.generalInfo?.unavailable"
                 :src="unavailableIcon"
                 alt="icon-unavailable"
                 :title="$t('desc.unavailable')"
               />
 
               <img
-                v-if="station.reqLevel < 0"
+                v-if="!station.generalInfo"
                 :src="unknownIcon"
                 alt="icon-unknown"
                 :title="$t('desc.unknown')"
               />
             </td>
 
-            <td class="station_users" :class="{ inactive: !station.online }">
+            <td class="station_users" :class="{ inactive: !station.onlineInfo }">
               <span>
-                <span class="highlight">{{ station.currentUsers }}</span>
+                <span class="highlight">{{ station.onlineInfo?.currentUsers || "0" }}</span>
                 /
-                <span>{{ station.maxUsers }}</span>
+                <span>{{ station.onlineInfo?.maxUsers || "0" }}</span>
               </span>
             </td>
 
-            <td class="station_spawns" :class="{ inactive: !station.online }">
-              <span class="highlight">{{ station.spawns.length }}</span>
+            <td class="station_spawns" :class="{ inactive: !station.onlineInfo }">
+              <span class="highlight">{{ station.onlineInfo?.spawns.length || "0" }}</span>
             </td>
 
-            <td class="station_schedules" :class="{ inactive: !station.online }">
+            <td class="station_schedules" :class="{ inactive: !station.onlineInfo }">
               <span>
                 <span class="highlight">
-                  {{ station.scheduledTrains.length }}
+                  {{ station.onlineInfo?.scheduledTrains?.length || "0" }}
                 </span>
                 /
                 <span style="color: #bbb">
-                  {{ station.scheduledTrains.filter((train) => train.stopInfo.confirmed).length }}
+                  {{ station.onlineInfo?.scheduledTrains?.filter((train) => train.stopInfo.confirmed).length || "0" }}
                 </span>
               </span>
             </td>
@@ -259,13 +267,13 @@ export default defineComponent({
 
   methods: {
     setScenery(name: string) {
-      const station = this.stations.find((station) => station.stationName === name);
+      const station = this.stations.find((station) => station.name === name);
 
       if (!station) return;
 
       this.$router.push({
         name: 'SceneryView',
-        query: { station: station.stationName.replaceAll(' ', '_') },
+        query: { station: station.name.replaceAll(' ', '_') },
       });
     },
   },

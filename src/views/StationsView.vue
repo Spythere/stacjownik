@@ -103,7 +103,7 @@ export default defineComponent({
     });
 
     const focusedStationInfo = computed(() =>
-      computedStations.value.find((station) => station.stationName === focusedStationName)
+      computedStations.value.find((station) => station.name === focusedStationName)
     );
 
     return {
