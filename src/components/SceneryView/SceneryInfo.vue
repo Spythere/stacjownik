@@ -82,7 +82,7 @@
         <img v-if="station.generalInfo?.default" :src="td2Icon" alt="default scenery" :title="$t('desc.default')" />
 
         <img
-          v-if="station.generalInfo?.nonPublic || !station.generalInfo?.reqLevel"
+          v-if="station.generalInfo?.nonPublic"
           :src="lockIcon"
           alt="non public scenery"
           :title="$t('desc.non-public')"

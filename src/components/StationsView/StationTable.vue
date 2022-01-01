@@ -146,7 +146,7 @@
               />
 
               <img
-                v-if="station.generalInfo?.nonPublic && station.generalInfo?.reqLevel > -1"
+                v-if="station.generalInfo?.nonPublic"
                 :src="lockIcon"
                 alt="non-public"
                 :title="$t('desc.non-public')"
