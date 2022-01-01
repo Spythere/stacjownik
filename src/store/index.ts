@@ -96,7 +96,7 @@ export const store = createStore<State>({
       commit(MUTATIONS.SET_SCENERY_DATA_STATUS, DataStatus.Loaded);
       dispatch(ACTIONS.fetchOnlineData);
 
-      setInterval(() => dispatch(ACTIONS.fetchOnlineData), Math.floor(Math.random() * 5000) + 2500);
+      setInterval(() => dispatch(ACTIONS.fetchOnlineData), Math.floor(Math.random() * 5000) + 25000);
     },
 
     async fetchOnlineData({ commit, dispatch }) {
