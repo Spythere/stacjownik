@@ -89,37 +89,14 @@ export const store = createStore<State>({
     async synchronizeData({ commit, dispatch, state }) {
       if (state.listenerLaunched) return;
 
-      const queryDate = new Date();
-
-      const nextRefreshDate = new Date();
-
-      if (queryDate.getHours() < 8)
-        nextRefreshDate.setHours(8, 0, 0, 0);
-      else if (queryDate.getHours() < 20)
-        nextRefreshDate.setHours(20, 0, 0, 0);
-      else {
-        nextRefreshDate.setDate(nextRefreshDate.getDate() + 1);
-        nextRefreshDate.setHours(8, 0, 0, 0);
-      }
-
-      let sceneryDataQuery = URLs.sceneryData;
-      if (!StorageManager.isRegistered("nextSceneryDataRefreshTime") || StorageManager.isRegistered("nextSceneryDataRefreshTime")
-        && queryDate.getTime() >= StorageManager.getNumericValue("nextSceneryDataRefreshTime")) {
-        StorageManager.setNumericValue("nextSceneryDataRefreshTime", nextRefreshDate.getTime());
-        sceneryDataQuery += "?time=" + queryDate.getTime();
-      }
-
-      const sceneryData: StationJSONData = await (await axios.get(sceneryDataQuery)).data;
+      // Nowy parametr żądania co godzinę
+      const sceneryData: StationJSONData = await (await axios.get(`${URLs.sceneryData}?time=${Math.floor(Date.now() / 1800000)}`)).data;
 
       commit(MUTATIONS.SET_SCENERY_DATA, sceneryData);
       commit(MUTATIONS.SET_SCENERY_DATA_STATUS, DataStatus.Loaded);
-
       dispatch(ACTIONS.fetchOnlineData);
 
-
-      const randIntervalTime = Math.floor(Math.random() * 5000) + 25000;
-
-      setInterval(() => dispatch(ACTIONS.fetchOnlineData), randIntervalTime);
+      setInterval(() => dispatch(ACTIONS.fetchOnlineData), Math.floor(Math.random() * 5000) + 2500);
     },
 
     async fetchOnlineData({ commit, dispatch }) {
