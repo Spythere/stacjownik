@@ -43,31 +43,7 @@ export interface State {
   listenerLaunched: boolean;
 }
 
-
-// interface SceneryData {
-//   id: number;
-//   name: string;
-//   url: string;
-//   project_lines: string;
-//   project_name: string;
-//   req_level?: number;
-//   supporters_only: boolean;
-//   signal_type: string;
-//   control_type: string;
-//   sbl_routes: string;
-//   twb_routes: string;
-//   track_oneway_e: number;
-//   track_oneway_ne: number;
-//   track_twoway_e: number;
-//   track_twoway_ne: number;
-//   checkpoints?: string;
-//   is_default: boolean;
-//   is_nonpublic: boolean;
-//   is_unavailable: boolean;
-// }
 type StationJSONData = [string, string, string, string, string, string, string, string, string, string, number, number, number, number, string | null, boolean, boolean, boolean];
-
-// const initStationData = (initData: any[][])
 
 export const key: InjectionKey<Store<State>> = Symbol()
 
@@ -227,6 +203,8 @@ export const store = createStore<State>({
     },
 
     async fetchTimetableData({ commit }) {
+      commit(MUTATIONS.SET_TIMETABLE_DATA_STATUS, DataStatus.Loading);
+
       const reducedList = this.state.trainList.reduce(async (acc: Promise<Timetable[]>, train: Train) => {
         const timetable: TimetableAPIData = await (await axios.get(URLs.getTimetableURL(train.trainNo, this.state.region.id))).data.message;
         const trainInfo = timetable.trainInfo;
@@ -311,59 +289,13 @@ export const store = createStore<State>({
       }, Promise.resolve([]));
 
       commit(MUTATIONS.UPDATE_TIMETABLES, (await reducedList));
+      commit(MUTATIONS.SET_TIMETABLE_DATA_STATUS, DataStatus.Loaded);
     }
 
   },
 
   mutations: {
     SET_SCENERY_DATA(state, data: StationJSONData[]) {
-      // state.sceneryData = [...data];
-
-      // state.stationList = data.map(scenery => ({
-      //   stationName: scenery.name,
-      //   stationURL: scenery.url,
-      //   stationLines: scenery.project_lines,
-      //   stationProject: scenery.project_name,
-      //   reqLevel: scenery.req_level === undefined ? -1 : scenery.req_level,
-      //   supportersOnly: scenery.supporters_only,
-      //   signalType: scenery.signal_type,
-      //   controlType: scenery.control_type,
-      //   SBL: scenery.sbl_routes,
-      //   TWB: scenery.twb_routes,
-      //   routes: {
-      //     oneWay: {
-      //       catenary: scenery.track_oneway_e,
-      //       noCatenary: scenery.track_oneway_ne
-      //     },
-      //     twoWay: {
-      //       catenary: scenery.track_twoway_e,
-      //       noCatenary: scenery.track_twoway_ne
-      //     }
-      //   },
-      //   checkpoints: scenery.checkpoints ? scenery.checkpoints.split(";").map(sub => ({ checkpointName: sub, scheduledTrains: [] })) : [],
-
-      //   default: scenery.is_default,
-      //   nonPublic: scenery.is_nonpublic,
-      //   unavailable: scenery.is_unavailable,
-
-      //   stationHash: "",
-      //   maxUsers: 0,
-      //   currentUsers: 0,
-      //   dispatcherName: "",
-      //   dispatcherRate: 0,
-      //   dispatcherExp: -1,
-      //   dispatcherId: 0,
-      //   dispatcherIsSupporter: false,
-      //   online: false,
-      //   statusTimestamp: -3,
-      //   statusID: "free",
-      //   statusTimeString: "",
-      //   stationTrains: [],
-      //   scheduledTrains: [],
-      //   spawns: []
-      // }));
-
-
       state.stationList = data.map(station => ({
         name: station[0],
 
@@ -425,7 +357,10 @@ export const store = createStore<State>({
           acc.push({
             name: station.name,
             generalInfo: station.generalInfo,
-            onlineInfo: onlineStationData,
+            onlineInfo: {
+              ...onlineStationData,
+              scheduledTrains: station.onlineInfo?.scheduledTrains || []
+            },
           });
         else if (listedStationData)
           acc.push({

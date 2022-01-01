@@ -17,7 +17,6 @@
       <SceneryTimetable
         :station="stationInfo"
         :timetableOnly="timetableOnly"
-        :dataStatus="data.timetableDataStatus"
       />
     </div>
   </div>

@@ -34,7 +34,7 @@
       </button>
     </div>
 
-    <span class="timetable-item loading" v-if="dataStatus == 0">
+    <span class="timetable-item loading" v-if="timetableDataStatus == 0">
       {{ $t("app.loading") }}
     </span>
 
@@ -138,6 +138,10 @@ import Station from "@/scripts/interfaces/Station";
 import SelectBox from "../Global/SelectBox.vue";
 import { computed, defineComponent, ref } from "@vue/runtime-core";
 import { useRoute } from "vue-router";
+import { useStore } from "@/store";
+import { GETTERS } from "@/constants/storeConstants";
+import { DataStatus } from "@/scripts/enums/DataStatus";
+import { ComputedRef } from "vue";
 
 export default defineComponent({
   components: { SelectBox },
@@ -148,9 +152,6 @@ export default defineComponent({
     },
     timetableOnly: {
       type: Boolean,
-    },
-    dataStatus: {
-      type: Number,
     },
   },
 
@@ -163,21 +164,19 @@ export default defineComponent({
     const route = useRoute();
     const currentURL = computed(() => `${location.origin}${route.fullPath}`);
 
+    const store = useStore();
+
+    const timetableDataStatus = computed(() => store.getters[GETTERS.timetableDataStatus]) as ComputedRef<DataStatus>
+
     const selectedCheckpoint = ref("");
 
     const computedScheduledTrains = computed(() => {
-      if (!props.station) return [];
+      if (!props.station) return [];  
 
       let scheduledTrains =
         props.station.generalInfo?.checkpoints.find(
           (cp) => cp.checkpointName === selectedCheckpoint.value
         )?.scheduledTrains || props.station.onlineInfo?.scheduledTrains || [];
-
-      // if (props.station.checkpoints)
-      //   scheduledTrains = props.station.checkpoints.find(
-      //     (cp) => cp.checkpointName === selectedCheckpoint.value
-      //   )?.scheduledTrains;
-      // else scheduledTrains = props.station.scheduledTrains;
 
       return (
         scheduledTrains?.sort((a, b) => {
@@ -200,6 +199,7 @@ export default defineComponent({
       currentURL,
       selectedCheckpoint,
       computedScheduledTrains,
+      timetableDataStatus
     };
   },
 
