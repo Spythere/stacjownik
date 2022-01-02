@@ -92,6 +92,7 @@ export const store = createStore<State>({
       // Nowy parametr żądania co godzinę
       const sceneryData: StationJSONData = await (await axios.get(`${URLs.sceneryData}?time=${Math.floor(Date.now() / 1800000)}`)).data;
 
+      commit(MUTATIONS.SET_TIMETABLE_DATA_STATUS, DataStatus.Loading);
       commit(MUTATIONS.SET_SCENERY_DATA, sceneryData);
       commit(MUTATIONS.SET_SCENERY_DATA_STATUS, DataStatus.Loaded);
       dispatch(ACTIONS.fetchOnlineData);
@@ -180,7 +181,6 @@ export const store = createStore<State>({
     },
 
     async fetchTimetableData({ commit }) {
-      commit(MUTATIONS.SET_TIMETABLE_DATA_STATUS, DataStatus.Loading);
 
       const reducedList = this.state.trainList.reduce(async (acc: Promise<Timetable[]>, train: Train) => {
         const timetable: TimetableAPIData = await (await axios.get(URLs.getTimetableURL(train.trainNo, this.state.region.id))).data.message;
