@@ -18,6 +18,8 @@
         :station="stationInfo"
         :timetableOnly="timetableOnly"
       />
+
+      <SceneryHistory :name="stationInfo.name" />
     </div>
   </div>
 </template>
@@ -28,6 +30,8 @@ import { DataStatus } from "@/scripts/enums/DataStatus";
 
 import SceneryInfo from "@/components/SceneryView/SceneryInfo.vue";
 import SceneryTimetable from "@/components/SceneryView/SceneryTimetable.vue";
+import SceneryHistory from "@/components/SceneryView/SceneryHistory.vue"
+
 import ActionButton from "@/components/Global/ActionButton.vue";
 
 import { computed, ComputedRef, defineComponent } from "@vue/runtime-core";
@@ -36,7 +40,7 @@ import { GETTERS } from "@/constants/storeConstants";
 import { useRoute } from "vue-router";
 
 export default defineComponent({
-  components: { SceneryInfo, SceneryTimetable, ActionButton },
+  components: { SceneryInfo, SceneryTimetable, SceneryHistory, ActionButton },
 
   setup() {
     const route = useRoute();
