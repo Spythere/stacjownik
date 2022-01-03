@@ -5,8 +5,8 @@
     "journal": "DZIENNIK",
     "loading": "Pobieranie danych...",
     "support": "Wspomóż projekt",
-    "error": "An error occured while loading data!",
-    "no-result": "No results for current search!"
+    "error": "Wystąpił problem z załadowaniem danych!",
+    "no-result": "Brak wyników o podanych kryteriach!"
   },
   "desc": {
     "control-type": "Sterowanie: ",
