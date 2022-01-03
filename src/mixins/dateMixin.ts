@@ -2,8 +2,8 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   methods: {
-    localeDate(dateString: string) {
-        return new Date(dateString).toLocaleDateString("pl-PL", { 
+    localeDate(dateString: string, locale: string) {
+      return new Date(dateString).toLocaleDateString(locale == 'pl' ? 'pl-PL' : 'en-GB', { 
             weekday: "long",
             day: "numeric", 
             month: "2-digit", 

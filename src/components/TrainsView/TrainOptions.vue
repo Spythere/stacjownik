@@ -12,7 +12,7 @@
         <input
           class="search-input"
           v-model="searchedTrain"
-          :placeholder="$t('trains.search-no')"
+          :placeholder="$t('trains.search-train')"
         />
 
         <img

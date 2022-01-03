@@ -1,6 +1,6 @@
 <template>
   <div class="scenery-history">
-    <!-- <div>HISTORIA DYŻURÓW</div>
+    <h2>HISTORIA DYŻURÓW</h2>
 
     <ul>
       <li v-for="(dispatcher, i) in dispatcherHistory" :key="i">
@@ -8,7 +8,7 @@
         &nbsp;
         {{ timestampToString(dispatcher.dispatcherFrom) }}
       </li>
-    </ul> -->
+    </ul>
   </div>
 </template>
 
@@ -64,7 +64,7 @@ export default defineComponent({
 
       if (!apiResult.errorMessage) this.dispatcherHistory = apiResult.result.dispatcherHistory;
     } catch (error) {
-      console.error(error);
+      console.error(error); 
     }
   },
 

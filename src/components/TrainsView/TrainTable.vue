@@ -454,7 +454,7 @@ img.train-image {
   grid-template-rows: 1fr;
 
   @include smallScreen() {
-    font-size: 1.3em;
+    font-size: 1.2em;
   }
 }
 

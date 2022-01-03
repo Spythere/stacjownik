@@ -21,9 +21,9 @@ const routes: Array<RouteRecordRaw> = [
     props: true
   },
   {
-    path: "/history",
-    name: "HistoryView",
-    component: () => import("@/views/HistoryView.vue"),
+    path: "/journal",
+    name: "TimetableHistoryView",
+    component: () => import("@/views/TimetableHistoryView.vue"),
   },
   {
     path: '/:catchAll(.*)',

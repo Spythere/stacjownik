@@ -1,11 +1,5 @@
 <template>
   <div class="app">
-    <!-- <UpdateModal
-      :currentVersion="VERSION"
-      @toggleUpdateModal="toggleUpdateModal"
-      v-if="updateModalVisible"
-    /> -->
-
     <div class="app_container">
       <!-- <div class="wip-alert">
         <img class="icon-error" :src="iconError" alt="error" />
@@ -16,9 +10,7 @@
         <div class="header_body">
           <span class="header_brand">
             <span>
-              <span>
-                <span>S</span>
-              </span>
+              <span>S</span>
               <span>tacj</span>
               <span class="train-logo">
                 <img class="logo-image" src="@/assets/stacjownik-logo.svg" alt="stacjownik logo" />
@@ -66,6 +58,8 @@
             <router-link class="route" active-class="route-active" to="/" exact>{{ $t('app.sceneries') }} </router-link>
             /
             <router-link class="route" active-class="route-active" to="/trains">{{ $t('app.trains') }} </router-link>
+            /
+            <router-link class="route" active-class="route-active" to="/journal">{{ $t('app.journal') }} </router-link>
           </span>
         </div>
       </header>
@@ -101,7 +95,6 @@ import { StoreData } from './scripts/interfaces/StoreData';
 import { useStore } from './store';
 
 import packageInfo from '.././package.json';
-import axios from 'axios';
 
 export default defineComponent({
   components: {
@@ -175,7 +168,6 @@ export default defineComponent({
     },
 
     updateToNewestVersion() {
-      //   to do
       if (!StorageManager.isRegistered('unavailable-status')) {
         StorageManager.setBooleanValue('unavailable-status', true);
         StorageManager.setBooleanValue('ending-status', true);

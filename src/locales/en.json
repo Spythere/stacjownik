@@ -4,7 +4,9 @@
     "trains": "TRAINS",
     "journal": "JOURNAL",
     "loading": "Loading data...",
-    "support": "Support the project"
+    "support": "Support the project",
+    "error": "An error occured while loading data!",
+    "no-result": "No results for current search!"
   },
   "desc": {
     "control-type": "Control type: ",
@@ -121,8 +123,8 @@
     "option-length": "length",
     "option-distance": "distance",
     "option-timetable": "train no.",
-    "search-no": "Search for train no...",
-    "search-driver": "Search for driver...",
+    "search-train": "Train no.",
+    "search-driver": "Driver name",
     "detailed-timetable": "Detailed timetable for train no. ",
     "via-title": "Via: ",
     "no-timetable": "no current timetable",
@@ -160,8 +162,19 @@
     "begins": "BEGINS HERE",
     "terminates": "TERMINATES\nHERE"
   },
-  "history": {
-    "search-train": "Search for train no.",
-    "search-driver": "Search for driver name..."
+   "history": {
+    "title": "TIMETABLE JOURNAL",
+    "search": "Search",
+    "search-train": "Train no.",
+    "search-driver": "Driver name",
+    "driver-name": "Driver:",
+    "route-length": "Route length:",
+    "station-count": "Stations:",
+    "begins-at": "Begins at:",
+    "terminates-at": "Terminates at:",
+    "terminates-at-actual": "Terminates at (actual time):",
+    "timetable-active": "ACTIVE",
+    "timetable-fulfilled": "FULFILLED",
+    "timetable-abandoned": "ABANDONED"
   }
 }

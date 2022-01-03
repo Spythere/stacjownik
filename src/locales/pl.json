@@ -4,7 +4,9 @@
     "trains": "POCIĄGI",
     "journal": "DZIENNIK",
     "loading": "Pobieranie danych...",
-    "support": "Wspomóż projekt"
+    "support": "Wspomóż projekt",
+    "error": "An error occured while loading data!",
+    "no-result": "No results for current search!"
   },
   "desc": {
     "control-type": "Sterowanie: ",
@@ -121,8 +123,8 @@
     "option-length": "długość",
     "option-distance": "kilometraż",
     "option-timetable": "numer pociągu",
-    "search-no": "Szukaj nr pociągu",
-    "search-driver": "Szukaj maszynisty",
+    "search-train": "Numer pociągu",
+    "search-driver": "Nick maszynisty",
     "detailed-timetable": "Szczegółowy rozkład jazdy pociągu ",
     "via-title": "Przez: ",
     "no-timetable": "brak rozkładu jazdy",
@@ -161,7 +163,18 @@
     "terminates": "KOŃCZY BIEG"
   },
   "history": {
-    "search-train": "Szukaj nr pociągu",
-    "search-driver": "Szukaj maszynisty"
+    "title": "DZIENNIK ROZKŁADÓW JAZDY",
+    "search": "Szukaj",
+    "search-train": "Numer pociągu",
+    "search-driver": "Nick maszynisty",
+    "driver-name": "Maszynista:",
+    "route-length": "Kilometraż:",
+    "station-count": "Stacje:",
+    "begins-at": "Rozpoczęcie:",
+    "terminates-at": "Zakończenie (planowe):",
+    "terminates-at-actual": "Zakończenie (rzeczywiste):",
+    "timetable-active": "AKTYWNY",
+    "timetable-fulfilled": "WYPEŁNIONY",
+    "timetable-abandoned": "PORZUCONY"
   }
 }

@@ -19,7 +19,7 @@
         :timetableOnly="timetableOnly"
       />
 
-      <SceneryHistory :name="stationInfo.name" />
+      <!-- <SceneryHistory :name="stationInfo.name" /> -->
     </div>
   </div>
 </template>
