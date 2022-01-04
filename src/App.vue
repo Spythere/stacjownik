@@ -79,7 +79,7 @@
         <a href="https://td2.info.pl/profile/?u=20777" target="_blank">
           Spythere
         </a>
-        2021 | v{{ VERSION }}
+        {{ new Date().getUTCFullYear() }} | v{{ VERSION }}
       </footer>
     </div>
   </div>
@@ -151,7 +151,7 @@ export default defineComponent({
 
     this.updateModalVisible = this.hasReleaseNotes && !StorageManager.getBooleanValue('version_notes_read');
 
-    this.updateToNewestVersion();  
+    this.updateToNewestVersion();
   },
 
   methods: {
