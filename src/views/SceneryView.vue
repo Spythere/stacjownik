@@ -12,13 +12,16 @@
     </div>
 
     <div class="scenery-wrapper" v-if="stationInfo">
+      <!-- <button class="history-btn btn btn--image">
+          <img :src="icons.history" alt="History icon">
+      </button> -->
+      
       <SceneryInfo :station="stationInfo" :timetableOnly="timetableOnly" />
 
       <SceneryTimetable
         :station="stationInfo"
         :timetableOnly="timetableOnly"
       />
-
       <!-- <SceneryHistory :name="stationInfo.name" /> -->
     </div>
   </div>
@@ -41,6 +44,12 @@ import { useRoute } from "vue-router";
 
 export default defineComponent({
   components: { SceneryInfo, SceneryTimetable, SceneryHistory, ActionButton },
+
+  data: () => ({
+    icons: {
+      history: require("@/assets/icon-history.svg")
+    }
+  }),
 
   setup() {
     const route = useRoute();
@@ -110,6 +119,8 @@ $sceneryBgCol: #333;
   }
 
   &-wrapper {
+    position: relative;
+
     width: 75%;
     max-width: 950px;
 
@@ -125,5 +136,19 @@ $sceneryBgCol: #333;
 
     text-align: center;
   }
+}
+
+button.history-btn {
+  position: absolute;
+  top: 0.5em;
+  right: 0.5em;
+
+  padding: 0.25em;
+
+  img {
+    width: 2em;
+  }
+
+
 }
 </style>

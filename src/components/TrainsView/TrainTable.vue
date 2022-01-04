@@ -1,18 +1,15 @@
 <template>
   <div class="train-table">
     <div class="traffic-warning" v-if="distanceLimitExceeded">
-      {{ $t("trains.distance-exceeded") }}
+      {{ $t('trains.distance-exceeded') }}
     </div>
 
     <div class="no-trains" v-if="computedTrains.length == 0 && timetableLoaded">
-      {{ $t("trains.no-trains") }}
+      {{ $t('trains.no-trains') }}
     </div>
 
-    <div
-      class="no-trains"
-      v-if="computedTrains.length == 0 && !timetableLoaded"
-    >
-      {{ $t("trains.loading") }}
+    <div class="no-trains" v-if="computedTrains.length == 0 && !timetableLoaded">
+      {{ $t('trains.loading') }}
     </div>
 
     <ul class="train-list">
@@ -20,6 +17,12 @@
         class="train-row"
         v-for="(train, i) in computedTrains"
         :key="i"
+        tabindex="0"
+        @keydown="
+          (e) => {
+            if (e.keyCode == 13) changeScheduleShowState(train.timetableData?.timetableId);
+          }
+        "
         :ref="
           (el) => {
             if (!train.timetableData) return;
@@ -27,17 +30,14 @@
           }
         "
       >
-        <div
-          class="wrapper"
-          @click="changeScheduleShowState(train.timetableData?.timetableId)"
-        >
+        <div class="wrapper" @click="changeScheduleShowState(train.timetableData?.timetableId)">
           <span class="info">
             <div class="info_timetable" v-if="!train.timetableData">
               <div class="timetable_general">
                 <span>
                   {{ train.trainNo }} |
                   <span style="color: gold">
-                    {{ $t("trains.no-timetable") }}
+                    {{ $t('trains.no-timetable') }}
                   </span>
                 </span>
               </div>
@@ -58,9 +58,7 @@
                   <span>
                     <strong>{{ train.timetableData.category }}</strong>
                     {{ train.trainNo }} |
-                    <span style="color: gold">
-                      {{ train.timetableData.routeDistance }} km
-                    </span>
+                    <span style="color: gold"> {{ train.timetableData.routeDistance }} km </span>
                   </span>
                 </span>
 
@@ -68,33 +66,22 @@
                   <span class="activator">
                     SRJP
 
-                    <img
-                      :src="
-                        showedSchedule == train.timetableData.timetableId
-                          ? ascSVG
-                          : descSVG
-                      "
-                      alt="arrow-icon"
-                    />
+                    <img :src="showedSchedule == train.timetableData.timetableId ? ascSVG : descSVG" alt="arrow-icon" />
                   </span>
 
-                  <span class="content">
-                    {{ $t("trains.detailed-timetable") }} {{ train.trainNo }}
-                  </span>
+                  <span class="content"> {{ $t('trains.detailed-timetable') }} {{ train.trainNo }} </span>
                 </span>
               </div>
 
               <div class="timetable_route">
-                {{ train.timetableData.route.replace("|", " - ") }}
+                {{ train.timetableData.route.replace('|', ' - ') }}
               </div>
 
               <div class="timetable_stops">
                 <span v-if="train.timetableData.followingStops.length > 2">
-                  {{ $t("trains.via-title") }}
+                  {{ $t('trains.via-title') }}
 
-                  <span
-                    v-html="displayStopList(train.timetableData.followingStops)"
-                  ></span>
+                  <span v-html="displayStopList(train.timetableData.followingStops)"></span>
                 </span>
               </div>
             </div>
@@ -103,10 +90,7 @@
           <span class="driver">
             <div class="driver-info">
               <span class="driver-name">
-                <a
-                  :href="'https://td2.info.pl/profile/?u=' + train.driverId"
-                  target="_blank"
-                >
+                <a :href="'https://td2.info.pl/profile/?u=' + train.driverId" target="_blank">
                   {{ train.driverName }}
                 </a>
               </span>
@@ -119,54 +103,37 @@
             <span class="driver-loco">
               <div class="driver-cars">
                 <span v-if="train.cars.length > 0">
-                  {{ $t("trains.cars") }}:
+                  {{ $t('trains.cars') }}:
                   <span class="count">{{ train.cars.length }}</span>
                 </span>
 
                 <span v-else>{{ displayLocoInfo(train.locoType) }}</span>
               </div>
 
-              <img
-                class="train-image"
-                :src="train.locoURL"
-                @error="onImageError"
-              />
+              <img class="train-image" :src="train.locoURL" @error="onImageError" />
             </span>
           </span>
 
           <span class="stats">
             <div class="stats-main">
               <span v-for="stat in stats.main" :key="stat.name">
-                <img
-                  :src="require(`@/assets/icon-${stat.name}.svg`)"
-                  :alt="stat.name"
-                />
-                {{
-                  `${~~(train[stat.name] * (stat.multiplier || 1))}${stat.unit}`
-                }}
+                <img :src="require(`@/assets/icon-${stat.name}.svg`)" :alt="stat.name" />
+                {{ `${~~(train[stat.name] * (stat.multiplier || 1))}${stat.unit}` }}
               </span>
             </div>
 
             <div class="stats-position">
               <span v-for="stat in stats.position" :key="stat.name">
                 <div>
-                  <img
-                    :src="require(`@/assets/icon-${stat.name}.svg`)"
-                    :alt="stat.name"
-                  />
+                  <img :src="require(`@/assets/icon-${stat.name}.svg`)" :alt="stat.name" />
                 </div>
-                {{ (train[stat.prop] || "---") + (stat.unit || "") }}
+                {{ (train[stat.prop] || '---') + (stat.unit || '') }}
               </span>
             </div>
           </span>
         </div>
 
-        <transition
-          name="unfold"
-          @enter="enter"
-          @afterEnter="afterEnter"
-          @leave="leave"
-        >
+        <transition name="unfold" @enter="enter" @afterEnter="afterEnter" @leave="leave">
           <TrainSchedule
             v-if="showedSchedule === train.timetableData?.timetableId"
             :followingStops="train.timetableData?.followingStops"
@@ -179,20 +146,14 @@
 </template>
 
 <script lang="ts">
-import Train from "@/scripts/interfaces/Train";
-import TrainStop from "@/scripts/interfaces/TrainStop";
+import Train from '@/scripts/interfaces/Train';
+import TrainStop from '@/scripts/interfaces/TrainStop';
 
-import TrainSchedule from "@/components/TrainsView/TrainSchedule.vue";
-import { DataStatus } from "@/scripts/enums/DataStatus";
-import {
-  computed,
-  ComputedRef,
-  defineComponent,
-  Ref,
-  ref,
-} from "@vue/runtime-core";
-import { useStore } from "@/store";
-import { GETTERS } from "@/constants/storeConstants";
+import TrainSchedule from '@/components/TrainsView/TrainSchedule.vue';
+import { DataStatus } from '@/scripts/enums/DataStatus';
+import { computed, ComputedRef, defineComponent, Ref, ref } from '@vue/runtime-core';
+import { useStore } from '@/store';
+import { GETTERS } from '@/constants/storeConstants';
 
 export default defineComponent({
   components: {
@@ -213,45 +174,45 @@ export default defineComponent({
 
   data: () => ({
     showedSchedule: 0,
-    defaultLocoImage: require("@/assets/unknown.png"),
+    defaultLocoImage: require('@/assets/unknown.png'),
 
-    ascSVG: require("@/assets/icon-arrow-asc.svg"),
-    descSVG: require("@/assets/icon-arrow-desc.svg"),
+    ascSVG: require('@/assets/icon-arrow-asc.svg'),
+    descSVG: require('@/assets/icon-arrow-desc.svg'),
 
     stats: {
       main: [
         {
-          name: "mass",
-          unit: "t",
+          name: 'mass',
+          unit: 't',
           multiplier: 0.001,
         },
         {
-          name: "speed",
-          unit: "km/h",
+          name: 'speed',
+          unit: 'km/h',
         },
         {
-          name: "length",
-          unit: "m",
+          name: 'length',
+          unit: 'm',
         },
       ],
 
       position: [
         {
-          name: "scenery",
-          prop: "currentStationName",
+          name: 'scenery',
+          prop: 'currentStationName',
         },
         {
-          name: "route",
-          prop: "connectedTrack",
+          name: 'route',
+          prop: 'connectedTrack',
         },
         {
-          name: "signal",
-          prop: "signal",
+          name: 'signal',
+          prop: 'signal',
         },
         {
-          name: "distance",
-          prop: "distance",
-          unit: "m",
+          name: 'distance',
+          prop: 'distance',
+          unit: 'm',
         },
       ],
     },
@@ -261,14 +222,10 @@ export default defineComponent({
     const store = useStore();
     const elList: Ref<(HTMLElement | null)[]> = ref([]);
 
-    const timetableDataStatus: ComputedRef<DataStatus> = computed(
-      () => store.getters[GETTERS.timetableDataStatus]
-    );
+    const timetableDataStatus: ComputedRef<DataStatus> = computed(() => store.getters[GETTERS.timetableDataStatus]);
 
     const queryTimetable = computed(() => {
-      const q = props.computedTrains.find(
-        (train) => train.trainNo === Number(props.queryTrain)
-      )?.timetableData;
+      const q = props.computedTrains.find((train) => train.trainNo === Number(props.queryTrain))?.timetableData;
 
       return q;
     });
@@ -276,18 +233,12 @@ export default defineComponent({
     return {
       elList,
       queryTimetable,
-      timetableLoaded: computed(
-        () => timetableDataStatus.value === DataStatus.Loaded
-      ),
-      timetableError: computed(
-        () => timetableDataStatus.value === DataStatus.Error
-      ),
+      timetableLoaded: computed(() => timetableDataStatus.value === DataStatus.Loaded),
+      timetableError: computed(() => timetableDataStatus.value === DataStatus.Error),
       distanceLimitExceeded: computed(
         () =>
-          props.computedTrains.findIndex(
-            ({ timetableData }) =>
-              timetableData && timetableData.routeDistance > 200
-          ) != -1
+          props.computedTrains.findIndex(({ timetableData }) => timetableData && timetableData.routeDistance > 200) !=
+          -1
       ),
     };
   },
@@ -296,7 +247,7 @@ export default defineComponent({
     enter(el: HTMLElement) {
       const maxHeight = getComputedStyle(el).height;
 
-      el.style.height = "0px";
+      el.style.height = '0px';
 
       getComputedStyle(el);
 
@@ -306,21 +257,20 @@ export default defineComponent({
     },
 
     afterEnter(el: HTMLElement) {
-      el.style.height = "auto";
+      el.style.height = 'auto';
     },
 
     leave(el: HTMLElement) {
       el.style.height = getComputedStyle(el).height;
 
       setTimeout(() => {
-        el.style.height = "0px";
+        el.style.height = '0px';
       }, 10);
     },
 
     focusOnTrain(trainNoStr: string) {
-      const timetableId = this.computedTrains.find(
-        (train) => train.trainNo == Number(trainNoStr)
-      )?.timetableData?.timetableId;
+      const timetableId = this.computedTrains.find((train) => train.trainNo == Number(trainNoStr))?.timetableData
+        ?.timetableId;
 
       if (!timetableId) return;
 
@@ -330,15 +280,14 @@ export default defineComponent({
     changeScheduleShowState(timetableId: number | undefined) {
       if (!timetableId || timetableId < 0) return;
 
-      this.showedSchedule =
-        this.showedSchedule == timetableId ? 0 : timetableId;
+      this.showedSchedule = this.showedSchedule == timetableId ? 0 : timetableId;
 
       setTimeout(() => {
         const currentEl = this.elList[timetableId];
 
         currentEl?.scrollIntoView({
-          behavior: "smooth",
-          block: this.showedSchedule == 0 ? "nearest" : "center",
+          behavior: 'smooth',
+          block: this.showedSchedule == 0 ? 'nearest' : 'center',
         });
       }, 200);
     },
@@ -350,39 +299,31 @@ export default defineComponent({
     },
 
     displayStopList(stops: TrainStop[]): string | undefined {
-      if (!stops) return "";
+      if (!stops) return '';
 
       return stops
         .reduce((acc: string[], stop: TrainStop, i: number) => {
-          if (stop.stopType.includes("ph"))
-            acc.push(
-              `<strong style='color:${
-                stop.confirmed ? "springgreen" : "white"
-              }'>${stop.stopName}</strong>`
-            );
+          if (stop.stopType.includes('ph'))
+            acc.push(`<strong style='color:${stop.confirmed ? 'springgreen' : 'white'}'>${stop.stopName}</strong>`);
           else if (
             i > 0 &&
             i < stops.length - 1 &&
-            !stop.stopNameRAW.includes("po.") &&
-            !stop.stopNameRAW.includes("SBL")
+            !stop.stopNameRAW.includes('po.') &&
+            !stop.stopNameRAW.includes('SBL')
           )
-            acc.push(
-              `<span style='color:${
-                stop.confirmed ? "springgreen" : "lightgray"
-              }'>${stop.stopName}</span>`
-            );
+            acc.push(`<span style='color:${stop.confirmed ? 'springgreen' : 'lightgray'}'>${stop.stopName}</span>`);
           return acc;
         }, [])
-        .join(" > ");
+        .join(' > ');
     },
 
     displayLocoInfo(locoType: string) {
-      if (locoType.includes("EN")) return `${this.$t("trains.EZT")}`;
-      if (locoType.includes("SN")) return `${this.$t("trains.SZT")}`;
-      if (locoType.startsWith("E")) return `${this.$t("trains.loco-electric")}`;
-      if (locoType.startsWith("S")) return `${this.$t("trains.loco-diesel")}`;
+      if (locoType.includes('EN')) return `${this.$t('trains.EZT')}`;
+      if (locoType.includes('SN')) return `${this.$t('trains.SZT')}`;
+      if (locoType.startsWith('E')) return `${this.$t('trains.loco-electric')}`;
+      if (locoType.startsWith('S')) return `${this.$t('trains.loco-diesel')}`;
 
-      return "";
+      return '';
     },
   },
 
@@ -393,8 +334,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import "../../styles/responsive.scss";
-@import "../../styles/user_badge.scss";
+@import '../../styles/responsive.scss';
+@import '../../styles/user_badge.scss';
 
 .unfold {
   &-leave-active,

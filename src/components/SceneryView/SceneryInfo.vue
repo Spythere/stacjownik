@@ -139,7 +139,9 @@
             class="user"
             :class="train.stopStatus"
             :key="train.trainNo + i"
+            tabindex="0"
             @click="() => navigateToTrain(train.trainNo)"
+            @keydown="(e) => { if(e.keyCode == 13) navigateToTrain(train.trainNo) }"
           >
             <span class="user_train">{{ train.trainNo }}</span>
             <span class="user_name">{{ train.driverName }}</span>
@@ -264,7 +266,7 @@ h3 {
 
 .info {
   &-header {
-    padding: 1em;
+    padding: 2em 1em;
 
     & > .scenery-name {
       font-weight: bold;
@@ -273,6 +275,10 @@ h3 {
       font-size: 3.5em;
 
       text-transform: uppercase;
+
+      @include smallScreen() {
+        font-size: 2.75em; 
+      }
     }
 
     & > .scenery-hash {

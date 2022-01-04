@@ -1,32 +1,18 @@
 <template>
   <div class="scenery-timetable">
     <h3 class="timetable-header">
-      <span>{{ $t("scenery.timetables") }}</span>
+      <span>{{ $t('scenery.timetables') }}</span>
 
-      <a
-        :href="currentURL + '&timetable_only=1'"
-        v-if="!timetableOnly"
-        target="_blank"
-      >
-        <img
-          :src="viewIcon"
-          alt="icon-view"
-          :title="$t('timetables.timetable-only')"
-        />
+      <a :href="currentURL + '&timetable_only=1'" v-if="!timetableOnly" target="_blank" class="timetable-only">
+        <img :src="viewIcon" alt="icon-view" :title="$t('timetables.timetable-only')" />
       </a>
     </h3>
 
-    <div
-      class="checkpoints"
-      v-if="
-        station &&
-        station.generalInfo?.checkpoints
-      "
-    >
+    <div class="checkpoints" v-if="station && station.generalInfo?.checkpoints">
       <button
         v-for="cp in station.generalInfo.checkpoints"
         :key="cp.checkpointName"
-        class="checkpoint_item btn--text"
+        class="checkpoint_item btn btn--text"
         :class="{ current: selectedCheckpoint === cp.checkpointName }"
         @click="selectCheckpoint(cp)"
       >
@@ -35,14 +21,11 @@
     </div>
 
     <span class="timetable-item loading" v-if="timetableDataStatus == 0 && computedScheduledTrains.length == 0">
-      {{ $t("app.loading") }}
+      {{ $t('app.loading') }}
     </span>
 
-    <span
-      class="timetable-item empty"
-      v-else-if="computedScheduledTrains.length == 0"
-    >
-      {{ $t("scenery.no-timetables") }}
+    <span class="timetable-item empty" v-else-if="computedScheduledTrains.length == 0">
+      {{ $t('scenery.no-timetables') }}
     </span>
 
     <transition-group name="list-anim">
@@ -50,45 +33,32 @@
         class="timetable-item"
         v-for="(scheduledTrain, i) in computedScheduledTrains"
         :key="i + 1"
+        tabindex="0"
+        @click="navigateToTrain(scheduledTrain.trainNo)"
+        @keydown="
+          (e) => {
+            if (e.keyCode == 13) navigateToTrain(scheduledTrain.trainNo);
+          }
+        "
       >
         <span class="timetable-general">
           <span class="general-info">
-            <router-link
-              :to="{
-                name: 'TrainsView',
-                query: {
-                  train: scheduledTrain.trainNo.toString(),
-                },
-              }"
-            >
-              <span>
-                <strong>{{ scheduledTrain.category }}</strong>
-                {{ scheduledTrain.trainNo }}
-              </span>
-            </router-link>
-            |
             <span>
-              <a
-                :href="
-                  'https://td2.info.pl/profile/?u=' + scheduledTrain.driverId
-                "
-                target="_blank"
-                >{{ scheduledTrain.driverName }}</a
-              >
+              <strong>{{ scheduledTrain.category }}</strong>
+              {{ scheduledTrain.trainNo }}
+            </span>
+            |
+            <span style="color: white">
+              {{ scheduledTrain.driverName }}
             </span>
 
             <div class="info-route">
-              <strong
-                >{{ scheduledTrain.beginsAt }} -
-                {{ scheduledTrain.terminatesAt }}</strong
-              >
+              <strong>{{ scheduledTrain.beginsAt }} - {{ scheduledTrain.terminatesAt }}</strong>
             </div>
           </span>
 
           <span class="general-status">
-            <span :class="scheduledTrain.stopStatus"
-              >{{ $t(`timetables.${scheduledTrain.stopStatus}`) }}
-            </span>
+            <span :class="scheduledTrain.stopStatus">{{ $t(`timetables.${scheduledTrain.stopStatus}`) }} </span>
           </span>
         </span>
 
@@ -101,9 +71,7 @@
             >
             </span>
             <span class="arrival-time" v-else>
-              {{ scheduledTrain.stopInfo.arrivalTimeString }} ({{
-                scheduledTrain.stopInfo.arrivalDelay
-              }})
+              {{ scheduledTrain.stopInfo.arrivalTimeString }} ({{ scheduledTrain.stopInfo.arrivalDelay }})
             </span>
           </span>
 
@@ -122,9 +90,7 @@
             >
             </span>
             <span class="departure-time" v-else>
-              {{ scheduledTrain.stopInfo.departureTimeString }} ({{
-                scheduledTrain.stopInfo.departureDelay
-              }})
+              {{ scheduledTrain.stopInfo.departureTimeString }} ({{ scheduledTrain.stopInfo.departureDelay }})
             </span>
           </span>
         </span>
@@ -134,14 +100,14 @@
 </template>
 
 <script lang="ts">
-import Station from "@/scripts/interfaces/Station";
-import SelectBox from "../Global/SelectBox.vue";
-import { computed, defineComponent, ref } from "@vue/runtime-core";
-import { useRoute } from "vue-router";
-import { useStore } from "@/store";
-import { GETTERS } from "@/constants/storeConstants";
-import { DataStatus } from "@/scripts/enums/DataStatus";
-import { ComputedRef } from "vue";
+import Station from '@/scripts/interfaces/Station';
+import SelectBox from '../Global/SelectBox.vue';
+import { computed, defineComponent, ref } from '@vue/runtime-core';
+import { useRoute } from 'vue-router';
+import { useStore } from '@/store';
+import { GETTERS } from '@/constants/storeConstants';
+import { DataStatus } from '@/scripts/enums/DataStatus';
+import { ComputedRef } from 'vue';
 
 export default defineComponent({
   components: { SelectBox },
@@ -156,7 +122,7 @@ export default defineComponent({
   },
 
   data: () => ({
-    viewIcon: require("@/assets/icon-view.svg"),
+    viewIcon: require('@/assets/icon-view.svg'),
     listOpen: false,
   }),
 
@@ -166,31 +132,28 @@ export default defineComponent({
 
     const store = useStore();
 
-    const timetableDataStatus = computed(() => store.getters[GETTERS.timetableDataStatus]) as ComputedRef<DataStatus>
+    const timetableDataStatus = computed(() => store.getters[GETTERS.timetableDataStatus]) as ComputedRef<DataStatus>;
 
-    const selectedCheckpoint = ref("");
+    const selectedCheckpoint = ref('');
 
     const computedScheduledTrains = computed(() => {
-      if (!props.station) return [];  
+      if (!props.station) return [];
 
       let scheduledTrains =
-        props.station.generalInfo?.checkpoints.find(
-          (cp) => cp.checkpointName === selectedCheckpoint.value
-        )?.scheduledTrains || props.station.onlineInfo?.scheduledTrains || [];
+        props.station.generalInfo?.checkpoints.find((cp) => cp.checkpointName === selectedCheckpoint.value)
+          ?.scheduledTrains ||
+        props.station.onlineInfo?.scheduledTrains ||
+        [];
 
       return (
         scheduledTrains?.sort((a, b) => {
           if (a.stopStatusID > b.stopStatusID) return 1;
           else if (a.stopStatusID < b.stopStatusID) return -1;
 
-          if (a.stopInfo.arrivalTimestamp > b.stopInfo.arrivalTimestamp)
-            return 1;
-          else if (a.stopInfo.arrivalTimestamp < b.stopInfo.arrivalTimestamp)
-            return -1;
+          if (a.stopInfo.arrivalTimestamp > b.stopInfo.arrivalTimestamp) return 1;
+          else if (a.stopInfo.arrivalTimestamp < b.stopInfo.arrivalTimestamp) return -1;
 
-          return a.stopInfo.departureTimestamp > b.stopInfo.departureTimestamp
-            ? 1
-            : -1;
+          return a.stopInfo.departureTimestamp > b.stopInfo.departureTimestamp ? 1 : -1;
         }) || []
       );
     });
@@ -199,24 +162,31 @@ export default defineComponent({
       currentURL,
       selectedCheckpoint,
       computedScheduledTrains,
-      timetableDataStatus
+      timetableDataStatus,
     };
   },
 
   methods: {
     loadSelectedOption() {
       if (!this.station) return;
-      if(!this.station.generalInfo) return;
-      if(!this.station.generalInfo.checkpoints) return;
+      if (!this.station.generalInfo) return;
+      if (!this.station.generalInfo.checkpoints) return;
       if (this.station.generalInfo.checkpoints.length == 0) return;
 
-      if (this.selectedCheckpoint != "") return;
+      if (this.selectedCheckpoint != '') return;
 
       this.selectedCheckpoint = this.station.generalInfo.checkpoints[0].checkpointName;
     },
 
     selectCheckpoint(cp: { checkpointName: string }) {
       this.selectedCheckpoint = cp.checkpointName;
+    },
+
+    navigateToTrain(trainNo: number) {
+      this.$router.push({
+        name: 'TrainsView',
+        query: { train: trainNo.toString() },
+      });
     },
   },
 
@@ -231,8 +201,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import "../../styles/responsive.scss";
-@import "../../styles/variables.scss";
+@import '../../styles/responsive.scss';
+@import '../../styles/variables.scss';
 
 h3 {
   margin: 0.5em 0;
@@ -243,10 +213,17 @@ h3 {
   align-items: center;
 
   font-size: 1.5em;
+}
+
+.timetable-only {
+  margin-left: 0.5em;
 
   img {
     width: 1.1em;
-    margin-left: 0.5em;
+  }
+
+  &:focus {
+    outline: 1px solid white;
   }
 }
 
@@ -365,6 +342,8 @@ h3 {
 
     background: $bgLigtherCol;
 
+    cursor: pointer;
+
     @include smallScreen() {
       display: flex;
       flex-direction: column;
@@ -428,7 +407,7 @@ h3 {
 
     &:not(:last-child)::after {
       margin: 0 0.5em;
-      content: "•";
+      content: '•';
       color: white;
     }
   }
@@ -446,7 +425,7 @@ h3 {
   transform: rotate(-45deg);
 
   &::before {
-    content: "";
+    content: '';
     position: absolute;
     display: block;
     width: 55px;
