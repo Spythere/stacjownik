@@ -4,7 +4,7 @@
       class="scenery-offline"
       v-if="!stationInfo && isDataLoaded && isComponentVisible"
     >
-      {{ $t("scenery.no-scenery") }}
+      <div>{{ $t("scenery.no-scenery") }}</div>
 
       <action-button>
         <router-link to="/">{{ $t("scenery.return-btn") }}</router-link>
