@@ -35,11 +35,7 @@
         :key="i + 1"
         tabindex="0"
         @click="navigateToTrain(scheduledTrain.trainNo)"
-        @keydown="
-          (e) => {
-            if (e.keyCode == 13) navigateToTrain(scheduledTrain.trainNo);
-          }
-        "
+        @keydown.enter="navigateToTrain(scheduledTrain.trainNo)"
       >
         <span class="timetable-general">
           <span class="general-info">

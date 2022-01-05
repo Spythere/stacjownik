@@ -38,7 +38,7 @@
             v-for="(station, i) in stations"
             :key="i + station.name"
             @click="() => setScenery(station.name)"
-            @keydown="(e) => { if(e.keyCode == 13) setScenery(station.name) }"
+            @keydown.enter="setScenery(station.name)"
             tabindex="0"
           >
             <td

@@ -18,17 +18,9 @@
         v-for="(train, i) in computedTrains"
         :key="i"
         tabindex="0"
-        @keydown="
-          (e) => {
-            if (e.keyCode == 13) changeScheduleShowState(train.timetableData?.timetableId);
-          }
-        "
-        :ref="
-          (el) => {
-            if (!train.timetableData) return;
-            elList[train.timetableData.timetableId] = el;
-          }
-        "
+        @keydown.enter="changeScheduleShowState(train.timetableData?.timetableId)"
+        
+        :ref="el => registerReference(el, train.timetableData?.timetableId)"
       >
         <div class="wrapper" @click="changeScheduleShowState(train.timetableData?.timetableId)">
           <span class="info">
@@ -268,6 +260,10 @@ export default defineComponent({
       }, 10);
     },
 
+    registerReference(el: HTMLElement, timetableId: number | undefined) {
+      if(timetableId) this.elList[timetableId] = el;      
+    },
+
     focusOnTrain(trainNoStr: string) {
       const timetableId = this.computedTrains.find((train) => train.trainNo == Number(trainNoStr))?.timetableData
         ?.timetableId;
@@ -335,7 +331,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '../../styles/responsive.scss';
-@import '../../styles/user_badge.scss';
 
 .unfold {
   &-leave-active,
