@@ -25,14 +25,6 @@
                   'on-time': stop.arrivalDelay == 0 && stop.confirmed,
                 }"
               >
-                <!-- {{
-                  stylizeTime(
-                    stop.confirmed ? stop.arrivalRealTimeString || '' : stop.arrivalTimeString || '',
-                    stop.arrivalDelay,
-                    stop.confirmed
-                  )
-                }} -->
-
                 <span v-if="stop.arrivalDelay != 0 && stop.confirmed">
                   <s>{{ stop.arrivalTimeString }}</s>
                   {{ stop.arrivalRealTimeString }}
@@ -124,13 +116,6 @@ export default defineComponent({
   },
 
   methods: {
-    stylizeTime(timeString: string, delay: number, confirmed: boolean) {
-      return timeString;
-      // (delay != 0 && confirmed
-      //   ? " (" + (delay > 0 ? "+" : "") + delay.toString() + ")"
-      //   : "")
-    },
-
     toggleShowState() {
       this.$emit('click');
     },
@@ -190,11 +175,8 @@ $stopNameClr: #22a8d1;
   z-index: 10;
 
   top: -1px;
-  /* left: -1rem; */
   left: -17px;
 
-  /* transform: translate(-1px, -1px); */
-  /* transform: translateX(-4spx, -1px); */
 
   height: 100%;
   width: 3px;
