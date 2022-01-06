@@ -4,19 +4,19 @@
       {{ $t('trains.distance-exceeded') }}
     </div>
 
-    <div class="no-trains" v-if="computedTrains.length == 0 && timetableLoaded">
+    <div class="table-info no-trains" v-if="computedTrains.length == 0 && timetableLoaded">
       {{ $t('trains.no-trains') }}
     </div>
 
-    <div class="no-trains" v-if="computedTrains.length == 0 && !timetableLoaded">
+    <div class="table-info loading" v-if="computedTrains.length == 0 && !timetableLoaded">
       {{ $t('trains.loading') }}
     </div>
 
     <ul class="train-list">
       <li
         class="train-row"
-        v-for="(train, i) in computedTrains"
-        :key="i"
+        v-for="(train) in computedTrains.filter((_, i) => i < 10)"
+        :key="train.trainNo + train.driverId"
         tabindex="0"
         @keydown.enter="changeScheduleShowState(train.timetableData?.timetableId)"
         :ref="(el) => registerReference(el, train.timetableData?.timetableId)"
@@ -107,8 +107,10 @@
 
                 <span v-else>{{ displayLocoInfo(train.locoType) }}</span>
               </div>
+              
+              <img v-if="defaultVehicleIcons.includes(train.locoType)" class="train-image" :src="defaultLocoImage" alt="default vehicle">
+              <img v-else class="train-image" :src="train.locoURL" :alt="train.locoType" @error="onImageError" />
 
-              <img class="train-image" :src="train.locoURL" @error="onImageError" />
             </span>
           </span>
 
@@ -139,18 +141,25 @@
           />
         </transition>
       </li>
+
+      <div class="table-info limit" v-if="timetableLoaded && computedTrains.length > 10">
+        {{ $t('trains.table-limit') }}
+      </div>
     </ul>
   </div>
 </template>
 
 <script lang="ts">
-import Train from '@/scripts/interfaces/Train';
-import TrainStop from '@/scripts/interfaces/TrainStop';
-
-import TrainSchedule from '@/components/TrainsView/TrainSchedule.vue';
-import { DataStatus } from '@/scripts/enums/DataStatus';
 import { computed, ComputedRef, defineComponent, Ref, ref } from '@vue/runtime-core';
 import { useStore } from '@/store';
+
+import defaultVehicleIconsJSON from "@/data/defaultVehicleIcons.json";
+
+import Train from '@/scripts/interfaces/Train';
+import TrainStop from '@/scripts/interfaces/TrainStop';
+import TrainSchedule from '@/components/TrainsView/TrainSchedule.vue';
+
+import { DataStatus } from '@/scripts/enums/DataStatus';
 import { GETTERS } from '@/constants/storeConstants';
 
 export default defineComponent({
@@ -179,6 +188,8 @@ export default defineComponent({
       arrowAsc: require('@/assets/icon-arrow-asc.svg'),
       arrowDesc: require('@/assets/icon-arrow-desc.svg'),
     },
+
+    defaultVehicleIcons: defaultVehicleIconsJSON,
 
     stats: {
       main: [
@@ -240,7 +251,7 @@ export default defineComponent({
         () =>
           props.computedTrains.findIndex(({ timetableData }) => timetableData && timetableData.routeDistance > 200) !=
           -1
-      ),
+      )
     };
   },
 
@@ -353,7 +364,7 @@ export default defineComponent({
   }
 }
 
-.no-trains {
+.table-info {
   text-align: center;
 
   padding: 1em;

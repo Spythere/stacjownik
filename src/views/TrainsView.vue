@@ -39,7 +39,6 @@ const filteredTrainList = (
   return trainList
     .filter(
       (train) =>
-        train.online &&
         (searchedTrain.length > 0
           ? train.trainNo.toString().includes(searchedTrain)
           : true) &&
@@ -81,7 +80,7 @@ const filteredTrainList = (
       }
 
       return 0;
-    });
+    })
 };
 
 export default defineComponent({

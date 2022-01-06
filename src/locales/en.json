@@ -135,7 +135,8 @@
     "loco-electric": "Electric locomotive",
     "loco-diesel": "Diesel locomotive",
     "timetable-comments": "Exploitation comments available for this train",
-    "comment": "Exploitation comment"
+    "comment": "Exploitation comment",
+    "table-limit": "For performance reasons there's a limit of 10 trains shown at the same time." 
   },
   "journal": {
     "title": "SCENERY ACTIVITY JOURNAL",
