@@ -219,6 +219,8 @@ export const store = createStore<State>({
             stopType: point.pointStopType,
             stopDistance: point.pointDistance,
 
+            comments: point.comments,
+
             mainStop: point.pointName.includes("strong"),
 
             arrivalLine,

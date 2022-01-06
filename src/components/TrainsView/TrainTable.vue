@@ -19,10 +19,9 @@
         :key="i"
         tabindex="0"
         @keydown.enter="changeScheduleShowState(train.timetableData?.timetableId)"
-        
-        :ref="el => registerReference(el, train.timetableData?.timetableId)"
+        :ref="(el) => registerReference(el, train.timetableData?.timetableId)"
       >
-        <div class="wrapper" @click="changeScheduleShowState(train.timetableData?.timetableId)">
+        <div class="row-wrapper" @click="changeScheduleShowState(train.timetableData?.timetableId)">
           <span class="info">
             <div class="info_timetable" v-if="!train.timetableData">
               <div class="timetable_general">
@@ -58,7 +57,10 @@
                   <span class="activator">
                     SRJP
 
-                    <img :src="showedSchedule == train.timetableData.timetableId ? ascSVG : descSVG" alt="arrow-icon" />
+                    <img
+                      :src="showedSchedule == train.timetableData.timetableId ? icons.arrowAsc : icons.arrowDesc"
+                      alt="arrow-icon"
+                    />
                   </span>
 
                   <span class="content"> {{ $t('trains.detailed-timetable') }} {{ train.trainNo }} </span>
@@ -76,6 +78,10 @@
                   <span v-html="displayStopList(train.timetableData.followingStops)"></span>
                 </span>
               </div>
+            </div>
+
+            <div class="info_comments" v-if="hasTimetableComments(train.timetableData)">
+              <img :src="icons.warning" title="Pociąg z uwagami eksplatacyjnymi" />
             </div>
           </span>
 
@@ -168,8 +174,11 @@ export default defineComponent({
     showedSchedule: 0,
     defaultLocoImage: require('@/assets/unknown.png'),
 
-    ascSVG: require('@/assets/icon-arrow-asc.svg'),
-    descSVG: require('@/assets/icon-arrow-desc.svg'),
+    icons: {
+      warning: require('@/assets/icon-warning.svg'),
+      arrowAsc: require('@/assets/icon-arrow-asc.svg'),
+      arrowDesc: require('@/assets/icon-arrow-desc.svg'),
+    },
 
     stats: {
       main: [
@@ -261,7 +270,7 @@ export default defineComponent({
     },
 
     registerReference(el: HTMLElement, timetableId: number | undefined) {
-      if(timetableId) this.elList[timetableId] = el;      
+      if (timetableId) this.elList[timetableId] = el;
     },
 
     focusOnTrain(trainNoStr: string) {
@@ -321,6 +330,10 @@ export default defineComponent({
 
       return '';
     },
+
+    hasTimetableComments(timetableData: Train['timetableData']) {
+      return timetableData?.followingStops.some((stop) => stop.comments) || false;
+    },
   },
 
   activated() {
@@ -374,6 +387,16 @@ img.train-image {
 
     background-color: var(--clr-secondary);
     cursor: pointer;
+
+    .row-wrapper {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(20em, 1fr));
+      grid-template-rows: 1fr;
+
+      @include smallScreen() {
+        font-size: 1.2em;
+      }
+    }
   }
 
   &_cars {
@@ -384,18 +407,12 @@ img.train-image {
   }
 }
 
-.wrapper {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(20em, 1fr));
-  grid-template-rows: 1fr;
-
-  @include smallScreen() {
-    font-size: 1.2em;
-  }
-}
-
 .info {
-  .timetable {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  & .timetable {
     &_hero {
       display: flex;
     }
@@ -448,6 +465,12 @@ img.train-image {
           background: var(--clr-skr);
         }
       }
+    }
+  }
+
+  &_comments {
+    img {
+      width: 2em;
     }
   }
 }

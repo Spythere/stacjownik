@@ -14,7 +14,10 @@
               {{ Math.floor(stop.stopDistance) }}
             </span>
 
-            <span class="stop-name" v-html="stop.stopName"></span>
+            <span class="stop-name">
+              <span v-html="stop.stopName"></span>
+              <img v-if="stop.comments" :src="icons.warning" :title="`Uwagi eksploatacyjne: ${stop.comments}`">
+            </span>
             <span class="stop-date">
               <span
                 class="date arrival"
@@ -59,6 +62,7 @@
             </span>
           </span>
 
+
           <div class="stop_line" v-if="i < followingStops.length - 1">
             <div class="progress-bar"></div>
 
@@ -88,7 +92,14 @@ export default defineComponent({
       required: true,
     },
   },
+
   emits: ['click'],
+
+  data: () => ({
+    icons: {
+      warning: require("@/assets/icon-warning.svg")
+    }
+  }),
 
   setup(props) {
     return {
@@ -176,7 +187,6 @@ $stopNameClr: #22a8d1;
 
   top: -1px;
   left: -17px;
-
 
   height: 100%;
   width: 3px;
@@ -335,6 +345,11 @@ ul.stop_list > li.stop {
 
     display: flex;
     align-items: center;
+
+    img {
+      width: 1em;
+      margin-left: 0.5em;
+    }
   }
 
   .stop-date {
