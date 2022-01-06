@@ -81,7 +81,7 @@
             </div>
 
             <div class="info_comments" v-if="hasTimetableComments(train.timetableData)">
-              <img :src="icons.warning" title="Pociąg z uwagami eksplatacyjnymi" />
+              <img :src="icons.warning" :title="$t('trains.timetable-comments')" />
             </div>
           </span>
 

@@ -133,7 +133,9 @@
     "EZT": "EMU",
     "SZT": "DMU",
     "loco-electric": "Electric locomotive",
-    "loco-diesel": "Diesel locomotive"
+    "loco-diesel": "Diesel locomotive",
+    "timetable-comments": "Exploitation comments available for this train",
+    "comment": "Exploitation comment"
   },
   "journal": {
     "title": "SCENERY ACTIVITY JOURNAL",

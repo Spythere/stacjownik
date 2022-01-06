@@ -133,7 +133,9 @@
     "EZT": "EZT",
     "SZT": "SZT",
     "loco-electric": "Elektrowóz",
-    "loco-diesel": "Spalinowóz"
+    "loco-diesel": "Spalinowóz",
+    "timetable-comments": "Pociąg z uwagami eksploatacyjnymi",
+    "comment": "Uwaga eksploatacyjna"
   },
   "journal": {
     "title": "DZIENNIK AKTYWNOŚCI SCENERII",
