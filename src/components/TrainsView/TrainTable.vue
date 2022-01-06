@@ -15,7 +15,7 @@
     <ul class="train-list">
       <li
         class="train-row"
-        v-for="(train) in computedTrains.filter((_, i) => i < 10)"
+        v-for="train in computedTrains.filter((_, i) => i < 10)"
         :key="train.trainNo + train.driverId"
         tabindex="0"
         @keydown.enter="changeScheduleShowState(train.timetableData?.timetableId)"
@@ -80,8 +80,13 @@
               </div>
             </div>
 
-            <div class="info_comments" v-if="hasTimetableComments(train.timetableData)">
-              <img :src="icons.warning" :title="$t('trains.timetable-comments')" />
+            <div class="info_comments" v-if="getSceneriesWithComments(train.timetableData).length > 0">
+              <img
+                :src="icons.warning"
+                :title="
+                  `${$t('trains.timetable-comments')} (${getSceneriesWithComments(train.timetableData).join(',')})`
+                "
+              />
             </div>
           </span>
 
@@ -107,10 +112,14 @@
 
                 <span v-else>{{ displayLocoInfo(train.locoType) }}</span>
               </div>
-              
-              <img v-if="defaultVehicleIcons.includes(train.locoType)" class="train-image" :src="defaultLocoImage" alt="default vehicle">
-              <img v-else class="train-image" :src="train.locoURL" :alt="train.locoType" @error="onImageError" />
 
+              <img
+                v-if="defaultVehicleIcons.includes(train.locoType)"
+                class="train-image"
+                :src="defaultLocoImage"
+                alt="default vehicle"
+              />
+              <img v-else class="train-image" :src="train.locoURL" :alt="train.locoType" @error="onImageError" />
             </span>
           </span>
 
@@ -153,7 +162,7 @@
 import { computed, ComputedRef, defineComponent, Ref, ref } from '@vue/runtime-core';
 import { useStore } from '@/store';
 
-import defaultVehicleIconsJSON from "@/data/defaultVehicleIcons.json";
+import defaultVehicleIconsJSON from '@/data/defaultVehicleIcons.json';
 
 import Train from '@/scripts/interfaces/Train';
 import TrainStop from '@/scripts/interfaces/TrainStop';
@@ -251,7 +260,7 @@ export default defineComponent({
         () =>
           props.computedTrains.findIndex(({ timetableData }) => timetableData && timetableData.routeDistance > 200) !=
           -1
-      )
+      ),
     };
   },
 
@@ -342,8 +351,14 @@ export default defineComponent({
       return '';
     },
 
-    hasTimetableComments(timetableData: Train['timetableData']) {
-      return timetableData?.followingStops.some((stop) => stop.comments) || false;
+    getSceneriesWithComments(timetableData: Train['timetableData']) {
+      return (
+        timetableData?.followingStops.reduce((acc, stop) => {
+          if (stop.comments) acc.push(stop.stopNameRAW);
+
+          return acc;
+        }, [] as string[]) || []
+      );
     },
   },
 
