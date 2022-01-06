@@ -2,12 +2,7 @@
   <div class="train-schedule" @click="toggleShowState">
     <div class="schedule-wrapper">
       <ul class="stop_list">
-        <li
-          v-for="(stop, i) in followingStops"
-          :key="i"
-          class="stop"
-          :class="addClasses(stop, i)"
-        >
+        <li v-for="(stop, i) in followingStops" :key="i" class="stop" :class="addClasses(stop, i)">
           <span class="stop_info">
             <div class="indicator"></div>
 
@@ -27,26 +22,29 @@
                 :class="{
                   delayed: stop.arrivalDelay > 0 && stop.confirmed,
                   preponed: stop.arrivalDelay < 0 && stop.confirmed,
+                  'on-time': stop.arrivalDelay == 0 && stop.confirmed,
                 }"
               >
-                p.
-                {{
+                <!-- {{
                   stylizeTime(
-                    stop.confirmed
-                      ? stop.arrivalRealTimeString || ""
-                      : stop.arrivalTimeString || "",
+                    stop.confirmed ? stop.arrivalRealTimeString || '' : stop.arrivalTimeString || '',
                     stop.arrivalDelay,
                     stop.confirmed
                   )
-                }}
+                }} -->
+
+                <span v-if="stop.arrivalDelay != 0 && stop.confirmed">
+                  <s>{{ stop.arrivalTimeString }}</s>
+                  {{ stop.arrivalRealTimeString }}
+                </span>
+
+                <span v-else>
+                  {{ stop.arrivalTimeString }}
+                </span>
               </span>
 
-              <span
-                class="date stop"
-                v-if="stop.stopTime"
-                :class="stop.stopType.replace(', ', '-')"
-              >
-                {{ stop.stopTime }} {{ stop.stopType }}
+              <span class="date stop" v-if="stop.stopTime" :class="stop.stopType.replace(', ', '-')">
+                {{ stop.stopTime }} {{ stop.stopType == '' ? 'pt' : stop.stopType }}
               </span>
 
               <span
@@ -57,16 +55,14 @@
                   preponed: stop.departureDelay < 0 && stop.confirmed,
                 }"
               >
-                o.
-                {{
-                  stylizeTime(
-                    stop.confirmed
-                      ? stop.departureRealTimeString || ""
-                      : stop.departureTimeString || "",
-                    stop.departureDelay,
-                    stop.confirmed
-                  )
-                }}
+                <span v-if="stop.departureDelay != 0 && stop.confirmed">
+                  <s>{{ stop.departureTimeString }}</s>
+                  {{ stop.departureRealTimeString }}
+                </span>
+
+                <span v-else>
+                  {{ stop.departureTimeString }}
+                </span>
               </span>
             </span>
           </span>
@@ -74,9 +70,7 @@
           <div class="stop_line" v-if="i < followingStops.length - 1">
             <div class="progress-bar"></div>
 
-            <span
-              v-if="stop.departureLine == followingStops[i + 1].arrivalLine"
-            >
+            <span v-if="stop.departureLine == followingStops[i + 1].arrivalLine">
               {{ stop.departureLine }}
             </span>
 
@@ -92,8 +86,8 @@
 </template>
 
 <script lang="ts">
-import TrainStop from "@/scripts/interfaces/TrainStop";
-import { computed, defineComponent } from "@vue/runtime-core";
+import TrainStop from '@/scripts/interfaces/TrainStop';
+import { computed, defineComponent } from '@vue/runtime-core';
 
 export default defineComponent({
   props: {
@@ -102,14 +96,13 @@ export default defineComponent({
       required: true,
     },
   },
-  emits: ["click"],
+  emits: ['click'],
 
   setup(props) {
     return {
       lastConfirmed: computed(() => {
         return props.followingStops.findIndex(
-          (stop, i, stops) =>
-            stop.confirmed && !stops[i + 1]?.confirmed && !stops[i + 1]?.stopped
+          (stop, i, stops) => stop.confirmed && !stops[i + 1]?.confirmed && !stops[i + 1]?.stopped
         );
       }),
       activeMinorStops: computed(() => {
@@ -118,16 +111,10 @@ export default defineComponent({
         );
 
         const activeMinorStopList: number[] = [];
-        if (lastMajorConfirmed + 1 >= props.followingStops.length)
-          return activeMinorStopList;
+        if (lastMajorConfirmed + 1 >= props.followingStops.length) return activeMinorStopList;
 
-        for (
-          let i = lastMajorConfirmed + 1;
-          i < props.followingStops.length;
-          i++
-        ) {
-          if (props.followingStops[i].stopNameRAW.includes("po."))
-            activeMinorStopList.push(i);
+        for (let i = lastMajorConfirmed + 1; i < props.followingStops.length; i++) {
+          if (props.followingStops[i].stopNameRAW.includes('po.')) activeMinorStopList.push(i);
           else break;
         }
 
@@ -138,16 +125,14 @@ export default defineComponent({
 
   methods: {
     stylizeTime(timeString: string, delay: number, confirmed: boolean) {
-      return (
-        timeString +
-        (delay != 0 && confirmed
-          ? " (" + (delay > 0 ? "+" : "") + delay.toString() + ")"
-          : "")
-      );
+      return timeString;
+      // (delay != 0 && confirmed
+      //   ? " (" + (delay > 0 ? "+" : "") + delay.toString() + ")"
+      //   : "")
     },
 
     toggleShowState() {
-      this.$emit("click");
+      this.$emit('click');
     },
 
     addClasses(stop: TrainStop, index: number) {
@@ -157,12 +142,10 @@ export default defineComponent({
         begin: stop.beginsHere,
         end: stop.terminatesHere,
         delayed: stop.departureDelay > 0,
-        [stop.stopType.replaceAll(", ", "-")]:
-          stop.stopType.match(new RegExp("ph|pm|pt")) &&
-          !stop.confirmed &&
-          !stop.beginsHere,
-        "minor-stop-active": this.activeMinorStops.includes(index),
-        "last-confirmed": index == this.lastConfirmed && !stop.terminatesHere,
+        [stop.stopType.replaceAll(', ', '-')]:
+          stop.stopType.match(new RegExp('ph|pm|pt')) && !stop.confirmed && !stop.beginsHere,
+        'minor-stop-active': this.activeMinorStops.includes(index),
+        'last-confirmed': index == this.lastConfirmed && !stop.terminatesHere,
       };
     },
   },
@@ -173,10 +156,10 @@ export default defineComponent({
 $barClr: #b1b1b1;
 $confirmedClr: #18d818;
 $stoppedClr: #f55f31;
-$haltClr: #48c5eb;
+$haltClr: #f8bb36;
 
-$preponedClr: #008b00;
-$delayedClr: #e93f3f;
+$preponedClr: lime;
+$delayedClr: salmon;
 $dateClr: #525151;
 $stopExchangeClr: #db8e29;
 $stopDefaultClr: #252525;
@@ -227,11 +210,11 @@ ul.stop_list > li.stop {
 
   padding: 0 0.5em;
 
-  &[class*="ph"] > .stop_info > .indicator {
+  &[class*='ph'] > .stop_info > .indicator {
     border-color: $stopNameClr;
   }
 
-  &[class*="pt"] > .stop_info > .indicator {
+  &[class*='pt'] > .stop_info > .indicator {
     border-color: #818181;
   }
 
@@ -394,11 +377,23 @@ ul.stop_list > li.stop {
     .arrival,
     .departure {
       &.delayed {
-        background: $delayedClr;
+        s {
+          color: #999;
+        }
+
+        span {
+          color: $delayedClr;
+        }
       }
 
       &.preponed {
-        background: $preponedClr;
+        s {
+          color: #999;
+        }
+
+        span {
+          color: $preponedClr;
+        }
       }
     }
   }
