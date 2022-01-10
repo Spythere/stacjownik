@@ -29,14 +29,18 @@
 
       <SceneryHeader :station="stationInfo" />
 
-      <div v-if="viewMode == 'info'">
-        <SceneryInfo :station="stationInfo" :timetableOnly="timetableOnly" />
-        <SceneryTimetable :station="stationInfo" :timetableOnly="timetableOnly" />
-      </div>
+      <transition name="scenery-view-anim" mode="out-in">
+        <div :key="viewMode">
+          <div v-if="viewMode == 'info'">
+            <SceneryInfo :station="stationInfo" :timetableOnly="timetableOnly" />
+            <SceneryTimetable :station="stationInfo" :timetableOnly="timetableOnly" />
+          </div>
 
-      <div v-else-if="viewMode == 'history'">
-        <SceneryHistory :name="stationInfo.name" />
-      </div>
+          <div v-else-if="viewMode == 'history'">
+            <SceneryHistory :name="stationInfo.name" />
+          </div>
+        </div>
+      </transition>
     </div>
   </div>
 </template>
@@ -117,6 +121,21 @@ export default defineComponent({
 @import '../styles/variables.scss';
 
 $sceneryBgCol: #333;
+
+.scenery-view-anim {
+  &-enter-from,
+  &-leave-to {
+    opacity: 0;
+  }
+
+  &-enter-active {
+    transition: all 100ms ease-out;
+  }
+
+  &-leave-active {
+    transition: all 100ms ease-out 100ms;
+  }
+}
 
 .scenery {
   &-view {

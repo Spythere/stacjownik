@@ -194,6 +194,7 @@ export default defineComponent({
     transition: all 100ms ease-out 100ms;
   }
 }
+
 .scenery-history {
   height: 600px;
   overflow-y: hidden;
