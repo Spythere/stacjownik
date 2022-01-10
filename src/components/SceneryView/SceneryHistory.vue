@@ -94,12 +94,6 @@ export default defineComponent({
       required: true,
     },
   },
-  setup() {
-    const store = useStore();
-    const router = useRouter();
-
-    return {};
-  },
 
   async mounted() {
     try {
@@ -166,6 +160,7 @@ ul {
 
 li {
   margin: 1em 0;
+  padding: 0 0.5em;
 
   h3 {
     cursor: pointer;
