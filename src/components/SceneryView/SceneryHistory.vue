@@ -2,49 +2,47 @@
   <div class="scenery-history">
     <h2>{{ $t('journal.title') }}</h2>
 
-    <ul>
-      <li v-if="!isLoaded">
-        <h3>{{ $t('journal.loading') }}</h3>
-      </li>
+    <transition name="history-list-anim" mode="out-in">
+      <ul :key="dispatcherTimeline.length">
+        <li v-if="!isLoaded">
+          <h3>{{ $t('journal.loading') }}</h3>
+        </li>
 
-      <li v-if="isLoaded && dispatcherTimeline.length == 0">
-        <h3>{{ $t('journal.no-history') }}</h3>
-      </li>
+        <li v-if="isLoaded && dispatcherTimeline.length == 0">
+          <h3>{{ $t('journal.no-history') }}</h3>
+        </li>
 
-      <li v-for="(timeline, i) in dispatcherTimeline" :key="i">
-        <h3
-          @click="toggleTimeline(i)"
-          @keydown.enter="toggleTimeline(i)"
-          @keydown.space="toggleTimeline(i)"
-          tabindex="0"
-        >
-          {{ timeline.date }} <img :src="timeline.showTimeline ? icons.ascArrow : icons.descArrow" alt="arrow" />
-        </h3>
-
-        <span v-if="timeline.showTimeline">
-          <div v-for="dispatcher in timeline.dispatchers" :key="dispatcher.dispatcherFrom">
-            <span>
-              <span class="dispatcher-from text--primary">
-                {{ timestampToString(dispatcher.dispatcherFrom, true) }}
+        <li v-for="(timeline, i) in dispatcherTimeline" :key="i">
+          <h3
+            @click="toggleTimeline(i)"
+            @keydown.enter="toggleTimeline(i)"
+            @keydown.space="toggleTimeline(i)"
+            tabindex="0"
+          >
+            {{ timeline.date }} <img :src="timeline.showTimeline ? icons.ascArrow : icons.descArrow" alt="arrow" />
+          </h3>
+          
+          <span v-if="timeline.showTimeline">
+            <div v-for="dispatcher in timeline.dispatchers" :key="dispatcher.dispatcherFrom">
+              <span>
+                <span class="dispatcher-from text--primary">
+                  {{ timestampToString(dispatcher.dispatcherFrom, true) }}
+                </span>
+                >
+                <span class="dispatcher-to text--primary"> {{ timestampToString(dispatcher.dispatcherTo, true) }}</span>
               </span>
-              >
-              <span class="dispatcher-to text--primary"> {{ timestampToString(dispatcher.dispatcherTo, true) }}</span>
-            </span>
-
-            <b>{{ dispatcher.dispatcherName }}</b>
-          </div>
-        </span>
-      </li>
-    </ul>
+              <b>{{ dispatcher.dispatcherName }}</b>
+            </div>
+          </span>
+        </li>
+      </ul>
+    </transition>
   </div>
 </template>
 
 <script lang="ts">
-import { GETTERS } from '@/constants/storeConstants';
-import { useStore } from '@/store';
 import axios from 'axios';
 import { defineComponent } from 'vue';
-import { useRouter } from 'vue-router';
 
 interface DispatcherTimeline {
   date: string;
@@ -146,6 +144,20 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.history-list-anim {
+  &-enter-from,
+  &-leave-to {
+    opacity: 0;
+  }
+
+  &-enter-active {
+    transition: all 100ms ease-out;
+  }
+
+  &-leave-active {
+    transition: all 100ms ease-out 100ms;
+  }
+}
 .scenery-history {
   height: 600px;
   overflow-y: hidden;
