@@ -5,10 +5,10 @@ import StorageManager from './storageManager';
 const sortStations = (a: Station, b: Station, sorter: { index: number; dir: number }) => {
   switch (sorter.index) {
     case 1:
-      if ((a.generalInfo?.reqLevel || -1 ) > (b.generalInfo?.reqLevel || -1)) return sorter.dir;
-      if ((a.generalInfo?.reqLevel || -1) < (b.generalInfo?.reqLevel || -1)) return -sorter.dir;
-
+      if ((a.generalInfo?.reqLevel || 0) > (b.generalInfo?.reqLevel || 0)) return sorter.dir;
+      if ((a.generalInfo?.reqLevel || 0) < (b.generalInfo?.reqLevel || 0)) return -sorter.dir;
       break;
+    
     case 2:
       if ((a.onlineInfo?.statusTimestamp || 0) > (b.onlineInfo?.statusTimestamp || 0)) return sorter.dir;
       if ((a.onlineInfo?.statusTimestamp || 0) < (b.onlineInfo?.statusTimestamp || 0)) return -sorter.dir;
@@ -195,15 +195,6 @@ export default class StationFilterManager {
       this.filters[prop] = !this.filters[prop];
 
     })
-
-    // for(let prop in this.filters) {
-    //   if(typeof prop !== "boolean") continue;
-
-    //   this.filters[prop] = !this.filterInitStates[prop];
-
-    //   console.log("inverted!");
-
-    // }
   }
 
   changeSorter(index: number) {

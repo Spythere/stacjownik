@@ -282,7 +282,7 @@ export const store = createStore<State>({
           url: station[1],
           lines: station[2],
           project: station[3],
-          reqLevel: station[4] == "" ? -1 : Number(station[4]),
+          reqLevel: station[4] == "" || station[4] === null ? -1 : Number(station[4]),
           supportersOnly: station[5] == "TAK",
           signalType: station[6],
           controlType: station[7],
