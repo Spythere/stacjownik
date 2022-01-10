@@ -40,8 +40,11 @@
 </template>
 
 <script lang="ts">
+import { GETTERS } from '@/constants/storeConstants';
+import { useStore } from '@/store';
 import axios from 'axios';
 import { defineComponent } from 'vue';
+import { useRouter } from 'vue-router';
 
 interface DispatcherTimeline {
   date: string;
@@ -92,6 +95,9 @@ export default defineComponent({
     },
   },
   setup() {
+    const store = useStore();
+    const router = useRouter();
+
     return {};
   },
 

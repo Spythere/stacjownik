@@ -23,7 +23,6 @@ import { DataStatus } from "@/scripts/enums/DataStatus";
 
 import { getLocoURL, getStatusID, getStatusTimestamp, getTimestamp, getTrainStopStatus, parseSpawns, timestampToString } from "@/scripts/utils/storeUtils";
 import { URLs } from '@/scripts/utils/apiURLs';
-import StorageManager from '@/scripts/managers/storageManager';
 import ScheduledTrain from '@/scripts/interfaces/ScheduledTrain';
 
 export interface State {

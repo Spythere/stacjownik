@@ -9,12 +9,17 @@
     </div>
 
     <div class="scenery-wrapper" v-if="stationInfo" ref="card-wrapper">
-      <button v-if="!timetableOnly" class="back-btn btn btn--image" :title="$t('scenery.return-btn')" @click="navigateTo('/')">
+      <button
+        v-if="!timetableOnly"
+        class="back-btn btn btn--image"
+        :title="$t('scenery.return-btn')"
+        @click="navigateTo('/')"
+      >
         <img :src="icons.back" alt="Back to scenery" />
       </button>
 
       <button
-        v-if="!timetableOnly"
+        v-if="!timetableOnly && currentRegion.id == 'eu'"
         class="history-btn btn btn--image"
         @click="setCardViewMode(viewMode == 'history' ? 'info' : 'history')"
         :title="viewMode == 'history' ? $t('scenery.info-btn') : $t('scenery.history-btn')"
@@ -85,6 +90,7 @@ export default defineComponent({
 
     return {
       data,
+      currentRegion: computed(() => store.getters[GETTERS.currentRegion]),
       timetableOnly,
       isComponentVisible,
       isDataLoaded,
@@ -99,11 +105,15 @@ export default defineComponent({
 
     navigateTo(path: string) {
       this.$router.push(path);
-    }
+    },
   },
 
   mounted() {
     this.cardHeight = (this.$refs['card-wrapper'] as HTMLElement).getBoundingClientRect().height;
+  },
+
+  activated() {
+    if (this.currentRegion.id != 'eu' && this.viewMode == 'history') this.viewMode = 'info';
   },
 });
 </script>
@@ -143,7 +153,6 @@ $sceneryBgCol: #333;
 
     width: 75%;
     max-width: 950px;
-
 
     @include midScreen {
       width: 95%;
