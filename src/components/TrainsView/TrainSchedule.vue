@@ -17,6 +17,7 @@
             <span class="stop-name">
               <span v-html="stop.stopName"></span>
               <img v-if="stop.comments" :src="icons.warning" :title="`${$t('trains.comment')}: ${stop.comments}`">
+              {{ decodeURIComponent(stop.comments) }}
             </span>
             <span class="stop-date">
               <span

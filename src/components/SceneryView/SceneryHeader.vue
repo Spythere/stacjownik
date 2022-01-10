@@ -31,12 +31,11 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../../styles/variables.scss';
-@import '../../../styles/responsive.scss';
-
+@import '../../styles/variables.scss';
+@import '../../styles/responsive.scss';
 
 .info-header {
-  padding: 2em 1em;
+  padding-top: 2em;
 
   & > .scenery-name {
     font-weight: bold;

@@ -1,80 +1,83 @@
 <template>
   <div class="scenery-view">
-    <div
-      class="scenery-offline"
-      v-if="!stationInfo && isDataLoaded && isComponentVisible"
-    >
-      <div>{{ $t("scenery.no-scenery") }}</div>
+    <div class="scenery-offline" v-if="!stationInfo && isDataLoaded && isComponentVisible">
+      <div>{{ $t('scenery.no-scenery') }}</div>
 
       <action-button>
-        <router-link to="/">{{ $t("scenery.return-btn") }}</router-link>
+        <router-link to="/">{{ $t('scenery.return-btn') }}</router-link>
       </action-button>
     </div>
 
-    <div class="scenery-wrapper" v-if="stationInfo">
-      <!-- <button class="history-btn btn btn--image">
-          <img :src="icons.history" alt="History icon">
-      </button> -->
-      
-      <SceneryInfo :station="stationInfo" :timetableOnly="timetableOnly" />
+    <div class="scenery-wrapper" v-if="stationInfo" ref="card-wrapper">
+      <!-- <scenery-info-header :station="stationInfo" /> -->
+      <SceneryHeader :station="stationInfo" />
 
-      <SceneryTimetable
-        :station="stationInfo"
-        :timetableOnly="timetableOnly"
-      />
-      <!-- <SceneryHistory :name="stationInfo.name" /> -->
+
+      <div v-if="viewMode == 'info'">
+        <button v-if="!timetableOnly" class="history-btn btn btn--image" @click="setCardViewMode('history')" title="Widok historii dyżurnych ruchu">
+          <img :src="icons.history" alt="History icon" />
+        </button>
+
+        <SceneryInfo :station="stationInfo" :timetableOnly="timetableOnly" />
+        <SceneryTimetable :station="stationInfo" :timetableOnly="timetableOnly" />
+      </div>
+      
+      <div v-else-if="viewMode == 'history'">
+        <button class="history-btn btn btn--image" @click="setCardViewMode('info')">
+          <img :src="icons.user" alt="History icon" />
+        </button>
+
+        <SceneryHistory :name="stationInfo.name" />
+      </div>
+
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { StoreData } from "@/scripts/interfaces/StoreData";
-import { DataStatus } from "@/scripts/enums/DataStatus";
+import { StoreData } from '@/scripts/interfaces/StoreData';
+import { DataStatus } from '@/scripts/enums/DataStatus';
 
-import SceneryInfo from "@/components/SceneryView/SceneryInfo.vue";
-import SceneryTimetable from "@/components/SceneryView/SceneryTimetable.vue";
-import SceneryHistory from "@/components/SceneryView/SceneryHistory.vue"
+import SceneryInfo from '@/components/SceneryView/SceneryInfo.vue';
+import SceneryTimetable from '@/components/SceneryView/SceneryTimetable.vue';
+import SceneryHistory from '@/components/SceneryView/SceneryHistory.vue';
+import SceneryHeader from "@/components/SceneryView/SceneryHeader.vue";
 
-import ActionButton from "@/components/Global/ActionButton.vue";
+import ActionButton from '@/components/Global/ActionButton.vue';
 
-import { computed, ComputedRef, defineComponent } from "@vue/runtime-core";
-import { useStore } from "@/store";
-import { GETTERS } from "@/constants/storeConstants";
-import { useRoute } from "vue-router";
+import { computed, ComputedRef, defineComponent } from '@vue/runtime-core';
+import { useStore } from '@/store';
+import { GETTERS } from '@/constants/storeConstants';
+import { useRoute } from 'vue-router';
 
 export default defineComponent({
-  components: { SceneryInfo, SceneryTimetable, SceneryHistory, ActionButton },
+  components: { SceneryInfo, SceneryTimetable, SceneryHistory, ActionButton, SceneryHeader },
 
   data: () => ({
     icons: {
-      history: require("@/assets/icon-history.svg")
-    }
+      history: require('@/assets/icon-history.svg'),
+      user: require('@/assets/icon-user.svg'),
+    },
+
+    cardHeight: 0,
+
+    viewMode: 'info',
   }),
 
   setup() {
     const route = useRoute();
     const store = useStore();
 
-    const data: ComputedRef<StoreData> = computed(
-      () => store.getters[GETTERS.allData]
-    );
+    const data: ComputedRef<StoreData> = computed(() => store.getters[GETTERS.allData]);
 
-    const timetableOnly = computed(() =>
-      route.query["timetable_only"] == "1" ? true : false
-    );
+    const timetableOnly = computed(() => (route.query['timetable_only'] == '1' ? true : false));
 
-    const isComponentVisible = computed(() => route.path === "/scenery");
+    const isComponentVisible = computed(() => route.path === '/scenery');
 
-    const isDataLoaded = computed(
-      () => data.value.dataConnectionStatus === DataStatus.Loaded
-    );
+    const isDataLoaded = computed(() => data.value.dataConnectionStatus === DataStatus.Loaded);
 
     const stationInfo = computed(() =>
-      data.value.stationList.find(
-        (station) =>
-          station.name ===
-          route.query.station?.toString().replace(/_/g, " ")
-      )
+      data.value.stationList.find((station) => station.name === route.query.station?.toString().replace(/_/g, ' '))
     );
 
     return {
@@ -85,12 +88,22 @@ export default defineComponent({
       stationInfo,
     };
   },
+
+  methods: {
+    setCardViewMode(mode: string) {
+      this.viewMode = mode;
+    },
+  },
+
+  mounted() {
+    this.cardHeight = (this.$refs['card-wrapper'] as HTMLElement).getBoundingClientRect().height;
+  }
 });
 </script>
 
 <style lang="scss" scoped>
-@import "../styles/responsive.scss";
-@import "../styles/variables.scss";
+@import '../styles/responsive.scss';
+@import '../styles/variables.scss';
 
 $sceneryBgCol: #333;
 
@@ -148,7 +161,5 @@ button.history-btn {
   img {
     width: 2em;
   }
-
-
 }
 </style>

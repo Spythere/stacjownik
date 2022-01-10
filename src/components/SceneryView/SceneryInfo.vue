@@ -1,8 +1,5 @@
 <template>
   <div class="scenery-info">
-    <!-- info header -->
-    <scenery-info-header :station="station" />
-
     <section v-if="!timetableOnly">
       <!-- info stats -->
       <scenery-info-stats :station="station" />
@@ -24,12 +21,11 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@vue/runtime-core';
+import { defineComponent } from '@vue/runtime-core';
 
 import SceneryInfoDispatcher from './SceneryInfo/SceneryInfoDispatcher.vue';
 import SceneryInfoIcons from './SceneryInfo/SceneryInfoIcons.vue';
 import SceneryInfoStats from './SceneryInfo/SceneryInfoStats.vue';
-import SceneryInfoHeader from './SceneryInfo/SceneryInfoHeader.vue';
 import SceneryInfoUserList from './SceneryInfo/SceneryInfoUserList.vue';
 import SceneryInfoSpawnList from './SceneryInfo/SceneryInfoSpawnList.vue';
 
@@ -40,7 +36,6 @@ export default defineComponent({
     SceneryInfoDispatcher,
     SceneryInfoIcons,
     SceneryInfoStats,
-    SceneryInfoHeader,
     SceneryInfoUserList,
     SceneryInfoSpawnList,
   },

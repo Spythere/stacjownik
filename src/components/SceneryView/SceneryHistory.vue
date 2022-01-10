@@ -3,10 +3,29 @@
     <h2>HISTORIA DYŻURÓW</h2>
 
     <ul>
-      <li v-for="(dispatcher, i) in dispatcherHistory" :key="i">
-        {{ dispatcher.dispatcherName }}
-        &nbsp;
-        {{ timestampToString(dispatcher.dispatcherFrom) }}
+      <li v-for="(timeline, i) in dispatcherTimeline" :key="i">
+        <h3
+          @click="toggleTimeline(i)"
+          @keydown.enter="toggleTimeline(i)"
+          @keydown.space="toggleTimeline(i)"
+          tabindex="0"
+        >
+          {{ timeline.date }} <img :src="icons.descArrow" alt="" />
+        </h3>
+
+        <span v-if="timeline.showTimeline">
+          <div v-for="dispatcher in timeline.dispatchers" :key="dispatcher.dispatcherFrom">
+            <span>
+              <span class="dispatcher-from text--primary">
+                {{ timestampToString(dispatcher.dispatcherFrom, true) }}
+              </span>
+              >
+              <span class="dispatcher-to text--primary"> {{ timestampToString(dispatcher.dispatcherTo, true) }}</span>
+            </span>
+
+            <b>{{ dispatcher.dispatcherName }}</b>
+          </div>
+        </span>
       </li>
     </ul>
   </div>
@@ -15,6 +34,12 @@
 <script lang="ts">
 import axios from 'axios';
 import { defineComponent } from 'vue';
+
+interface DispatcherTimeline {
+  date: string;
+  dispatchers: DispatcherHistory[];
+  showTimeline: boolean;
+}
 
 interface DispatcherHistory {
   dispatcherName: string;
@@ -38,15 +63,17 @@ interface HistoryResultAPI {
   errorMessage?: any;
 }
 
-const PROD_MODE = true;
-
-const API_URL = PROD_MODE
-  ? 'https://stacjownik-api-di22o.ondigitalocean.app/api/getSceneryHistory'
-  : 'http://localhost:3001/api/getTimetables';
+const API_URL = 'https://stacjownik-api-di22o.ondigitalocean.app/api/getSceneryHistory';
 
 export default defineComponent({
   data: () => ({
     dispatcherHistory: [] as DispatcherHistory[],
+    dispatcherTimeline: [] as DispatcherTimeline[],
+
+    icons: {
+      ascArrow: require('@/assets/icon-arrow-asc.svg'),
+      descArrow: require('@/assets/icon-arrow-desc.svg'),
+    },
   }),
   props: {
     name: {
@@ -62,18 +89,42 @@ export default defineComponent({
     try {
       const apiResult: HistoryResultAPI = (await axios.get(`${API_URL}?name=${this.name}`)).data;
 
-      if (!apiResult.errorMessage) this.dispatcherHistory = apiResult.result.dispatcherHistory;
+      if (!apiResult.errorMessage) {
+        this.dispatcherHistory = apiResult.result.dispatcherHistory;
+
+        this.dispatcherTimeline = this.dispatcherHistory
+          .reduce((acc, dispatcher) => {
+            const dateStr = new Date(dispatcher.dispatcherFrom).toLocaleDateString('pl-PL').replace(/\./g, '/');
+
+            const timelineDay = acc.find((timeline) => timeline.date == dateStr) || {
+              date: dateStr,
+              dispatchers: [],
+              showTimeline: false,
+            };
+
+            timelineDay.dispatchers.push(dispatcher);
+
+            if (!acc.find((timeline) => timeline.date == dateStr)) acc.push(timelineDay);
+
+            return acc;
+          }, [] as DispatcherTimeline[])
+          .reverse();
+      }
     } catch (error) {
-      console.error(error); 
+      console.error(error);
     }
   },
 
   methods: {
-    timestampToString: (timestamp: number): string =>
+    toggleTimeline(index: number) {
+      this.dispatcherTimeline[index].showTimeline = !this.dispatcherTimeline[index].showTimeline;
+    },
+
+    timestampToString: (timestamp: number, timeOnly = false): string =>
       new Date(timestamp).toLocaleTimeString('pl-PL', {
-        day: '2-digit',
-        month: '2-digit',
-        year: '2-digit',
+        day: timeOnly ? undefined : '2-digit',
+        month: timeOnly ? undefined : '2-digit',
+        year: timeOnly ? undefined : '2-digit',
         hour: '2-digit',
         minute: '2-digit',
       }),
@@ -81,4 +132,55 @@ export default defineComponent({
 });
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.scenery-history {
+    max-height: 600px;
+    overflow-y: scroll;
+}
+
+ul {
+  margin-top: 1em;
+}
+
+li {
+  margin: 1em 0;
+
+  h3 {
+    cursor: pointer;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: #444;
+    padding: 0.5em;
+    margin: 0 auto 0.5em auto;
+
+    max-width: 700px;
+
+    img {
+      width: 1.3em;
+      vertical-align: middle;
+
+      margin-left: 0.5em;
+    }
+
+    &:focus {
+      outline: 1px solid white;
+    }
+  }
+
+  div {
+    padding: 0.5em 0;
+    margin: 0.5em auto;
+
+    background-color: #444;
+    border-radius: 0.5em;
+
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+
+    max-width: 400px;
+  }
+}
+</style>
