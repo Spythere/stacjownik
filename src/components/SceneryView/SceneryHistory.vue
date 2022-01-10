@@ -21,19 +21,23 @@
           >
             {{ timeline.date }} <img :src="timeline.showTimeline ? icons.ascArrow : icons.descArrow" alt="arrow" />
           </h3>
-          
-          <span v-if="timeline.showTimeline">
-            <div v-for="dispatcher in timeline.dispatchers" :key="dispatcher.dispatcherFrom">
-              <span>
-                <span class="dispatcher-from text--primary">
-                  {{ timestampToString(dispatcher.dispatcherFrom, true) }}
+
+          <transition name="unfold-anim" @enter="enter" @afterEnter="afterEnter" @leave="leave">
+            <div class="dispatcher-list" v-if="timeline.showTimeline">
+              <div class="dispatcher-item" v-for="dispatcher in timeline.dispatchers" :key="dispatcher.dispatcherFrom">
+                <span>
+                  <span class="dispatcher-from text--primary">
+                    {{ timestampToString(dispatcher.dispatcherFrom, true) }}
+                  </span>
+                  >
+                  <span class="dispatcher-to text--primary">
+                    {{ timestampToString(dispatcher.dispatcherTo, true) }}</span
+                  >
                 </span>
-                >
-                <span class="dispatcher-to text--primary"> {{ timestampToString(dispatcher.dispatcherTo, true) }}</span>
-              </span>
-              <b>{{ dispatcher.dispatcherName }}</b>
+                <b>{{ dispatcher.dispatcherName }}</b>
+              </div>
             </div>
-          </span>
+          </transition>
         </li>
       </ul>
     </transition>
@@ -131,6 +135,30 @@ export default defineComponent({
       this.dispatcherTimeline[index].showTimeline = !this.dispatcherTimeline[index].showTimeline;
     },
 
+    enter(el: HTMLElement) {
+      const maxHeight = getComputedStyle(el).height;
+
+      el.style.height = '0px';
+
+      getComputedStyle(el);
+
+      setTimeout(() => {
+        el.style.height = maxHeight;
+      }, 10);
+    },
+
+    afterEnter(el: HTMLElement) {
+      el.style.height = 'auto';
+    },
+
+    leave(el: HTMLElement) {
+      el.style.height = getComputedStyle(el).height;
+
+      setTimeout(() => {
+        el.style.height = '0px';
+      }, 10);
+    },
+
     timestampToString: (timestamp: number, timeOnly = false): string =>
       new Date(timestamp).toLocaleTimeString('pl-PL', {
         day: timeOnly ? undefined : '2-digit',
@@ -144,6 +172,14 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.unfold-anim {
+  &-leave-active,
+  &-enter-active {
+    transition: all 100ms ease-out;
+    overflow: hidden;
+  }
+}
+
 .history-list-anim {
   &-enter-from,
   &-leave-to {
@@ -199,7 +235,12 @@ li {
     }
   }
 
-  div {
+  .dispatcher-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .dispatcher-item {
     padding: 0.5em 0;
     margin: 0.5em auto;
 
@@ -209,6 +250,7 @@ li {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
 
+    width: 90%;
     max-width: 400px;
   }
 }
