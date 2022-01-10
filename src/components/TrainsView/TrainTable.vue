@@ -4,157 +4,142 @@
       {{ $t('trains.distance-exceeded') }}
     </div>
 
-    <div class="table-info no-trains" v-if="computedTrains.length == 0 && timetableLoaded">
-      {{ $t('trains.no-trains') }}
-    </div>
-
-    <div class="table-info loading" v-if="computedTrains.length == 0 && !timetableLoaded">
-      {{ $t('trains.loading') }}
-    </div>
-
-    <ul class="train-list">
-      <li
-        class="train-row"
-        v-for="train in computedTrains.filter((_, i) => i < 10)"
-        :key="train.trainNo + train.driverId"
-        tabindex="0"
-        @keydown.enter="changeScheduleShowState(train.timetableData?.timetableId)"
-        :ref="(el) => registerReference(el, train.timetableData?.timetableId)"
-      >
-        <div class="row-wrapper" @click="changeScheduleShowState(train.timetableData?.timetableId)">
-          <span class="info">
-            <div class="info_timetable" v-if="!train.timetableData">
-              <div class="timetable_general">
-                <span>
-                  {{ train.trainNo }} |
-                  <span style="color: gold">
-                    {{ $t('trains.no-timetable') }}
-                  </span>
-                </span>
-              </div>
-            </div>
-
-            <div class="info_timetable" v-else>
-              <div class="timetable_general">
-                <span class="timetable_hero">
-                  <span class="timetable_warnings">
-                    <span class="warning twr" v-if="train.timetableData.TWR">
-                      TWR
-                    </span>
-                    <span class="warning skr" v-if="train.timetableData.SKR">
-                      SKR
-                    </span>
-                  </span>
-
-                  <span>
-                    <strong>{{ train.timetableData.category }}</strong>
-                    {{ train.trainNo }} |
-                    <span style="color: gold"> {{ train.timetableData.routeDistance }} km </span>
-                  </span>
-                </span>
-
-                <span class="timetable_srjp g-tooltip">
-                  <span class="activator">
-                    SRJP
-
-                    <img
-                      :src="showedSchedule == train.timetableData.timetableId ? icons.arrowAsc : icons.arrowDesc"
-                      alt="arrow-icon"
-                    />
-                  </span>
-
-                  <span class="content"> {{ $t('trains.detailed-timetable') }} {{ train.trainNo }} </span>
-                </span>
-              </div>
-
-              <div class="timetable_route">
-                {{ train.timetableData.route.replace('|', ' - ') }}
-              </div>
-
-              <div class="timetable_stops">
-                <span v-if="train.timetableData.followingStops.length > 2">
-                  {{ $t('trains.via-title') }}
-
-                  <span v-html="displayStopList(train.timetableData.followingStops)"></span>
-                </span>
-              </div>
-            </div>
-
-            <div class="info_comments" v-if="getSceneriesWithComments(train.timetableData).length > 0">
-              <img
-                :src="icons.warning"
-                :title="
-                  `${$t('trains.timetable-comments')} (${getSceneriesWithComments(train.timetableData).join(',')})`
-                "
-              />
-            </div>
-          </span>
-
-          <span class="driver">
-            <div class="driver-info">
-              <span class="driver-name">
-                <a :href="'https://td2.info.pl/profile/?u=' + train.driverId" target="_blank">
-                  {{ train.driverName }}
-                </a>
-              </span>
-              &bull;
-              <span class="driver-type">
-                {{ train.locoType }}
-              </span>
-            </div>
-
-            <span class="driver-loco">
-              <div class="driver-cars">
-                <span v-if="train.cars.length > 0">
-                  {{ $t('trains.cars') }}:
-                  <span class="count">{{ train.cars.length }}</span>
-                </span>
-
-                <span v-else>{{ displayLocoInfo(train.locoType) }}</span>
-              </div>
-
-              <img
-                v-if="defaultVehicleIcons.includes(train.locoType)"
-                class="train-image"
-                :src="defaultLocoImage"
-                alt="default vehicle"
-              />
-              <img v-else class="train-image" :src="train.locoURL" :alt="train.locoType" @error="onImageError" />
-            </span>
-          </span>
-
-          <span class="stats">
-            <div class="stats-main">
-              <span v-for="stat in stats.main" :key="stat.name">
-                <img :src="require(`@/assets/icon-${stat.name}.svg`)" :alt="stat.name" />
-                {{ `${~~(train[stat.name] * (stat.multiplier || 1))}${stat.unit}` }}
-              </span>
-            </div>
-
-            <div class="stats-position">
-              <span v-for="stat in stats.position" :key="stat.name">
-                <div>
-                  <img :src="require(`@/assets/icon-${stat.name}.svg`)" :alt="stat.name" />
-                </div>
-                {{ (train[stat.prop] || '---') + (stat.unit || '') }}
-              </span>
-            </div>
-          </span>
+    <transition name="train-list-anim" mode="out-in">
+      <div :key="computedTrains.length+Number(timetableLoaded)">
+        <div class="table-info no-trains" v-if="computedTrains.length == 0 && timetableLoaded">
+          {{ $t('trains.no-trains') }}
         </div>
-
-        <transition name="unfold" @enter="enter" @afterEnter="afterEnter" @leave="leave">
-          <TrainSchedule
-            v-if="showedSchedule === train.timetableData?.timetableId"
-            :followingStops="train.timetableData?.followingStops"
-            @click="changeScheduleShowState(train.timetableData?.timetableId)"
-          />
-        </transition>
-      </li>
-
-      <div class="table-info limit" v-if="timetableLoaded && computedTrains.length > 10">
-        {{ $t('trains.table-limit') }}
+        <div class="table-info loading" v-if="computedTrains.length == 0 && !timetableLoaded">
+          {{ $t('trains.loading') }}
+        </div>
+        <ul class="train-list">
+          <li
+            class="train-row"
+            v-for="train in computedTrains.filter((_, i) => i < 10)"
+            :key="train.trainNo + train.driverId"
+            tabindex="0"
+            @keydown.enter="changeScheduleShowState(train.timetableData?.timetableId)"
+            :ref="(el) => registerReference(el, train.timetableData?.timetableId)"
+          >
+            <div class="row-wrapper" @click="changeScheduleShowState(train.timetableData?.timetableId)">
+              <span class="info">
+                <div class="info_timetable" v-if="!train.timetableData">
+                  <div class="timetable_general">
+                    <span>
+                      {{ train.trainNo }} |
+                      <span style="color: gold">
+                        {{ $t('trains.no-timetable') }}
+                      </span>
+                    </span>
+                  </div>
+                </div>
+                <div class="info_timetable" v-else>
+                  <div class="timetable_general">
+                    <span class="timetable_hero">
+                      <span class="timetable_warnings">
+                        <span class="warning twr" v-if="train.timetableData.TWR">
+                          TWR
+                        </span>
+                        <span class="warning skr" v-if="train.timetableData.SKR">
+                          SKR
+                        </span>
+                      </span>
+                      <span>
+                        <strong>{{ train.timetableData.category }}</strong>
+                        {{ train.trainNo }} |
+                        <span style="color: gold"> {{ train.timetableData.routeDistance }} km </span>
+                      </span>
+                    </span>
+                    <span class="timetable_srjp g-tooltip">
+                      <span class="activator">
+                        SRJP
+                        <img
+                          :src="showedSchedule == train.timetableData.timetableId ? icons.arrowAsc : icons.arrowDesc"
+                          alt="arrow-icon"
+                        />
+                      </span>
+                      <span class="content"> {{ $t('trains.detailed-timetable') }} {{ train.trainNo }} </span>
+                    </span>
+                  </div>
+                  <div class="timetable_route">
+                    {{ train.timetableData.route.replace('|', ' - ') }}
+                  </div>
+                  <div class="timetable_stops">
+                    <span v-if="train.timetableData.followingStops.length > 2">
+                      {{ $t('trains.via-title') }}
+                      <span v-html="displayStopList(train.timetableData.followingStops)"></span>
+                    </span>
+                  </div>
+                </div>
+                <div class="info_comments" v-if="getSceneriesWithComments(train.timetableData).length > 0">
+                  <img
+                    :src="icons.warning"
+                    :title="
+                      `${$t('trains.timetable-comments')} (${getSceneriesWithComments(train.timetableData).join(',')})`
+                    "
+                  />
+                </div>
+              </span>
+              <span class="driver">
+                <div class="driver-info">
+                  <span class="driver-name">
+                    <a :href="'https://td2.info.pl/profile/?u=' + train.driverId" target="_blank">
+                      {{ train.driverName }}
+                    </a>
+                  </span>
+                  &bull;
+                  <span class="driver-type">
+                    {{ train.locoType }}
+                  </span>
+                </div>
+                <span class="driver-loco">
+                  <div class="driver-cars">
+                    <span v-if="train.cars.length > 0">
+                      {{ $t('trains.cars') }}:
+                      <span class="count">{{ train.cars.length }}</span>
+                    </span>
+                    <span v-else>{{ displayLocoInfo(train.locoType) }}</span>
+                  </div>
+                  <img
+                    v-if="defaultVehicleIcons.includes(train.locoType)"
+                    class="train-image"
+                    :src="defaultLocoImage"
+                    alt="default vehicle"
+                  />
+                  <img v-else class="train-image" :src="train.locoURL" :alt="train.locoType" @error="onImageError" />
+                </span>
+              </span>
+              <span class="stats">
+                <div class="stats-main">
+                  <span v-for="stat in stats.main" :key="stat.name">
+                    <img :src="require(`@/assets/icon-${stat.name}.svg`)" :alt="stat.name" />
+                    {{ `${~~(train[stat.name] * (stat.multiplier || 1))}${stat.unit}` }}
+                  </span>
+                </div>
+                <div class="stats-position">
+                  <span v-for="stat in stats.position" :key="stat.name">
+                    <div>
+                      <img :src="require(`@/assets/icon-${stat.name}.svg`)" :alt="stat.name" />
+                    </div>
+                    {{ (train[stat.prop] || '---') + (stat.unit || '') }}
+                  </span>
+                </div>
+              </span>
+            </div>
+            <transition name="unfold-timetable-anim" @enter="enter" @afterEnter="afterEnter" @leave="leave">
+              <TrainSchedule
+                v-if="showedSchedule === train.timetableData?.timetableId"
+                :followingStops="train.timetableData?.followingStops"
+                @click="changeScheduleShowState(train.timetableData?.timetableId)"
+              />
+            </transition>
+          </li>
+          <div class="table-info limit" v-if="timetableLoaded && computedTrains.length > 10">
+            {{ $t('trains.table-limit') }}
+          </div>
+        </ul>
       </div>
-    </ul>
+    </transition>
   </div>
 </template>
 
@@ -371,11 +356,26 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '../../styles/responsive.scss';
 
-.unfold {
+.unfold-timetable-anim {
   &-leave-active,
   &-enter-active {
     transition: all 150ms ease-out;
     overflow: hidden;
+  }
+}
+
+.train-list-anim {
+  &-enter-from,
+  &-leave-to {
+    opacity: 0;
+  }
+
+  &-enter-active {
+    transition: all 100ms ease-out;
+  }
+
+  &-leave-active {
+    transition: all 100ms ease-out 100ms;
   }
 }
 
