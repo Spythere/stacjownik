@@ -10,26 +10,29 @@
 
     <div class="scenery-wrapper" v-if="stationInfo" ref="card-wrapper">
       <!-- <scenery-info-header :station="stationInfo" /> -->
+      <button v-if="!timetableOnly" class="back-btn btn btn--image" title="Powrót do scenerii" @click="navigateTo('/')">
+        <img :src="icons.back" alt="Back to scenery" />
+      </button>
+
+      <button
+        v-if="!timetableOnly"
+        class="history-btn btn btn--image"
+        @click="setCardViewMode(viewMode == 'history' ? 'info' : 'history')"
+        :title="viewMode == 'history' ? 'Powrót do widoku scenerii' : 'Widok historii dyżurnych ruchu'"
+      >
+        <img :src="viewMode == 'history' ? icons.history : icons.user" alt="icon" />
+      </button>
+
       <SceneryHeader :station="stationInfo" />
 
-
       <div v-if="viewMode == 'info'">
-        <button v-if="!timetableOnly" class="history-btn btn btn--image" @click="setCardViewMode('history')" title="Widok historii dyżurnych ruchu">
-          <img :src="icons.history" alt="History icon" />
-        </button>
-
         <SceneryInfo :station="stationInfo" :timetableOnly="timetableOnly" />
         <SceneryTimetable :station="stationInfo" :timetableOnly="timetableOnly" />
       </div>
-      
-      <div v-else-if="viewMode == 'history'">
-        <button class="history-btn btn btn--image" @click="setCardViewMode('info')">
-          <img :src="icons.user" alt="History icon" />
-        </button>
 
+      <div v-else-if="viewMode == 'history'">
         <SceneryHistory :name="stationInfo.name" />
       </div>
-
     </div>
   </div>
 </template>
@@ -41,7 +44,7 @@ import { DataStatus } from '@/scripts/enums/DataStatus';
 import SceneryInfo from '@/components/SceneryView/SceneryInfo.vue';
 import SceneryTimetable from '@/components/SceneryView/SceneryTimetable.vue';
 import SceneryHistory from '@/components/SceneryView/SceneryHistory.vue';
-import SceneryHeader from "@/components/SceneryView/SceneryHeader.vue";
+import SceneryHeader from '@/components/SceneryView/SceneryHeader.vue';
 
 import ActionButton from '@/components/Global/ActionButton.vue';
 
@@ -57,6 +60,7 @@ export default defineComponent({
     icons: {
       history: require('@/assets/icon-history.svg'),
       user: require('@/assets/icon-user.svg'),
+      back: require('@/assets/icon-back.svg'),
     },
 
     cardHeight: 0,
@@ -93,11 +97,15 @@ export default defineComponent({
     setCardViewMode(mode: string) {
       this.viewMode = mode;
     },
+
+    navigateTo(path: string) {
+      this.$router.push(path);
+    }
   },
 
   mounted() {
     this.cardHeight = (this.$refs['card-wrapper'] as HTMLElement).getBoundingClientRect().height;
-  }
+  },
 });
 </script>
 
@@ -151,15 +159,21 @@ $sceneryBgCol: #333;
   }
 }
 
-button.history-btn {
+button.btn {
   position: absolute;
-  top: 0.5em;
-  right: 0.5em;
-
   padding: 0.25em;
 
+  top: 0.5em;
   img {
     width: 2em;
   }
+}
+
+button.history-btn {
+  right: 0.5em;
+}
+
+button.back-btn {
+  left: 0.5em;
 }
 </style>

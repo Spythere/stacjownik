@@ -10,7 +10,7 @@
           @keydown.space="toggleTimeline(i)"
           tabindex="0"
         >
-          {{ timeline.date }} <img :src="icons.descArrow" alt="" />
+          {{ timeline.date }} <img :src="timeline.showTimeline ? icons.ascArrow : icons.descArrow" alt="arrow" />
         </h3>
 
         <span v-if="timeline.showTimeline">
