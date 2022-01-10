@@ -21,7 +21,7 @@
     </div>
 
     <transition name="scenery-timetable-list-anim" mode="out-in">
-      <div :key="timetableDataStatus + computedScheduledTrains.length">
+      <div :key="timetableDataStatus + selectedCheckpoint">
         <span class="timetable-item loading" v-if="timetableDataStatus == 0 && computedScheduledTrains.length == 0">
           {{ $t('app.loading') }}
         </span>

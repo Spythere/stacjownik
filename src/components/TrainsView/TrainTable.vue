@@ -5,13 +5,15 @@
     </div>
 
     <transition name="train-list-anim" mode="out-in">
-      <div :key="computedTrains.length+Number(timetableLoaded)">
+      <div :key="timetableLoaded">
         <div class="table-info no-trains" v-if="computedTrains.length == 0 && timetableLoaded">
           {{ $t('trains.no-trains') }}
         </div>
+
         <div class="table-info loading" v-if="computedTrains.length == 0 && !timetableLoaded">
           {{ $t('trains.loading') }}
         </div>
+
         <ul class="train-list">
           <li
             class="train-row"
@@ -33,6 +35,7 @@
                     </span>
                   </div>
                 </div>
+
                 <div class="info_timetable" v-else>
                   <div class="timetable_general">
                     <span class="timetable_hero">
@@ -40,16 +43,19 @@
                         <span class="warning twr" v-if="train.timetableData.TWR">
                           TWR
                         </span>
+
                         <span class="warning skr" v-if="train.timetableData.SKR">
                           SKR
                         </span>
                       </span>
+
                       <span>
                         <strong>{{ train.timetableData.category }}</strong>
                         {{ train.trainNo }} |
                         <span style="color: gold"> {{ train.timetableData.routeDistance }} km </span>
                       </span>
                     </span>
+
                     <span class="timetable_srjp g-tooltip">
                       <span class="activator">
                         SRJP
@@ -61,9 +67,11 @@
                       <span class="content"> {{ $t('trains.detailed-timetable') }} {{ train.trainNo }} </span>
                     </span>
                   </div>
+
                   <div class="timetable_route">
                     {{ train.timetableData.route.replace('|', ' - ') }}
                   </div>
+
                   <div class="timetable_stops">
                     <span v-if="train.timetableData.followingStops.length > 2">
                       {{ $t('trains.via-title') }}
@@ -71,6 +79,7 @@
                     </span>
                   </div>
                 </div>
+
                 <div class="info_comments" v-if="getSceneriesWithComments(train.timetableData).length > 0">
                   <img
                     :src="icons.warning"
@@ -80,6 +89,7 @@
                   />
                 </div>
               </span>
+
               <span class="driver">
                 <div class="driver-info">
                   <span class="driver-name">
@@ -109,6 +119,7 @@
                   <img v-else class="train-image" :src="train.locoURL" :alt="train.locoType" @error="onImageError" />
                 </span>
               </span>
+
               <span class="stats">
                 <div class="stats-main">
                   <span v-for="stat in stats.main" :key="stat.name">
@@ -126,6 +137,7 @@
                 </div>
               </span>
             </div>
+
             <transition name="unfold-timetable-anim" @enter="enter" @afterEnter="afterEnter" @leave="leave">
               <TrainSchedule
                 v-if="showedSchedule === train.timetableData?.timetableId"

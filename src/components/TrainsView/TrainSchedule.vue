@@ -85,6 +85,7 @@
 <script lang="ts">
 import TrainStop from '@/scripts/interfaces/TrainStop';
 import { computed, defineComponent } from '@vue/runtime-core';
+import decodedChars from "@/data/decodedChars.json";
 
 export default defineComponent({
   props: {
@@ -145,6 +146,11 @@ export default defineComponent({
         'last-confirmed': index == this.lastConfirmed && !stop.terminatesHere,
       };
     },
+
+    decodeSWDRComment(comment: string) {
+        const test = 'kurw&#x119;a&#x119;'
+        const charsToDecode = test.split('&#x');
+    }
   },
 });
 </script>
