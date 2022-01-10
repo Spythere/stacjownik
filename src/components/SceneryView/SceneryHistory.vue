@@ -1,14 +1,14 @@
 <template>
   <div class="scenery-history">
-    <h2>HISTORIA DYŻURÓW</h2>
+    <h2>{{ $t('journal.title') }}</h2>
 
     <ul>
       <li v-if="!isLoaded">
-        <h3>Ładowanie historii...</h3>
+        <h3>{{ $t('journal.loading') }}</h3>
       </li>
 
       <li v-if="isLoaded && dispatcherTimeline.length == 0">
-        <h3>Brak historii dla tej scenerii!</h3>
+        <h3>{{ $t('journal.no-history') }}</h3>
       </li>
 
       <li v-for="(timeline, i) in dispatcherTimeline" :key="i">
@@ -98,9 +98,9 @@ export default defineComponent({
   async mounted() {
     try {
       const apiResult: HistoryResultAPI = (await axios.get(`${API_URL}?name=${this.name}`)).data;
-      
+
       this.isLoaded = true;
-      if(!apiResult || !apiResult.result) return;
+      if (!apiResult || !apiResult.result) return;
 
       if (!apiResult.errorMessage) {
         this.dispatcherHistory = apiResult.result.dispatcherHistory;
@@ -122,7 +122,6 @@ export default defineComponent({
             return acc;
           }, [] as DispatcherTimeline[])
           .reverse();
-
       }
     } catch (error) {
       console.error(error);
@@ -148,12 +147,14 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .scenery-history {
-    height: 600px;
-    overflow-y: scroll;
+  height: 600px;
+  overflow-y: hidden;
 }
 
 ul {
-  margin-top: 1em;
+  margin-top: 2em;
+  height: 600px;
+  overflow-y: scroll;
 }
 
 li {

@@ -139,10 +139,9 @@
     "table-limit": "For performance reasons there's a limit of 10 trains shown at the same time." 
   },
   "journal": {
-    "title": "SCENERY ACTIVITY JOURNAL",
-    "subtitle": "Shows all recent dispatchers on a selected scenery",
-    "disclaimer": "<b>This functionality is unfinished!</b> \n Information shown here could be false or incorrect!",
-    "select": "Select a scenery"
+    "title": "DISPATCHER HISTORY",
+    "loading": "Loading dispatcher history data...",
+    "no-history": "No dispatcher history found!"
   },
   "scenery": {
     "users": "PLAYERS ONLINE",
@@ -152,7 +151,9 @@
     "no-users": "NO ACTIVE PLAYERS",
     "no-spawns": "NO OPEN SPAWNS",
     "no-scenery": "Oops! This scenery doesn't exist!",
-    "return-btn": "Return to main site"
+    "return-btn": "Return to main site",
+    "history-btn": "View the dispatcher history",
+    "info-btn": "Return to the scenery view"
   },
   "timetables": {
     "timetable-only": "Switch to timetable-only view",

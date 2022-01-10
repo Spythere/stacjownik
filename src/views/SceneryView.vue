@@ -9,7 +9,7 @@
     </div>
 
     <div class="scenery-wrapper" v-if="stationInfo" ref="card-wrapper">
-      <button v-if="!timetableOnly" class="back-btn btn btn--image" title="Powrót do scenerii" @click="navigateTo('/')">
+      <button v-if="!timetableOnly" class="back-btn btn btn--image" :title="$t('scenery.return-btn')" @click="navigateTo('/')">
         <img :src="icons.back" alt="Back to scenery" />
       </button>
 
@@ -17,9 +17,9 @@
         v-if="!timetableOnly"
         class="history-btn btn btn--image"
         @click="setCardViewMode(viewMode == 'history' ? 'info' : 'history')"
-        :title="viewMode == 'history' ? 'Powrót do widoku scenerii' : 'Widok historii dyżurnych ruchu'"
+        :title="viewMode == 'history' ? $t('scenery.info-btn') : $t('scenery.history-btn')"
       >
-        <img :src="viewMode == 'history' ? icons.history : icons.user" alt="icon" />
+        <img :src="viewMode == 'history' ? icons.user : icons.history" alt="icon" />
       </button>
 
       <SceneryHeader :station="stationInfo" />
