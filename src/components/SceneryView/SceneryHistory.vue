@@ -155,10 +155,11 @@ export default defineComponent({
 .scenery-history {
   height: 600px;
   overflow-y: hidden;
+
+  padding-top: 1em;
 }
 
 ul {
-  margin-top: 2em;
   height: 600px;
   overflow-y: scroll;
 }

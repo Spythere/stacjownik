@@ -67,8 +67,6 @@ export default defineComponent({
       back: require('@/assets/icon-back.svg'),
     },
 
-    cardHeight: 0,
-
     viewMode: 'info',
   }),
 
@@ -106,10 +104,6 @@ export default defineComponent({
     navigateTo(path: string) {
       this.$router.push(path);
     },
-  },
-
-  mounted() {
-    this.cardHeight = (this.$refs['card-wrapper'] as HTMLElement).getBoundingClientRect().height;
   },
 
   activated() {
