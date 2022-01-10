@@ -9,7 +9,6 @@
     </div>
 
     <div class="scenery-wrapper" v-if="stationInfo" ref="card-wrapper">
-      <!-- <scenery-info-header :station="stationInfo" /> -->
       <button v-if="!timetableOnly" class="back-btn btn btn--image" title="Powrót do scenerii" @click="navigateTo('/')">
         <img :src="icons.back" alt="Back to scenery" />
       </button>
@@ -144,6 +143,7 @@ $sceneryBgCol: #333;
 
     width: 75%;
     max-width: 950px;
+
 
     @include midScreen {
       width: 95%;

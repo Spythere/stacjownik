@@ -3,6 +3,14 @@
     <h2>HISTORIA DYŻURÓW</h2>
 
     <ul>
+      <li v-if="!isLoaded">
+        <h3>Ładowanie historii...</h3>
+      </li>
+
+      <li v-if="isLoaded && dispatcherTimeline.length == 0">
+        <h3>Brak historii dla tej scenerii!</h3>
+      </li>
+
       <li v-for="(timeline, i) in dispatcherTimeline" :key="i">
         <h3
           @click="toggleTimeline(i)"
@@ -70,6 +78,8 @@ export default defineComponent({
     dispatcherHistory: [] as DispatcherHistory[],
     dispatcherTimeline: [] as DispatcherTimeline[],
 
+    isLoaded: false,
+
     icons: {
       ascArrow: require('@/assets/icon-arrow-asc.svg'),
       descArrow: require('@/assets/icon-arrow-desc.svg'),
@@ -88,6 +98,9 @@ export default defineComponent({
   async mounted() {
     try {
       const apiResult: HistoryResultAPI = (await axios.get(`${API_URL}?name=${this.name}`)).data;
+      
+      this.isLoaded = true;
+      if(!apiResult || !apiResult.result) return;
 
       if (!apiResult.errorMessage) {
         this.dispatcherHistory = apiResult.result.dispatcherHistory;
@@ -109,6 +122,7 @@ export default defineComponent({
             return acc;
           }, [] as DispatcherTimeline[])
           .reverse();
+
       }
     } catch (error) {
       console.error(error);
@@ -134,7 +148,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .scenery-history {
-    max-height: 600px;
+    height: 600px;
     overflow-y: scroll;
 }
 
