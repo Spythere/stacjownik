@@ -9,77 +9,57 @@
       />
 
       <div class="search-box">
-        <input
-          class="search-input"
-          v-model="searchedTrain"
-          :placeholder="$t('trains.search-train')"
-        />
+        <input class="search-input" v-model="searchedTrain" :placeholder="$t('trains.search-train')" />
 
-        <img
-          class="search-exit"
-          :src="exitIcon"
-          alt="exit-icon"
-          @click="() => (searchedTrain = '')"
-        />
+        <img class="search-exit" :src="exitIcon" alt="exit-icon" @click="() => (searchedTrain = '')" />
       </div>
 
       <div class="search-box">
-        <input
-          class="search-input"
-          v-model="searchedDriver"
-          :placeholder="$t('trains.search-driver')"
-        />
+        <input class="search-input" v-model="searchedDriver" :placeholder="$t('trains.search-driver')" />
 
-        <img
-          class="search-exit"
-          :src="exitIcon"
-          alt="exit-icon"
-          @click="() => (searchedDriver = '')"
-        />
+        <img class="search-exit" :src="exitIcon" alt="exit-icon" @click="() => (searchedDriver = '')" />
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from "vue";
-import { useI18n } from "vue-i18n";
-import SelectBox from "../Global/SelectBox.vue";
+import { computed, defineComponent, inject, Ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import SelectBox from '../Global/SelectBox.vue';
 
 export default defineComponent({
   components: { SelectBox },
-  props: ["queryTrain"],
-  emits: ["changeSearchedTrain", "changeSearchedDriver", "changeSorter"],
+  emits: ['changeSearchedTrain', 'changeSearchedDriver', 'changeSorter'],
 
   data: () => ({
-    exitIcon: require("@/assets/icon-exit.svg"),
-    searchedTrain: "",
-    searchedDriver: "",
+    exitIcon: require('@/assets/icon-exit.svg'),
   }),
 
   setup() {
     const { t } = useI18n();
+    const queryTrain = inject('queryTrain') as Ref<string>;
 
     const sorterOptions = [
       {
-        id: "mass",
-        value: "masa",
+        id: 'mass',
+        value: 'masa',
       },
       {
-        id: "speed",
-        value: "prędkość",
+        id: 'speed',
+        value: 'prędkość',
       },
       {
-        id: "length",
-        value: "długość",
+        id: 'length',
+        value: 'długość',
       },
       {
-        id: "distance",
-        value: "kilometraż",
+        id: 'distance',
+        value: 'kilometraż',
       },
       {
-        id: "timetable",
-        value: "numer pociągu",
+        id: 'timetable',
+        value: 'numer pociągu',
       },
     ];
 
@@ -92,52 +72,41 @@ export default defineComponent({
 
     return {
       translatedSorterOptions,
+      queryTrain,
+      searchedTrain: inject('searchedTrain') as string,
+      searchedDriver: inject('searchedDriver') as string,
+      sorterActive: inject('sorterActive') as { id: string | number; dir: number },
     };
   },
 
   mounted() {
     if (this.queryTrain) {
       this.searchedTrain = this.queryTrain;
-      this.searchedDriver = "";
+      this.searchedDriver = '';
     }
   },
 
   methods: {
-    chooseTrain(train: string) {
-      this.$emit("changeSearchedTrain", train);
-    },
-
-    chooseDriver(driverName: string) {
-      this.$emit("changeSearchedDriver", driverName);
-    },
-
     changeSorter(item: { id: string | number; value: string }) {
-      this.$emit("changeSorter", { id: item.id, dir: -1 });
+      this.sorterActive.id = item.id;
+      this.sorterActive.dir = -1;
     },
   },
 
   watch: {
-    searchedTrain(value: string) {
-      this.chooseTrain(value);
-    },
-
-    searchedDriver(value: string) {
-      this.chooseDriver(value);
-    },
-
     queryTrain(train: string) {
       if (!train) return;
-      if (train == "") return;
+      if (train == '') return;
 
       this.searchedTrain = train;
-      this.searchedDriver = "";
+      this.searchedDriver = '';
     },
   },
 });
 </script>
 
 <style lang="scss" scoped>
-@import "../../styles/responsive";
+@import '../../styles/responsive';
 
 .train-options {
   @include smallScreen() {

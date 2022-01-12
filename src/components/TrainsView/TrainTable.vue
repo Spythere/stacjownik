@@ -5,25 +5,26 @@
     </div>
 
     <transition name="train-list-anim" mode="out-in">
-      <div :key="timetableLoaded">
-        <div class="table-info no-trains" v-if="computedTrains.length == 0 && timetableLoaded">
+      <div :key="timetableLoaded + searchedDriver + searchedTrain + sorterActive.id">
+        <div class="table-info no-trains" v-if="trains.length == 0 && timetableLoaded">
           {{ $t('trains.no-trains') }}
         </div>
 
-        <div class="table-info loading" v-if="computedTrains.length == 0 && !timetableLoaded">
+        <div class="table-info loading" v-if="trains.length == 0 && !timetableLoaded">
           {{ $t('trains.loading') }}
         </div>
 
         <ul class="train-list">
           <li
             class="train-row"
-            v-for="train in computedTrains.filter((_, i) => i < 10)"
+            v-for="train in trains"
             :key="train.trainNo + train.driverId"
             tabindex="0"
-            @keydown.enter="changeScheduleShowState(train.timetableData?.timetableId)"
+            @click="showTrainTimetable(train.trainNo, train.timetableData?.timetableId)"
+            @keydown.enter="showTrainTimetable(train.trainNo, train.timetableData?.timetableId)"
             :ref="(el) => registerReference(el, train.timetableData?.timetableId)"
           >
-            <div class="row-wrapper" @click="changeScheduleShowState(train.timetableData?.timetableId)">
+            <div class="row-wrapper">
               <span class="info">
                 <div class="info_timetable" v-if="!train.timetableData">
                   <div class="timetable_general">
@@ -60,7 +61,7 @@
                       <span class="activator">
                         SRJP
                         <img
-                          :src="showedSchedule == train.timetableData.timetableId ? icons.arrowAsc : icons.arrowDesc"
+                          :src="chosenSchedule == train.timetableData.timetableId ? icons.arrowAsc : icons.arrowDesc"
                           alt="arrow-icon"
                         />
                       </span>
@@ -127,6 +128,7 @@
                     {{ `${~~(train[stat.name] * (stat.multiplier || 1))}${stat.unit}` }}
                   </span>
                 </div>
+
                 <div class="stats-position">
                   <span v-for="stat in stats.position" :key="stat.name">
                     <div>
@@ -138,17 +140,11 @@
               </span>
             </div>
 
-            <transition name="unfold-timetable-anim" @enter="enter" @afterEnter="afterEnter" @leave="leave">
-              <TrainSchedule
-                v-if="showedSchedule === train.timetableData?.timetableId"
-                :followingStops="train.timetableData?.followingStops"
-                @click="changeScheduleShowState(train.timetableData?.timetableId)"
-              />
-            </transition>
+            <TrainSchedule
+              v-if="train.timetableData?.timetableId == chosenSchedule"
+              :followingStops="train.timetableData?.followingStops"
+            />
           </li>
-          <div class="table-info limit" v-if="timetableLoaded && computedTrains.length > 10">
-            {{ $t('trains.table-limit') }}
-          </div>
         </ul>
       </div>
     </transition>
@@ -156,7 +152,7 @@
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, Ref, ref } from '@vue/runtime-core';
+import { computed, ComputedRef, defineComponent, inject, Ref, ref } from '@vue/runtime-core';
 import { useStore } from '@/store';
 
 import defaultVehicleIconsJSON from '@/data/defaultVehicleIcons.json';
@@ -174,19 +170,13 @@ export default defineComponent({
   },
 
   props: {
-    computedTrains: {
+    trains: {
       type: Array as () => Train[],
       required: true,
-    },
-
-    queryTrain: {
-      type: String,
-      required: false,
     },
   },
 
   data: () => ({
-    showedSchedule: 0,
     defaultLocoImage: require('@/assets/unknown.png'),
 
     icons: {
@@ -242,21 +232,23 @@ export default defineComponent({
 
     const timetableDataStatus: ComputedRef<DataStatus> = computed(() => store.getters[GETTERS.timetableDataStatus]);
 
-    const queryTimetable = computed(() => {
-      const q = props.computedTrains.find((train) => train.trainNo === Number(props.queryTrain))?.timetableData;
+    const searchedTrain = inject('searchedTrain') as Ref<string>;
+    const searchedDriver = inject('searchedDriver') as Ref<string>;
+    const queryTrain = inject('queryTrain') as Ref<string>;
 
-      return q;
-    });
+    const chosenSchedule = ref(0);
 
     return {
       elList,
-      queryTimetable,
+      searchedTrain,
+      searchedDriver,
+      chosenSchedule,
+
+      sorterActive: inject('sorterActive') as { id: string | number; dir: number },
       timetableLoaded: computed(() => timetableDataStatus.value === DataStatus.Loaded),
       timetableError: computed(() => timetableDataStatus.value === DataStatus.Error),
       distanceLimitExceeded: computed(
-        () =>
-          props.computedTrains.findIndex(({ timetableData }) => timetableData && timetableData.routeDistance > 200) !=
-          -1
+        () => props.trains.findIndex(({ timetableData }) => timetableData && timetableData.routeDistance > 200) != -1
       ),
     };
   },
@@ -291,27 +283,34 @@ export default defineComponent({
     },
 
     focusOnTrain(trainNoStr: string) {
-      const timetableId = this.computedTrains.find((train) => train.trainNo == Number(trainNoStr))?.timetableData
-        ?.timetableId;
+      const timetableId = this.trains.find((train) => train.trainNo == Number(trainNoStr))?.timetableData?.timetableId;
 
       if (!timetableId) return;
 
-      this.changeScheduleShowState(timetableId);
+      this.showTrainTimetable(Number(trainNoStr), timetableId);
     },
 
-    changeScheduleShowState(timetableId: number | undefined) {
-      if (!timetableId || timetableId < 0) return;
+    showTrainTimetable(trainNo: number, timetableId: number | undefined) {      
+      if (!timetableId && this.trains.length == 1) this.searchedTrain = '';
 
-      this.showedSchedule = this.showedSchedule == timetableId ? 0 : timetableId;
+      if (!timetableId) return;
 
+      this.searchedTrain =
+        this.searchedTrain == trainNo.toString() && this.chosenSchedule != 0 ? '' : trainNo.toString();
+      this.chosenSchedule = this.chosenSchedule == timetableId ? 0 : timetableId;
+
+      this.scrollToTimetable(timetableId);
+    },
+
+    scrollToTimetable(timetableId: number) {
       setTimeout(() => {
         const currentEl = this.elList[timetableId];
 
         currentEl?.scrollIntoView({
           behavior: 'smooth',
-          block: this.showedSchedule == 0 ? 'nearest' : 'center',
+          block: 'center',
         });
-      }, 200);
+      }, 150);
     },
 
     onImageError(e: Event) {
@@ -325,7 +324,7 @@ export default defineComponent({
 
       return stops
         .reduce((acc: string[], stop: TrainStop, i: number) => {
-          if (stop.stopType.includes('ph'))
+          if (stop.stopType.includes('ph') && !stop.stopNameRAW.includes('po.'))
             acc.push(`<strong style='color:${stop.confirmed ? 'springgreen' : 'white'}'>${stop.stopName}</strong>`);
           else if (
             i > 0 &&
@@ -358,10 +357,6 @@ export default defineComponent({
       );
     },
   },
-
-  activated() {
-    if (this.queryTrain) this.focusOnTrain(this.queryTrain);
-  },
 });
 </script>
 
@@ -387,7 +382,7 @@ export default defineComponent({
   }
 
   &-leave-active {
-    transition: all 100ms ease-out 100ms;
+    transition: all 100ms ease-out;
   }
 }
 
@@ -448,7 +443,6 @@ img.train-image {
 .info {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
 
   & .timetable {
     &_hero {
@@ -458,6 +452,7 @@ img.train-image {
     &_general {
       display: flex;
       justify-content: space-between;
+      align-items: center;
     }
 
     &_srjp .activator {
@@ -551,17 +546,17 @@ img.train-image {
 }
 
 .stats {
+  font-size: 0.9em;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-
-  font-size: 0.9em;
 
   padding: 1em 0;
 
   &-main {
     display: flex;
-    margin-bottom: 1.5em;
+    justify-content: space-between;
+    align-items: center;
 
     & > span {
       display: flex;
