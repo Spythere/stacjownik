@@ -196,7 +196,6 @@ export default defineComponent({
 }
 
 .scenery-history {
-  height: 600px;
   overflow-y: hidden;
 
   padding-top: 1em;
