@@ -94,15 +94,14 @@
               <span class="driver">
                 <div class="driver-info">
                   <span class="driver-name">
-                    <a :href="'https://td2.info.pl/profile/?u=' + train.driverId" target="_blank">
-                      {{ train.driverName }}
-                    </a>
+                    {{ train.driverName }}
                   </span>
                   &bull;
                   <span class="driver-type">
                     {{ train.locoType }}
                   </span>
                 </div>
+                
                 <span class="driver-loco">
                   <div class="driver-cars">
                     <span v-if="train.cars.length > 0">
@@ -282,17 +281,8 @@ export default defineComponent({
       if (timetableId) this.elList[timetableId] = el;
     },
 
-    focusOnTrain(trainNoStr: string) {
-      const timetableId = this.trains.find((train) => train.trainNo == Number(trainNoStr))?.timetableData?.timetableId;
-
-      if (!timetableId) return;
-
-      this.showTrainTimetable(Number(trainNoStr), timetableId);
-    },
-
-    showTrainTimetable(trainNo: number, timetableId: number | undefined) {      
+    showTrainTimetable(trainNo: number, timetableId: number | undefined) {
       if (!timetableId && this.trains.length == 1) this.searchedTrain = '';
-
       if (!timetableId) return;
 
       this.searchedTrain =
