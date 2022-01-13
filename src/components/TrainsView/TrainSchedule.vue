@@ -16,8 +16,12 @@
 
             <span class="stop-name">
               <span v-html="stop.stopName"></span>
-              <img v-if="stop.comments" :src="icons.warning" :title="stop.comments">
-              <!-- {{ decodeURIComponent(stop.comments) }} -->
+
+              <span class="g-tooltip" v-if="stop.comments">
+                <img :src="icons.warning" />
+                <span class="content" v-html="stop.comments">
+                </span>
+              </span>
 
               <span v-html="stop.comments"></span>
             </span>
@@ -65,7 +69,6 @@
             </span>
           </span>
 
-
           <div class="stop_line" v-if="i < followingStops.length - 1">
             <div class="progress-bar"></div>
 
@@ -87,7 +90,7 @@
 <script lang="ts">
 import TrainStop from '@/scripts/interfaces/TrainStop';
 import { computed, defineComponent } from '@vue/runtime-core';
-import decodedChars from "@/data/decodedChars.json";
+import decodedChars from '@/data/decodedChars.json';
 
 export default defineComponent({
   props: {
@@ -101,8 +104,8 @@ export default defineComponent({
 
   data: () => ({
     icons: {
-      warning: require("@/assets/icon-warning.svg")
-    }
+      warning: require('@/assets/icon-warning.svg'),
+    },
   }),
 
   setup(props) {
@@ -150,9 +153,9 @@ export default defineComponent({
     },
 
     decodeSWDRComment(comment: string) {
-        const test = 'kurw&#x119;a&#x119;'
-        const charsToDecode = test.split('&#x');
-    }
+      const test = 'kurw&#x119;a&#x119;';
+      const charsToDecode = test.split('&#x');
+    },
   },
 });
 </script>
@@ -181,9 +184,13 @@ $stopNameClr: #22a8d1;
 
 .train-schedule {
   max-height: 600px;
-  margin-top: 2em;
+
+  padding-top: 1em;
+  margin-top: 1em;
 
   overflow-y: auto;
+
+  z-index: 5;
 }
 
 .schedule-wrapper {
@@ -201,6 +208,66 @@ $stopNameClr: #22a8d1;
   width: 3px;
 
   background-color: $barClr;
+}
+
+.stop-name {
+  background: $stopNameClr;
+  padding: 0.3em 0.5em;
+
+  display: flex;
+  align-items: center;
+
+  .g-tooltip > .content {
+    font-size: 0.9em;
+  }
+
+  img {
+    width: 1em;
+    margin-left: 0.5em;
+  }
+}
+
+.stop-date {
+  display: flex;
+  align-items: center;
+
+  .date {
+    background: $dateClr;
+    padding: 0.3em 0.5em;
+  }
+
+  .stop {
+    &.ph,
+    &.ph-pm,
+    &.pm {
+      background: $stopExchangeClr;
+    }
+
+    background: $stopDefaultClr;
+  }
+
+  .arrival,
+  .departure {
+    &.delayed {
+      s {
+        color: #999;
+      }
+
+      span {
+        color: $delayedClr;
+      }
+    }
+
+    &.preponed {
+      s {
+        color: #999;
+      }
+
+      span {
+        color: $preponedClr;
+      }
+    }
+  }
 }
 
 ul.stop_list > li.stop {
@@ -346,62 +413,6 @@ ul.stop_list > li.stop {
     background: var(--clr-secondary);
     border: 3px solid $barClr;
     border-radius: 100%;
-  }
-
-  .stop-name {
-    background: $stopNameClr;
-    padding: 0.3em 0.5em;
-
-    display: flex;
-    align-items: center;
-
-    img {
-      width: 1em;
-      margin-left: 0.5em;
-    }
-  }
-
-  .stop-date {
-    display: flex;
-    align-items: center;
-
-    .date {
-      background: $dateClr;
-      padding: 0.3em 0.5em;
-    }
-
-    .stop {
-      &.ph,
-      &.ph-pm,
-      &.pm {
-        background: $stopExchangeClr;
-      }
-
-      background: $stopDefaultClr;
-    }
-
-    .arrival,
-    .departure {
-      &.delayed {
-        s {
-          color: #999;
-        }
-
-        span {
-          color: $delayedClr;
-        }
-      }
-
-      &.preponed {
-        s {
-          color: #999;
-        }
-
-        span {
-          color: $preponedClr;
-        }
-      }
-    }
   }
 }
 </style>

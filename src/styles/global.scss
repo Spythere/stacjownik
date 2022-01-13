@@ -50,7 +50,7 @@ body {
 .g-tooltip {
   position: relative;
 
-  z-index: 10;
+  z-index: 100;
 
   .content {
     position: absolute;
@@ -59,13 +59,12 @@ body {
 
     transform: translate(-50%, -120%);
 
-    z-index: 10;
     visibility: hidden;
     opacity: 0;
 
-    min-width: 150px;
+    min-width: 250px;
 
-    background-color: var(--clr-accent);
+    background-color: gray;
     text-align: center;
     
     padding: 0.15em;
@@ -81,7 +80,7 @@ body {
       margin-left: -5px;
       border-width: 5px;
       border-style: solid;
-      border-color: var(--clr-accent) transparent transparent transparent;
+      border-color: gray transparent transparent transparent;
     }
 
     @include smallScreen() {

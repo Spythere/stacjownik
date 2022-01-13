@@ -101,7 +101,7 @@
                     {{ train.locoType }}
                   </span>
                 </div>
-                
+
                 <span class="driver-loco">
                   <div class="driver-cars">
                     <span v-if="train.cars.length > 0">
@@ -300,7 +300,7 @@ export default defineComponent({
           behavior: 'smooth',
           block: 'center',
         });
-      }, 150);
+      }, 200);
     },
 
     onImageError(e: Event) {
@@ -433,6 +433,7 @@ img.train-image {
 .info {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
 
   & .timetable {
     &_hero {
@@ -493,7 +494,7 @@ img.train-image {
 
   &_comments {
     img {
-      width: 2em;
+      width: 1.75em;
     }
   }
 }
