@@ -22,8 +22,6 @@
                 <span class="content" v-html="stop.comments">
                 </span>
               </span>
-
-              <span v-html="stop.comments"></span>
             </span>
             <span class="stop-date">
               <span
