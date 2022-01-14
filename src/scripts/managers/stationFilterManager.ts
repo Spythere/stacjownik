@@ -8,7 +8,7 @@ const sortStations = (a: Station, b: Station, sorter: { index: number; dir: numb
       if ((a.generalInfo?.reqLevel || 0) > (b.generalInfo?.reqLevel || 0)) return sorter.dir;
       if ((a.generalInfo?.reqLevel || 0) < (b.generalInfo?.reqLevel || 0)) return -sorter.dir;
       break;
-    
+
     case 2:
       if ((a.onlineInfo?.statusTimestamp || 0) > (b.onlineInfo?.statusTimestamp || 0)) return sorter.dir;
       if ((a.onlineInfo?.statusTimestamp || 0) < (b.onlineInfo?.statusTimestamp || 0)) return -sorter.dir;
@@ -83,9 +83,10 @@ const filterStations = (station: Station, filters: Filter) => {
     if (filters['real'] && station.generalInfo.lines != '') return returnMode;
     if (filters['fictional'] && station.generalInfo.lines == '') return returnMode;
 
-    if (station.generalInfo.reqLevel == -1) return true;
-    if (station.generalInfo.reqLevel < filters['minLevel']) return returnMode;
-    if (station.generalInfo.reqLevel > filters['maxLevel']) return returnMode;
+    // if (station.generalInfo.reqLevel == -1) return true;
+    // if (station.generalInfo.reqLevel == -1 && filters['minLevel'] == 0) return true;
+    if (station.generalInfo.reqLevel + (station.generalInfo.nonPublic ? 1 : 0) < filters['minLevel']) return returnMode;
+    if (station.generalInfo.reqLevel + (station.generalInfo.nonPublic ? 1 : 0) > filters['maxLevel']) return returnMode;
 
     if (filters['no-1track'] && (station.generalInfo.routes.oneWay.catenary != 0 || station.generalInfo.routes.oneWay.noCatenary != 0)) return returnMode;
     if (filters['no-2track'] && (station.generalInfo.routes.twoWay.catenary != 0 || station.generalInfo.routes.twoWay.noCatenary != 0)) return returnMode;
