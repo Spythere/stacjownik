@@ -47,7 +47,7 @@
                 default: station.generalInfo?.default,
                 'non-public': station.generalInfo?.nonPublic,
                 online: station.onlineInfo,
-                'station-unavailable': station.generalInfo?.unavailable,
+                unavailable: station.generalInfo?.unavailable,
               }"
             >
               <b v-if="station.generalInfo?.project" style="color: salmon;">{{ station.generalInfo.project }}</b>
@@ -57,18 +57,22 @@
             <td class="station_level">
               <span v-if="station.generalInfo">
                 <span
-                  v-if="station.generalInfo.reqLevel > -1 && !station.generalInfo.nonPublic"
+                  v-if="
+                    station.generalInfo.reqLevel > -1 &&
+                      !station.generalInfo.nonPublic &&
+                      !station.generalInfo.unavailable
+                  "
                   :style="calculateExpStyle(station.generalInfo.reqLevel, station.generalInfo.supportersOnly)"
                 >
                   {{ station.generalInfo.reqLevel >= 2 ? station.generalInfo.reqLevel : 'L' }}
                 </span>
 
+                <span v-else-if="station.generalInfo.nonPublic">
+                  <img :src="lockIcon" alt="non-public" :title="$t('desc.non-public')" />
+                </span>
+
                 <span v-else>
-                  <img
-                    :src="lockIcon"
-                    alt="non-public"
-                    :title="$t('desc.non-public')"
-                  />
+                  <img :src="unavailableIcon" alt="unavailable" :title="$t('desc.unavailable')" />
                 </span>
               </span>
 
@@ -165,13 +169,6 @@
                 :src="SBLIcon"
                 alt="SBL"
                 :title="$t('desc.SBL') + `${station.generalInfo.SBL}`"
-              />
-
-              <img
-                v-if="station.generalInfo?.unavailable"
-                :src="unavailableIcon"
-                alt="icon-unavailable"
-                :title="$t('desc.unavailable')"
               />
 
               <img v-if="!station.generalInfo" :src="unknownIcon" alt="icon-unknown" :title="$t('desc.unknown')" />
@@ -384,12 +381,18 @@ tr.station {
 
 td.station {
   &_name {
+    font-weight: bold;
+
     &.default {
-      font-weight: bold;
       color: $accentCol;
     }
 
     &.non-public {
+      color: #bebebe;
+    }
+
+    &.unavailable {
+      font-weight: 500;
       color: #bebebe;
     }
   }
