@@ -19,8 +19,7 @@
 
               <span class="g-tooltip" v-if="stop.comments">
                 <img :src="icons.warning" />
-                <span class="content" v-html="stop.comments">
-                </span>
+                <span class="content" v-html="stop.comments"> </span>
               </span>
             </span>
             <span class="stop-date">
