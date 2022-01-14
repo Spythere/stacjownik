@@ -44,7 +44,8 @@
             <td
               class="station_name"
               :class="{
-                'default-station': station.generalInfo?.default,
+                default: station.generalInfo?.default,
+                'non-public': station.generalInfo?.nonPublic,
                 online: station.onlineInfo,
                 'station-unavailable': station.generalInfo?.unavailable,
               }"
@@ -53,17 +54,30 @@
               {{ station.name }}
             </td>
 
-            <td class="station_level" >
+            <td class="station_level">
               <span v-if="station.generalInfo">
-                <span :style="calculateExpStyle(station.generalInfo.reqLevel, station.generalInfo.supportersOnly)">
-                  {{ station.generalInfo.reqLevel > -1 ? (station.generalInfo.reqLevel >= 2 ? station.generalInfo.reqLevel : 'L') : '?' }}
+                <span
+                  v-if="station.generalInfo.reqLevel > -1 && !station.generalInfo.nonPublic"
+                  :style="calculateExpStyle(station.generalInfo.reqLevel, station.generalInfo.supportersOnly)"
+                >
+                  {{ station.generalInfo.reqLevel >= 2 ? station.generalInfo.reqLevel : 'L' }}
+                </span>
+
+                <span v-else>
+                  <img
+                    :src="lockIcon"
+                    alt="non-public"
+                    :title="$t('desc.non-public')"
+                  />
                 </span>
               </span>
-              
-              <span v-else>?</span>
+
+              <span v-else>
+                ?
+              </span>
             </td>
 
-            <td class="station_status" >
+            <td class="station_status">
               <span class="status-badge" :class="station.onlineInfo.statusID" v-if="station.onlineInfo">
                 {{ $t(`status.${station.onlineInfo.statusID}`) }}
                 {{ station.onlineInfo.statusID == 'online' ? station.onlineInfo.statusTimeString : '' }}
@@ -99,7 +113,9 @@
               <span
                 v-if="station.generalInfo && station.generalInfo.routes.twoWay.noCatenary > 0"
                 class="track no-catenary"
-                :title="`Liczba niezelektryfikowanych szlaków dwutorowych: ${station.generalInfo.routes.twoWay.noCatenary}`"
+                :title="
+                  `Liczba niezelektryfikowanych szlaków dwutorowych: ${station.generalInfo.routes.twoWay.noCatenary}`
+                "
               >
                 {{ station.generalInfo.routes.twoWay.noCatenary }}
               </span>
@@ -109,7 +125,9 @@
               <span
                 v-if="station.generalInfo && station.generalInfo.routes.oneWay.catenary > 0"
                 class="track catenary"
-                :title="`Liczba zelektryfikowanych szlaków jednotorowych: ${station.generalInfo.routes.oneWay.catenary}`"
+                :title="
+                  `Liczba zelektryfikowanych szlaków jednotorowych: ${station.generalInfo.routes.oneWay.catenary}`
+                "
               >
                 {{ station.generalInfo.routes.oneWay.catenary }}
               </span>
@@ -117,7 +135,9 @@
               <span
                 v-if="station.generalInfo && station.generalInfo.routes.oneWay.noCatenary > 0"
                 class="track no-catenary"
-                :title="`Liczba niezelektryfikowanych szlaków jednotorowych: ${station.generalInfo.routes.oneWay.noCatenary}`"
+                :title="
+                  `Liczba niezelektryfikowanych szlaków jednotorowych: ${station.generalInfo.routes.oneWay.noCatenary}`
+                "
               >
                 {{ station.generalInfo.routes.oneWay.noCatenary }}
               </span>
@@ -148,47 +168,35 @@
               />
 
               <img
-                v-if="station.generalInfo?.nonPublic"
-                :src="lockIcon"
-                alt="non-public"
-                :title="$t('desc.non-public')"
-              />
-
-              <img
                 v-if="station.generalInfo?.unavailable"
                 :src="unavailableIcon"
                 alt="icon-unavailable"
                 :title="$t('desc.unavailable')"
               />
 
-              <img
-                v-if="!station.generalInfo"
-                :src="unknownIcon"
-                alt="icon-unknown"
-                :title="$t('desc.unknown')"
-              />
+              <img v-if="!station.generalInfo" :src="unknownIcon" alt="icon-unknown" :title="$t('desc.unknown')" />
             </td>
 
             <td class="station_users" :class="{ inactive: !station.onlineInfo }">
               <span>
-                <span class="highlight">{{ station.onlineInfo?.currentUsers || "0" }}</span>
+                <span class="highlight">{{ station.onlineInfo?.currentUsers || '0' }}</span>
                 /
-                <span>{{ station.onlineInfo?.maxUsers || "0" }}</span>
+                <span>{{ station.onlineInfo?.maxUsers || '0' }}</span>
               </span>
             </td>
 
             <td class="station_spawns" :class="{ inactive: !station.onlineInfo }">
-              <span class="highlight">{{ station.onlineInfo?.spawns.length || "0" }}</span>
+              <span class="highlight">{{ station.onlineInfo?.spawns.length || '0' }}</span>
             </td>
 
             <td class="station_schedules" :class="{ inactive: !station.onlineInfo }">
               <span>
                 <span class="highlight">
-                  {{ station.onlineInfo?.scheduledTrains?.length || "0" }}
+                  {{ station.onlineInfo?.scheduledTrains?.length || '0' }}
                 </span>
                 /
                 <span style="color: #bbb">
-                  {{ station.onlineInfo?.scheduledTrains?.filter((train) => train.stopInfo.confirmed).length || "0" }}
+                  {{ station.onlineInfo?.scheduledTrains?.filter((train) => train.stopInfo.confirmed).length || '0' }}
                 </span>
               </span>
             </td>
@@ -375,6 +383,17 @@ tr.station {
 }
 
 td.station {
+  &_name {
+    &.default {
+      font-weight: bold;
+      color: $accentCol;
+    }
+
+    &.non-public {
+      color: #bebebe;
+    }
+  }
+
   &_level,
   &_dispatcher-exp {
     span {
@@ -384,6 +403,11 @@ td.station {
       height: 2em;
       line-height: 2em;
       margin: 0 auto;
+    }
+
+    img {
+      width: 2em;
+      border-radius: 50%;
     }
   }
 
