@@ -233,7 +233,6 @@ export default defineComponent({
 
     const searchedTrain = inject('searchedTrain') as Ref<string>;
     const searchedDriver = inject('searchedDriver') as Ref<string>;
-    const queryTrain = inject('queryTrain') as Ref<string>;
 
     const chosenSchedule = ref(0);
 
