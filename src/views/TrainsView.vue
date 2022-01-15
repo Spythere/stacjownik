@@ -34,8 +34,8 @@ const filteredTrainList = (
   return trainList
     .filter(
       (train) =>
-        (searchedTrain.length > 0 ? train.trainNo.toString().includes(searchedTrain) : true) &&
-        (searchedDriver.length > 0 ? train.driverName.toLowerCase().includes(searchedDriver.toLowerCase()) : true)
+        (searchedTrain.length > 0 ? train.trainNo.toString().startsWith(searchedTrain) : true) &&
+        (searchedDriver.length > 0 ? train.driverName.toLowerCase().startsWith(searchedDriver.toLowerCase()) : true)
     )
     .sort((a: Train, b: Train) => {
       switch (sorterActive.id) {
