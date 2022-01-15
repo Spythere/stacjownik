@@ -151,24 +151,47 @@
     </transition>
 
     <div class="paginator" v-if="timetableLoaded && currentTrains.length > 0">
-      <span class="paginator_item" @click="changePageTo(0)">
-        &lt;&lt;
+      <span
+        class="paginator_item"
+        :tabindex="currentPage == 0 ? -1 : 0"
+        :class="{ disabled: currentPage == 0 }"
+        @click="changePageTo(0)"
+        @keydown.enter="changePageTo(0)"
+      >
+        1&lt;
       </span>
 
-      <span class="paginator_item" @click="changePageTo(currentPage - 1)">
+      <span
+        class="paginator_item"
+        :tabindex="currentPage == 0 ? -1 : 0"
+        :class="{ disabled: currentPage == 0 }"
+        @click="changePageTo(currentPage - 1)"
+        @keydown.enter="changePageTo(currentPage - 1)"
+      >
         &lt;
       </span>
-      <!-- :class="{ current: currentPage == i + currentPage - 1 }"
-        @click="changePageTo(i + currentPage - 1)" -->
+
       <span class="paginator_item">
         {{ currentPage + 1 }}
       </span>
 
-      <span class="paginator_item" @click="changePageTo(currentPage + 1)">
+      <span
+        class="paginator_item"
+        :tabindex="currentPage == paginatorPageCount - 1 ? -1 : 0"
+        :class="{ disabled: currentPage == paginatorPageCount - 1 }"
+        @click="changePageTo(currentPage + 1)"
+        @keydown.enter="changePageTo(currentPage + 1)"
+      >
         &gt;
       </span>
-      <span class="paginator_item" @click="changePageTo(paginatorPageCount - 1)">
-        &gt;&gt;
+      <span
+        class="paginator_item"
+        :tabindex="currentPage == paginatorPageCount - 1 ? -1 : 0"
+        :class="{ disabled: currentPage == paginatorPageCount - 1 }"
+        @click="changePageTo(paginatorPageCount - 1)"
+        @keydown.enter="changePageTo(paginatorPageCount - 1)"
+      >
+        &gt;{{ paginatorPageCount }}
       </span>
     </div>
   </div>
@@ -251,7 +274,6 @@ export default defineComponent({
 
   setup(props) {
     const store = useStore();
-    const elList: Ref<(HTMLElement | null)[]> = ref([]);
 
     const timetableDataStatus: ComputedRef<DataStatus> = computed(() => store.getters[GETTERS.timetableDataStatus]);
 
@@ -274,8 +296,11 @@ export default defineComponent({
       currentPage.value = 0;
     });
 
+    watch(paginatorPageCount, (value) => {
+      if (currentPage.value >= value) currentPage.value = paginatorPageCount.value - 1;
+    });
+
     return {
-      elList,
       searchedTrain,
       searchedDriver,
       chosenSchedule,
@@ -318,10 +343,6 @@ export default defineComponent({
       }, 10);
     },
 
-    registerReference(el: HTMLElement, timetableId: number | undefined) {
-      if (timetableId) this.elList[timetableId.toString()] = el;
-    },
-
     showTrainTimetable(trainNo: number, timetableId: number | undefined) {
       if (!timetableId && this.trains.length == 1) this.searchedTrain = '';
       if (!timetableId) return;
@@ -329,19 +350,6 @@ export default defineComponent({
       this.searchedTrain =
         this.searchedTrain == trainNo.toString() && this.chosenSchedule != 0 ? '' : trainNo.toString();
       this.chosenSchedule = this.chosenSchedule == timetableId ? 0 : timetableId;
-
-      this.scrollToTimetable(timetableId);
-    },
-
-    scrollToTimetable(timetableId: number) {
-      setTimeout(() => {
-        const currentEl = this.elList[timetableId.toString()];
-
-        currentEl?.scrollIntoView({
-          behavior: 'smooth',
-          block: 'center',
-        });
-      }, 200);
     },
 
     onImageError(e: Event) {
@@ -394,7 +402,7 @@ export default defineComponent({
     },
 
     changePageTo(index: number) {
-      this.currentPage = index < 0 ? 0 : index % this.paginatorPageCount;
+      this.currentPage = index < 0 ? 0 : index >= this.paginatorPageCount ? this.paginatorPageCount - 1 : index;
     },
   },
 });
@@ -647,8 +655,13 @@ img.train-image {
 
     cursor: pointer;
 
-    &.current {
-      background-color: salmon;
+    &.disabled {
+      outline: 2px solid lightgray;
+      color: lightgray;
+    }
+
+    &:focus {
+      outline: 2px solid white;
     }
   }
 }
