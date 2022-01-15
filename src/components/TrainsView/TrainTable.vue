@@ -5,7 +5,7 @@
     </div>
 
     <transition name="train-list-anim" mode="out-in">
-      <div :key="timetableLoaded + searchedDriver + searchedTrain + sorterActive.id">
+      <div :key="timetableLoaded + searchedDriver + searchedTrain + sorterActive.id + currentPage">
         <div class="table-info no-trains" v-if="trains.length == 0 && timetableLoaded">
           {{ $t('trains.no-trains') }}
         </div>
@@ -13,16 +13,17 @@
         <div class="table-info loading" v-if="trains.length == 0 && !timetableLoaded">
           {{ $t('trains.loading') }}
         </div>
-
+        <!-- 
+            :ref="(el) => registerReference(el, train.timetableData?.timetableId)"
+ -->
         <ul class="train-list">
           <li
             class="train-row"
-            v-for="train in trains"
+            v-for="train in currentTrains"
             :key="train.trainNo + train.driverId"
             tabindex="0"
             @click="showTrainTimetable(train.trainNo, train.timetableData?.timetableId)"
             @keydown.enter="showTrainTimetable(train.trainNo, train.timetableData?.timetableId)"
-            :ref="(el) => registerReference(el, train.timetableData?.timetableId)"
           >
             <div class="row-wrapper">
               <span class="info">
@@ -110,13 +111,14 @@
                     </span>
                     <span v-else>{{ displayLocoInfo(train.locoType) }}</span>
                   </div>
+
                   <img
-                    v-if="defaultVehicleIcons.includes(train.locoType)"
                     class="train-image"
-                    :src="defaultLocoImage"
-                    alt="default vehicle"
+                    hidden="true"
+                    :src="train.locoURL"
+                    :alt="train.locoType"
+                    @load="onImageLoad"
                   />
-                  <img v-else class="train-image" :src="train.locoURL" :alt="train.locoType" @error="onImageError" />
                 </span>
               </span>
 
@@ -147,11 +149,33 @@
         </ul>
       </div>
     </transition>
+
+    <div class="paginator" v-if="timetableLoaded && currentTrains.length > 0">
+      <span class="paginator_item" @click="changePageTo(0)">
+        &lt;&lt;
+      </span>
+
+      <span class="paginator_item" @click="changePageTo(currentPage - 1)">
+        &lt;
+      </span>
+      <!-- :class="{ current: currentPage == i + currentPage - 1 }"
+        @click="changePageTo(i + currentPage - 1)" -->
+      <span class="paginator_item">
+        {{ currentPage + 1 }}
+      </span>
+
+      <span class="paginator_item" @click="changePageTo(currentPage + 1)">
+        &gt;
+      </span>
+      <span class="paginator_item" @click="changePageTo(paginatorPageCount - 1)">
+        &gt;&gt;
+      </span>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, inject, Ref, ref } from '@vue/runtime-core';
+import { computed, ComputedRef, defineComponent, inject, Ref, ref, watch } from '@vue/runtime-core';
 import { useStore } from '@/store';
 
 import defaultVehicleIconsJSON from '@/data/defaultVehicleIcons.json';
@@ -236,11 +260,29 @@ export default defineComponent({
 
     const chosenSchedule = ref(0);
 
+    // PAGINATION
+    const PAGE_CAPACITY = 5;
+
+    const currentPage = ref(0);
+    const paginatorPageCount = computed(() => Math.ceil(props.trains.length / PAGE_CAPACITY));
+
+    const currentTrains = computed(() => {
+      return props.trains.slice(currentPage.value * PAGE_CAPACITY, currentPage.value * PAGE_CAPACITY + PAGE_CAPACITY);
+    });
+
+    watch([searchedTrain, searchedDriver], () => {
+      currentPage.value = 0;
+    });
+
     return {
       elList,
       searchedTrain,
       searchedDriver,
       chosenSchedule,
+
+      currentTrains,
+      paginatorPageCount,
+      currentPage,
 
       sorterActive: inject('sorterActive') as { id: string | number; dir: number },
       timetableLoaded: computed(() => timetableDataStatus.value === DataStatus.Loaded),
@@ -277,7 +319,7 @@ export default defineComponent({
     },
 
     registerReference(el: HTMLElement, timetableId: number | undefined) {
-      if (timetableId) this.elList[timetableId] = el;
+      if (timetableId) this.elList[timetableId.toString()] = el;
     },
 
     showTrainTimetable(trainNo: number, timetableId: number | undefined) {
@@ -293,7 +335,7 @@ export default defineComponent({
 
     scrollToTimetable(timetableId: number) {
       setTimeout(() => {
-        const currentEl = this.elList[timetableId];
+        const currentEl = this.elList[timetableId.toString()];
 
         currentEl?.scrollIntoView({
           behavior: 'smooth',
@@ -305,7 +347,12 @@ export default defineComponent({
     onImageError(e: Event) {
       const imageEl = e.target as HTMLImageElement;
 
-      imageEl.src = this.defaultLocoImage;
+      imageEl.hidden = true;
+    },
+
+    onImageLoad(e: Event) {
+      const imageEl = e.target as HTMLImageElement;
+      imageEl.hidden = false;
     },
 
     displayStopList(stops: TrainStop[]): string | undefined {
@@ -344,6 +391,10 @@ export default defineComponent({
           return acc;
         }, [] as string[]) || []
       );
+    },
+
+    changePageTo(index: number) {
+      this.currentPage = index < 0 ? 0 : index % this.paginatorPageCount;
     },
   },
 });
@@ -578,6 +629,26 @@ img.train-image {
       img {
         width: 2em;
       }
+    }
+  }
+}
+
+.paginator {
+  display: flex;
+  justify-content: center;
+
+  &_item {
+    padding: 0.25em 0.5em;
+    margin: 0 0.5em;
+    outline: 2px solid salmon;
+
+    text-align: center;
+    width: 30px;
+
+    cursor: pointer;
+
+    &.current {
+      background-color: salmon;
     }
   }
 }
