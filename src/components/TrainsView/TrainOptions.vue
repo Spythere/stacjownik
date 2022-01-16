@@ -38,7 +38,6 @@ export default defineComponent({
 
   setup() {
     const { t } = useI18n();
-    const queryTrain = inject('queryTrain') as Ref<string>;
 
     const sorterOptions = [
       {
@@ -72,34 +71,16 @@ export default defineComponent({
 
     return {
       translatedSorterOptions,
-      queryTrain,
       searchedTrain: inject('searchedTrain') as string,
       searchedDriver: inject('searchedDriver') as string,
       sorterActive: inject('sorterActive') as { id: string | number; dir: number },
     };
   },
 
-  mounted() {
-    if (this.queryTrain) {
-      this.searchedTrain = this.queryTrain;
-      this.searchedDriver = '';
-    }
-  },
-
   methods: {
     changeSorter(item: { id: string | number; value: string }) {
       this.sorterActive.id = item.id;
       this.sorterActive.dir = -1;
-    },
-  },
-
-  watch: {
-    queryTrain(train: string) {
-      if (!train) return;
-      if (train == '') return;
-
-      this.searchedTrain = train;
-      this.searchedDriver = '';
     },
   },
 });

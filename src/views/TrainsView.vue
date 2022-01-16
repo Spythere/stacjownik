@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, provide, reactive, Ref, ref } from 'vue';
+import { computed, ComputedRef, defineComponent, provide, reactive, Ref, ref, watch } from 'vue';
 
 import { DataStatus } from '@/scripts/enums/DataStatus';
 import Train from '@/scripts/interfaces/Train';
@@ -80,7 +80,6 @@ export default defineComponent({
   data: () => ({
     statsIcon: require('@/assets/icon-stats.svg'),
     trainStatsOpen: false,
-    queryTrain: '',
   }),
 
   setup(props) {
@@ -94,12 +93,9 @@ export default defineComponent({
     const searchedDriver = ref('');
     const searchedTrain = ref('');
 
-    const queryTrain = ref(props.train) as Ref<string>;
-
     provide('searchedTrain', searchedTrain);
     provide('searchedDriver', searchedDriver);
     provide('sorterActive', sorterActive);
-    provide('queryTrain', queryTrain);
 
     const computedTrains: ComputedRef<Train[]> = computed(() => {
       if (timetableDataStatus.value != DataStatus.Loaded) return [];
@@ -119,6 +115,20 @@ export default defineComponent({
       sorterActive,
       chosenTrainCategories,
     };
+  },
+
+  mounted() {
+    if (this.train) {
+      this.searchedTrain = this.train;
+      this.searchedDriver = '';
+    }
+  },
+
+  activated() {    
+    if (this.train) {
+      this.searchedTrain = this.train;
+      this.searchedDriver = '';
+    }
   },
 });
 </script>

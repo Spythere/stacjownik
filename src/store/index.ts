@@ -404,7 +404,7 @@ export const store = createStore<State>({
               && station.generalInfo.checkpoints
               && station.generalInfo.checkpoints.length > 0
               && station.generalInfo.checkpoints.some(cp => cp.checkpointName.toLowerCase().includes(stop.stopNameRAW.toLowerCase())))
-              
+
               return true;
 
             return false;
@@ -471,7 +471,7 @@ export const store = createStore<State>({
             ...station.onlineInfo,
             scheduledTrains
           } : undefined
-         };
+        };
       });
 
       state.trainList = state.trainList.reduce((acc, train) => {

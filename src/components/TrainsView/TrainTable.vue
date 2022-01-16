@@ -1,11 +1,11 @@
 <template>
   <div class="train-table">
-    <div class="traffic-warning" v-if="distanceLimitExceeded">
-      {{ $t('trains.distance-exceeded') }}
-    </div>
-
     <transition name="train-list-anim" mode="out-in">
-      <div :key="timetableLoaded + searchedDriver + searchedTrain + sorterActive.id + currentPage">
+      <div :key="Number(timetableLoaded) + currentPage">
+        <div class="traffic-warning" v-if="distanceLimitExceeded">
+          {{ $t('trains.distance-exceeded') }}
+        </div>
+
         <div class="table-info no-trains" v-if="trains.length == 0 && timetableLoaded">
           {{ $t('trains.no-trains') }}
         </div>
@@ -56,17 +56,6 @@
                         {{ train.trainNo }} |
                         <span style="color: gold"> {{ train.timetableData.routeDistance }} km </span>
                       </span>
-                    </span>
-
-                    <span class="timetable_srjp g-tooltip">
-                      <span class="activator">
-                        SRJP
-                        <img
-                          :src="chosenSchedule == train.timetableData.timetableId ? icons.arrowAsc : icons.arrowDesc"
-                          alt="arrow-icon"
-                        />
-                      </span>
-                      <span class="content"> {{ $t('trains.detailed-timetable') }} {{ train.trainNo }} </span>
                     </span>
                   </div>
 
@@ -150,50 +139,52 @@
       </div>
     </transition>
 
-    <div class="paginator" v-if="timetableLoaded && currentTrains.length > 0">
-      <span
-        class="paginator_item"
-        :tabindex="currentPage == 0 ? -1 : 0"
-        :class="{ disabled: currentPage == 0 }"
-        @click="changePageTo(0)"
-        @keydown.enter="changePageTo(0)"
-      >
-        1&lt;
-      </span>
+    <transition name="train-list-anim">
+      <div class="paginator" v-if="timetableLoaded && currentTrains.length > 0">
+        <span
+          class="paginator_item"
+          :tabindex="currentPage == 0 ? -1 : 0"
+          :class="{ disabled: currentPage == 0 }"
+          @click="changePageTo(0)"
+          @keydown.enter="changePageTo(0)"
+        >
+          1&lt;
+        </span>
 
-      <span
-        class="paginator_item"
-        :tabindex="currentPage == 0 ? -1 : 0"
-        :class="{ disabled: currentPage == 0 }"
-        @click="changePageTo(currentPage - 1)"
-        @keydown.enter="changePageTo(currentPage - 1)"
-      >
-        &lt;
-      </span>
+        <span
+          class="paginator_item"
+          :tabindex="currentPage == 0 ? -1 : 0"
+          :class="{ disabled: currentPage == 0 }"
+          @click="changePageTo(currentPage - 1)"
+          @keydown.enter="changePageTo(currentPage - 1)"
+        >
+          &lt;
+        </span>
 
-      <span class="paginator_item page-number">
-        {{ currentPage + 1 }}
-      </span>
+        <span class="paginator_item page-number">
+          {{ currentPage + 1 }}
+        </span>
 
-      <span
-        class="paginator_item"
-        :tabindex="currentPage == paginatorPageCount - 1 ? -1 : 0"
-        :class="{ disabled: currentPage == paginatorPageCount - 1 }"
-        @click="changePageTo(currentPage + 1)"
-        @keydown.enter="changePageTo(currentPage + 1)"
-      >
-        &gt;
-      </span>
-      <span
-        class="paginator_item"
-        :tabindex="currentPage == paginatorPageCount - 1 ? -1 : 0"
-        :class="{ disabled: currentPage == paginatorPageCount - 1 }"
-        @click="changePageTo(paginatorPageCount - 1)"
-        @keydown.enter="changePageTo(paginatorPageCount - 1)"
-      >
-        &gt;{{ paginatorPageCount }}
-      </span>
-    </div>
+        <span
+          class="paginator_item"
+          :tabindex="currentPage == paginatorPageCount - 1 ? -1 : 0"
+          :class="{ disabled: currentPage == paginatorPageCount - 1 }"
+          @click="changePageTo(currentPage + 1)"
+          @keydown.enter="changePageTo(currentPage + 1)"
+        >
+          &gt;
+        </span>
+        <span
+          class="paginator_item"
+          :tabindex="currentPage == paginatorPageCount - 1 ? -1 : 0"
+          :class="{ disabled: currentPage == paginatorPageCount - 1 }"
+          @click="changePageTo(paginatorPageCount - 1)"
+          @keydown.enter="changePageTo(paginatorPageCount - 1)"
+        >
+          &gt;{{ paginatorPageCount }}
+        </span>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -660,7 +651,6 @@ img.train-image {
     &.page-number {
       font-weight: bold;
       color: gold;
-
     }
 
     &.disabled {
