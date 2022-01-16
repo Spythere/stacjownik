@@ -89,6 +89,14 @@
       "defaultValue": true
     },
     {
+      "id": "SUP",
+      "name": "SUP",
+      "iconName": "SUP",
+      "section": "control",
+      "value": true,
+      "defaultValue": true
+    },
+    {
       "id": "SBL",
       "name": "SBL",
       "iconName": "SBL",

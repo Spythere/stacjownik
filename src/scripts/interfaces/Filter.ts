@@ -7,6 +7,7 @@ export default interface Filter {
   "SPK": boolean;
   "SCS": boolean;
   "SPE": boolean;
+  "SUP": boolean;
   ręczne: boolean;
   mechaniczne: boolean;
   "SBL": boolean;

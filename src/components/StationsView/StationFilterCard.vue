@@ -99,7 +99,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, ref } from '@vue/runtime-core';
+import { defineComponent, inject } from '@vue/runtime-core';
 
 import { ACTIONS, GETTERS, MUTATIONS } from '@/constants/storeConstants';
 import inputData from '@/data/options.json';

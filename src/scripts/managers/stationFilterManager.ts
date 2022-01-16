@@ -103,6 +103,7 @@ const filterStations = (station: Station, filters: Filter) => {
     if (filters['SPK'] && (station.generalInfo.controlType === 'SPK' || station.generalInfo.controlType.includes('+SPK'))) return returnMode;
     if (filters['SCS'] && (station.generalInfo.controlType === 'SCS' || station.generalInfo.controlType.includes('+SCS'))) return returnMode;
     if (filters['SPE'] && (station.generalInfo.controlType === 'SPE' || station.generalInfo.controlType.includes('+SPE'))) return returnMode;
+    if (filters['SUP'] && station.generalInfo.SUP) return returnMode;
 
     if (filters['SCS'] && filters['SPK'] && (station.generalInfo.controlType.includes('SPK') || station.generalInfo.controlType.includes('SCS'))) return returnMode;
 
@@ -125,6 +126,7 @@ export default class StationFilterManager {
     SPK: false,
     SCS: false,
     SPE: false,
+    SUP: false,
     ręczne: false,
     mechaniczne: false,
     współczesna: false,
