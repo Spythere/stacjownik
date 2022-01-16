@@ -12,6 +12,7 @@
     "control-type": "Control type: ",
     "signals-type": "Signals type:  ",
     "SBL": "This scenery has automatic line blockade system on following routes: ",
+    "SUP": "Requires the SUP application (level crossing remote control simulator)",
     "TWB-all": "This scenery has two-way route blockade on all routes",
     "TWB-routes": "This scenery has two-way route blockade on following routes: ",
     "default": "This scenery is available by default",

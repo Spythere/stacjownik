@@ -1,5 +1,5 @@
 export const URLs = {
-  sceneryData: "https://spythere.github.io/api/stationData.json",
+  sceneryData: "https://spythere.github.io/api/stationDataNew.json",
   sceneryDataDev: "http://127.0.0.1:8000/data",
   stations: "https://api.td2.info.pl:9640/?method=getStationsOnline",
   trains: "https://api.td2.info.pl:9640/?method=getTrainsOnline",

@@ -18,6 +18,8 @@ export default interface Station {
     signalType: string;
     controlType: string;
 
+    SUP: boolean;
+
     default: boolean;
     nonPublic: boolean;
     unavailable: boolean;

@@ -8,6 +8,13 @@
     />
 
     <img
+      v-if="station.generalInfo?.SUP"
+      :src="require(`@/assets/icon-SUP.svg`)"
+      alt="SUP (RASP-UZK)"
+      :title="$t('desc.SUP')"
+    />
+
+    <img
       v-if="station.generalInfo?.signalType"
       :src="require(`@/assets/icon-${station.generalInfo.signalType}.svg`)"
       :alt="station.generalInfo.signalType"

@@ -156,6 +156,14 @@
                 :title="$t('desc.control-type') + $t(`controls.${station.generalInfo.controlType}`)"
               />
 
+               <img
+                class="icon-info"
+                v-if="station.generalInfo?.SUP"
+                :src="require(`@/assets/icon-SUP.svg`)"
+                alt="SUP (RASP-UZK)"
+                :title="$t('desc.SUP')"
+              />
+
               <img
                 class="icon-info"
                 v-if="station.generalInfo?.signalType"
@@ -246,6 +254,7 @@ export default defineComponent({
     userIcon: require('@/assets/icon-user.svg'),
     trainIcon: require('@/assets/icon-train.svg'),
     SBLIcon: require('@/assets/icon-SBL.svg'),
+    SUPIcon: require("@/assets/icon-SUP.svg"),
     lockIcon: require('@/assets/icon-lock.svg'),
     unavailableIcon: require('@/assets/icon-unavailable.svg'),
     unknownIcon: require('@/assets/icon-unknown.svg'),

@@ -42,7 +42,7 @@ export interface State {
   listenerLaunched: boolean;
 }
 
-type StationJSONData = [string, string, string, string, string, string, string, string, string, string, number, number, number, number, string | null, boolean, boolean, boolean];
+type StationJSONData = [string, string, string, string, string, string, string, string, boolean, string, string, number, number, number, number, string | null, boolean, boolean, boolean];
 
 export const key: InjectionKey<Store<State>> = Symbol()
 
@@ -286,23 +286,26 @@ export const store = createStore<State>({
           supportersOnly: station[5] == "TAK",
           signalType: station[6],
           controlType: station[7],
-          SBL: station[8],
-          TWB: station[9],
+          
+          SUP: station[8],
+
+          SBL: station[9],
+          TWB: station[10],
           routes: {
             oneWay: {
-              catenary: station[10],
-              noCatenary: station[11]
+              catenary: station[11],
+              noCatenary: station[12]
             },
             twoWay: {
-              catenary: station[12],
-              noCatenary: station[13]
+              catenary: station[13],
+              noCatenary: station[14]
             }
           },
-          checkpoints: station[14] ? (station[14]).split(";").map(sub => ({ checkpointName: sub, scheduledTrains: [] })) : [],
+          checkpoints: station[15] ? (station[15]).split(";").map(sub => ({ checkpointName: sub, scheduledTrains: [] })) : [],
 
-          default: station[15],
-          nonPublic: station[16],
-          unavailable: station[17],
+          default: station[16],
+          nonPublic: station[17],
+          unavailable: station[18],
         }
       }));
 
