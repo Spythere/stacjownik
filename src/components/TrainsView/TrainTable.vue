@@ -171,7 +171,7 @@
         &lt;
       </span>
 
-      <span class="paginator_item">
+      <span class="paginator_item page-number">
         {{ currentPage + 1 }}
       </span>
 
@@ -651,10 +651,17 @@ img.train-image {
     margin: 0 0.5em;
     outline: 2px solid salmon;
 
+    min-width: 30px;
+
     text-align: center;
-    width: 30px;
 
     cursor: pointer;
+
+    &.page-number {
+      font-weight: bold;
+      color: gold;
+
+    }
 
     &.disabled {
       outline: 2px solid lightgray;
