@@ -297,7 +297,8 @@ export default defineComponent({
     });
 
     watch(paginatorPageCount, (value) => {
-      if (currentPage.value >= value) currentPage.value = paginatorPageCount.value - 1;
+      if (currentPage.value >= value)
+        currentPage.value = paginatorPageCount.value - 1 < 0 ? 0 : paginatorPageCount.value - 1;
     });
 
     return {
