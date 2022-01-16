@@ -87,7 +87,6 @@
 <script lang="ts">
 import TrainStop from '@/scripts/interfaces/TrainStop';
 import { computed, defineComponent } from '@vue/runtime-core';
-import decodedChars from '@/data/decodedChars.json';
 
 export default defineComponent({
   props: {
@@ -147,11 +146,6 @@ export default defineComponent({
         'minor-stop-active': this.activeMinorStops.includes(index),
         'last-confirmed': index == this.lastConfirmed && !stop.terminatesHere,
       };
-    },
-
-    decodeSWDRComment(comment: string) {
-      const test = 'kurw&#x119;a&#x119;';
-      const charsToDecode = test.split('&#x');
     },
   },
 });
@@ -214,13 +208,12 @@ $stopNameClr: #22a8d1;
   display: flex;
   align-items: center;
 
-  .g-tooltip > .content {
-    font-size: 0.9em;
-  }
-
-  img {
-    width: 1em;
+  .g-tooltip {
     margin-left: 0.5em;
+
+    img {
+      width: 1em;
+    }
   }
 }
 

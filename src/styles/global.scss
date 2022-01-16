@@ -50,12 +50,15 @@ body {
 .g-tooltip {
   position: relative;
 
-  z-index: 11;
+  display: inline-block;
+  vertical-align: middle;
 
   .content {
     position: absolute;
     left: 50%;
     top: 0;
+
+    z-index: 100;
 
     transform: translate(-50%, -120%);
 
@@ -67,10 +70,10 @@ body {
     background-color: gray;
     text-align: center;
     
-    padding: 0.15em;
     border-radius: .5em;
 
     transition: opacity 0.3s;
+    padding: 0.25em;
 
     &::after {
       content: "";

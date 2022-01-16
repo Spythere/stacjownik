@@ -40,22 +40,30 @@
         >
           <span class="timetable-general">
             <span class="general-info">
-              <span>
+              <span class="info-number">
                 <strong>{{ scheduledTrain.category }}</strong>
                 {{ scheduledTrain.trainNo }}
+
+                <span class="g-tooltip" v-if="scheduledTrain.stopInfo.comments">
+                  <img :src="icons.warning" />
+                  <span class="content" v-html="scheduledTrain.stopInfo.comments"> </span>
+                </span>
               </span>
               |
               <span style="color: white">
                 {{ scheduledTrain.driverName }}
               </span>
+
               <div class="info-route">
                 <strong>{{ scheduledTrain.beginsAt }} - {{ scheduledTrain.terminatesAt }}</strong>
               </div>
             </span>
+
             <span class="general-status">
               <span :class="scheduledTrain.stopStatus">{{ $t(`timetables.${scheduledTrain.stopStatus}`) }} </span>
             </span>
           </span>
+
           <span class="timetable-schedule">
             <span class="schedule-arrival">
               <span
@@ -64,10 +72,12 @@
                 v-html="$t('timetables.begins')"
               >
               </span>
+
               <span class="arrival-time" v-else>
                 {{ scheduledTrain.stopInfo.arrivalTimeString }} ({{ scheduledTrain.stopInfo.arrivalDelay }})
               </span>
             </span>
+
             <span class="schedule-stop">
               <span class="stop-time" v-if="scheduledTrain.stopInfo.stopTime">
                 {{ scheduledTrain.stopInfo.stopTime }}
@@ -75,6 +85,7 @@
               </span>
               <span class="stop-arrow arrow"></span>
             </span>
+
             <span class="schedule-departure">
               <span
                 class="departure-time terminates"
@@ -82,6 +93,7 @@
                 v-html="$t('timetables.terminates')"
               >
               </span>
+
               <span class="departure-time" v-else>
                 {{ scheduledTrain.stopInfo.departureTimeString }} ({{ scheduledTrain.stopInfo.departureDelay }})
               </span>
@@ -118,6 +130,9 @@ export default defineComponent({
   data: () => ({
     viewIcon: require('@/assets/icon-view.svg'),
     listOpen: false,
+    icons: {
+      warning: require('@/assets/icon-warning.svg'),
+    },
   }),
 
   setup(props) {
@@ -128,7 +143,11 @@ export default defineComponent({
 
     const timetableDataStatus = computed(() => store.getters[GETTERS.timetableDataStatus]) as ComputedRef<DataStatus>;
 
-    const selectedCheckpoint = ref('');
+    const selectedCheckpoint = ref(
+      props.station?.generalInfo?.checkpoints?.length == 0
+        ? ''
+        : props.station?.generalInfo?.checkpoints[0].checkpointName || ''
+    );
 
     const computedScheduledTrains = computed(() => {
       if (!props.station) return [];
@@ -236,82 +255,6 @@ h3 {
   }
 }
 
-.select-box {
-  font-size: 1.2em;
-}
-
-.option {
-  &-container {
-    position: relative;
-
-    input {
-      display: none;
-    }
-
-    label {
-      padding: 0.5em 0.35em;
-      cursor: pointer;
-    }
-  }
-
-  &-item {
-    display: flex;
-    justify-content: center;
-
-    &:hover {
-      background-color: rgba(#868686, 0.85);
-    }
-
-    transition: background 150ms ease-in;
-  }
-
-  &-selected,
-  &-list {
-    background: #444;
-    border-radius: 0.5em;
-  }
-
-  &-selected {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    padding: 0.35em 0.7em;
-    min-width: 10em;
-    cursor: pointer;
-
-    span {
-      margin-right: 2em;
-    }
-
-    img {
-      max-width: 0.75em;
-    }
-  }
-
-  &-list {
-    position: absolute;
-    top: 100%;
-    left: 0;
-
-    width: 100%;
-
-    z-index: 10;
-
-    background-color: rgba(#222, 0.95);
-    overflow: hidden;
-
-    max-height: 0;
-
-    &.open {
-      max-height: 250px;
-      opacity: 1;
-    }
-
-    transition: all 150ms ease-in;
-  }
-}
-
 .timetable {
   &-header {
     a {
@@ -335,6 +278,7 @@ h3 {
     background: $bgLigtherCol;
 
     cursor: pointer;
+    z-index: 10;
 
     @include smallScreen() {
       display: flex;
@@ -362,8 +306,6 @@ h3 {
     justify-content: space-between;
 
     text-align: left;
-
-    overflow: hidden;
 
     @include smallScreen() {
       width: 95%;
@@ -433,12 +375,22 @@ h3 {
 }
 
 .general-info {
-  span {
+  .info-number {
     color: $accentCol;
+
   }
 
   .info-route {
     margin-top: 0.5em;
+  }
+
+  .g-tooltip > .content {
+    z-index: 100;
+    color: white;
+  }
+
+  img {
+    width: 1.1em;
   }
 }
 
