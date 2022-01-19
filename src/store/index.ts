@@ -479,6 +479,10 @@ export const store = createStore<State>({
 
       state.trainList = state.trainList.reduce((acc, train) => {
         const timetableData = timetableList.find(data => data && data.trainNo === train.trainNo && data.driverId === train.driverId);
+        const allTimetables = timetableList.filter(data => data && data.driverId === train.driverId && data.trainNo !== train.trainNo);
+
+        if (allTimetables.length > 0)
+          return acc;
 
         const trainStopData = state.stationList
           .find(station => station.name === train.currentStationName)
