@@ -65,7 +65,7 @@
           </span>
 
           <span class="timetable-schedule">
-            <span class="schedule-arrival">
+            <span class="schedule-arrival">              
               <span
                 class="arrival-time begins"
                 v-if="scheduledTrain.stopInfo.beginsHere"
@@ -76,6 +76,7 @@
               <span class="arrival-time" v-else>
                 {{ scheduledTrain.stopInfo.arrivalTimeString }} ({{ scheduledTrain.stopInfo.arrivalDelay }})
               </span>
+
             </span>
 
             <span class="schedule-stop">

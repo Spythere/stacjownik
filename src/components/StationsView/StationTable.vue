@@ -37,8 +37,10 @@
             class="station"
             v-for="(station, i) in stations"
             :key="i + station.name"
-            @click="() => setScenery(station.name)"
+            @click.left="setScenery(station.name)"
+            @click.right="openForumSite($event, station.generalInfo?.url)"
             @keydown.enter="setScenery(station.name)"
+            @keydown.space="openForumSite($event, station.generalInfo?.url)"
             tabindex="0"
           >
             <td
@@ -156,7 +158,7 @@
                 :title="$t('desc.control-type') + $t(`controls.${station.generalInfo.controlType}`)"
               />
 
-               <img
+              <img
                 class="icon-info"
                 v-if="station.generalInfo?.SUP"
                 :src="require(`@/assets/icon-SUP.svg`)"
@@ -254,7 +256,7 @@ export default defineComponent({
     userIcon: require('@/assets/icon-user.svg'),
     trainIcon: require('@/assets/icon-train.svg'),
     SBLIcon: require('@/assets/icon-SBL.svg'),
-    SUPIcon: require("@/assets/icon-SUP.svg"),
+    SUPIcon: require('@/assets/icon-SUP.svg'),
     lockIcon: require('@/assets/icon-lock.svg'),
     unavailableIcon: require('@/assets/icon-unavailable.svg'),
     unknownIcon: require('@/assets/icon-unknown.svg'),
@@ -292,6 +294,13 @@ export default defineComponent({
         query: { station: station.name.replaceAll(' ', '_') },
       });
     },
+
+    openForumSite(e: Event, url: string | undefined) {
+        if(!url) return;
+
+        e.preventDefault();
+        window.open(url, '_blank');
+    }
   },
 });
 </script>
