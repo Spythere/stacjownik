@@ -143,7 +143,13 @@
   "journal": {
     "title": "HISTORIA DYŻURÓW",
     "loading": "Ładowanie historii dyżurów...",
-    "no-history": "Brak historii dyżurów dla tej scenerii!"
+    "no-history": "Brak historii dyżurów dla tej scenerii!",
+
+    "search-train": "Numer pociągu",
+    "search-driver": "Nick maszynisty",
+
+    "option-distance": "kilometraż",
+    "option-total-stops": "stacje"
   },
   "scenery": {
     "users": "GRACZE ONLINE",

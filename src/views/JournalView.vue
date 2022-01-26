@@ -1,25 +1,7 @@
 <template>
   <section class="history-view">
     <div class="history-wrapper">
-      <h2>{{ $t('history.title') }}</h2>
-      <form class="history_search" action="javascript:void(0);">
-        <div class="search-box">
-          <input
-            class="search-input"
-            v-model="searchedTrain"
-            :placeholder="$t('history.search-train')"
-            @submit="test"
-          />
-          <img class="search-exit" :src="exitIcon" alt="exit-icon" @click="clearTrain" />
-        </div>
-        <div class="search-box">
-          <input class="search-input" v-model="searchedDriver" :placeholder="$t('history.search-driver')" />
-          <img class="search-exit" :src="exitIcon" alt="exit-icon" @click="clearDriver" />
-        </div>
-        <action-button class="search-button" @click="search">
-          {{ $t('history.search') }}
-        </action-button>
-      </form>
+      <JournalOptions @changedOptions="search" />
 
       <div class="history_list">
         <div class="list_wrapper">
@@ -114,13 +96,17 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, Ref, ref } from 'vue';
+import { computed, defineComponent, provide, reactive, Ref, ref } from 'vue';
 import axios from 'axios';
 
-import ActionButton from '@/components/Global/ActionButton.vue';
 import SearchBox from '@/components/Global/SearchBox.vue';
 import dateMixin from '@/mixins/dateMixin';
 import { DataStatus } from '@/scripts/enums/DataStatus';
+
+import ActionButton from '@/components/Global/ActionButton.vue';
+import JournalOptions from '@/components/JournalView/JournalOptions.vue';
+
+import FilterOption from '@/scripts/interfaces/FilterOption';
 
 const PROD_MODE = true;
 
@@ -160,80 +146,72 @@ interface TimetableHistory {
   fulfilled: boolean;
 }
 
+const initFilters = {
+  status: {
+    active: {
+      id: 'active',
+      name: 'status',
+      value: false,
+      defaultValue: false,
+    },
+
+    abandoned: {
+      id: 'abandoned',
+      name: 'status',
+      value: false,
+      defaultValue: false,
+    },
+
+    fulfilled: {
+      id: 'fulfilled',
+      name: 'status',
+      value: true,
+      defaultValue: true,
+    },
+  },
+};
+
 export default defineComponent({
-  components: { SearchBox, ActionButton },
+  components: { SearchBox, ActionButton, JournalOptions },
   mixins: [dateMixin],
 
   data: () => ({
     exitIcon: require('@/assets/icon-exit.svg'),
   }),
+
   setup() {
-    const historyList: Ref<TimetableHistory[]> = ref([]);
     const historyDataStatus: Ref<{ status: DataStatus; error: string | null }> = ref({
       status: DataStatus.Loading,
       error: null,
     });
 
+    const sorterActive = ref({ id: 'distance', dir: -1 });
     const searchedDriver = ref('');
     const searchedTrain = ref('');
-    const maxCount = ref(15);
 
-    const fetchHistoryData = async (
-      props: {
-        searchedDriver?: string;
-        searchedTrain?: string;
-        maxCount?: number;
-      } = {}
-    ) => {
-      historyDataStatus.value.status = DataStatus.Loading;
-
-      const queries: string[] = [];
-
-      if (!props.searchedDriver && !props.searchedTrain) queries.push('count=15');
-      if (props.maxCount) queries.push(`count=${props.maxCount}`);
-      if (props.searchedDriver) queries.push(`driver=${props.searchedDriver}`);
-      if (props.searchedTrain) queries.push(`train=${props.searchedTrain}`);
-
-      try {
-        const responseData: APIResponse | null = await (await axios.get(`${API_URL}?${queries.join('&')}`)).data;
-
-        if (!responseData) {
-          historyDataStatus.value.status = DataStatus.Error;
-          historyDataStatus.value.error = 'Brak danych!';
-          return;
-        }
-
-        if (responseData.errorMessage) {
-          historyDataStatus.value.status = DataStatus.Error;
-          historyDataStatus.value.error = responseData.errorMessage;
-
-          return;
-        }
-
-        if (!responseData.response) return;
-
-        // Response data exists
-        historyList.value = responseData.response;
-        historyDataStatus.value.status = DataStatus.Loaded;
-      } catch (error) {
-        historyDataStatus.value.status = DataStatus.Error;
-        historyDataStatus.value.error = 'Ups! Coś poszło nie tak!';
-      }
-    };
-
-    // on created
-    fetchHistoryData();
+    provide('searchedTrain', searchedTrain);
+    provide('searchedDriver', searchedDriver);
+    provide('sorterActive', sorterActive);
 
     return {
-      historyList,
-      searchedDriver,
-      searchedTrain,
-      maxCount,
-      fetchHistoryData,
+      historyList: ref([]) as Ref<TimetableHistory[]>,
       historyDataStatus,
+
       isDataLoading: computed(() => historyDataStatus.value.status === DataStatus.Loading),
       isDataError: computed(() => historyDataStatus.value.status === DataStatus.Error),
+
+      searchedDriver,
+      searchedTrain,
+      sorterActive,
+
+      maxCount: ref(15),
+
+      filters: reactive({ ...initFilters }) as { [filterSection: string]: { [filterId: string]: FilterOption } },
     };
+  },
+
+  mounted() {
+    this.fetchHistoryData();
   },
 
   methods: {
@@ -246,23 +224,7 @@ export default defineComponent({
       });
     },
 
-    clearDriver() {
-      this.searchedDriver = '';
-
-      this.search();
-    },
-
-    test() {
-      console.log('xd');
-    },
-
-    clearTrain() {
-      this.searchedTrain = '';
-
-      this.search();
-    },
-
-    async search() {
+    search() {
       this.fetchHistoryData({
         searchedDriver: this.searchedDriver,
         searchedTrain: this.searchedTrain,
@@ -272,12 +234,58 @@ export default defineComponent({
     keyPressed({ keyCode }) {
       if (keyCode == 13) this.search();
     },
+
+    async fetchHistoryData(
+      props: {
+        searchedDriver?: string;
+        searchedTrain?: string;
+        maxCount?: number;
+      } = {}
+    ) {
+      this.historyDataStatus.status = DataStatus.Loading;
+
+      const queries: string[] = [];
+
+      if (!props.searchedDriver && !props.searchedTrain) queries.push('count=15');
+      if (props.maxCount) queries.push(`count=${props.maxCount}`);
+      if (props.searchedDriver) queries.push(`driver=${props.searchedDriver}`);
+      if (props.searchedTrain) queries.push(`train=${props.searchedTrain}`);
+
+      console.log(this.sorterActive);
+
+      try {
+        const responseData: APIResponse | null = await (await axios.get(`${API_URL}?${queries.join('&')}`)).data;
+
+        if (!responseData) {
+          this.historyDataStatus.status = DataStatus.Error;
+          this.historyDataStatus.error = 'Brak danych!';
+          return;
+        }
+
+        if (responseData.errorMessage) {
+          this.historyDataStatus.status = DataStatus.Error;
+          this.historyDataStatus.error = responseData.errorMessage;
+
+          return;
+        }
+
+        if (!responseData.response) return;
+
+        // Response data exists
+        this.historyList = responseData.response;
+        this.historyDataStatus.status = DataStatus.Loaded;
+      } catch (error) {
+        this.historyDataStatus.status = DataStatus.Error;
+        this.historyDataStatus.error = 'Ups! Coś poszło nie tak!';
+      }
+    },
   },
 });
 </script>
 
 <style lang="scss" scoped>
 @import '../styles/responsive.scss';
+@import '../styles/option.scss';
 
 .warning {
   &-enter-from,
@@ -302,13 +310,9 @@ export default defineComponent({
 }
 
 .history-wrapper {
-  width: 1000px;
-  padding: 2em 1em;
-}
+  width: 1300px;
 
-h2 {
-  text-align: center;
-  margin-bottom: 1rem;
+  padding: 1em 0.5em;
 }
 
 .history_item {
@@ -340,50 +344,10 @@ h2 {
   align-items: center;
   flex-wrap: wrap;
 
-  margin-bottom: 0.5em;
-
   @include smallScreen() {
     justify-content: center;
     flex-direction: column;
   }
-}
-
-.search {
-  &-box {
-    position: relative;
-
-    background: #333;
-    border-radius: 0.5em;
-    min-width: 200px;
-
-    margin: 0.5em 0 0.5em 0.5em;
-
-    @include smallScreen() {
-      width: 85%;
-    }
-  }
-
-  &-input {
-    border: none;
-
-    min-width: 85%;
-    padding: 0.35em 0.5em;
-  }
-
-  &-exit {
-    position: absolute;
-    cursor: pointer;
-
-    top: 50%;
-    right: 10px;
-    transform: translateY(-50%);
-
-    width: 1em;
-  }
-}
-
-.search-button {
-  margin-left: 0.5em;
 }
 
 .history_warning {
@@ -405,11 +369,6 @@ li,
 @include smallScreen() {
   .history-view {
     font-size: 1.25em;
-  }
-
-  .search-button {
-    margin-left: 0;
-    margin-top: 0.5em;
   }
 }
 </style>
