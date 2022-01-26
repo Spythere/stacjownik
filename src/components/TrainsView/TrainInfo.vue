@@ -39,10 +39,10 @@
           </div>
 
           <div class="timetable_stops">
-            <!-- <span v-if="train.timetableData.followingStops.length > 2">
+            <span v-if="train.timetableData.followingStops.length > 2">
               {{ $t('trains.via-title') }}
               <span v-html="displayStopList(train.timetableData.followingStops)"></span>
-            </span> -->
+            </span>
           </div>
         </div>
 
@@ -74,11 +74,11 @@
             <span v-else>{{ displayLocoInfo(train.locoType) }}</span>
           </div>
 
-          <!-- <img class="train-image" hidden="true" :src="train.locoURL" :alt="train.locoType" @load="onImageLoad" /> -->
+          <img class="train-image" hidden="true" :src="train.locoURL" :alt="train.locoType" @load="onImageLoad" />
         </span>
       </span>
 
-      <!-- <span class="stats">
+      <span class="stats">
         <div class="stats-main">
           <span v-for="stat in STATS.main" :key="stat.name">
             <img :src="require(`@/assets/icon-${stat.name}.svg`)" :alt="stat.name" />
@@ -92,7 +92,7 @@
             {{ (train[stat.prop] || '---') + (stat.unit || '') }}
           </span>
         </div>
-      </span> -->
+      </span>
     </div>
   </div>
 </template>
