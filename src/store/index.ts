@@ -398,13 +398,16 @@ export const store = createStore<State>({
       state.stationList = state.stationList.map(station => {
         const stationName = station.name.toLowerCase();
 
-        const scheduledTrains: ScheduledTrain[] = timetableList.reduce((acc: ScheduledTrain[], timetable: Timetable) => {
+        console.log(stationName, station.onlineInfo?.hash);
+
+        const scheduledTrains: ScheduledTrain[] = timetableList.reduce((acc: ScheduledTrain[], timetable: Timetable) => {          
           if (!timetable.followingSceneries.includes(station.onlineInfo?.hash || "")) return acc;
 
           const stopInfoIndex = timetable.followingStops.findIndex(stop => {
             const stopName = stop.stopNameRAW.toLowerCase();
 
-            if (station.generalInfo?.name == "Arkadia Zdrój 2019" && stop.pointId != "1583014379097") return false;
+            // if (stop.stopName == "ARKADIA ZDRÓJ" && station.name == "Arkadia Zdrój 2019" && stop.pointId != "1583014379097") return false;
+            // if (stop.stopName == "ARKADIA ZDRÓJ" && station.name == "Arkadia Zdrój 2012" && stop.pointId != "1519258642187") return false;
             
             if (stationName === stopName) return true;
             if (stopName.includes(stationName) && !stop.stopName.includes("po.") && !stop.stopName.includes("podg.")) return true;
@@ -450,6 +453,8 @@ export const store = createStore<State>({
 
           for (const checkpoint of station.generalInfo.checkpoints) {
             timetableList.forEach(timetable => {
+              if (!timetable.followingSceneries.includes(station.onlineInfo?.hash || "")) return;
+
               timetable.followingStops
                 .filter(trainStop => trainStop.stopNameRAW.toLowerCase() === checkpoint.checkpointName.toLowerCase())
                 .forEach(trainStop => {
