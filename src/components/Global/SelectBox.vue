@@ -2,29 +2,22 @@
   <div class="select-box">
     <div class="select-box_content">
       <button class="selected" @click="toggleBox">
-        {{ computedSelectedItem.value }}
+        <span class="text--primary">{{prefix}}</span> {{ computedSelectedItem.value }}
       </button>
 
       <ul class="options" :ref="(el) => (listRef = el)">
         <li class="option" v-for="(item, i) in itemList" :key="item.id">
           <transition
             name="unfold"
-            :style="`
+            :style="
+              `
             --delay-in: ${i * 55}ms; 
-            --delay-out: ${(itemList.length - 1 - i) * 55}ms`"
+            --delay-out: ${(itemList.length - 1 - i) * 55}ms`
+            "
           >
             <label :for="item.id" v-if="listOpen">
-              <input
-                type="button"
-                :id="item.id"
-                name="select-box"
-                @click="selectOption(item)"
-              />
-              <span
-                :style="
-                  computedSelectedItem.id == item.id ? 'color: gold;' : ''
-                "
-              >
+              <input type="button" :id="item.id" name="select-box" @click="selectOption(item)" />
+              <span :style="computedSelectedItem.id == item.id ? 'color: gold;' : ''">
                 {{ item.value }}
               </span>
             </label>
@@ -40,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, Ref, ref } from "@vue/runtime-core";
+import { computed, defineComponent, Ref, ref } from '@vue/runtime-core';
 
 interface Item {
   id: string | number;
@@ -48,7 +41,7 @@ interface Item {
 }
 
 export default defineComponent({
-  emits: ["selected"],
+  emits: ['selected'],
 
   props: {
     itemList: {
@@ -60,11 +53,16 @@ export default defineComponent({
       type: Number,
       default: 0,
     },
+
+    prefix: {
+      type: String,
+      default: '',
+    },
   },
 
   data: () => ({
-    ascIcon: require("@/assets/icon-arrow-asc.svg"),
-    descIcon: require("@/assets/icon-arrow-desc.svg"),
+    ascIcon: require('@/assets/icon-arrow-asc.svg'),
+    descIcon: require('@/assets/icon-arrow-desc.svg'),
   }),
 
   setup(props) {
@@ -77,10 +75,7 @@ export default defineComponent({
     let selectedItem: Ref<Item> = ref(props.itemList[props.defaultItemIndex]);
 
     const computedSelectedItem = computed(() => {
-      return (
-        props.itemList.find((item) => item.id === selectedItem.value.id) ||
-        props.itemList[props.defaultItemIndex]
-      );
+      return props.itemList.find((item) => item.id === selectedItem.value.id) || props.itemList[props.defaultItemIndex];
     });
 
     return {
@@ -98,7 +93,7 @@ export default defineComponent({
       this.selectedItem = item;
       this.listOpen = false;
 
-      this.$emit("selected", item);
+      this.$emit('selected', item);
     },
 
     toggleBox(e: Event) {
@@ -116,7 +111,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import "../../styles/variables.scss";
+@import '../../styles/variables.scss';
 
 .unfold {
   &-enter-from,

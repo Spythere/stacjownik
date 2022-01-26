@@ -148,8 +148,11 @@
     "search-train": "Numer pociągu",
     "search-driver": "Nick maszynisty",
 
+    "sort-prefix": "Sortuj: ", 
+
     "option-distance": "kilometraż",
-    "option-total-stops": "stacje"
+    "option-total-stops": "stacje",
+    "option-date": "data"
   },
   "scenery": {
     "users": "GRACZE ONLINE",

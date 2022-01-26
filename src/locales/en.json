@@ -147,9 +147,12 @@
 
     "search-train": "Train no.",
     "search-driver": "Driver name",
+    
+    "sort-prefix": "Sort: ", 
 
     "option-distance": "distance",
-    "option-total-stops": "total stops"
+    "option-total-stops": "total stops",
+    "option-date": "date"
   },
   "scenery": {
     "users": "PLAYERS ONLINE",

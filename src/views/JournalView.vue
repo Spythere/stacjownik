@@ -38,7 +38,7 @@
                     <b
                       class="history_item-status"
                       :class="{
-                        fulfilled: item.fulfilled,
+                        fulfilled: item.fulfilled || item.currentDistance >= item.routeDistance * 0.9,
                         terminated: item.terminated && !item.fulfilled,
                         active: !item.terminated,
                       }"
@@ -46,7 +46,7 @@
                       {{
                         !item.terminated
                           ? $t('history.timetable-active')
-                          : item.fulfilled
+                          : (item.fulfilled || item.currentDistance >= item.routeDistance * 0.9)
                           ? $t('history.timetable-fulfilled')
                           : $t('history.timetable-abandoned')
                       }}
@@ -185,7 +185,7 @@ export default defineComponent({
       error: null,
     });
 
-    const sorterActive = ref({ id: 'distance', dir: -1 });
+    const sorterActive = ref({ id: 'date', dir: -1 });
     const searchedDriver = ref('');
     const searchedTrain = ref('');
 
@@ -251,7 +251,12 @@ export default defineComponent({
       if (props.searchedDriver) queries.push(`driver=${props.searchedDriver}`);
       if (props.searchedTrain) queries.push(`train=${props.searchedTrain}`);
 
-      console.log(this.sorterActive);
+      // Z API: const SORT_TYPES = ['allStopsCount', 'endDate', 'beginDate', 'routeDistance'];
+      if (this.sorterActive.id == 'distance') queries.push("sortBy=routeDistance");
+      else if (this.sorterActive.id == 'total-stops') queries.push("sortBy=allStopsCount");
+
+      console.log(queries);
+      
 
       try {
         const responseData: APIResponse | null = await (await axios.get(`${API_URL}?${queries.join('&')}`)).data;

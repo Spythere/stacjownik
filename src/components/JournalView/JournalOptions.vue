@@ -4,12 +4,11 @@
       <div class="options_content">
         <div class="content_select">
           <select-box
-            :title="$t('journal.option-distance')"
             :itemList="translatedSorterOptions"
             :defaultItemIndex="0"
             @selected="changeSorter"
+            :prefix="$t('journal.sort-prefix')"
           />
-
         </div>
 
         <div class="content_search">
@@ -61,7 +60,7 @@ export default defineComponent({
   setup() {
     const { t } = useI18n();
 
-    const sorterOptions = ['distance', 'total-stops'];
+    const sorterOptions = ['date', 'distance', 'total-stops'];
 
     const translatedSorterOptions = computed(() =>
       sorterOptions.map((id) => ({
@@ -83,11 +82,11 @@ export default defineComponent({
     changeSorter(item: { id: string | number; value: string }) {
       this.sorterActive.id = item.id;
       this.sorterActive.dir = -1;
+
+      this.$emit('changedOptions');
     },
 
     search() {
-      console.log('gituwa');
-
       this.$emit('changedOptions');
     },
 
@@ -118,7 +117,6 @@ export default defineComponent({
     display: flex;
     flex-wrap: wrap;
 
-
     @include smallScreen() {
       justify-content: center;
     }
@@ -129,13 +127,12 @@ export default defineComponent({
     flex-direction: column;
     align-items: flex-start;
 
-    .content_search, .content_select {
+    .content_search,
+    .content_select {
       display: flex;
       align-items: center;
       flex-wrap: wrap;
     }
-
-
 
     @include smallScreen() {
       padding: 0 1em;
