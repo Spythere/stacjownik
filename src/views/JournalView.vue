@@ -30,8 +30,14 @@
                         <b>{{ item.route.replace('|', ' - ') }}</b>
                       </div>
 
-                      <div class="text--grayed">
-                        {{ item.sceneriesString.replaceAll('%', ' - ') }}
+                      <div class="scenery-list">
+                        <span
+                          v-for="(scenery, i) in sceneryList(item)"
+                          :key="scenery.name"
+                          :class="{ confirmed: scenery.confirmed }"
+                        >
+                          {{ i > 0 ? ' - ' : '' }} {{ scenery.name }}
+                        </span>
                       </div>
                     </span>
 
@@ -46,7 +52,7 @@
                       {{
                         !item.terminated
                           ? $t('history.timetable-active')
-                          : (item.fulfilled || item.currentDistance >= item.routeDistance * 0.9)
+                          : item.fulfilled || item.currentDistance >= item.routeDistance * 0.9
                           ? $t('history.timetable-fulfilled')
                           : $t('history.timetable-abandoned')
                       }}
@@ -215,6 +221,11 @@ export default defineComponent({
   },
 
   methods: {
+    sceneryList(historyItem: TimetableHistory) {
+      return historyItem.sceneriesString
+        .split('%')
+        .map((name, i) => ({ name, confirmed: i < historyItem.confirmedStopsCount }));
+    },
     navigateToTrain(trainNo: number | null) {
       if (!trainNo) return;
 
@@ -252,11 +263,10 @@ export default defineComponent({
       if (props.searchedTrain) queries.push(`train=${props.searchedTrain}`);
 
       // Z API: const SORT_TYPES = ['allStopsCount', 'endDate', 'beginDate', 'routeDistance'];
-      if (this.sorterActive.id == 'distance') queries.push("sortBy=routeDistance");
-      else if (this.sorterActive.id == 'total-stops') queries.push("sortBy=allStopsCount");
+      if (this.sorterActive.id == 'distance') queries.push('sortBy=routeDistance');
+      else if (this.sorterActive.id == 'total-stops') queries.push('sortBy=allStopsCount');
 
       console.log(queries);
-      
 
       try {
         const responseData: APIResponse | null = await (await axios.get(`${API_URL}?${queries.join('&')}`)).data;
@@ -326,6 +336,16 @@ export default defineComponent({
     justify-content: space-between;
 
     padding: 0.2em 0;
+
+    .scenery-list {
+      span {
+        color: #adadad;
+
+        &.confirmed {
+          color: rgb(163, 235, 163);
+        }
+      }
+    }
   }
 
   &-status {
