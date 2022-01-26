@@ -125,6 +125,7 @@
     "option-length": "length",
     "option-distance": "distance",
     "option-timetable": "train no.",
+    "sorter-prefix": "Sort: ",
     "search-train": "Train no.",
     "search-driver": "Driver name",
     "detailed-timetable": "Detailed timetable for train no. ",

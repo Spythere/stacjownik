@@ -5,6 +5,7 @@
         :title="$t('trains.option-distance')"
         :itemList="translatedSorterOptions"
         :defaultItemIndex="3"
+        :prefix="$t('trains.sorter-prefix')"
         @selected="changeSorter"
       />
 

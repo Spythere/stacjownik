@@ -181,7 +181,7 @@ button.selected {
 
   height: 100%;
 
-  min-width: 9em;
+  min-width: 12em;
 
   text-align: center;
 }
