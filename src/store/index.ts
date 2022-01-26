@@ -223,6 +223,7 @@ export const store = createStore<State>({
             stopNameRAW: point.pointNameRAW,
             stopType: point.pointStopType,
             stopDistance: point.pointDistance,
+            pointId: point.pointId,
 
             comments: point.comments,
 
@@ -403,7 +404,8 @@ export const store = createStore<State>({
           const stopInfoIndex = timetable.followingStops.findIndex(stop => {
             const stopName = stop.stopNameRAW.toLowerCase();
 
-
+            if (station.generalInfo?.name == "Arkadia Zdrój 2019" && stop.pointId != "1583014379097") return false;
+            
             if (stationName === stopName) return true;
             if (stopName.includes(stationName) && !stop.stopName.includes("po.") && !stop.stopName.includes("podg.")) return true;
             if (stationName.includes(stopName) && !stop.stopName.includes("po.") && !stop.stopName.includes("podg.")) return true;

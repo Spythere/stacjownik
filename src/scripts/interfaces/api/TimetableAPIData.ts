@@ -20,7 +20,7 @@ export default interface TimetableAPIData {
     pointName: string;
     pointNameRAW: string;
     entryId: number;
-    pointId: number;
+    pointId: string;
     comments: string | null;
     confirmed: boolean;
     isStopped: boolean;

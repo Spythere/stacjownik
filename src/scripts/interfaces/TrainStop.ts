@@ -18,6 +18,7 @@ export default interface TrainStop {
   departureRealTimeString: string | null;
   departureRealTimestamp: number;
   departureDelay: number;
+  pointId: string;
 
   comments?: any;
 
