@@ -398,8 +398,6 @@ export const store = createStore<State>({
       state.stationList = state.stationList.map(station => {
         const stationName = station.name.toLowerCase();
 
-        console.log(stationName, station.onlineInfo?.hash);
-
         const scheduledTrains: ScheduledTrain[] = timetableList.reduce((acc: ScheduledTrain[], timetable: Timetable) => {          
           if (!timetable.followingSceneries.includes(station.onlineInfo?.hash || "")) return acc;
 

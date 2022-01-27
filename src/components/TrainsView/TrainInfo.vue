@@ -1,6 +1,64 @@
 <template>
   <div class="train-info">
-    <div class="wrapper">
+    <!-- SIMPLE VIEW -->
+    <div v-if="simpleView">
+      <div class="simple-view wrapper">
+        <span>
+          <span v-if="train.timetableData">
+            <div>
+              <strong>{{ train.timetableData.category }} {{ train.trainNo }}</strong>
+              |
+              {{ train.driverName }}
+            </div>
+
+            <div>
+              <strong>{{ train.timetableData.route.replace('|', ' - ') }}</strong>
+            </div>
+
+            <div style="margin-top: 0.5em">
+              <span style="color: #ccc">
+                {{ train.locoType }}
+              </span>
+              |
+              <span style="color: gold"> {{ train.timetableData.routeDistance }} km </span>
+              |
+              <span> {{ confirmedPercentage(train.timetableData.followingStops) }}% trasy </span>
+            </div>
+          </span>
+
+          <span v-else>
+            <span>
+              {{ train.trainNo }} |
+              <span style="color: gold">
+                {{ $t('trains.no-timetable') }}
+              </span>
+            </span>
+          </span>
+        </span>
+
+        <span> </span>
+
+        <span class="info-stats">
+          <span v-for="(stat, i) in STATS.main" :key="stat.name">
+            <span v-if="i > 0"> &bull; </span>
+            <span>{{ $t(`trains.option-${stat.name}`).toUpperCase() }}</span
+            >:
+            <span class="text--primary">{{ `${~~(train[stat.name] * (stat.multiplier || 1))}${stat.unit}` }} </span>
+          </span>
+
+          <!-- <span
+            >MASA: <span class="text--primary">{{}}m</span></span
+          >
+          &bull;
+          <span>DŁUGOŚĆ: <span class="text--primary">300m</span></span>
+          &bull;
+          <span>PRĘDKOŚĆ: <span class="text--primary">120km/h</span></span> -->
+        </span>
+      </div>
+    </div>
+
+    <!-- EXTENDED VIEW -->
+    <div class="extended-view wrapper" v-else>
       <span class="info">
         <div class="info_timetable" v-if="!train.timetableData">
           <div class="timetable_general">
@@ -88,7 +146,7 @@
 
         <div class="stats-position">
           <span v-for="stat in STATS.position" :key="stat.name">
-            <div><img :src="require(`@/assets/icon-${stat.name}.svg`)" :alt="stat.name" /> -</div>
+            <div><img :src="require(`@/assets/icon-${stat.name}.svg`)" :alt="stat.name" /></div>
             {{ (train[stat.prop] || '---') + (stat.unit || '') }}
           </span>
         </div>
@@ -107,6 +165,11 @@ export default defineComponent({
     train: {
       type: Object as () => Train,
       required: true,
+    },
+
+    simpleView: {
+      type: Boolean,
+      default: false,
     },
   },
 
@@ -174,6 +237,10 @@ export default defineComponent({
         .join(' > ');
     },
 
+    confirmedPercentage(stops: TrainStop[]) {
+      return ((stops.filter((stop) => stop.confirmed).length / stops.length) * 100).toFixed(0);
+    },
+
     displayLocoInfo(locoType: string) {
       if (locoType.includes('EN')) return `${this.$t('trains.EZT')}`;
       if (locoType.includes('SN')) return `${this.$t('trains.SZT')}`;
@@ -212,8 +279,35 @@ export default defineComponent({
 
 .wrapper {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(20em, 1fr));
-  grid-template-rows: 1fr;
+  padding: 1em;
+
+  &.extended-view {
+    grid-template-columns: repeat(auto-fit, minmax(20em, 1fr));
+    grid-template-rows: 1fr;
+  }
+
+  &.simple-view {
+    grid-template-columns: 2fr 1fr 2fr;
+    grid-template-rows: 1fr;
+
+    &:hover {
+      background: #424242;
+    }
+
+    .info-stats {
+      text-align: right;
+    }
+
+    @include smallScreen() {
+      grid-template-columns: 1fr;
+      gap: 1em 0;
+      text-align: center;
+
+      .info-stats {
+        text-align: center;
+      }
+    }
+  }
 
   @include smallScreen() {
     font-size: 1.2em;
@@ -295,9 +389,7 @@ export default defineComponent({
   justify-content: center;
   flex-flow: column;
 
-  grid-row: span 2;
-
-  padding: 2em 0;
+  padding-top: 1em;
 
   &-info {
     text-align: center;
@@ -311,6 +403,10 @@ export default defineComponent({
   &-loco {
     width: 100%;
     text-align: center;
+
+    img.train-image {
+      width: 15em;
+    }
   }
 
   &-cars {
@@ -332,7 +428,7 @@ export default defineComponent({
   flex-direction: column;
   justify-content: space-between;
 
-  padding: 1em 0;
+  padding-top: 1em;
 
   &-main {
     display: flex;

@@ -2,7 +2,7 @@
   <section class="trains-view">
     <div class="wrapper">
       <div class="options-bar">
-        <TrainStats :trains="trainList" :trainStatsOpen="trainStatsOpen" />
+        <!-- <TrainStats :trains="trainList" :trainStatsOpen="trainStatsOpen" /> -->
 
         <TrainOptions />
       </div>
@@ -124,7 +124,7 @@ export default defineComponent({
     }
   },
 
-  activated() {    
+  activated() {
     if (this.train) {
       this.searchedTrain = this.train;
       this.searchedDriver = '';

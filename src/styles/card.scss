@@ -1,4 +1,5 @@
 @import './variables.scss';
+@import './responsive.scss';
 
 .card {
   display: flex;
@@ -8,7 +9,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 4;
+  z-index: 100;
 
   overflow: auto;
   background: $primaryCol;
