@@ -23,6 +23,8 @@
               <span style="color: gold"> {{ train.timetableData.routeDistance }} km </span>
               |
               <span> {{ confirmedPercentage(train.timetableData.followingStops) }}% trasy </span>
+              |
+              <span v-html="currentDelay(train.timetableData.followingStops)"></span>
             </div>
           </span>
 
@@ -239,6 +241,16 @@ export default defineComponent({
 
     confirmedPercentage(stops: TrainStop[]) {
       return ((stops.filter((stop) => stop.confirmed).length / stops.length) * 100).toFixed(0);
+    },
+
+    currentDelay(stops: TrainStop[]) {
+      const delay =
+        stops.find((stop, i) => (i == 0 && !stop.confirmed) || (i > 0 && stops[i - 1].confirmed && !stop.confirmed))
+          ?.departureDelay || 0;
+
+      if (delay > 0) return `<span style='color: salmon'>Opóźniony: ${delay} min</span>`;
+      else if (delay < 0) return `<span style='color: lightgreen'>Przed czasem: ${delay} min</span>`;
+      else return 'Planowo';
     },
 
     displayLocoInfo(locoType: string) {
