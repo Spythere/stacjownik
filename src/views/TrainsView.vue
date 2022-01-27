@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, provide, reactive, Ref, ref, watch } from 'vue';
+import { computed, ComputedRef, defineComponent, provide, reactive, ref } from 'vue';
 
 import { DataStatus } from '@/scripts/enums/DataStatus';
 import Train from '@/scripts/interfaces/Train';
@@ -24,6 +24,13 @@ import TrainOptions from '@/components/TrainsView/TrainOptions.vue';
 
 import { useStore } from '@/store';
 import { GETTERS } from '@/constants/storeConstants';
+import TrainStop from '@/scripts/interfaces/TrainStop';
+
+const confirmedPercentage = (stops: TrainStop[] | undefined) => {
+  if (!stops) return -1;
+
+  return Number(((stops.filter((stop) => stop.confirmed).length / stops.length) * 100).toFixed(0));
+};
 
 const filteredTrainList = (
   trainList: Train[],
@@ -45,6 +52,14 @@ const filteredTrainList = (
 
         case 'distance':
           if ((a.timetableData?.routeDistance || -1) > (b.timetableData?.routeDistance || -1)) return sorterActive.dir;
+
+          return -sorterActive.dir;
+
+        case 'progress':
+          if (
+            confirmedPercentage(a.timetableData?.followingStops) > confirmedPercentage(b.timetableData?.followingStops)
+          )
+            return sorterActive.dir;
 
           return -sorterActive.dir;
 

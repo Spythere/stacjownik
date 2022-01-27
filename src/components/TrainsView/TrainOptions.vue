@@ -4,7 +4,7 @@
       <select-box
         :title="$t('trains.option-distance')"
         :itemList="translatedSorterOptions"
-        :defaultItemIndex="3"
+        :defaultItemIndex="0"
         :prefix="$t('trains.sorter-prefix')"
         @selected="changeSorter"
       />
@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, inject, Ref } from 'vue';
+import { computed, defineComponent, inject } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SelectBox from '../Global/SelectBox.vue';
 
@@ -42,6 +42,14 @@ export default defineComponent({
 
     const sorterOptions = [
       {
+        id: 'distance',
+        value: 'kilometraż',
+      },
+      {
+        id: 'progress',
+        value: 'przebyta trasa',
+      },
+      {
         id: 'mass',
         value: 'masa',
       },
@@ -52,10 +60,6 @@ export default defineComponent({
       {
         id: 'length',
         value: 'długość',
-      },
-      {
-        id: 'distance',
-        value: 'kilometraż',
       },
       {
         id: 'timetable',

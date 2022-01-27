@@ -125,6 +125,7 @@
     "option-length": "length",
     "option-distance": "distance",
     "option-timetable": "train no.",
+    "option-progress": "route progress",
     "sorter-prefix": "Sort: ",
     "search-train": "Train no.",
     "search-driver": "Driver name",
