@@ -22,7 +22,7 @@
               |
               <span style="color: gold"> {{ train.timetableData.routeDistance }} km </span>
               |
-              <span> {{ confirmedPercentage(train.timetableData.followingStops) }}% trasy </span>
+              <span> {{ $t('trains.route-progress') }} {{ confirmedPercentage(train.timetableData.followingStops) }}%</span>
               |
               <span v-html="currentDelay(train.timetableData.followingStops)"></span>
             </div>
@@ -47,14 +47,6 @@
             >:
             <span class="text--primary">{{ `${~~(train[stat.name] * (stat.multiplier || 1))}${stat.unit}` }} </span>
           </span>
-
-          <!-- <span
-            >MASA: <span class="text--primary">{{}}m</span></span
-          >
-          &bull;
-          <span>DŁUGOŚĆ: <span class="text--primary">300m</span></span>
-          &bull;
-          <span>PRĘDKOŚĆ: <span class="text--primary">120km/h</span></span> -->
         </span>
       </div>
     </div>
@@ -89,7 +81,7 @@
               <span>
                 <strong>{{ train.timetableData.category }}</strong>
                 {{ train.trainNo }} |
-                <span style="color: gold"> {{ train.timetableData.routeDistance }} km </span>
+                <span style="color: gold"> {{ train.timetableData.routeDistance }} km</span>
               </span>
             </span>
           </div>
@@ -248,9 +240,9 @@ export default defineComponent({
         stops.find((stop, i) => (i == 0 && !stop.confirmed) || (i > 0 && stops[i - 1].confirmed && !stop.confirmed))
           ?.departureDelay || 0;
 
-      if (delay > 0) return `<span style='color: salmon'>Opóźniony: ${delay} min</span>`;
-      else if (delay < 0) return `<span style='color: lightgreen'>Przed czasem: ${delay} min</span>`;
-      else return 'Planowo';
+      if (delay > 0) return `<span style='color: salmon'>${this.$t('trains.delayed')} ${delay} min</span>`;
+      else if (delay < 0) return `<span style='color: lightgreen'>${this.$t('trains.preponed')} ${delay} min</span>`;
+      else return this.$t('trains.on-time');
     },
 
     displayLocoInfo(locoType: string) {

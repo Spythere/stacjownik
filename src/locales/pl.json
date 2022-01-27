@@ -113,6 +113,7 @@
   "trains": {
     "no-trains": "Brak pociągów do wyświetlenia!",
     "loading": "Pobieranie danych o pociągach...",
+
     "stats": "STATYSTYKI RUCHU",
     "stats-speed": "PRĘDKOŚCI POCIĄGÓW (MIN, ŚR, MAX) [km/h]",
     "stats-length": "DŁUGOŚCI ROZKŁADÓW (MIN, ŚR, MAX) [km]",
@@ -120,15 +121,25 @@
     "stats-special-twr": "WYSOKIEGO RYZYKA",
     "stats-special-skr": "PRZEKROCZONA SKRAJNIA",
     "stats-locos": "NAJCZĘSTSZE JEDNOSTKI",
+
     "option-mass": "masa",
     "option-speed": "prędkość",
     "option-length": "długość",
     "option-distance": "kilometraż",
     "option-timetable": "nr pociągu",
     "option-progress": "przebyta trasa",
+    "option-delay": "opóźnienie",
+
     "sorter-prefix": "Sortuj: ",
     "search-train": "Numer pociągu",
     "search-driver": "Nick maszynisty",
+
+    "delayed": "Opóźniony: ",
+    "preponed": "Przed czasem: ",
+    "on-time": "Planowo",
+
+    "route-progress": "Postęp: ",
+
     "detailed-timetable": "Szczegółowy rozkład jazdy pociągu ",
     "via-title": "Przez: ",
     "no-timetable": "brak rozkładu jazdy",

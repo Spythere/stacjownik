@@ -50,6 +50,10 @@ export default defineComponent({
         value: 'przebyta trasa',
       },
       {
+        id: 'delay',
+        value: 'opóźnienie',
+      },
+      {
         id: 'mass',
         value: 'masa',
       },
@@ -60,10 +64,6 @@ export default defineComponent({
       {
         id: 'length',
         value: 'długość',
-      },
-      {
-        id: 'timetable',
-        value: 'numer pociągu',
       },
     ];
 

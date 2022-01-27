@@ -32,6 +32,16 @@ const confirmedPercentage = (stops: TrainStop[] | undefined) => {
   return Number(((stops.filter((stop) => stop.confirmed).length / stops.length) * 100).toFixed(0));
 };
 
+const currentDelay = (stops: TrainStop[] | undefined) => {
+  if (!stops) return -Infinity;
+
+  const delay =
+    stops.find((stop, i) => (i == 0 && !stop.confirmed) || (i > 0 && stops[i - 1].confirmed && !stop.confirmed))
+      ?.departureDelay || 0;
+
+  return delay;
+};
+
 const filteredTrainList = (
   trainList: Train[],
   searchedTrain: string,
@@ -59,6 +69,12 @@ const filteredTrainList = (
           if (
             confirmedPercentage(a.timetableData?.followingStops) > confirmedPercentage(b.timetableData?.followingStops)
           )
+            return sorterActive.dir;
+
+          return -sorterActive.dir;
+
+        case 'delay':
+          if (currentDelay(a.timetableData?.followingStops) > currentDelay(b.timetableData?.followingStops))
             return sorterActive.dir;
 
           return -sorterActive.dir;

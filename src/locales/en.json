@@ -113,6 +113,7 @@
   "trains": {
     "no-trains": "No trains to show here!",
     "loading": "Loading train data...",
+
     "stats": "TRAFFIC STATISTICS",
     "stats-speed": "TRAINS SPEED (MIN, AVG, MAX) [km/h]",
     "stats-length": "TIMETABLES LENGTH (MIN, AVG, MAX) [km]",
@@ -120,15 +121,25 @@
     "stats-special-twr": "HIGH RISK",
     "stats-special-skr": "EXCEEDED STRUCT. GAUGE",
     "stats-locos": "MOST COMMON UNITS",
+
     "option-mass": "mass",
     "option-speed": "speed",
     "option-length": "length",
     "option-distance": "distance",
     "option-timetable": "train no.",
     "option-progress": "route progress",
+    "option-delay": "current delay",
+
     "sorter-prefix": "Sort: ",
     "search-train": "Train no.",
     "search-driver": "Driver name",
+
+    "delayed": "Delayed: ",
+    "preponed": "Ahead of schedule: ",
+    "on-time": "On time",
+
+    "route-progress": "Progress: ",
+
     "detailed-timetable": "Detailed timetable for train no. ",
     "via-title": "Via: ",
     "no-timetable": "no current timetable",
