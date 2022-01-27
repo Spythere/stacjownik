@@ -35,6 +35,7 @@
                 <span v-if="stop.arrivalDelay != 0 && stop.confirmed">
                   <s>{{ stop.arrivalTimeString }}</s>
                   {{ stop.arrivalRealTimeString }}
+                  ({{ stop.arrivalDelay > 0 ? '+' : '' }}{{ stop.arrivalDelay }})
                 </span>
 
                 <span v-else>
@@ -57,6 +58,8 @@
                 <span v-if="stop.departureDelay != 0 && stop.confirmed">
                   <s>{{ stop.departureTimeString }}</s>
                   {{ stop.departureRealTimeString }}
+
+                  ({{ stop.departureDelay > 0 ? '+' : '' }}{{ stop.departureDelay }})
                 </span>
 
                 <span v-else>
