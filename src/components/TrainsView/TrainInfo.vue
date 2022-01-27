@@ -22,9 +22,23 @@
               |
               <span style="color: gold"> {{ train.timetableData.routeDistance }} km </span>
               |
-              <span> {{ $t('trains.route-progress') }} {{ confirmedPercentage(train.timetableData.followingStops) }}%</span>
+              <span>
+                {{ $t('trains.route-progress') }} {{ confirmedPercentage(train.timetableData.followingStops) }}%</span
+              >
               |
               <span v-html="currentDelay(train.timetableData.followingStops)"></span>
+
+              <div class="comments" v-if="getSceneriesWithComments(train.timetableData).length > 0">
+                <img
+                  class="image-warning"
+                  :src="icons.warning"
+                  :title="
+                    `${$t('trains.timetable-comments')} (${getSceneriesWithComments(train.timetableData).join(',')})`
+                  "
+                />
+
+                <b>{{ $t('trains.timetable-comments').toUpperCase() }}</b>
+              </div>
             </div>
           </span>
 
@@ -41,8 +55,7 @@
         <span> </span>
 
         <span class="info-stats">
-          <span v-for="(stat, i) in STATS.main" :key="stat.name">
-            <span v-if="i > 0"> &bull; </span>
+          <span v-for="stat in STATS.main" :key="stat.name">
             <span>{{ $t(`trains.option-${stat.name}`).toUpperCase() }}</span
             >:
             <span class="text--primary">{{ `${~~(train[stat.name] * (stat.multiplier || 1))}${stat.unit}` }} </span>
@@ -100,6 +113,7 @@
 
         <div class="info_comments" v-if="getSceneriesWithComments(train.timetableData).length > 0">
           <img
+            class="image-warning"
             :src="icons.warning"
             :title="`${$t('trains.timetable-comments')} (${getSceneriesWithComments(train.timetableData).join(',')})`"
           />
@@ -281,6 +295,10 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '../../styles/responsive.scss';
 
+.image-warning {
+  width: 1.35em;
+}
+
 .wrapper {
   display: grid;
   padding: 1em;
@@ -293,7 +311,7 @@ export default defineComponent({
   }
 
   &.simple-view {
-    grid-template-columns: 2fr 1fr 2fr;
+    grid-template-columns: 4fr 1fr 2fr;
     grid-template-rows: 1fr;
 
     &:hover {
@@ -302,6 +320,23 @@ export default defineComponent({
 
     .info-stats {
       text-align: right;
+
+      display: flex;
+
+      flex-direction: column;
+    }
+
+    .comments {
+      display: flex;
+      align-items: center;
+
+      font-size: 0.9em;
+
+      margin-top: 1em;
+
+      img {
+        margin-right: 0.5em;
+      }
     }
 
     @include smallScreen() {
@@ -311,6 +346,15 @@ export default defineComponent({
 
       .info-stats {
         text-align: center;
+      }
+
+      .comments {
+        flex-direction: column;
+        justify-content: center;
+
+        img {
+          margin: 0 0 0.5em 0;
+        }
       }
     }
   }
@@ -379,12 +423,6 @@ export default defineComponent({
           background: var(--clr-skr);
         }
       }
-    }
-  }
-
-  &_comments {
-    img {
-      width: 1.75em;
     }
   }
 }
