@@ -1,5 +1,5 @@
 <template>
-  <div class="train-table">
+  <div class="train-table" @keydown.esc="closeTimetableCard">
     <transition name="anim" mode="out-in">
       <div :key="timetableLoaded">
         <div class="traffic-warning" v-if="distanceLimitExceeded">
@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts">
-import { Component, computed, ComputedRef, defineComponent, inject, Ref, ref, watch } from '@vue/runtime-core';
+import { computed, ComputedRef, defineComponent, inject, Ref } from '@vue/runtime-core';
 import { useStore } from '@/store';
 
 import defaultVehicleIconsJSON from '@/data/defaultVehicleIcons.json';

@@ -284,6 +284,8 @@ export default defineComponent({
   &.extended-view {
     grid-template-columns: repeat(auto-fit, minmax(20em, 1fr));
     grid-template-rows: 1fr;
+
+    margin-top: 0.5em;
   }
 
   &.simple-view {

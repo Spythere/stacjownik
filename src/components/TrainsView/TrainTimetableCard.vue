@@ -1,10 +1,11 @@
 <template>
   <div class="bg-dimmer" @click="close"></div>
   <section class="train-timetable-card card">
-
+    <div class="card-exit" @click="close" @keydown.enter="close" tabindex="0">
+      <img :src="icons.exit" alt="icon-exit" />
+    </div>
 
     <train-info :train="train" />
-
     <train-schedule :followingStops="train.timetableData?.followingStops" ref="card-inner" tabindex="0" @focus="test" />
   </section>
 </template>
@@ -40,9 +41,8 @@ export default defineComponent({
     },
 
     test() {
-      console.log("xd");
-      
-    }
+      console.log('xd');
+    },
   },
 });
 </script>
