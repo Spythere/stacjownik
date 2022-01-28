@@ -87,7 +87,7 @@ const filterStations = (station: Station, filters: Filter) => {
     // if (station.generalInfo.reqLevel == -1 && filters['minLevel'] == 0) return true;
 
     if (station.generalInfo.reqLevel + ((station.generalInfo.nonPublic || station.generalInfo.unavailable) ? 1 : 0) < filters['minLevel']) return returnMode;
-    if (station.name != "LCS Polska" && station.generalInfo.reqLevel + ((station.generalInfo.nonPublic || station.generalInfo.unavailable) ? 1 : 0) > filters['maxLevel']) return returnMode;
+    if (station.generalInfo.reqLevel + ((station.generalInfo.nonPublic || station.generalInfo.unavailable) ? 1 : 0) > filters['maxLevel']) return returnMode;
 
     if (filters['no-1track'] && (station.generalInfo.routes.oneWay.catenary != 0 || station.generalInfo.routes.oneWay.noCatenary != 0)) return returnMode;
     if (filters['no-2track'] && (station.generalInfo.routes.twoWay.catenary != 0 || station.generalInfo.routes.twoWay.noCatenary != 0)) return returnMode;
