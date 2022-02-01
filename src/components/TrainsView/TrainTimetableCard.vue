@@ -67,10 +67,19 @@ export default defineComponent({
   position: fixed;
   top: 50%;
   left: 50%;
-
-  z-index: 100;
+  
+  transform: translate(-50%, -50%);
 
   padding: 0.5em;
+
+  width: 100%;
+  max-width: 1000px;
+
+  @include smallScreen {
+    width: 95%;
+  }
+
+  z-index: 100;
 
   border: 1px solid white;
 }

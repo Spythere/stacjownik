@@ -52,7 +52,9 @@
           </span>
         </span>
 
-        <span> </span>
+        <span class="train-image" style="display: flex; justify-content: center; align-items: center;">
+          <img :src="train.locoURL" alt="Not Found" @error="onImageError" />
+        </span>
 
         <span class="info-stats">
           <span v-for="stat in STATS.main" :key="stat.name">
@@ -120,6 +122,22 @@
         </div>
       </span>
 
+      <span class="stats">
+        <div class="stats-main">
+          <span v-for="stat in STATS.main" :key="stat.name">
+            <img :src="require(`@/assets/icon-${stat.name}.svg`)" :alt="stat.name" />
+            {{ `${~~(train[stat.name] * (stat.multiplier || 1))}${stat.unit}` }}
+          </span>
+        </div>
+
+        <div class="stats-position">
+          <span v-for="stat in STATS.position" :key="stat.name">
+            <div><img :src="require(`@/assets/icon-${stat.name}.svg`)" :alt="stat.name" /></div>
+            {{ (train[stat.prop] || '---') + (stat.unit || '') }}
+          </span>
+        </div>
+      </span>
+
       <span class="driver">
         <div class="driver-info">
           <span class="driver-name">
@@ -140,24 +158,18 @@
             <span v-else>{{ displayLocoInfo(train.locoType) }}</span>
           </div>
 
-          <img class="train-image" hidden="true" :src="train.locoURL" :alt="train.locoType" @load="onImageLoad" />
+          <div class="driver-stock">
+            <img class="train-image" :src="train.locoURL" alt="loco" @error="onImageError" />
+            <img
+              v-for="(car, i) in train.cars"
+              :key="i"
+              :src="`https://rj.td2.info.pl/dist/img/thumbnails/${car.split(':')[0]}.png`"
+              @error="onImageError"
+              alt="car"
+              srcset=""
+            />
+          </div>
         </span>
-      </span>
-
-      <span class="stats">
-        <div class="stats-main">
-          <span v-for="stat in STATS.main" :key="stat.name">
-            <img :src="require(`@/assets/icon-${stat.name}.svg`)" :alt="stat.name" />
-            {{ `${~~(train[stat.name] * (stat.multiplier || 1))}${stat.unit}` }}
-          </span>
-        </div>
-
-        <div class="stats-position">
-          <span v-for="stat in STATS.position" :key="stat.name">
-            <div><img :src="require(`@/assets/icon-${stat.name}.svg`)" :alt="stat.name" /></div>
-            {{ (train[stat.prop] || '---') + (stat.unit || '') }}
-          </span>
-        </div>
       </span>
     </div>
   </div>
@@ -280,13 +292,9 @@ export default defineComponent({
 
     onImageError(e: Event) {
       const imageEl = e.target as HTMLImageElement;
+      imageEl.src = require('@/assets/unknown.png');
 
-      imageEl.hidden = true;
-    },
-
-    onImageLoad(e: Event) {
-      const imageEl = e.target as HTMLImageElement;
-      imageEl.hidden = false;
+      console.log('error');
     },
   },
 });
@@ -304,15 +312,17 @@ export default defineComponent({
   padding: 1em;
 
   &.extended-view {
-    grid-template-columns: repeat(auto-fit, minmax(20em, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(30em, 1fr));
     grid-template-rows: 1fr;
 
     margin-top: 0.5em;
   }
 
   &.simple-view {
-    grid-template-columns: 4fr 1fr 2fr;
+    grid-template-columns: 2fr 1fr 1fr;
     grid-template-rows: 1fr;
+
+    gap: 0.5em;
 
     &:hover {
       background: #424242;
@@ -322,7 +332,6 @@ export default defineComponent({
       text-align: right;
 
       display: flex;
-
       flex-direction: column;
     }
 
@@ -447,10 +456,6 @@ export default defineComponent({
   &-loco {
     width: 100%;
     text-align: center;
-
-    img.train-image {
-      width: 15em;
-    }
   }
 
   &-cars {
@@ -462,6 +467,16 @@ export default defineComponent({
 
     .count {
       color: var(--clr-primary);
+    }
+  }
+
+  &-stock {
+    display: flex;
+    align-items: flex-end;
+    overflow-x: auto;
+
+    img {
+      margin: 0 auto;
     }
   }
 }

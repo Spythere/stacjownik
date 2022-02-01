@@ -141,12 +141,6 @@ export default defineComponent({
 
     showTrainTimetable(train: Train) {
       this.chosenTrain = train;
-
-      this.$nextTick(() => {
-        const cardRef = this.$refs.card;
-
-        (cardRef as any).$refs['card-inner'].focus();
-      });
     },
 
     closeTimetableCard() {
