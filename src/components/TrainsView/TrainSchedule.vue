@@ -177,8 +177,6 @@ $stopNameClr: #22a8d1;
 }
 
 .train-schedule {
-  max-height: 600px;
-
   padding-top: 1em;
   margin-top: 1em;
 

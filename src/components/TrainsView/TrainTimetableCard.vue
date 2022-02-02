@@ -75,6 +75,7 @@ export default defineComponent({
   width: 100%;
   max-width: 1000px;
 
+
   @include smallScreen {
     width: 95%;
   }

@@ -4,18 +4,21 @@
     <div v-if="simpleView">
       <div class="simple-view wrapper">
         <span>
-          <span v-if="train.timetableData">
+          <span>
             <div>
-              <strong>{{ train.timetableData.category }} {{ train.trainNo }}</strong>
+              <span v-if="train.timetableData">
+                <strong>{{ train.timetableData.category }}</strong>
+              </span>
+              <strong> {{ train.trainNo }}</strong>
               |
               {{ train.driverName }}
             </div>
 
             <div>
-              <strong>{{ train.timetableData.route.replace('|', ' - ') }}</strong>
+              <strong v-if="train.timetableData">{{ train.timetableData.route.replace('|', ' - ') }}</strong>
             </div>
 
-            <div style="margin-top: 0.5em">
+            <div style="margin-top: 0.5em" v-if="train.timetableData">
               <span style="color: #ccc">
                 {{ train.locoType }}
               </span>
@@ -40,15 +43,10 @@
                 <b>{{ $t('trains.timetable-comments').toUpperCase() }}</b>
               </div>
             </div>
-          </span>
 
-          <span v-else>
-            <span>
-              {{ train.trainNo }} |
-              <span style="color: gold">
-                {{ $t('trains.no-timetable') }}
-              </span>
-            </span>
+            <div style="margin-top: 2em" v-else>
+              {{ train.locoType }}
+            </div>
           </span>
         </span>
 
@@ -68,8 +66,8 @@
 
     <!-- EXTENDED VIEW -->
     <div class="extended-view wrapper" v-else>
-      <span class="info">
-        <div class="info_timetable" v-if="!train.timetableData">
+      <span class="info-timetable">
+        <div v-if="!train.timetableData">
           <div class="timetable_general">
             <span>
               {{ train.trainNo }} |
@@ -80,7 +78,7 @@
           </div>
         </div>
 
-        <div class="info_timetable" v-else>
+        <div v-else>
           <div class="timetable_general">
             <span class="timetable_hero">
               <span class="timetable_warnings">
@@ -93,10 +91,13 @@
                 </span>
               </span>
 
-              <span>
-                <strong>{{ train.timetableData.category }}</strong>
-                {{ train.trainNo }} |
-                <span style="color: gold"> {{ train.timetableData.routeDistance }} km</span>
+              <span class="timetable_driver-stats">
+                <div>
+                  <b>{{ train.timetableData.category }}</b>
+                  <b>{{ ' ' + train.trainNo }}</b> |
+
+                  <span>{{ train.driverName }}</span>
+                </div>
               </span>
             </span>
           </div>
@@ -122,54 +123,56 @@
         </div>
       </span>
 
-      <span class="stats">
-        <div class="stats-main">
+      <span class="info-driver">
+        <div class="driver_cars">
+          <!-- <span v-else>{{ displayLocoInfo(train.locoType) }}</span> -->
+        </div>
+
+        <div style="display: flex; justify-content: center;">
+          <span class="text--primary"> {{ train.timetableData?.routeDistance }}</span>
+          <span>km</span>
           <span v-for="stat in STATS.main" :key="stat.name">
-            <img :src="require(`@/assets/icon-${stat.name}.svg`)" :alt="stat.name" />
-            {{ `${~~(train[stat.name] * (stat.multiplier || 1))}${stat.unit}` }}
+            <span>&nbsp;&bull;&nbsp;</span>
+            <span class="text--primary">{{ `${~~(train[stat.name] * (stat.multiplier || 1))}` }}</span>
+            <span>{{ stat.unit }}</span>
           </span>
         </div>
 
-        <div class="stats-position">
-          <span v-for="stat in STATS.position" :key="stat.name">
-            <div><img :src="require(`@/assets/icon-${stat.name}.svg`)" :alt="stat.name" /></div>
-            {{ (train[stat.prop] || '---') + (stat.unit || '') }}
+        <div class="driver_position" style="display: flex; justify-content: center;">
+          <span v-if="train.currentStationName">
+            Na scenerii <b class="text--primary">{{ train['currentStationName'] }}</b>
           </span>
-        </div>
-      </span>
 
-      <span class="driver">
-        <div class="driver-info">
-          <span class="driver-name">
-            {{ train.driverName }}
+          <span v-if="train.signal">
+            &nbsp;przy semaforze <b class="text--primary">{{ train['signal'] }}</b>
           </span>
-          &bull;
-          <span class="driver-type">
-            {{ train.locoType }}
+
+          <span v-if="train.connectedTrack">
+            &nbsp;na szlaku <b class="text--primary">{{ train['connectedTrack'] }}</b>
           </span>
         </div>
 
-        <span class="driver-loco">
-          <div class="driver-cars">
-            <span v-if="train.cars.length > 0">
-              {{ $t('trains.cars') }}:
-              <span class="count">{{ train.cars.length }}</span>
-            </span>
-            <span v-else>{{ displayLocoInfo(train.locoType) }}</span>
-          </div>
+        <div style="display: flex; justify-content: center; margin-top: 0.5em;">
+          <span> {{ train.locoType }} </span>
 
-          <div class="driver-stock">
-            <img class="train-image" :src="train.locoURL" alt="loco" @error="onImageError" />
-            <img
-              v-for="(car, i) in train.cars"
-              :key="i"
-              :src="`https://rj.td2.info.pl/dist/img/thumbnails/${car.split(':')[0]}.png`"
-              @error="onImageError"
-              alt="car"
-              srcset=""
-            />
-          </div>
-        </span>
+          <span v-if="train.cars.length > 0">
+            &nbsp;&bull; {{ $t('trains.cars') }}:
+            <span class="count">{{ train.cars.length }}</span>
+          </span>
+        </div>
+
+        <div class="driver_stock">
+          <img class="train-image" :src="train.locoURL" alt="loco" @error="onImageError" />
+
+          <img
+            v-for="(car, i) in train.cars"
+            :key="i"
+            :src="`https://rj.td2.info.pl/dist/img/thumbnails/${car.split(':')[0]}.png`"
+            @error="onImageError"
+            alt="car"
+            srcset=""
+          />
+        </div>
       </span>
     </div>
   </div>
@@ -201,17 +204,17 @@ export default defineComponent({
     STATS: {
       main: [
         {
-          name: 'mass',
-          unit: 't',
-          multiplier: 0.001,
-        },
-        {
           name: 'speed',
           unit: 'km/h',
         },
         {
           name: 'length',
           unit: 'm',
+        },
+        {
+          name: 'mass',
+          unit: 't',
+          multiplier: 0.001,
         },
       ],
 
@@ -308,17 +311,17 @@ export default defineComponent({
 }
 
 .wrapper {
-  display: grid;
   padding: 1em;
 
   &.extended-view {
-    grid-template-columns: repeat(auto-fit, minmax(30em, 1fr));
-    grid-template-rows: 1fr;
+    /* grid-template-columns: repeat(auto-fit, minmax(20em, 1fr));
+    grid-template-rows: 1fr; */
 
     margin-top: 0.5em;
   }
 
   &.simple-view {
+    display: grid;
     grid-template-columns: 2fr 1fr 1fr;
     grid-template-rows: 1fr;
 
@@ -373,64 +376,62 @@ export default defineComponent({
   }
 }
 
-.info {
+.info-timetable {
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+}
 
-  & .timetable {
-    &_hero {
-      display: flex;
-    }
+.timetable {
+  &_general {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 
-    &_general {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+  &_hero {
+    display: flex;
+  }
 
-    &_srjp .activator {
-      display: flex;
-      align-items: center;
+  &_srjp .activator {
+    display: flex;
+    align-items: center;
 
-      background-color: #22a8d1;
-      border-radius: 0.5em;
-      padding: 0.1em 0.35em;
-    }
+    background-color: #22a8d1;
+    border-radius: 0.5em;
+    padding: 0.1em 0.35em;
+  }
 
-    &_route {
-      display: flex;
-      align-items: center;
+  &_route {
+    display: flex;
+    align-items: center;
+
+    font-weight: bold;
+
+    margin: 5px 0;
+
+    font-size: 1.1em;
+  }
+
+  &_stops {
+    margin-bottom: 10px;
+    font-size: 0.8em;
+  }
+
+  &_warnings {
+    display: flex;
+    color: black;
+
+    .warning {
+      padding: 0.1em 0.65em;
+      margin-right: 0.35em;
 
       font-weight: bold;
 
-      margin: 5px 0;
+      &.twr {
+        background: var(--clr-twr);
+      }
 
-      font-size: 1.1em;
-    }
-
-    &_stops {
-      margin-bottom: 10px;
-      font-size: 0.7em;
-    }
-
-    &_warnings {
-      display: flex;
-      color: black;
-
-      .warning {
-        padding: 0.1em 0.65em;
-        margin-right: 0.35em;
-
-        font-weight: bold;
-
-        &.twr {
-          background: var(--clr-twr);
-        }
-
-        &.skr {
-          background: var(--clr-skr);
-        }
+      &.skr {
+        background: var(--clr-skr);
       }
     }
   }
@@ -444,21 +445,13 @@ export default defineComponent({
 
   padding-top: 1em;
 
-  &-info {
+  &_header {
     text-align: center;
     word-wrap: break-word;
+    margin-top: 1em;
   }
 
-  &-name {
-    font-weight: bold;
-  }
-
-  &-loco {
-    width: 100%;
-    text-align: center;
-  }
-
-  &-cars {
+  &_cars {
     margin: 0.65em 0;
     white-space: pre-wrap;
     text-align: center;
@@ -470,60 +463,23 @@ export default defineComponent({
     }
   }
 
-  &-stock {
+  &_stock {
     display: flex;
     align-items: flex-end;
     overflow-x: auto;
+
+    width: 100%;
+
+    padding: 0.5em 0;
 
     img {
       margin: 0 auto;
     }
   }
-}
 
-.stats {
-  font-size: 0.9em;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-
-  padding-top: 1em;
-
-  &-main {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    & > span {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      width: 100%;
-    }
-
-    img {
-      margin: 0 0.3em;
-      width: 2em;
-    }
-  }
-
-  &-position {
-    display: flex;
-
-    margin-top: 1em;
-    text-align: center;
-
-    p {
-      color: var(--clr-accent);
-    }
-
-    & > span {
-      width: 100%;
-
-      img {
-        width: 2em;
-      }
+  &_position {
+    span {
+      text-align: center;
     }
   }
 }
