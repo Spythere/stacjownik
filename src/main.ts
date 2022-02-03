@@ -15,7 +15,7 @@ const i18n = createI18n({
     en: enLang,
     pl: plLang,
   },
-  enableLegacy: false
+  enableLegacy: false,
 })
 
 const clickOutsideDirective: Directive = {

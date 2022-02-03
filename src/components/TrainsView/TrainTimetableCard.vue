@@ -6,7 +6,7 @@
     </div>
 
     <train-info :train="train" />
-    <train-schedule :followingStops="train.timetableData?.followingStops" ref="card-inner" tabindex="0" @focus="test" />
+    <train-schedule :followingStops="train.timetableData?.followingStops" ref="card-inner" tabindex="0" />
   </section>
 </template>
 
@@ -38,11 +38,7 @@ export default defineComponent({
   methods: {
     close() {
       this.$emit('close');
-    },
-
-    test() {
-      console.log('xd');
-    },
+    }
   },
 });
 </script>
@@ -73,7 +69,7 @@ export default defineComponent({
   padding: 0.5em;
 
   width: 100%;
-  max-width: 1000px;
+  max-width: 1300px;
 
 
   @include smallScreen {

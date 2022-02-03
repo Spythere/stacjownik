@@ -1,0 +1,189 @@
+<template>
+  <div class="train-info simple">
+    <section>
+      <span>
+        <div>
+          <strong v-if="train.timetableData">{{ train.timetableData.category }}&nbsp;</strong>
+          <strong>{{ train.trainNo }}</strong>
+          <span>&nbsp;| {{ train.driverName }}</span>
+        </div>
+
+        <div class="timetable_route">
+          <strong v-if="train.timetableData">{{ train.timetableData.route.replace('|', ' - ') }}</strong>
+          <img
+            v-if="getSceneriesWithComments(train.timetableData).length > 0"
+            class="image-warning"
+            :src="icons.warning"
+            :title="`${$t('trains.timetable-comments')} (${getSceneriesWithComments(train.timetableData).join(',')})`"
+          />
+        </div>
+
+        <hr style="margin: 0.25em 0" />
+
+        <div class="timetable_stops" v-if="train.timetableData">
+          <span v-if="train.timetableData.followingStops.length > 2">
+            {{ $t('trains.via-title') }}
+            <span v-html="displayStopList(train.timetableData.followingStops)"></span>
+          </span>
+        </div>
+        <div style="margin-top: 0.5em" v-if="train.timetableData">
+          <span class="text--primary"> {{ train.timetableData.routeDistance }} km </span>
+          |
+          <span>
+            {{ $t('trains.route-progress') }} {{ confirmedPercentage(train.timetableData.followingStops) }}%
+          </span>
+          |
+          <span v-html="currentDelay(train.timetableData.followingStops)"></span>
+        </div>
+
+        <div class="driver_position text--grayed">
+          <span v-if="train.currentStationName">
+            Na scenerii <span>{{ train['currentStationName'] }}</span>
+          </span>
+
+          <span v-if="train.signal">
+            przy semaforze <span>{{ train['signal'] }}</span>
+          </span>
+
+          <span v-if="train.connectedTrack">
+            na szlaku <span>{{ train['connectedTrack'] }}</span>
+          </span>
+        </div>
+      </span>
+    </section>
+
+    <section class="train-image" style="display: flex; justify-content: center; align-items: center;">
+      <img :src="train.locoURL" alt="Not Found" @error="onImageError" />
+
+      <div class="text--grayed">
+        {{ train.locoType }}
+        <span v-if="train.cars.length > 0">
+          &nbsp;&bull; {{ $t('trains.cars') }}:
+          <span class="count">{{ train.cars.length }}</span>
+        </span>
+      </div>
+
+      <div>
+        <div>
+          <span v-for="(stat, i) in STATS.main" :key="stat.name">
+            <span v-if="i > 0"> &bull; </span>
+            <span>{{ `${~~(train[stat.name] * (stat.multiplier || 1))}${stat.unit}` }} </span>
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- <span class="info-stats">
+          <span v-for="stat in STATS.main" :key="stat.name">
+            <span>{{ $t(`trains.option-${stat.name}`).toUpperCase() }}</span
+            >:
+            <span class="text--primary">{{ `${~~(train[stat.name] * (stat.multiplier || 1))}${stat.unit}` }} </span>
+          </span>
+        </span> -->
+  </div>
+</template>
+
+<script lang="ts">
+import trainInfoMixin from '@/mixins/trainInfoMixin';
+import Train from '@/scripts/interfaces/Train';
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+  props: {
+    train: {
+      type: Object as () => Train,
+      required: true,
+    },
+  },
+
+  mixins: [trainInfoMixin],
+
+  data: () => ({
+    icons: {
+      warning: require('@/assets/icon-warning.svg'),
+    },
+  }),
+});
+</script>
+
+<style lang="scss" scoped>
+@import '../../styles/responsive.scss';
+
+.image-warning {
+  width: 1em;
+  height: 1em;
+
+  margin-left: 0.25em;
+}
+
+.train-image {
+  display: flex;
+  flex-direction: column;
+
+  img {
+    margin: 0.5em 0;
+    width: 12em;
+  }
+}
+
+.simple {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: 1fr;
+
+  padding: 1em;
+
+  gap: 0.5em;
+
+  &:hover {
+    background: #424242;
+  }
+}
+
+.timetable_stops {
+  font-size: 0.75em;
+}
+
+.timetable_route {
+  display: flex;
+  align-items: center;
+}
+
+.comments {
+  display: flex;
+  align-items: center;
+
+  font-size: 0.9em;
+
+  margin-top: 1em;
+
+  img {
+    margin-right: 0.5em;
+  }
+}
+
+@include smallScreen() {
+  .simple {
+    grid-template-columns: 1fr;
+    gap: 1em 0;
+    text-align: center;
+  }
+
+  .info-stats {
+    text-align: center;
+  }
+
+  .timetable_route {
+    justify-content: center;
+  }
+
+  .comments {
+    flex-direction: column;
+    justify-content: center;
+
+    img {
+      margin: 0 0 0.5em 0;
+    }
+  }
+}
+</style>

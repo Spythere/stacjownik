@@ -1,0 +1,251 @@
+<template>
+  <div class="train-info extended">
+    <section class="info-timetable">
+      <div v-if="!train.timetableData">
+        <div class="timetable_general">
+          <span>
+            {{ train.trainNo }} |
+            <span>{{ train.driverName }}</span>
+          </span>
+        </div>
+      </div>
+
+      <div v-else>
+        <div class="timetable_general">
+          <span class="timetable_hero">
+            <span class="timetable_warnings">
+              <span class="warning twr" v-if="train.timetableData.TWR">
+                TWR
+              </span>
+
+              <span class="warning skr" v-if="train.timetableData.SKR">
+                SKR
+              </span>
+            </span>
+
+            <span class="timetable_driver-stats">
+              <div>
+                <b>{{ train.timetableData.category }}</b>
+                <b>{{ ' ' + train.trainNo }}</b> |
+
+                <span>{{ train.driverName }}</span>
+              </div>
+            </span>
+          </span>
+        </div>
+
+        <div class="timetable_route">
+          {{ train.timetableData.route.replace('|', ' - ') }}
+
+          <img
+            v-if="getSceneriesWithComments(train.timetableData).length > 0"
+            class="image-warning"
+            :src="icons.warning"
+            :title="`${$t('trains.timetable-comments')} (${getSceneriesWithComments(train.timetableData).join(',')})`"
+          />
+        </div>
+
+        <div class="timetable_stops">
+          <span v-if="train.timetableData.followingStops.length > 2">
+            {{ $t('trains.via-title') }}
+            <span v-html="displayStopList(train.timetableData.followingStops)"></span>
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <section class="info-driver">
+      <div class="driver_cars">
+        <!-- <span v-else>{{ displayLocoInfo(train.locoType) }}</span> -->
+      </div>
+
+      <div class="color: #444;">
+        <span v-if="train.timetableData">
+          <span class="text--primary"> {{ train.timetableData.routeDistance }} </span>km &bull;
+        </span>
+        <span v-for="(stat, i) in STATS.main" :key="stat.name">
+          <span v-if="i > 0">&nbsp;&bull;&nbsp;</span>
+          <span class="text--primary">{{ `${~~(train[stat.name] * (stat.multiplier || 1))}` }}</span>
+          <span>{{ stat.unit }}</span>
+        </span>
+      </div>
+
+      <div class="driver_position">
+        <span v-if="train.currentStationName">
+          Na scenerii <b class="text--primary">{{ train['currentStationName'] }}</b>
+        </span>
+
+        <span v-if="train.signal">
+          przy semaforze <b class="text--primary">{{ train['signal'] }}</b>
+        </span>
+
+        <span v-if="train.connectedTrack">
+          na szlaku <b class="text--primary">{{ train['connectedTrack'] }}</b>
+        </span>
+      </div>
+
+      <div style="margin-top: 0.5em;">
+        <b class="text--grayed"> {{ train.locoType }} </b>
+
+        <span v-if="train.cars.length > 0">
+          &nbsp;&bull; {{ $t('trains.cars') }}:
+          <span class="count">{{ train.cars.length }}</span>
+        </span>
+      </div>
+
+      <div class="driver_stock">
+        <img class="train-image" :src="train.locoURL" alt="loco" @error="onImageError" />
+
+        <img v-if="train.locoType.startsWith('EN')" :src="train.locoURL.replace('rb', 's')" alt="" />
+        <img v-if="train.locoType.startsWith('EN71')" :src="train.locoURL.replace('rb', 's')" alt="" />
+        <img v-if="train.locoType.startsWith('EN')" :src="train.locoURL.replace('rb', 'ra')" alt="" />
+
+        <img
+          v-for="(car, i) in train.cars"
+          :key="i"
+          :src="`https://rj.td2.info.pl/dist/img/thumbnails/${car.split(':')[0]}.png`"
+          @error="onImageError"
+          alt="car"
+        />
+      </div>
+    </section>
+  </div>
+</template>
+
+<script lang="ts">
+import trainInfoMixin from '@/mixins/trainInfoMixin';
+import Train from '@/scripts/interfaces/Train';
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+  props: {
+    train: {
+      type: Object as () => Train,
+      required: true,
+    },
+  },
+
+  mixins: [trainInfoMixin],
+
+  data: () => ({
+    icons: {
+      warning: require('@/assets/icon-warning.svg'),
+    },
+  }),
+});
+</script>
+
+<style lang="scss" scoped>
+.image-warning {
+  width: 1em;
+}
+
+.extended {
+  margin-top: 0.5em;
+  padding: 1em;
+}
+
+.info-timetable {
+  display: flex;
+}
+
+.timetable {
+  &_general {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &_hero {
+    display: flex;
+  }
+
+  &_srjp .activator {
+    display: flex;
+    align-items: center;
+
+    background-color: #22a8d1;
+    border-radius: 0.5em;
+    padding: 0.1em 0.35em;
+  }
+
+  &_route {
+    display: flex;
+    align-items: center;
+
+    font-weight: bold;
+
+    margin: 5px 0;
+
+    font-size: 1.1em;
+  }
+
+  &_stops {
+    margin-bottom: 10px;
+    font-size: 0.8em;
+  }
+
+  &_warnings {
+    display: flex;
+    color: black;
+
+    .warning {
+      padding: 0.1em 0.65em;
+      margin-right: 0.35em;
+
+      font-weight: bold;
+
+      &.twr {
+        background: var(--clr-twr);
+      }
+
+      &.skr {
+        background: var(--clr-skr);
+      }
+    }
+  }
+}
+
+.driver {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-flow: column;
+
+  padding-top: 1em;
+
+  &_header {
+    text-align: center;
+    word-wrap: break-word;
+    margin-top: 1em;
+  }
+
+  &_cars {
+    margin: 0.65em 0;
+    white-space: pre-wrap;
+    text-align: center;
+
+    color: #c5c5c5;
+
+    .count {
+      color: var(--clr-primary);
+    }
+  }
+
+  &_stock {
+    display: flex;
+    align-items: flex-end;
+    overflow-x: auto;
+
+    width: 100%;
+
+    padding: 0.5em 0;
+  }
+
+  &_position {
+    span {
+      text-align: center;
+    }
+  }
+}
+</style>
