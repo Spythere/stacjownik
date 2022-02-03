@@ -60,23 +60,10 @@ export default defineComponent({
 }
 
 .train-timetable-card {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  
-  transform: translate(-50%, -50%);
-
   padding: 0.5em;
 
-  width: 100%;
+  width: 95%;
   max-width: 1300px;
-
-
-  @include smallScreen {
-    width: 95%;
-  }
-
-  z-index: 100;
 
   border: 1px solid white;
 }

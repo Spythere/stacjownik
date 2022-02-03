@@ -38,15 +38,15 @@
 
         <div class="driver_position text--grayed">
           <span v-if="train.currentStationName">
-            Na scenerii <span>{{ train['currentStationName'] }}</span>
+            {{ $t('trains.current-scenery') }} <span>{{ train['currentStationName'] }}&nbsp;</span>
           </span>
 
           <span v-if="train.signal">
-            przy semaforze <span>{{ train['signal'] }}</span>
+            {{ $t('trains.current-signal') }} <span>{{ train['signal'] }}&nbsp;</span>
           </span>
 
           <span v-if="train.connectedTrack">
-            na szlaku <span>{{ train['connectedTrack'] }}</span>
+            {{ $t('trains.current-track') }} <span>{{ train['connectedTrack'] }}</span>
           </span>
         </div>
       </span>
@@ -72,14 +72,6 @@
         </div>
       </div>
     </section>
-
-    <!-- <span class="info-stats">
-          <span v-for="stat in STATS.main" :key="stat.name">
-            <span>{{ $t(`trains.option-${stat.name}`).toUpperCase() }}</span
-            >:
-            <span class="text--primary">{{ `${~~(train[stat.name] * (stat.multiplier || 1))}${stat.unit}` }} </span>
-          </span>
-        </span> -->
   </div>
 </template>
 
@@ -138,6 +130,10 @@ export default defineComponent({
   &:hover {
     background: #424242;
   }
+}
+
+.driver_position:first-letter {
+  text-transform: capitalize;
 }
 
 .timetable_stops {

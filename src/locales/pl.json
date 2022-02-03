@@ -122,6 +122,10 @@
     "stats-special-skr": "PRZEKROCZONA SKRAJNIA",
     "stats-locos": "NAJCZĘSTSZE JEDNOSTKI",
 
+    "current-scenery": "na scenerii",
+    "current-signal": "przy sygnale",
+    "current-track": "na szlaku",
+
     "option-mass": "masa",
     "option-speed": "prędkość",
     "option-length": "długość",

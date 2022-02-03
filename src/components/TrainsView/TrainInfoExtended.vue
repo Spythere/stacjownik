@@ -72,15 +72,15 @@
 
       <div class="driver_position">
         <span v-if="train.currentStationName">
-          Na scenerii <b class="text--primary">{{ train['currentStationName'] }}</b>
+          {{ $t('trains.current-scenery') }} <b class="text--primary">{{ train['currentStationName'] }}&nbsp;</b>
         </span>
 
         <span v-if="train.signal">
-          przy semaforze <b class="text--primary">{{ train['signal'] }}</b>
+          {{ $t('trains.current-signal') }} <b class="text--primary">{{ train['signal'] }}&nbsp;</b>
         </span>
 
         <span v-if="train.connectedTrack">
-          na szlaku <b class="text--primary">{{ train['connectedTrack'] }}</b>
+          {{ $t('trains.current-track') }} <b class="text--primary">{{ train['connectedTrack'] }}</b>
         </span>
       </div>
 
@@ -245,6 +245,10 @@ export default defineComponent({
   &_position {
     span {
       text-align: center;
+    }
+
+    &:first-letter {
+      text-transform: capitalize;
     }
   }
 }

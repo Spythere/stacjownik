@@ -122,6 +122,10 @@
     "stats-special-skr": "EXCEEDED STRUCT. GAUGE",
     "stats-locos": "MOST COMMON UNITS",
 
+    "current-scenery": "on scenery",
+    "current-signal": "at signal",
+    "current-track": "on track",
+
     "option-mass": "mass",
     "option-speed": "speed",
     "option-length": "length",
