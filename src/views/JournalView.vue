@@ -22,13 +22,17 @@
                   <div class="history_item-top">
                     <span>
                       <span @click="navigateToTrain(!item.terminated ? item.trainNo : null)" style="cursor: pointer">
-                        <b class="text--primary">{{ item.trainCategoryCode }}</b>
-                        {{ item.trainNo }}
+                        <b class="text--primary">{{ item.trainCategoryCode }}&nbsp;</b>
+                        <b>{{ item.trainNo }}</b>
+                        | {{ item.driverName }}
+                        | {{ item.timetableId }}
                       </span>
 
                       <div>
                         <b>{{ item.route.replace('|', ' - ') }}</b>
                       </div>
+
+                      <hr style="margin: 0.25em 0" />
 
                       <div class="scenery-list">
                         <span
@@ -36,7 +40,7 @@
                           :key="scenery.name"
                           :class="{ confirmed: scenery.confirmed }"
                         >
-                          {{ i > 0 ? ' - ' : '' }} {{ scenery.name }}
+                          {{ i > 0 ? ' > ' : '' }} {{ scenery.name }}
                         </span>
                       </div>
                     </span>
@@ -59,11 +63,34 @@
                     </b>
                   </div>
 
-                  <div style="margin: 1em 0">
-                    <div>
-                      <b>{{ $t('history.driver-name') }}</b>
-                      {{ item.driverName }}
+                  <div class="schedule-dates" style="margin-top: 1em;">
+                    <div>{{ $t('history.timetable-day') }} {{ localeDay(item.beginDate, $i18n.locale) }}</div>
+
+                    <!-- Data odjazdu ze stacji początkowej -->
+                    <b>{{ item.route.split('|')[0] }}:</b>
+                    <s v-if="item.beginDate != item.scheduledBeginDate" class="text--grayed">
+                      {{ localeTime(item.scheduledBeginDate, $i18n.locale) }}
+                    </s>
+                    <span>{{ localeTime(item.beginDate, $i18n.locale) }} </span>&bull;
+
+                    <!-- Data przyjazdu na stację końcową / porzucenia -->
+                    <b v-if="(item.fulfilled && item.terminated) || !item.terminated"
+                      >{{ item.route.split('|').slice(-1)[0] }}:</b
+                    >
+                    <i v-else>{{ $t('history.timetable-abandoned') }} </i>
+
+                    <s v-if="item.endDate != item.scheduledEndDate" class="text--grayed">
+                      {{ localeTime(item.scheduledEndDate, $i18n.locale) }}
+                    </s>
+                    <span>{{ localeTime(item.endDate, $i18n.locale) }} </span>
+
+                    <!-- Nick dyżurnego -->
+                    <div v-if="item.authorName" class="text--grayed">
+                      <b>{{ $t('history.dispatcher-name') }} {{ item.authorName }}</b>
                     </div>
+                  </div>
+
+                  <div style="margin-top: 1em;">
                     <div>
                       <b>{{ $t('history.route-length') }}</b>
                       {{ !item.fulfilled ? item.currentDistance + ' /' : '' }}
@@ -74,21 +101,6 @@
                       <b>{{ $t('history.station-count') }}</b>
                       {{ item.confirmedStopsCount }} /
                       {{ item.allStopsCount }}
-                    </div>
-
-                    <div>
-                      <b>{{ $t('history.begins-at') }}</b>
-                      {{ localeDate(item.beginDate, $i18n.locale) }}
-                    </div>
-
-                    <div>
-                      <b>{{ $t('history.terminates-at') }}</b>
-                      {{ localeDate(item.scheduledEndDate, $i18n.locale) }}
-                    </div>
-
-                    <div v-if="item.terminated">
-                      <b>{{ $t('history.terminates-at-actual') }}</b>
-                      {{ localeDate(item.endDate, $i18n.locale) }}
                     </div>
                   </div>
                 </li>
@@ -150,6 +162,9 @@ interface TimetableHistory {
 
   terminated: boolean;
   fulfilled: boolean;
+
+  authorName?: string;
+  authorId?: number;
 }
 
 const initFilters = {
@@ -266,8 +281,6 @@ export default defineComponent({
       if (this.sorterActive.id == 'distance') queries.push('sortBy=routeDistance');
       else if (this.sorterActive.id == 'total-stops') queries.push('sortBy=allStopsCount');
 
-      console.log(queries);
-
       try {
         const responseData: APIResponse | null = await (await axios.get(`${API_URL}?${queries.join('&')}`)).data;
 
@@ -382,6 +395,10 @@ export default defineComponent({
   &.error {
     background-color: var(--clr-error);
   }
+}
+
+.schedule-dates > * {
+  margin-right: 0.25em;
 }
 
 li,
