@@ -22,8 +22,8 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: "/journal",
-    name: "ErrorView",
-    component: () => import("@/views/ErrorView.vue"),
+    name: "JournalView",
+    component: () => import("@/views/JournalView.vue"),
   },
   {
     path: '/:catchAll(.*)',

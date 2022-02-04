@@ -24,8 +24,7 @@
                       <span @click="navigateToTrain(!item.terminated ? item.trainNo : null)" style="cursor: pointer">
                         <b class="text--primary">{{ item.trainCategoryCode }}&nbsp;</b>
                         <b>{{ item.trainNo }}</b>
-                        | {{ item.driverName }}
-                        | {{ item.timetableId }}
+                        | <span>{{ item.driverName }}</span> | <span class="text--grayed">#{{ item.timetableId }}</span>
                       </span>
 
                       <div>
@@ -42,6 +41,26 @@
                         >
                           {{ i > 0 ? ' > ' : '' }} {{ scenery.name }}
                         </span>
+                      </div>
+
+                      <div class="schedule-dates">
+                        <!-- Data odjazdu ze stacji początkowej -->
+                        <b>{{ item.route.split('|')[0] }}:</b>
+                        <s v-if="item.beginDate != item.scheduledBeginDate" class="text--grayed">
+                          {{ localeTime(item.scheduledBeginDate, $i18n.locale) }}
+                        </s>
+                        <span>{{ localeTime(item.beginDate, $i18n.locale) }} </span>&bull;
+
+                        <!-- Data przyjazdu na stację końcową / porzucenia -->
+                        <b v-if="(item.fulfilled && item.terminated) || !item.terminated"
+                          >{{ item.route.split('|').slice(-1)[0] }}:</b
+                        >
+                        <i v-else>{{ $t('history.timetable-abandoned') }} </i>
+
+                        <s v-if="item.endDate != item.scheduledEndDate && item.terminated" class="text--grayed">
+                          {{ localeTime(item.scheduledEndDate, $i18n.locale) }}
+                        </s>
+                        <span>{{ localeTime(item.endDate, $i18n.locale) }} </span>
                       </div>
                     </span>
 
@@ -63,26 +82,8 @@
                     </b>
                   </div>
 
-                  <div class="schedule-dates" style="margin-top: 1em;">
+                  <div style="margin-top: 1em;">
                     <div>{{ $t('history.timetable-day') }} {{ localeDay(item.beginDate, $i18n.locale) }}</div>
-
-                    <!-- Data odjazdu ze stacji początkowej -->
-                    <b>{{ item.route.split('|')[0] }}:</b>
-                    <s v-if="item.beginDate != item.scheduledBeginDate" class="text--grayed">
-                      {{ localeTime(item.scheduledBeginDate, $i18n.locale) }}
-                    </s>
-                    <span>{{ localeTime(item.beginDate, $i18n.locale) }} </span>&bull;
-
-                    <!-- Data przyjazdu na stację końcową / porzucenia -->
-                    <b v-if="(item.fulfilled && item.terminated) || !item.terminated"
-                      >{{ item.route.split('|').slice(-1)[0] }}:</b
-                    >
-                    <i v-else>{{ $t('history.timetable-abandoned') }} </i>
-
-                    <s v-if="item.endDate != item.scheduledEndDate" class="text--grayed">
-                      {{ localeTime(item.scheduledEndDate, $i18n.locale) }}
-                    </s>
-                    <span>{{ localeTime(item.endDate, $i18n.locale) }} </span>
 
                     <!-- Nick dyżurnego -->
                     <div v-if="item.authorName" class="text--grayed">
