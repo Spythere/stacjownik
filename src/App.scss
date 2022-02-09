@@ -18,6 +18,19 @@
   }
 }
 
+// INDICATOR TOOLTIP ANIMATION
+.tooltip-anim {
+  &-enter-from,
+  &-leave-to {
+    opacity: 0;
+  }
+
+  &-enter-active,
+  &-leave-active {
+    transition: all $animDuration $animType;
+  }
+}
+
 .route {
   margin: 0 0.2em;
 
@@ -84,25 +97,94 @@
 
   border-radius: 0 0 1em 1em;
 
-  .signal-status-indicator {
+}
+
+.indicator {
+  &-wrapper {
     position: absolute;
     left: 50%;
     bottom: 0;
-    
     transform: translateX(11.6em);
+    z-index: 100;
 
+  }
+
+  &-content {
+    display: flex;
+    position: relative;
+
+  }
+
+  &-svg {
     width: 1.2em;
+  }
+
+  &-tooltip {
+    position: absolute;
+    top: 50%;
+    left: 100%;
+
+
+    transform: translateY(-50%);
+    padding: 0.5em;
+    margin-left: 1em;
+
+    background-color: #171717;
+    border-radius: 0.75em;
+
+    min-width: 13em;
+    text-align: center;
+    overflow: none;
+
+    font-size: 0.95em;
+
+    &::before {
+      position: absolute;
+      top: 50%;
+      left: 1px;
+
+      transform: translate(-100%, -50%);
+
+      width: 0; 
+      height: 0; 
+      
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent; 
+      border-right: 12px solid #171717;
+
+      content: '';
+    }
+
+    @include midScreen() {
+      left: 50%;
+      top: 100%;
+
+      transform: translate(-50%, 0);
+      margin-left: 0;
+      margin-top: 0.75em;
+
+      &::before {
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-bottom: 10px solid #171717;
+
+        top: 0;
+        left: 50%;
+
+        transform: translate(-50%, -100%);
+      }
+    }
+
+    @include smallScreen() {
+      min-width: 8em;  
+    }
+
+
   }
 }
 
-.train-logo {
-  position:  relative;
-}
-
-
 
 .header {
-  
   &_brand {
     position: relative;
     width: 100%;

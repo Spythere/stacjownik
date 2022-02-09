@@ -119,7 +119,7 @@ export const store = createStore<State>({
           const onlineDispatchersData: { success: boolean, message: string[][] } = await response[2].data;
 
           if (!onlineStationsData.success) {
-            commit(MUTATIONS.SET_DATA_CONNECTION_STATUS, DataStatus.Error);
+            // commit(MUTATIONS.SET_DATA_CONNECTION_STATUS, DataStatus.Error);
             commit(MUTATIONS.SET_SCENERY_DATA_STATUS, DataStatus.Error);
             return;
           }            
@@ -207,7 +207,7 @@ export const store = createStore<State>({
         const data: { success: boolean; message: TimetableAPIData } = await (await axios.get(URLs.getTimetableURL(train.trainNo, this.state.region.id))).data;
 
         if (!data.success) {
-          warnings++;
+          warnings++;          
           return acc;
         }
 

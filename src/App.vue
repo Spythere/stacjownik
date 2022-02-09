@@ -8,12 +8,26 @@
       </div> -->
       <header class="app_header">
         <div class="header_body">
-          <object
-            class="signal-status-indicator"
-            type="image/svg+xml"
-            :data="icons.statusIndicator"
-            ref="status-indicator"
-          ></object>
+          <div class="indicator-wrapper">
+            <div class="indicator-content">
+              <object
+                class="indicator-svg"
+                type="image/svg+xml"
+                :data="icons.statusIndicator"
+                ref="status-indicator"
+                @mouseenter="() => tooltipActive = true"
+                @mouseleave="() => tooltipActive = false"
+              ></object>
+
+              <transition name="tooltip-anim">
+                <div class="indicator-tooltip" v-if="tooltipActive">
+                  <b>{{ indicator.status <= 0 ? 'S3' : indicator.status == 1 ? 'S1a' : indicator.status == 2 ? 'S2' : 'S5' }}</b>
+                  <br>
+                  {{ indicator.message }}
+                </div>
+              </transition>
+            </div>
+          </div>
 
           <!-- <object class="signal-status-indicator" :src="icons.statusIndicator" alt="status-icon" ref="status-indicator"></object> -->
           <span class="header_brand">
@@ -155,10 +169,12 @@ export default defineComponent({
       error: require('@/assets/icon-error.svg'),
     },
 
-    indicator: {} as {
-      status: DataStatus;
-      message: string;
+    indicator: {
+      status: DataStatus.Loading,
+      message: "Ładowanie danych..."
     },
+
+    tooltipActive: false
   }),
 
   created() {
@@ -190,6 +206,13 @@ export default defineComponent({
         return;
       } 
 
+      if (timetableDataStatus == DataStatus.Warning) {
+        this.indicator.status = DataStatus.Warning;
+        this.indicator.message = "Rozkłady jazdy mogą być niekompletne!";
+        this.setSignalStatus(DataStatus.Warning);
+        return;
+      } 
+
       if (trainsDataStatus == DataStatus.Warning) {
         this.indicator.status = DataStatus.Warning;
         this.indicator.message = "Nie można pobrać danych o pociągach!";
@@ -204,15 +227,8 @@ export default defineComponent({
         return;
       } 
 
-      if (timetableDataStatus == DataStatus.Warning) {
-        this.indicator.status = DataStatus.Warning;
-        this.indicator.message = "Rozkłady jazdy mogą być niekompletne!";
-        this.setSignalStatus(DataStatus.Warning);
-        return;
-      } 
-
       this.indicator.status = DataStatus.Loaded;
-      this.indicator.message = "";
+      this.indicator.message = "Dane załadowane poprawnie!";
 
       this.setSignalStatus(DataStatus.Loaded);
     },
@@ -240,9 +256,9 @@ export default defineComponent({
 
     const obj = this.$refs['status-indicator'] as HTMLObjectElement;
 
-    obj.addEventListener('load', () => {
-      this.setSignalStatus(DataStatus.Loading);
-    });
+    // obj.addEventListener('load', () => {
+    //   this.setSignalStatus(DataStatus.Loading);
+    // });
   },
 
   methods: {
@@ -259,6 +275,8 @@ export default defineComponent({
       const redTop = obj.contentDocument?.querySelector('#red-top') as SVGElement;
       const orange = obj.contentDocument?.querySelector('#orange') as SVGElement;
       const redBottom = obj.contentDocument?.querySelector('#red-bottom') as SVGElement;
+
+      if(!green || !greenBlink || !redTop || !orange || !redBottom) return;
 
       if (status == DataStatus.Loaded) {
         green.style.visibility = 'visible';
@@ -291,10 +309,6 @@ export default defineComponent({
         orange.style.visibility = 'hidden';
         redBottom.style.visibility = 'hidden';
       }
-
-      // (this.$refs['redTop'] as SVGElement).style.display = "none";
-      // (this.$refs['orangeBottom'] as SVGElement).style.display = "block";
-      // (this.$refs['redBottom'] as SVGElement).style.display = "none";
     },
 
     changeLang(lang: string) {
