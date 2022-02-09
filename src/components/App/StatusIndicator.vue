@@ -153,21 +153,13 @@
           </filter>
         </defs>
       </svg>
-      <!-- 
-        <object
-          class="indicator-svg"
-          type="image/svg+xml"
-          :data="icons.statusIndicator"
-          ref="status-indicator"
-          @mouseenter="() => (tooltipActive = true)"
-          @mouseleave="() => (tooltipActive = false)"
-        ></object> -->
 
       <transition name="tooltip-anim">
         <div class="indicator-tooltip" v-if="tooltipActive">
-          <b>{{
-            indicator.status <= 0 ? 'S3' : indicator.status == 1 ? 'S1a' : indicator.status == 2 ? 'S2' : 'S5'
-          }}</b>
+          <b
+            >Sygnał
+            {{ indicator.status <= 0 ? 'S3' : indicator.status == 1 ? 'S1a' : indicator.status == 2 ? 'S2' : 'S5' }}</b
+          >
           <br />
           {{ indicator.message }}
         </div>
@@ -209,9 +201,6 @@ export default defineComponent({
 
   watch: {
     dataStatus(storeData: StoreData) {
-      // if(val == DataStatus.Loaded)
-      //   this.setSignalStatus(DataStatus.Loaded)
-
       const dataConnectionStatus = storeData.dataConnectionStatus;
       const sceneryDataStatus = storeData.sceneryDataStatus;
       const trainsDataStatus = storeData.trainsDataStatus;
@@ -219,44 +208,44 @@ export default defineComponent({
       const timetableDataStatus = storeData.timetableDataStatus;
 
       if (dataConnectionStatus == DataStatus.Error) {
-        this.indicator.status = DataStatus.Error;
+        this.setSignalStatus(dataConnectionStatus);
+        this.indicator.status = dataConnectionStatus;
         this.indicator.message = 'Błąd podczas łączenia z serwisem SWDR!';
-        this.setSignalStatus(DataStatus.Error);
         return;
       }
 
       if (sceneryDataStatus == DataStatus.Error) {
-        this.indicator.status = DataStatus.Error;
+        this.setSignalStatus(sceneryDataStatus);
+        this.indicator.status = sceneryDataStatus;
         this.indicator.message = 'Nie można pobrać danych o sceneriach!';
-        this.setSignalStatus(DataStatus.Error);
         return;
       }
 
       if (trainsDataStatus == DataStatus.Warning) {
-        this.indicator.status = DataStatus.Warning;
+        this.setSignalStatus(trainsDataStatus);
+        this.indicator.status = trainsDataStatus;
         this.indicator.message = 'Nie można pobrać danych o pociągach!';
-        this.setSignalStatus(DataStatus.Warning);
         return;
       }
 
       if (dispatcherDataStatus == DataStatus.Warning) {
-        this.indicator.status = DataStatus.Warning;
+        this.setSignalStatus(dispatcherDataStatus);
+        this.indicator.status = dispatcherDataStatus;
         this.indicator.message = 'Nie można pobrać danych o statusach dyżurnych ruchu!';
-        this.setSignalStatus(DataStatus.Warning);
         return;
       }
 
       if (timetableDataStatus == DataStatus.Warning) {
-        this.indicator.status = DataStatus.Warning;
+        this.setSignalStatus(timetableDataStatus);
+        this.indicator.status = timetableDataStatus;
         this.indicator.message = 'Rozkłady jazdy mogą być niekompletne!';
-        this.setSignalStatus(DataStatus.Warning);
         return;
       }
 
+      this.setSignalStatus(DataStatus.Loaded);
+
       this.indicator.status = DataStatus.Loaded;
       this.indicator.message = 'Dane załadowane poprawnie!';
-
-      this.setSignalStatus(DataStatus.Loaded);
     },
   },
 
