@@ -8,6 +8,14 @@
       </div> -->
       <header class="app_header">
         <div class="header_body">
+          <object
+            class="signal-status-indicator"
+            type="image/svg+xml"
+            :data="icons.statusIndicator"
+            ref="status-indicator"
+          ></object>
+
+          <!-- <object class="signal-status-indicator" :src="icons.statusIndicator" alt="status-icon" ref="status-indicator"></object> -->
           <span class="header_brand">
             <span>
               <span>S</span>
@@ -25,7 +33,7 @@
                 :class="{ current: currentLang == 'pl' }"
                 v-if="currentLang == 'pl'"
               >
-                <img :src="iconPL" alt="icon-pl" />
+                <img :src="icons.pl" alt="icon-pl" />
               </span>
 
               <span
@@ -34,7 +42,7 @@
                 :class="{ current: currentLang == 'en' }"
                 v-if="currentLang == 'en'"
               >
-                <img :src="iconEN" alt="icon-en" />
+                <img :src="icons.en" alt="icon-en" />
               </span>
             </span>
           </span>
@@ -89,12 +97,13 @@
 import Clock from '@/components/App/Clock.vue';
 
 import StorageManager from '@/scripts/managers/storageManager';
-import { computed, ComputedRef, defineComponent, provide, ref } from 'vue';
+import { computed, ComputedRef, defineComponent, provide, ref, watch } from 'vue';
 import { GETTERS } from './constants/storeConstants';
 import { StoreData } from './scripts/interfaces/StoreData';
 import { useStore } from './store';
 
 import packageInfo from '.././package.json';
+import { DataStatus } from './scripts/enums/DataStatus';
 
 export default defineComponent({
   components: {
@@ -111,6 +120,9 @@ export default defineComponent({
       () => store.getters[GETTERS.currentRegion]
     );
 
+    const dataStatus = computed(() => data.value);
+    const sceneryDataStatus = computed(() => data.value.sceneryDataStatus);
+
     const isFilterCardVisible = ref(false);
 
     provide('isFilterCardVisible', isFilterCardVisible);
@@ -119,6 +131,10 @@ export default defineComponent({
       data,
       currentRegion,
       isFilterCardVisible,
+
+      dataStatus,
+      sceneryDataStatus,
+      dispatcherDataStatus: computed(() => data.value.dispatcherDataStatus),
 
       openFilterCard() {
         isFilterCardVisible.value = true;
@@ -132,14 +148,83 @@ export default defineComponent({
     hasReleaseNotes: false,
     currentLang: 'pl',
 
-    iconEN: require('@/assets/icon-en.jpg'),
-    iconPL: require('@/assets/icon-pl.svg'),
-    iconError: require('@/assets/icon-error.svg'),
-    svgChristmasCap: require('@/assets/christmas-cap.svg'),
+    icons: {
+      statusIndicator: require('@/assets/signal-status-indicator.svg'),
+      en: require('@/assets/icon-en.jpg'),
+      pl: require('@/assets/icon-pl.svg'),
+      error: require('@/assets/icon-error.svg'),
+    },
+
+    indicator: {} as {
+      status: DataStatus;
+      message: string;
+    },
   }),
 
   created() {
     this.loadLang();
+  },
+
+  watch: {
+    dataStatus(storeData: StoreData) {
+      // if(val == DataStatus.Loaded)
+      //   this.setSignalStatus(DataStatus.Loaded)
+      
+      const dataConnectionStatus = storeData.dataConnectionStatus;
+      const sceneryDataStatus = storeData.sceneryDataStatus;
+      const trainsDataStatus = storeData.trainsDataStatus;
+      const dispatcherDataStatus = storeData.dispatcherDataStatus;
+      const timetableDataStatus = storeData.timetableDataStatus;
+
+      if (dataConnectionStatus == DataStatus.Error) {
+        this.indicator.status = DataStatus.Error;
+        this.indicator.message = "Błąd podczas łączenia z serwisem SWDR!";
+        this.setSignalStatus(DataStatus.Error);
+        return;
+      }
+
+      if (sceneryDataStatus == DataStatus.Error) {
+        this.indicator.status = DataStatus.Error;
+        this.indicator.message = "Nie można pobrać danych o sceneriach!";
+        this.setSignalStatus(DataStatus.Error);
+        return;
+      } 
+
+      if (trainsDataStatus == DataStatus.Warning) {
+        this.indicator.status = DataStatus.Warning;
+        this.indicator.message = "Nie można pobrać danych o pociągach!";
+        this.setSignalStatus(DataStatus.Warning);
+        return;
+      } 
+
+      if (dispatcherDataStatus == DataStatus.Warning) {
+        this.indicator.status = DataStatus.Warning;
+        this.indicator.message = "Nie można pobrać danych o statusach dyżurnych ruchu!";
+        this.setSignalStatus(DataStatus.Warning);
+        return;
+      } 
+
+      if (timetableDataStatus == DataStatus.Warning) {
+        this.indicator.status = DataStatus.Warning;
+        this.indicator.message = "Rozkłady jazdy mogą być niekompletne!";
+        this.setSignalStatus(DataStatus.Warning);
+        return;
+      } 
+
+      this.indicator.status = DataStatus.Loaded;
+      this.indicator.message = "";
+
+      this.setSignalStatus(DataStatus.Loaded);
+    },
+
+    sceneryDataStatus(val: DataStatus) {
+      if (val == DataStatus.Error) this.setSignalStatus(DataStatus.Error);
+    },
+
+    dispatcherDataStatus(val: DataStatus) {
+      if (val == DataStatus.Warning && this.sceneryDataStatus != DataStatus.Error)
+        this.setSignalStatus(DataStatus.Warning);
+    },
   },
 
   async mounted() {
@@ -152,12 +237,64 @@ export default defineComponent({
     this.updateModalVisible = this.hasReleaseNotes && !StorageManager.getBooleanValue('version_notes_read');
 
     this.updateToNewestVersion();
+
+    const obj = this.$refs['status-indicator'] as HTMLObjectElement;
+
+    obj.addEventListener('load', () => {
+      this.setSignalStatus(DataStatus.Loading);
+    });
   },
 
   methods: {
     toggleUpdateModal() {
       this.updateModalVisible = !this.updateModalVisible;
       StorageManager.setBooleanValue('version_notes_read', true);
+    },
+
+    setSignalStatus(status: DataStatus) {
+      const obj = this.$refs['status-indicator'] as HTMLObjectElement;
+
+      const green = obj.contentDocument?.querySelector('#green') as SVGElement;
+      const greenBlink = obj.contentDocument?.querySelector('#green-blink') as SVGElement;
+      const redTop = obj.contentDocument?.querySelector('#red-top') as SVGElement;
+      const orange = obj.contentDocument?.querySelector('#orange') as SVGElement;
+      const redBottom = obj.contentDocument?.querySelector('#red-bottom') as SVGElement;
+
+      if (status == DataStatus.Loaded) {
+        green.style.visibility = 'visible';
+        greenBlink.style.visibility = 'hidden';
+        redTop.style.visibility = 'hidden';
+        orange.style.visibility = 'hidden';
+        redBottom.style.visibility = 'hidden';
+      }
+
+      if (status == DataStatus.Warning) {
+        green.style.visibility = 'hidden';
+        greenBlink.style.visibility = 'hidden';
+        redTop.style.visibility = 'hidden';
+        orange.style.visibility = 'visible';
+        redBottom.style.visibility = 'hidden';
+      }
+
+      if (status == DataStatus.Error) {
+        green.style.visibility = 'hidden';
+        greenBlink.style.visibility = 'hidden';
+        redTop.style.visibility = 'visible';
+        orange.style.visibility = 'hidden';
+        redBottom.style.visibility = 'visible';
+      }
+
+      if (status == DataStatus.Loading) {
+        green.style.visibility = 'hidden';
+        greenBlink.style.visibility = 'visible';
+        redTop.style.visibility = 'hidden';
+        orange.style.visibility = 'hidden';
+        redBottom.style.visibility = 'hidden';
+      }
+
+      // (this.$refs['redTop'] as SVGElement).style.display = "none";
+      // (this.$refs['orangeBottom'] as SVGElement).style.display = "block";
+      // (this.$refs['redBottom'] as SVGElement).style.display = "none";
     },
 
     changeLang(lang: string) {

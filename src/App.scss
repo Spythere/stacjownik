@@ -75,21 +75,34 @@
 
 // HEADER
 .app_header {
+  display: flex;
+  justify-content: center;
+  
+  position: relative;
   background: $primaryCol;
   padding: 0.5em 0.3em 0 0.3em;
 
   border-radius: 0 0 1em 1em;
 
-  display: flex;
-  justify-content: center;
+  .signal-status-indicator {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    
+    transform: translateX(11.6em);
 
+    width: 1.2em;
+  }
 }
 
 .train-logo {
   position:  relative;
 }
 
+
+
 .header {
+  
   &_brand {
     position: relative;
     width: 100%;

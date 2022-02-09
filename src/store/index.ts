@@ -36,8 +36,11 @@ export interface State {
   stationCount: number;
 
   dataConnectionStatus: DataStatus;
+
   sceneryDataStatus: DataStatus;
   timetableDataStatus: DataStatus;
+  dispatcherDataStatus: DataStatus;
+  trainsDataStatus: DataStatus;
 
   listenerLaunched: boolean;
 }
@@ -59,8 +62,11 @@ export const store = createStore<State>({
     stationCount: 0,
 
     dataConnectionStatus: DataStatus.Loading,
+
     sceneryDataStatus: DataStatus.Loading,
     timetableDataStatus: DataStatus.Loading,
+    dispatcherDataStatus: DataStatus.Loading,
+    trainsDataStatus: DataStatus.Loading,
 
     listenerLaunched: false
   }),
@@ -76,7 +82,11 @@ export const store = createStore<State>({
       activeStationCount: state.stationCount,
 
       dataConnectionStatus: state.dataConnectionStatus,
-      timetableDataStatus: state.timetableDataStatus
+      timetableDataStatus: state.timetableDataStatus,
+      sceneryDataStatus: state.sceneryDataStatus,
+
+      dispatcherDataStatus: state.dispatcherDataStatus,
+      trainsDataStatus: state.trainsDataStatus
     }),
     timetableDataStatus: (state): DataStatus => state.timetableDataStatus,
     sceneryDataStatus: (state): DataStatus => state.sceneryDataStatus,
@@ -104,22 +114,31 @@ export const store = createStore<State>({
 
       Promise.all([axios.get(URLs.stations), axios.get(URLs.trains), axios.get(URLs.dispatchers)])
         .then(async response => {
-          const onlineStationsData: StationAPIData[] = response[0].data.message;
-          const onlineTrainsData: TrainAPIData[] = await response[1].data.message;
-          const onlineDispatchersData: string[][] = await response[2].data.message;
+          const onlineStationsData: { success: boolean, message: StationAPIData[] } = response[0].data;
+          const onlineTrainsData: { success: boolean, message: TrainAPIData[] } = await response[1].data;
+          const onlineDispatchersData: { success: boolean, message: string[][] } = await response[2].data;
 
-
-          const updatedStationList: Station['onlineInfo'][] = onlineStationsData.reduce((acc, station) => {
+          if (!onlineStationsData.success) {
+            commit(MUTATIONS.SET_DATA_CONNECTION_STATUS, DataStatus.Error);
+            commit(MUTATIONS.SET_SCENERY_DATA_STATUS, DataStatus.Error);
+            return;
+          }            
+                        
+          commit(MUTATIONS.SET_SCENERY_DATA_STATUS, DataStatus.Loaded);
+          commit(MUTATIONS.SET_DISPATCHER_DATA_STATUS, onlineDispatchersData.success ? DataStatus.Loaded : DataStatus.Warning);   
+          commit(MUTATIONS.SET_TRAINS_DATA_STATUS, onlineTrainsData.success ? DataStatus.Loaded : DataStatus.Warning);
+           
+          const updatedStationList: Station['onlineInfo'][] = onlineStationsData.message.reduce((acc, station) => {
             if (station.region !== this.state.region.id || !station.isOnline) return acc;
 
-            const stationStatus = onlineDispatchersData.find((status: string[]) => status[0] == station.stationHash && status[1] == this.state.region.id);
+            const stationStatus = onlineDispatchersData.success ? onlineDispatchersData.message.find((status: string[]) => status[0] == station.stationHash && status[1] == this.state.region.id) : undefined;            
 
             const statusTimestamp = getStatusTimestamp(stationStatus);
             const statusID = getStatusID(stationStatus);
 
-            const stationTrains = onlineTrainsData
+            const stationTrains = onlineTrainsData.success ? onlineTrainsData.message
               .filter(train => train.region === this.state.region.id && train.isOnline && train.station.stationName === station.stationName)
-              .map(train => ({ driverName: train.driverName, trainNo: train.trainNo }));
+              .map(train => ({ driverName: train.driverName, trainNo: train.trainNo })) : [];
 
             acc.push({
               name: station.stationName,
@@ -141,8 +160,8 @@ export const store = createStore<State>({
             return acc;
           }, [] as Station['onlineInfo'][]);
 
-          const updatedTrainList = await Promise.all(
-            onlineTrainsData
+          const updatedTrainList = onlineTrainsData.success ? await Promise.all(
+            onlineTrainsData.message
               .filter(train => train.region === this.state.region.id)
               .map(async train => {
                 const locoType = train.dataCon.split(";") ? train.dataCon.split(";")[0] : train.dataCon;
@@ -165,11 +184,13 @@ export const store = createStore<State>({
                   cars: train.dataCon.split(";").filter((train, i) => i > 0) || []
                 };
               })
-          );
+          ) : [];
 
           // Pass reduced lists to mutations
           commit(MUTATIONS.UPDATE_STATIONS, updatedStationList);
           commit(MUTATIONS.UPDATE_TRAINS, updatedTrainList);
+          
+          // Statuses
           commit(MUTATIONS.SET_DATA_CONNECTION_STATUS, DataStatus.Loaded);
 
           dispatch(ACTIONS.fetchTimetableData);
@@ -180,14 +201,16 @@ export const store = createStore<State>({
     },
 
     async fetchTimetableData({ commit }) {
+      let warnings = 0;
 
       const reducedList = this.state.trainList.reduce(async (acc: Promise<Timetable[]>, train: Train) => {
         const data: { success: boolean; message: TimetableAPIData } = await (await axios.get(URLs.getTimetableURL(train.trainNo, this.state.region.id))).data;
 
         if (!data.success) {
+          warnings++;
           return acc;
         }
-        
+
         const timetable = data.message;
         const trainInfo = timetable.trainInfo;
 
@@ -274,7 +297,7 @@ export const store = createStore<State>({
       }, Promise.resolve([]));
 
       commit(MUTATIONS.UPDATE_TIMETABLES, (await reducedList));
-      commit(MUTATIONS.SET_TIMETABLE_DATA_STATUS, DataStatus.Loaded);
+      commit(MUTATIONS.SET_TIMETABLE_DATA_STATUS, warnings == 0 ? DataStatus.Loaded : DataStatus.Warning);
     }
 
   },
@@ -293,7 +316,7 @@ export const store = createStore<State>({
           supportersOnly: station[5] == "TAK",
           signalType: station[6],
           controlType: station[7],
-          
+
           SUP: station[8],
 
           SBL: station[9],
@@ -319,17 +342,27 @@ export const store = createStore<State>({
 
     },
 
-    SET_SCENERY_DATA_STATUS(state, status: DataStatus) {
-      state.sceneryDataStatus = status;
-    },
-
+    
     SET_DATA_CONNECTION_STATUS(state, status: DataStatus) {
       state.dataConnectionStatus = status;
+    },
+    
+    SET_SCENERY_DATA_STATUS(state, status: DataStatus) {
+      state.sceneryDataStatus = status;
     },
 
     SET_TIMETABLE_DATA_STATUS(state, status: DataStatus) {
       state.timetableDataStatus = status;
     },
+
+    SET_DISPATCHER_DATA_STATUS(state, status: DataStatus) {
+      state.dispatcherDataStatus = status;
+    },
+
+    SET_TRAINS_DATA_STATUS(state, status: DataStatus) {
+      state.trainsDataStatus = status;
+    },
+
 
     SET_REGION(state, region: { id: string; value: string }) {
       state.region = region;
@@ -398,7 +431,7 @@ export const store = createStore<State>({
       state.stationList = state.stationList.map(station => {
         const stationName = station.name.toLowerCase();
 
-        const scheduledTrains: ScheduledTrain[] = timetableList.reduce((acc: ScheduledTrain[], timetable: Timetable) => {          
+        const scheduledTrains: ScheduledTrain[] = timetableList.reduce((acc: ScheduledTrain[], timetable: Timetable) => {
           if (!timetable.followingSceneries.includes(station.onlineInfo?.hash || "")) return acc;
 
           const stopInfoIndex = timetable.followingStops.findIndex(stop => {
@@ -406,7 +439,7 @@ export const store = createStore<State>({
 
             // if (stop.stopName == "ARKADIA ZDRÓJ" && station.name == "Arkadia Zdrój 2019" && stop.pointId != "1583014379097") return false;
             // if (stop.stopName == "ARKADIA ZDRÓJ" && station.name == "Arkadia Zdrój 2012" && stop.pointId != "1519258642187") return false;
-            
+
             if (stationName === stopName) return true;
             if (stopName.includes(stationName) && !stop.stopName.includes("po.") && !stop.stopName.includes("podg.")) return true;
             if (stationName.includes(stopName) && !stop.stopName.includes("po.") && !stop.stopName.includes("podg.")) return true;

@@ -6,9 +6,13 @@ export const ACTIONS = {
 
 export const MUTATIONS = {
     SET_SCENERY_DATA: "SET_SCENERY_DATA",
+    SET_DATA_CONNECTION_STATUS: "SET_DATA_CONNECTION_STATUS",
+    
     SET_SCENERY_DATA_STATUS: "SET_SCENERY_DATA_STATUS",
     SET_TIMETABLE_DATA_STATUS: "SET_TIMETABLE_DATA_STATUS",
-    SET_DATA_CONNECTION_STATUS: "SET_DATA_CONNECTION_STATUS",
+    SET_DISPATCHER_DATA_STATUS: "SET_DISPATCHER_DATA_STATUS",
+    SET_TRAINS_DATA_STATUS: "SET_TRAINS_DATA_STATUS",
+
     SET_REGION: "SET_REGION",
     UPDATE_STATIONS: "UPDATE_STATIONS",
     UPDATE_TRAINS: "UPDATE_TRAINS",
@@ -19,8 +23,12 @@ export const GETTERS = {
     stationList: "stationList",
     trainList: "trainList",
     allData: "allData",
+
     timetableDataStatus: "timetableDataStatus",
     sceneryDataStatus: "sceneryDataStatus",
+    dispatcherDataStatus: "dispatcherDataStatus",
+    trainsDataStatus: "trainDataStatus",
+
     dataStatus: "dataStatus",
     currentRegion: "currentRegion"
 }

@@ -10,5 +10,9 @@ export interface StoreData {
   activeStationCount: number;
 
   dataConnectionStatus: DataStatus;
+
   timetableDataStatus: DataStatus;
+  sceneryDataStatus: DataStatus;
+  dispatcherDataStatus: DataStatus;
+  trainsDataStatus: DataStatus;
 }
