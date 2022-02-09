@@ -129,8 +129,6 @@ export default defineComponent({
     provide('sorterActive', sorterActive);
 
     const computedTrains: ComputedRef<Train[]> = computed(() => {
-      if (timetableDataStatus.value != DataStatus.Loaded) return [];
-
       return filteredTrainList(trainList.value, searchedTrain.value, searchedDriver.value, sorterActive.value);
     });
 

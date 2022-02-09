@@ -27,7 +27,7 @@ export const GETTERS = {
     timetableDataStatus: "timetableDataStatus",
     sceneryDataStatus: "sceneryDataStatus",
     dispatcherDataStatus: "dispatcherDataStatus",
-    trainsDataStatus: "trainDataStatus",
+    trainsDataStatus: "trainsDataStatus",
 
     dataStatus: "dataStatus",
     currentRegion: "currentRegion"

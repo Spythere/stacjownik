@@ -5,8 +5,6 @@ import { createStore, useStore as baseUseStore, Store } from 'vuex'
 
 import axios from "axios";
 
-// import JSONStationData from "@/data/stationData.json";
-
 import Station from "@/scripts/interfaces/Station";
 import Train from "@/scripts/interfaces/Train";
 import TrainStop from "@/scripts/interfaces/TrainStop";
@@ -90,6 +88,7 @@ export const store = createStore<State>({
     }),
     timetableDataStatus: (state): DataStatus => state.timetableDataStatus,
     sceneryDataStatus: (state): DataStatus => state.sceneryDataStatus,
+    trainsDataStatus: (state): DataStatus => state.trainsDataStatus,
     dataStatus: (state): DataStatus => state.dataConnectionStatus,
     currentRegion: (state): { id: string; value: string } => state.region
   },
@@ -131,7 +130,7 @@ export const store = createStore<State>({
           const updatedStationList: Station['onlineInfo'][] = onlineStationsData.message.reduce((acc, station) => {
             if (station.region !== this.state.region.id || !station.isOnline) return acc;
 
-            const stationStatus = onlineDispatchersData.success ? onlineDispatchersData.message.find((status: string[]) => status[0] == station.stationHash && status[1] == this.state.region.id) : undefined;            
+            const stationStatus = onlineDispatchersData.success ? onlineDispatchersData.message.find((status: string[]) => status[0] == station.stationHash && status[1] == this.state.region.id) : -1;            
 
             const statusTimestamp = getStatusTimestamp(stationStatus);
             const statusID = getStatusID(stationStatus);
@@ -192,7 +191,8 @@ export const store = createStore<State>({
           
           // Statuses
           commit(MUTATIONS.SET_DATA_CONNECTION_STATUS, DataStatus.Loaded);
-
+          
+          // commit(MUTATIONS.SET_TIMETABLE_DATA_STATUS, DataStatus.Loading);
           dispatch(ACTIONS.fetchTimetableData);
         })
         .catch(() => {

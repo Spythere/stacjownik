@@ -5,6 +5,7 @@ $unav: #ff3d5d;
 $brb: #e6a100;
 $no-space: #222;
 $taken: #09a116;
+$unknown: rgb(185, 60, 60);
 
 .status-badge {
   border-radius: 1rem;
@@ -46,5 +47,10 @@ $taken: #09a116;
     background-color: $no-space;
     color: white;
     font-size: 0.85em;
+  }
+
+  &.unknown {
+    background-color: $unknown;
+    font-size: 0.95em;
   }
 }

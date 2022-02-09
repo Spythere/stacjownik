@@ -47,7 +47,8 @@
     "no-limit": "NO LIMIT",
     "unavailable": "UNAVAILABLE",
     "brb": "AFK",
-    "no-space": "NO SPACE"
+    "no-space": "NO SPACE",
+    "unknown": "UNKNOWN"
   },
   "options": {
     "filters": "FILTERS",

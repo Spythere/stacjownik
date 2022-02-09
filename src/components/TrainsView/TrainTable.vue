@@ -1,16 +1,16 @@
 <template>
   <div class="train-table" @keydown.esc="closeTimetableCard">
     <transition name="anim" mode="out-in">
-      <div :key="timetableLoaded">
+      <div :key="trainsDataStatus">
         <div class="traffic-warning" v-if="distanceLimitExceeded">
           {{ $t('trains.distance-exceeded') }}
         </div>
 
-        <div class="table-info no-trains" v-if="trains.length == 0 && timetableLoaded">
+        <div class="table-info no-trains" v-if="trains.length == 0 && trainsDataStatus == 2">
           {{ $t('trains.no-trains') }}
         </div>
 
-        <div class="table-info loading" v-if="trains.length == 0 && !timetableLoaded">
+        <div class="table-info loading" v-if="trains.length == 0 && trainsDataStatus == 0">
           {{ $t('trains.loading') }}
         </div>
 
@@ -81,6 +81,7 @@ export default defineComponent({
     const store = useStore();
 
     const timetableDataStatus: ComputedRef<DataStatus> = computed(() => store.getters[GETTERS.timetableDataStatus]);
+    const trainsDataStatus: ComputedRef<DataStatus> = computed(() => store.getters[GETTERS.trainsDataStatus]);
 
     const searchedTrain = inject('searchedTrain') as Ref<string>;
     const searchedDriver = inject('searchedDriver') as Ref<string>;
@@ -106,7 +107,9 @@ export default defineComponent({
       currentTrains,
 
       sorterActive: inject('sorterActive') as { id: string | number; dir: number },
+      trainsDataStatus: computed(() => trainsDataStatus.value),
       timetableLoaded: computed(() => timetableDataStatus.value === DataStatus.Loaded),
+      timetableWarning: computed(() => timetableDataStatus.value === DataStatus.Warning),
       timetableError: computed(() => timetableDataStatus.value === DataStatus.Error),
       distanceLimitExceeded: computed(
         () => props.trains.findIndex(({ timetableData }) => timetableData && timetableData.routeDistance > 200) != -1

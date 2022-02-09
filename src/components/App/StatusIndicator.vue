@@ -242,6 +242,13 @@ export default defineComponent({
         return;
       }
 
+      if (timetableDataStatus == DataStatus.Loading) {
+        this.setSignalStatus(timetableDataStatus);
+        this.indicator.status = timetableDataStatus;
+        this.indicator.message = 'Ładowanie rozkładów jazdy...';
+        return;
+      }
+
       this.setSignalStatus(DataStatus.Loaded);
 
       this.indicator.status = DataStatus.Loaded;
