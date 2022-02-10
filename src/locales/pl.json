@@ -8,6 +8,16 @@
     "error": "Wystąpił problem z załadowaniem danych!",
     "no-result": "Brak wyników o podanych kryteriach!"
   },
+
+   "data-status": {
+    "S1a-connection": "<b>Sygnał S1a</b> <br> Błąd podczas próby połączenia się z serwisem SWDR!",
+    "S1a-sceneries": "<b>Sygnał S1a</b> <br> Błąd podczas pobierania danych o sceneriach online!",
+    "S2": "<b>Sygnał S2</b> <br> Pomyślnie załadowano dane!",
+    "S3": "<b>Sygnał S3</b> <br> Pobieranie danych...",
+    "S5-timetables": "<b>Sygnał S5</b> <br> Rozkłady jazdy mogą być niekompletne!",
+    "S5-dispatchers": "<b>Sygnał S5</b> <br> Błąd podczas pobierania danych o statusach dyżurnych ruchu!",
+    "S5-trains": "<b>Sygnał S5</b>  <br> Błąd podczas pobierania danych o pociągach online!"
+  },
   "desc": {
     "control-type": "Sterowanie: ",
     "signals-type": "Sygnalizacja: ",

@@ -155,13 +155,8 @@
       </svg>
 
       <transition name="tooltip-anim">
-        <div class="indicator-tooltip" v-if="tooltipActive">
-          <b
-            >Sygnał
-            {{ indicator.status <= 0 ? 'S3' : indicator.status == 1 ? 'S1a' : indicator.status == 2 ? 'S2' : 'S5' }}</b
-          >
-          <br />
-          {{ indicator.message }}
+        <div v-html="$t(indicator.message)" class="indicator-tooltip" v-if="tooltipActive">
+          
         </div>
       </transition>
     </div>
@@ -184,7 +179,7 @@ export default defineComponent({
       tooltipActive: false,
       indicator: {
         status: DataStatus.Loading,
-        message: 'Ładowanie danych...',
+        message: 'data-status.S3',
       },
 
       greenLight: false,
@@ -210,49 +205,49 @@ export default defineComponent({
       if (dataConnectionStatus == DataStatus.Error) {
         this.setSignalStatus(dataConnectionStatus);
         this.indicator.status = dataConnectionStatus;
-        this.indicator.message = 'Błąd podczas łączenia z serwisem SWDR!';
+        this.indicator.message = 'data-status.S1a-connection';
         return;
       }
 
       if (sceneryDataStatus == DataStatus.Error) {
         this.setSignalStatus(sceneryDataStatus);
         this.indicator.status = sceneryDataStatus;
-        this.indicator.message = 'Nie można pobrać danych o sceneriach!';
+        this.indicator.message = 'data-status.S1a-sceneries';
         return;
       }
 
       if (trainsDataStatus == DataStatus.Warning) {
         this.setSignalStatus(trainsDataStatus);
         this.indicator.status = trainsDataStatus;
-        this.indicator.message = 'Nie można pobrać danych o pociągach!';
+        this.indicator.message = 'data-status.S5-trains';
         return;
       }
 
       if (dispatcherDataStatus == DataStatus.Warning) {
         this.setSignalStatus(dispatcherDataStatus);
         this.indicator.status = dispatcherDataStatus;
-        this.indicator.message = 'Nie można pobrać danych o statusach dyżurnych ruchu!';
+        this.indicator.message = 'data-status.S5-dispatchers';
         return;
       }
 
       if (timetableDataStatus == DataStatus.Warning) {
         this.setSignalStatus(timetableDataStatus);
         this.indicator.status = timetableDataStatus;
-        this.indicator.message = 'Rozkłady jazdy mogą być niekompletne!';
+        this.indicator.message = 'data-status.S5-timetables';
         return;
       }
 
       if (timetableDataStatus == DataStatus.Loading) {
         this.setSignalStatus(timetableDataStatus);
         this.indicator.status = timetableDataStatus;
-        this.indicator.message = 'Ładowanie rozkładów jazdy...';
+        this.indicator.message = 'data-status.S3';
         return;
       }
 
       this.setSignalStatus(DataStatus.Loaded);
 
       this.indicator.status = DataStatus.Loaded;
-      this.indicator.message = 'Dane załadowane poprawnie!';
+      this.indicator.message = 'data-status.S2';
     },
   },
 

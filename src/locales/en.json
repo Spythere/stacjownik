@@ -8,6 +8,15 @@
     "error": "An error occured while loading data!",
     "no-result": "No results for current search!"
   },
+   "data-status": {
+    "S1a-connection": "<b>S1a signal</b> <br> Cannot connect with SWDR API service!",
+    "S1a-sceneries": "<b>S1a signal</b> <br> Cannot load online stations data!",
+    "S2": "<b>S2 signal</b> <br> All data loaded successfully!",
+    "S3": "<b>S3 signal</b> <br> Loading data...",
+    "S5-timetables": "<b>S5 signal</b> <br> Timetables might be incorrect or missing!",
+    "S5-dispatchers": "<b>S5 signal</b> <br> Cannot load dispatchers status data!",
+    "S5-trains": "<b>S5 signal</b> <br> Cannot load online trains data!"
+  },
   "desc": {
     "control-type": "Control type: ",
     "signals-type": "Signals type:  ",
