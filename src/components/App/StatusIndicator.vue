@@ -3,8 +3,7 @@
     <div class="indicator-content">
       <svg
         width="31"
-        height="90"
-        viewBox="0 0 31 100"
+        viewBox="0 0 31 120"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         class="indicator-svg"
