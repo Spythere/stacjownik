@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "deploy": "npm run build && firebase deploy --only hosting"
+    "deploy-prod": "npm run build && firebase deploy --only hosting:prod",
+    "deploy-dev": "npm run build && firebase deploy --only hosting:dev"
   },
   "dependencies": {
     "core-js": "^3.12.1",

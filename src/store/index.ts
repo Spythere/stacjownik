@@ -43,7 +43,41 @@ export interface State {
   listenerLaunched: boolean;
 }
 
-type StationJSONData = [string, string, string, string, string, string, string, string, boolean, string, string, number, number, number, number, string | null, boolean, boolean, boolean];
+interface StationJSONData {
+  name: string;
+  url: string;
+  lines: string;
+  project: string;
+
+  reqLevel: number;
+
+  supportersOnly: boolean;
+
+  signalType: string;
+  controlType: string;
+
+  SUP: boolean;
+
+  SBL: string;
+  TWB: string;
+
+  routes: {
+    oneWay: {
+      catenary: number;
+      noCatenary: number;
+    };
+    twoWay: {
+      catenary: number;
+      noCatenary: number;
+    }
+  };
+
+  checkpoints: string | null;
+
+  default: boolean;
+  nonPublic: boolean;
+  unavailable: boolean;
+}
 
 export const key: InjectionKey<Store<State>> = Symbol()
 
@@ -121,16 +155,16 @@ export const store = createStore<State>({
             // commit(MUTATIONS.SET_DATA_CONNECTION_STATUS, DataStatus.Error);
             commit(MUTATIONS.SET_SCENERY_DATA_STATUS, DataStatus.Error);
             return;
-          }            
-                        
+          }
+
           commit(MUTATIONS.SET_SCENERY_DATA_STATUS, DataStatus.Loaded);
-          commit(MUTATIONS.SET_DISPATCHER_DATA_STATUS, onlineDispatchersData.success ? DataStatus.Loaded : DataStatus.Warning);   
+          commit(MUTATIONS.SET_DISPATCHER_DATA_STATUS, onlineDispatchersData.success ? DataStatus.Loaded : DataStatus.Warning);
           commit(MUTATIONS.SET_TRAINS_DATA_STATUS, onlineTrainsData.success ? DataStatus.Loaded : DataStatus.Warning);
-           
+
           const updatedStationList: Station['onlineInfo'][] = onlineStationsData.message.reduce((acc, station) => {
             if (station.region !== this.state.region.id || !station.isOnline) return acc;
 
-            const stationStatus = onlineDispatchersData.success ? onlineDispatchersData.message.find((status: string[]) => status[0] == station.stationHash && status[1] == this.state.region.id) : -1;            
+            const stationStatus = onlineDispatchersData.success ? onlineDispatchersData.message.find((status: string[]) => status[0] == station.stationHash && status[1] == this.state.region.id) : -1;
 
             const statusTimestamp = getStatusTimestamp(stationStatus);
             const statusID = getStatusID(stationStatus);
@@ -188,10 +222,10 @@ export const store = createStore<State>({
           // Pass reduced lists to mutations
           commit(MUTATIONS.UPDATE_STATIONS, updatedStationList);
           commit(MUTATIONS.UPDATE_TRAINS, updatedTrainList);
-          
+
           // Statuses
           commit(MUTATIONS.SET_DATA_CONNECTION_STATUS, DataStatus.Loaded);
-          
+
           // commit(MUTATIONS.SET_TIMETABLE_DATA_STATUS, DataStatus.Loading);
           dispatch(ACTIONS.fetchTimetableData);
         })
@@ -207,7 +241,7 @@ export const store = createStore<State>({
         const data: { success: boolean; message: TimetableAPIData } = await (await axios.get(URLs.getTimetableURL(train.trainNo, this.state.region.id))).data;
 
         if (!data.success) {
-          warnings++;          
+          warnings++;
           return acc;
         }
 
@@ -304,49 +338,24 @@ export const store = createStore<State>({
 
   mutations: {
     SET_SCENERY_DATA(state, data: StationJSONData[]) {
-      state.stationList = data.map(station => ({
-        name: station[0],
+      state.stationList = data.map(stationData => ({
+        name: stationData.name,
 
         generalInfo: {
-          name: station[0],
-          url: station[1],
-          lines: station[2],
-          project: station[3],
-          reqLevel: station[4] == "" || station[4] === null ? -1 : Number(station[4]),
-          supportersOnly: station[5] == "TAK",
-          signalType: station[6],
-          controlType: station[7],
-
-          SUP: station[8],
-
-          SBL: station[9],
-          TWB: station[10],
-          routes: {
-            oneWay: {
-              catenary: station[11],
-              noCatenary: station[12]
-            },
-            twoWay: {
-              catenary: station[13],
-              noCatenary: station[14]
-            }
-          },
-          checkpoints: station[15] ? (station[15]).split(";").map(sub => ({ checkpointName: sub, scheduledTrains: [] })) : [],
-
-          default: station[16],
-          nonPublic: station[17],
-          unavailable: station[18],
+          ...stationData,
+          checkpoints: stationData.checkpoints ? stationData.checkpoints.split(";").map(sub => ({ checkpointName: sub, scheduledTrains: [] })) : [],
         }
       }));
 
-
+      console.log(state.stationList);
+      
     },
 
-    
+
     SET_DATA_CONNECTION_STATUS(state, status: DataStatus) {
       state.dataConnectionStatus = status;
     },
-    
+
     SET_SCENERY_DATA_STATUS(state, status: DataStatus) {
       state.sceneryDataStatus = status;
     },
