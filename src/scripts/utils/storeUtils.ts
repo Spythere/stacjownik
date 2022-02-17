@@ -1,4 +1,5 @@
 import Station from "../interfaces/Station";
+import Timetable from "../interfaces/Timetable";
 import TrainStop from "../interfaces/TrainStop";
 
 export const getLocoURL = (locoType: string): string => (`https://rj.td2.info.pl/dist/img/thumbnails/${locoType.includes("EN") ? locoType + "rb" : locoType}.png`)
@@ -79,7 +80,7 @@ export const timestampToString = (timestamp: number | null): string =>
       })
     : "";
 
-export const getTrainStopStatus = (stopInfo: TrainStop, timetableData: { currentStationName: string }, station: Station) => {
+export const getTrainStopStatus = (stopInfo: TrainStop, currentStationName: string, station: Station) => {
   let stopStatus = "",
     stopLabel = "",
     stopStatusID = -1;
@@ -88,23 +89,23 @@ export const getTrainStopStatus = (stopInfo: TrainStop, timetableData: { current
     stopStatus = "terminated";
     stopLabel = "Skończył bieg";
     stopStatusID = 5;
-  } else if (!stopInfo.terminatesHere && stopInfo.confirmed && timetableData.currentStationName == station.name) {
+  } else if (!stopInfo.terminatesHere && stopInfo.confirmed && currentStationName == station.name) {
     stopStatus = "departed";
     stopLabel = "Odprawiony";
     stopStatusID = 2;
-  } else if (!stopInfo.terminatesHere && stopInfo.confirmed && timetableData.currentStationName != station.name) {
+  } else if (!stopInfo.terminatesHere && stopInfo.confirmed && currentStationName != station.name) {
     stopStatus = "departed-away";
     stopLabel = "Odjechał";
     stopStatusID = 4;
-  } else if (timetableData.currentStationName == station.name && !stopInfo.stopped) {
+  } else if (currentStationName == station.name && !stopInfo.stopped) {
     stopStatus = "online";
     stopLabel = "Na stacji";
     stopStatusID = 0;
-  } else if (timetableData.currentStationName == station.name && stopInfo.stopped) {
+  } else if (currentStationName == station.name && stopInfo.stopped) {
     stopStatus = "stopped";
     stopLabel = "Postój";
     stopStatusID = 1;
-  } else if (timetableData.currentStationName != station.name) {
+  } else if (currentStationName != station.name) {
     stopStatus = "arriving";
     stopLabel = "W drodze";
     stopStatusID = 3;

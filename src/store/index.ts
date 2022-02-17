@@ -26,6 +26,7 @@ import ScheduledTrain from '@/scripts/interfaces/ScheduledTrain';
 export interface State {
   stationList: Station[],
   trainList: Train[],
+  timetableList: Timetable[],
 
   sceneryData: any[][],
 
@@ -85,6 +86,7 @@ export const store = createStore<State>({
   state: () => ({
     stationList: [],
     trainList: [],
+    timetableList: [],
 
     sceneryData: [],
 
@@ -237,11 +239,17 @@ export const store = createStore<State>({
     async fetchTimetableData({ commit }) {
       let warnings = 0;
 
-      const reducedList = this.state.trainList.reduce(async (acc: Promise<Timetable[]>, train: Train) => {
+      const timetableList = this.state.trainList.reduce(async (acc: Promise<Timetable[]>, train: Train) => {
         const data: { success: boolean; message: TimetableAPIData } = await (await axios.get(URLs.getTimetableURL(train.trainNo, this.state.region.id))).data;
 
         if (!data.success) {
           warnings++;
+
+          (await acc).push({
+            trainNo: train.trainNo,
+            success: false
+          });
+
           return acc;
         }
 
@@ -312,25 +320,30 @@ export const store = createStore<State>({
         }, []);
 
         (await acc).push({
+          data: {
+            trainNo: train.trainNo,
+            driverName: train.driverName,
+            driverId: train.driverId,
+            currentStationName: train.currentStationName,
+            currentStationHash: train.currentStationHash,
+            timetableId: trainInfo.timetableId,
+            category: trainInfo.trainCategoryCode,
+            route: trainInfo.route,
+            TWR: trainInfo.twr,
+            SKR: trainInfo.skr,
+            routeDistance: timetable.stopPoints[timetable.stopPoints.length - 1].pointDistance,
+            followingStops,
+            followingSceneries: trainInfo.sceneries
+          },
+
           trainNo: train.trainNo,
-          driverName: train.driverName,
-          driverId: train.driverId,
-          currentStationName: train.currentStationName,
-          currentStationHash: train.currentStationHash,
-          timetableId: trainInfo.timetableId,
-          category: trainInfo.trainCategoryCode,
-          route: trainInfo.route,
-          TWR: trainInfo.twr,
-          SKR: trainInfo.skr,
-          routeDistance: timetable.stopPoints[timetable.stopPoints.length - 1].pointDistance,
-          followingStops,
-          followingSceneries: trainInfo.sceneries
+          success: true
         });
 
         return acc;
       }, Promise.resolve([]));
 
-      commit(MUTATIONS.UPDATE_TIMETABLES, (await reducedList));
+      commit(MUTATIONS.UPDATE_TIMETABLES, (await timetableList));
       commit(MUTATIONS.SET_TIMETABLE_DATA_STATUS, warnings == 0 ? DataStatus.Loaded : DataStatus.Warning);
     }
 
@@ -346,9 +359,6 @@ export const store = createStore<State>({
           checkpoints: stationData.checkpoints ? stationData.checkpoints.split(";").map(sub => ({ checkpointName: sub, scheduledTrains: [] })) : [],
         }
       }));
-
-      console.log(state.stationList);
-      
     },
 
 
@@ -441,9 +451,12 @@ export const store = createStore<State>({
         const stationName = station.name.toLowerCase();
 
         const scheduledTrains: ScheduledTrain[] = timetableList.reduce((acc: ScheduledTrain[], timetable: Timetable) => {
-          if (!timetable.followingSceneries.includes(station.onlineInfo?.hash || "")) return acc;
+          if (!timetable.data)
+            return acc;
 
-          const stopInfoIndex = timetable.followingStops.findIndex(stop => {
+          if (!timetable.data.followingSceneries.includes(station.onlineInfo?.hash || "")) return acc;
+
+          const stopInfoIndex = timetable.data.followingStops.findIndex(stop => {
             const stopName = stop.stopNameRAW.toLowerCase();
 
             // if (stop.stopName == "ARKADIA ZDRÓJ" && station.name == "Arkadia Zdrój 2019" && stop.pointId != "1583014379097") return false;
@@ -466,18 +479,18 @@ export const store = createStore<State>({
 
           if (stopInfoIndex == -1) return acc;
 
-          const trainStop = timetable.followingStops[stopInfoIndex];
-          const trainStopStatus = getTrainStopStatus(trainStop, timetable, station);
+          const trainStop = timetable.data.followingStops[stopInfoIndex];
+          const trainStopStatus = getTrainStopStatus(trainStop, timetable.data.currentStationName, station);
 
           acc.push({
-            trainNo: timetable.trainNo,
-            driverName: timetable.driverName,
-            driverId: timetable.driverId,
-            currentStationName: timetable.currentStationName,
-            currentStationHash: timetable.currentStationHash,
-            category: timetable.category,
-            beginsAt: timetable.followingStops[0].stopNameRAW,
-            terminatesAt: timetable.followingStops[timetable.followingStops.length - 1].stopNameRAW,
+            trainNo: timetable.data.trainNo,
+            driverName: timetable.data.driverName,
+            driverId: timetable.data.driverId,
+            currentStationName: timetable.data.currentStationName,
+            currentStationHash: timetable.data.currentStationHash,
+            category: timetable.data.category,
+            beginsAt: timetable.data.followingStops[0].stopNameRAW,
+            terminatesAt: timetable.data.followingStops[timetable.data.followingStops.length - 1].stopNameRAW,
             nearestStop: "",
             stopInfo: trainStop,
             stopLabel: trainStopStatus.stopLabel,
@@ -493,22 +506,25 @@ export const store = createStore<State>({
 
           for (const checkpoint of station.generalInfo.checkpoints) {
             timetableList.forEach(timetable => {
-              if (!timetable.followingSceneries.includes(station.onlineInfo?.hash || "")) return;
+              if (!timetable.data) return;
+              if (!timetable.data.followingSceneries.includes(station.onlineInfo?.hash || "")) return;
 
-              timetable.followingStops
+              const timetableData = timetable.data;
+
+              timetableData.followingStops
                 .filter(trainStop => trainStop.stopNameRAW.toLowerCase() === checkpoint.checkpointName.toLowerCase())
                 .forEach(trainStop => {
-                  const trainStopStatus = getTrainStopStatus(trainStop, timetable, station);
+                  const trainStopStatus = getTrainStopStatus(trainStop, timetableData.currentStationName, station);
 
                   checkpoint.scheduledTrains.push({
                     trainNo: timetable.trainNo,
-                    driverName: timetable.driverName,
-                    driverId: timetable.driverId,
-                    currentStationName: timetable.currentStationName,
-                    currentStationHash: timetable.currentStationHash,
-                    category: timetable.category,
-                    beginsAt: timetable.followingStops[0].stopNameRAW,
-                    terminatesAt: timetable.followingStops[timetable.followingStops.length - 1].stopNameRAW,
+                    driverName: timetableData.driverName,
+                    driverId: timetableData.driverId,
+                    currentStationName: timetableData.currentStationName,
+                    currentStationHash: timetableData.currentStationHash,
+                    category: timetableData.category,
+                    beginsAt: timetableData.followingStops[0].stopNameRAW,
+                    terminatesAt: timetableData.followingStops[timetableData.followingStops.length - 1].stopNameRAW,
                     nearestStop: "",
                     stopInfo: trainStop,
                     stopLabel: trainStopStatus.stopLabel,
@@ -531,8 +547,10 @@ export const store = createStore<State>({
       });
 
       state.trainList = state.trainList.reduce((acc, train) => {
-        const timetableData = timetableList.find(data => data && data.trainNo === train.trainNo && data.driverId === train.driverId);
-        const allTimetables = timetableList.filter(data => data && data.driverId === train.driverId && data.trainNo !== train.trainNo);
+        const timetable = timetableList.find(tt => tt.data && tt.trainNo === train.trainNo && tt.data.driverId === train.driverId);
+        const allTimetables = timetableList.filter(tt => tt.data && tt.data.driverId === train.driverId && tt.trainNo !== train.trainNo);
+
+        if (!timetable || !timetable.data) return acc;
 
         if (allTimetables.length > 0)
           return acc;
@@ -541,7 +559,7 @@ export const store = createStore<State>({
           .find(station => station.name === train.currentStationName)
           ?.onlineInfo?.scheduledTrains?.find(stationTrain => stationTrain.trainNo === train.trainNo);
 
-        acc.push({ ...train, timetableData, stopStatus: trainStopData?.stopStatus || "", stopLabel: trainStopData?.stopLabel || "" });
+        acc.push({ ...train, timetableData: timetable.data, stopStatus: trainStopData?.stopStatus || "", stopLabel: trainStopData?.stopLabel || "" });
 
         return acc;
       }, [] as Train[]);
