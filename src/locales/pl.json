@@ -180,7 +180,8 @@
 
     "option-distance": "kilometraż",
     "option-total-stops": "stacje",
-    "option-date": "data"
+    "option-beginDate": "data",
+    "option-timetableId": "ID rozkładu"
   },
   "scenery": {
     "users": "GRACZE ONLINE",

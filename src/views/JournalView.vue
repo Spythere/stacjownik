@@ -207,7 +207,7 @@ export default defineComponent({
       error: null,
     });
 
-    const sorterActive = ref({ id: 'date', dir: -1 });
+    const sorterActive = ref({ id: 'timetableId', dir: -1 });
     const searchedDriver = ref('');
     const searchedTrain = ref('');
 
@@ -266,21 +266,22 @@ export default defineComponent({
       props: {
         searchedDriver?: string;
         searchedTrain?: string;
-        maxCount?: number;
       } = {}
     ) {
       this.historyDataStatus.status = DataStatus.Loading;
 
       const queries: string[] = [];
 
-      if (!props.searchedDriver && !props.searchedTrain) queries.push('count=15');
-      if (props.maxCount) queries.push(`count=${props.maxCount}`);
       if (props.searchedDriver) queries.push(`driver=${props.searchedDriver}`);
       if (props.searchedTrain) queries.push(`train=${props.searchedTrain}`);
 
       // Z API: const SORT_TYPES = ['allStopsCount', 'endDate', 'beginDate', 'routeDistance'];
       if (this.sorterActive.id == 'distance') queries.push('sortBy=routeDistance');
       else if (this.sorterActive.id == 'total-stops') queries.push('sortBy=allStopsCount');
+      else if (this.sorterActive.id == 'beginDate') queries.push('sortBy=beginDate');
+      else queries.push('sortBy=timetableId');
+
+      queries.push('countLimit=15')
 
       try {
         const responseData: APIResponse | null = await (await axios.get(`${API_URL}?${queries.join('&')}`)).data;

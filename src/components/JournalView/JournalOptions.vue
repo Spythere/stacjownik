@@ -60,7 +60,7 @@ export default defineComponent({
   setup() {
     const { t } = useI18n();
 
-    const sorterOptions = ['date', 'distance', 'total-stops'];
+    const sorterOptions = ['timetableId', 'beginDate', 'distance', 'total-stops'];
 
     const translatedSorterOptions = computed(() =>
       sorterOptions.map((id) => ({

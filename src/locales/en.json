@@ -179,7 +179,8 @@
 
     "option-distance": "distance",
     "option-total-stops": "total stops",
-    "option-date": "date"
+    "option-beginDate": "date",
+    "option-timetableId": "timetable ID"
   },
   "scenery": {
     "users": "PLAYERS ONLINE",
