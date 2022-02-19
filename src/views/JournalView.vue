@@ -126,11 +126,12 @@ import ActionButton from '@/components/Global/ActionButton.vue';
 import JournalOptions from '@/components/JournalView/JournalOptions.vue';
 
 import FilterOption from '@/scripts/interfaces/FilterOption';
+import { URLs } from '@/scripts/utils/apiURLs';
 
 const PROD_MODE = true;
 
 const API_URL = PROD_MODE
-  ? 'https://stacjownik-api-di22o.ondigitalocean.app/api/getTimetables'
+  ? `${URLs.stacjownikAPI}/api/getTimetables`
   : 'http://localhost:3001/api/getTimetables';
 
 interface APIResponse {

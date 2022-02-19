@@ -27,6 +27,7 @@ import { defineComponent } from 'vue';
 
 import styleMixin from '@/mixins/styleMixin';
 import Station from '@/scripts/interfaces/Station';
+import axios from 'axios';
 
 export default defineComponent({
   mixins: [styleMixin],
@@ -35,6 +36,10 @@ export default defineComponent({
       type: Object as () => Station,
       default: {},
     },
+  },
+
+  async mounted() {
+    // const dispatcherInfo = await axios.get()
   },
 
   data: () => ({
