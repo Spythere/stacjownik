@@ -11,6 +11,10 @@
       <span class="dispatcher_name">{{ station.onlineInfo.dispatcherName }}</span>
     </div>
 
+    <span class="status-badge" v-if="station.onlineInfo && onlineFrom > 0">
+      OD {{ new Date(onlineFrom).toLocaleTimeString('pl-PL', { hour: "2-digit", minute: "2-digit" }) }}
+    </span>
+
     <span class="status-badge" v-if="station.onlineInfo" :class="station.onlineInfo.statusID">
       {{ $t(`status.${station.onlineInfo.statusID}`) }}
       {{ station.onlineInfo.statusID == 'online' ? station.onlineInfo.statusTimeString : '' }}
@@ -28,6 +32,16 @@ import { defineComponent } from 'vue';
 import styleMixin from '@/mixins/styleMixin';
 import Station from '@/scripts/interfaces/Station';
 import axios from 'axios';
+import { URLs } from '@/scripts/utils/apiURLs';
+
+interface SceneryHistoryData {
+  response?: {
+    stationName: string;
+    currentDispatcher: string;
+    currentDispatcherId: number;
+    currentDispatcherFrom: number;
+  };
+}
 
 export default defineComponent({
   mixins: [styleMixin],
@@ -39,13 +53,19 @@ export default defineComponent({
   },
 
   async mounted() {
-    // const dispatcherInfo = await axios.get()
+    const dispatcherInfo: SceneryHistoryData = await (
+      await axios.get(`${URLs.stacjownikAPI}/api/getSceneryHistory?name=${this.station.name.replace(/ /g, '_')}&historyCount=0`)
+    ).data;
+
+    this.onlineFrom = dispatcherInfo.response?.currentDispatcherFrom || -1;
   },
 
   data: () => ({
     icons: {
       spawn: require('@/assets/icon-spawn.svg'),
     },
+
+    onlineFrom: -1
   }),
 });
 </script>
@@ -55,6 +75,8 @@ export default defineComponent({
   display: flex;
   align-items: center;
   justify-content: center;
+
+  flex-wrap: wrap;
 
   .dispatcher {
     font-size: 2em;
@@ -79,6 +101,7 @@ export default defineComponent({
 
   .status-badge {
     font-size: 1.2em;
+    margin: 0.5em 0.25em;
   }
 }
 </style>

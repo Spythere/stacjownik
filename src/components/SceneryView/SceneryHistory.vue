@@ -45,6 +45,7 @@
 </template>
 
 <script lang="ts">
+import { URLs } from '@/scripts/utils/apiURLs';
 import axios from 'axios';
 import { defineComponent } from 'vue';
 
@@ -76,7 +77,7 @@ interface HistoryResultAPI {
   errorMessage?: any;
 }
 
-const API_URL = 'https://stacjownik-api-di22o.ondigitalocean.app/api/getSceneryHistory';
+const API_URL = `${URLs.stacjownikAPI}/api/getSceneryHistory`;
 
 export default defineComponent({
   data: () => ({
