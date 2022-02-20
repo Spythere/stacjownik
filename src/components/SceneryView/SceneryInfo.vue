@@ -7,8 +7,8 @@
       <scenery-info-icons :station="station" />
 
       <!-- info dispatcher -->
-      <scenery-info-dispatcher :station="station" />
-      
+      <scenery-info-dispatcher :station="station" :onlineFrom="onlineFrom" />
+
       <div class="info-lists">
         <!-- user list -->
         <scenery-info-user-list :station="station" />
@@ -45,8 +45,12 @@ export default defineComponent({
       default: {},
     },
 
-    timetableOnly: Boolean,
+    timetableOnly: Boolean
   },
+
+  data: () => ({
+    onlineFrom: -1
+  }),
 });
 </script>
 

@@ -31,17 +31,6 @@ import { defineComponent } from 'vue';
 
 import styleMixin from '@/mixins/styleMixin';
 import Station from '@/scripts/interfaces/Station';
-import axios from 'axios';
-import { URLs } from '@/scripts/utils/apiURLs';
-
-interface SceneryHistoryData {
-  response?: {
-    stationName: string;
-    currentDispatcher: string;
-    currentDispatcherId: number;
-    currentDispatcherFrom: number;
-  };
-}
 
 export default defineComponent({
   mixins: [styleMixin],
@@ -50,22 +39,18 @@ export default defineComponent({
       type: Object as () => Station,
       default: {},
     },
+
+    onlineFrom: {
+      type: Number,
+      default: -1
+    }
   },
 
-  async mounted() {
-    const dispatcherInfo: SceneryHistoryData = await (
-      await axios.get(`${URLs.stacjownikAPI}/api/getSceneryHistory?name=${this.station.name.replace(/ /g, '_')}&historyCount=0`)
-    ).data;
-
-    this.onlineFrom = dispatcherInfo.response?.currentDispatcherFrom || -1;
-  },
 
   data: () => ({
     icons: {
       spawn: require('@/assets/icon-spawn.svg'),
-    },
-
-    onlineFrom: -1
+    }
   }),
 });
 </script>

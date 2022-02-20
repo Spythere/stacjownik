@@ -73,7 +73,7 @@ interface SceneryHistory {
 }
 
 interface HistoryResultAPI {
-  result: SceneryHistory;
+  response: SceneryHistory;
   errorMessage?: any;
 }
 
@@ -100,13 +100,16 @@ export default defineComponent({
 
   async mounted() {
     try {
-      const apiResult: HistoryResultAPI = (await axios.get(`${API_URL}?name=${this.name}`)).data;
+      const apiResult: HistoryResultAPI = (await axios.get(`${API_URL}?name=${this.name}&historyCount=100`)).data;
 
+      console.log(apiResult);
+      
+
+      if (!apiResult || !apiResult.response) return;
       this.isLoaded = true;
-      if (!apiResult || !apiResult.result) return;
 
       if (!apiResult.errorMessage) {
-        this.dispatcherHistory = apiResult.result.dispatcherHistory;
+        this.dispatcherHistory = apiResult.response.dispatcherHistory;
 
         this.dispatcherTimeline = this.dispatcherHistory
           .reduce((acc, dispatcher) => {

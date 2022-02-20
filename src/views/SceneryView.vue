@@ -61,6 +61,20 @@ import { useStore } from '@/store';
 import { GETTERS } from '@/constants/storeConstants';
 import { useRoute } from 'vue-router';
 
+import axios from 'axios';
+import { URLs } from '@/scripts/utils/apiURLs';
+import { watch, watchEffect } from 'vue';
+import Station from '@/scripts/interfaces/Station';
+
+interface SceneryHistoryData {
+  response?: {
+    stationName: string;
+    currentDispatcher: string;
+    currentDispatcherId: number;
+    currentDispatcherFrom: number;
+  };
+}
+
 export default defineComponent({
   components: { SceneryInfo, SceneryTimetable, SceneryHistory, ActionButton, SceneryHeader },
 
@@ -72,6 +86,9 @@ export default defineComponent({
     },
 
     viewMode: 'info',
+
+    stationInfo: {} as (Station | undefined),
+    onlineFrom: -1
   }),
 
   setup() {
@@ -85,10 +102,14 @@ export default defineComponent({
     const isComponentVisible = computed(() => route.path === '/scenery');
 
     const isDataLoaded = computed(() => data.value.dataConnectionStatus === DataStatus.Loaded);
+     
+    const stationInfo = computed(() => {       
+       return data.value.stationList.find((station) => station.name === route.query.station?.toString().replace(/_/g, ' '))
+    })
 
-    const stationInfo = computed(() =>
-      data.value.stationList.find((station) => station.name === route.query.station?.toString().replace(/_/g, ' '))
-    );
+    // const onlineFrom = computed(async () => {
+    //   return await (await axios.get(`${URLs.stacjownikAPI}?name=${route.query.station}&historyCount=0`)).data;
+    // });
 
     return {
       data,
@@ -96,7 +117,7 @@ export default defineComponent({
       timetableOnly,
       isComponentVisible,
       isDataLoaded,
-      stationInfo,
+      stationInfo
     };
   },
 
@@ -110,8 +131,14 @@ export default defineComponent({
     },
   },
 
-  activated() {
+  async mounted() {
+    this.stationInfo = (this.$store.getters[GETTERS.allData] as StoreData).stationList.find((station) => station.name === this.$route.query.station?.toString().replace(/_/g, ' '))
+  },
+
+  async activated() {    
     if (this.currentRegion.id != 'eu' && this.viewMode == 'history') this.viewMode = 'info';
+
+    const onlineFrom = await (await axios.get(`${URLs.stacjownikAPI}/api/getSceneryHistory?name=${this.$route.query.station}&historyCount=0`)).data;
   },
 });
 </script>
