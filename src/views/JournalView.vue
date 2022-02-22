@@ -4,10 +4,10 @@
       <JournalOptions @changedOptions="search" />
 
       <div class="history_list">
-        <div class="list_wrapper">
+        <div class="list_wrapper" ref="scrollElement">
           <transition name="warning" mode="out-in">
             <div :key="historyDataStatus.status">
-              <div v-if="isDataLoading" class="history_warning">{{ $t('app.loading') }}</div>
+              <!-- <div v-if="isDataLoading" class="history_warning"></div> -->
 
               <div v-if="!isDataLoading && isDataError" class="history_warning error">
                 {{ $t('app.error') }}
@@ -110,12 +110,17 @@
           </transition>
         </div>
       </div>
+
+      <div class="history-loading" v-if="isDataLoading">
+        <img :src="icons.loading" alt="loading icon" />
+        <span class="loading-label">{{ $t('app.loading') }}</span>
+      </div>
     </div>
   </section>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, provide, reactive, Ref, ref } from 'vue';
+import { computed, defineComponent, onMounted, onUnmounted, provide, reactive, Ref, ref } from 'vue';
 import axios from 'axios';
 
 import SearchBox from '@/components/Global/SearchBox.vue';
@@ -130,9 +135,7 @@ import { URLs } from '@/scripts/utils/apiURLs';
 
 const PROD_MODE = true;
 
-const API_URL = PROD_MODE
-  ? `${URLs.stacjownikAPI}/api/getTimetables`
-  : 'http://localhost:3001/api/getTimetables';
+const API_URL = PROD_MODE ? `${URLs.stacjownikAPI}/api/getTimetables` : 'http://localhost:3001/api/getTimetables';
 
 interface APIResponse {
   errorMessage: string | null;
@@ -199,7 +202,9 @@ export default defineComponent({
   mixins: [dateMixin],
 
   data: () => ({
-    exitIcon: require('@/assets/icon-exit.svg'),
+    icons: {
+      loading: require('@/assets/icon-loading.svg'),
+    },
   }),
 
   setup() {
@@ -211,10 +216,33 @@ export default defineComponent({
     const sorterActive = ref({ id: 'timetableId', dir: -1 });
     const searchedDriver = ref('');
     const searchedTrain = ref('');
+    const countFromIndex = ref(0);
+    const countLimit = 15;
 
     provide('searchedTrain', searchedTrain);
     provide('searchedDriver', searchedDriver);
     provide('sorterActive', sorterActive);
+
+    const scrollElement: Ref<HTMLElement | null> = ref(null);
+
+    const handleScroll = (e: Event) => {
+      if (!scrollElement.value) return;
+
+      const element = scrollElement.value;
+
+      if (element.getBoundingClientRect().bottom * 0.9 < window.innerHeight) {
+        console.log('gituwa');
+        // historyDataStatus.value.status = DataStatus.Loading
+      }
+    };
+
+    onMounted(() => {
+      window.addEventListener('scroll', handleScroll);
+    });
+
+    onUnmounted(() => {
+      window.removeEventListener('scroll', handleScroll);
+    });
 
     return {
       historyList: ref([]) as Ref<TimetableHistory[]>,
@@ -227,6 +255,10 @@ export default defineComponent({
       searchedTrain,
       sorterActive,
 
+      countFromIndex,
+      countLimit,
+
+      scrollElement,
       maxCount: ref(15),
 
       filters: reactive({ ...initFilters }) as { [filterSection: string]: { [filterId: string]: FilterOption } },
@@ -282,7 +314,7 @@ export default defineComponent({
       else if (this.sorterActive.id == 'beginDate') queries.push('sortBy=beginDate');
       else queries.push('sortBy=timetableId');
 
-      queries.push('countLimit=15')
+      queries.push('countLimit=15');
 
       try {
         const responseData: APIResponse | null = await (await axios.get(`${API_URL}?${queries.join('&')}`)).data;
@@ -414,6 +446,28 @@ li,
 @include smallScreen() {
   .history-view {
     font-size: 1.25em;
+  }
+}
+
+.history-loading {
+  margin-top: 1em;
+
+  img {
+    margin: 0 auto;
+    display: block;
+
+    width: 8em;
+  }
+
+  text-align: center;
+
+  .loading-label {
+
+    background: white;
+    color: black;
+
+    padding: 0.15em 0.25em;
+    font-size: 1.3em;
   }
 }
 </style>
