@@ -56,24 +56,14 @@ import SceneryHeader from '@/components/SceneryView/SceneryHeader.vue';
 
 import ActionButton from '@/components/Global/ActionButton.vue';
 
-import { computed, ComputedRef, defineComponent } from '@vue/runtime-core';
+import { computed, ComputedRef, defineComponent, onMounted } from '@vue/runtime-core';
 import { useStore } from '@/store';
 import { GETTERS } from '@/constants/storeConstants';
 import { useRoute } from 'vue-router';
 
 import axios from 'axios';
 import { URLs } from '@/scripts/utils/apiURLs';
-import { watch, watchEffect } from 'vue';
 import Station from '@/scripts/interfaces/Station';
-
-interface SceneryHistoryData {
-  response?: {
-    stationName: string;
-    currentDispatcher: string;
-    currentDispatcherId: number;
-    currentDispatcherFrom: number;
-  };
-}
 
 export default defineComponent({
   components: { SceneryInfo, SceneryTimetable, SceneryHistory, ActionButton, SceneryHeader },
@@ -107,6 +97,7 @@ export default defineComponent({
        return data.value.stationList.find((station) => station.name === route.query.station?.toString().replace(/_/g, ' '))
     })
 
+
     // const onlineFrom = computed(async () => {
     //   return await (await axios.get(`${URLs.stacjownikAPI}?name=${route.query.station}&historyCount=0`)).data;
     // });
@@ -132,7 +123,7 @@ export default defineComponent({
   },
 
   async mounted() {
-    this.stationInfo = (this.$store.getters[GETTERS.allData] as StoreData).stationList.find((station) => station.name === this.$route.query.station?.toString().replace(/_/g, ' '))
+    // this.stationInfo = (this.$store.getters[GETTERS.allData] as StoreData).stationList.find((station) => station.name === this.$route.query.station?.toString().replace(/_/g, ' '))
   },
 
   async activated() {    

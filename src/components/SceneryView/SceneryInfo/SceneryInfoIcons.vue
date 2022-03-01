@@ -22,18 +22,18 @@
     />
 
     <img
-      v-if="station.generalInfo && station.generalInfo.SBL !== ''"
+      v-if="station.generalInfo && station.generalInfo.routes.sblRouteNames.length > 0"
       :src="icons.SBL"
-      :alt="$t('desc.SBL') + `${station.generalInfo.SBL}`"
-      :title="$t('desc.SBL') + `${station.generalInfo.SBL}`"
+      alt="sbl icon"
+      :title="$t('desc.SBL') + `${station.generalInfo.routes.sblRouteNames.join(', ')}`"
     />
 
     <img
-      v-if="station.generalInfo && station.generalInfo.TWB !== ''"
+      v-if="station.generalInfo && station.generalInfo.routes.twoWay.some(route => route.TWB)"
       :src="icons.TWB"
-      alt="two way route blockade"
+      alt="TWB icon"
       :title="
-        `${station.generalInfo.TWB === 'TAK' ? $t('desc.TWB-all') : $t('desc.TWB-routes') + station.generalInfo.TWB}`
+        $t('desc.TWB-routes') + station.generalInfo.routes.twoWay.filter(route => route.TWB).map(route => route.name).join(', ')
       "
     />
 
