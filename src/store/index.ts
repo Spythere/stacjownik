@@ -22,6 +22,7 @@ import { DataStatus } from "@/scripts/enums/DataStatus";
 import { getLocoURL, getStatusID, getStatusTimestamp, getTimestamp, getTrainStopStatus, parseSpawns, timestampToString } from "@/scripts/utils/storeUtils";
 import { URLs } from '@/scripts/utils/apiURLs';
 import ScheduledTrain from '@/scripts/interfaces/ScheduledTrain';
+import StationRoutes from '@/scripts/interfaces/StationRoutes';
 
 export interface State {
   stationList: Station[],
@@ -52,27 +53,14 @@ interface StationJSONData {
 
   reqLevel: number;
 
-  supportersOnly: boolean;
+  // supportersOnly: boolean;
 
   signalType: string;
   controlType: string;
 
   SUP: boolean;
 
-  SBL: string;
-  TWB: string;
-
-  routes: {
-    oneWay: {
-      catenary: number;
-      noCatenary: number;
-    };
-    twoWay: {
-      catenary: number;
-      noCatenary: number;
-    }
-  };
-
+  routes: string;
   checkpoints: string | null;
 
   default: boolean;
@@ -351,11 +339,44 @@ export const store = createStore<State>({
 
   mutations: {
     SET_SCENERY_DATA(state, data: StationJSONData[]) {
+
       state.stationList = data.map(stationData => ({
         name: stationData.name,
 
         generalInfo: {
           ...stationData,
+          routes: stationData.routes?.split(";").filter(routeString => routeString).reduce((acc, routeString) => {
+            const name = routeString.split("_")[0];
+            const specs = routeString.split("_")[1].split("");
+
+            const twoWay = specs[0] == "2";
+            const catenary = specs[1] == "E";
+            const SBL = specs[2] == "S";
+            const TWB = specs[3] ? true : false;
+
+            const propName = twoWay
+              ? catenary
+                ? 'twoWayCatenaryRouteNames'
+                : 'twoWayNoCatenaryRouteNames'
+              : catenary
+                ? 'oneWayCatenaryRouteNames'
+                : 'oneWayNoCatenaryRouteNames';
+
+            acc[twoWay ? 'twoWay' : 'oneWay'].push({ name, SBL, TWB, catenary });
+            acc[propName].push(name);
+
+            if (SBL) acc['sblRouteNames'].push(name);
+
+            return acc;
+          }, {
+            oneWay: [],
+            twoWay: [],
+            sblRouteNames: [],
+            oneWayCatenaryRouteNames: [],
+            oneWayNoCatenaryRouteNames: [],
+            twoWayCatenaryRouteNames: [],
+            twoWayNoCatenaryRouteNames: []
+          } as StationRoutes) || {},
           checkpoints: stationData.checkpoints ? stationData.checkpoints.split(";").map(sub => ({ checkpointName: sub, scheduledTrains: [] })) : [],
         }
       }));

@@ -64,7 +64,7 @@
                       !station.generalInfo.nonPublic &&
                       !station.generalInfo.unavailable
                   "
-                  :style="calculateExpStyle(station.generalInfo.reqLevel, station.generalInfo.supportersOnly)"
+                  :style="calculateExpStyle(station.generalInfo.reqLevel)"
                 >
                   {{ station.generalInfo.reqLevel >= 2 ? station.generalInfo.reqLevel : 'L' }}
                 </span>
@@ -109,43 +109,43 @@
 
             <td class="station_tracks twoway">
               <span
-                v-if="station.generalInfo && station.generalInfo.routes.twoWay.catenary > 0"
+                v-if="station.generalInfo && station.generalInfo.routes.twoWayCatenaryRouteNames.length  > 0"
                 class="track catenary"
-                :title="`Liczba zelektryfikowanych szlaków dwutorowych: ${station.generalInfo.routes.twoWay.catenary}`"
+                :title="`Liczba zelektryfikowanych szlaków dwutorowych: ${station.generalInfo.routes.twoWayCatenaryRouteNames.length }`"
               >
-                {{ station.generalInfo.routes.twoWay.catenary }}
+                {{ station.generalInfo.routes.twoWayCatenaryRouteNames.length  }}
               </span>
 
               <span
-                v-if="station.generalInfo && station.generalInfo.routes.twoWay.noCatenary > 0"
+                v-if="station.generalInfo && station.generalInfo.routes.twoWayNoCatenaryRouteNames.length > 0"
                 class="track no-catenary"
                 :title="
-                  `Liczba niezelektryfikowanych szlaków dwutorowych: ${station.generalInfo.routes.twoWay.noCatenary}`
+                  `Liczba niezelektryfikowanych szlaków dwutorowych: ${station.generalInfo.routes.twoWayNoCatenaryRouteNames.length}`
                 "
               >
-                {{ station.generalInfo.routes.twoWay.noCatenary }}
+                {{ station.generalInfo.routes.twoWayNoCatenaryRouteNames.length }}
               </span>
 
               <span class="separator"></span>
 
               <span
-                v-if="station.generalInfo && station.generalInfo.routes.oneWay.catenary > 0"
+                v-if="station.generalInfo && station.generalInfo.routes.oneWayCatenaryRouteNames.length > 0"
                 class="track catenary"
                 :title="
-                  `Liczba zelektryfikowanych szlaków jednotorowych: ${station.generalInfo.routes.oneWay.catenary}`
+                  `Liczba zelektryfikowanych szlaków jednotorowych: ${station.generalInfo.routes.oneWayCatenaryRouteNames.length}`
                 "
               >
-                {{ station.generalInfo.routes.oneWay.catenary }}
+                {{ station.generalInfo.routes.oneWayCatenaryRouteNames.length }}
               </span>
 
               <span
-                v-if="station.generalInfo && station.generalInfo.routes.oneWay.noCatenary > 0"
+                v-if="station.generalInfo && station.generalInfo.routes.oneWayNoCatenaryRouteNames.length > 0"
                 class="track no-catenary"
                 :title="
-                  `Liczba niezelektryfikowanych szlaków jednotorowych: ${station.generalInfo.routes.oneWay.noCatenary}`
+                  `Liczba niezelektryfikowanych szlaków jednotorowych: ${station.generalInfo.routes.oneWayNoCatenaryRouteNames.length}`
                 "
               >
-                {{ station.generalInfo.routes.oneWay.noCatenary }}
+                {{ station.generalInfo.routes.oneWayNoCatenaryRouteNames.length }}
               </span>
             </td>
 
@@ -175,10 +175,10 @@
               />
 
               <img
-                v-if="station.generalInfo?.SBL && station.generalInfo?.SBL !== ''"
+                v-if="station.generalInfo && station.generalInfo.routes.sblRouteNames.length > 0"
                 :src="SBLIcon"
                 alt="SBL"
-                :title="$t('desc.SBL') + `${station.generalInfo.SBL}`"
+                :title="$t('desc.SBL') + `${station.generalInfo.routes.sblRouteNames.join(',')}`"
               />
 
               <img v-if="!station.generalInfo" :src="unknownIcon" alt="icon-unknown" :title="$t('desc.unknown')" />
@@ -296,11 +296,11 @@ export default defineComponent({
     },
 
     openForumSite(e: Event, url: string | undefined) {
-        if(!url) return;
+      if (!url) return;
 
-        e.preventDefault();
-        window.open(url, '_blank');
-    }
+      e.preventDefault();
+      window.open(url, '_blank');
+    },
   },
 });
 </script>

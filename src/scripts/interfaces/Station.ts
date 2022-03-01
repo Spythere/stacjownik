@@ -1,4 +1,5 @@
 import ScheduledTrain from "./ScheduledTrain";
+import StationRoutes from "./StationRoutes";
 
 export default interface Station {
   name: string;
@@ -8,13 +9,11 @@ export default interface Station {
     url: string;
 
     reqLevel: number;
-    supportersOnly: boolean;
+    // supportersOnly: boolean;
 
     lines: string;
     project: string;
 
-    SBL: string;
-    TWB: string;
     signalType: string;
     controlType: string;
 
@@ -24,17 +23,14 @@ export default interface Station {
     nonPublic: boolean;
     unavailable: boolean;
 
-    routes: {
-      oneWay: { catenary: number; noCatenary: number };
-      twoWay: { catenary: number; noCatenary: number };
-    };
+    routes: StationRoutes;
 
     checkpoints: {
       checkpointName: string;
       scheduledTrains: ScheduledTrain[];
     }[];
   };
-  
+
   onlineInfo?: {
     hash: string;
     name: string;
@@ -42,23 +38,23 @@ export default interface Station {
     maxUsers: number;
     currentUsers: number;
 
-    spawns: { spawnName: string; spawnLength: number }[];    
+    spawns: { spawnName: string; spawnLength: number }[];
     dispatcherRate: number;
     dispatcherName: string;
     dispatcherExp: number;
     dispatcherId: number;
     dispatcherIsSupporter: boolean;
-    
+
     statusTimestamp: number;
     statusTimeString: string;
     statusID: string;
-  
+
     stationTrains?: {
       driverName: string;
       trainNo: number;
       stopStatus?: string;
     }[];
-  
+
     scheduledTrains?: ScheduledTrain[];
   }
 

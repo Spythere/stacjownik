@@ -77,26 +77,25 @@ const filterStations = (station: Station, filters: Filter) => {
   if (station.generalInfo?.unavailable && filters['unavailable']) return returnMode;
 
   if (station.generalInfo) {
+    const routes = station.generalInfo.routes;
+
     if (station.generalInfo.default && filters['default']) return returnMode;
     if (!station.generalInfo.default && filters['notDefault']) return returnMode;
 
     if (filters['real'] && station.generalInfo.lines != '') return returnMode;
     if (filters['fictional'] && station.generalInfo.lines == '') return returnMode;
 
-    // if (station.generalInfo.reqLevel == -1) return true;
-    // if (station.generalInfo.reqLevel == -1 && filters['minLevel'] == 0) return true;
-
     if (station.generalInfo.reqLevel + ((station.generalInfo.nonPublic || station.generalInfo.unavailable) ? 1 : 0) < filters['minLevel']) return returnMode;
     if (station.generalInfo.reqLevel + ((station.generalInfo.nonPublic || station.generalInfo.unavailable) ? 1 : 0) > filters['maxLevel']) return returnMode;
 
-    if (filters['no-1track'] && (station.generalInfo.routes.oneWay.catenary != 0 || station.generalInfo.routes.oneWay.noCatenary != 0)) return returnMode;
-    if (filters['no-2track'] && (station.generalInfo.routes.twoWay.catenary != 0 || station.generalInfo.routes.twoWay.noCatenary != 0)) return returnMode;
+    if (filters['no-1track'] && (routes.oneWayCatenaryRouteNames.length != 0 || routes.oneWayNoCatenaryRouteNames.length != 0)) return returnMode;
+    if (filters['no-2track'] && (routes.twoWayCatenaryRouteNames.length != 0 || routes.twoWayNoCatenaryRouteNames.length != 0)) return returnMode;
 
-    if (station.generalInfo.routes.oneWay.catenary < filters['minOneWayCatenary']) return returnMode;
-    if (station.generalInfo.routes.oneWay.noCatenary < filters['minOneWay']) return returnMode;
+    if (routes.oneWayCatenaryRouteNames.length < filters['minOneWayCatenary']) return returnMode;
+    if (routes.oneWayNoCatenaryRouteNames.length < filters['minOneWay']) return returnMode;
 
-    if (station.generalInfo.routes.twoWay.catenary < filters['minTwoWayCatenary']) return returnMode;
-    if (station.generalInfo.routes.twoWay.noCatenary < filters['minTwoWay']) return returnMode;
+    if (routes.twoWayCatenaryRouteNames.length < filters['minTwoWayCatenary']) return returnMode;
+    if (routes.twoWayNoCatenaryRouteNames.length < filters['minTwoWay']) return returnMode;
 
     if (filters[station.generalInfo.controlType]) return returnMode;
     if (filters[station.generalInfo.signalType]) return returnMode;
@@ -112,7 +111,7 @@ const filterStations = (station: Station, filters: Filter) => {
 
     if (filters['ręczne'] && station.generalInfo.controlType.includes('ręczne')) return returnMode;
 
-    if (filters['SBL'] && station.generalInfo.SBL) return returnMode;
+    if (filters['SBL'] && routes.sblRouteNames.length > 0) return returnMode;
   }
 
   return true;
