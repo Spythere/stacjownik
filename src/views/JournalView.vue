@@ -231,7 +231,7 @@ export default defineComponent({
       const element = scrollElement.value;
 
       if (element.getBoundingClientRect().bottom * 0.9 < window.innerHeight) {
-        console.log('gituwa');
+        // console.log('gituwa');
         // historyDataStatus.value.status = DataStatus.Loading
       }
     };
@@ -266,7 +266,9 @@ export default defineComponent({
   },
 
   mounted() {
-    this.fetchHistoryData();
+    setTimeout(() => {
+      this.fetchHistoryData();
+    }, 250);
   },
 
   methods: {
@@ -357,11 +359,11 @@ export default defineComponent({
   }
 
   &-enter-active {
-    transition: all 100ms ease-out;
+    transition: all 200ms ease-in-out;
   }
 
   &-leave-active {
-    transition: all 100ms ease-out 100ms;
+    transition: all 200ms ease-in-out;
   }
 }
 
@@ -450,7 +452,7 @@ li,
 }
 
 .history-loading {
-  margin-top: 1em;
+  margin-top: 2em;
 
   img {
     margin: 0 auto;
@@ -463,11 +465,13 @@ li,
 
   .loading-label {
 
-    background: white;
-    color: black;
+    background: #333;
+    color: white;
 
-    padding: 0.15em 0.25em;
+    padding: 0.5em 0.5em;
     font-size: 1.3em;
+
+    border-radius: 1em;
   }
 }
 </style>
