@@ -4,14 +4,16 @@ export default interface StationRoutes {
         name: string;
         catenary: boolean;
         SBL: boolean;
-        TWB: boolean
+        TWB: boolean;
+        isInternal: boolean;
     }[];
 
     twoWay: {
         name: string;
         catenary: boolean;
         SBL: boolean;
-        TWB: boolean
+        TWB: boolean;
+        isInternal: boolean;
     }[];
 
     /* [catenary, noCatenary] */

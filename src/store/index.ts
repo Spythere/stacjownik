@@ -346,13 +346,15 @@ export const store = createStore<State>({
         generalInfo: {
           ...stationData,
           routes: stationData.routes?.split(";").filter(routeString => routeString).reduce((acc, routeString) => {
-            const name = routeString.split("_")[0];
-            const specs = routeString.split("_")[1].split("");
+            const specs1 = routeString.split("_")[0];
+            const isInternal = specs1.startsWith('!');
+            const name = isInternal ? specs1.replace("!", "") : specs1; 
 
-            const twoWay = specs[0] == "2";
-            const catenary = specs[1] == "E";
-            const SBL = specs[2] == "S";
-            const TWB = specs[3] ? true : false;
+            const specs2 = routeString.split("_")[1].split("");
+            const twoWay = specs2[0] == "2";
+            const catenary = specs2[1] == "E";
+            const SBL = specs2[2] == "S";
+            const TWB = specs2[3] ? true : false;
 
             const propName = twoWay
               ? catenary
@@ -362,8 +364,8 @@ export const store = createStore<State>({
                 ? 'oneWayCatenaryRouteNames'
                 : 'oneWayNoCatenaryRouteNames';
 
-            acc[twoWay ? 'twoWay' : 'oneWay'].push({ name, SBL, TWB, catenary });
-            acc[propName].push(name);
+            acc[twoWay ? 'twoWay' : 'oneWay'].push({ name, SBL, TWB, catenary, isInternal });
+            if(!isInternal) acc[propName].push(name);
 
             if (SBL) acc['sblRouteNames'].push(name);
 
