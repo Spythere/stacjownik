@@ -48,6 +48,7 @@ const filteredTrainList = (
   searchedDriver: string,
   sorterActive: { id: string; dir: number }
 ) => {
+  
   return trainList
     .filter(
       (train) =>
@@ -113,12 +114,12 @@ export default defineComponent({
     trainStatsOpen: false,
   }),
 
-  setup(props) {
+  setup() {
     const store = useStore();
 
     const trainList: ComputedRef<Train[]> = computed(() => store.getters[GETTERS.trainList]);
 
-    const timetableDataStatus: ComputedRef<DataStatus> = computed(() => store.getters[GETTERS.timetableDataStatus]);
+    // const timetableDataStatus: ComputedRef<DataStatus> = computed(() => store.getters[GETTERS.timetableDataStatus]);
 
     const sorterActive = ref({ id: 'distance', dir: -1 });
     const searchedDriver = ref('');

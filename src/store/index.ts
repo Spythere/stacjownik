@@ -162,6 +162,7 @@ export const store = createStore<State>({
             const stationTrains = onlineTrainsData.success ? onlineTrainsData.message
               .filter(train => train.region === this.state.region.id && train.isOnline && train.station.stationName === station.stationName)
               .map(train => ({ driverName: train.driverName, trainNo: train.trainNo })) : [];
+            
 
             acc.push({
               name: station.stationName,
@@ -204,10 +205,10 @@ export const store = createStore<State>({
                   connectedTrack: train.dataSceneryConnection,
                   locoType,
                   locoURL: getLocoURL(locoType),
-                  cars: train.dataCon.split(";").filter((train, i) => i > 0) || []
+                  cars: train.dataCon.split(";").filter((train, i) => i > 0) || [],
                 };
               })
-          ) : [];
+          ) : [];          
 
           // Pass reduced lists to mutations
           commit(MUTATIONS.UPDATE_STATIONS, updatedStationList);
@@ -463,9 +464,10 @@ export const store = createStore<State>({
         else acc.push({ ...updatedTrain });
 
         return acc;
-      }, [] as Train[]);
+      }, [] as Train[]);      
 
-      state.trainCount = state.trainList.filter(train => train.online).length;
+      state.trainCount = state.trainList.length;      
+      
       state.dataConnectionStatus = DataStatus.Loaded;
     },
 
@@ -573,7 +575,7 @@ export const store = createStore<State>({
         const timetable = timetableList.find(tt => tt.data && tt.trainNo === train.trainNo && tt.data.driverId === train.driverId);
         const allTimetables = timetableList.filter(tt => tt.data && tt.data.driverId === train.driverId && tt.trainNo !== train.trainNo);
 
-        if (!timetable || !timetable.data) return acc;
+        // if (!timetable || !timetable.data) return acc;
 
         if (allTimetables.length > 0)
           return acc;
@@ -582,7 +584,7 @@ export const store = createStore<State>({
           .find(station => station.name === train.currentStationName)
           ?.onlineInfo?.scheduledTrains?.find(stationTrain => stationTrain.trainNo === train.trainNo);
 
-        acc.push({ ...train, timetableData: timetable.data, stopStatus: trainStopData?.stopStatus || "", stopLabel: trainStopData?.stopLabel || "" });
+        acc.push({ ...train, timetableData: timetable?.data, stopStatus: trainStopData?.stopStatus || "", stopLabel: trainStopData?.stopLabel || "" });
 
         return acc;
       }, [] as Train[]);
