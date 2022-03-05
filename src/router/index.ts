@@ -1,17 +1,15 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 
-import StationsView from "@/views/StationsView.vue";
-
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'StationsView',
-    component: StationsView
+    component: () => import("@/views/StationsView.vue")
   },
   {
     path: "/trains",
     name: "TrainsView",
-    component:  () => import("@/views/TrainsView.vue"),
+    component: () => import("@/views/TrainsView.vue"),
     props: route => ({ train: route.query.train })
   },
   {
@@ -32,6 +30,14 @@ const routes: Array<RouteRecordRaw> = [
 ]
 
 const router = createRouter({
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition;
+    } else {
+      return { top: 0, left: 0 };
+    }
+
+  },
   history: createWebHistory(),
   routes,
 })

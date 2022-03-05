@@ -6,6 +6,7 @@ export default interface StationRoutes {
         SBL: boolean;
         TWB: boolean;
         isInternal: boolean;
+        tracks: number;
     }[];
 
     twoWay: {
@@ -14,6 +15,7 @@ export default interface StationRoutes {
         SBL: boolean;
         TWB: boolean;
         isInternal: boolean;
+        tracks: number;
     }[];
 
     /* [catenary, noCatenary] */

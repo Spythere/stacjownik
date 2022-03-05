@@ -365,7 +365,7 @@ export const store = createStore<State>({
                 ? 'oneWayCatenaryRouteNames'
                 : 'oneWayNoCatenaryRouteNames';
 
-            acc[twoWay ? 'twoWay' : 'oneWay'].push({ name, SBL, TWB, catenary, isInternal });
+            acc[twoWay ? 'twoWay' : 'oneWay'].push({ name, SBL, TWB, catenary, isInternal, tracks: twoWay ? 2 : 1 });
             if(!isInternal) acc[propName].push(name);
 
             if (SBL) acc['sblRouteNames'].push(name);
@@ -457,7 +457,7 @@ export const store = createStore<State>({
     },
 
     UPDATE_TRAINS(state, updatedTrainList: any[]) {
-      state.trainList = updatedTrainList.reduce((acc, updatedTrain) => {
+      state.trainList = updatedTrainList.reduce((acc, updatedTrain) => {        
         const trainData = state.trainList.find(train => train.trainNo === updatedTrain.trainNo);
 
         if (trainData) acc.push({ ...trainData, ...updatedTrain });
@@ -573,12 +573,8 @@ export const store = createStore<State>({
 
       state.trainList = state.trainList.reduce((acc, train) => {
         const timetable = timetableList.find(tt => tt.data && tt.trainNo === train.trainNo && tt.data.driverId === train.driverId);
-        const allTimetables = timetableList.filter(tt => tt.data && tt.data.driverId === train.driverId && tt.trainNo !== train.trainNo);
-
-        // if (!timetable || !timetable.data) return acc;
-
-        if (allTimetables.length > 0)
-          return acc;
+        
+        if (!train.online && !timetable) return acc;;
 
         const trainStopData = state.stationList
           .find(station => station.name === train.currentStationName)

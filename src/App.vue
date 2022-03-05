@@ -50,8 +50,9 @@
               </span>
 
               <img src="@/assets/icon-dispatcher.svg" alt="icon dispatcher" />
-              <span>{{ data.activeStationCount }}</span>
-              <span>{{ data.activeTrainCount }}</span>
+              {{ data.activeStationCount }}
+              |
+              {{ data.activeTrainCount }}
               <img src="@/assets/icon-train.svg" alt="icon train" />
             </div>
           </span>
@@ -131,6 +132,11 @@ export default defineComponent({
       sceneryDataStatus,
       dispatcherDataStatus: computed(() => data.value.dispatcherDataStatus),
 
+      timetableCount: data.value.trainList.filter((train) => train.timetableData).length,
+      onlineDispatcherCount: data.value.stationList.filter(
+        (station) => station.onlineInfo && station.onlineInfo.statusTimestamp > 0
+      ).length,
+
       openFilterCard() {
         isFilterCardVisible.value = true;
       },
@@ -148,8 +154,6 @@ export default defineComponent({
       pl: require('@/assets/icon-pl.svg'),
       error: require('@/assets/icon-error.svg'),
     },
-
-
   }),
 
   created() {
@@ -174,7 +178,6 @@ export default defineComponent({
       StorageManager.setBooleanValue('version_notes_read', true);
     },
 
-  
     changeLang(lang: string) {
       this.$i18n.locale = lang;
       this.currentLang = lang;

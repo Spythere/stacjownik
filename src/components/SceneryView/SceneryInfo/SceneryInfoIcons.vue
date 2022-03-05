@@ -21,7 +21,7 @@
       :title="$t('desc.signals-type') + $t(`signals.${station.generalInfo.signalType}`)"
     />
 
-    <img
+    <!-- <img
       v-if="station.generalInfo && station.generalInfo.routes.sblRouteNames.length > 0"
       :src="icons.SBL"
       alt="sbl icon"
@@ -35,7 +35,7 @@
       :title="
         $t('desc.TWB-routes') + station.generalInfo.routes.twoWay.filter(route => route.TWB).map(route => route.name).join(', ')
       "
-    />
+    /> -->
 
     <img v-if="station.generalInfo?.default" :src="icons.td2" alt="default scenery" :title="$t('desc.default')" />
 
