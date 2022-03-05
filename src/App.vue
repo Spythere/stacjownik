@@ -50,9 +50,9 @@
               </span>
 
               <img src="@/assets/icon-dispatcher.svg" alt="icon dispatcher" />
-              {{ data.activeStationCount }}
-              |
-              {{ data.activeTrainCount }}
+              <span class="text--primary">{{ data.activeStationCount }}</span>
+              <span class="text--grayed">|</span>
+              <span class="text--primary">{{ data.activeTrainCount }}</span>
               <img src="@/assets/icon-train.svg" alt="icon train" />
             </div>
           </span>
