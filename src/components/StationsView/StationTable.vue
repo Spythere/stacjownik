@@ -35,6 +35,7 @@
         <tbody>
           <tr
             class="station"
+            :class="{ 'last-selected': lastSelectedStationName == station.name }"
             v-for="(station, i) in stations"
             :key="i + station.name"
             @click.left="setScenery(station.name)"
@@ -267,6 +268,8 @@ export default defineComponent({
     headIds: ['station', 'min-lvl', 'status', 'dispatcher', 'dispatcher-lvl', 'routes', 'general'],
 
     headIconsIds: ['user', 'spawn', 'timetable'],
+
+    lastSelectedStationName: ""
   }),
 
   setup() {
@@ -288,6 +291,8 @@ export default defineComponent({
       const station = this.stations.find((station) => station.name === name);
 
       if (!station) return;
+
+      this.lastSelectedStationName = station.name;
 
       this.$router.push({
         name: 'SceneryView',

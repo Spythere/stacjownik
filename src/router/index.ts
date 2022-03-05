@@ -30,12 +30,12 @@ const routes: Array<RouteRecordRaw> = [
 ]
 
 const router = createRouter({
-  scrollBehavior(to, from, savedPosition) {
-    if (savedPosition) {
-      return savedPosition;
-    } else {
-      return { top: 0, left: 0 };
-    }
+  scrollBehavior(to, from) {    
+    if (to.name == "SceneryView")
+      return { el: `.app_main` };
+    
+    if (from.name == "SceneryView" && to.name == "StationsView")
+      return { el: `.last-selected`, top: 20 }
 
   },
   history: createWebHistory(),

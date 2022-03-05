@@ -28,33 +28,6 @@
       </span>
     </span>
   </section>
-
-  <section class="info-tracks" v-if="station.generalInfo">
-    <div
-      class="track-info"
-      :class="{ 'no-catenary': !route.catenary, internal: route.isInternal }"
-      v-for="route in [...station.generalInfo.routes.oneWay, ...station.generalInfo.routes.twoWay].filter(route => route.name != '-')"
-      :key="route.name"
-      :title="
-        `Szlak ${route.name}: ${route.isInternal ? 'wewnętrzny' : 'zewnętrzny'}, ${
-          route.tracks == 2 ? 'dwutorowy' : 'jednotorowy'
-        }, ${route.catenary ? 'zelektryfikowany' : 'niezelektryfikowany'} z ${route.SBL ? 'SBL' : 'PBL'} ${
-          route.TWB ? 'i blokadą dwukierunkową' : ''
-        }`
-      "
-    >
-      <span class="track-name">
-        <b>{{ route.name }}</b>
-      </span>
-
-      <span class="track-specs">
-        {{ route.tracks }}tor
-        <img :src="require('@/assets/icon-track-catenary.svg')" alt="icon track catenary" v-if="route.catenary" />
-        <img v-if="route.TWB" :src="require('@/assets/icon-track-twb.svg')" alt="icon track twb"/>
-        <img v-if="route.SBL" :src="require('@/assets/icon-track-sbl.svg')" alt="icon track sbl"/>
-      </span>
-    </div>
-  </section>
 </template>
 
 <script lang="ts">
@@ -83,43 +56,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '../../../styles/variables.scss';
-
-.info-tracks {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-
-  padding: 0 3em;
-}
-
-.track-info {
-  margin: 0.45em 0.25em;
-  font-size: 1.05em;
-  cursor: help;
-
-  span {
-    height: 100%;
-    background-color: #009dce;
-
-    padding: 0.2em 0.25em;
-  }
-
-  &.no-catenary > span {
-    background-color: #686868;
-  }
-
-  &.internal > .track-name {
-    text-decoration: underline;
-  }
-
-  img {
-    height: 1.2em;
-    vertical-align: text-bottom;
-  }
-}
-
-.train-specs {
-}
 
 .info-stats {
   padding: 1rem 0;

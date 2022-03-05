@@ -69,11 +69,11 @@
 
       <main class="app_main">
         <router-view v-slot="{ Component }">
-          <transition name="view-anim" mode="out-in">
+          <!-- <transition name="view-anim" mode="out-in"> -->
             <keep-alive>
               <component :is="Component" />
             </keep-alive>
-          </transition>
+          <!-- </transition> -->
         </router-view>
       </main>
 

@@ -3,8 +3,12 @@
     <section v-if="!timetableOnly">
       <!-- info stats -->
       <scenery-info-stats :station="station" />
+
       <!-- info icons -->
       <scenery-info-icons :station="station" />
+
+      <!-- info routes -->
+      <scenery-info-routes :station="station" />
 
       <!-- info dispatcher -->
       <scenery-info-dispatcher :station="station" :onlineFrom="onlineFrom" />
@@ -28,6 +32,7 @@ import SceneryInfoIcons from './SceneryInfo/SceneryInfoIcons.vue';
 import SceneryInfoStats from './SceneryInfo/SceneryInfoStats.vue';
 import SceneryInfoUserList from './SceneryInfo/SceneryInfoUserList.vue';
 import SceneryInfoSpawnList from './SceneryInfo/SceneryInfoSpawnList.vue';
+import SceneryInfoRoutes from "./SceneryInfo/SceneryInfoRoutes.vue";
 
 import Station from '@/scripts/interfaces/Station';
 
@@ -38,6 +43,7 @@ export default defineComponent({
     SceneryInfoStats,
     SceneryInfoUserList,
     SceneryInfoSpawnList,
+    SceneryInfoRoutes
   },
   props: {
     station: {

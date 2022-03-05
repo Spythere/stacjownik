@@ -21,22 +21,6 @@
       :title="$t('desc.signals-type') + $t(`signals.${station.generalInfo.signalType}`)"
     />
 
-    <!-- <img
-      v-if="station.generalInfo && station.generalInfo.routes.sblRouteNames.length > 0"
-      :src="icons.SBL"
-      alt="sbl icon"
-      :title="$t('desc.SBL') + `${station.generalInfo.routes.sblRouteNames.join(', ')}`"
-    />
-
-    <img
-      v-if="station.generalInfo && station.generalInfo.routes.twoWay.some(route => route.TWB)"
-      :src="icons.TWB"
-      alt="TWB icon"
-      :title="
-        $t('desc.TWB-routes') + station.generalInfo.routes.twoWay.filter(route => route.TWB).map(route => route.name).join(', ')
-      "
-    /> -->
-
     <img v-if="station.generalInfo?.default" :src="icons.td2" alt="default scenery" :title="$t('desc.default')" />
 
     <img
@@ -79,8 +63,6 @@ export default defineComponent({
 
   data: () => ({
     icons: {
-      SBL: require('@/assets/icon-SBL.svg'),
-      TWB: require('@/assets/icon-2way-block.svg'),
       td2: require('@/assets/icon-td2.svg'),
       lock: require('@/assets/icon-lock.svg'),
       unavailable: require('@/assets/icon-unavailable.svg'),
@@ -94,8 +76,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .info-icons {
-  padding: 1em 0;
-
   img {
     width: 3.5em;
     margin: 0 0.5em;
