@@ -65,6 +65,7 @@ export default defineComponent({
   width: 95%;
   max-width: 1300px;
 
+
   border: 1px solid white;
 }
 </style>

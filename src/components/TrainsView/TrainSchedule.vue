@@ -180,6 +180,8 @@ $stopNameClr: #22a8d1;
   padding-top: 1em;
   margin-top: 1em;
 
+  min-height: 400px;
+
   overflow-y: auto;
 
   z-index: 5;
