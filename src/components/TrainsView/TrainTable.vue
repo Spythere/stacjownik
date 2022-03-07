@@ -80,7 +80,6 @@ export default defineComponent({
   setup(props) {
     const store = useStore();
 
-    const timetableDataStatus: ComputedRef<DataStatus> = computed(() => store.getters[GETTERS.timetableDataStatus]);
     const trainsDataStatus: ComputedRef<DataStatus> = computed(() => store.getters[GETTERS.trainsDataStatus]);
 
     const searchedTrain = inject('searchedTrain') as Ref<string>;
@@ -108,9 +107,6 @@ export default defineComponent({
 
       sorterActive: inject('sorterActive') as { id: string | number; dir: number },
       trainsDataStatus: computed(() => trainsDataStatus.value),
-      timetableLoaded: computed(() => timetableDataStatus.value === DataStatus.Loaded),
-      timetableWarning: computed(() => timetableDataStatus.value === DataStatus.Warning),
-      timetableError: computed(() => timetableDataStatus.value === DataStatus.Error),
       distanceLimitExceeded: computed(
         () => props.trains.findIndex(({ timetableData }) => timetableData && timetableData.routeDistance > 200) != -1
       ),

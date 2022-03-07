@@ -17,7 +17,7 @@
 
     <span class="status-badge" v-if="station.onlineInfo" :class="station.onlineInfo.statusID">
       {{ $t(`status.${station.onlineInfo.statusID}`) }}
-      {{ station.onlineInfo.statusID == 'online' ? station.onlineInfo.statusTimeString : '' }}
+      {{ station.onlineInfo.statusID == 'online' ?  timestampToString(station.onlineInfo.statusTimestamp) : '' }}
     </span>
 
     <span class="status-badge free" v-else>
@@ -31,9 +31,10 @@ import { defineComponent } from 'vue';
 
 import styleMixin from '@/mixins/styleMixin';
 import Station from '@/scripts/interfaces/Station';
+import dateMixin from '@/mixins/dateMixin';
 
 export default defineComponent({
-  mixins: [styleMixin],
+  mixins: [styleMixin, dateMixin ],
   props: {
     station: {
       type: Object as () => Station,

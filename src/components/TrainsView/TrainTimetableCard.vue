@@ -6,7 +6,7 @@
     </div>
 
     <train-info :train="train" />
-    <train-schedule :followingStops="train.timetableData?.followingStops" ref="card-inner" tabindex="0" />
+    <train-schedule v-if="train.timetableData" :followingStops="train.timetableData.followingStops" ref="card-inner" tabindex="0" />
   </section>
 </template>
 

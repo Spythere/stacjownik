@@ -195,18 +195,9 @@ export default defineComponent({
 
   watch: {
     dataStatus(storeData: StoreData) {
-      const dataConnectionStatus = storeData.dataConnectionStatus;
       const sceneryDataStatus = storeData.sceneryDataStatus;
       const trainsDataStatus = storeData.trainsDataStatus;
       const dispatcherDataStatus = storeData.dispatcherDataStatus;
-      const timetableDataStatus = storeData.timetableDataStatus;
-
-      if (dataConnectionStatus == DataStatus.Error) {
-        this.setSignalStatus(dataConnectionStatus);
-        this.indicator.status = dataConnectionStatus;
-        this.indicator.message = 'data-status.S1a-connection';
-        return;
-      }
 
       if (sceneryDataStatus == DataStatus.Error) {
         this.setSignalStatus(sceneryDataStatus);
@@ -226,20 +217,6 @@ export default defineComponent({
         this.setSignalStatus(dispatcherDataStatus);
         this.indicator.status = dispatcherDataStatus;
         this.indicator.message = 'data-status.S5-dispatchers';
-        return;
-      }
-
-      if (timetableDataStatus == DataStatus.Warning) {
-        this.setSignalStatus(timetableDataStatus);
-        this.indicator.status = timetableDataStatus;
-        this.indicator.message = 'data-status.S5-timetables';
-        return;
-      }
-
-      if (timetableDataStatus == DataStatus.Loading) {
-        this.setSignalStatus(timetableDataStatus);
-        this.indicator.status = timetableDataStatus;
-        this.indicator.message = 'data-status.S3';
         return;
       }
 

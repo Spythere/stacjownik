@@ -87,7 +87,7 @@
             <td class="station_status">
               <span class="status-badge" :class="station.onlineInfo.statusID" v-if="station.onlineInfo">
                 {{ $t(`status.${station.onlineInfo.statusID}`) }}
-                {{ station.onlineInfo.statusID == 'online' ? station.onlineInfo.statusTimeString : '' }}
+                {{ station.onlineInfo.statusID == 'online' ? timestampToString(station.onlineInfo.statusTimestamp) : '' }}
               </span>
 
               <span class="status-badge free" v-else>
@@ -102,7 +102,7 @@
             <td class="station_dispatcher-exp">
               <span
                 v-if="station.onlineInfo"
-                :style="calculateExpStyle(station.onlineInfo.dispatcherExp, station.onlineInfo.dispatcherIsSupporter)"
+                :style="calculateExpStyle(station.onlineInfo.dispatcherExp)"
               >
                 {{ 2 > station.onlineInfo.dispatcherExp ? 'L' : station.onlineInfo.dispatcherExp }}
               </span>
@@ -231,6 +231,8 @@ import { computed, ComputedRef, defineComponent } from '@vue/runtime-core';
 import { useStore } from '@/store';
 import { GETTERS } from '@/constants/storeConstants';
 import Station from '@/scripts/interfaces/Station';
+import { StoreData } from '@/scripts/interfaces/StoreData';
+import dateMixin from '@/mixins/dateMixin';
 
 export default defineComponent({
   props: {
@@ -248,7 +250,7 @@ export default defineComponent({
     changeSorter: { type: Function, required: true },
   },
 
-  mixins: [styleMixin],
+  mixins: [styleMixin, dateMixin],
 
   data: () => ({
     likeIcon: require('@/assets/icon-like.svg'),
@@ -275,10 +277,10 @@ export default defineComponent({
   setup() {
     const store = useStore();
 
-    const dataConnectionStatus: ComputedRef<DataStatus> = computed(() => store.getters[GETTERS.dataStatus]);
+    const data: ComputedRef<StoreData> = computed(() => store.getters[GETTERS.allData]);
 
     const isDataLoaded = computed(() => {
-      return dataConnectionStatus.value == DataStatus.Loaded;
+      return data.value.sceneryDataStatus == DataStatus.Loaded;
     });
 
     return {

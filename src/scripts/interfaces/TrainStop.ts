@@ -1,4 +1,4 @@
-export default interface TrainStop {
+export default interface  TrainStop {
   stopName: string;
   stopNameRAW: string;
   stopType: string;
@@ -6,19 +6,19 @@ export default interface TrainStop {
   mainStop: boolean;
 
   arrivalLine: string | null;
-  arrivalTimeString: string | null;
+  // arrivalTimeString: string | null;
   arrivalTimestamp: number;
-  arrivalRealTimeString: string | null;
+  // arrivalRealTimeString: string | null;
   arrivalRealTimestamp: number;
   arrivalDelay: number;
 
   departureLine: string | null;
-  departureTimeString: string | null;
+  // departureTimeString: string | null;
   departureTimestamp: number;
-  departureRealTimeString: string | null;
+  // departureRealTimeString: string | null;
   departureRealTimestamp: number;
   departureDelay: number;
-  pointId: string;
+  pointId: number;
 
   comments?: any;
 

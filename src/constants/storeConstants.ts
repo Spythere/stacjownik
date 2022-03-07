@@ -1,22 +1,18 @@
 export const ACTIONS = {
     synchronizeData: "synchronizeData",
     fetchOnlineData: "fetchOnlineData",
-    fetchTimetableData: "fetchTimetableData"
+    loadStaticStationData: "loadStaticStationData"
 }
 
 export const MUTATIONS = {
-    SET_SCENERY_DATA: "SET_SCENERY_DATA",
     SET_DATA_CONNECTION_STATUS: "SET_DATA_CONNECTION_STATUS",
     
+    SET_SCENERY_DATA: "SET_SCENERY_DATA",
     SET_SCENERY_DATA_STATUS: "SET_SCENERY_DATA_STATUS",
-    SET_TIMETABLE_DATA_STATUS: "SET_TIMETABLE_DATA_STATUS",
     SET_DISPATCHER_DATA_STATUS: "SET_DISPATCHER_DATA_STATUS",
     SET_TRAINS_DATA_STATUS: "SET_TRAINS_DATA_STATUS",
 
     SET_REGION: "SET_REGION",
-    UPDATE_STATIONS: "UPDATE_STATIONS",
-    UPDATE_TRAINS: "UPDATE_TRAINS",
-    UPDATE_TIMETABLES: "UPDATE_TIMETABLES"
 }
 
 export const GETTERS = {
@@ -24,11 +20,9 @@ export const GETTERS = {
     trainList: "trainList",
     allData: "allData",
 
-    timetableDataStatus: "timetableDataStatus",
-    sceneryDataStatus: "sceneryDataStatus",
-    dispatcherDataStatus: "dispatcherDataStatus",
+    dispatcherDataSWDRStatus: "dispatcherDataSWDRStatus",
+    swdrDataStatus: "swdrDataStatus",
     trainsDataStatus: "trainsDataStatus",
 
-    dataStatus: "dataStatus",
     currentRegion: "currentRegion"
 }

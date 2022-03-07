@@ -90,18 +90,6 @@ export default defineComponent({
       return filterManager.getFilteredStationList(store.getters[GETTERS.stationList]);
     });
 
-    const getStatusClass = computed(() => {
-      if (data.value.dataConnectionStatus == DataStatus.Loading) return 'loading';
-      if (data.value.dataConnectionStatus == DataStatus.Error) return 'error';
-      return 'success';
-    });
-
-    const timetableDataStatusClass = computed(() => {
-      if (data.value.timetableDataStatus == DataStatus.Loading) return 'loading';
-      if (data.value.timetableDataStatus == DataStatus.Error) return 'error';
-      return 'success';
-    });
-
     const focusedStationInfo = computed(() =>
       computedStations.value.find((station) => station.name === focusedStationName)
     );
@@ -110,8 +98,6 @@ export default defineComponent({
       data,
       computedStations,
       filterManager,
-      getStatusClass,
-      timetableDataStatusClass,
       focusedStationName,
       focusedStationInfo,
     };

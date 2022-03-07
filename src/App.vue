@@ -50,9 +50,9 @@
               </span>
 
               <img src="@/assets/icon-dispatcher.svg" alt="icon dispatcher" />
-              <span class="text--primary">{{ data.activeStationCount }}</span>
+              <span class="text--primary">{{ dispatcherCount }}</span>
               <span class="text--grayed">|</span>
-              <span class="text--primary">{{ data.activeTrainCount }}</span>
+              <span class="text--primary">{{ trainCount }}</span>
               <img src="@/assets/icon-train.svg" alt="icon train" />
             </div>
           </span>
@@ -70,9 +70,9 @@
       <main class="app_main">
         <router-view v-slot="{ Component }">
           <!-- <transition name="view-anim" mode="out-in"> -->
-            <keep-alive>
-              <component :is="Component" />
-            </keep-alive>
+          <keep-alive>
+            <component :is="Component" />
+          </keep-alive>
           <!-- </transition> -->
         </router-view>
       </main>
@@ -92,7 +92,7 @@
 import Clock from '@/components/App/Clock.vue';
 
 import StorageManager from '@/scripts/managers/storageManager';
-import { computed, ComputedRef, defineComponent, provide, ref } from 'vue';
+import { computed, ComputedRef, defineComponent, provide, reactive, Ref, ref } from 'vue';
 import { GETTERS } from './constants/storeConstants';
 import { StoreData } from './scripts/interfaces/StoreData';
 import { useStore } from './store';
@@ -116,8 +116,8 @@ export default defineComponent({
       () => store.getters[GETTERS.currentRegion]
     );
 
-    const dataStatus = computed(() => data.value);
-    const sceneryDataStatus = computed(() => data.value.sceneryDataStatus);
+    const dataStatus = computed(() => data.value.sceneryDataStatus);
+    // const sceneryDataStatus = computed(() => data.value.sceneryDataStatus);
 
     const isFilterCardVisible = ref(false);
 
@@ -129,13 +129,13 @@ export default defineComponent({
       isFilterCardVisible,
 
       dataStatus,
-      sceneryDataStatus,
       dispatcherDataStatus: computed(() => data.value.dispatcherDataStatus),
 
-      timetableCount: data.value.trainList.filter((train) => train.timetableData).length,
-      onlineDispatcherCount: data.value.stationList.filter(
-        (station) => station.onlineInfo && station.onlineInfo.statusTimestamp > 0
-      ).length,
+      trainCount: computed(() => data.value.trainList.length),
+
+      dispatcherCount: computed(
+        () => data.value.stationList.filter((station) => station.onlineInfo).length
+      ),
 
       openFilterCard() {
         isFilterCardVisible.value = true;

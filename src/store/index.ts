@@ -7,19 +7,16 @@ import axios from "axios";
 
 import Station from "@/scripts/interfaces/Station";
 import Train from "@/scripts/interfaces/Train";
-import TrainStop from "@/scripts/interfaces/TrainStop";
 
 import { StoreData } from "@/scripts/interfaces/StoreData";
 
-import TimetableAPIData from '@/scripts/interfaces/api/TimetableAPIData';
 import StationAPIData from '@/scripts/interfaces/api/StationAPIData';
 import TrainAPIData from '@/scripts/interfaces/api/TrainAPIData';
-import Timetable from '@/scripts/interfaces/Timetable';
 
 import { ACTIONS, MUTATIONS } from "@/constants/storeConstants";
 import { DataStatus } from "@/scripts/enums/DataStatus";
 
-import { getLocoURL, getStatusID, getStatusTimestamp, getTimestamp, getTrainStopStatus, parseSpawns, timestampToString } from "@/scripts/utils/storeUtils";
+import { getLocoURL, getScheduledTrain, getStatusID, getStatusTimestamp, parseSpawns } from "@/scripts/utils/storeUtils";
 import { URLs } from '@/scripts/utils/apiURLs';
 import ScheduledTrain from '@/scripts/interfaces/ScheduledTrain';
 import StationRoutes from '@/scripts/interfaces/StationRoutes';
@@ -27,7 +24,7 @@ import StationRoutes from '@/scripts/interfaces/StationRoutes';
 export interface State {
   stationList: Station[],
   trainList: Train[],
-  timetableList: Timetable[],
+  // timetableList: Timetable[],
 
   sceneryData: any[][],
 
@@ -68,13 +65,14 @@ interface StationJSONData {
   unavailable: boolean;
 }
 
+
 export const key: InjectionKey<Store<State>> = Symbol()
 
 export const store = createStore<State>({
   state: () => ({
     stationList: [],
     trainList: [],
-    timetableList: [],
+    // timetableList: [],
 
     sceneryData: [],
 
@@ -100,247 +98,213 @@ export const store = createStore<State>({
       stationList: state.stationList,
       trainList: state.trainList,
 
-      activeTrainCount: state.trainCount,
-      activeStationCount: state.stationCount,
-
-      dataConnectionStatus: state.dataConnectionStatus,
-      timetableDataStatus: state.timetableDataStatus,
       sceneryDataStatus: state.sceneryDataStatus,
-
       dispatcherDataStatus: state.dispatcherDataStatus,
       trainsDataStatus: state.trainsDataStatus
     }),
-    timetableDataStatus: (state): DataStatus => state.timetableDataStatus,
+
     sceneryDataStatus: (state): DataStatus => state.sceneryDataStatus,
     trainsDataStatus: (state): DataStatus => state.trainsDataStatus,
     dataStatus: (state): DataStatus => state.dataConnectionStatus,
+
     currentRegion: (state): { id: string; value: string } => state.region
   },
 
   actions: {
     async synchronizeData({ commit, dispatch, state }) {
       if (state.listenerLaunched) return;
-
-      // Nowy parametr żądania co godzinę
-      const sceneryData: StationJSONData = await (await axios.get(`${URLs.sceneryData}?time=${Math.floor(Date.now() / 1800000)}`)).data;
-
-      commit(MUTATIONS.SET_TIMETABLE_DATA_STATUS, DataStatus.Loading);
-      commit(MUTATIONS.SET_SCENERY_DATA, sceneryData);
-      commit(MUTATIONS.SET_SCENERY_DATA_STATUS, DataStatus.Loaded);
-      dispatch(ACTIONS.fetchOnlineData);
+      
+      await dispatch(ACTIONS.loadStaticStationData);
+      await dispatch(ACTIONS.fetchOnlineData);
 
       setInterval(() => dispatch(ACTIONS.fetchOnlineData), Math.floor(Math.random() * 5000) + 25000);
     },
 
-    async fetchOnlineData({ commit, dispatch }) {
-      commit(MUTATIONS.SET_DATA_CONNECTION_STATUS, DataStatus.Loading);
+    async loadStaticStationData({ commit }) {
+      // Nowy parametr żądania co godzinę
+      const sceneryData: StationJSONData = await (await axios.get(`${URLs.sceneryData}?time=${Math.floor(Date.now() / 1800000)}`)).data;
 
-      Promise.all([axios.get(URLs.stations), axios.get(URLs.trains), axios.get(URLs.dispatchers)])
-        .then(async response => {
-          const onlineStationsData: { success: boolean, message: StationAPIData[] } = response[0].data;
-          const onlineTrainsData: { success: boolean, message: TrainAPIData[] } = await response[1].data;
-          const onlineDispatchersData: { success: boolean, message: string[][] } = await response[2].data;
-
-          if (!onlineStationsData.success) {
-            // commit(MUTATIONS.SET_DATA_CONNECTION_STATUS, DataStatus.Error);
-            commit(MUTATIONS.SET_SCENERY_DATA_STATUS, DataStatus.Error);
-            return;
-          }
-
-          commit(MUTATIONS.SET_SCENERY_DATA_STATUS, DataStatus.Loaded);
-          commit(MUTATIONS.SET_DISPATCHER_DATA_STATUS, onlineDispatchersData.success ? DataStatus.Loaded : DataStatus.Warning);
-          commit(MUTATIONS.SET_TRAINS_DATA_STATUS, onlineTrainsData.success ? DataStatus.Loaded : DataStatus.Warning);
-
-          const updatedStationList: Station['onlineInfo'][] = onlineStationsData.message.reduce((acc, station) => {
-            if (station.region !== this.state.region.id || !station.isOnline) return acc;
-
-            const stationStatus = onlineDispatchersData.success ? onlineDispatchersData.message.find((status: string[]) => status[0] == station.stationHash && status[1] == this.state.region.id) : -1;
-
-            const statusTimestamp = getStatusTimestamp(stationStatus);
-            const statusID = getStatusID(stationStatus);
-
-            const stationTrains = onlineTrainsData.success ? onlineTrainsData.message
-              .filter(train => train.region === this.state.region.id && train.isOnline && train.station.stationName === station.stationName)
-              .map(train => ({ driverName: train.driverName, trainNo: train.trainNo })) : [];
-            
-
-            acc.push({
-              name: station.stationName,
-              hash: station.stationHash,
-              maxUsers: station.maxUsers,
-              currentUsers: station.currentUsers,
-              spawns: parseSpawns(station.spawnString),
-              dispatcherName: station.dispatcherName,
-              dispatcherRate: station.dispatcherRate,
-              dispatcherId: station.dispatcherId,
-              dispatcherExp: station.dispatcherExp,
-              dispatcherIsSupporter: station.dispatcherIsSupporter,
-              stationTrains,
-              statusTimestamp,
-              statusID,
-              statusTimeString: timestampToString(statusTimestamp),
-            });
-
-            return acc;
-          }, [] as Station['onlineInfo'][]);
-
-          const updatedTrainList = onlineTrainsData.success ? await Promise.all(
-            onlineTrainsData.message
-              .filter(train => train.region === this.state.region.id)
-              .map(async train => {
-                const locoType = train.dataCon.split(";") ? train.dataCon.split(";")[0] : train.dataCon;
-
-                return {
-                  trainNo: train.trainNo,
-                  mass: train.dataMass,
-                  length: train.dataLength,
-                  speed: train.dataSpeed,
-                  distance: train.dataDistance,
-                  signal: train.dataSignal,
-                  online: train.isOnline,
-                  driverId: train.driverId,
-                  driverName: train.driverName,
-                  currentStationName: train.station.stationName,
-                  currentStationHash: train.station.stationHash,
-                  connectedTrack: train.dataSceneryConnection,
-                  locoType,
-                  locoURL: getLocoURL(locoType),
-                  cars: train.dataCon.split(";").filter((train, i) => i > 0) || [],
-                };
-              })
-          ) : [];          
-
-          // Pass reduced lists to mutations
-          commit(MUTATIONS.UPDATE_STATIONS, updatedStationList);
-          commit(MUTATIONS.UPDATE_TRAINS, updatedTrainList);
-
-          // Statuses
-          commit(MUTATIONS.SET_DATA_CONNECTION_STATUS, DataStatus.Loaded);
-
-          // commit(MUTATIONS.SET_TIMETABLE_DATA_STATUS, DataStatus.Loading);
-          dispatch(ACTIONS.fetchTimetableData);
-        })
-        .catch(() => {
-          commit(MUTATIONS.SET_DATA_CONNECTION_STATUS, DataStatus.Error);
-        });
+      if (!sceneryData)
+        commit(MUTATIONS.SET_SCENERY_DATA_STATUS, DataStatus.Error);
+      else
+        commit(MUTATIONS.SET_SCENERY_DATA, sceneryData);
     },
 
-    async fetchTimetableData({ commit }) {
-      let warnings = 0;
+    async fetchOnlineData({ commit }) {
+      // Pobierz dane o pociągach i rozkładach jazdy z API Stacjownika
+      const trainsAPIData: { response: TrainAPIData[], errorMessage?: string } = (await axios.get(`${URLs.stacjownikAPI}/api/getActiveTrainList`)).data;
 
-      const timetableList = this.state.trainList.reduce(async (acc: Promise<Timetable[]>, train: Train) => {
-        const data: { success: boolean; message: TimetableAPIData } = await (await axios.get(URLs.getTimetableURL(train.trainNo, this.state.region.id))).data;
+      // Pobierz dane o sceneriach online i o dyżurnych
+      const dispatchersAPIData: { success: boolean, message: string[][] } = await (await axios.get(URLs.dispatchers)).data;
+      const stationsAPIData: { success: boolean, message: StationAPIData[] } = await (await axios.get(URLs.stations)).data;
 
-        if (!data.success) {
-          warnings++;
+      if (!stationsAPIData || !stationsAPIData.success) {
+        commit(MUTATIONS.SET_SCENERY_DATA_STATUS, DataStatus.Error);
+        return;
+      }
 
-          (await acc).push({
-            trainNo: train.trainNo,
-            success: false
+      commit(MUTATIONS.SET_SCENERY_DATA_STATUS, DataStatus.Loaded);
+
+      if (!dispatchersAPIData || !dispatchersAPIData.success)
+        commit(MUTATIONS.SET_DISPATCHER_DATA_STATUS, DataStatus.Warning)
+
+      if (!trainsAPIData || !trainsAPIData.response)
+        commit(MUTATIONS.SET_TRAINS_DATA_STATUS, DataStatus.Warning);
+
+
+      // Zaktualizuj listę pociągów
+      const updatedTrainList: Train[] =
+        trainsAPIData?.response
+          .filter(train => train.region === this.state.region.id && train.online)
+          .map(train => {
+            const stock = train.stockString.split(";");
+            const locoType = stock ? stock[0] : train.stockString;
+
+            const timetable = train.timetable;
+
+            return {
+              trainNo: train.trainNo,
+              mass: train.mass,
+              length: train.length,
+              speed: train.speed,
+              region: train.region,
+
+              distance: train.distance,
+              signal: train.signal,
+              online: train.online,
+              driverId: train.driverId,
+              driverName: train.driverName,
+              currentStationName: train.currentStationName,
+              currentStationHash: train.currentStationHash,
+              connectedTrack: train.connectedTrack,
+              locoType,
+              locoURL: getLocoURL(locoType),
+              cars: stock.slice(1),
+
+              timetableData: timetable ? {
+                timetableId: timetable.timetableId,
+                SKR: timetable.SKR,
+                TWR: timetable.TWR,
+                route: timetable.route,
+                category: timetable.category,
+                followingStops: timetable.stopList,
+                routeDistance: timetable.stopList[timetable.stopList.length - 1].stopDistance,
+                sceneries: timetable.sceneries
+              } : undefined
+            };
+          }) || []
+
+      const onlineStationNames: string[] = [];
+
+      stationsAPIData.message.forEach((stationAPI) => {
+        if (stationAPI.region !== this.state.region.id || !stationAPI.isOnline) return;
+
+        onlineStationNames.push(stationAPI.stationName);
+
+        const stationName = stationAPI.stationName.toLowerCase();
+        const station = this.state.stationList.find(s => s.name == stationAPI.stationName);
+
+        const stationStatus = dispatchersAPIData.success ? dispatchersAPIData.message.find((status: string[]) => status[0] == stationAPI.stationHash && status[1] == this.state.region.id) : -1;
+        const statusTimestamp = getStatusTimestamp(stationStatus);
+        const statusID = getStatusID(stationStatus);
+
+        const stationTrains = trainsAPIData.response
+          .filter(train => train.region === this.state.region.id && train.online && train.currentStationName === stationAPI.stationName)
+          .map(train => ({ driverName: train.driverName, trainNo: train.trainNo }));
+
+        station?.generalInfo?.checkpoints.forEach(cp => cp.scheduledTrains.length = 0);
+
+        const scheduledTrains: ScheduledTrain[] = updatedTrainList.reduce((acc: ScheduledTrain[], train) => {
+          if (!train.timetableData) return acc;
+
+          const timetable = train.timetableData;
+          if (!timetable.sceneries.includes(stationAPI.stationHash)) return acc;
+
+          const stopInfoIndex = timetable.followingStops.findIndex(stop => {
+            const stopName = stop.stopNameRAW.toLowerCase();
+
+            // if (stop.stopName == "ARKADIA ZDRÓJ" && station.name == "Arkadia Zdrój 2019" && stop.pointId != "1583014379097") return false;
+            // if (stop.stopName == "ARKADIA ZDRÓJ" && station.name == "Arkadia Zdrój 2012" && stop.pointId != "1519258642187") return false;
+
+            if (stationName === stopName) return true;
+            if (stopName.includes(stationName) && !stop.stopName.includes("po.") && !stop.stopName.includes("podg.")) return true;
+            if (stationName.includes(stopName) && !stop.stopName.includes("po.") && !stop.stopName.includes("podg.")) return true;
+            if (stopName.includes("podg.") && stopName.split(", podg.")[0] && stationName.includes(stopName.split(", podg.")[0])) return true;
+
+            if (station?.generalInfo
+              && station.generalInfo.checkpoints
+              && station.generalInfo.checkpoints.length > 0
+              && station.generalInfo.checkpoints.some(cp => cp.checkpointName.toLowerCase().includes(stop.stopNameRAW.toLowerCase())))
+
+              return true;
+
+            return false;
           });
 
-          return acc;
-        }
+          if (stopInfoIndex == -1) return acc;
 
-        const timetable = data.message;
-        const trainInfo = timetable.trainInfo;
+          const trainStop = timetable.followingStops[stopInfoIndex];
+          const scheduledStopTrain = getScheduledTrain(train, trainStop, stationAPI.stationName);
 
-        if (!timetable || !trainInfo) return acc;
+          if (station && station.generalInfo?.checkpoints && station.generalInfo.checkpoints.length > 0) {
+            for (const checkpoint of station.generalInfo.checkpoints) {
+              timetable.followingStops
+                .filter(trainStop => trainStop.stopNameRAW.toLowerCase() === checkpoint.checkpointName.toLowerCase())
+                .forEach(trainCheckpointStop => {
+                  const scheduledCheckpointTrain = getScheduledTrain(train, trainCheckpointStop, stationAPI.stationName);
 
-        let lastArrivalLine = "";
-
-        const followingStops: TrainStop[] = timetable.stopPoints.reduce((stopsAcc: TrainStop[], point) => {
-          if (point.pointNameRAW.toLowerCase().includes("sbl")) {
-            if (point.arrivalLine && !point.arrivalLine.toLocaleLowerCase().includes("sbl"))
-              lastArrivalLine = point.arrivalLine;
-
-            if (point.departureLine && !point.departureLine.toLocaleLowerCase().includes("sbl")) {
-              stopsAcc[stopsAcc.length - 1].departureLine = point.departureLine
+                  checkpoint.scheduledTrains.push(scheduledCheckpointTrain);
+                });
             }
-
-            return stopsAcc;
           }
 
-          const arrivalTimestamp = getTimestamp(point.arrivalTime);
-          const arrivalRealTimestamp = getTimestamp(point.arrivalRealTime);
-
-          const departureTimestamp = getTimestamp(point.departureTime);
-          const departureRealTimestamp = getTimestamp(point.departureRealTime);
-
-          let arrivalLine = lastArrivalLine || point.arrivalLine;
-
-          if (lastArrivalLine != "")
-            lastArrivalLine = "";
-
-          stopsAcc.push({
-            stopName: point.pointName,
-            stopNameRAW: point.pointNameRAW,
-            stopType: point.pointStopType,
-            stopDistance: point.pointDistance,
-            pointId: point.pointId,
-
-            comments: point.comments,
-
-            mainStop: point.pointName.includes("strong"),
-
-            arrivalLine,
-            arrivalTimeString: timestampToString(arrivalTimestamp),
-            arrivalTimestamp: arrivalTimestamp,
-            arrivalRealTimeString: timestampToString(arrivalRealTimestamp),
-            arrivalRealTimestamp: arrivalRealTimestamp,
-            arrivalDelay: point.arrivalDelay,
-
-            departureLine: point.departureLine,
-            departureTimeString: timestampToString(departureTimestamp),
-            departureTimestamp: departureTimestamp,
-            departureRealTimeString: timestampToString(departureRealTimestamp),
-            departureRealTimestamp: departureRealTimestamp,
-            departureDelay: point.departureDelay,
-
-            beginsHere: arrivalTimestamp == 0,
-            terminatesHere: departureTimestamp == 0,
-
-            confirmed: point.confirmed,
-            stopped: point.isStopped,
-            stopTime: point.pointStopTime
-          });
-
-          return stopsAcc;
+          acc.push(scheduledStopTrain);
+          return acc;
         }, []);
 
-        (await acc).push({
-          data: {
-            trainNo: train.trainNo,
-            driverName: train.driverName,
-            driverId: train.driverId,
-            currentStationName: train.currentStationName,
-            currentStationHash: train.currentStationHash,
-            timetableId: trainInfo.timetableId,
-            category: trainInfo.trainCategoryCode,
-            route: trainInfo.route,
-            TWR: trainInfo.twr,
-            SKR: trainInfo.skr,
-            routeDistance: timetable.stopPoints[timetable.stopPoints.length - 1].pointDistance,
-            followingStops,
-            followingSceneries: trainInfo.sceneries
-          },
+        const onlineInfo = {
+          name: stationAPI.stationName,
+          hash: stationAPI.stationHash,
+          maxUsers: stationAPI.maxUsers,
+          currentUsers: stationAPI.currentUsers,
+          spawns: parseSpawns(stationAPI.spawnString),
+          dispatcherName: stationAPI.dispatcherName,
+          dispatcherRate: stationAPI.dispatcherRate,
+          dispatcherId: stationAPI.dispatcherId,
+          dispatcherExp: stationAPI.dispatcherExp,
+          dispatcherIsSupporter: stationAPI.dispatcherIsSupporter,
+          stationTrains,
+          statusTimestamp,
+          statusID,
+          scheduledTrains,
+          // statusTimeString: timestampToString(statusTimestamp),
+        }
 
-          trainNo: train.trainNo,
-          success: true
+        if (!station) {
+          this.state.stationList.push({
+            name: stationAPI.stationName,
+            onlineInfo
+          })
+
+          return;
+        }
+
+        station.onlineInfo = { ...onlineInfo };
+
+      });
+
+      this.state.stationList
+        .filter(station => !onlineStationNames.includes(station.name) && station.onlineInfo)
+        .forEach(offlineStation => {
+          offlineStation.onlineInfo = undefined;
         });
 
-        return acc;
-      }, Promise.resolve([]));
-
-      commit(MUTATIONS.UPDATE_TIMETABLES, (await timetableList));
-      commit(MUTATIONS.SET_TIMETABLE_DATA_STATUS, warnings == 0 ? DataStatus.Loaded : DataStatus.Warning);
-    }
-
+      this.state.trainList = updatedTrainList;
+    },
   },
 
   mutations: {
     SET_SCENERY_DATA(state, data: StationJSONData[]) {
-
       state.stationList = data.map(stationData => ({
         name: stationData.name,
 
@@ -349,7 +313,7 @@ export const store = createStore<State>({
           routes: stationData.routes?.split(";").filter(routeString => routeString).reduce((acc, routeString) => {
             const specs1 = routeString.split("_")[0];
             const isInternal = specs1.startsWith('!');
-            const name = isInternal ? specs1.replace("!", "") : specs1; 
+            const name = isInternal ? specs1.replace("!", "") : specs1;
 
             const specs2 = routeString.split("_")[1].split("");
             const twoWay = specs2[0] == "2";
@@ -366,7 +330,7 @@ export const store = createStore<State>({
                 : 'oneWayNoCatenaryRouteNames';
 
             acc[twoWay ? 'twoWay' : 'oneWay'].push({ name, SBL, TWB, catenary, isInternal, tracks: twoWay ? 2 : 1 });
-            if(!isInternal) acc[propName].push(name);
+            if (!isInternal) acc[propName].push(name);
 
             if (SBL) acc['sblRouteNames'].push(name);
 
@@ -383,19 +347,11 @@ export const store = createStore<State>({
           checkpoints: stationData.checkpoints ? stationData.checkpoints.split(";").map(sub => ({ checkpointName: sub, scheduledTrains: [] })) : [],
         }
       }));
-    },
 
-
-    SET_DATA_CONNECTION_STATUS(state, status: DataStatus) {
-      state.dataConnectionStatus = status;
     },
 
     SET_SCENERY_DATA_STATUS(state, status: DataStatus) {
       state.sceneryDataStatus = status;
-    },
-
-    SET_TIMETABLE_DATA_STATUS(state, status: DataStatus) {
-      state.timetableDataStatus = status;
     },
 
     SET_DISPATCHER_DATA_STATUS(state, status: DataStatus) {
@@ -406,187 +362,10 @@ export const store = createStore<State>({
       state.trainsDataStatus = status;
     },
 
-
     SET_REGION(state, region: { id: string; value: string }) {
       state.region = region;
     },
 
-    UPDATE_STATIONS(state, updatedStationList: Station['onlineInfo'][]) {
-
-      state.stationList = state.stationList.reduce((acc: Station[], station) => {
-        const onlineStationData = updatedStationList.find(updatedStation => updatedStation?.name === station.name);
-        const listedStationData = state.stationList.find(data => data.name === station.name);
-
-        if (onlineStationData)
-          acc.push({
-            name: station.name,
-            generalInfo: station.generalInfo,
-            onlineInfo: {
-              ...onlineStationData,
-              scheduledTrains: station.onlineInfo?.scheduledTrains || []
-            },
-          });
-        else if (listedStationData)
-          acc.push({
-            ...station,
-            onlineInfo: undefined
-          });
-
-        return acc;
-      }, [] as Station[]);
-
-      updatedStationList
-        .filter(uStation => !state.stationList.some(station => uStation?.name === station.name))
-        .forEach(uStation => {
-          if (!uStation) return;
-
-          state.stationList.push({
-            name: uStation.name,
-
-            onlineInfo: {
-              ...uStation,
-              scheduledTrains: [],
-              stationTrains: uStation.stationTrains || []
-            },
-            generalInfo: undefined
-          });
-        });
-
-      state.stationCount = state.stationList.filter(station => station.onlineInfo).length;
-      state.dataConnectionStatus = DataStatus.Loaded;
-    },
-
-    UPDATE_TRAINS(state, updatedTrainList: any[]) {
-      state.trainList = updatedTrainList.reduce((acc, updatedTrain) => {        
-        const trainData = state.trainList.find(train => train.trainNo === updatedTrain.trainNo);
-
-        if (trainData) acc.push({ ...trainData, ...updatedTrain });
-        else acc.push({ ...updatedTrain });
-
-        return acc;
-      }, [] as Train[]);      
-
-      state.trainCount = state.trainList.length;      
-      
-      state.dataConnectionStatus = DataStatus.Loaded;
-    },
-
-    UPDATE_TIMETABLES(state, timetableList: Timetable[]) {
-      state.stationList = state.stationList.map(station => {
-        const stationName = station.name.toLowerCase();
-
-        const scheduledTrains: ScheduledTrain[] = timetableList.reduce((acc: ScheduledTrain[], timetable: Timetable) => {
-          if (!timetable.data)
-            return acc;
-
-          if (!timetable.data.followingSceneries.includes(station.onlineInfo?.hash || "")) return acc;
-
-          const stopInfoIndex = timetable.data.followingStops.findIndex(stop => {
-            const stopName = stop.stopNameRAW.toLowerCase();
-
-            // if (stop.stopName == "ARKADIA ZDRÓJ" && station.name == "Arkadia Zdrój 2019" && stop.pointId != "1583014379097") return false;
-            // if (stop.stopName == "ARKADIA ZDRÓJ" && station.name == "Arkadia Zdrój 2012" && stop.pointId != "1519258642187") return false;
-
-            if (stationName === stopName) return true;
-            if (stopName.includes(stationName) && !stop.stopName.includes("po.") && !stop.stopName.includes("podg.")) return true;
-            if (stationName.includes(stopName) && !stop.stopName.includes("po.") && !stop.stopName.includes("podg.")) return true;
-            if (stopName.includes("podg.") && stopName.split(", podg.")[0] && stationName.includes(stopName.split(", podg.")[0])) return true;
-
-            if (station.generalInfo
-              && station.generalInfo.checkpoints
-              && station.generalInfo.checkpoints.length > 0
-              && station.generalInfo.checkpoints.some(cp => cp.checkpointName.toLowerCase().includes(stop.stopNameRAW.toLowerCase())))
-
-              return true;
-
-            return false;
-          });
-
-          if (stopInfoIndex == -1) return acc;
-
-          const trainStop = timetable.data.followingStops[stopInfoIndex];
-          const trainStopStatus = getTrainStopStatus(trainStop, timetable.data.currentStationName, station);
-
-          acc.push({
-            trainNo: timetable.data.trainNo,
-            driverName: timetable.data.driverName,
-            driverId: timetable.data.driverId,
-            currentStationName: timetable.data.currentStationName,
-            currentStationHash: timetable.data.currentStationHash,
-            category: timetable.data.category,
-            beginsAt: timetable.data.followingStops[0].stopNameRAW,
-            terminatesAt: timetable.data.followingStops[timetable.data.followingStops.length - 1].stopNameRAW,
-            nearestStop: "",
-            stopInfo: trainStop,
-            stopLabel: trainStopStatus.stopLabel,
-            stopStatus: trainStopStatus.stopStatus,
-            stopStatusID: trainStopStatus.stopStatusID
-          });
-
-          return acc;
-        }, []);
-
-        if (station.generalInfo && station.generalInfo.checkpoints.length > 0) {
-          station.generalInfo.checkpoints.forEach(cp => (cp.scheduledTrains.length = 0));
-
-          for (const checkpoint of station.generalInfo.checkpoints) {
-            timetableList.forEach(timetable => {
-              if (!timetable.data) return;
-              if (!timetable.data.followingSceneries.includes(station.onlineInfo?.hash || "")) return;
-
-              const timetableData = timetable.data;
-
-              timetableData.followingStops
-                .filter(trainStop => trainStop.stopNameRAW.toLowerCase() === checkpoint.checkpointName.toLowerCase())
-                .forEach(trainStop => {
-                  const trainStopStatus = getTrainStopStatus(trainStop, timetableData.currentStationName, station);
-
-                  checkpoint.scheduledTrains.push({
-                    trainNo: timetable.trainNo,
-                    driverName: timetableData.driverName,
-                    driverId: timetableData.driverId,
-                    currentStationName: timetableData.currentStationName,
-                    currentStationHash: timetableData.currentStationHash,
-                    category: timetableData.category,
-                    beginsAt: timetableData.followingStops[0].stopNameRAW,
-                    terminatesAt: timetableData.followingStops[timetableData.followingStops.length - 1].stopNameRAW,
-                    nearestStop: "",
-                    stopInfo: trainStop,
-                    stopLabel: trainStopStatus.stopLabel,
-                    stopStatus: trainStopStatus.stopStatus,
-                    stopStatusID: trainStopStatus.stopStatusID
-                  });
-                });
-            });
-          }
-        }
-
-
-        return {
-          ...station,
-          onlineInfo: station.onlineInfo ? {
-            ...station.onlineInfo,
-            scheduledTrains
-          } : undefined
-        };
-      });
-
-      state.trainList = state.trainList.reduce((acc, train) => {
-        const timetable = timetableList.find(tt => tt.data && tt.trainNo === train.trainNo && tt.data.driverId === train.driverId);
-        
-        if (!train.online && !timetable) return acc;;
-
-        const trainStopData = state.stationList
-          .find(station => station.name === train.currentStationName)
-          ?.onlineInfo?.scheduledTrains?.find(stationTrain => stationTrain.trainNo === train.trainNo);
-
-        acc.push({ ...train, timetableData: timetable?.data, stopStatus: trainStopData?.stopStatus || "", stopLabel: trainStopData?.stopLabel || "" });
-
-        return acc;
-      }, [] as Train[]);
-
-      state.timetableDataStatus = DataStatus.Loaded;
-    }
   }
 })
 

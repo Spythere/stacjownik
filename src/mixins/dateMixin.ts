@@ -26,6 +26,15 @@ export default defineComponent({
         hour: "2-digit",
         minute: "2-digit"
       })
+    },
+
+    timestampToString(timestamp: number | null) {
+      return timestamp
+        ? new Date(timestamp).toLocaleTimeString("pl-PL", {
+          hour: "2-digit",
+          minute: "2-digit"
+        })
+        : "";
     }
   }
 })

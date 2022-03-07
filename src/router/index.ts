@@ -30,8 +30,9 @@ const routes: Array<RouteRecordRaw> = [
 ]
 
 const router = createRouter({
-  scrollBehavior(to, from) {    
-    if (to.name == "SceneryView")
+  scrollBehavior(to, from) {        
+    
+    if (to.name == "SceneryView" && from.name)
       return { el: `.app_main` };
     
     if (from.name == "SceneryView" && to.name == "StationsView")

@@ -1,19 +1,62 @@
-import StationAPIData from "./StationAPIData";
-
 export default interface TrainAPIData {
   trainNo: number;
-  driverId: number;
+
+  mass: number;
+  length: number;
+  speed: number;
+  stockString: string;
+
+  signal: string;
+  distance: number;
+  connectedTrack: string;
+
   driverName: string;
+  driverId: number;
   driverIsSupporter: boolean;
-  station: StationAPIData;
-  dataSignal: string;
-  dataSceneryConnection: string;
-  dataDistance: number;
-  dataCon: string;
-  dataSpeed: number;
-  dataMass: number;
-  dataLength: number;
-  region: string;
-  isOnline: boolean;
+
+  currentStationName: string;
+  currentStationHash: string;
+
+  online: boolean;
   lastSeen: number;
+
+  region: string;
+
+  timetable?: {
+    timetableId: number;
+    category: string;
+    route: string;
+
+    stopList: {
+      stopName: string;
+      stopNameRAW: string;
+      stopType: string;
+      stopDistance: number;
+      pointId: number;
+
+      mainStop: boolean;
+
+      arrivalLine: string;
+      arrivalTimestamp: number;
+      arrivalRealTimestamp: number;
+      arrivalDelay: number;
+
+      departureLine: string;
+      departureTimestamp: number;
+      departureRealTimestamp: number;
+      departureDelay: number;
+
+      comments?: any;
+
+      beginsHere: boolean;
+      terminatesHere: boolean;
+      confirmed: boolean;
+      stopped: boolean;
+      stopTime: number;
+    }[];
+
+    TWR: boolean;
+    SKR: boolean;
+    sceneries: string[];
+  };
 }

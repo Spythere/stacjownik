@@ -27,8 +27,6 @@ export default interface Train {
     TWR: boolean;
     SKR: boolean;
     routeDistance: number;
+    sceneries: string[];
   };
-
-  stopStatus: string;
-  stopLabel: string;
 }

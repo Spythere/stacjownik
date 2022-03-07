@@ -1,6 +1,6 @@
 <template>
   <div class="scenery-view">
-    <div class="scenery-offline" v-if="!stationInfo && isDataLoaded && isComponentVisible">
+    <div class="scenery-offline" v-if="!stationInfo && isComponentVisible">
       <div>{{ $t('scenery.no-scenery') }}</div>
 
       <action-button>
@@ -77,8 +77,8 @@ export default defineComponent({
 
     viewMode: 'info',
 
-    stationInfo: {} as (Station | undefined),
-    onlineFrom: -1
+    stationInfo: {} as Station | undefined,
+    onlineFrom: -1,
   }),
 
   setup() {
@@ -91,12 +91,11 @@ export default defineComponent({
 
     const isComponentVisible = computed(() => route.path === '/scenery');
 
-    const isDataLoaded = computed(() => data.value.dataConnectionStatus === DataStatus.Loaded);
-     
-    const stationInfo = computed(() => {       
-       return data.value.stationList.find((station) => station.name === route.query.station?.toString().replace(/_/g, ' '))
-    })
-
+    const stationInfo = computed(() => {
+      return data.value.stationList.find(
+        (station) => station.name === route.query.station?.toString().replace(/_/g, ' ')
+      );
+    });
 
     // const onlineFrom = computed(async () => {
     //   return await (await axios.get(`${URLs.stacjownikAPI}?name=${route.query.station}&historyCount=0`)).data;
@@ -107,8 +106,7 @@ export default defineComponent({
       currentRegion: computed(() => store.getters[GETTERS.currentRegion]),
       timetableOnly,
       isComponentVisible,
-      isDataLoaded,
-      stationInfo
+      stationInfo,
     };
   },
 
@@ -126,10 +124,12 @@ export default defineComponent({
     // this.stationInfo = (this.$store.getters[GETTERS.allData] as StoreData).stationList.find((station) => station.name === this.$route.query.station?.toString().replace(/_/g, ' '))
   },
 
-  async activated() {    
+  async activated() {
     if (this.currentRegion.id != 'eu' && this.viewMode == 'history') this.viewMode = 'info';
 
-    const onlineFrom = await (await axios.get(`${URLs.stacjownikAPI}/api/getSceneryHistory?name=${this.$route.query.station}&historyCount=0`)).data;
+    const onlineFrom = await (
+      await axios.get(`${URLs.stacjownikAPI}/api/getSceneryHistory?name=${this.$route.query.station}&historyCount=0`)
+    ).data;
   },
 });
 </script>

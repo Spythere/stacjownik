@@ -1,5 +1,4 @@
-import Station from "../interfaces/Station";
-import Timetable from "../interfaces/Timetable";
+import Train from "../interfaces/Train";
 import TrainStop from "../interfaces/TrainStop";
 
 export const getLocoURL = (locoType: string): string => (`https://rj.td2.info.pl/dist/img/thumbnails/${locoType.includes("EN") ? locoType + "rb" : locoType}.png`)
@@ -72,15 +71,7 @@ export const parseSpawns = (spawnString: string) => {
 
 export const getTimestamp = (date: string | null): number => (date ? new Date(date).getTime() : 0);
 
-export const timestampToString = (timestamp: number | null): string =>
-  timestamp
-    ? new Date(timestamp).toLocaleTimeString("pl-PL", {
-        hour: "2-digit",
-        minute: "2-digit"
-      })
-    : "";
-
-export const getTrainStopStatus = (stopInfo: TrainStop, currentStationName: string, station: Station) => {
+export const getTrainStopStatus = (stopInfo: TrainStop, currentStationName: string, stationName: string) => {
   let stopStatus = "",
     stopLabel = "",
     stopStatusID = -1;
@@ -89,23 +80,23 @@ export const getTrainStopStatus = (stopInfo: TrainStop, currentStationName: stri
     stopStatus = "terminated";
     stopLabel = "Skończył bieg";
     stopStatusID = 5;
-  } else if (!stopInfo.terminatesHere && stopInfo.confirmed && currentStationName == station.name) {
+  } else if (!stopInfo.terminatesHere && stopInfo.confirmed && currentStationName == stationName) {
     stopStatus = "departed";
     stopLabel = "Odprawiony";
     stopStatusID = 2;
-  } else if (!stopInfo.terminatesHere && stopInfo.confirmed && currentStationName != station.name) {
+  } else if (!stopInfo.terminatesHere && stopInfo.confirmed && currentStationName != stationName) {
     stopStatus = "departed-away";
     stopLabel = "Odjechał";
     stopStatusID = 4;
-  } else if (currentStationName == station.name && !stopInfo.stopped) {
+  } else if (currentStationName == stationName && !stopInfo.stopped) {
     stopStatus = "online";
     stopLabel = "Na stacji";
     stopStatusID = 0;
-  } else if (currentStationName == station.name && stopInfo.stopped) {
+  } else if (currentStationName == stationName && stopInfo.stopped) {
     stopStatus = "stopped";
     stopLabel = "Postój";
     stopStatusID = 1;
-  } else if (currentStationName != station.name) {
+  } else if (currentStationName != stationName) {
     stopStatus = "arriving";
     stopLabel = "W drodze";
     stopStatusID = 3;
@@ -113,3 +104,25 @@ export const getTrainStopStatus = (stopInfo: TrainStop, currentStationName: stri
 
   return { stopStatus, stopLabel, stopStatusID };
 };
+
+
+export function getScheduledTrain(train: Train, trainStop: TrainStop, stationName: string) {
+  const timetable = train.timetableData!;
+  const trainStopStatus = getTrainStopStatus(trainStop, train.currentStationName, stationName);
+
+  return {
+    trainNo: train.trainNo,
+    driverName: train.driverName,
+    driverId: train.driverId,
+    currentStationName: train.currentStationName,
+    currentStationHash: train.currentStationHash,
+    category: timetable.category,
+    beginsAt: timetable.followingStops[0].stopNameRAW,
+    terminatesAt: timetable.followingStops[timetable.followingStops.length - 1].stopNameRAW,
+    nearestStop: "",
+    stopInfo: trainStop,
+    stopLabel: trainStopStatus.stopLabel,
+    stopStatus: trainStopStatus.stopStatus,
+    stopStatusID: trainStopStatus.stopStatusID
+  }
+}

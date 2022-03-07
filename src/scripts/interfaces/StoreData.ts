@@ -6,13 +6,8 @@ export interface StoreData {
   stationList: Station[];
   trainList: Train[];
 
-  activeTrainCount: number;
-  activeStationCount: number;
 
-  dataConnectionStatus: DataStatus;
-
-  timetableDataStatus: DataStatus;
   sceneryDataStatus: DataStatus;
   dispatcherDataStatus: DataStatus;
-  trainsDataStatus: DataStatus;
+  trainsDataStatus: DataStatus;  
 }

@@ -21,8 +21,8 @@
     </div>
 
     <transition name="scenery-timetable-list-anim" mode="out-in">
-      <div :key="timetableDataStatus + selectedCheckpoint">
-        <span class="timetable-item loading" v-if="timetableDataStatus == 0 && computedScheduledTrains.length == 0">
+      <div :key="trainsDataStatus + selectedCheckpoint">
+        <span class="timetable-item loading" v-if="trainsDataStatus == 0 && computedScheduledTrains.length == 0">
           {{ $t('app.loading') }}
         </span>
 
@@ -65,18 +65,26 @@
           </span>
 
           <span class="timetable-schedule">
-            <span class="schedule-arrival">              
-              <span
-                class="arrival-time begins"
-                v-if="scheduledTrain.stopInfo.beginsHere"
-                v-html="$t('timetables.begins')"
-              >
+            <span class="schedule-arrival">
+              <span class="arrival-time begins" v-if="scheduledTrain.stopInfo.beginsHere">
+                {{ $t('timetables.begins') }}
               </span>
 
               <span class="arrival-time" v-else>
-                {{ scheduledTrain.stopInfo.arrivalTimeString }} ({{ scheduledTrain.stopInfo.arrivalDelay }})
+                <div v-if="scheduledTrain.stopInfo.arrivalDelay == 0">
+                  <span>{{ timestampToString(scheduledTrain.stopInfo.arrivalTimestamp) }}</span>
+                </div>
+                <div v-else>
+                  <s style="margin-right: 0.2em;" class="text--grayed">{{
+                    timestampToString(scheduledTrain.stopInfo.arrivalTimestamp)
+                  }}</s>
+                  <span>
+                    {{ timestampToString(scheduledTrain.stopInfo.arrivalRealTimestamp) }}
+                    ({{ scheduledTrain.stopInfo.arrivalDelay > 0 ? '+' : ''
+                    }}{{ scheduledTrain.stopInfo.arrivalDelay }})
+                  </span>
+                </div>
               </span>
-
             </span>
 
             <span class="schedule-stop">
@@ -88,15 +96,25 @@
             </span>
 
             <span class="schedule-departure">
-              <span
-                class="departure-time terminates"
-                v-if="scheduledTrain.stopInfo.terminatesHere"
-                v-html="$t('timetables.terminates')"
-              >
+              <span class="departure-time terminates" v-if="scheduledTrain.stopInfo.terminatesHere">
+                {{ $t('timetables.terminates') }}
               </span>
 
               <span class="departure-time" v-else>
-                {{ scheduledTrain.stopInfo.departureTimeString }} ({{ scheduledTrain.stopInfo.departureDelay }})
+                <div v-if="scheduledTrain.stopInfo.departureDelay == 0">
+                  <span>{{ timestampToString(scheduledTrain.stopInfo.departureTimestamp) }}</span>
+                </div>
+                <div v-else>
+                  <s style="margin-right: 0.2em;" class="text--grayed">{{
+                    timestampToString(scheduledTrain.stopInfo.departureTimestamp)
+                  }}</s>
+
+                  <span>
+                    {{ timestampToString(scheduledTrain.stopInfo.departureRealTimestamp) }}
+                    ({{ scheduledTrain.stopInfo.departureDelay > 0 ? '+' : ''
+                    }}{{ scheduledTrain.stopInfo.departureDelay }})
+                  </span>
+                </div>
               </span>
             </span>
           </span>
@@ -115,9 +133,12 @@ import { useStore } from '@/store';
 import { GETTERS } from '@/constants/storeConstants';
 import { DataStatus } from '@/scripts/enums/DataStatus';
 import { ComputedRef } from 'vue';
+import dateMixin from '@/mixins/dateMixin';
 
 export default defineComponent({
   components: { SelectBox },
+
+  mixins: [dateMixin],
 
   props: {
     station: {
@@ -142,7 +163,7 @@ export default defineComponent({
 
     const store = useStore();
 
-    const timetableDataStatus = computed(() => store.getters[GETTERS.timetableDataStatus]) as ComputedRef<DataStatus>;
+    const trainsDataStatus = computed(() => store.getters[GETTERS.trainsDataStatus]) as ComputedRef<DataStatus>;
 
     const selectedCheckpoint = ref(
       props.station?.generalInfo?.checkpoints?.length == 0
@@ -176,7 +197,7 @@ export default defineComponent({
       currentURL,
       selectedCheckpoint,
       computedScheduledTrains,
-      timetableDataStatus,
+      trainsDataStatus,
     };
   },
 
@@ -317,11 +338,12 @@ h3 {
   &-schedule {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(30px, 1fr));
-    font-size: 1.3em;
+    font-size: 1.15em;
 
     @include smallScreen() {
       width: 100%;
       margin: 0.5em 0;
+      font-size: 1.4em;
     }
   }
 }
@@ -378,7 +400,6 @@ h3 {
 .general-info {
   .info-number {
     color: $accentCol;
-
   }
 
   .info-route {
@@ -396,6 +417,8 @@ h3 {
 }
 
 .general-status {
+  margin-left: 0.5em;
+
   span.arriving {
     color: #aaa;
   }
@@ -449,6 +472,6 @@ h3 {
 
 .arrival-time.begins,
 .departure-time.terminates {
-  font-size: 0.75em;
+  font-size: 0.85em;
 }
 </style>

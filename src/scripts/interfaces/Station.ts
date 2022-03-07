@@ -46,7 +46,7 @@ export default interface Station {
     dispatcherIsSupporter: boolean;
 
     statusTimestamp: number;
-    statusTimeString: string;
+    // statusTimeString: string;
     statusID: string;
 
     stationTrains?: {
