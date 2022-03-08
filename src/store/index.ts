@@ -300,6 +300,7 @@ export const store = createStore<State>({
         });
 
       this.state.trainList = updatedTrainList;
+      this.state.trainsDataStatus = DataStatus.Loaded;
     },
   },
 
