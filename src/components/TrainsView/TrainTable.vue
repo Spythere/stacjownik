@@ -2,9 +2,9 @@
   <div class="train-table" @keydown.esc="closeTimetableCard">
     <transition name="anim" mode="out-in">
       <div :key="trainsDataStatus">
-        <div class="traffic-warning" v-if="distanceLimitExceeded">
+        <!-- <div class="traffic-warning" v-if="data.">
           {{ $t('trains.distance-exceeded') }}
-        </div>
+        </div> -->
 
         <div class="table-info no-trains" v-if="trains.length == 0 && trainsDataStatus >= 2">
           {{ $t('trains.no-trains') }}

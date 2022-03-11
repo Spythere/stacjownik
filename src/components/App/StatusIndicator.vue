@@ -163,12 +163,14 @@
 </template>
 
 <script lang="ts">
+import { GETTERS } from '@/constants/storeConstants';
 import { DataStatus } from '@/scripts/enums/DataStatus';
 import { StoreData } from '@/scripts/interfaces/StoreData';
-import { defineComponent } from 'vue';
+import { State, useStore } from '@/store';
+import { computed, defineComponent } from 'vue';
+import { Store } from 'vuex';
 
 export default defineComponent({
-  props: ['dataStatus'],
 
   data() {
     return {
@@ -193,11 +195,20 @@ export default defineComponent({
     this.setSignalStatus(DataStatus.Loading);
   },
 
+  setup() {
+      const store: Store<State> = useStore();
+
+      return {
+        dataStatus: computed(() => store.getters[GETTERS.allData] as StoreData)
+      }
+  },
+
   watch: {
     dataStatus(storeData: StoreData) {
       const sceneryDataStatus = storeData.sceneryDataStatus;
       const trainsDataStatus = storeData.trainsDataStatus;
       const dispatcherDataStatus = storeData.dispatcherDataStatus;
+          
 
       if (sceneryDataStatus == DataStatus.Error) {
         this.setSignalStatus(sceneryDataStatus);

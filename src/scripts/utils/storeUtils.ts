@@ -34,7 +34,7 @@ export const getStatusID = (stationStatus: any): string => {
 };
 
 export const getStatusTimestamp = (stationStatus: any): number => {
-  if (!stationStatus || stationStatus == -1) return -2;
+  if (!stationStatus) return -2;
 
   const statusCode = stationStatus[2];
   const statusTimestamp = stationStatus[3];

@@ -8,7 +8,7 @@
       </div> -->
       <header class="app_header">
         <div class="header_body">
-          <status-indicator :dataStatus="dataStatus" />
+          <status-indicator />
 
           <span class="header_brand">
             <span>
@@ -116,7 +116,6 @@ export default defineComponent({
       () => store.getters[GETTERS.currentRegion]
     );
 
-    const dataStatus = computed(() => data.value.sceneryDataStatus);
     // const sceneryDataStatus = computed(() => data.value.sceneryDataStatus);
 
     const isFilterCardVisible = ref(false);
@@ -128,7 +127,6 @@ export default defineComponent({
       currentRegion,
       isFilterCardVisible,
 
-      dataStatus,
       dispatcherDataStatus: computed(() => data.value.dispatcherDataStatus),
 
       trainCount: computed(() => data.value.trainList.length),

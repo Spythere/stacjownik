@@ -24,6 +24,8 @@ import StationRoutes from '@/scripts/interfaces/StationRoutes';
 export interface State {
   stationList: Station[],
   trainList: Train[],
+
+  lastDispatcherStatuses: { hash: string; statusTimestamp: number; statusID: string; }[],
   // timetableList: Timetable[],
 
   sceneryData: any[][],
@@ -75,6 +77,7 @@ export const store = createStore<State>({
     // timetableList: [],
 
     sceneryData: [],
+    lastDispatcherStatuses: [],
 
     region: { id: "eu", value: "PL1" },
 
@@ -195,6 +198,7 @@ export const store = createStore<State>({
           }) || []
 
       const onlineStationNames: string[] = [];
+      const prevDispatcherStatuses: State['lastDispatcherStatuses'] = [];
 
       stationsAPIData.message.forEach((stationAPI) => {
         if (stationAPI.region !== this.state.region.id || !stationAPI.isOnline) return;
@@ -204,9 +208,17 @@ export const store = createStore<State>({
         const stationName = stationAPI.stationName.toLowerCase();
         const station = this.state.stationList.find(s => s.name == stationAPI.stationName);
 
+        const prevDispatcherStatus = this.state.lastDispatcherStatuses.find(dispatcher => dispatcher.hash === stationAPI.stationHash);
         const stationStatus = dispatchersAPIData.success ? dispatchersAPIData.message.find((status: string[]) => status[0] == stationAPI.stationHash && status[1] == this.state.region.id) : -1;
-        const statusTimestamp = getStatusTimestamp(stationStatus);
-        const statusID = getStatusID(stationStatus);
+        
+        const statusTimestamp = getStatusTimestamp(stationStatus == -1 && prevDispatcherStatus ? prevDispatcherStatus.statusTimestamp : stationStatus);
+        const statusID = getStatusID(stationStatus == -1 && prevDispatcherStatus ? prevDispatcherStatus.statusTimestamp : stationStatus );
+
+        prevDispatcherStatuses.push({
+          hash: stationAPI.stationHash,
+          statusID,
+          statusTimestamp
+        });
 
         const stationTrains = trainsAPIData.response
           .filter(train => train.region === this.state.region.id && train.online && train.currentStationName === stationAPI.stationName)
@@ -277,7 +289,6 @@ export const store = createStore<State>({
           statusTimestamp,
           statusID,
           scheduledTrains,
-          // statusTimeString: timestampToString(statusTimestamp),
         }
 
         if (!station) {
@@ -298,9 +309,10 @@ export const store = createStore<State>({
         .forEach(offlineStation => {
           offlineStation.onlineInfo = undefined;
         });
-
+    
       this.state.trainList = updatedTrainList;
       this.state.trainsDataStatus = DataStatus.Loaded;
+      this.state.lastDispatcherStatuses = prevDispatcherStatuses;
     },
   },
 
