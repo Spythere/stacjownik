@@ -14,20 +14,17 @@
               {{ Math.floor(stop.stopDistance) }}
             </span>
 
-            <span class="stop-name">
-              <span v-html="stop.stopName"></span>
-
-              <span class="g-tooltip" v-if="stop.comments">
-                <img :src="icons.warning" />
-                <span class="content" v-html="stop.comments"> </span>
-              </span>
-            </span>
+            <span class="stop-name" v-html="stop.stopName"> </span>
 
             <stop-date :stop="stop" />
           </span>
 
           <div class="stop_line" v-if="i < followingStops.length - 1">
             <div class="progress-bar"></div>
+
+            <div v-if="stop.comments" style="color: salmon;">
+              <b>{{ stop.stopNameRAW }}</b>: <span v-html="stop.comments"></span>
+            </div>
 
             <span v-if="stop.departureLine == followingStops[i + 1].arrivalLine">
               {{ stop.departureLine }}
@@ -117,6 +114,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '../../styles/responsive.scss';
+
 $barClr: #b1b1b1;
 $confirmedClr: #18d818;
 $stoppedClr: #f55f31;
@@ -133,14 +132,16 @@ $stopNameClr: #22a8d1;
 }
 
 .train-schedule {
-  padding-top: 1em;
-  margin-top: 1em;
 
   min-height: 400px;
 
   overflow-y: auto;
 
   z-index: 5;
+
+  @include smallScreen() {
+    font-size: 1.2em;
+  }
 }
 
 .schedule-wrapper {
@@ -166,13 +167,31 @@ $stopNameClr: #22a8d1;
 
   display: flex;
   align-items: center;
+}
 
-  .g-tooltip {
-    margin-left: 0.5em;
+.stop-comment {
+  background: forestgreen;
+  padding: 0.3em 0.5em;
 
-    img {
-      width: 1em;
-    }
+  max-width: 250px;
+  overflow: hidden;
+  white-space: nowrap;
+
+  width: 2em;
+
+  cursor: pointer;
+
+  &:hover {
+    text-overflow: ellipsis;
+    width: 100%;
+  }
+
+  img {
+    width: 1em;
+  }
+
+  span {
+    font-size: 0.8em;
   }
 }
 
@@ -275,6 +294,8 @@ ul.stop_list > li.stop {
 
     position: relative;
     text-align: center;
+
+    flex-wrap: wrap;
 
     padding: 0.15em 0;
   }

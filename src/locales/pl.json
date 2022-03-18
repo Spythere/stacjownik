@@ -165,7 +165,7 @@
     "loco-electric": "Elektrowóz",
     "loco-diesel": "Spalinowóz",
     "timetable-comments": "Pociąg z uwagami eksploatacyjnymi",
-    "comment": "Uwaga eksploatacyjna",
+    "comment": "Uwagi eksploatacyjne dla: ",
     "table-limit": "Dla płynności działania strony pokazanych jest tylko 10 pociągów zgodnie z wybranymi filtrami." 
   },
   "journal": {

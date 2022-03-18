@@ -24,37 +24,39 @@
             </span>
 
             <span class="timetable_driver-stats">
-              <div>
+              <span>
                 <b>{{ train.timetableData.category }}</b>
                 <b>{{ ' ' + train.trainNo }}</b> |
 
                 <span>{{ train.driverName }}</span>
-              </div>
+              </span>
+
+              <span class="hide-info" @click="toggleInfo">
+                <img :src="icons.ascArrow" :class="{ hidden: !isInfoShown }" />
+                <span>{{ isInfoShown ? 'Ukryj' : 'Pokaż' }} informacje</span>
+              </span>
             </span>
           </span>
         </div>
 
         <div class="timetable_route">
           {{ train.timetableData.route.replace('|', ' - ') }}
-
-          <img
-            v-if="getSceneriesWithComments(train.timetableData).length > 0"
-            class="image-warning"
-            :src="icons.warning"
-            :title="`${$t('trains.timetable-comments')} (${getSceneriesWithComments(train.timetableData).join(',')})`"
-          />
         </div>
 
-        <div class="timetable_stops">
+        <div class="timetable_stops" v-if="isInfoShown">
           <span v-if="train.timetableData.followingStops.length > 2">
             {{ $t('trains.via-title') }}
             <span v-html="displayStopList(train.timetableData.followingStops)"></span>
           </span>
         </div>
+
+        <div class="timetable_comments" v-if="getSceneriesWithComments(train.timetableData).length > 0 && isInfoShown">
+          {{ $t('trains.comment') }} <b>{{ getSceneriesWithComments(train.timetableData).join(',') }}</b>
+        </div>
       </div>
     </section>
 
-    <section class="info-driver">
+    <section class="info-driver" v-show="isInfoShown">
       <div class="driver_cars">
         <!-- <span v-else>{{ displayLocoInfo(train.locoType) }}</span> -->
       </div>
@@ -130,19 +132,46 @@ export default defineComponent({
   data: () => ({
     icons: {
       warning: require('@/assets/icon-warning.svg'),
+      ascArrow: require('@/assets/icon-arrow-asc.svg'),
     },
+
+    isInfoShown: true,
   }),
+
+  methods: {
+    toggleInfo() {
+      this.isInfoShown = !this.isInfoShown;
+    },
+  },
 });
 </script>
 
 <style lang="scss" scoped>
 .image-warning {
-  width: 1em;
+  width: 1.2em;
+  vertical-align: text-bottom;
+
+  margin-left: 0.2em;
 }
 
 .extended {
   margin-top: 0.5em;
   padding: 1em;
+}
+
+.hide-info {
+  margin-left: 1em;
+
+  img {
+    width: 1.3em;
+    vertical-align: text-bottom;
+
+    &.hidden {
+      transform: rotate(180deg);
+    }
+  }
+
+  cursor: pointer;
 }
 
 .info-timetable {
@@ -170,9 +199,6 @@ export default defineComponent({
   }
 
   &_route {
-    display: flex;
-    align-items: center;
-
     font-weight: bold;
 
     margin: 5px 0;
@@ -183,6 +209,10 @@ export default defineComponent({
   &_stops {
     margin-bottom: 10px;
     font-size: 0.8em;
+  }
+
+  &_comments {
+    color: salmon;
   }
 
   &_warnings {

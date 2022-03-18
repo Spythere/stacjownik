@@ -20,6 +20,7 @@ import { getLocoURL, getScheduledTrain, getStatusID, getStatusTimestamp, parseSp
 import { URLs } from '@/scripts/utils/apiURLs';
 import ScheduledTrain from '@/scripts/interfaces/ScheduledTrain';
 import StationRoutes from '@/scripts/interfaces/StationRoutes';
+import StorageManager from '@/scripts/managers/storageManager';
 
 export interface State {
   stationList: Station[],
@@ -116,16 +117,15 @@ export const store = createStore<State>({
   actions: {
     async synchronizeData({ commit, dispatch, state }) {
       if (state.listenerLaunched) return;
-      
+
       await dispatch(ACTIONS.loadStaticStationData);
-      await dispatch(ACTIONS.fetchOnlineData);
+      dispatch(ACTIONS.fetchOnlineData);
 
       setInterval(() => dispatch(ACTIONS.fetchOnlineData), Math.floor(Math.random() * 5000) + 25000);
     },
 
     async loadStaticStationData({ commit }) {
-      // Nowy parametr żądania co godzinę
-      const sceneryData: StationJSONData = await (await axios.get(`${URLs.sceneryData}?time=${Math.floor(Date.now() / 1800000)}`)).data;
+      const sceneryData: StationJSONData = await (await axios.get(`${URLs.sceneryData}?timestamp=${Math.floor(Date.now() / 1800000)}`)).data;
 
       if (!sceneryData)
         commit(MUTATIONS.SET_SCENERY_DATA_STATUS, DataStatus.Error);
@@ -147,12 +147,8 @@ export const store = createStore<State>({
       }
 
       commit(MUTATIONS.SET_SCENERY_DATA_STATUS, DataStatus.Loaded);
-
-      if (!dispatchersAPIData || !dispatchersAPIData.success)
-        commit(MUTATIONS.SET_DISPATCHER_DATA_STATUS, DataStatus.Warning)
-
-      if (!trainsAPIData || !trainsAPIData.response)
-        commit(MUTATIONS.SET_TRAINS_DATA_STATUS, DataStatus.Warning);
+      commit(MUTATIONS.SET_DISPATCHER_DATA_STATUS, !dispatchersAPIData || !dispatchersAPIData.success ? DataStatus.Warning : DataStatus.Loaded)
+      commit(MUTATIONS.SET_TRAINS_DATA_STATUS, !trainsAPIData || !trainsAPIData.response ? DataStatus.Warning : DataStatus.Loaded);
 
 
       // Zaktualizuj listę pociągów
@@ -210,9 +206,9 @@ export const store = createStore<State>({
 
         const prevDispatcherStatus = this.state.lastDispatcherStatuses.find(dispatcher => dispatcher.hash === stationAPI.stationHash);
         const stationStatus = dispatchersAPIData.success ? dispatchersAPIData.message.find((status: string[]) => status[0] == stationAPI.stationHash && status[1] == this.state.region.id) : -1;
-        
+
         const statusTimestamp = getStatusTimestamp(stationStatus == -1 && prevDispatcherStatus ? prevDispatcherStatus.statusTimestamp : stationStatus);
-        const statusID = getStatusID(stationStatus == -1 && prevDispatcherStatus ? prevDispatcherStatus.statusTimestamp : stationStatus );
+        const statusID = getStatusID(stationStatus == -1 && prevDispatcherStatus ? prevDispatcherStatus.statusTimestamp : stationStatus);
 
         prevDispatcherStatuses.push({
           hash: stationAPI.stationHash,
@@ -309,10 +305,12 @@ export const store = createStore<State>({
         .forEach(offlineStation => {
           offlineStation.onlineInfo = undefined;
         });
-    
+
       this.state.trainList = updatedTrainList;
       this.state.trainsDataStatus = DataStatus.Loaded;
-      this.state.lastDispatcherStatuses = prevDispatcherStatuses;
+
+      if (dispatchersAPIData.success)
+        this.state.lastDispatcherStatuses = prevDispatcherStatuses;
     },
   },
 

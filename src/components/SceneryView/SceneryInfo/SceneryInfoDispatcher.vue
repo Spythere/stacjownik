@@ -3,7 +3,7 @@
     <div class="dispatcher" v-if="station.onlineInfo">
       <span
         class="dispatcher_level"
-        :style="calculateExpStyle(station.onlineInfo.dispatcherExp, station.onlineInfo.dispatcherIsSupporter)"
+        :style="calculateExpStyle(station.onlineInfo.dispatcherExp)"
       >
         {{ station.onlineInfo.dispatcherExp > 1 ? station.onlineInfo.dispatcherExp : 'L' }}
       </span>
