@@ -145,7 +145,7 @@ $stopNameClr: #22a8d1;
   z-index: 5;
 
   @include smallScreen() {
-    font-size: 1.2em;
+    font-size: 1.1em;
   }
 }
 

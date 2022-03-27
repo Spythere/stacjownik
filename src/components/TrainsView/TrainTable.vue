@@ -190,7 +190,8 @@ img.train-image {
 
 .train {
   &-list {
-    max-height: 1000px;
+    max-height: 100vh;
+    min-height: 550px;
     overflow: auto;
 
     padding-right: 0.5em;
