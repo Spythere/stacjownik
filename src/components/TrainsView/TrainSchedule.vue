@@ -23,7 +23,7 @@
             <div class="progress-bar"></div>
 
             <div v-if="stop.comments" style="color: salmon;">
-              <b>{{ stop.stopNameRAW }}</b>: <span v-html="stop.comments"></span>
+              <b>{{ stop.stopNameRAW }} </b>: <span v-html="stop.comments"></span>
             </div>
 
             <span v-if="stop.departureLine == followingStops[i + 1].arrivalLine">
@@ -34,6 +34,12 @@
               {{ stop.departureLine }} /
               {{ followingStops[i + 1].arrivalLine }}
             </span>
+          </div>
+
+          <div class="stop_line" v-else>
+            <div v-if="stop.comments" style="color: salmon;">
+              <b>{{ stop.stopNameRAW }} </b>: <span v-html="stop.comments"></span>
+            </div>
           </div>
         </li>
       </ul>
@@ -132,7 +138,6 @@ $stopNameClr: #22a8d1;
 }
 
 .train-schedule {
-
   min-height: 400px;
 
   overflow-y: auto;

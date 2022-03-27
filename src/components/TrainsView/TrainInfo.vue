@@ -34,6 +34,8 @@ export default defineComponent({
 @import '../../styles/responsive.scss';
 
 .wrapper {
+  font-size: 1em;
+  
   @include smallScreen() {
     font-size: 1.2em;
   }
