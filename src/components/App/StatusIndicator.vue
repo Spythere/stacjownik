@@ -207,8 +207,7 @@ export default defineComponent({
     dataStatus(storeData: StoreData) {
       const sceneryDataStatus = storeData.sceneryDataStatus;
       const trainsDataStatus = storeData.trainsDataStatus;
-      const dispatcherDataStatus = storeData.dispatcherDataStatus;
-          
+      const dispatcherDataStatus = storeData.dispatcherDataStatus;            
 
       if (sceneryDataStatus == DataStatus.Error) {
         this.setSignalStatus(sceneryDataStatus);
@@ -231,10 +230,12 @@ export default defineComponent({
         return;
       }
 
-      this.setSignalStatus(DataStatus.Loaded);
-
-      this.indicator.status = DataStatus.Loaded;
-      this.indicator.message = 'data-status.S2';
+      if (sceneryDataStatus == DataStatus.Loaded) {
+        this.setSignalStatus(DataStatus.Loaded);
+  
+        this.indicator.status = DataStatus.Loaded;
+        this.indicator.message = 'data-status.S2';
+      }
     },
   },
 
