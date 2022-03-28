@@ -133,9 +133,7 @@ export const store = createStore<State>({
         commit(MUTATIONS.SET_SCENERY_DATA, sceneryData);
     },
 
-    async fetchOnlineData({ commit }) {
-      console.log("Pobieranie danych");
-      
+    async fetchOnlineData({ commit }) {      
       // Pobierz dane o pociągach i rozkładach jazdy z API Stacjownika
       const trainsAPIData: { response: TrainAPIData[], errorMessage?: string } = (await axios.get(`${URLs.stacjownikAPI}/api/getActiveTrainList`)).data;
 
@@ -207,10 +205,10 @@ export const store = createStore<State>({
         const station = this.state.stationList.find(s => s.name == stationAPI.stationName);
 
         const prevDispatcherStatus = this.state.lastDispatcherStatuses.find(dispatcher => dispatcher.hash === stationAPI.stationHash);
-        const stationStatus = dispatchersAPIData.success ? dispatchersAPIData.message.find((status: string[]) => status[0] == stationAPI.stationHash && status[1] == this.state.region.id) : -1;
+        const stationStatus = dispatchersAPIData.success ? dispatchersAPIData.message.find((status: string[]) => status[0] == stationAPI.stationHash && status[1] == this.state.region.id) : -1;        
 
         const statusTimestamp = getStatusTimestamp(stationStatus == -1 && prevDispatcherStatus ? prevDispatcherStatus.statusTimestamp : stationStatus);
-        const statusID = getStatusID(stationStatus == -1 && prevDispatcherStatus ? prevDispatcherStatus.statusTimestamp : stationStatus);
+        const statusID = getStatusID(stationStatus == -1 && prevDispatcherStatus ? prevDispatcherStatus.statusID : stationStatus);
 
         prevDispatcherStatuses.push({
           hash: stationAPI.stationHash,
