@@ -134,6 +134,8 @@ export const store = createStore<State>({
     },
 
     async fetchOnlineData({ commit }) {
+      console.log("Pobieranie danych");
+      
       // Pobierz dane o pociągach i rozkładach jazdy z API Stacjownika
       const trainsAPIData: { response: TrainAPIData[], errorMessage?: string } = (await axios.get(`${URLs.stacjownikAPI}/api/getActiveTrainList`)).data;
 

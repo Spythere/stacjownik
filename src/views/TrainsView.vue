@@ -47,14 +47,19 @@ const filteredTrainList = (
   searchedTrain: string,
   searchedDriver: string,
   sorterActive: { id: string; dir: number }
-) => {
-  
+) => {  
   return trainList
     .filter(
       (train) =>
         (searchedTrain.length > 0 ? train.trainNo.toString().startsWith(searchedTrain) : true) &&
         (searchedDriver.length > 0 ? train.driverName.toLowerCase().startsWith(searchedDriver.toLowerCase()) : true)
     )
+    .sort((a, b) => {
+      const commentsA = a.timetableData?.followingStops.some(s => s.comments) ? 1 : 0;
+      const commentsB = b.timetableData?.followingStops.some(s => s.comments) ? 1 : 0;
+
+      return commentsB - commentsA;
+    })
     .sort((a: Train, b: Train) => {
       switch (sorterActive.id) {
         case 'mass':

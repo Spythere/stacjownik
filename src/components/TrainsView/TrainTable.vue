@@ -49,6 +49,7 @@ import TrainInfo from '@/components/TrainsView/TrainInfo.vue';
 import { DataStatus } from '@/scripts/enums/DataStatus';
 import { GETTERS } from '@/constants/storeConstants';
 import TrainTimetableCard from './TrainTimetableCard.vue';
+import { ref } from 'vue';
 
 export default defineComponent({
   components: {
@@ -74,7 +75,6 @@ export default defineComponent({
 
     defaultVehicleIcons: defaultVehicleIconsJSON,
 
-    chosenTrain: null as Train | null,
   }),
 
   setup(props) {
@@ -91,6 +91,9 @@ export default defineComponent({
       //.slice(currentPage.value * PAGE_CAPACITY, currentPage.value * PAGE_CAPACITY + PAGE_CAPACITY);
     });
 
+    const chosenTrainId = ref(null) as Ref<string | null>;
+    const chosenTrain = computed(() => props.trains.find(train => train.trainNo + train.driverName === chosenTrainId.value));
+
     // watch([searchedTrain, searchedDriver], () => {
     //   currentPage.value = 0;
     // });
@@ -104,6 +107,9 @@ export default defineComponent({
       searchedTrain,
       searchedDriver,
       currentTrains,
+
+      chosenTrain,
+      chosenTrainId,
 
       sorterActive: inject('sorterActive') as { id: string | number; dir: number },
       trainsDataStatus: computed(() => trainsDataStatus.value),
@@ -139,11 +145,11 @@ export default defineComponent({
     },
 
     showTrainTimetable(train: Train) {
-      this.chosenTrain = train;
+      this.chosenTrainId = train.trainNo + train.driverName;
     },
 
     closeTimetableCard() {
-      this.chosenTrain = null;
+      this.chosenTrainId = null;
     },
   },
 });
