@@ -3,6 +3,12 @@
     <section>
       <span>
         <div>
+          <span class="timetable_warnings">
+            <span class="warning twr" v-if="train.timetableData?.TWR">TWR</span>
+
+            <span class="warning skr" v-if="train.timetableData?.SKR">SKR</span>
+          </span>
+
           <strong v-if="train.timetableData">{{ train.timetableData.category }}&nbsp;</strong>
           <strong>{{ train.trainNo }}</strong>
           <span>&nbsp;| {{ train.driverName }}</span>
@@ -143,6 +149,27 @@ export default defineComponent({
 .timetable_route {
   display: flex;
   align-items: center;
+
+  margin-top: 0.5em;
+}
+
+.timetable_warnings {
+  color: black;
+
+  .warning {
+    padding: 0.1em 0.5em;
+    margin-right: 0.2em;
+
+    font-weight: bold;
+
+    &.twr {
+      background: var(--clr-twr);
+    }
+
+    &.skr {
+      background: var(--clr-skr);
+    }
+  }
 }
 
 .comments {

@@ -26,30 +26,6 @@
         </div>
       </div>
     </div>
-
-    <!-- <div class="options_wrapper">
-      <select-box
-        :title="$t('trains.option-distance')"
-        :itemList="translatedSorterOptions"
-        :defaultItemIndex="0"
-        :prefix="$t('trains.sorter-prefix')"
-        @selected="changeSorter"
-      />
-    </div>
-
-    <div class="options_wrapper">
-      <div class="search-box">
-        <input class="search-input" v-model="searchedTrain" :placeholder="$t('trains.search-train')" />
-
-        <img class="search-exit" :src="exitIcon" alt="exit-icon" @click="() => (searchedTrain = '')" />
-      </div>
-
-      <div class="search-box">
-        <input class="search-input" v-model="searchedDriver" :placeholder="$t('trains.search-driver')" />
-
-        <img class="search-exit" :src="exitIcon" alt="exit-icon" @click="() => (searchedDriver = '')" />
-      </div>
-    </div> -->
   </div>
 </template>
 
