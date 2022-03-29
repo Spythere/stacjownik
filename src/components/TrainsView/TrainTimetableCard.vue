@@ -6,7 +6,12 @@
     </div>
 
     <train-info :train="train" />
-    <train-schedule v-if="train.timetableData" :followingStops="train.timetableData.followingStops" ref="card-inner" tabindex="0" />
+    <train-schedule
+      v-if="train.timetableData"
+      :followingStops="train.timetableData.followingStops"
+      ref="card-inner"
+      tabindex="0"
+    />
   </section>
 </template>
 
@@ -38,7 +43,7 @@ export default defineComponent({
   methods: {
     close() {
       this.$emit('close');
-    }
+    },
   },
 });
 </script>
@@ -64,7 +69,10 @@ export default defineComponent({
 
   width: 95%;
   max-width: 1300px;
+  max-height: calc(100vh - 2em);
 
+  top: 0;
+  transform: translate(-50%, 1em);
 
   border: 1px solid white;
 }

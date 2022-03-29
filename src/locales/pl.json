@@ -144,6 +144,7 @@
     "option-timetable": "nr pociągu",
     "option-progress": "przebyta trasa",
     "option-delay": "opóźnienie",
+    "option-comments": "uwagi ekspl.",
 
     "sorter-prefix": "Sortuj: ",
     "search-train": "Numer pociągu",

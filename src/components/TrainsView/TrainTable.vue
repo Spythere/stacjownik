@@ -201,6 +201,7 @@ img.train-image {
     overflow: auto;
 
     padding-right: 0.5em;
+    margin-top: 1em;
 
     @include smallScreen() {
       width: 100%;

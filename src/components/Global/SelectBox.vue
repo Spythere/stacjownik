@@ -2,7 +2,7 @@
   <div class="select-box">
     <div class="select-box_content">
       <button class="selected" @click="toggleBox">
-        <span class="text--primary">{{prefix}}</span> {{ computedSelectedItem.value }}
+        <span class="text--primary">{{ prefix }}</span> {{ computedSelectedItem.value }}
       </button>
 
       <ul class="options" :ref="(el) => (listRef = el)">

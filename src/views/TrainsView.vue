@@ -42,67 +42,90 @@ const currentDelay = (stops: TrainStop[] | undefined) => {
   return delay;
 };
 
+function sortTrainList(trainList: Train[], sorterActive: { id: string; dir: number }) {
+  return trainList.sort((a: Train, b: Train) => {
+    switch (sorterActive.id) {
+      case 'mass':
+        if (a.mass > b.mass) return sorterActive.dir;
+        return -sorterActive.dir;
+
+      case 'distance':
+        if ((a.timetableData?.routeDistance || -1) > (b.timetableData?.routeDistance || -1)) return sorterActive.dir;
+
+        return -sorterActive.dir;
+
+      case 'progress':
+        if (confirmedPercentage(a.timetableData?.followingStops) > confirmedPercentage(b.timetableData?.followingStops))
+          return sorterActive.dir;
+
+        return -sorterActive.dir;
+
+      case 'delay':
+        if (currentDelay(a.timetableData?.followingStops) > currentDelay(b.timetableData?.followingStops))
+          return sorterActive.dir;
+
+        return -sorterActive.dir;
+
+      case 'speed':
+        if (a.speed > b.speed) return sorterActive.dir;
+        return -sorterActive.dir;
+
+      case 'timetable':
+        if (a.trainNo > b.trainNo) return sorterActive.dir;
+        return -sorterActive.dir;
+
+      case 'length':
+        if (a.length > b.length) return sorterActive.dir;
+        return -sorterActive.dir;
+
+      default:
+        break;
+    }
+
+    return 0;
+  });
+}
+
 const filteredTrainList = (
   trainList: Train[],
   searchedTrain: string,
   searchedDriver: string,
-  sorterActive: { id: string; dir: number }
-) => {  
-  return trainList
-    .filter(
-      (train) =>
-        (searchedTrain.length > 0 ? train.trainNo.toString().startsWith(searchedTrain) : true) &&
-        (searchedDriver.length > 0 ? train.driverName.toLowerCase().startsWith(searchedDriver.toLowerCase()) : true)
-    )
-    .sort((a, b) => {
-      const commentsA = a.timetableData?.followingStops.some(s => s.comments) ? 1 : 0;
-      const commentsB = b.timetableData?.followingStops.some(s => s.comments) ? 1 : 0;
+  sorterActive: { id: string; dir: number },
+  priorityProp: string
+) => {
+  let finalTrainList: Train[] = [];
 
-      return commentsB - commentsA;
-    })
-    .sort((a: Train, b: Train) => {
-      switch (sorterActive.id) {
-        case 'mass':
-          if (a.mass > b.mass) return sorterActive.dir;
-          return -sorterActive.dir;
+  switch (sorterActive.id) {
+    case 'comments':
+      const trainsSortedByComments = trainList
+        .filter(
+          (train) =>
+            (searchedTrain.length > 0 ? train.trainNo.toString().startsWith(searchedTrain) : true) &&
+            (searchedDriver.length > 0 ? train.driverName.toLowerCase().startsWith(searchedDriver.toLowerCase()) : true)
+        )
+        .sort((a, b) => {
+          const commentsA = a.timetableData?.followingStops.some((s) => s.comments) ? 1 : 0;
+          const commentsB = b.timetableData?.followingStops.some((s) => s.comments) ? 1 : 0;
 
-        case 'distance':
-          if ((a.timetableData?.routeDistance || -1) > (b.timetableData?.routeDistance || -1)) return sorterActive.dir;
+          return commentsB - commentsA;
+        });
 
-          return -sorterActive.dir;
+      const trainsWithComments = trainsSortedByComments.filter((train) =>
+        train.timetableData?.followingStops.some((s) => s.comments)
+      );
 
-        case 'progress':
-          if (
-            confirmedPercentage(a.timetableData?.followingStops) > confirmedPercentage(b.timetableData?.followingStops)
-          )
-            return sorterActive.dir;
+      const trainsWithoutComments = trainsSortedByComments.slice(trainsWithComments.length);
 
-          return -sorterActive.dir;
+      finalTrainList.push(...trainsWithComments);
+      finalTrainList.push(...sortTrainList(trainsWithoutComments, sorterActive));
+      break;
 
-        case 'delay':
-          if (currentDelay(a.timetableData?.followingStops) > currentDelay(b.timetableData?.followingStops))
-            return sorterActive.dir;
+    default:
+      finalTrainList.push(...sortTrainList(trainList, sorterActive));
+      break;
+  }
 
-          return -sorterActive.dir;
-
-        case 'speed':
-          if (a.speed > b.speed) return sorterActive.dir;
-          return -sorterActive.dir;
-
-        case 'timetable':
-          if (a.trainNo > b.trainNo) return sorterActive.dir;
-          return -sorterActive.dir;
-
-        case 'length':
-          if (a.length > b.length) return sorterActive.dir;
-          return -sorterActive.dir;
-
-        default:
-          break;
-      }
-
-      return 0;
-    });
+  return finalTrainList;
 };
 
 export default defineComponent({
@@ -129,13 +152,20 @@ export default defineComponent({
     const sorterActive = ref({ id: 'distance', dir: -1 });
     const searchedDriver = ref('');
     const searchedTrain = ref('');
+    const priorityProp = ref('');
 
     provide('searchedTrain', searchedTrain);
     provide('searchedDriver', searchedDriver);
     provide('sorterActive', sorterActive);
 
     const computedTrains: ComputedRef<Train[]> = computed(() => {
-      return filteredTrainList(trainList.value, searchedTrain.value, searchedDriver.value, sorterActive.value);
+      return filteredTrainList(
+        trainList.value,
+        searchedTrain.value,
+        searchedDriver.value,
+        sorterActive.value,
+        priorityProp.value
+      );
     });
 
     /* Provide list for TrainStats category filter */

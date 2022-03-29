@@ -143,6 +143,7 @@
     "option-timetable": "train no.",
     "option-progress": "route progress",
     "option-delay": "current delay",
+    "option-comments": "comments",
 
     "sorter-prefix": "Sort: ",
     "search-train": "Train no.",
