@@ -42,6 +42,14 @@ const currentDelay = (stops: TrainStop[] | undefined) => {
   return delay;
 };
 
+function filterTrainList(trainList: Train[], searchedTrain: string, searchedDriver: string) {
+  return trainList.filter(
+    (train) =>
+      (searchedTrain.length > 0 ? train.trainNo.toString().startsWith(searchedTrain) : true) &&
+      (searchedDriver.length > 0 ? train.driverName.toLowerCase().startsWith(searchedDriver.toLowerCase()) : true)
+  );
+}
+
 function sortTrainList(trainList: Train[], sorterActive: { id: string; dir: number }) {
   return trainList.sort((a: Train, b: Train) => {
     switch (sorterActive.id) {
@@ -95,14 +103,11 @@ const filteredTrainList = (
 ) => {
   let finalTrainList: Train[] = [];
 
+  const filtered = filterTrainList(trainList, searchedTrain, searchedDriver);
+
   switch (sorterActive.id) {
     case 'comments':
-      const trainsSortedByComments = trainList
-        .filter(
-          (train) =>
-            (searchedTrain.length > 0 ? train.trainNo.toString().startsWith(searchedTrain) : true) &&
-            (searchedDriver.length > 0 ? train.driverName.toLowerCase().startsWith(searchedDriver.toLowerCase()) : true)
-        )
+      const trainsSortedByComments = filtered
         .sort((a, b) => {
           const commentsA = a.timetableData?.followingStops.some((s) => s.comments) ? 1 : 0;
           const commentsB = b.timetableData?.followingStops.some((s) => s.comments) ? 1 : 0;
@@ -121,7 +126,7 @@ const filteredTrainList = (
       break;
 
     default:
-      finalTrainList.push(...sortTrainList(trainList, sorterActive));
+      finalTrainList.push(...sortTrainList(filtered, sorterActive));
       break;
   }
 
