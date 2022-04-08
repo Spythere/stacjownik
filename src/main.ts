@@ -1,6 +1,7 @@
-import { createApp, Directive } from 'vue'
+import { createApp, Directive, ref } from 'vue'
 import App from './App.vue'
 import router from './router'
+import { store, key } from './store'
 
 import enLang from '@/locales/en.json';
 import plLang from '@/locales/pl.json';
@@ -33,6 +34,8 @@ const clickOutsideDirective: Directive = {
 }
 
 createApp(App)
+.provide('isFilterCardVisible', ref(false))
+  .use(store, key)
   .use(router)
   .use(i18n)
   .directive('click-outside', clickOutsideDirective)

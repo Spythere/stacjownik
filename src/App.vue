@@ -92,7 +92,7 @@
 import Clock from '@/components/App/Clock.vue';
 
 import StorageManager from '@/scripts/managers/storageManager';
-import { computed, ComputedRef, defineComponent, provide, reactive, Ref, ref } from 'vue';
+import { computed, ComputedRef, defineComponent, provide, ref } from 'vue';
 import { GETTERS } from './constants/storeConstants';
 import { StoreData } from './scripts/interfaces/StoreData';
 import { useStore } from './store';
