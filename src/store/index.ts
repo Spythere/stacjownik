@@ -20,14 +20,17 @@ import { getLocoURL, getScheduledTrain, getStatusID, getStatusTimestamp, parseSp
 import { URLs } from '@/scripts/utils/apiURLs';
 import ScheduledTrain from '@/scripts/interfaces/ScheduledTrain';
 import StationRoutes from '@/scripts/interfaces/StationRoutes';
-import StorageManager from '@/scripts/managers/storageManager';
+import { connect } from 'socket.io-client';
+
+// Websocket config
+const socket = connect(process.env.NODE_ENV === 'production' ? URLs.stacjownikAPI : URLs.stacjownikAPIDev)
+socket.emit('connection');
 
 export interface State {
   stationList: Station[],
   trainList: Train[],
 
   lastDispatcherStatuses: { hash: string; statusTimestamp: number; statusID: string; }[],
-  // timetableList: Timetable[],
 
   sceneryData: any[][],
 
@@ -119,9 +122,12 @@ export const store = createStore<State>({
       if (state.listenerLaunched) return;
 
       await dispatch(ACTIONS.loadStaticStationData);
-      dispatch(ACTIONS.fetchOnlineData);
 
-      setInterval(() => dispatch(ACTIONS.fetchOnlineData), Math.floor(Math.random() * 5000) + 25000);
+      socket.on('DATA_UPDATE', () => {        
+        dispatch(ACTIONS.fetchOnlineData);
+      });
+
+      // setInterval(() => dispatch(ACTIONS.fetchOnlineData), Math.floor(Math.random() * 5000) + 25000);
     },
 
     async loadStaticStationData({ commit }) {

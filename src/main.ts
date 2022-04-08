@@ -1,12 +1,12 @@
-import { createApp, Directive, ref } from 'vue'
+import { createApp, Directive } from 'vue'
 import App from './App.vue'
 import router from './router'
-import { store, key } from './store'
 
 import enLang from '@/locales/en.json';
 import plLang from '@/locales/pl.json';
 
 import { createI18n } from 'vue-i18n'
+
 
 const i18n = createI18n({
   locale: 'pl',
@@ -17,6 +17,7 @@ const i18n = createI18n({
   },
   enableLegacy: false,
 })
+
 
 const clickOutsideDirective: Directive = {
   mounted(el, binding) {
@@ -32,9 +33,7 @@ const clickOutsideDirective: Directive = {
 }
 
 createApp(App)
-  .use(store, key)
   .use(router)
   .use(i18n)
-  .provide('isFilterCardVisible', ref(false))
   .directive('click-outside', clickOutsideDirective)
   .mount('#app')

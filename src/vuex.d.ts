@@ -11,4 +11,10 @@ declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
     $store: Store<State>
   }
+
+  // Train filter for TrainView
+  interface TrainFilter {
+    id: string;
+    isActive: boolean;
+  }
 }
