@@ -20,10 +20,17 @@ import { getLocoURL, getScheduledTrain, getStatusID, getStatusTimestamp, parseSp
 import { URLs } from '@/scripts/utils/apiURLs';
 import ScheduledTrain from '@/scripts/interfaces/ScheduledTrain';
 import StationRoutes from '@/scripts/interfaces/StationRoutes';
-import { connect } from 'socket.io-client';
+import { connect, io } from 'socket.io-client';
+
+const connectToDevAPI = true;
 
 // Websocket config
-const socket = connect(process.env.NODE_ENV === 'production' ? URLs.stacjownikAPI : URLs.stacjownikAPIDev)
+const socket = io(process.env.NODE_ENV === 'production' || connectToDevAPI ? URLs.stacjownikAPI : URLs.stacjownikAPIDev,
+  {
+    transports: ["websocket", "polling"],
+    rememberUpgrade: true
+  })
+
 socket.emit('connection');
 
 export interface State {
@@ -123,7 +130,7 @@ export const store = createStore<State>({
 
       await dispatch(ACTIONS.loadStaticStationData);
 
-      socket.on('DATA_UPDATE', () => {        
+      socket.on('DATA_UPDATE', () => {
         dispatch(ACTIONS.fetchOnlineData);
       });
 
@@ -139,7 +146,7 @@ export const store = createStore<State>({
         commit(MUTATIONS.SET_SCENERY_DATA, sceneryData);
     },
 
-    async fetchOnlineData({ commit }) {      
+    async fetchOnlineData({ commit }) {
       // Pobierz dane o pociągach i rozkładach jazdy z API Stacjownika
       const trainsAPIData: { response: TrainAPIData[], errorMessage?: string } = (await axios.get(`${URLs.stacjownikAPI}/api/getActiveTrainList`)).data;
 
@@ -211,7 +218,7 @@ export const store = createStore<State>({
         const station = this.state.stationList.find(s => s.name == stationAPI.stationName);
 
         const prevDispatcherStatus = this.state.lastDispatcherStatuses.find(dispatcher => dispatcher.hash === stationAPI.stationHash);
-        const stationStatus = dispatchersAPIData.success ? dispatchersAPIData.message.find((status: string[]) => status[0] == stationAPI.stationHash && status[1] == this.state.region.id) : -1;        
+        const stationStatus = dispatchersAPIData.success ? dispatchersAPIData.message.find((status: string[]) => status[0] == stationAPI.stationHash && status[1] == this.state.region.id) : -1;
 
         const statusTimestamp = getStatusTimestamp(stationStatus == -1 && prevDispatcherStatus ? prevDispatcherStatus.statusTimestamp : stationStatus);
         const statusID = getStatusID(stationStatus == -1 && prevDispatcherStatus ? prevDispatcherStatus.statusID : stationStatus);
