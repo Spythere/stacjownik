@@ -28,7 +28,8 @@ const connectToDevAPI = true;
 const socket = io(process.env.NODE_ENV === 'production' || connectToDevAPI ? URLs.stacjownikAPI : URLs.stacjownikAPIDev,
   {
     transports: ["websocket", "polling"],
-    rememberUpgrade: true
+    rememberUpgrade: true,
+    reconnection: true
   })
 
 socket.emit('connection');
