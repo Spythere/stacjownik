@@ -100,10 +100,7 @@ export default defineComponent({
 
   async mounted() {
     try {
-      const apiResult: HistoryResultAPI = (await axios.get(`${API_URL}?name=${this.name}&historyCount=100`)).data;
-
-      console.log(apiResult);
-      
+      const apiResult: HistoryResultAPI = (await axios.get(`${API_URL}?name=${this.name}&historyCount=100`)).data;      
 
       if (!apiResult || !apiResult.response) return;
       this.isLoaded = true;

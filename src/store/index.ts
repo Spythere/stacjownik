@@ -20,19 +20,11 @@ import { getLocoURL, getScheduledTrain, getStatusID, getStatusTimestamp, parseSp
 import { URLs } from '@/scripts/utils/apiURLs';
 import ScheduledTrain from '@/scripts/interfaces/ScheduledTrain';
 import StationRoutes from '@/scripts/interfaces/StationRoutes';
-import { connect, io } from 'socket.io-client';
+import { connect, io, Socket } from 'socket.io-client';
 
 const connectToDevAPI = true;
 
-// Websocket config
-const socket = io(process.env.NODE_ENV === 'production' || connectToDevAPI ? URLs.stacjownikAPI : URLs.stacjownikAPIDev,
-  {
-    transports: ["websocket", "polling"],
-    rememberUpgrade: true,
-    reconnection: true
-  })
 
-socket.emit('connection');
 
 export interface State {
   stationList: Station[],
@@ -47,6 +39,7 @@ export interface State {
   stationCount: number;
 
   dataConnectionStatus: DataStatus;
+  webSocket?: Socket;
 
   sceneryDataStatus: DataStatus;
   timetableDataStatus: DataStatus;
@@ -54,6 +47,16 @@ export interface State {
   trainsDataStatus: DataStatus;
 
   listenerLaunched: boolean;
+}
+
+interface APIData {
+  stations?: StationAPIData[],
+  dispatchers?: string[][],
+  trains?: TrainAPIData[],
+
+  stationsSWDRStatus: string;
+  trainsSWDRStatus: string;
+  dispatchersSWDRStatus: string;
 }
 
 interface StationJSONData {
@@ -96,6 +99,8 @@ export const store = createStore<State>({
     trainCount: 0,
     stationCount: 0,
 
+    webSocket: undefined,
+
     dataConnectionStatus: DataStatus.Loading,
 
     sceneryDataStatus: DataStatus.Loading,
@@ -126,16 +131,23 @@ export const store = createStore<State>({
   },
 
   actions: {
-    async synchronizeData({ commit, dispatch, state }) {
-      if (state.listenerLaunched) return;
-
+    async connectToAPI({ state, dispatch }) {
       await dispatch(ACTIONS.loadStaticStationData);
 
-      socket.on('DATA_UPDATE', () => {
-        dispatch(ACTIONS.fetchOnlineData);
+      // Websocket config
+      const socket = io(process.env.NODE_ENV !== 'production' && connectToDevAPI ? URLs.stacjownikAPIDev : URLs.stacjownikAPI,
+        {
+          transports: ["websocket", "polling"],
+          rememberUpgrade: true,
+          reconnection: true
+        })
+
+      socket.on('UPDATE', (data: APIData) => {
+        this.dispatch(ACTIONS.fetchOnlineData, data);
       });
 
-      // setInterval(() => dispatch(ACTIONS.fetchOnlineData), Math.floor(Math.random() * 5000) + 25000);
+      socket.emit('connection');
+      state.webSocket = socket;
     },
 
     async loadStaticStationData({ commit }) {
@@ -147,28 +159,21 @@ export const store = createStore<State>({
         commit(MUTATIONS.SET_SCENERY_DATA, sceneryData);
     },
 
-    async fetchOnlineData({ commit }) {
-      // Pobierz dane o pociągach i rozkładach jazdy z API Stacjownika
-      const trainsAPIData: { response: TrainAPIData[], errorMessage?: string } = (await axios.get(`${URLs.stacjownikAPI}/api/getActiveTrainList`)).data;
-
-      // Pobierz dane o sceneriach online i o dyżurnych
-      const dispatchersAPIData: { success: boolean, message: string[][] } = await (await axios.get(URLs.dispatchers)).data;
-      const stationsAPIData: { success: boolean, message: StationAPIData[] } = await (await axios.get(URLs.stations)).data;
-
-      if (!stationsAPIData || !stationsAPIData.success) {
+    async fetchOnlineData({ commit }, data: APIData) {
+      if (!data.stations) {
         commit(MUTATIONS.SET_SCENERY_DATA_STATUS, DataStatus.Error);
         return;
       }
 
       commit(MUTATIONS.SET_SCENERY_DATA_STATUS, DataStatus.Loaded);
-      commit(MUTATIONS.SET_DISPATCHER_DATA_STATUS, !dispatchersAPIData || !dispatchersAPIData.success ? DataStatus.Warning : DataStatus.Loaded)
-      commit(MUTATIONS.SET_TRAINS_DATA_STATUS, !trainsAPIData || !trainsAPIData.response ? DataStatus.Warning : DataStatus.Loaded);
+      commit(MUTATIONS.SET_DISPATCHER_DATA_STATUS, !data.dispatchers ? DataStatus.Warning : DataStatus.Loaded)
+      commit(MUTATIONS.SET_TRAINS_DATA_STATUS, !data.trains ? DataStatus.Warning : DataStatus.Loaded);
 
 
       // Zaktualizuj listę pociągów
       const updatedTrainList: Train[] =
-        trainsAPIData?.response
-          .filter(train => train.region === this.state.region.id && train.online)
+        data.trains
+          ?.filter(train => train.region === this.state.region.id && train.online)
           .map(train => {
             const stock = train.stockString.split(";");
             const locoType = stock ? stock[0] : train.stockString;
@@ -210,7 +215,7 @@ export const store = createStore<State>({
       const onlineStationNames: string[] = [];
       const prevDispatcherStatuses: State['lastDispatcherStatuses'] = [];
 
-      stationsAPIData.message.forEach((stationAPI) => {
+      data.stations?.forEach((stationAPI) => {
         if (stationAPI.region !== this.state.region.id || !stationAPI.isOnline) return;
 
         onlineStationNames.push(stationAPI.stationName);
@@ -219,7 +224,7 @@ export const store = createStore<State>({
         const station = this.state.stationList.find(s => s.name == stationAPI.stationName);
 
         const prevDispatcherStatus = this.state.lastDispatcherStatuses.find(dispatcher => dispatcher.hash === stationAPI.stationHash);
-        const stationStatus = dispatchersAPIData.success ? dispatchersAPIData.message.find((status: string[]) => status[0] == stationAPI.stationHash && status[1] == this.state.region.id) : -1;
+        const stationStatus = data.dispatchers?.find((status: string[]) => status[0] == stationAPI.stationHash && status[1] == this.state.region.id) || -1;
 
         const statusTimestamp = getStatusTimestamp(stationStatus == -1 && prevDispatcherStatus ? prevDispatcherStatus.statusTimestamp : stationStatus);
         const statusID = getStatusID(stationStatus == -1 && prevDispatcherStatus ? prevDispatcherStatus.statusID : stationStatus);
@@ -230,8 +235,8 @@ export const store = createStore<State>({
           statusTimestamp
         });
 
-        const stationTrains = trainsAPIData.response
-          .filter(train => train.region === this.state.region.id && train.online && train.currentStationName === stationAPI.stationName)
+        const stationTrains = data.trains
+          ?.filter(train => train?.region === this.state.region.id && train.online && train.currentStationName === stationAPI.stationName)
           .map(train => ({ driverName: train.driverName, trainNo: train.trainNo }));
 
         station?.generalInfo?.checkpoints.forEach(cp => cp.scheduledTrains.length = 0);
@@ -323,7 +328,7 @@ export const store = createStore<State>({
       this.state.trainList = updatedTrainList;
       this.state.trainsDataStatus = DataStatus.Loaded;
 
-      if (dispatchersAPIData.success)
+      if (data.dispatchers != null)
         this.state.lastDispatcherStatuses = prevDispatcherStatuses;
     },
   },

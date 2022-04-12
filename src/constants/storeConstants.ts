@@ -1,5 +1,5 @@
 export const ACTIONS = {
-    synchronizeData: "synchronizeData",
+    connectToAPI: "connectToAPI",
     fetchOnlineData: "fetchOnlineData",
     loadStaticStationData: "loadStaticStationData"
 }

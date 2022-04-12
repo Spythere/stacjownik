@@ -93,7 +93,7 @@ import Clock from '@/components/App/Clock.vue';
 
 import StorageManager from '@/scripts/managers/storageManager';
 import { computed, ComputedRef, defineComponent, provide, ref } from 'vue';
-import { GETTERS } from './constants/storeConstants';
+import { ACTIONS, GETTERS } from './constants/storeConstants';
 import { StoreData } from './scripts/interfaces/StoreData';
 import { useStore } from './store';
 
@@ -108,7 +108,7 @@ export default defineComponent({
 
   setup() {
     const store = useStore();
-    store.dispatch('synchronizeData');
+    store.dispatch(ACTIONS.connectToAPI);
 
     const data: ComputedRef<StoreData> = computed(() => store.getters[GETTERS.allData]);
 

@@ -19,7 +19,6 @@ function currentDelay(stops: TrainStop[] | undefined) {
 };
 
 function filterTrainList(trainList: Train[], searchedTrain: string, searchedDriver: string, filters: TrainFilter[]) {
-    console.log(filters);
     
     return trainList.filter(
         (train) =>
