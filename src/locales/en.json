@@ -8,7 +8,7 @@
     "error": "An error occured while loading data!",
     "no-result": "No results for current search!"
   },
-   "data-status": {
+  "data-status": {
     "S1a-connection": "<b>S1a signal</b> <br> Cannot connect with SWDR API service!",
     "S1a-sceneries": "<b>S1a signal</b> <br> Cannot load online stations data!",
     "S2": "<b>S2 signal</b> <br> All data loaded successfully!",
@@ -66,7 +66,7 @@
   "filters": {
     "endingStatus": "ENDS SOON",
     "afkStatus": "AFK",
-    "noSpaceStatus":"NO SPACE",
+    "noSpaceStatus": "NO SPACE",
     "unavailableStatus": "UNAVAILABLE",
 
     "title": "STATION FILTER",
@@ -145,6 +145,15 @@
     "option-delay": "current delay",
     "option-comments": "comments",
 
+    "filter-comments": "comments",
+    "filter-twr": "TWR",
+    "filter-skr": "SKR",
+    "filter-passenger": "passenger",
+    "filter-freight": "freight",
+    "filter-other": "other",
+    "filter-noTimetable": "no timetable",
+    "filter-reset": "X RESET",
+
     "sorter-prefix": "Sort: ",
     "search-train": "Train no.",
     "search-driver": "Driver name",
@@ -166,7 +175,7 @@
     "loco-diesel": "Diesel locomotive",
     "timetable-comments": "Exploitation comments available for this train",
     "comment": "Exploitation comments for: ",
-    "table-limit": "For performance reasons there's a limit of 10 trains shown at the same time." 
+    "table-limit": "For performance reasons there's a limit of 10 trains shown at the same time."
   },
   "journal": {
     "title": "DISPATCHER HISTORY",
@@ -175,8 +184,8 @@
 
     "search-train": "Train no.",
     "search-driver": "Driver name",
-    
-    "sort-prefix": "Sort: ", 
+
+    "sort-prefix": "Sort: ",
 
     "option-distance": "distance",
     "option-total-stops": "total stops",
@@ -206,7 +215,7 @@
     "begins": "BEGINS HERE",
     "terminates": "TERMINATES\nHERE"
   },
-   "history": {
+  "history": {
     "title": "TIMETABLE JOURNAL",
     "search": "Search",
     "search-train": "Train no.",

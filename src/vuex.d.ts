@@ -1,5 +1,6 @@
 import { ComponentCustomProperties } from 'vue'
 import { Store } from 'vuex'
+import { TrainFilterType } from './scripts/enums/TrainFilterType';
 
 declare module '@vue/runtime-core' {
   // declare your own store states
@@ -14,7 +15,7 @@ declare module '@vue/runtime-core' {
 
   // Train filter for TrainView
   interface TrainFilter {
-    id: string;
+    id: TrainFilterType;
     isActive: boolean;
   }
 }

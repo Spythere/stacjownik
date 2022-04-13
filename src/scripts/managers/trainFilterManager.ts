@@ -1,4 +1,5 @@
 import { TrainFilter } from "vue";
+import { TrainFilterType } from "../enums/TrainFilterType";
 import Train from "../interfaces/Train";
 import TrainStop from "../interfaces/TrainStop";
 
@@ -19,11 +20,41 @@ function currentDelay(stops: TrainStop[] | undefined) {
 };
 
 function filterTrainList(trainList: Train[], searchedTrain: string, searchedDriver: string, filters: TrainFilter[]) {
-    
     return trainList.filter(
-        (train) =>
-            (searchedTrain.length > 0 ? train.trainNo.toString().startsWith(searchedTrain) : true) &&
-            (searchedDriver.length > 0 ? train.driverName.toLowerCase().startsWith(searchedDriver.toLowerCase()) : true)
+        (train) => {
+            const isFiltered = filters.every(f => {
+                if (f.isActive) return true;
+                
+                if (!train.timetableData) return filters.find(filter => filter.id == TrainFilterType.noTimetable)!.isActive;
+
+                switch (f.id) {
+                    case TrainFilterType.comments:
+                        return !train.timetableData.followingStops.some(stop => stop.comments);
+                    
+                    case TrainFilterType.twr:
+                        return !train.timetableData.TWR;
+                    
+                    case TrainFilterType.skr:
+                        return !train.timetableData.SKR;
+                    
+                    case TrainFilterType.passenger:
+                        return !/^[AMRE]\D{2}$/.test(train.timetableData.category);
+                    
+                    case TrainFilterType.freight:
+                        return !train.timetableData.category.startsWith('T');
+                    
+                    case TrainFilterType.other:
+                        return !/^[PXZ]\D{2}$/.test(train.timetableData.category);
+                    
+                    default:
+                        return true;
+                }
+            })
+
+            return (searchedTrain.length > 0 ? train.trainNo.toString().startsWith(searchedTrain) : true) &&
+                (searchedDriver.length > 0 ? train.driverName.toLowerCase().startsWith(searchedDriver.toLowerCase()) : true) && isFiltered
+        }
+
     );
 }
 
@@ -78,34 +109,7 @@ export function filteredTrainList(
     sorterActive: { id: string; dir: number },
     filters: TrainFilter[]
 ) {
-    let finalTrainList: Train[] = [];
 
-    const filtered = filterTrainList(trainList, searchedTrain, searchedDriver, filters);
-
-    switch (sorterActive.id) {
-        case 'comments':
-            const trainsSortedByComments = filtered
-                .sort((a, b) => {
-                    const commentsA = a.timetableData?.followingStops.some((s) => s.comments) ? 1 : 0;
-                    const commentsB = b.timetableData?.followingStops.some((s) => s.comments) ? 1 : 0;
-
-                    return commentsB - commentsA;
-                });
-
-            const trainsWithComments = trainsSortedByComments.filter((train) =>
-                train.timetableData?.followingStops.some((s) => s.comments)
-            );
-
-            const trainsWithoutComments = trainsSortedByComments.slice(trainsWithComments.length);
-
-            finalTrainList.push(...trainsWithComments);
-            finalTrainList.push(...sortTrainList(trainsWithoutComments, sorterActive));
-            break;
-
-        default:
-            finalTrainList.push(...sortTrainList(filtered, sorterActive));
-            break;
-    }
-
-    return finalTrainList;
+    const filtered = filterTrainList(trainList, searchedTrain, searchedDriver, filters);        
+    return [...sortTrainList(filtered, sorterActive)];
 };

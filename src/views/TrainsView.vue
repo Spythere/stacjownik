@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import { computed, ComputedRef, defineComponent, provide, reactive, ref, TrainFilter } from 'vue';
-import { filteredTrainList } from "@/scripts/managers/trainFilterManager";
+import { filteredTrainList } from '@/scripts/managers/trainFilterManager';
 
 import Train from '@/scripts/interfaces/Train';
 
@@ -24,7 +24,7 @@ import TrainOptions from '@/components/TrainsView/TrainOptions.vue';
 
 import { useStore } from '@/store';
 import { GETTERS } from '@/constants/storeConstants';
-
+import { TrainFilterType } from '@/scripts/enums/TrainFilterType';
 
 export default defineComponent({
   components: {
@@ -45,10 +45,39 @@ export default defineComponent({
 
     const trainList: ComputedRef<Train[]> = computed(() => store.getters[GETTERS.trainList]);
 
-    // const timetableDataStatus: ComputedRef<DataStatus> = computed(() => store.getters[GETTERS.timetableDataStatus]);
+    const initFilters: TrainFilter[] = [
+      {
+        id: TrainFilterType.twr,
+        isActive: true,
+      },
+      {
+        id: TrainFilterType.skr,
+        isActive: true,
+      },
+      {
+        id: TrainFilterType.passenger,
+        isActive: true,
+      },
+      {
+        id: TrainFilterType.freight,
+        isActive: true,
+      },
+      {
+        id: TrainFilterType.other,
+        isActive: true,
+      },
+      {
+        id: TrainFilterType.comments,
+        isActive: true,
+      },
+       {
+        id: TrainFilterType.noTimetable,
+        isActive: true,
+      },
+    ];
 
     const sorterActive = ref({ id: 'distance', dir: -1 });
-    const filtersActive = reactive([]) as TrainFilter[];
+    const filterList = reactive([...initFilters]) as TrainFilter[];
 
     const searchedDriver = ref('');
     const searchedTrain = ref('');
@@ -56,7 +85,7 @@ export default defineComponent({
     provide('searchedTrain', searchedTrain);
     provide('searchedDriver', searchedDriver);
     provide('sorterActive', sorterActive);
-    provide('filtersActive', filtersActive);
+    provide('filterList', filterList);
 
     const computedTrains: ComputedRef<Train[]> = computed(() => {
       return filteredTrainList(
@@ -64,7 +93,7 @@ export default defineComponent({
         searchedTrain.value,
         searchedDriver.value,
         sorterActive.value,
-        filtersActive
+        filterList
       );
     });
 

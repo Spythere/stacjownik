@@ -9,7 +9,7 @@
     "no-result": "Brak wyników o podanych kryteriach!"
   },
 
-   "data-status": {
+  "data-status": {
     "S1a-connection": "<b>Sygnał S1a</b> <br> Błąd podczas próby połączenia się z serwisem SWDR!",
     "S1a-sceneries": "<b>Sygnał S1a</b> <br> Błąd podczas pobierania danych o sceneriach online!",
     "S2": "<b>Sygnał S2</b> <br> Pomyślnie załadowano dane!",
@@ -67,7 +67,7 @@
   "filters": {
     "endingStatus": "KOŃCZY",
     "afkStatus": "Z/W",
-    "noSpaceStatus":"BRAK MIEJSCA",
+    "noSpaceStatus": "BRAK MIEJSCA",
     "unavailableStatus": "NIEDOSTĘPNY",
 
     "title": "FILTRUJ STACJE",
@@ -146,6 +146,16 @@
     "option-delay": "opóźnienie",
     "option-comments": "uwagi ekspl.",
 
+    "filter-comments": "uwagi ekspl.",
+    "filter-twr": "TWR",
+    "filter-skr": "SKR",
+    "filter-passenger": "pasażerskie",
+    "filter-freight": "towarowe",
+    "filter-other": "inne",
+    "filter-noTimetable": "bez RJ",
+    "filter-reset": "X RESETUJ",
+
+
     "sorter-prefix": "Sortuj: ",
     "search-train": "Numer pociągu",
     "search-driver": "Nick maszynisty",
@@ -167,7 +177,7 @@
     "loco-diesel": "Spalinowóz",
     "timetable-comments": "Pociąg z uwagami eksploatacyjnymi",
     "comment": "Uwagi eksploatacyjne dla: ",
-    "table-limit": "Dla płynności działania strony pokazanych jest tylko 10 pociągów zgodnie z wybranymi filtrami." 
+    "table-limit": "Dla płynności działania strony pokazanych jest tylko 10 pociągów zgodnie z wybranymi filtrami."
   },
   "journal": {
     "title": "HISTORIA DYŻURÓW",
@@ -177,7 +187,7 @@
     "search-train": "Numer pociągu",
     "search-driver": "Nick maszynisty",
 
-    "sort-prefix": "Sortuj: ", 
+    "sort-prefix": "Sortuj: ",
 
     "option-distance": "kilometraż",
     "option-total-stops": "stacje",
