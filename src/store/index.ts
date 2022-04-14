@@ -169,7 +169,6 @@ export const store = createStore<State>({
       commit(MUTATIONS.SET_DISPATCHER_DATA_STATUS, !data.dispatchers ? DataStatus.Warning : DataStatus.Loaded)
       commit(MUTATIONS.SET_TRAINS_DATA_STATUS, !data.trains ? DataStatus.Warning : DataStatus.Loaded);
 
-
       // Zaktualizuj listę pociągów
       const updatedTrainList: Train[] =
         data.trains
@@ -394,6 +393,7 @@ export const store = createStore<State>({
 
     SET_REGION(state, region: { id: string; value: string }) {
       state.region = region;
+      state.webSocket?.emit('FETCH_DATA');
     },
 
   }

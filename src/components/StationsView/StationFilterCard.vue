@@ -167,7 +167,6 @@ export default defineComponent({
 
     handleChangeRegion() {
       this.$store.commit(MUTATIONS.SET_REGION, this.currentRegion);
-      this.$store.dispatch(ACTIONS.fetchOnlineData);
 
       this.closeCard();
     },

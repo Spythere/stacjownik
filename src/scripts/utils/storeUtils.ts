@@ -4,8 +4,8 @@ import TrainStop from "../interfaces/TrainStop";
 export const getLocoURL = (locoType: string): string => (`https://rj.td2.info.pl/dist/img/thumbnails/${locoType.includes("EN") ? locoType + "rb" : locoType}.png`)
 
 export const getStatusID = (stationStatus: any): string => {
-  if (!stationStatus) return "not-signed";
-  if (stationStatus == -1) return "unknown";
+  if (!stationStatus) return "unknown";
+  if (stationStatus == -1) return "unavailable";
 
   const statusCode = stationStatus[2];
   const statusTimestamp = stationStatus[3];
@@ -30,7 +30,7 @@ export const getStatusID = (stationStatus: any): string => {
       break;
   }
 
-  return "unavailable";
+  return "not-signed";
 };
 
 export const getStatusTimestamp = (stationStatus: any): number => {
