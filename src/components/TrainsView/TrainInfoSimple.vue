@@ -12,6 +12,10 @@
           <strong v-if="train.timetableData">{{ train.timetableData.category }}&nbsp;</strong>
           <strong>{{ train.trainNo }}</strong>
           <span>&nbsp;| {{ train.driverName }}</span>
+
+          <img class="image-offline" v-if="!train.currentStationHash" :src="icons.offline" alt="offline" 
+            :title="$t('trains.offline')"
+          >
         </div>
 
         <div class="timetable_route">
@@ -43,8 +47,12 @@
         </div>
 
         <div class="driver_position text--grayed">
-          <span v-if="train.currentStationName">
+          <span v-if="train.currentStationHash">
             {{ $t('trains.current-scenery') }} <span>{{ train['currentStationName'] }}&nbsp;</span>
+          </span>
+
+          <span v-else>
+            {{ $t('trains.current-scenery') }} <span>{{ train['currentStationName'].replace(/.[a-zA-Z0-9]+.sc/, "") }} (offline)&nbsp;</span>
           </span>
 
           <span v-if="train.signal">
@@ -99,6 +107,7 @@ export default defineComponent({
   data: () => ({
     icons: {
       warning: require('@/assets/icon-warning.svg'),
+      offline: require("@/assets/icon-offline.svg")
     },
   }),
 });
@@ -107,7 +116,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '../../styles/responsive.scss';
 
-.image-warning {
+.image-warning, .image-offline {
   width: 1em;
   height: 1em;
 
@@ -123,6 +132,8 @@ export default defineComponent({
     width: 12em;
   }
 }
+
+
 
 .simple {
   display: grid;

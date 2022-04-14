@@ -4,7 +4,7 @@
       <div class="options-bar">
         <!-- <TrainStats :trains="trainList" :trainStatsOpen="trainStatsOpen" /> -->
 
-        <TrainOptions />
+        <train-options />
       </div>
 
       <TrainTable :trains="computedTrains" />
@@ -15,16 +15,15 @@
 <script lang="ts">
 import { computed, ComputedRef, defineComponent, provide, reactive, ref, TrainFilter } from 'vue';
 import { filteredTrainList } from '@/scripts/managers/trainFilterManager';
+import  { trainFilters } from "@/data/trainOptions";
 
 import Train from '@/scripts/interfaces/Train';
-
 import TrainTable from '@/components/TrainsView/TrainTable.vue';
 import TrainStats from '@/components/TrainsView/TrainStats.vue';
 import TrainOptions from '@/components/TrainsView/TrainOptions.vue';
 
 import { useStore } from '@/store';
 import { GETTERS } from '@/constants/storeConstants';
-import { TrainFilterType } from '@/scripts/enums/TrainFilterType';
 
 export default defineComponent({
   components: {
@@ -45,39 +44,9 @@ export default defineComponent({
 
     const trainList: ComputedRef<Train[]> = computed(() => store.getters[GETTERS.trainList]);
 
-    const initFilters: TrainFilter[] = [
-      {
-        id: TrainFilterType.twr,
-        isActive: true,
-      },
-      {
-        id: TrainFilterType.skr,
-        isActive: true,
-      },
-      {
-        id: TrainFilterType.passenger,
-        isActive: true,
-      },
-      {
-        id: TrainFilterType.freight,
-        isActive: true,
-      },
-      {
-        id: TrainFilterType.other,
-        isActive: true,
-      },
-      {
-        id: TrainFilterType.comments,
-        isActive: true,
-      },
-       {
-        id: TrainFilterType.noTimetable,
-        isActive: true,
-      },
-    ];
-
     const sorterActive = ref({ id: 'distance', dir: -1 });
-    const filterList = reactive([...initFilters]) as TrainFilter[];
+    const filterList = reactive([...trainFilters]) as TrainFilter[];
+    const isTrainOptionsCardVisible = ref(false);
 
     const searchedDriver = ref('');
     const searchedTrain = ref('');
@@ -86,6 +55,7 @@ export default defineComponent({
     provide('searchedDriver', searchedDriver);
     provide('sorterActive', sorterActive);
     provide('filterList', filterList);
+    provide('isTrainOptionsCardVisible', isTrainOptionsCardVisible);
 
     const computedTrains: ComputedRef<Train[]> = computed(() => {
       return filteredTrainList(
@@ -97,9 +67,6 @@ export default defineComponent({
       );
     });
 
-    /* Provide list for TrainStats category filter */
-    const chosenTrainCategories = reactive([] as string[]);
-    provide('chosenTrainCategories', chosenTrainCategories);
 
     return {
       trainList,
@@ -107,7 +74,6 @@ export default defineComponent({
       searchedTrain,
       searchedDriver,
       sorterActive,
-      chosenTrainCategories,
     };
   },
 

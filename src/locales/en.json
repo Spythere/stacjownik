@@ -123,6 +123,7 @@
   "trains": {
     "no-trains": "No trains to show here!",
     "loading": "Loading train data...",
+    "offline": "Offline ride",
 
     "stats": "TRAFFIC STATISTICS",
     "stats-speed": "TRAINS SPEED (MIN, AVG, MAX) [km/h]",

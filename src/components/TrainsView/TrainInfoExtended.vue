@@ -31,6 +31,8 @@
                 <span>{{ train.driverName }}</span>
               </span>
 
+              <img class="image-offline" v-if="!train.currentStationHash" :src="icons.offline" alt="offline" :title="$t('trains.offline')" />
+
               <span class="hide-info" @click="toggleInfo">
                 <img :src="icons.ascArrow" :class="{ hidden: !isInfoShown }" />
                 <span>{{ isInfoShown ? 'Ukryj' : 'Pokaż' }} informacje</span>
@@ -73,8 +75,13 @@
       </div>
 
       <div class="driver_position">
-        <span v-if="train.currentStationName">
+        <span v-if="train.currentStationHash">
           {{ $t('trains.current-scenery') }} <b class="text--primary">{{ train['currentStationName'] }}&nbsp;</b>
+        </span>
+
+        <span v-else>
+          {{ $t('trains.current-scenery') }}
+          <span><b class="text--primary">{{ train['currentStationName'].replace(/.[a-zA-Z0-9]+.sc/, '') }}</b> (offline)&nbsp;</span>
         </span>
 
         <span v-if="train.signal">
@@ -133,6 +140,7 @@ export default defineComponent({
     icons: {
       warning: require('@/assets/icon-warning.svg'),
       ascArrow: require('@/assets/icon-arrow-asc.svg'),
+      offline: require('@/assets/icon-offline.svg'),
     },
 
     isInfoShown: true,
@@ -147,11 +155,12 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.image-warning {
-  width: 1.2em;
-  vertical-align: text-bottom;
+.image-warning,
+.image-offline {
+  width: 1em;
+  height: 1em;
 
-  margin-left: 0.2em;
+  margin-left: 0.5em;
 }
 
 .extended {

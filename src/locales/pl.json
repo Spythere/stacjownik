@@ -124,6 +124,7 @@
   "trains": {
     "no-trains": "Brak pociągów do wyświetlenia!",
     "loading": "Pobieranie danych o pociągach...",
+    "offline": "Przejazd offline",
 
     "stats": "STATYSTYKI RUCHU",
     "stats-speed": "PRĘDKOŚCI POCIĄGÓW (MIN, ŚR, MAX) [km/h]",

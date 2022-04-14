@@ -2,27 +2,23 @@
   <div class="train-options">
     <div class="options_wrapper">
       <div class="options_content">
-        <div class="content_select">
-          <select-box
-            :itemList="translatedSorterOptions"
-            :defaultItemIndex="0"
-            @selected="changeSorter"
-            :prefix="$t('trains.sorter-prefix')"
-          />
+        <select-box
+          :itemList="translatedSorterOptions"
+          :defaultItemIndex="0"
+          @selected="changeSorter"
+          :prefix="$t('trains.sorter-prefix')"
+        />
+
+        <div class="search-box">
+          <input class="search-input" v-model="searchedTrain" :placeholder="$t('trains.search-train')" />
+
+          <img class="search-exit" :src="exitIcon" alt="exit-icon" @click="() => (searchedTrain = '')" />
         </div>
 
-        <div class="content_search">
-          <div class="search-box">
-            <input class="search-input" v-model="searchedTrain" :placeholder="$t('trains.search-train')" />
+        <div class="search-box">
+          <input class="search-input" v-model="searchedDriver" :placeholder="$t('trains.search-driver')" />
 
-            <img class="search-exit" :src="exitIcon" alt="exit-icon" @click="() => (searchedTrain = '')" />
-          </div>
-
-          <div class="search-box">
-            <input class="search-input" v-model="searchedDriver" :placeholder="$t('trains.search-driver')" />
-
-            <img class="search-exit" :src="exitIcon" alt="exit-icon" @click="() => (searchedDriver = '')" />
-          </div>
+          <img class="search-exit" :src="exitIcon" alt="exit-icon" @click="() => (searchedDriver = '')" />
         </div>
       </div>
     </div>
@@ -152,37 +148,30 @@ export default defineComponent({
     flex-wrap: wrap;
 
     @include smallScreen() {
+      padding: 0 1em;
+
       justify-content: center;
     }
   }
 
   &_content {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
 
-    .content_search,
-    .content_select {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
+    & > * {
+        margin-right: 0.25em;
+        margin-top: 0.25em;
     }
 
     @include smallScreen() {
-      padding: 0 1em;
-
-      .content_select {
-        margin: 0 auto;
-      }
-
-      .content_search {
-        justify-content: center;
-      }
+      margin: 0 auto;
+      justify-content: center;
     }
   }
 }
 
-.content_search .search {
+.search {
   &-box {
     position: relative;
 
@@ -190,11 +179,9 @@ export default defineComponent({
     border-radius: 0.5em;
     min-width: 200px;
 
-    margin: 0.5em 0.5em 0.5em 0;
 
     @include smallScreen() {
-      width: 100%;
-      margin: 0.5em auto;
+      flex-grow: 2;
     }
   }
 
@@ -221,6 +208,8 @@ export default defineComponent({
   display: flex;
   flex-wrap: wrap;
 
+  margin-top: 0.5em;
+
   @include smallScreen() {
     justify-content: center;
   }
@@ -236,7 +225,7 @@ export default defineComponent({
   color: gray;
 
   &.active {
-    color: gold;
+    color: var(--clr-primary);
   }
 
   &.reset-btn {
