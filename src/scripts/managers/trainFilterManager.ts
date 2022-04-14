@@ -44,7 +44,7 @@ function filterTrainList(trainList: Train[], searchedTrain: string, searchedDriv
                         return !train.timetableData.category.startsWith('T');
                     
                     case TrainFilterType.other:
-                        return !/^[PXZ]\D{2}$/.test(train.timetableData.category);
+                        return !/^[PXZL]\D{2}$/.test(train.timetableData.category);
                     
                     default:
                         return true;
