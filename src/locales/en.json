@@ -208,9 +208,9 @@
   "timetables": {
     "timetable-only": "Switch to timetable-only view",
     "online": "At station",
-    "departed": "Dispatched",
-    "departed-away": "Departed",
-    "arriving": "En route",
+    "departed": "Dispatched to:",
+    "departed-away": "Departed to:",
+    "arriving": "Arriving from:",
     "stopped": "Stopped",
     "terminated": "Terminated",
     "begins": "BEGINS HERE",

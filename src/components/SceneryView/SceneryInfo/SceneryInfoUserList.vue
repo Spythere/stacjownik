@@ -3,7 +3,7 @@
     <h3 class="user-header section-header">
       <img :src="icons.user" alt="icon-user" />
       &nbsp;{{ $t('scenery.users') }} &nbsp;
-      <span class="text--primary">{{ station.onlineInfo?.currentUsers || '0' }}/{{ station.onlineInfo?.maxUsers || '0' }}</span>
+      <span class="text--primary">{{ station.onlineInfo?.currentUsers || '0' }}</span>&nbsp;/&nbsp;<span class="text--primary">{{ station.onlineInfo?.maxUsers || '0' }}</span>
     </h3>
 
     <div
@@ -80,7 +80,7 @@ $no-timetable: #aaa;
 $departed: springgreen;
 $stopped: #ffa600;
 $online: gold;
-$terminated: red;
+$terminated: salmon;
 $disconnected: slategray;
 
 .info-user-list {

@@ -81,8 +81,8 @@ h3.section-header {
 
 .info-lists {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 550px));
-  justify-content: center;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 400px));
+  justify-content: space-around;
 }
 
 .badge {

@@ -3,17 +3,17 @@
     <section>
       <span>
         <div>
-          <span class="timetable_warnings">
-            <span class="warning twr" v-if="train.timetableData?.TWR">TWR</span>
-
-            <span class="warning skr" v-if="train.timetableData?.SKR">SKR</span>
+          <span>
+            <span class="timetable_warnings">
+              <span class="warning twr" v-if="train.timetableData?.TWR">TWR</span>
+              <span class="warning skr" v-if="train.timetableData?.SKR">SKR</span>
+            </span>
+            <strong v-if="train.timetableData">{{ train.timetableData.category }}&nbsp;</strong>
+            <strong>{{ train.trainNo }}</strong>
+            <span>&nbsp;| {{ train.driverName }}</span>
           </span>
 
-          <strong v-if="train.timetableData">{{ train.timetableData.category }}&nbsp;</strong>
-          <strong>{{ train.trainNo }}</strong>
-          <span>&nbsp;| {{ train.driverName }}</span>
-
-          <img class="image-offline" v-if="!train.currentStationHash" :src="icons.offline" alt="offline" 
+          <img class="image-offline" style="height: 1em" v-if="!train.currentStationHash" :src="icons.offline" alt="offline" 
             :title="$t('trains.offline')"
           >
         </div>
@@ -117,10 +117,9 @@ export default defineComponent({
 @import '../../styles/responsive.scss';
 
 .image-warning, .image-offline {
-  width: 1em;
   height: 1em;
 
-  margin-left: 0.25em;
+  margin-left: 0.5em;
 }
 
 .train-image {

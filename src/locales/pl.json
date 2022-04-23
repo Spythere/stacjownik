@@ -210,9 +210,9 @@
   "timetables": {
     "timetable-only": "Wyodrębnij rozkłady jazdy",
     "online": "Na stacji",
-    "departed": "Odprawiony",
-    "departed-away": "Odjechał",
-    "arriving": "W drodze",
+    "departed": "Odprawiony do:",
+    "departed-away": "Odjechał do:",
+    "arriving": "W drodze z:",
     "stopped": "Postój",
     "terminated": "Skończył bieg",
     "begins": "ROZPOCZYNA\nBIEG",

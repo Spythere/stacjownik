@@ -49,7 +49,7 @@
 <script lang="ts">
 import { URLs } from '@/scripts/utils/apiURLs';
 import axios from 'axios';
-import { defineComponent } from 'vue';
+import { defineComponent, inject } from 'vue';
 
 interface DispatcherTimeline {
   date: string;
@@ -99,34 +99,41 @@ export default defineComponent({
     },
   },
 
-  async mounted() {
+  setup() {
+    return {
+      savedSceneryHistory: inject('savedSceneryHistory'),
+    };
+  },
+
+  async mounted() {    
     try {
       const apiResult: HistoryResultAPI = (await axios.get(`${API_URL}?name=${this.name}&historyCount=100`)).data;
 
       if (!apiResult || !apiResult.response) return;
       this.isLoaded = true;
 
-      if (!apiResult.errorMessage) {
-        this.dispatcherHistory = apiResult.response.dispatcherHistory;
+      if (apiResult.errorMessage) return;
 
-        this.dispatcherTimeline = this.dispatcherHistory
-          .reduce((acc, dispatcher) => {
-            const dateStr = new Date(dispatcher.dispatcherFrom).toLocaleDateString('pl-PL').replace(/\./g, '/');
+      this.dispatcherHistory = apiResult.response.dispatcherHistory;
+      this.savedSceneryHistory = this.dispatcherHistory;
 
-            const timelineDay = acc.find((timeline) => timeline.date == dateStr) || {
-              date: dateStr,
-              dispatchers: [],
-              showTimeline: false,
-            };
+      this.dispatcherTimeline = this.dispatcherHistory
+        .reduce((acc, dispatcher) => {
+          const dateStr = new Date(dispatcher.dispatcherFrom).toLocaleDateString('pl-PL').replace(/\./g, '/');
 
-            timelineDay.dispatchers.unshift(dispatcher);
+          const timelineDay = acc.find((timeline) => timeline.date == dateStr) || {
+            date: dateStr,
+            dispatchers: [],
+            showTimeline: false,
+          };
 
-            if (!acc.find((timeline) => timeline.date == dateStr)) acc.push(timelineDay);
+          timelineDay.dispatchers.unshift(dispatcher);
 
-            return acc;
-          }, [] as DispatcherTimeline[])
-          .reverse();
-      }
+          if (!acc.find((timeline) => timeline.date == dateStr)) acc.push(timelineDay);
+
+          return acc;
+        }, [] as DispatcherTimeline[])
+        .reverse();
     } catch (error) {
       console.error(error);
     }
@@ -215,7 +222,6 @@ export default defineComponent({
     width: 1.3em;
   }
 }
-
 
 ul {
   height: 600px;

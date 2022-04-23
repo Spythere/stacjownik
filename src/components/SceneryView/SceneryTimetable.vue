@@ -62,18 +62,20 @@
               <span style="color: white">
                 {{ scheduledTrain.driverName }}
               </span>
+              |
+              <span class="general-status">
+                <span :class="scheduledTrain.stopStatus">
+                  {{ $t(`timetables.${scheduledTrain.stopStatus}`) }}
+                  <span v-if="scheduledTrain.stopStatus == 'arriving'"> {{ scheduledTrain.prevStationName }}</span>
+                  <span v-if="scheduledTrain.stopStatus.startsWith('departed')">{{
+                    scheduledTrain.nextStationName
+                  }}</span>
+                </span>
+              </span>
 
               <div class="info-route">
                 <strong>{{ scheduledTrain.beginsAt }} - {{ scheduledTrain.terminatesAt }}</strong>
               </div>
-            </span>
-
-            <span class="general-status">
-              <span :class="scheduledTrain.stopStatus">
-                {{ $t(`timetables.${scheduledTrain.stopStatus}`) }}
-                <span v-if="scheduledTrain.stopStatus == 'arriving'">z: {{ scheduledTrain.prevStationName }}</span>
-                <span v-if="scheduledTrain.stopStatus.startsWith('departed')">do: {{ scheduledTrain.nextStationName }}</span>
-              </span>
             </span>
           </span>
 
@@ -255,15 +257,24 @@ export default defineComponent({
 @import '../../styles/responsive.scss';
 @import '../../styles/variables.scss';
 
-h3 {
+h3.timetable-header {
   margin: 0.5em 0;
   padding: 0.3em;
 
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
 
   font-size: 1.5em;
+
+  a {
+    display: flex;
+  }
+
+  img {
+    width: 1.2em;
+  }
 }
 
 .timetable-only {
@@ -294,18 +305,13 @@ h3 {
 }
 
 .timetable {
-  &-header {
-    a {
-      display: flex;
-    }
-  }
-
   &-count {
     margin-left: 0.5em;
   }
 
   &-item {
     margin: 1em auto;
+    max-width: 1100px;
 
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
@@ -433,11 +439,10 @@ h3 {
 }
 
 .general-status {
-  margin-left: 1em;
   text-align: right;
 
   span.arriving {
-    color: #aaa;
+    color: #ccc;
   }
 
   span.departed {
@@ -446,7 +451,7 @@ h3 {
 
     &-away {
       font-weight: bold;
-      color: rgb(0, 155, 0);
+      color: #5ecc5e;
     }
   }
 
@@ -460,7 +465,7 @@ h3 {
   }
 
   span.terminated {
-    color: #e00000;
+    color: salmon;
     font-weight: bold;
   }
 }
@@ -477,12 +482,14 @@ h3 {
   }
 
   &-stop {
+    position: relative;
     display: flex;
     flex-direction: column;
 
     .stop-time {
       font-size: 0.85em;
-      margin: 0.5em 0;
+      // position: absolute;
+      transform: translateY(-0.25em);
     }
   }
 }

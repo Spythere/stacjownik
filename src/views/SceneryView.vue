@@ -47,7 +47,6 @@
 
 <script lang="ts">
 import { StoreData } from '@/scripts/interfaces/StoreData';
-import { DataStatus } from '@/scripts/enums/DataStatus';
 
 import SceneryInfo from '@/components/SceneryView/SceneryInfo.vue';
 import SceneryTimetable from '@/components/SceneryView/SceneryTimetable.vue';
@@ -56,7 +55,7 @@ import SceneryHeader from '@/components/SceneryView/SceneryHeader.vue';
 
 import ActionButton from '@/components/Global/ActionButton.vue';
 
-import { computed, ComputedRef, defineComponent, onMounted } from '@vue/runtime-core';
+import { computed, ComputedRef, defineComponent, provide, reactive } from '@vue/runtime-core';
 import { useStore } from '@/store';
 import { GETTERS } from '@/constants/storeConstants';
 import { useRoute } from 'vue-router';
@@ -85,6 +84,7 @@ export default defineComponent({
     const route = useRoute();
     const store = useStore();
 
+    const savedSceneryHistory = reactive({});
     const data: ComputedRef<StoreData> = computed(() => store.getters[GETTERS.allData]);
 
     const timetableOnly = computed(() => (route.query['timetable_only'] == '1' ? true : false));
@@ -96,6 +96,8 @@ export default defineComponent({
         (station) => station.name === route.query.station?.toString().replace(/_/g, ' ')
       );
     });
+
+    provide('savedSceneryHistory', savedSceneryHistory);
 
     // const onlineFrom = computed(async () => {
     //   return await (await axios.get(`${URLs.stacjownikAPI}?name=${route.query.station}&historyCount=0`)).data;
