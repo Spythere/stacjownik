@@ -11,7 +11,9 @@ export default interface ScheduledTrain {
 
     terminatesAt: string;
     beginsAt: string;
-    nearestStop: string;
+
+    prevStationName: string;
+    nextStationName: string;
 
     stopLabel: string;
     stopStatus: string;

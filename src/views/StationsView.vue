@@ -11,16 +11,6 @@
             @resetFilters="resetFilters"
             ref="filterCardRef"
           />
-
-          <div class="paypal-link">
-            <a target="_blank" href="https://paypal.me/spythere">
-              <img
-                src="https://img.shields.io/badge/PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white"
-                alt="PayPal image"
-                style="width: 7em"
-              />
-            </a>
-          </div>
         </div>
 
         <StationTable
@@ -199,21 +189,6 @@ export default defineComponent({
   margin-bottom: 0.5em;
 }
 
-.paypal-link {
-  flex-grow: 2;
-  text-align: right;
-
-  img {
-    vertical-align: middle;
-    border-radius: 0.5em;
-    transition: box-shadow 150ms;
-  }
-
-  a:hover img,
-  a:focus img {
-    box-shadow: 0 0 10px 4px #04477e;
-  }
-}
 
 @include smallScreen {
   .options-bar {

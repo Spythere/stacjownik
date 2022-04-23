@@ -1,8 +1,9 @@
 <template>
   <section class="info-spawn-list">
     <h3 class="spawn-header section-header">
-      {{ $t('scenery.spawns') }}
       <img :src="icons.spawn" alt="icon-spawn" />
+      &nbsp;{{ $t('scenery.spawns') }} &nbsp;
+      <span class="text--primary">{{ station.onlineInfo?.spawns.length || '0' }}</span>
     </h3>
 
     <span v-if="station.onlineInfo">

@@ -21,8 +21,8 @@
 
       <span class="track-specs">
         {{ route.tracks }}tor
-        <img v-if="route.catenary" :src="icons.trackCatenary" alt="icon track catenary"  />
-        <img v-else :src="icons.trackNoCatenary" alt="icon track no catenary" >
+        <img v-if="route.catenary" :src="icons.trackCatenary" alt="icon track catenary" />
+        <img v-else :src="icons.trackNoCatenary" alt="icon track no catenary" />
 
         <img v-if="route.TWB" :src="icons.trackTWB" alt="icon track twb" />
         <img v-if="route.SBL" :src="icons.trackSBL" alt="icon track sbl" />
@@ -46,12 +46,12 @@ export default defineComponent({
   data() {
     return {
       icons: {
-        trackTWB: require("@/assets/icon-track-twb.svg"),
-        trackSBL: require("@/assets/icon-track-sbl.svg"),
-        trackCatenary: require("@/assets/icon-track-catenary.svg"),
-        trackNoCatenary: require("@/assets/icon-track-nocatenary.svg"),
-      }
-    }
+        trackTWB: require('@/assets/icon-track-twb.svg'),
+        trackSBL: require('@/assets/icon-track-sbl.svg'),
+        trackCatenary: require('@/assets/icon-track-catenary.svg'),
+        trackNoCatenary: require('@/assets/icon-track-nocatenary.svg'),
+      },
+    };
   },
 });
 </script>
@@ -90,5 +90,4 @@ export default defineComponent({
     vertical-align: text-bottom;
   }
 }
-
 </style>

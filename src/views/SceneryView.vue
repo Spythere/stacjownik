@@ -183,7 +183,7 @@ $sceneryBgCol: #333;
     position: relative;
 
     width: 75%;
-    max-width: 950px;
+    max-width: 1200px;
 
     @include midScreen {
       width: 95%;

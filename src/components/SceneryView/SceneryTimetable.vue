@@ -1,7 +1,16 @@
 <template>
   <div class="scenery-timetable">
     <h3 class="timetable-header">
+      <img :src="icons.timetable" alt="icon-timetable" />&nbsp;
       <span>{{ $t('scenery.timetables') }}</span>
+
+      <span class="timetable-count">
+        <span class="text--primary">{{ station.onlineInfo?.scheduledTrains?.length || '0' }}</span>
+        /
+        <span class="text--grayed">
+          {{ station.onlineInfo?.scheduledTrains?.filter((train) => train.stopInfo.confirmed).length || '0' }}
+        </span>
+      </span>
 
       <a :href="currentURL + '&timetable_only=1'" v-if="!timetableOnly" target="_blank" class="timetable-only">
         <img :src="viewIcon" alt="icon-view" :title="$t('timetables.timetable-only')" />
@@ -60,7 +69,11 @@
             </span>
 
             <span class="general-status">
-              <span :class="scheduledTrain.stopStatus">{{ $t(`timetables.${scheduledTrain.stopStatus}`) }} </span>
+              <span :class="scheduledTrain.stopStatus">
+                {{ $t(`timetables.${scheduledTrain.stopStatus}`) }}
+                <span v-if="scheduledTrain.stopStatus == 'arriving'">z: {{ scheduledTrain.prevStationName }}</span>
+                <span v-if="scheduledTrain.stopStatus.startsWith('departed')">do: {{ scheduledTrain.nextStationName }}</span>
+              </span>
             </span>
           </span>
 
@@ -90,7 +103,7 @@
             <span class="schedule-stop">
               <span class="stop-time" v-if="scheduledTrain.stopInfo.stopTime">
                 {{ scheduledTrain.stopInfo.stopTime }}
-                {{ scheduledTrain.stopInfo.stopType }}
+                {{ scheduledTrain.stopInfo.stopType || 'pt' }}
               </span>
               <span class="stop-arrow arrow"></span>
             </span>
@@ -134,6 +147,7 @@ import { GETTERS } from '@/constants/storeConstants';
 import { DataStatus } from '@/scripts/enums/DataStatus';
 import { ComputedRef } from 'vue';
 import dateMixin from '@/mixins/dateMixin';
+import TrainStop from '@/scripts/interfaces/TrainStop';
 
 export default defineComponent({
   components: { SelectBox },
@@ -143,6 +157,7 @@ export default defineComponent({
   props: {
     station: {
       type: Object as () => Station,
+      required: true,
     },
     timetableOnly: {
       type: Boolean,
@@ -154,6 +169,7 @@ export default defineComponent({
     listOpen: false,
     icons: {
       warning: require('@/assets/icon-warning.svg'),
+      timetable: require('@/assets/icon-timetable.svg'),
     },
   }),
 
@@ -282,10 +298,10 @@ h3 {
     a {
       display: flex;
     }
+  }
 
-    img {
-      cursor: pointer;
-    }
+  &-count {
+    margin-left: 0.5em;
   }
 
   &-item {
@@ -356,7 +372,7 @@ h3 {
 
   font-size: 1.2em;
 
-  > .checkpoint_item {
+  .checkpoint_item {
     &.current {
       font-weight: bold;
       color: $accentCol;
@@ -417,7 +433,8 @@ h3 {
 }
 
 .general-status {
-  margin-left: 0.5em;
+  margin-left: 1em;
+  text-align: right;
 
   span.arriving {
     color: #aaa;
@@ -464,8 +481,8 @@ h3 {
     flex-direction: column;
 
     .stop-time {
-      font-size: 0.7em;
-      margin: 5px 0;
+      font-size: 0.85em;
+      margin: 0.5em 0;
     }
   }
 }

@@ -1,3 +1,4 @@
+import ScheduledTrain from "../interfaces/ScheduledTrain";
 import Train from "../interfaces/Train";
 import TrainStop from "../interfaces/TrainStop";
 
@@ -106,9 +107,28 @@ export const getTrainStopStatus = (stopInfo: TrainStop, currentStationName: stri
 };
 
 
-export function getScheduledTrain(train: Train, trainStop: TrainStop, stationName: string) {
+export function getScheduledTrain(train: Train, trainStopIndex: number, stationName: string): ScheduledTrain {
   const timetable = train.timetableData!;
+  const followingStops = timetable.followingStops;
+  const trainStop = followingStops[trainStopIndex];
+
   const trainStopStatus = getTrainStopStatus(trainStop, train.currentStationName, stationName);
+
+  let prevStationName = "", nextStationName = "";  
+
+  for (let i = trainStopIndex - 1; i >= 0; i--) {
+    if (followingStops[i].stopName.startsWith("<strong>")) {
+      prevStationName = followingStops[i].stopNameRAW;
+      break;
+    }
+  }
+
+  for (let i = trainStopIndex + 1; i < followingStops.length; i++) {
+    if (followingStops[i].stopName.startsWith("<strong>")) {
+      nextStationName = followingStops[i].stopNameRAW;
+      break;
+    }
+  }
 
   return {
     trainNo: train.trainNo,
@@ -119,7 +139,10 @@ export function getScheduledTrain(train: Train, trainStop: TrainStop, stationNam
     category: timetable.category,
     beginsAt: timetable.followingStops[0].stopNameRAW,
     terminatesAt: timetable.followingStops[timetable.followingStops.length - 1].stopNameRAW,
-    nearestStop: "",
+    
+    nextStationName,
+    prevStationName,
+
     stopInfo: trainStop,
     stopLabel: trainStopStatus.stopLabel,
     stopStatus: trainStopStatus.stopStatus,

@@ -5,13 +5,10 @@ import { createStore, useStore as baseUseStore, Store } from 'vuex'
 
 import axios from "axios";
 
-import Station from "@/scripts/interfaces/Station";
 import Train from "@/scripts/interfaces/Train";
 
 import { StoreData } from "@/scripts/interfaces/StoreData";
 
-import StationAPIData from '@/scripts/interfaces/api/StationAPIData';
-import TrainAPIData from '@/scripts/interfaces/api/TrainAPIData';
 
 import { ACTIONS, MUTATIONS } from "@/constants/storeConstants";
 import { DataStatus } from "@/scripts/enums/DataStatus";
@@ -20,68 +17,10 @@ import { getLocoURL, getScheduledTrain, getStatusID, getStatusTimestamp, parseSp
 import { URLs } from '@/scripts/utils/apiURLs';
 import ScheduledTrain from '@/scripts/interfaces/ScheduledTrain';
 import StationRoutes from '@/scripts/interfaces/StationRoutes';
-import { connect, io, Socket } from 'socket.io-client';
+import { io } from 'socket.io-client';
+import { APIData, State, StationJSONData } from './types';
 
-const connectToDevAPI = true;
-
-
-
-export interface State {
-  stationList: Station[],
-  trainList: Train[],
-
-  lastDispatcherStatuses: { hash: string; statusTimestamp: number; statusID: string; }[],
-
-  sceneryData: any[][],
-
-  region: { id: string; value: string };
-  trainCount: number;
-  stationCount: number;
-
-  dataConnectionStatus: DataStatus;
-  webSocket?: Socket;
-
-  sceneryDataStatus: DataStatus;
-  timetableDataStatus: DataStatus;
-  dispatcherDataStatus: DataStatus;
-  trainsDataStatus: DataStatus;
-
-  listenerLaunched: boolean;
-}
-
-interface APIData {
-  stations?: StationAPIData[],
-  dispatchers?: string[][],
-  trains?: TrainAPIData[],
-
-  stationsSWDRStatus: string;
-  trainsSWDRStatus: string;
-  dispatchersSWDRStatus: string;
-}
-
-interface StationJSONData {
-  name: string;
-  url: string;
-  lines: string;
-  project: string;
-
-  reqLevel: number;
-
-  // supportersOnly: boolean;
-
-  signalType: string;
-  controlType: string;
-
-  SUP: boolean;
-
-  routes: string;
-  checkpoints: string | null;
-
-  default: boolean;
-  nonPublic: boolean;
-  unavailable: boolean;
-}
-
+const connectToDevAPI = false;
 
 export const key: InjectionKey<Store<State>> = Symbol()
 
@@ -269,18 +208,22 @@ export const store = createStore<State>({
 
           if (stopInfoIndex == -1) return acc;
 
-          const trainStop = timetable.followingStops[stopInfoIndex];
-          const scheduledStopTrain = getScheduledTrain(train, trainStop, stationAPI.stationName);
+          const scheduledStopTrain = getScheduledTrain(train, stopInfoIndex, stationAPI.stationName);
 
           if (station && station.generalInfo?.checkpoints && station.generalInfo.checkpoints.length > 0) {
             for (const checkpoint of station.generalInfo.checkpoints) {
-              timetable.followingStops
-                .filter(trainStop => trainStop.stopNameRAW.toLowerCase() === checkpoint.checkpointName.toLowerCase())
-                .forEach(trainCheckpointStop => {
-                  const scheduledCheckpointTrain = getScheduledTrain(train, trainCheckpointStop, stationAPI.stationName);
+              const index = timetable.followingStops.findIndex(stop => stop.stopNameRAW.toLowerCase() == checkpoint.checkpointName.toLowerCase());
+              
+              if (index == -1) continue;
+              
+              const scheduledCheckpointTrain = getScheduledTrain(train, index, stationAPI.stationName);
+              checkpoint.scheduledTrains.push(scheduledCheckpointTrain);
 
-                  checkpoint.scheduledTrains.push(scheduledCheckpointTrain);
-                });
+              // timetable.followingStops
+                // .filter(trainStop => trainStop.stopNameRAW.toLowerCase() === checkpoint.checkpointName.toLowerCase())
+                // .forEach((trainCheckpointStop, i) => {
+
+                // });
             }
           }
 

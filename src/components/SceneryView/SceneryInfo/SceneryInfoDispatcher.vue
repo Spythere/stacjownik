@@ -1,23 +1,25 @@
 <template>
   <section class="info-dispatcher">
     <div class="dispatcher" v-if="station.onlineInfo">
-      <span
-        class="dispatcher_level"
-        :style="calculateExpStyle(station.onlineInfo.dispatcherExp)"
-      >
+      <span class="dispatcher_level" :style="calculateExpStyle(station.onlineInfo.dispatcherExp)">
         {{ station.onlineInfo.dispatcherExp > 1 ? station.onlineInfo.dispatcherExp : 'L' }}
       </span>
 
       <span class="dispatcher_name">{{ station.onlineInfo.dispatcherName }}</span>
+
+      <span class="dispatcher_likes text--primary">
+        <img :src="icons.like" alt="icon-like" />
+        <span>{{ station.onlineInfo?.dispatcherRate || '0' }}</span>
+      </span>
     </div>
 
     <span class="status-badge" v-if="station.onlineInfo && onlineFrom > 0">
-      OD {{ new Date(onlineFrom).toLocaleTimeString('pl-PL', { hour: "2-digit", minute: "2-digit" }) }}
+      OD {{ new Date(onlineFrom).toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' }) }}
     </span>
 
     <span class="status-badge" v-if="station.onlineInfo" :class="station.onlineInfo.statusID">
       {{ $t(`status.${station.onlineInfo.statusID}`) }}
-      {{ station.onlineInfo.statusID == 'online' ?  timestampToString(station.onlineInfo.statusTimestamp) : '' }}
+      {{ station.onlineInfo.statusID == 'online' ? timestampToString(station.onlineInfo.statusTimestamp) : '' }}
     </span>
 
     <span class="status-badge free" v-else>
@@ -34,7 +36,7 @@ import Station from '@/scripts/interfaces/Station';
 import dateMixin from '@/mixins/dateMixin';
 
 export default defineComponent({
-  mixins: [styleMixin, dateMixin ],
+  mixins: [styleMixin, dateMixin],
   props: {
     station: {
       type: Object as () => Station,
@@ -43,15 +45,15 @@ export default defineComponent({
 
     onlineFrom: {
       type: Number,
-      default: -1
-    }
+      default: -1,
+    },
   },
-
 
   data: () => ({
     icons: {
       spawn: require('@/assets/icon-spawn.svg'),
-    }
+      like: require('@/assets/icon-like.svg'),
+    },
   }),
 });
 </script>
@@ -81,12 +83,21 @@ export default defineComponent({
     }
 
     &_name {
-      margin-right: 1em;
+      margin-right: 0.4em;
+    }
+
+    &_likes {
+      img {
+        height: 0.7em;
+        margin-right: 0.25em;
+      }
+
+      margin-right: 1.5em;
     }
   }
 
   .status-badge {
-    font-size: 1.2em;
+    font-size: 1.25em;
     margin: 0.5em 0.25em;
   }
 }

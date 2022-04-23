@@ -132,6 +132,62 @@
     font-size: 1.25em;
     padding: 0.5em;
   }
+
+  &_badges {
+    position: absolute;
+    top: 0;
+    right: 0;
+    
+    .badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      font-weight: bold;
+      padding: 3px 10px;
+      margin: 0.5em 0;
+    
+      span {
+        margin-left: 0.5em;
+      }
+    }
+    
+    img {
+      width: 1.3em;
+    }
+    
+    
+    @media only screen and (max-width: 850px) {
+      // display: flex;
+      // top: 100%;
+      // right: 1em;
+      
+      left: 0;
+      right: auto;
+      bottom: 0;
+      top: auto;
+
+
+      .badge {
+          // margin: 0 0.25em;
+
+          span {
+            display: none;
+          }
+      }
+    }
+  }
+}
+
+.badge.paypal {
+  background-color: white;
+  color: black;
+}
+
+.badge.discord {
+  background-color: black;
+  color: white;
+  font-size: 0.9em;
 }
 
 // COUNTER

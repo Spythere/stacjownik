@@ -78,7 +78,7 @@ export default defineComponent({
 .info-icons {
   img {
     width: 3.5em;
-    margin: 0 0.5em;
+    margin: 1em 0.5em;
 
     border: 2px solid #4e4e4e;
     border-radius: 0.5em;

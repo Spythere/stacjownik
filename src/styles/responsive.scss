@@ -6,7 +6,7 @@
 
 
 @mixin midScreen() {
-    @media only screen and (max-width: 950px) {
+    @media only screen and (max-width: 1150px) {
         @content;
     }
 }

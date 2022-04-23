@@ -2,7 +2,7 @@
   <div class="scenery-info">
     <section v-if="!timetableOnly">
       <!-- info stats -->
-      <scenery-info-stats :station="station" />
+      <!-- <scenery-info-stats :station="station" /> -->
 
       <!-- info icons -->
       <scenery-info-icons :station="station" />
@@ -32,7 +32,7 @@ import SceneryInfoIcons from './SceneryInfo/SceneryInfoIcons.vue';
 import SceneryInfoStats from './SceneryInfo/SceneryInfoStats.vue';
 import SceneryInfoUserList from './SceneryInfo/SceneryInfoUserList.vue';
 import SceneryInfoSpawnList from './SceneryInfo/SceneryInfoSpawnList.vue';
-import SceneryInfoRoutes from "./SceneryInfo/SceneryInfoRoutes.vue";
+import SceneryInfoRoutes from './SceneryInfo/SceneryInfoRoutes.vue';
 
 import Station from '@/scripts/interfaces/Station';
 
@@ -43,7 +43,7 @@ export default defineComponent({
     SceneryInfoStats,
     SceneryInfoUserList,
     SceneryInfoSpawnList,
-    SceneryInfoRoutes
+    SceneryInfoRoutes,
   },
   props: {
     station: {
@@ -51,11 +51,11 @@ export default defineComponent({
       default: {},
     },
 
-    timetableOnly: Boolean
+    timetableOnly: Boolean,
   },
 
   data: () => ({
-    onlineFrom: -1
+    onlineFrom: -1,
   }),
 });
 </script>
@@ -80,10 +80,9 @@ h3.section-header {
 }
 
 .info-lists {
-  display: flex;
-
-  align-items: center;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 550px));
+  justify-content: center;
 }
 
 .badge {

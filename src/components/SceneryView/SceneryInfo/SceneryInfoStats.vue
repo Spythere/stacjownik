@@ -83,7 +83,7 @@ export default defineComponent({
   }
 
   span > img {
-    width: 1.2em;
+    width: 1.2em; 
     margin-right: 0.5em;
   }
 }

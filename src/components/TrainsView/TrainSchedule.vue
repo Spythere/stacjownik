@@ -1,4 +1,4 @@
-<template>
+p<template>
   <div class="train-schedule" @click="toggleShowState">
     <div class="schedule-wrapper">
       <ul class="stop_list">

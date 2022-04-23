@@ -1,6 +1,9 @@
 <template>
   <div class="scenery-history">
-    <h2>{{ $t('journal.title') }}</h2>
+    <div class="history-title">
+      <img :src="icons.history" alt="icon history" />
+      <h2>{{ $t('journal.title') }}</h2>
+    </div>
 
     <transition name="history-list-anim" mode="out-in">
       <ul :key="dispatcherTimeline.length">
@@ -19,25 +22,24 @@
             @keydown.space="toggleTimeline(i)"
             tabindex="0"
           >
-            {{ timeline.date }} <img :src="timeline.showTimeline ? icons.ascArrow : icons.descArrow" alt="arrow" />
+            {{ timeline.date }}
+            <!-- <img :src="timeline.showTimeline ? icons.ascArrow : icons.descArrow" alt="arrow" /> -->
           </h3>
 
-          <transition name="unfold-anim" @enter="enter" @afterEnter="afterEnter" @leave="leave">
-            <div class="dispatcher-list" v-if="timeline.showTimeline">
-              <div class="dispatcher-item" v-for="dispatcher in timeline.dispatchers" :key="dispatcher.dispatcherFrom">
-                <span>
-                  <span class="dispatcher-from text--primary">
-                    {{ timestampToString(dispatcher.dispatcherFrom, true) }}
-                  </span>
-                  >
-                  <span class="dispatcher-to text--primary">
-                    {{ timestampToString(dispatcher.dispatcherTo, true) }}</span
-                  >
-                </span>
-                <b>{{ dispatcher.dispatcherName }}</b>
-              </div>
-            </div>
-          </transition>
+          <!-- <transition name="unfold-anim" @enter="enter" @afterEnter="afterEnter" @leave="leave"> -->
+          <!-- <div class="dispatcher-list" v-if="timeline.showTimeline"> -->
+          <div class="dispatcher-item" v-for="dispatcher in timeline.dispatchers" :key="dispatcher.dispatcherFrom">
+            <b>{{ dispatcher.dispatcherName }}</b>
+            <span>
+              <span class="dispatcher-from text--primary">
+                {{ timestampToString(dispatcher.dispatcherFrom, true) }}
+              </span>
+              &gt;
+              <span class="dispatcher-to text--primary"> {{ timestampToString(dispatcher.dispatcherTo, true) }}</span>
+            </span>
+          </div>
+          <!-- </div> -->
+          <!-- </transition> -->
         </li>
       </ul>
     </transition>
@@ -87,8 +89,7 @@ export default defineComponent({
     isLoaded: false,
 
     icons: {
-      ascArrow: require('@/assets/icon-arrow-asc.svg'),
-      descArrow: require('@/assets/icon-arrow-desc.svg'),
+      history: require('@/assets/icon-history.svg'),
     },
   }),
   props: {
@@ -100,7 +101,7 @@ export default defineComponent({
 
   async mounted() {
     try {
-      const apiResult: HistoryResultAPI = (await axios.get(`${API_URL}?name=${this.name}&historyCount=100`)).data;      
+      const apiResult: HistoryResultAPI = (await axios.get(`${API_URL}?name=${this.name}&historyCount=100`)).data;
 
       if (!apiResult || !apiResult.response) return;
       this.isLoaded = true;
@@ -118,7 +119,7 @@ export default defineComponent({
               showTimeline: false,
             };
 
-            timelineDay.dispatchers.push(dispatcher);
+            timelineDay.dispatchers.unshift(dispatcher);
 
             if (!acc.find((timeline) => timeline.date == dateStr)) acc.push(timelineDay);
 
@@ -202,6 +203,20 @@ export default defineComponent({
   padding-top: 1em;
 }
 
+.history-title {
+  display: flex;
+  justify-content: center;
+
+  margin-bottom: 0.5em;
+  font-size: 1.2em;
+
+  img {
+    margin-right: 0.5em;
+    width: 1.3em;
+  }
+}
+
+
 ul {
   height: 600px;
   overflow-y: scroll;
@@ -218,11 +233,14 @@ li {
     justify-content: center;
     align-items: center;
 
-    background: #444;
+    background: #2a2a2a;
     padding: 0.5em;
     margin: 0 auto 0.5em auto;
 
     max-width: 700px;
+
+    position: sticky;
+    top: 0;
 
     img {
       width: 1.3em;
@@ -246,13 +264,12 @@ li {
     margin: 0.5em auto;
 
     background-color: #444;
-    border-radius: 0.5em;
 
     display: grid;
     grid-template-columns: repeat(2, 1fr);
 
     width: 90%;
-    max-width: 400px;
+    max-width: 600px;
   }
 }
 </style>

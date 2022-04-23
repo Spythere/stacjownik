@@ -1,8 +1,9 @@
 <template>
   <section class="info-user-list">
     <h3 class="user-header section-header">
-      {{ $t('scenery.users') }}
       <img :src="icons.user" alt="icon-user" />
+      &nbsp;{{ $t('scenery.users') }} &nbsp;
+      <span class="text--primary">{{ station.onlineInfo?.currentUsers || '0' }}/{{ station.onlineInfo?.maxUsers || '0' }}</span>
     </h3>
 
     <div
@@ -83,6 +84,8 @@ $terminated: red;
 $disconnected: slategray;
 
 .info-user-list {
+  padding: 0.5em;
+
   ul {
     display: flex;
     flex-wrap: wrap;
