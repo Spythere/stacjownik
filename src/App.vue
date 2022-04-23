@@ -65,7 +65,7 @@
             <router-link class="route" active-class="route-active" to="/journal">{{ $t('app.journal') }} </router-link>
           </span>
 
-          <span class="header_badges">
+          <!-- <span class="header_badges">
             <a href="https://www.paypal.com/paypalme/spythere" target="_blank" class="badge paypal">
               <img :src="icons.paypal" alt="icon paypal">
               <span>PAYPAL</span>
@@ -75,9 +75,7 @@
               <img :src="icons.discord" alt="icon discord">
               <span>STACJOWNIK</span>
             </a>
-            <!-- <img src="https://img.shields.io/badge/PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white" alt="">
-            <img src="https://img.shields.io/badge/Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white" alt=""> -->
-          </span>
+          </span> -->
         </div>
       </header>
 
