@@ -96,6 +96,12 @@ export default defineComponent({
             );
         },
 
+        displayDistance(distance: number) {
+            if (distance < 1000) return `${distance}m`;
+
+            return `${(distance / 1000).toPrecision(2)}km`;
+        },
+
         onImageError(e: Event) {
             const imageEl = e.target as HTMLImageElement;
             imageEl.src = require('@/assets/unknown.png');

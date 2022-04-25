@@ -375,9 +375,9 @@ export default defineComponent({
 }
 
 .history-wrapper {
-  width: 1300px;
+  width: 1350px;
 
-  padding: 1em 0.5em;
+  padding: 1em 0;
 }
 
 .history_item {

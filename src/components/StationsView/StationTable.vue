@@ -342,19 +342,21 @@ section.station_table {
 
 .table_wrapper {
   overflow: auto;
+
 }
 
 table {
   white-space: nowrap;
   border-collapse: collapse;
+  min-width: 1350px;
 
-  min-width: 1000px;
+
 
   thead th {
     position: sticky;
     top: 0;
 
-    min-width: 85px;
+    min-width: 75px;
 
     padding: 0.5em;
     background-color: $primaryCol;
@@ -391,7 +393,7 @@ tr.station {
     background-color: lighten($rowCol, 20);
   }
 
-  & > td {
+  td {
     padding: 0.25em 1em;
     text-align: center;
 

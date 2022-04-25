@@ -176,7 +176,7 @@ export default defineComponent({
 .table-info {
   text-align: center;
 
-  padding: 1em;
+  padding: 1em 0;
   margin: 1em 0;
 
   font-size: 1.35em;
@@ -189,7 +189,7 @@ img.train-image {
 }
 
 .traffic-warning {
-  padding: 1em 0.5em;
+  padding: 1em 0;
   margin-bottom: 0.5em;
   background: var(--clr-warning);
 }
@@ -198,7 +198,6 @@ img.train-image {
   &-list {
     overflow: auto;
 
-    padding-right: 0.5em;
     margin-top: 1em;
 
     @include smallScreen() {

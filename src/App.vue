@@ -7,75 +7,74 @@
         <p>Absolutny zakaz wjazdu!</p>
       </div> -->
       <header class="app_header">
-        <div class="header_body">
-          <status-indicator />
+        <div class="header_container">
+          <div class="header_icons-container">
+            <span class="icons">
+              <a href="https://www.paypal.com/paypalme/spythere" target="_blank">
+                <img :src="icons.dollar" alt="icon paypal" />
+              </a>
+              <a href="https://discord.gg/x2mpNN3svk" target="_blank">
+                <img :src="icons.discord" alt="icon discord" />
+              </a>
+            </span>
+          </div>
 
-          <span class="header_brand">
-            <span>
-              <span>S</span>
-              <span>tacj</span>
-              <span class="train-logo">
-                <img class="logo-image" src="@/assets/stacjownik-logo.svg" alt="stacjownik logo" />
+          <div class="header_body">
+            <status-indicator />
+            <span class="header_brand">
+              <span>
+                <span>S</span>
+                <span>tacj</span>
+                <span class="train-logo">
+                  <img class="logo-image" src="@/assets/stacjownik-logo.svg" alt="stacjownik logo" />
+                </span>
+                <span>wnik</span>
               </span>
-              <span>wnik</span>
+              <span class="brand_lang">
+                <span
+                  class="lang pl"
+                  @click="changeLang('en')"
+                  :class="{ current: currentLang == 'pl' }"
+                  v-if="currentLang == 'pl'"
+                >
+                  <img :src="icons.pl" alt="icon-pl" />
+                </span>
+                <span
+                  class="lang en"
+                  @click="changeLang('pl')"
+                  :class="{ current: currentLang == 'en' }"
+                  v-if="currentLang == 'en'"
+                >
+                  <img :src="icons.en" alt="icon-en" />
+                </span>
+              </span>
             </span>
 
-            <span class="brand_lang">
-              <span
-                class="lang pl"
-                @click="changeLang('en')"
-                :class="{ current: currentLang == 'pl' }"
-                v-if="currentLang == 'pl'"
-              >
-                <img :src="icons.pl" alt="icon-pl" />
-              </span>
-
-              <span
-                class="lang en"
-                @click="changeLang('pl')"
-                :class="{ current: currentLang == 'en' }"
-                v-if="currentLang == 'en'"
-              >
-                <img :src="icons.en" alt="icon-en" />
-              </span>
+            <span class="header_info">
+              <Clock />
+              <div class="info_counter">
+                <span class="region" @click="openFilterCard">
+                  {{ currentRegion.value }}
+                </span>
+                <img src="@/assets/icon-dispatcher.svg" alt="icon dispatcher" />
+                <span class="text--primary">{{ dispatcherCount }}</span>
+                <span class="text--grayed">|</span>
+                <span class="text--primary">{{ trainCount }}</span>
+                <img src="@/assets/icon-train.svg" alt="icon train" />
+              </div>
             </span>
-          </span>
-
-          <span class="header_info">
-            <Clock />
-
-            <div class="info_counter">
-              <span class="region" @click="openFilterCard">
-                {{ currentRegion.value }}
-              </span> 
-
-              <img src="@/assets/icon-dispatcher.svg" alt="icon dispatcher" />
-              <span class="text--primary">{{ dispatcherCount }}</span>
-              <span class="text--grayed">|</span>
-              <span class="text--primary">{{ trainCount }}</span>
-              <img src="@/assets/icon-train.svg" alt="icon train" />
-            </div>
-          </span>
-
-          <span class="header_links">
-            <router-link class="route" active-class="route-active" to="/" exact>{{ $t('app.sceneries') }} </router-link>
-            /
-            <router-link class="route" active-class="route-active" to="/trains">{{ $t('app.trains') }} </router-link>
-            /
-            <router-link class="route" active-class="route-active" to="/journal">{{ $t('app.journal') }} </router-link>
-          </span>
-
-          <!-- <span class="header_badges">
-            <a href="https://www.paypal.com/paypalme/spythere" target="_blank" class="badge paypal">
-              <img :src="icons.paypal" alt="icon paypal">
-              <span>PAYPAL</span>
-            </a>
-
-            <a href="https://discord.gg/x2mpNN3svk" target="_blank" class="badge discord">
-              <img :src="icons.discord" alt="icon discord">
-              <span>STACJOWNIK</span>
-            </a>
-          </span> -->
+            <span class="header_links">
+              <router-link class="route" active-class="route-active" to="/" exact
+                >{{ $t('app.sceneries') }}
+              </router-link>
+              /
+              <router-link class="route" active-class="route-active" to="/trains">{{ $t('app.trains') }} </router-link>
+              /
+              <router-link class="route" active-class="route-active" to="/journal"
+                >{{ $t('app.journal') }}
+              </router-link>
+            </span>
+          </div>
         </div>
       </header>
 
@@ -143,9 +142,7 @@ export default defineComponent({
 
       trainCount: computed(() => data.value.trainList.length),
 
-      dispatcherCount: computed(
-        () => data.value.stationList.filter((station) => station.onlineInfo).length
-      ),
+      dispatcherCount: computed(() => data.value.stationList.filter((station) => station.onlineInfo).length),
 
       openFilterCard() {
         isFilterCardVisible.value = true;
@@ -163,7 +160,7 @@ export default defineComponent({
       en: require('@/assets/icon-en.jpg'),
       pl: require('@/assets/icon-pl.svg'),
       error: require('@/assets/icon-error.svg'),
-      paypal: require('@/assets/icon-paypal.svg'),
+      dollar: require('@/assets/icon-dollar.svg'),
       discord: require('@/assets/icon-discord.png'),
     },
   }),

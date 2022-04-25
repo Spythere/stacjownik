@@ -49,12 +49,15 @@
   min-width: 0;
   min-height: 100vh;
 
+
   header {
     flex: 0 0 auto;
   }
 
   main {
     flex: 1 1 auto;
+
+    padding: 0 0.5em;
   }
 
   footer {
@@ -79,14 +82,21 @@
   justify-content: center;
   
   position: relative;
-  background: $primaryCol;
-  padding: 0.5em 0.3em 0 0.3em;
-
-  border-radius: 0 0 1em 1em;
-
+  background-color: $primaryCol;
 }
 
 .header {
+  &_container {
+    display: flex;
+    justify-content: center;
+    position: relative;
+
+    width: 1350px;
+    padding: 0.5em 0.3em 0 0.3em;
+    border-radius: 0 0 1em 1em;
+
+  }
+
   &_brand {
     position: relative;
     width: 100%;
@@ -112,6 +122,7 @@
       cursor: pointer;
     }
   }
+  
 
   &_info {
     display: flex;
@@ -133,61 +144,36 @@
     padding: 0.5em;
   }
 
-  &_badges {
-    position: absolute;
-    top: 0;
-    right: 0;
-    
-    .badge {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      
-      font-weight: bold;
-      padding: 3px 10px;
-      margin: 0.5em 0;
-    
-      span {
-        margin-left: 0.5em;
-      }
-    }
-    
-    img {
-      width: 1.3em;
-    }
-    
-    
-    @media only screen and (max-width: 850px) {
-      // display: flex;
-      // top: 100%;
-      // right: 1em;
-      
-      left: 0;
-      right: auto;
-      bottom: 0.5em;
-      top: auto;
+}
+
+// ICONS
+.icons {
+  display: flex;
+  position: absolute;
+  right: 0.5em;
+  bottom: 0;
+
+  a {      
+    margin: 0.5em 0;
+    margin-left: 0.6em;
+  }
+  
+  img {
+    width: 1.9em;
+  }
+
+  @include smallScreen() {
+    flex-direction: column;
+    right: 0.25em;
+    right: auto;
+    left: 0.5em;
 
 
-      .badge {
-          // margin: 0 0.25em;
-
-          span {
-            display: none;
-          }
-      }
+    a {
+      margin: 0.25em 0;
     }
   }
-}
-
-.badge.paypal {
-  background-color: white;
-  color: black;
-}
-
-.badge.discord {
-  background-color: black;
-  color: white;
-  font-size: 0.9em;
+      
 }
 
 // COUNTER

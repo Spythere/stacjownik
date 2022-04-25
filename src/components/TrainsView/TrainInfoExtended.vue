@@ -31,7 +31,13 @@
                 <span>{{ train.driverName }}</span>
               </span>
 
-              <img class="image-offline" v-if="!train.currentStationHash" :src="icons.offline" alt="offline" :title="$t('trains.offline')" />
+              <img
+                class="image-offline"
+                v-if="!train.currentStationHash"
+                :src="icons.offline"
+                alt="offline"
+                :title="$t('trains.offline')"
+              />
 
               <span class="hide-info" @click="toggleInfo">
                 <img :src="icons.ascArrow" :class="{ hidden: !isInfoShown }" />
@@ -81,7 +87,10 @@
 
         <span v-else>
           {{ $t('trains.current-scenery') }}
-          <span><b class="text--primary">{{ train['currentStationName'].replace(/.[a-zA-Z0-9]+.sc/, '') }}</b> (offline)&nbsp;</span>
+          <span
+            ><b class="text--primary">{{ train['currentStationName'].replace(/.[a-zA-Z0-9]+.sc/, '') }}</b>
+            (offline)&nbsp;</span
+          >
         </span>
 
         <span v-if="train.signal">
@@ -89,8 +98,10 @@
         </span>
 
         <span v-if="train.connectedTrack">
-          {{ $t('trains.current-track') }} <b class="text--primary">{{ train['connectedTrack'] }}</b>
+          {{ $t('trains.current-track') }} <b class="text--primary">{{ train['connectedTrack'] }}&nbsp;</b>
         </span>
+
+        <span v-if="train.distance">({{ displayDistance(train.distance) }})</span>
       </div>
 
       <div style="margin-top: 0.5em;">

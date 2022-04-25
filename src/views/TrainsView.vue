@@ -103,9 +103,7 @@ export default defineComponent({
 
 .wrapper {
   margin: 1rem auto;
-  max-width: 1300px;
-
-  padding: 0 0.5em;
+  max-width: 1350px;
 }
 
 @include smallScreen {

@@ -13,9 +13,14 @@
             <span>&nbsp;| {{ train.driverName }}</span>
           </span>
 
-          <img class="image-offline" style="height: 1em" v-if="!train.currentStationHash" :src="icons.offline" alt="offline" 
+          <img
+            class="image-offline"
+            style="height: 1em"
+            v-if="!train.currentStationHash"
+            :src="icons.offline"
+            alt="offline"
             :title="$t('trains.offline')"
-          >
+          />
         </div>
 
         <div class="timetable_route">
@@ -52,7 +57,8 @@
           </span>
 
           <span v-else>
-            {{ $t('trains.current-scenery') }} <span>{{ train['currentStationName'].replace(/.[a-zA-Z0-9]+.sc/, "") }} (offline)&nbsp;</span>
+            {{ $t('trains.current-scenery') }}
+            <span>{{ train['currentStationName'].replace(/.[a-zA-Z0-9]+.sc/, '') }} (offline)&nbsp;</span>
           </span>
 
           <span v-if="train.signal">
@@ -60,8 +66,10 @@
           </span>
 
           <span v-if="train.connectedTrack">
-            {{ $t('trains.current-track') }} <span>{{ train['connectedTrack'] }}</span>
+            {{ $t('trains.current-track') }} <span>{{ train['connectedTrack'] }}&nbsp;</span>
           </span>
+
+          <span v-if="train.distance">({{ displayDistance(train.distance) }})</span>
         </div>
       </span>
     </section>
@@ -107,7 +115,7 @@ export default defineComponent({
   data: () => ({
     icons: {
       warning: require('@/assets/icon-warning.svg'),
-      offline: require("@/assets/icon-offline.svg")
+      offline: require('@/assets/icon-offline.svg'),
     },
   }),
 });
@@ -116,7 +124,8 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '../../styles/responsive.scss';
 
-.image-warning, .image-offline {
+.image-warning,
+.image-offline {
   height: 1em;
 
   margin-left: 0.5em;
@@ -131,8 +140,6 @@ export default defineComponent({
     width: 12em;
   }
 }
-
-
 
 .simple {
   display: grid;
