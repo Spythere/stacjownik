@@ -228,6 +228,7 @@ export default defineComponent({
       });
 
       this.minimumHours = 0;
+      this.changeNumericFilterValue('onlineFromHours', this.minimumHours, true);
 
       this.$emit('resetFilters');
     },

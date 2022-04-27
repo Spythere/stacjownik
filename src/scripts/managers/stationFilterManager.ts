@@ -82,7 +82,7 @@ const filterStations = (station: Station, filters: Filter) => {
     if (filters['abandoned'] && station.generalInfo.abandoned) return returnMode;
 
     if (station.generalInfo.default && filters['default']) return returnMode;
-    if (!station.generalInfo.default && filters['notDefault'] && !station.generalInfo.abandoned) return returnMode;
+    if (!station.generalInfo.default && filters['notDefault'] && (!station.generalInfo.abandoned && !station.generalInfo.unavailable)) return returnMode;
 
     if (filters['real'] && station.generalInfo.lines != '') return returnMode;
     if (filters['fictional'] && station.generalInfo.lines == '' && (!station.generalInfo.abandoned && !station.generalInfo.unavailable)) return returnMode;
