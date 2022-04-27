@@ -349,12 +349,21 @@ section.station_table {
 
 .table_wrapper {
   overflow: auto;
+  overflow-y: hidden;
 }
 
 table {
   white-space: nowrap;
   border-collapse: collapse;
   min-width: 1350px;
+
+  @include smallScreen() {
+    min-width: auto;
+  }
+
+  thead tr {
+    background-color: $primaryCol;
+  }
 
   thead th {
     position: sticky;

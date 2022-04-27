@@ -175,7 +175,6 @@ export default defineComponent({
 .wrapper {
   display: flex;
   justify-content: center;
-  padding: 0 0.5em;
 }
 
 .body {
