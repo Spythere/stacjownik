@@ -47,7 +47,14 @@
       "value": false,
       "defaultValue": false
     },
-
+     {
+      "id": "abandoned",
+      "name": "abandoned",
+      "iconName": "user",
+      "section": "access",
+      "value": false,
+      "defaultValue": false
+    },
     {
       "id": "SPK",
       "name": "SPK",

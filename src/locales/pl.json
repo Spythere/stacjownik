@@ -29,7 +29,8 @@
     "non-public": "Sceneria niepubliczna",
     "unavailable": "Sceneria niedostępna",
     "unknown": "Nieznana sceneria",
-    "real": "Sceneria z realnymi liniami kolejowymi: "
+    "real": "Sceneria z realnymi liniami kolejowymi: ",
+    "abandoned": "Sceneria wycofana z rozgrywki"
   },
   "signals": {
     "współczesna": "współczesna",
@@ -77,6 +78,7 @@
     "fictional": "FIKCYJNA",
     "unavailable": "NIEDOSTĘPNA",
     "non-public": "NIEPUBLICZNA",
+    "abandoned": "WYCOFANA",
 
     "SPK": "SPK",
     "SCS": "SCS",

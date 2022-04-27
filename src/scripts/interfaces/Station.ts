@@ -22,6 +22,7 @@ export default interface Station {
     default: boolean;
     nonPublic: boolean;
     unavailable: boolean;
+    abandoned?: boolean;
 
     routes: StationRoutes;
 

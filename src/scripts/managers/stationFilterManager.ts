@@ -74,19 +74,22 @@ const filterStations = (station: Station, filters: Filter) => {
 
   if (station.onlineInfo && filters['occupied']) return returnMode;
   if (!station.onlineInfo && filters['free']) return returnMode;
-  if (station.generalInfo?.unavailable && filters['unavailable']) return returnMode;
+  if (station.generalInfo?.unavailable && filters['unavailable'] && !station.onlineInfo) return returnMode;
 
   if (station.generalInfo) {
     const routes = station.generalInfo.routes;
 
+    if (filters['abandoned'] && station.generalInfo.abandoned) return returnMode;
+
     if (station.generalInfo.default && filters['default']) return returnMode;
-    if (!station.generalInfo.default && filters['notDefault']) return returnMode;
+    if (!station.generalInfo.default && filters['notDefault'] && (!station.generalInfo.abandoned && !station.generalInfo.unavailable)) return returnMode;
 
     if (filters['real'] && station.generalInfo.lines != '') return returnMode;
-    if (filters['fictional'] && station.generalInfo.lines == '') return returnMode;
+    if (filters['fictional'] && station.generalInfo.lines == '' && (!station.generalInfo.abandoned && !station.generalInfo.unavailable)) return returnMode;
 
-    if (station.generalInfo.reqLevel + ((station.generalInfo.nonPublic || station.generalInfo.unavailable) ? 1 : 0) < filters['minLevel']) return returnMode;
-    if (station.generalInfo.reqLevel + ((station.generalInfo.nonPublic || station.generalInfo.unavailable) ? 1 : 0) > filters['maxLevel']) return returnMode;
+
+    if (station.generalInfo.reqLevel + ((station.generalInfo.nonPublic || station.generalInfo.unavailable || station.generalInfo.abandoned) ? 1 : 0) < filters['minLevel']) return returnMode;
+    if (station.generalInfo.reqLevel + ((station.generalInfo.nonPublic || station.generalInfo.unavailable || station.generalInfo.abandoned) ? 1 : 0) > filters['maxLevel']) return returnMode;
 
     if (filters['no-1track'] && (routes.oneWayCatenaryRouteNames.length != 0 || routes.oneWayNoCatenaryRouteNames.length != 0)) return returnMode;
     if (filters['no-2track'] && (routes.twoWayCatenaryRouteNames.length != 0 || routes.twoWayNoCatenaryRouteNames.length != 0)) return returnMode;
@@ -148,6 +151,7 @@ export default class StationFilterManager {
     ending: false,
     nonPublic: false,
     unavailable: true,
+    abandoned: true,
     afkStatus: false,
     endingStatus: false,
     noSpaceStatus: false,

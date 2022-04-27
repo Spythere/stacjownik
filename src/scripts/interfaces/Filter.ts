@@ -28,6 +28,7 @@ export default interface Filter {
   occupied: boolean;
   nonPublic: boolean;
   unavailable: boolean;
+  abandoned: boolean;
 
   endingStatus: boolean;
   afkStatus: boolean;

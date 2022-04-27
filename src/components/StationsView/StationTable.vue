@@ -70,6 +70,10 @@
                   {{ station.generalInfo.reqLevel >= 2 ? station.generalInfo.reqLevel : 'L' }}
                 </span>
 
+                <span v-else-if="station.generalInfo.abandoned">
+                  <img :src="abandonedIcon" alt="non-public" :title="$t('desc.abandoned')" />
+                </span>
+
                 <span v-else-if="station.generalInfo.nonPublic">
                   <img :src="lockIcon" alt="non-public" :title="$t('desc.non-public')" />
                 </span>
@@ -87,7 +91,9 @@
             <td class="station_status">
               <span class="status-badge" :class="station.onlineInfo.statusID" v-if="station.onlineInfo">
                 {{ $t(`status.${station.onlineInfo.statusID}`) }}
-                {{ station.onlineInfo.statusID == 'online' ? timestampToString(station.onlineInfo.statusTimestamp) : '' }}
+                {{
+                  station.onlineInfo.statusID == 'online' ? timestampToString(station.onlineInfo.statusTimestamp) : ''
+                }}
               </span>
 
               <span class="status-badge free" v-else>
@@ -100,21 +106,20 @@
             </td>
 
             <td class="station_dispatcher-exp">
-              <span
-                v-if="station.onlineInfo"
-                :style="calculateExpStyle(station.onlineInfo.dispatcherExp)"
-              >
+              <span v-if="station.onlineInfo" :style="calculateExpStyle(station.onlineInfo.dispatcherExp)">
                 {{ 2 > station.onlineInfo.dispatcherExp ? 'L' : station.onlineInfo.dispatcherExp }}
               </span>
             </td>
 
             <td class="station_tracks twoway">
               <span
-                v-if="station.generalInfo && station.generalInfo.routes.twoWayCatenaryRouteNames.length  > 0"
+                v-if="station.generalInfo && station.generalInfo.routes.twoWayCatenaryRouteNames.length > 0"
                 class="track catenary"
-                :title="`Liczba zelektryfikowanych szlaków dwutorowych: ${station.generalInfo.routes.twoWayCatenaryRouteNames.length }`"
+                :title="
+                  `Liczba zelektryfikowanych szlaków dwutorowych: ${station.generalInfo.routes.twoWayCatenaryRouteNames.length}`
+                "
               >
-                {{ station.generalInfo.routes.twoWayCatenaryRouteNames.length  }}
+                {{ station.generalInfo.routes.twoWayCatenaryRouteNames.length }}
               </span>
 
               <span
@@ -263,6 +268,8 @@ export default defineComponent({
     lockIcon: require('@/assets/icon-lock.svg'),
     unavailableIcon: require('@/assets/icon-unavailable.svg'),
     unknownIcon: require('@/assets/icon-unknown.svg'),
+    abandonedIcon: require('@/assets/icon-abandoned.svg'),
+
 
     ascIcon: require('@/assets/icon-arrow-asc.svg'),
     descIcon: require('@/assets/icon-arrow-desc.svg'),
@@ -271,7 +278,7 @@ export default defineComponent({
 
     headIconsIds: ['user', 'spawn', 'timetable'],
 
-    lastSelectedStationName: ""
+    lastSelectedStationName: '',
   }),
 
   setup() {
@@ -342,15 +349,12 @@ section.station_table {
 
 .table_wrapper {
   overflow: auto;
-
 }
 
 table {
   white-space: nowrap;
   border-collapse: collapse;
   min-width: 1350px;
-
-
 
   thead th {
     position: sticky;
