@@ -47,9 +47,9 @@
                         <!-- Data odjazdu ze stacji początkowej -->
                         <b>{{ item.route.split('|')[0] }}:</b>
                         <s v-if="item.beginDate != item.scheduledBeginDate" class="text--grayed">
-                          {{ localeTime(item.scheduledBeginDate, $i18n.locale) }}
+                          {{ localeTime(item.beginDate, $i18n.locale) }}
                         </s>
-                        <span>{{ localeTime(item.beginDate, $i18n.locale) }} </span>&bull;
+                        <span>{{ localeTime(item.scheduledBeginDate, $i18n.locale) }} </span>&bull;
 
                         <!-- Data przyjazdu na stację końcową / porzucenia -->
                         <b v-if="(item.fulfilled && item.terminated) || !item.terminated"
@@ -58,9 +58,9 @@
                         <i v-else>{{ $t('history.timetable-abandoned') }} </i>
 
                         <s v-if="item.endDate != item.scheduledEndDate && item.terminated" class="text--grayed">
-                          {{ localeTime(item.scheduledEndDate, $i18n.locale) }}
+                          {{ localeTime(item.endDate, $i18n.locale) }}
                         </s>
-                        <span>{{ localeTime(item.endDate, $i18n.locale) }} </span>
+                        <span>{{ localeTime(item.scheduledEndDate, $i18n.locale) }} </span>
                       </div>
                     </span>
 
