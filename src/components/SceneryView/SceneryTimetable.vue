@@ -311,13 +311,12 @@ h3.timetable-header {
 
   &-item {
     margin: 1em auto;
+    padding: 0 0.5em;
     max-width: 1100px;
 
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
     gap: 0 0.5em;
-
-    padding: 0 0.35em;
 
     background: $bgLigtherCol;
 
@@ -342,7 +341,7 @@ h3.timetable-header {
   }
 
   &-general {
-    padding: 0.5rem 0.3rem;
+    padding: 0.5rem 0;
     border-radius: 10px;
 
     display: flex;
@@ -352,8 +351,7 @@ h3.timetable-header {
     text-align: left;
 
     @include smallScreen() {
-      width: 95%;
-      font-size: 1.3em;
+      width: 100%;
     }
   }
 
@@ -365,7 +363,7 @@ h3.timetable-header {
     @include smallScreen() {
       width: 100%;
       margin: 0.5em 0;
-      font-size: 1.4em;
+      font-size: 1.2em;
     }
   }
 }
