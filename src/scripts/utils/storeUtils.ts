@@ -6,7 +6,7 @@ export const getLocoURL = (locoType: string): string => (`https://rj.td2.info.pl
 
 export const getStatusID = (stationStatus: any): string => {
   if (!stationStatus) return "unknown";
-  if (stationStatus == -1) return "unavailable";
+  if (stationStatus == -1) return "not-signed";
 
   const statusCode = stationStatus[2];
   const statusTimestamp = stationStatus[3];
@@ -31,7 +31,7 @@ export const getStatusID = (stationStatus: any): string => {
       break;
   }
 
-  return "not-signed";
+  return "unavailable";
 };
 
 export const getStatusTimestamp = (stationStatus: any): number => {

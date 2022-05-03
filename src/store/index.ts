@@ -166,9 +166,11 @@ export const store = createStore<State>({
 
         const prevDispatcherStatus = this.state.lastDispatcherStatuses.find(dispatcher => dispatcher.hash === stationAPI.stationHash);
         const stationStatus = data.dispatchers?.find((status: string[]) => status[0] == stationAPI.stationHash && status[1] == this.state.region.id) || -1;
+        
+        const statusTimestamp = prevDispatcherStatus && !data.dispatchers ? prevDispatcherStatus.statusTimestamp : getStatusTimestamp(stationStatus);
+        const statusID = prevDispatcherStatus && !data.dispatchers ? prevDispatcherStatus.statusID : getStatusID(stationStatus);
 
-        const statusTimestamp = getStatusTimestamp(stationStatus == -1 && prevDispatcherStatus ? prevDispatcherStatus.statusTimestamp : stationStatus);
-        const statusID = getStatusID(stationStatus == -1 && prevDispatcherStatus ? prevDispatcherStatus.statusID : stationStatus);
+        console.log(stationName, prevDispatcherStatus);
 
         prevDispatcherStatuses.push({
           hash: stationAPI.stationHash,
