@@ -287,7 +287,7 @@ export default defineComponent({
     const data: ComputedRef<StoreData> = computed(() => store.getters[GETTERS.allData]);
 
     const isDataLoaded = computed(() => {
-      return data.value.sceneryDataStatus == DataStatus.Loaded;
+      return data.value.sceneryDataStatus != DataStatus.Loading;
     });
 
     return {

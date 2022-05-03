@@ -101,6 +101,9 @@ export const store = createStore<State>({
     async fetchOnlineData({ commit }, data: APIData) {
       if (!data.stations) {
         commit(MUTATIONS.SET_SCENERY_DATA_STATUS, DataStatus.Error);
+        commit(MUTATIONS.SET_TRAINS_DATA_STATUS, DataStatus.Error);
+        commit(MUTATIONS.SET_DISPATCHER_DATA_STATUS, DataStatus.Error);
+
         return;
       }
 

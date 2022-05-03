@@ -6,7 +6,7 @@
           {{ $t('trains.distance-exceeded') }}
         </div> -->
 
-        <div class="table-info no-trains" v-if="trains.length == 0 && trainsDataStatus >= 2">
+        <div class="table-info no-trains" v-if="trains.length == 0 && trainsDataStatus != 0">
           {{ $t('trains.no-trains') }}
         </div>
 
