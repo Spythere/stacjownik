@@ -170,8 +170,6 @@ export const store = createStore<State>({
         const statusTimestamp = prevDispatcherStatus && !data.dispatchers ? prevDispatcherStatus.statusTimestamp : getStatusTimestamp(stationStatus);
         const statusID = prevDispatcherStatus && !data.dispatchers ? prevDispatcherStatus.statusID : getStatusID(stationStatus);
 
-        console.log(stationName, prevDispatcherStatus);
-
         prevDispatcherStatuses.push({
           hash: stationAPI.stationHash,
           statusID,

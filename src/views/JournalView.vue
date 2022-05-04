@@ -225,24 +225,24 @@ export default defineComponent({
 
     const scrollElement: Ref<HTMLElement | null> = ref(null);
 
-    const handleScroll = (e: Event) => {
-      if (!scrollElement.value) return;
+    // const handleScroll = (e: Event) => {
+    //   if (!scrollElement.value) return;
 
-      const element = scrollElement.value;
+    //   const element = scrollElement.value;
 
-      if (element.getBoundingClientRect().bottom * 0.9 < window.innerHeight) {
-        // console.log('gituwa');
-        // historyDataStatus.value.status = DataStatus.Loading
-      }
-    };
+    //   if (element.getBoundingClientRect().bottom * 0.9 < window.innerHeight) {
+    //     // console.log('gituwa');
+    //     // historyDataStatus.value.status = DataStatus.Loading
+    //   }
+    // };
 
-    onMounted(() => {
-      window.addEventListener('scroll', handleScroll);
-    });
+    // onMounted(() => {
+    //   window.addEventListener('scroll', handleScroll);
+    // });
 
-    onUnmounted(() => {
-      window.removeEventListener('scroll', handleScroll);
-    });
+    // onUnmounted(() => {
+    //   window.removeEventListener('scroll', handleScroll);
+    // });
 
     return {
       historyList: ref([]) as Ref<TimetableHistory[]>,
