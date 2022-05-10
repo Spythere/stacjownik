@@ -52,15 +52,16 @@
                         <span>{{ localeTime(item.scheduledBeginDate, $i18n.locale) }} </span>&bull;
 
                         <!-- Data przyjazdu na stację końcową / porzucenia -->
-                        <b v-if="(item.fulfilled && item.terminated) || !item.terminated"
-                          >{{ item.route.split('|').slice(-1)[0] }}:</b
-                        >
+                        <b v-if="(item.fulfilled && item.terminated) || !item.terminated">
+                          {{ item.route.split('|').slice(-1)[0] }}:
+                        </b>
                         <i v-else>{{ $t('history.timetable-abandoned') }} </i>
+                        
 
                         <s v-if="item.endDate != item.scheduledEndDate && item.terminated" class="text--grayed">
-                          {{ localeTime(item.endDate, $i18n.locale) }}
+                          {{ localeTime(item.fulfilled ? item.endDate : item.scheduledEndDate, $i18n.locale) }}
                         </s>
-                        <span>{{ localeTime(item.scheduledEndDate, $i18n.locale) }} </span>
+                        <span>{{ localeTime(item.fulfilled ? item.scheduledEndDate : item.endDate, $i18n.locale) }} </span>
                       </div>
                     </span>
 
@@ -120,7 +121,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, onUnmounted, provide, reactive, Ref, ref } from 'vue';
+import { computed, defineComponent, provide, reactive, Ref, ref } from 'vue';
 import axios from 'axios';
 
 import SearchBox from '@/components/Global/SearchBox.vue';
@@ -317,6 +318,7 @@ export default defineComponent({
       else queries.push('sortBy=timetableId');
 
       queries.push('countLimit=15');
+      // queries.push('fulfilled=0', 'terminated=1');
 
       try {
         const responseData: APIResponse | null = await (await axios.get(`${API_URL}?${queries.join('&')}`)).data;
@@ -464,7 +466,6 @@ li,
   text-align: center;
 
   .loading-label {
-
     background: #333;
     color: white;
 
