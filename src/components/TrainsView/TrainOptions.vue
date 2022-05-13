@@ -2,23 +2,27 @@
   <div class="train-options">
     <div class="options_wrapper">
       <div class="options_content">
-        <select-box
-          :itemList="translatedSorterOptions"
-          :defaultItemIndex="0"
-          @selected="changeSorter"
-          :prefix="$t('trains.sorter-prefix')"
-        />
-
-        <div class="search-box">
-          <input class="search-input" v-model="searchedTrain" :placeholder="$t('trains.search-train')" />
-
-          <img class="search-exit" :src="exitIcon" alt="exit-icon" @click="() => (searchedTrain = '')" />
+        <div class="content_select">
+          <select-box
+            :itemList="translatedSorterOptions"
+            :defaultItemIndex="0"
+            @selected="changeSorter"
+            :prefix="$t('trains.sorter-prefix')"
+          />
         </div>
 
-        <div class="search-box">
-          <input class="search-input" v-model="searchedDriver" :placeholder="$t('trains.search-driver')" />
+        <div class="content_search">
+          <div class="search-box">
+            <input class="search-input" v-model="searchedTrain" :placeholder="$t('trains.search-train')" />
 
-          <img class="search-exit" :src="exitIcon" alt="exit-icon" @click="() => (searchedDriver = '')" />
+            <img class="search-exit" :src="exitIcon" alt="exit-icon" @click="() => (searchedTrain = '')" />
+          </div>
+
+          <div class="search-box">
+            <input class="search-input" v-model="searchedDriver" :placeholder="$t('trains.search-driver')" />
+
+            <img class="search-exit" :src="exitIcon" alt="exit-icon" @click="() => (searchedDriver = '')" />
+          </div>
         </div>
       </div>
     </div>
@@ -145,28 +149,19 @@ export default defineComponent({
 .options {
   &_wrapper {
     display: flex;
-    flex-wrap: wrap;
-
-    @include smallScreen() {
-      padding: 0 1em;
-
-      justify-content: center;
-    }
   }
 
   &_content {
     display: flex;
-    align-items: center;
     flex-wrap: wrap;
 
-    & > * {
-        margin-right: 0.25em;
-        margin-top: 0.25em;
-    }
+    .content_search,
+    .content_select {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
 
-    @include smallScreen() {
-      margin: 0 auto;
-      justify-content: center;
+      padding: 0.25em 0.25em 0 0;
     }
   }
 }
@@ -178,11 +173,7 @@ export default defineComponent({
     background: #333;
     border-radius: 0.5em;
     min-width: 200px;
-
-
-    @include smallScreen() {
-      flex-grow: 2;
-    }
+    margin-right: 0.25em;
   }
 
   &-input {
@@ -203,7 +194,6 @@ export default defineComponent({
     width: 1em;
   }
 }
-
 .filters {
   display: flex;
   flex-wrap: wrap;
@@ -230,6 +220,48 @@ export default defineComponent({
 
   &.reset-btn {
     color: salmon;
+  }
+}
+
+@include smallScreen() {
+  .journal-options {
+    width: 100%;
+  }
+  .options {
+    &_wrapper {
+      justify-content: center;
+    }
+
+    &_content {
+      padding: 0 1em;
+
+      flex-direction: column;
+
+      .content_select {
+        margin: 0 auto;
+        padding: 0;
+      }
+
+      .content_search {
+        justify-content: center;
+      }
+    }
+  }
+
+  .search {
+    &-box,
+    &-button {
+      margin: 0.5em 0 0 0;
+    }
+
+    &-box {
+      width: 100%;
+    }
+
+    &-button {
+      width: 80%;
+      max-width: 300px;
+    }
   }
 }
 </style>

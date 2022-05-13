@@ -37,7 +37,6 @@ import FilterCard from '@/components/StationsView/StationFilterCard.vue';
 import SelectBox from '@/components/Global/SelectBox.vue';
 
 import { StoreData } from '@/scripts/interfaces/StoreData';
-import { DataStatus } from '@/scripts/enums/DataStatus';
 import { computed, ComputedRef, defineComponent, reactive } from 'vue';
 import { useStore } from '@/store';
 import { GETTERS } from '@/constants/storeConstants';

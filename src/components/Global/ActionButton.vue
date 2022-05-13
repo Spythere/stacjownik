@@ -60,6 +60,7 @@ export default defineComponent({});
 
 .button_content {
   display: flex;
+  justify-content: center;
   align-items: center;
 }
 </style>

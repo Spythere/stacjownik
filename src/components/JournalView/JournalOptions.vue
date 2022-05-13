@@ -106,62 +106,34 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '../../styles/responsive';
 
-.journal-options {
-  @include smallScreen() {
-    width: 100%;
-  }
-}
-
 .options {
   &_wrapper {
     display: flex;
-    flex-wrap: wrap;
-
-    @include smallScreen() {
-      justify-content: center;
-    }
   }
 
   &_content {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+    flex-wrap: wrap;
 
     .content_search,
     .content_select {
       display: flex;
       align-items: center;
       flex-wrap: wrap;
-    }
 
-    @include smallScreen() {
-      padding: 0 1em;
-
-      .content_select {
-        margin: 0 auto;
-      }
-
-      .content_search {
-        justify-content: center;
-      }
+      padding: 0.25em 0.25em 0 0;
     }
   }
 }
 
-.content_search .search {
+.search {
   &-box {
     position: relative;
 
     background: #333;
     border-radius: 0.5em;
     min-width: 200px;
-
-    margin: 0.5em 0.5em 0.5em 0;
-
-    @include smallScreen() {
-      width: 100%;
-      margin: 0.5em auto;
-    }
+    margin-right: 0.25em;
   }
 
   &-input {
@@ -180,6 +152,48 @@ export default defineComponent({
     transform: translateY(-50%);
 
     width: 1em;
+  }
+}
+
+@include smallScreen() {
+  .journal-options {
+    width: 100%;
+  }
+  .options {
+    &_wrapper {
+      justify-content: center;
+    }
+
+    &_content {
+      padding: 0 1em;
+
+      flex-direction: column;
+
+      .content_select {
+        margin: 0 auto;
+        padding: 0;
+      }
+
+      .content_search {
+        justify-content: center;
+      }
+    }
+  }
+
+  .search {
+    &-box,
+    &-button {
+      margin: 0.5em 0 0 0;
+    }
+
+    &-box {
+      width: 100%;
+    }
+
+    &-button {
+      width: 80%;
+      max-width: 300px;
+    }
   }
 }
 </style>

@@ -323,12 +323,6 @@ h3.timetable-header {
     cursor: pointer;
     z-index: 10;
 
-    @include smallScreen() {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
     &.loading,
     &.empty {
       padding: 1rem;
@@ -349,22 +343,12 @@ h3.timetable-header {
     justify-content: space-between;
 
     text-align: left;
-
-    @include smallScreen() {
-      width: 100%;
-    }
   }
 
   &-schedule {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(30px, 1fr));
     font-size: 1.15em;
-
-    @include smallScreen() {
-      width: 100%;
-      margin: 0.5em 0;
-      font-size: 1.2em;
-    }
   }
 }
 
@@ -495,5 +479,26 @@ h3.timetable-header {
 .arrival-time.begins,
 .departure-time.terminates {
   font-size: 0.85em;
+}
+
+@include smallScreen() {
+  .timetable {
+    &-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      font-size: 1.2em;
+    }
+
+    &-general {
+      width: 100%;
+    }
+
+    &-schedule {
+      width: 100%;
+      margin: 0.5em 0;
+    }
+  }
 }
 </style>

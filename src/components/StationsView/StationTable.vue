@@ -12,7 +12,7 @@
                   class="sort-icon"
                   v-if="sorterActive.index == i"
                   :src="sorterActive.dir == 1 ? ascIcon : descIcon"
-                  alt
+                  alt="sort icon"
                 />
               </span>
             </th>
@@ -25,7 +25,7 @@
                   class="sort-icon"
                   v-if="sorterActive.index == i + 7"
                   :src="sorterActive.dir == 1 ? ascIcon : descIcon"
-                  alt
+                  alt="sort icon"
                 />
               </span>
             </th>
