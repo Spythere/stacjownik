@@ -56,12 +56,13 @@
                           {{ item.route.split('|').slice(-1)[0] }}:
                         </b>
                         <i v-else>{{ $t('history.timetable-abandoned') }} </i>
-                        
 
                         <s v-if="item.endDate != item.scheduledEndDate && item.terminated" class="text--grayed">
                           {{ localeTime(item.fulfilled ? item.endDate : item.scheduledEndDate, $i18n.locale) }}
                         </s>
-                        <span>{{ localeTime(item.fulfilled ? item.scheduledEndDate : item.endDate, $i18n.locale) }} </span>
+                        <span
+                          >{{ localeTime(item.fulfilled ? item.scheduledEndDate : item.endDate, $i18n.locale) }}
+                        </span>
                       </div>
                     </span>
 
@@ -267,9 +268,7 @@ export default defineComponent({
   },
 
   mounted() {
-    setTimeout(() => {
-      this.fetchHistoryData();
-    }, 250);
+    this.fetchHistoryData();
   },
 
   methods: {
@@ -291,6 +290,9 @@ export default defineComponent({
       this.fetchHistoryData({
         searchedDriver: this.searchedDriver,
         searchedTrain: this.searchedTrain,
+        fulfilled: true,
+        abandoned: true,
+        terminated: true
       });
     },
 
@@ -302,6 +304,9 @@ export default defineComponent({
       props: {
         searchedDriver?: string;
         searchedTrain?: string;
+        fulfilled?: boolean;
+        terminated?: boolean;
+        abandoned?: boolean;
       } = {}
     ) {
       this.historyDataStatus.status = DataStatus.Loading;
@@ -318,7 +323,8 @@ export default defineComponent({
       else queries.push('sortBy=timetableId');
 
       queries.push('countLimit=15');
-      // queries.push('fulfilled=0', 'terminated=1');
+
+      // queries.push(`fulfilled=${Number(props.fulfilled) || 1}`, `terminated=${Number(props.terminated) || 1}`, `abandoned=${Number(props.abandoned) || 1}`, `active=1`);
 
       try {
         const responseData: APIResponse | null = await (await axios.get(`${API_URL}?${queries.join('&')}`)).data;
@@ -394,7 +400,7 @@ export default defineComponent({
         color: #adadad;
 
         &.confirmed {
-          color: rgb(163, 235, 163);
+          color: #a3eba3;
         }
       }
     }

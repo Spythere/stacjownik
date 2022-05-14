@@ -39,6 +39,12 @@
           </action-button>
         </div>
       </div>
+
+      <div class="options_filters">
+        <span class="journal-filter active" tabindex="0">AKTYWNY</span>
+        <span class="journal-filter abandoned" tabindex="0">PORZUCONY</span>
+        <span class="journal-filter fulfilled" tabindex="0">WYPEŁNIONY</span>
+      </div>
     </div>
   </div>
 </template>
@@ -109,6 +115,7 @@ export default defineComponent({
 .options {
   &_wrapper {
     display: flex;
+    flex-direction: column;
   }
 
   &_content {
@@ -122,6 +129,30 @@ export default defineComponent({
       flex-wrap: wrap;
 
       padding: 0.25em 0.25em 0 0;
+    }
+  }
+
+  &_filters {
+    margin: 0.5em 0 0 0;
+
+    .journal-filter {
+      background-color: #333;
+      padding: 0.25em 0.3em;
+      margin: 0 0.25em 0 0;
+
+      cursor: pointer;
+
+      &.abandoned {
+        color: salmon;
+      }
+
+      &.fulfilled {
+        color: lightgreen;
+      }
+
+      &.active {
+        color: lightblue;
+      }
     }
   }
 }
@@ -162,6 +193,7 @@ export default defineComponent({
   .options {
     &_wrapper {
       justify-content: center;
+      align-items: center;
     }
 
     &_content {
