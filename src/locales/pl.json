@@ -195,7 +195,12 @@
     "option-distance": "kilometraż",
     "option-total-stops": "stacje",
     "option-beginDate": "data",
-    "option-timetableId": "ID rozkładu"
+    "option-timetableId": "ID rozkładu",
+
+    "filter-all": "WSZYSTKIE",
+    "filter-abandoned": "PORZUCONE",
+    "filter-fulfilled": "WYPEŁNIONE",
+    "filter-active": "AKTYWNE"
   },
   "scenery": {
     "users": "GRACZE ONLINE",

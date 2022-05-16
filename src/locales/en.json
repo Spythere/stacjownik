@@ -193,7 +193,12 @@
     "option-distance": "distance",
     "option-total-stops": "total stops",
     "option-beginDate": "date",
-    "option-timetableId": "timetable ID"
+    "option-timetableId": "timetable ID",
+
+    "filter-all": "ALL ENTRIES",
+    "filter-abandoned": "ABANDONED",
+    "filter-fulfilled": "FULFILLED",
+    "filter-active": "ACTIVE"
   },
   "scenery": {
     "users": "PLAYERS ONLINE",

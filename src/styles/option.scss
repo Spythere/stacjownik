@@ -7,9 +7,9 @@
     }
         
     span {
-        user-select: none;
-        -moz-user-select: none;
-        -webkit-user-select: none;
+        // user-select: none;
+        // -moz-user-select: none;
+        // -webkit-user-select: none;
 
         width: 100%;
         text-align: center;
@@ -32,5 +32,10 @@
                 box-shadow: none;
             }
         }
+    }
+
+    &:focus span {
+        // outline: 1px solid white;
+        border: none;
     }
 }

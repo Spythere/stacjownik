@@ -1,13 +1,17 @@
 <template>
   <section class="history-view">
     <div class="history-wrapper">
-      <JournalOptions @changedOptions="search" />
+      <JournalOptions @changedOptions="search" @changedFilter="search" />
 
       <div class="history_list">
         <div class="list_wrapper" ref="scrollElement">
           <transition name="warning" mode="out-in">
             <div :key="historyDataStatus.status">
-              <!-- <div v-if="isDataLoading" class="history_warning"></div> -->
+
+              <div class="history_loading" v-if="isDataLoading">
+                <img :src="icons.loading" alt="loading icon" />
+                <span class="loading-label">{{ $t('app.loading') }}</span>
+              </div>
 
               <div v-if="!isDataLoading && isDataError" class="history_warning error">
                 {{ $t('app.error') }}
@@ -112,17 +116,12 @@
           </transition>
         </div>
       </div>
-
-      <div class="history-loading" v-if="isDataLoading">
-        <img :src="icons.loading" alt="loading icon" />
-        <span class="loading-label">{{ $t('app.loading') }}</span>
-      </div>
     </div>
   </section>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, provide, reactive, Ref, ref } from 'vue';
+import { computed, defineComponent, JournalFilter, provide, Ref, ref } from 'vue';
 import axios from 'axios';
 
 import SearchBox from '@/components/Global/SearchBox.vue';
@@ -132,8 +131,9 @@ import { DataStatus } from '@/scripts/enums/DataStatus';
 import ActionButton from '@/components/Global/ActionButton.vue';
 import JournalOptions from '@/components/JournalView/JournalOptions.vue';
 
-import FilterOption from '@/scripts/interfaces/FilterOption';
 import { URLs } from '@/scripts/utils/apiURLs';
+import { journalFilters } from '@/data/journalFilters';
+import { JournalFilterType } from '@/scripts/enums/JournalFilterType';
 
 const PROD_MODE = true;
 
@@ -174,31 +174,6 @@ interface TimetableHistory {
   authorId?: number;
 }
 
-const initFilters = {
-  status: {
-    active: {
-      id: 'active',
-      name: 'status',
-      value: false,
-      defaultValue: false,
-    },
-
-    abandoned: {
-      id: 'abandoned',
-      name: 'status',
-      value: false,
-      defaultValue: false,
-    },
-
-    fulfilled: {
-      id: 'fulfilled',
-      name: 'status',
-      value: true,
-      defaultValue: true,
-    },
-  },
-};
-
 export default defineComponent({
   components: { SearchBox, ActionButton, JournalOptions },
   mixins: [dateMixin],
@@ -216,6 +191,8 @@ export default defineComponent({
     });
 
     const sorterActive = ref({ id: 'timetableId', dir: -1 });
+    const journalFilterActive = ref(journalFilters[0]);
+
     const searchedDriver = ref('');
     const searchedTrain = ref('');
     const countFromIndex = ref(0);
@@ -224,6 +201,7 @@ export default defineComponent({
     provide('searchedTrain', searchedTrain);
     provide('searchedDriver', searchedDriver);
     provide('sorterActive', sorterActive);
+    provide('journalFilterActive', journalFilterActive);
 
     const scrollElement: Ref<HTMLElement | null> = ref(null);
 
@@ -256,14 +234,13 @@ export default defineComponent({
       searchedDriver,
       searchedTrain,
       sorterActive,
+      journalFilterActive,
 
       countFromIndex,
       countLimit,
 
       scrollElement,
       maxCount: ref(15),
-
-      filters: reactive({ ...initFilters }) as { [filterSection: string]: { [filterId: string]: FilterOption } },
     };
   },
 
@@ -290,9 +267,7 @@ export default defineComponent({
       this.fetchHistoryData({
         searchedDriver: this.searchedDriver,
         searchedTrain: this.searchedTrain,
-        fulfilled: true,
-        abandoned: true,
-        terminated: true
+        filter: this.journalFilterActive,
       });
     },
 
@@ -304,9 +279,7 @@ export default defineComponent({
       props: {
         searchedDriver?: string;
         searchedTrain?: string;
-        fulfilled?: boolean;
-        terminated?: boolean;
-        abandoned?: boolean;
+        filter?: JournalFilter;
       } = {}
     ) {
       this.historyDataStatus.status = DataStatus.Loading;
@@ -324,7 +297,22 @@ export default defineComponent({
 
       queries.push('countLimit=15');
 
-      // queries.push(`fulfilled=${Number(props.fulfilled) || 1}`, `terminated=${Number(props.terminated) || 1}`, `abandoned=${Number(props.abandoned) || 1}`, `active=1`);
+      switch (props.filter?.id) {
+        case JournalFilterType.abandoned:
+          queries.push('fulfilled=0', 'terminated=1');
+          break;
+
+        case JournalFilterType.active:
+          queries.push('terminated=0');
+          break;
+
+        case JournalFilterType.fulfilled:
+          queries.push('fulfilled=1');
+          break;
+
+        default:
+          break;
+      }
 
       try {
         const responseData: APIResponse | null = await (await axios.get(`${API_URL}?${queries.join('&')}`)).data;
@@ -459,7 +447,7 @@ li,
   }
 }
 
-.history-loading {
+.history_loading {
   margin-top: 2em;
 
   img {

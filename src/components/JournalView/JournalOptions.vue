@@ -41,26 +41,34 @@
       </div>
 
       <div class="options_filters">
-        <span class="journal-filter active" tabindex="0">AKTYWNY</span>
-        <span class="journal-filter abandoned" tabindex="0">PORZUCONY</span>
-        <span class="journal-filter fulfilled" tabindex="0">WYPEŁNIONY</span>
+        <button
+          v-for="filter in journalFilters"
+          class="journal-filter-option btn--option"
+          :class="{ checked: journalFilterActive.id === filter.id }"
+          :id="filter.id"
+          @click="changeJournalFilter(filter)"
+        >
+          {{ $t(`journal.filter-${filter.id}`) }}
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, inject } from 'vue';
+import { journalFilters } from '@/data/journalFilters';
+import { computed, defineComponent, inject, JournalFilter } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ActionButton from '../Global/ActionButton.vue';
 import SelectBox from '../Global/SelectBox.vue';
 
 export default defineComponent({
   components: { SelectBox, ActionButton },
-  emits: ['changedOptions'],
+  emits: ['changedOptions', 'changedFilter'],
 
   data: () => ({
     exitIcon: require('@/assets/icon-exit.svg'),
+    journalFilters,
   }),
 
   setup() {
@@ -81,6 +89,7 @@ export default defineComponent({
       searchedTrain: inject('searchedTrain') as string,
       searchedDriver: inject('searchedDriver') as string,
       sorterActive: inject('sorterActive') as { id: string | number; dir: number },
+      journalFilterActive: inject('journalFilterActive') as JournalFilter
     };
   },
 
@@ -90,6 +99,11 @@ export default defineComponent({
       this.sorterActive.dir = -1;
 
       this.$emit('changedOptions');
+    },
+
+    changeJournalFilter(filter: JournalFilter) {
+      this.journalFilterActive = filter;
+      this.$emit('changedFilter');
     },
 
     search() {
@@ -111,6 +125,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '../../styles/responsive';
+@import '../../styles/option.scss';
 
 .options {
   &_wrapper {
@@ -133,24 +148,21 @@ export default defineComponent({
   }
 
   &_filters {
+    display: flex;
     margin: 0.5em 0 0 0;
 
-    .journal-filter {
-      background-color: #333;
-      padding: 0.25em 0.3em;
+    .journal-filter-option {
       margin: 0 0.25em 0 0;
 
-      cursor: pointer;
-
-      &.abandoned {
+      &#abandoned {
         color: salmon;
       }
 
-      &.fulfilled {
+      &#fulfilled {
         color: lightgreen;
       }
 
-      &.active {
+      &#active {
         color: lightblue;
       }
     }
