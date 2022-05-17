@@ -29,7 +29,12 @@
                   <li v-for="(item, i) in historyList" :key="item.timetableId">
                     <div class="history_item-top">
                       <span>
-                        <span @click="navigateToTrain(!item.terminated ? item.trainNo : null)" style="cursor: pointer">
+                        <span
+                          tabindex="0"
+                          @click="navigateToTrain(!item.terminated ? item.trainNo : null)"
+                          @keydown.enter="navigateToTrain(!item.terminated ? item.trainNo : null)"
+                          style="cursor: pointer"
+                        >
                           <b class="text--primary">{{ item.trainCategoryCode }}&nbsp;</b>
                           <b>{{ item.trainNo }}</b>
                           | <span>{{ item.driverName }}</span> |
@@ -94,11 +99,14 @@
                     </div>
 
                     <div style="margin-top: 1em;">
-                      <div>{{ $t('history.timetable-day') }} {{ localeDay(item.beginDate, $i18n.locale) }}</div>
+                      <div>
+                        {{ $t('history.timetable-day') }} <b>{{ localeDay(item.beginDate, $i18n.locale) }}</b>
+                      </div>
 
                       <!-- Nick dyżurnego -->
-                      <div v-if="item.authorName" class="text--grayed">
-                        <b>{{ $t('history.dispatcher-name') }} {{ item.authorName }}</b>
+                      <div v-if="item.authorName">
+                        <b class="text--grayed">{{ $t('history.dispatcher-name') }}&nbsp;</b>
+                        <b>{{ item.authorName }}</b>
                       </div>
                     </div>
 
@@ -123,8 +131,8 @@
         </div>
       </div>
 
-      <div class="history_warning" v-if="scrollNoMoreData">{{ $t('journal.no-further-data' )}}</div>
-      <div class="history_warning" v-else-if="!scrollDataLoaded">{{ $t('journal.loading-further-data' )}}</div>
+      <div class="history_warning" v-if="scrollNoMoreData">{{ $t('journal.no-further-data') }}</div>
+      <div class="history_warning" v-else-if="!scrollDataLoaded">{{ $t('journal.loading-further-data') }}</div>
     </div>
   </section>
 </template>
@@ -271,7 +279,7 @@ export default defineComponent({
     },
 
     handleScroll() {
-      this.showReturnButton = window.scrollY > window.innerHeight;      
+      this.showReturnButton = window.scrollY > window.innerHeight;
 
       const element = this.$refs.scrollElement as HTMLElement;
 
