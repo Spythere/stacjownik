@@ -71,9 +71,10 @@ export default defineComponent({
   max-width: 1300px;
   max-height: calc(100vh - 2em);
 
+  background-color: #202020;
+  
+
   top: 0;
   transform: translate(-50%, 1em);
-
-  border: 1px solid white;
 }
 </style>
