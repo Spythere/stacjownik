@@ -198,7 +198,10 @@
     "filter-all": "ALL ENTRIES",
     "filter-abandoned": "ABANDONED",
     "filter-fulfilled": "FULFILLED",
-    "filter-active": "ACTIVE"
+    "filter-active": "ACTIVE",
+
+    "no-further-data": "No further data for current parameters",
+    "loading-further-data": "Loading..."
   },
   "scenery": {
     "users": "PLAYERS ONLINE",

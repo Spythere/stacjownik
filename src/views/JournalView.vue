@@ -3,6 +3,10 @@
     <div class="history-wrapper">
       <JournalOptions @changedOptions="search" @changedFilter="search" />
 
+      <button class="return-btn" @click="scrollToTop" v-if="showReturnButton">
+        <img :src="icons.arrow" alt="return arrow" />
+      </button>
+
       <div class="history_list">
         <div class="list_wrapper" ref="scrollElement">
           <transition name="warning" mode="out-in">
@@ -119,8 +123,8 @@
         </div>
       </div>
 
-      <div class="history_warning" v-if="scrollNoMoreData">Brak dalszych wyników dla podanych parametrów</div>
-      <div class="history_warning" v-else-if="!scrollDataLoaded">Pobieranie kolejnych wyników...</div>
+      <div class="history_warning" v-if="scrollNoMoreData">{{ $t('journal.no-further-data' )}}</div>
+      <div class="history_warning" v-else-if="!scrollDataLoaded">{{ $t('journal.loading-further-data' )}}</div>
     </div>
   </section>
 </template>
@@ -186,11 +190,14 @@ export default defineComponent({
   data: () => ({
     icons: {
       loading: require('@/assets/icon-loading.svg'),
+      arrow: require('@/assets/icon-arrow-asc.svg'),
     },
 
     currentQuery: '',
     scrollDataLoaded: true,
     scrollNoMoreData: false,
+
+    showReturnButton: false,
   }),
 
   setup() {
@@ -264,6 +271,8 @@ export default defineComponent({
     },
 
     handleScroll() {
+      this.showReturnButton = window.scrollY > window.innerHeight;      
+
       const element = this.$refs.scrollElement as HTMLElement;
 
       if (
@@ -272,6 +281,10 @@ export default defineComponent({
         !this.scrollNoMoreData
       )
         this.addHistoryData();
+    },
+
+    scrollToTop() {
+      window.scrollTo({ top: 0 });
     },
 
     search() {
@@ -412,6 +425,39 @@ export default defineComponent({
   &-enter-from,
   &-leave-to {
     opacity: 0;
+  }
+}
+
+// Style
+
+.return-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  position: fixed;
+  right: 0;
+  bottom: 0;
+
+  margin: 0 1em 1em 0;
+
+  width: 2em;
+  height: 2em;
+
+  font-size: 1.7em;
+
+  background-color: #333;
+  color: white;
+
+  border-radius: 50%;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #3c3c3c;
+  }
+
+  img {
+    width: 1.3em;
   }
 }
 

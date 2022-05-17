@@ -200,7 +200,10 @@
     "filter-all": "WSZYSTKIE",
     "filter-abandoned": "PORZUCONE",
     "filter-fulfilled": "WYPEŁNIONE",
-    "filter-active": "AKTYWNE"
+    "filter-active": "AKTYWNE",
+
+    "no-further-data": "Brak dalszych wyników dla podanych parametrów",
+    "loading-further-data": "Ładowanie..."
   },
   "scenery": {
     "users": "GRACZE ONLINE",
