@@ -126,7 +126,7 @@ export default defineComponent({
       let progressBarString = `<span style="color: white"> ${percentage}% </span> `;
 
       for (let i = 0; i < 5; i++) {
-        progressBarString += `<span style="color: ${i + 1 < percentage / 20 ? 'springgreen' : 'gray'}">▉</span>`;
+        progressBarString += `<span style="color: ${i < Math.floor(percentage / 20) ? 'springgreen' : 'gray'}">▉</span>`;
       }
 
       return progressBarString;
