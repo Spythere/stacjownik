@@ -42,15 +42,14 @@
           </span>
         </div>
         <div style="margin-top: 0.5em" v-if="train.timetableData">
-          <span class="text--grayed">{{ currentDistance(train.timetableData.followingStops) }} km</span> /
-          <span class="text--primary"> {{ train.timetableData.routeDistance }} km </span>
-          |
           <span style="color: gray" v-html="generateProgressBar(train)"></span>
+          &nbsp;{{ currentDistance(train.timetableData.followingStops) }} km /
+          <span class="text--primary"> {{ train.timetableData.routeDistance }} km </span>
           |
           <span v-html="currentDelay(train.timetableData.followingStops)"></span>
         </div>
 
-        <div class="driver_position text--grayed">
+        <div class="driver_position text--grayed" style="margin-top: 0.25em">
           <span v-if="train.currentStationHash">
             {{ $t('trains.current-scenery') }} <span>{{ train['currentStationName'] }}&nbsp;</span>
           </span>
@@ -122,17 +121,13 @@ export default defineComponent({
     generateProgressBar(train: Train) {
       if (!train.timetableData) return '';
 
-      const percentage = this.confirmedPercentage(train.timetableData.followingStops);
-
-      const mainStops = train.timetableData.followingStops.filter((stop) => stop.stopName.startsWith('<strong>'));
-      const skipRatio = Math.floor(mainStops.length / 10);
+      const percentage = Math.floor(Number(this.confirmedPercentage(train.timetableData.followingStops)));
 
       let progressBarString = `<span style="color: white"> ${percentage}% </span> `;
 
-      mainStops.forEach((stop, i) => {
-        if (skipRatio > 0 && i % 10 == skipRatio) return;
-        progressBarString += `<span style="color: ${stop.confirmed ? 'springgreen' : 'gray'}">▉</span>`;
-      });
+      for (let i = 0; i < 5; i++) {
+        progressBarString += `<span style="color: ${i + 1 < percentage / 20 ? 'springgreen' : 'gray'}">▉</span>`;
+      }
 
       return progressBarString;
     },
