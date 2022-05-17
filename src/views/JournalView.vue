@@ -21,95 +21,98 @@
               </div>
 
               <ul v-else>
-                <li v-for="(item, i) in historyList" :key="item.timetableId" :style="`--delay: ${i * 50}ms`">
-                  <div class="history_item-top">
-                    <span>
-                      <span @click="navigateToTrain(!item.terminated ? item.trainNo : null)" style="cursor: pointer">
-                        <b class="text--primary">{{ item.trainCategoryCode }}&nbsp;</b>
-                        <b>{{ item.trainNo }}</b>
-                        | <span>{{ item.driverName }}</span> | <span class="text--grayed">#{{ item.timetableId }}</span>
+                <transition-group name="history-list-anim">
+                  <li v-for="(item, i) in historyList" :key="item.timetableId">
+                    <div class="history_item-top">
+                      <span>
+                        <span @click="navigateToTrain(!item.terminated ? item.trainNo : null)" style="cursor: pointer">
+                          <b class="text--primary">{{ item.trainCategoryCode }}&nbsp;</b>
+                          <b>{{ item.trainNo }}</b>
+                          | <span>{{ item.driverName }}</span> |
+                          <span class="text--grayed">#{{ item.timetableId }}</span>
+                        </span>
+
+                        <div>
+                          <b>{{ item.route.replace('|', ' - ') }}</b>
+                        </div>
+
+                        <hr style="margin: 0.25em 0" />
+
+                        <div class="scenery-list">
+                          <span
+                            v-for="(scenery, i) in getSceneryList(item)"
+                            :key="scenery.name"
+                            :class="{ confirmed: scenery.confirmed }"
+                          >
+                            {{ i > 0 ? ' > ' : '' }} {{ scenery.name }}
+                          </span>
+                        </div>
+
+                        <div class="schedule-dates">
+                          <!-- Data odjazdu ze stacji początkowej -->
+                          <b>{{ item.route.split('|')[0] }}:</b>
+                          <s v-if="item.beginDate != item.scheduledBeginDate" class="text--grayed">
+                            {{ localeTime(item.beginDate, $i18n.locale) }}
+                          </s>
+                          <span>{{ localeTime(item.scheduledBeginDate, $i18n.locale) }} </span>&bull;
+
+                          <!-- Data przyjazdu na stację końcową / porzucenia -->
+                          <b v-if="(item.fulfilled && item.terminated) || !item.terminated">
+                            {{ item.route.split('|').slice(-1)[0] }}:
+                          </b>
+                          <i v-else>{{ $t('history.timetable-abandoned') }} </i>
+
+                          <s v-if="item.endDate != item.scheduledEndDate && item.terminated" class="text--grayed">
+                            {{ localeTime(item.fulfilled ? item.endDate : item.scheduledEndDate, $i18n.locale) }}
+                          </s>
+                          <span
+                            >{{ localeTime(item.fulfilled ? item.scheduledEndDate : item.endDate, $i18n.locale) }}
+                          </span>
+                        </div>
                       </span>
 
+                      <b
+                        class="history_item-status"
+                        :class="{
+                          fulfilled: item.fulfilled || item.currentDistance >= item.routeDistance * 0.9,
+                          terminated: item.terminated && !item.fulfilled,
+                          active: !item.terminated,
+                        }"
+                      >
+                        {{
+                          !item.terminated
+                            ? $t('history.timetable-active')
+                            : item.fulfilled || item.currentDistance >= item.routeDistance * 0.9
+                            ? $t('history.timetable-fulfilled')
+                            : $t('history.timetable-abandoned')
+                        }}
+                      </b>
+                    </div>
+
+                    <div style="margin-top: 1em;">
+                      <div>{{ $t('history.timetable-day') }} {{ localeDay(item.beginDate, $i18n.locale) }}</div>
+
+                      <!-- Nick dyżurnego -->
+                      <div v-if="item.authorName" class="text--grayed">
+                        <b>{{ $t('history.dispatcher-name') }} {{ item.authorName }}</b>
+                      </div>
+                    </div>
+
+                    <div style="margin-top: 1em;">
                       <div>
-                        <b>{{ item.route.replace('|', ' - ') }}</b>
+                        <b>{{ $t('history.route-length') }}</b>
+                        {{ !item.fulfilled ? item.currentDistance + ' /' : '' }}
+                        {{ item.routeDistance }} km
                       </div>
 
-                      <hr style="margin: 0.25em 0" />
-
-                      <div class="scenery-list">
-                        <span
-                          v-for="(scenery, i) in getSceneryList(item)"
-                          :key="scenery.name"
-                          :class="{ confirmed: scenery.confirmed }"
-                        >
-                          {{ i > 0 ? ' > ' : '' }} {{ scenery.name }}
-                        </span>
+                      <div>
+                        <b>{{ $t('history.station-count') }}</b>
+                        {{ item.confirmedStopsCount }} /
+                        {{ item.allStopsCount }}
                       </div>
-
-                      <div class="schedule-dates">
-                        <!-- Data odjazdu ze stacji początkowej -->
-                        <b>{{ item.route.split('|')[0] }}:</b>
-                        <s v-if="item.beginDate != item.scheduledBeginDate" class="text--grayed">
-                          {{ localeTime(item.beginDate, $i18n.locale) }}
-                        </s>
-                        <span>{{ localeTime(item.scheduledBeginDate, $i18n.locale) }} </span>&bull;
-
-                        <!-- Data przyjazdu na stację końcową / porzucenia -->
-                        <b v-if="(item.fulfilled && item.terminated) || !item.terminated">
-                          {{ item.route.split('|').slice(-1)[0] }}:
-                        </b>
-                        <i v-else>{{ $t('history.timetable-abandoned') }} </i>
-
-                        <s v-if="item.endDate != item.scheduledEndDate && item.terminated" class="text--grayed">
-                          {{ localeTime(item.fulfilled ? item.endDate : item.scheduledEndDate, $i18n.locale) }}
-                        </s>
-                        <span
-                          >{{ localeTime(item.fulfilled ? item.scheduledEndDate : item.endDate, $i18n.locale) }}
-                        </span>
-                      </div>
-                    </span>
-
-                    <b
-                      class="history_item-status"
-                      :class="{
-                        fulfilled: item.fulfilled || item.currentDistance >= item.routeDistance * 0.9,
-                        terminated: item.terminated && !item.fulfilled,
-                        active: !item.terminated,
-                      }"
-                    >
-                      {{
-                        !item.terminated
-                          ? $t('history.timetable-active')
-                          : item.fulfilled || item.currentDistance >= item.routeDistance * 0.9
-                          ? $t('history.timetable-fulfilled')
-                          : $t('history.timetable-abandoned')
-                      }}
-                    </b>
-                  </div>
-
-                  <div style="margin-top: 1em;">
-                    <div>{{ $t('history.timetable-day') }} {{ localeDay(item.beginDate, $i18n.locale) }}</div>
-
-                    <!-- Nick dyżurnego -->
-                    <div v-if="item.authorName" class="text--grayed">
-                      <b>{{ $t('history.dispatcher-name') }} {{ item.authorName }}</b>
                     </div>
-                  </div>
-
-                  <div style="margin-top: 1em;">
-                    <div>
-                      <b>{{ $t('history.route-length') }}</b>
-                      {{ !item.fulfilled ? item.currentDistance + ' /' : '' }}
-                      {{ item.routeDistance }} km
-                    </div>
-
-                    <div>
-                      <b>{{ $t('history.station-count') }}</b>
-                      {{ item.confirmedStopsCount }} /
-                      {{ item.allStopsCount }}
-                    </div>
-                  </div>
-                </li>
+                  </li>
+                </transition-group>
               </ul>
             </div>
           </transition>
@@ -118,7 +121,6 @@
 
       <div class="history_warning" v-if="scrollNoMoreData">Brak dalszych wyników dla podanych parametrów</div>
       <div class="history_warning" v-else-if="!scrollDataLoaded">Pobieranie kolejnych wyników...</div>
-
     </div>
   </section>
 </template>
@@ -265,7 +267,7 @@ export default defineComponent({
       const element = this.$refs.scrollElement as HTMLElement;
 
       if (
-        element.getBoundingClientRect().bottom * 0.9 < window.innerHeight &&
+        element.getBoundingClientRect().bottom * 0.85 < window.innerHeight &&
         this.scrollDataLoaded &&
         !this.scrollNoMoreData
       )
@@ -385,6 +387,7 @@ export default defineComponent({
 @import '../styles/responsive.scss';
 @import '../styles/option.scss';
 
+// Animations
 .warning {
   &-enter-from,
   &-leave-to {
@@ -397,6 +400,18 @@ export default defineComponent({
 
   &-leave-active {
     transition: all 200ms ease-in-out;
+  }
+}
+
+.history-list-anim {
+  &-enter-active,
+  &-leave-active {
+    transition: all 0.5s ease;
+  }
+
+  &-enter-from,
+  &-leave-to {
+    opacity: 0;
   }
 }
 
