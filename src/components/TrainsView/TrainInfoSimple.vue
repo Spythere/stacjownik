@@ -42,16 +42,14 @@
           </span>
         </div>
         <div style="margin-top: 0.5em" v-if="train.timetableData">
+          <span style="color: gray" v-html="generateProgressBar(train)"></span>
+          &nbsp;{{ currentDistance(train.timetableData.followingStops) }} km /
           <span class="text--primary"> {{ train.timetableData.routeDistance }} km </span>
-          |
-          <span>
-            {{ $t('trains.route-progress') }} {{ confirmedPercentage(train.timetableData.followingStops) }}%
-          </span>
           |
           <span v-html="currentDelay(train.timetableData.followingStops)"></span>
         </div>
 
-        <div class="driver_position text--grayed">
+        <div class="driver_position text--grayed" style="margin-top: 0.25em">
           <span v-if="train.currentStationHash">
             {{ $t('trains.current-scenery') }} <span>{{ train['currentStationName'] }}&nbsp;</span>
           </span>
@@ -118,6 +116,22 @@ export default defineComponent({
       offline: require('@/assets/icon-offline.svg'),
     },
   }),
+
+  methods: {
+    generateProgressBar(train: Train) {
+      if (!train.timetableData) return '';
+
+      const percentage = Math.floor(Number(this.confirmedPercentage(train.timetableData.followingStops)));
+
+      let progressBarString = `<span style="color: white"> ${percentage}% </span> `;
+
+      for (let i = 0; i < 5; i++) {
+        progressBarString += `<span style="color: ${i + 1 < percentage / 20 ? 'springgreen' : 'gray'}">▉</span>`;
+      }
+
+      return progressBarString;
+    },
+  },
 });
 </script>
 
@@ -150,7 +164,8 @@ export default defineComponent({
   background-color: #202020;
   gap: 0.5em;
 
-  &:hover, &:focus {
+  &:hover,
+  &:focus {
     background: #292929;
   }
 }

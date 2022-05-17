@@ -63,6 +63,10 @@ export default defineComponent({
                 .join(' > ');
         },
 
+        currentDistance(stops: TrainStop[]) {
+            return stops.filter(stop => stop.confirmed).slice(-1)[0]?.stopDistance || 0;
+        },
+
         confirmedPercentage(stops: TrainStop[]) {
             return ((stops.filter((stop) => stop.confirmed).length / stops.length) * 100).toFixed(0);
         },
