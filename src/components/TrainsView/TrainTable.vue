@@ -19,7 +19,6 @@
             class="train-row"
             v-for="train in currentTrains"
             :key="train.trainNo + train.driverId"
-            tabindex="0"
             @click="showTrainTimetable(train)"
             @keydown.enter="showTrainTimetable(train)"
           >
@@ -74,7 +73,6 @@ export default defineComponent({
     },
 
     defaultVehicleIcons: defaultVehicleIconsJSON,
-
   }),
 
   setup(props) {
@@ -92,7 +90,9 @@ export default defineComponent({
     });
 
     const chosenTrainId = ref(null) as Ref<string | null>;
-    const chosenTrain = computed(() => props.trains.find(train => train.trainNo + train.driverName === chosenTrainId.value));
+    const chosenTrain = computed(() =>
+      props.trains.find((train) => train.trainNo + train.driverName === chosenTrainId.value)
+    );
 
     // watch([searchedTrain, searchedDriver], () => {
     //   currentPage.value = 0;
@@ -206,9 +206,9 @@ img.train-image {
   }
 
   &-row {
+    background-color: var(--clr-secondary);
     margin-bottom: 1em;
 
-    background-color: var(--clr-secondary);
     cursor: pointer;
   }
 

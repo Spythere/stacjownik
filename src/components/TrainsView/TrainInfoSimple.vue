@@ -1,5 +1,5 @@
 <template>
-  <div class="train-info simple">
+  <div class="train-info simple" tabindex="0">
     <section>
       <span>
         <div>
@@ -147,11 +147,11 @@ export default defineComponent({
   grid-template-rows: 1fr;
 
   padding: 1em;
-
+  background-color: #202020;
   gap: 0.5em;
 
-  &:hover {
-    background: #424242;
+  &:hover, &:focus {
+    background: #292929;
   }
 }
 
