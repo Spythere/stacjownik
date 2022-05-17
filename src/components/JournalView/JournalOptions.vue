@@ -149,6 +149,7 @@ export default defineComponent({
 
   &_filters {
     display: flex;
+    flex-wrap: wrap;
     margin: 0.5em 0 0 0;
 
     .journal-filter-option {
@@ -220,6 +221,14 @@ export default defineComponent({
 
       .content_search {
         justify-content: center;
+      }
+    }
+
+    &_filters {
+      justify-content: center;
+
+      .journal-filter-option {
+        margin: 0.25em 0.25em;
       }
     }
   }

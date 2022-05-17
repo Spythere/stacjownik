@@ -234,6 +234,8 @@ ul {
     &.checked {
       color: var(--clr-primary);
       font-weight: bold;
+
+      background-color: #3c3c3c;
     }
   }
 }
