@@ -7,21 +7,20 @@
         <div class="list_wrapper" ref="scrollElement">
           <transition name="warning" mode="out-in">
             <div :key="historyDataStatus.status">
-
-              <div class="history_loading" v-if="isDataLoading">
+              <div class="history_loading" v-if="isDataLoading || isDataInit">
                 <img :src="icons.loading" alt="loading icon" />
                 <span class="loading-label">{{ $t('app.loading') }}</span>
               </div>
 
-              <div v-if="!isDataLoading && isDataError" class="history_warning error">
+              <div v-else-if="isDataError" class="history_warning error">
                 {{ $t('app.error') }}
               </div>
 
-              <div class="history_warning" v-if="!isDataLoading && !isDataError && historyList.length == 0">
+              <div class="history_warning" v-else-if="historyList.length == 0">
                 {{ $t('app.no-result') }}
               </div>
 
-              <ul v-if="!isDataLoading && !isDataError">
+              <ul v-else>
                 <li v-for="(item, i) in historyList" :key="item.timetableId" :style="`--delay: ${i * 50}ms`">
                   <div class="history_item-top">
                     <span>
@@ -39,7 +38,7 @@
 
                       <div class="scenery-list">
                         <span
-                          v-for="(scenery, i) in sceneryList(item)"
+                          v-for="(scenery, i) in getSceneryList(item)"
                           :key="scenery.name"
                           :class="{ confirmed: scenery.confirmed }"
                         >
@@ -116,6 +115,10 @@
           </transition>
         </div>
       </div>
+
+      <div class="history_warning" v-if="scrollNoMoreData">Brak dalszych wyników dla podanych parametrów</div>
+      <div class="history_warning" v-else-if="!scrollDataLoaded">Pobieranie kolejnych wyników...</div>
+
     </div>
   </section>
 </template>
@@ -182,6 +185,10 @@ export default defineComponent({
     icons: {
       loading: require('@/assets/icon-loading.svg'),
     },
+
+    currentQuery: '',
+    scrollDataLoaded: true,
+    scrollNoMoreData: false,
   }),
 
   setup() {
@@ -205,31 +212,13 @@ export default defineComponent({
 
     const scrollElement: Ref<HTMLElement | null> = ref(null);
 
-    // const handleScroll = (e: Event) => {
-    //   if (!scrollElement.value) return;
-
-    //   const element = scrollElement.value;
-
-    //   if (element.getBoundingClientRect().bottom * 0.9 < window.innerHeight) {
-    //     // console.log('gituwa');
-    //     // historyDataStatus.value.status = DataStatus.Loading
-    //   }
-    // };
-
-    // onMounted(() => {
-    //   window.addEventListener('scroll', handleScroll);
-    // });
-
-    // onUnmounted(() => {
-    //   window.removeEventListener('scroll', handleScroll);
-    // });
-
     return {
       historyList: ref([]) as Ref<TimetableHistory[]>,
       historyDataStatus,
 
       isDataLoading: computed(() => historyDataStatus.value.status === DataStatus.Loading),
       isDataError: computed(() => historyDataStatus.value.status === DataStatus.Error),
+      isDataInit: computed(() => historyDataStatus.value.status === DataStatus.Initialized),
 
       searchedDriver,
       searchedTrain,
@@ -248,12 +237,21 @@ export default defineComponent({
     this.fetchHistoryData();
   },
 
+  activated() {
+    window.addEventListener('scroll', this.handleScroll);
+  },
+
+  deactivated() {
+    window.removeEventListener('scroll', this.handleScroll);
+  },
+
   methods: {
-    sceneryList(historyItem: TimetableHistory) {
+    getSceneryList(historyItem: TimetableHistory) {
       return historyItem.sceneriesString
         .split('%')
         .map((name, i) => ({ name, confirmed: i < historyItem.confirmedStopsCount }));
     },
+
     navigateToTrain(trainNo: number | null) {
       if (!trainNo) return;
 
@@ -263,16 +261,52 @@ export default defineComponent({
       });
     },
 
+    handleScroll() {
+      const element = this.$refs.scrollElement as HTMLElement;
+
+      if (
+        element.getBoundingClientRect().bottom * 0.9 < window.innerHeight &&
+        this.scrollDataLoaded &&
+        !this.scrollNoMoreData
+      )
+        this.addHistoryData();
+    },
+
     search() {
       this.fetchHistoryData({
         searchedDriver: this.searchedDriver,
         searchedTrain: this.searchedTrain,
         filter: this.journalFilterActive,
       });
+
+      this.scrollNoMoreData = false;
+      this.scrollDataLoaded = true;
     },
 
     keyPressed({ keyCode }) {
       if (keyCode == 13) this.search();
+    },
+
+    async addHistoryData() {
+      this.scrollDataLoaded = false;
+
+      const countFrom = this.historyList.length;
+
+      const responseData: APIResponse | null = await (
+        await axios.get(`${API_URL}?${this.currentQuery}&countFrom=${countFrom}`)
+      ).data;
+
+      console.log('Loading...');
+
+      if (!responseData?.response) return;
+
+      if (responseData.response.length == 0) {
+        this.scrollNoMoreData = true;
+        return;
+      }
+
+      this.historyList.push(...responseData.response);
+      this.scrollDataLoaded = true;
     },
 
     async fetchHistoryData(
@@ -314,8 +348,10 @@ export default defineComponent({
           break;
       }
 
+      this.currentQuery = queries.join('&');
+
       try {
-        const responseData: APIResponse | null = await (await axios.get(`${API_URL}?${queries.join('&')}`)).data;
+        const responseData: APIResponse | null = await (await axios.get(`${API_URL}?${this.currentQuery}`)).data;
 
         if (!responseData) {
           this.historyDataStatus.status = DataStatus.Error;
@@ -334,6 +370,7 @@ export default defineComponent({
 
         // Response data exists
         this.historyList = responseData.response;
+
         this.historyDataStatus.status = DataStatus.Loaded;
       } catch (error) {
         this.historyDataStatus.status = DataStatus.Error;
