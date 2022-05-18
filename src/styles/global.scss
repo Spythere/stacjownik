@@ -211,6 +211,11 @@ ul {
     &:hover, &:focus {
       color: $accentCol;
     }
+
+    &.checked {
+      color: var(--clr-primary);
+      font-weight: bold;
+    }
   }
 
   &--image {
