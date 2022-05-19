@@ -18,16 +18,22 @@
       </button>
     </div>
 
-    <JournalTimetables v-if="journalTypeChosen == 'timetables'" />
+    <div class="journal-section">
+      <keep-alive>
+        <JournalTimetables v-if="journalTypeChosen == 'timetables'" />
+        <JournalDispatchers v-else-if="journalTypeChosen == 'dispatchers'" />
+      </keep-alive>
+    </div>
   </section>
 </template>
 
 <script lang="ts">
 import JournalTimetables from '@/components/JournalView/JournalTimetables.vue';
 import { defineComponent } from 'vue';
+import JournalDispatchers from '@/components/JournalView/JournalDispatchers.vue';
 
 export default defineComponent({
-  components: { JournalTimetables },
+  components: { JournalTimetables, JournalDispatchers },
 
   data() {
     return {
@@ -56,5 +62,12 @@ export default defineComponent({
 
   border-radius: 0 0 0.5em 0.5em;
   padding: 0.1em 0;
+}
+
+.journal-section > section {
+  height: 100%;
+
+  display: flex;
+  justify-content: center;
 }
 </style>

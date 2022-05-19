@@ -1,0 +1,84 @@
+@import 'responsive.scss';
+
+// Animations
+.warning {
+  &-enter-from,
+  &-leave-to {
+    opacity: 0;
+  }
+
+  &-enter-active {
+    transition: all 200ms ease-in-out;
+  }
+
+  &-leave-active {
+    transition: all 200ms ease-in-out;
+  }
+}
+
+.journal-list-anim {
+  &-enter-active,
+  &-leave-active {
+    transition: all 0.5s ease;
+  }
+
+  &-enter-from,
+  &-leave-to {
+    opacity: 0;
+  }
+}
+
+//Styles
+.journal-wrapper {
+  width: 1350px;
+  padding: 1em 0;
+}
+
+.journal_warning {
+  text-align: center;
+  font-size: 1.3em;
+
+  &.error {
+    background-color: var(--clr-error);
+  }
+}
+
+.schedule-dates > * {
+  margin-right: 0.25em;
+}
+
+li,
+.journal_warning {
+  background: #202020;
+  padding: 1em;
+  margin: 1em 0;
+}
+
+.journal_loading {
+  margin-top: 2em;
+
+  img {
+    margin: 0 auto;
+    display: block;
+
+    width: 8em;
+  }
+
+  text-align: center;
+
+  .loading-label {
+    background: #333;
+    color: white;
+
+    padding: 0.5em 0.5em;
+    font-size: 1.3em;
+
+    border-radius: 1em;
+  }
+}
+
+@include smallScreen() {
+  .journal-wrapper {
+    font-size: 1.25em;
+  }
+}

@@ -1,8 +1,6 @@
 <template>
   <section class="journal-timetables">
     <div class="journal-wrapper">
-      <JournalOptions @changedOptions="search" @changedFilter="search" />
-
       <button class="return-btn" @click="scrollToTop" v-if="showReturnButton">
         <img :src="icons.arrow" alt="return arrow" />
       </button>
@@ -27,102 +25,7 @@
               <ul v-else>
                 <transition-group name="journal-list-anim">
                   <li v-for="(item, i) in historyList" :key="item.timetableId">
-                    <div class="journal_item-top">
-                      <span>
-                        <span
-                          tabindex="0"
-                          @click="navigateToTrain(!item.terminated ? item.trainNo : null)"
-                          @keydown.enter="navigateToTrain(!item.terminated ? item.trainNo : null)"
-                          style="cursor: pointer"
-                        >
-                          <b class="text--primary">{{ item.trainCategoryCode }}&nbsp;</b>
-                          <b>{{ item.trainNo }}</b>
-                          | <span>{{ item.driverName }}</span> |
-                          <span class="text--grayed">#{{ item.timetableId }}</span>
-                        </span>
-
-                        <div>
-                          <b>{{ item.route.replace('|', ' - ') }}</b>
-                        </div>
-
-                        <hr style="margin: 0.25em 0" />
-
-                        <div class="scenery-list">
-                          <span
-                            v-for="(scenery, i) in getSceneryList(item)"
-                            :key="scenery.name"
-                            :class="{ confirmed: scenery.confirmed }"
-                          >
-                            {{ i > 0 ? ' > ' : '' }} {{ scenery.name }}
-                          </span>
-                        </div>
-
-                        <div class="schedule-dates">
-                          <!-- Data odjazdu ze stacji początkowej -->
-                          <b>{{ item.route.split('|')[0] }}:</b>
-                          <s v-if="item.beginDate != item.scheduledBeginDate" class="text--grayed">
-                            {{ localeTime(item.beginDate, $i18n.locale) }}
-                          </s>
-                          <span>{{ localeTime(item.scheduledBeginDate, $i18n.locale) }} </span>&bull;
-
-                          <!-- Data przyjazdu na stację końcową / porzucenia -->
-                          <b v-if="(item.fulfilled && item.terminated) || !item.terminated">
-                            {{ item.route.split('|').slice(-1)[0] }}:
-                          </b>
-                          <i v-else>{{ $t('history.timetable-abandoned') }} </i>
-
-                          <s v-if="item.endDate != item.scheduledEndDate && item.terminated" class="text--grayed">
-                            {{ localeTime(item.fulfilled ? item.endDate : item.scheduledEndDate, $i18n.locale) }}
-                          </s>
-                          <span
-                            >{{ localeTime(item.fulfilled ? item.scheduledEndDate : item.endDate, $i18n.locale) }}
-                          </span>
-                        </div>
-                      </span>
-
-                      <b
-                        class="journal_item-status"
-                        :class="{
-                          fulfilled: item.fulfilled || item.currentDistance >= item.routeDistance * 0.9,
-                          terminated: item.terminated && !item.fulfilled,
-                          active: !item.terminated,
-                        }"
-                      >
-                        {{
-                          !item.terminated
-                            ? $t('history.timetable-active')
-                            : item.fulfilled || item.currentDistance >= item.routeDistance * 0.9
-                            ? $t('history.timetable-fulfilled')
-                            : $t('history.timetable-abandoned')
-                        }}
-                      </b>
-                    </div>
-
-                    <div style="margin-top: 1em;">
-                      <div>
-                        {{ $t('history.timetable-day') }} <b>{{ localeDay(item.beginDate, $i18n.locale) }}</b>
-                      </div>
-
-                      <!-- Nick dyżurnego -->
-                      <div v-if="item.authorName">
-                        <b class="text--grayed">{{ $t('history.dispatcher-name') }}&nbsp;</b>
-                        <b>{{ item.authorName }}</b>
-                      </div>
-                    </div>
-
-                    <div style="margin-top: 1em;">
-                      <div>
-                        <b>{{ $t('history.route-length') }}</b>
-                        {{ !item.fulfilled ? item.currentDistance + ' /' : '' }}
-                        {{ item.routeDistance }} km
-                      </div>
-
-                      <div>
-                        <b>{{ $t('history.station-count') }}</b>
-                        {{ item.confirmedStopsCount }} /
-                        {{ item.allStopsCount }}
-                      </div>
-                    </div>
+                    {{  item.driverName }}
                   </li>
                 </transition-group>
               </ul>
@@ -263,21 +166,6 @@ export default defineComponent({
   },
 
   methods: {
-    getSceneryList(historyItem: TimetableHistory) {
-      return historyItem.sceneriesString
-        .split('%')
-        .map((name, i) => ({ name, confirmed: i < historyItem.confirmedStopsCount }));
-    },
-
-    navigateToTrain(trainNo: number | null) {
-      if (!trainNo) return;
-
-      this.$router.push({
-        name: 'TrainsView',
-        query: { train: trainNo.toString() },
-      });
-    },
-
     handleScroll() {
       this.showReturnButton = window.scrollY > window.innerHeight;
 
@@ -403,38 +291,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '../../styles/JournalSection.scss';
 
-.journal_item {
-  &-top {
-    display: flex;
-    justify-content: space-between;
+// .journal_item {
 
-    padding: 0.2em 0;
-
-    .scenery-list {
-      span {
-        color: #adadad;
-
-        &.confirmed {
-          color: #a3eba3;
-        }
-      }
-    }
-  }
-
-  &-status {
-    &.terminated {
-      color: salmon;
-    }
-
-    &.fulfilled {
-      color: lightgreen;
-    }
-
-    &.active {
-      color: lightblue;
-    }
-  }
-}
-
-
+// }
 </style>

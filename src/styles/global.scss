@@ -244,3 +244,36 @@ ul {
     }
   }
 }
+
+.return-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  position: fixed;
+  right: 0;
+  bottom: 0;
+
+  z-index: 100;
+
+  margin: 0 1em 1em 0;
+
+  width: 2em;
+  height: 2em;
+
+  font-size: 1.7em;
+
+  background-color: #333;
+  color: white;
+
+  border-radius: 50%;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #3c3c3c;
+  }
+
+  img {
+    width: 1.3em;
+  }
+}
