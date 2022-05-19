@@ -28,14 +28,16 @@
 
           <!-- <transition name="unfold-anim" @enter="enter" @afterEnter="afterEnter" @leave="leave"> -->
           <!-- <div class="dispatcher-list" v-if="timeline.showTimeline"> -->
-          <div class="dispatcher-item" v-for="dispatcher in timeline.dispatchers" :key="dispatcher.dispatcherFrom">
+          <div class="dispatcher-item" v-for="dispatcher in timeline.dispatchers" :key="dispatcher.timestampFrom">
             <b>{{ dispatcher.dispatcherName }}</b>
             <span>
               <span class="dispatcher-from text--primary">
-                {{ timestampToString(dispatcher.dispatcherFrom, true) }}
+                {{ timestampToString(dispatcher.timestampFrom, true) }}
               </span>
-              &gt;
-              <span class="dispatcher-to text--primary"> {{ timestampToString(dispatcher.dispatcherTo, true) }}</span>
+
+              <span class="dispatcher-to text--primary" v-if="dispatcher.timestampTo">
+                &gt; {{ timestampToString(dispatcher.timestampTo, true) }}
+              </span>
             </span>
           </div>
           <!-- </div> -->
@@ -60,30 +62,32 @@ interface DispatcherTimeline {
 interface DispatcherHistory {
   dispatcherName: string;
   dispatcherId: number;
-  dispatcherFrom: any;
-  dispatcherTo: any;
+  timestampFrom: number;
+  timestampTo?: number;
 }
 
-interface SceneryHistory {
-  stops: any[];
-  checkpoints: any[];
+interface SceneryHistoryResponse {
   stationName: string;
-  currentDispatcher: string;
-  currentDispatcherId: number;
-  currentDispatcherFrom: number;
-  dispatcherHistory: DispatcherHistory[];
+  stationHash: string;
+  region: string;
+  dispatcherName: string;
+  dispatcherId: number;
+  timestampFrom: number;
+  timestampTo?: number;
+  currentDuration: number;
+  isOnline: boolean;
+  lastOnlineTimestamp: number;
 }
 
 interface HistoryResultAPI {
-  response: SceneryHistory;
-  errorMessage?: any;
+  response: SceneryHistoryResponse[];
+  errorMessage?: string;
 }
 
-const API_URL = `${URLs.stacjownikAPI}/api/getSceneryHistory`;
+const HISTORY_API_URL = `${URLs.stacjownikAPI}/api/getSceneryHistory`;
 
 export default defineComponent({
   data: () => ({
-    dispatcherHistory: [] as DispatcherHistory[],
     dispatcherTimeline: [] as DispatcherTimeline[],
 
     isLoaded: false,
@@ -105,21 +109,23 @@ export default defineComponent({
     };
   },
 
-  async mounted() {    
+  async mounted() {
     try {
-      const apiResult: HistoryResultAPI = (await axios.get(`${API_URL}?name=${this.name}&historyCount=100`)).data;
+      const apiResult: HistoryResultAPI = (await axios.get(`${HISTORY_API_URL}?name=${this.name}&historyCount=100`)).data;
 
       if (!apiResult || !apiResult.response) return;
       this.isLoaded = true;
 
       if (apiResult.errorMessage) return;
 
-      this.dispatcherHistory = apiResult.response.dispatcherHistory;
-      this.savedSceneryHistory = this.dispatcherHistory;
+      console.log(apiResult);
 
-      this.dispatcherTimeline = this.dispatcherHistory
-        .reduce((acc, dispatcher) => {
-          const dateStr = new Date(dispatcher.dispatcherFrom).toLocaleDateString('pl-PL').replace(/\./g, '/');
+      const dispatcherHistoryResult = apiResult.response;
+      this.savedSceneryHistory = dispatcherHistoryResult;
+
+      this.dispatcherTimeline = apiResult.response.reduce(
+        (acc, { timestampFrom, timestampTo, dispatcherId, dispatcherName }) => {
+          const dateStr = new Date(timestampFrom).toLocaleDateString('pl-PL').replace(/\./g, '/');
 
           const timelineDay = acc.find((timeline) => timeline.date == dateStr) || {
             date: dateStr,
@@ -127,13 +133,19 @@ export default defineComponent({
             showTimeline: false,
           };
 
-          timelineDay.dispatchers.unshift(dispatcher);
+          timelineDay.dispatchers.unshift({
+            timestampFrom,
+            timestampTo,
+            dispatcherId,
+            dispatcherName,
+          });
 
           if (!acc.find((timeline) => timeline.date == dateStr)) acc.push(timelineDay);
 
           return acc;
-        }, [] as DispatcherTimeline[])
-        .reverse();
+        },
+        [] as DispatcherTimeline[]
+      );
     } catch (error) {
       console.error(error);
     }

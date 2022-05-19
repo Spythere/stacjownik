@@ -166,7 +166,8 @@
 import { GETTERS } from '@/constants/storeConstants';
 import { DataStatus } from '@/scripts/enums/DataStatus';
 import { StoreData } from '@/scripts/interfaces/StoreData';
-import { State, useStore } from '@/store';
+import { useStore } from '@/store';
+import { State } from '@/store/types';
 import { computed, defineComponent } from 'vue';
 import { Store } from 'vuex';
 
