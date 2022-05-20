@@ -24,8 +24,48 @@
 
               <ul v-else>
                 <transition-group name="journal-list-anim">
-                  <li v-for="(item, i) in historyList" :key="item.timetableId">
-                    {{  item.driverName }}
+                  <li v-for="(doc, i) in computedHistoryList" :key="doc._id">
+                    <div class="journal_day" v-if="isAnotherDay(i - 1, i)">
+                      <span>{{ new Date(doc.timestampFrom).toLocaleDateString('pl-PL') }}</span>
+                    </div>
+
+                    <div
+                      class="journal_item"
+                      :class="{ online: doc.isOnline }"
+                      @click="navigateToScenery(doc.stationName, doc.isOnline)"
+                      @keydown.enter="navigateToScenery(doc.stationName, doc.isOnline)"
+                      tabindex="0"
+                    >
+                      <span>
+                        <b class="text--primary">{{ doc.dispatcherName }}</b> &bull; <b>{{ doc.stationName }}</b>
+                        <span class="text--grayed">&nbsp;#{{ doc.stationHash }}&nbsp;</span>
+                        <span class="region-badge" :class="doc.region">PL1</span>
+                      </span>
+                      <span>
+                        <span :data-status="doc.isOnline"
+                          >{{ doc.isOnline ? $t('history.online-since') : 'OFFLINE' }}&nbsp;</span
+                        >
+                        <span>
+                          {{ new Date(doc.timestampFrom).toLocaleTimeString('pl-PL', { timeStyle: 'short' }) }}
+                        </span>
+
+                        <span v-if="doc.currentDuration && doc.isOnline">
+                          ({{ calculateDuration(doc.currentDuration) }})
+                        </span>
+
+                        <span v-if="doc.timestampTo">
+                          &gt;
+                          {{ new Date(doc.timestampTo).toLocaleTimeString('pl-PL', { timeStyle: 'short' }) }}
+                          ({{ $t('history.duty-lasted') }} {{ calculateDuration(doc.currentDuration!) }})
+                        </span>
+                      </span>
+                    </div>
+
+                    <!-- <div>{{ new Date(doc.timestampFrom).toLocaleDateString('pl-PL') }}</div> -->
+
+                    <!-- <div v-if="doc.timestampTo && doc.currentDuration && doc.currentDuration <= 30*60*1000">
+                      Wpis zostanie usunięty za {{ ~~((Date.now() - doc.currentDuration)) }} min.
+                    </div> -->
                   </li>
                 </transition-group>
               </ul>
@@ -41,7 +81,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, JournalFilter, provide, Ref, ref } from 'vue';
+import { computed, defineComponent, provide, Ref, ref } from 'vue';
 import axios from 'axios';
 
 import SearchBox from '@/components/Global/SearchBox.vue';
@@ -53,45 +93,34 @@ import JournalOptions from '@/components/JournalView/JournalOptions.vue';
 
 import { URLs } from '@/scripts/utils/apiURLs';
 import { journalFilters } from '@/data/journalFilters';
-import { JournalFilterType } from '@/scripts/enums/JournalFilterType';
 
-const PROD_MODE = true;
+const DEV_MODE = true;
+const PROD_MODE = !DEV_MODE || process.env.NODE_ENV === 'production';
 
-const API_URL = PROD_MODE ? `${URLs.stacjownikAPI}/api/getTimetables` : 'http://localhost:3001/api/getTimetables';
+const DISPATCHERS_API_URL = (PROD_MODE ? `${URLs.stacjownikAPI}/api` : 'http://localhost:3001/api') + '/getDispatchers';
 
 interface APIResponse {
   errorMessage: string | null;
-  response: TimetableHistory[] | null;
+  response: DispatcherHistoryItem[] | null;
 }
 
-interface TimetableHistory {
-  timetableId: number;
-  trainNo: number;
-  trainCategoryCode: string;
-  driverId: number;
-  driverName: string;
-  route: string;
-  twr: number;
-  skr: number;
-  sceneriesString: string;
+interface DispatcherHistoryItem {
+  _id: string;
 
-  routeDistance: number;
-  currentDistance: number;
+  stationName: string;
+  stationHash: string;
+  region: string;
 
-  confirmedStopsCount: number;
-  allStopsCount: number;
+  dispatcherName: string;
+  dispatcherId: number;
 
-  beginDate: string;
-  endDate: string;
+  timestampFrom: number;
+  timestampTo?: number;
+  currentDuration?: number;
 
-  scheduledBeginDate: string;
-  scheduledEndDate: string;
+  lastOnlineTimestamp: number;
 
-  terminated: boolean;
-  fulfilled: boolean;
-
-  authorName?: string;
-  authorId?: number;
+  isOnline: boolean;
 }
 
 export default defineComponent({
@@ -133,7 +162,7 @@ export default defineComponent({
     const scrollElement: Ref<HTMLElement | null> = ref(null);
 
     return {
-      historyList: ref([]) as Ref<TimetableHistory[]>,
+      historyList: ref([]) as Ref<DispatcherHistoryItem[]>,
       historyDataStatus,
 
       isDataLoading: computed(() => historyDataStatus.value.status === DataStatus.Loading),
@@ -153,6 +182,14 @@ export default defineComponent({
     };
   },
 
+  computed: {
+    computedHistoryList() {
+      return this.historyList.filter(
+        (doc) => doc.isOnline || (doc.currentDuration && doc.currentDuration > 10 * 60000)
+      ); //.sort((a, b) => (b.isOnline ? 1 : 0) - (a.isOnline ? 1 : 0));
+    },
+  },
+
   mounted() {
     this.fetchHistoryData();
   },
@@ -166,6 +203,31 @@ export default defineComponent({
   },
 
   methods: {
+    navigateToScenery(name: string, isOnline: boolean) {
+      if (!isOnline) return;
+
+      this.$router.push(`/scenery?station=${name.trim().replace(/ /g, '_')}`);
+    },
+
+    calculateDuration(timestampMs: number) {
+      const minsTotal = Math.round(timestampMs / 60000);
+      const hoursTotal = Math.floor(minsTotal / 60);
+      const minsInHour = minsTotal % 60;
+
+      return minsTotal > 60
+        ? this.$t('history.hours', { hours: hoursTotal, minutes: minsInHour })
+        : this.$t('history.minutes', { minutes: minsTotal });
+    },
+
+    isAnotherDay(prevIndex: number, currIndex: number) {
+      if (currIndex == 0) return true;
+
+      return (
+        new Date(this.computedHistoryList[prevIndex].timestampFrom).getDate() !=
+        new Date(this.computedHistoryList[currIndex].timestampFrom).getDate()
+      );
+    },
+
     handleScroll() {
       this.showReturnButton = window.scrollY > window.innerHeight;
 
@@ -184,11 +246,7 @@ export default defineComponent({
     },
 
     search() {
-      this.fetchHistoryData({
-        searchedDriver: this.searchedDriver,
-        searchedTrain: this.searchedTrain,
-        filter: this.journalFilterActive,
-      });
+      this.fetchHistoryData();
 
       this.scrollNoMoreData = false;
       this.scrollDataLoaded = true;
@@ -200,10 +258,8 @@ export default defineComponent({
       const countFrom = this.historyList.length;
 
       const responseData: APIResponse | null = await (
-        await axios.get(`${API_URL}?${this.currentQuery}&countFrom=${countFrom}`)
+        await axios.get(`${DISPATCHERS_API_URL}?${this.currentQuery}&countFrom=${countFrom}`)
       ).data;
-
-      console.log('Loading...');
 
       if (!responseData?.response) return;
 
@@ -216,49 +272,21 @@ export default defineComponent({
       this.scrollDataLoaded = true;
     },
 
-    async fetchHistoryData(
-      props: {
-        searchedDriver?: string;
-        searchedTrain?: string;
-        filter?: JournalFilter;
-      } = {}
-    ) {
+    async fetchHistoryData() {
       this.historyDataStatus.status = DataStatus.Loading;
 
       const queries: string[] = [];
-
-      if (props.searchedDriver) queries.push(`driver=${props.searchedDriver}`);
-      if (props.searchedTrain) queries.push(`train=${props.searchedTrain}`);
-
-      // Z API: const SORT_TYPES = ['allStopsCount', 'endDate', 'beginDate', 'routeDistance'];
-      if (this.sorterActive.id == 'distance') queries.push('sortBy=routeDistance');
-      else if (this.sorterActive.id == 'total-stops') queries.push('sortBy=allStopsCount');
-      else if (this.sorterActive.id == 'beginDate') queries.push('sortBy=beginDate');
-      else queries.push('sortBy=timetableId');
-
       queries.push('countLimit=15');
-
-      switch (props.filter?.id) {
-        case JournalFilterType.abandoned:
-          queries.push('fulfilled=0', 'terminated=1');
-          break;
-
-        case JournalFilterType.active:
-          queries.push('terminated=0');
-          break;
-
-        case JournalFilterType.fulfilled:
-          queries.push('fulfilled=1');
-          break;
-
-        default:
-          break;
-      }
 
       this.currentQuery = queries.join('&');
 
+      // sorters; sortBy: duration, timestampFrom (default)
+      // filters; dispatcherName, stationName
+
       try {
-        const responseData: APIResponse | null = await (await axios.get(`${API_URL}?${this.currentQuery}`)).data;
+        const responseData: APIResponse | null = await (
+          await axios.get(`${DISPATCHERS_API_URL}?${this.currentQuery}`)
+        ).data;
 
         if (!responseData) {
           this.historyDataStatus.status = DataStatus.Error;
@@ -290,8 +318,89 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '../../styles/JournalSection.scss';
+@import '../../styles/responsive.scss';
 
-// .journal_item {
+.region-badge {
+  padding: 0.1em 0.5em;
+  border-radius: 0.5em;
+  font-weight: bold;
 
-// }
+  &.eu {
+    background-color: forestgreen;
+  }
+}
+
+.journal-wrapper {
+  max-width: 1100px;
+}
+
+.journal_item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  flex-wrap: wrap;
+
+  &.online {
+    cursor: pointer;
+  }
+
+  span[data-status='true'] {
+    color: springgreen;
+  }
+
+  span[data-status='false'] {
+    color: salmon;
+  }
+}
+
+.journal-current-day {
+  position: sticky;
+  top: -1px;
+
+  padding: 0.5em 0;
+  background-color: salmon;
+}
+
+.journal_day {
+  position: relative;
+  text-align: center;
+  background-color: #4d4d4d;
+
+  span {
+    position: relative;
+    background-color: #4d4d4d;
+    z-index: 10;
+
+    padding: 0 0.5em;
+  }
+
+  &::after {
+    position: absolute;
+    content: '';
+
+    z-index: 0;
+
+    left: 50%;
+    top: 50%;
+
+    transform: translate(-50%, -50%);
+
+    height: 3px;
+    width: 60%;
+    min-width: 200px;
+
+    background-color: white;
+  }
+}
+
+@include smallScreen() {
+  .journal_item {
+    flex-direction: column;
+
+    span {
+      margin-top: 0.25em;
+    }
+  }
+}
 </style>

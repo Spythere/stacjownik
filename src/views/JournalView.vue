@@ -37,7 +37,7 @@ export default defineComponent({
 
   data() {
     return {
-      journalTypeChosen: 'timetables',
+      journalTypeChosen: 'dispatchers',
     };
   },
 

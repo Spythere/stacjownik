@@ -237,6 +237,11 @@
     "timetable-day": "Timetable created at",
     "timetable-active": "ACTIVE",
     "timetable-fulfilled": "FULFILLED",
-    "timetable-abandoned": "ABANDONED"
+    "timetable-abandoned": "ABANDONED",
+
+    "online-since": "ONLINE SINCE",
+    "duty-lasted": "The duty lasted",
+    "minutes": "{minutes} mins",
+    "hours": "{hours}h {minutes} mins"
   }
 }

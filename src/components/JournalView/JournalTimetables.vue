@@ -26,7 +26,7 @@
 
               <ul v-else>
                 <transition-group name="journal-list-anim">
-                  <li v-for="(item, i) in historyList" :key="item.timetableId">
+                  <li v-for="(item, i) in historyList" class="journal_item" :key="item.timetableId">
                     <div class="journal_item-top">
                       <span>
                         <span
