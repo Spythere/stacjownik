@@ -251,7 +251,7 @@ li {
     justify-content: center;
     align-items: center;
 
-    background: #2a2a2a;
+    background: #222;
     padding: 0.5em;
     margin: 0 auto 0.5em auto;
 

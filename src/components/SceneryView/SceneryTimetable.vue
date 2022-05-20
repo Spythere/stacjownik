@@ -318,7 +318,7 @@ h3.timetable-header {
     grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
     gap: 0 0.5em;
 
-    background: $bgLigtherCol;
+    background: $bgCol;
 
     cursor: pointer;
     z-index: 10;

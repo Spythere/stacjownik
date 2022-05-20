@@ -191,7 +191,7 @@ $sceneryBgCol: #333;
       width: 95%;
     }
 
-    background: $sceneryBgCol;
+    background: #292929;
     padding: 1em;
     margin: 1rem 0;
 
