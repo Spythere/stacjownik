@@ -239,6 +239,11 @@
     "timetable-day": "Rozkład z dnia",
     "timetable-active": "AKTYWNY",
     "timetable-fulfilled": "WYPEŁNIONY",
-    "timetable-abandoned": "PORZUCONY"
+    "timetable-abandoned": "PORZUCONY",
+
+    "online-since": "ONLINE OD",
+    "duty-lasted": "Dyżur trwał",
+    "minutes": "{minutes} min.",
+    "hours": "{hours} godz. {minutes} min."
   }
 }

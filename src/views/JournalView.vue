@@ -1,578 +1,73 @@
 <template>
-  <section class="history-view">
-    <div class="history-wrapper">
-      <JournalOptions @changedOptions="search" @changedFilter="search" />
-
-      <button class="return-btn" @click="scrollToTop" v-if="showReturnButton">
-        <img :src="icons.arrow" alt="return arrow" />
+  <section class="journal-view">
+    <div class="journal-type-options">
+      <button
+        class="btn btn--text"
+        :class="{ checked: journalTypeChosen == 'timetables' }"
+        @click="changeJournalType('timetables')"
+      >
+        ROZKŁADY JAZDY
       </button>
+      &nbsp;&bull;&nbsp;
+      <button
+        class="btn btn--text"
+        :class="{ checked: journalTypeChosen == 'dispatchers' }"
+        @click="changeJournalType('dispatchers')"
+      >
+        DYŻURNI
+      </button>
+    </div>
 
-      <div class="history_list">
-        <div class="list_wrapper" ref="scrollElement">
-          <transition name="warning" mode="out-in">
-            <div :key="historyDataStatus.status">
-              <div class="history_loading" v-if="isDataLoading || isDataInit">
-                <img :src="icons.loading" alt="loading icon" />
-                <span class="loading-label">{{ $t('app.loading') }}</span>
-              </div>
-
-              <div v-else-if="isDataError" class="history_warning error">
-                {{ $t('app.error') }}
-              </div>
-
-              <div class="history_warning" v-else-if="historyList.length == 0">
-                {{ $t('app.no-result') }}
-              </div>
-
-              <ul v-else>
-                <transition-group name="history-list-anim">
-                  <li v-for="(item, i) in historyList" :key="item.timetableId">
-                    <div class="history_item-top">
-                      <span>
-                        <span
-                          tabindex="0"
-                          @click="navigateToTrain(!item.terminated ? item.trainNo : null)"
-                          @keydown.enter="navigateToTrain(!item.terminated ? item.trainNo : null)"
-                          style="cursor: pointer"
-                        >
-                          <b class="text--primary">{{ item.trainCategoryCode }}&nbsp;</b>
-                          <b>{{ item.trainNo }}</b>
-                          | <span>{{ item.driverName }}</span> |
-                          <span class="text--grayed">#{{ item.timetableId }}</span>
-                        </span>
-
-                        <div>
-                          <b>{{ item.route.replace('|', ' - ') }}</b>
-                        </div>
-
-                        <hr style="margin: 0.25em 0" />
-
-                        <div class="scenery-list">
-                          <span
-                            v-for="(scenery, i) in getSceneryList(item)"
-                            :key="scenery.name"
-                            :class="{ confirmed: scenery.confirmed }"
-                          >
-                            {{ i > 0 ? ' > ' : '' }} {{ scenery.name }}
-                          </span>
-                        </div>
-
-                        <div class="schedule-dates">
-                          <!-- Data odjazdu ze stacji początkowej -->
-                          <b>{{ item.route.split('|')[0] }}:</b>
-                          <s v-if="item.beginDate != item.scheduledBeginDate" class="text--grayed">
-                            {{ localeTime(item.beginDate, $i18n.locale) }}
-                          </s>
-                          <span>{{ localeTime(item.scheduledBeginDate, $i18n.locale) }} </span>&bull;
-
-                          <!-- Data przyjazdu na stację końcową / porzucenia -->
-                          <b v-if="(item.fulfilled && item.terminated) || !item.terminated">
-                            {{ item.route.split('|').slice(-1)[0] }}:
-                          </b>
-                          <i v-else>{{ $t('history.timetable-abandoned') }} </i>
-
-                          <s v-if="item.endDate != item.scheduledEndDate && item.terminated" class="text--grayed">
-                            {{ localeTime(item.fulfilled ? item.endDate : item.scheduledEndDate, $i18n.locale) }}
-                          </s>
-                          <span
-                            >{{ localeTime(item.fulfilled ? item.scheduledEndDate : item.endDate, $i18n.locale) }}
-                          </span>
-                        </div>
-                      </span>
-
-                      <b
-                        class="history_item-status"
-                        :class="{
-                          fulfilled: item.fulfilled || item.currentDistance >= item.routeDistance * 0.9,
-                          terminated: item.terminated && !item.fulfilled,
-                          active: !item.terminated,
-                        }"
-                      >
-                        {{
-                          !item.terminated
-                            ? $t('history.timetable-active')
-                            : item.fulfilled || item.currentDistance >= item.routeDistance * 0.9
-                            ? $t('history.timetable-fulfilled')
-                            : $t('history.timetable-abandoned')
-                        }}
-                      </b>
-                    </div>
-
-                    <div style="margin-top: 1em;">
-                      <div>
-                        {{ $t('history.timetable-day') }} <b>{{ localeDay(item.beginDate, $i18n.locale) }}</b>
-                      </div>
-
-                      <!-- Nick dyżurnego -->
-                      <div v-if="item.authorName">
-                        <b class="text--grayed">{{ $t('history.dispatcher-name') }}&nbsp;</b>
-                        <b>{{ item.authorName }}</b>
-                      </div>
-                    </div>
-
-                    <div style="margin-top: 1em;">
-                      <div>
-                        <b>{{ $t('history.route-length') }}</b>
-                        {{ !item.fulfilled ? item.currentDistance + ' /' : '' }}
-                        {{ item.routeDistance }} km
-                      </div>
-
-                      <div>
-                        <b>{{ $t('history.station-count') }}</b>
-                        {{ item.confirmedStopsCount }} /
-                        {{ item.allStopsCount }}
-                      </div>
-                    </div>
-                  </li>
-                </transition-group>
-              </ul>
-            </div>
-          </transition>
-        </div>
-      </div>
-
-      <div class="history_warning" v-if="scrollNoMoreData">{{ $t('journal.no-further-data') }}</div>
-      <div class="history_warning" v-else-if="!scrollDataLoaded">{{ $t('journal.loading-further-data') }}</div>
+    <div class="journal-section">
+      <keep-alive>
+        <JournalTimetables v-if="journalTypeChosen == 'timetables'" />
+        <JournalDispatchers v-else-if="journalTypeChosen == 'dispatchers'" />
+      </keep-alive>
     </div>
   </section>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, JournalFilter, provide, Ref, ref } from 'vue';
-import axios from 'axios';
-
-import SearchBox from '@/components/Global/SearchBox.vue';
-import dateMixin from '@/mixins/dateMixin';
-import { DataStatus } from '@/scripts/enums/DataStatus';
-
-import ActionButton from '@/components/Global/ActionButton.vue';
-import JournalOptions from '@/components/JournalView/JournalOptions.vue';
-
-import { URLs } from '@/scripts/utils/apiURLs';
-import { journalFilters } from '@/data/journalFilters';
-import { JournalFilterType } from '@/scripts/enums/JournalFilterType';
-
-const PROD_MODE = true;
-
-const API_URL = PROD_MODE ? `${URLs.stacjownikAPI}/api/getTimetables` : 'http://localhost:3001/api/getTimetables';
-
-interface APIResponse {
-  errorMessage: string | null;
-  response: TimetableHistory[] | null;
-}
-
-interface TimetableHistory {
-  timetableId: number;
-  trainNo: number;
-  trainCategoryCode: string;
-  driverId: number;
-  driverName: string;
-  route: string;
-  twr: number;
-  skr: number;
-  sceneriesString: string;
-
-  routeDistance: number;
-  currentDistance: number;
-
-  confirmedStopsCount: number;
-  allStopsCount: number;
-
-  beginDate: string;
-  endDate: string;
-
-  scheduledBeginDate: string;
-  scheduledEndDate: string;
-
-  terminated: boolean;
-  fulfilled: boolean;
-
-  authorName?: string;
-  authorId?: number;
-}
+import JournalTimetables from '@/components/JournalView/JournalTimetables.vue';
+import { defineComponent } from 'vue';
+import JournalDispatchers from '@/components/JournalView/JournalDispatchers.vue';
 
 export default defineComponent({
-  components: { SearchBox, ActionButton, JournalOptions },
-  mixins: [dateMixin],
+  components: { JournalTimetables, JournalDispatchers },
 
-  data: () => ({
-    icons: {
-      loading: require('@/assets/icon-loading.svg'),
-      arrow: require('@/assets/icon-arrow-asc.svg'),
-    },
-
-    currentQuery: '',
-    scrollDataLoaded: true,
-    scrollNoMoreData: false,
-
-    showReturnButton: false,
-  }),
-
-  setup() {
-    const historyDataStatus: Ref<{ status: DataStatus; error: string | null }> = ref({
-      status: DataStatus.Loading,
-      error: null,
-    });
-
-    const sorterActive = ref({ id: 'timetableId', dir: -1 });
-    const journalFilterActive = ref(journalFilters[0]);
-
-    const searchedDriver = ref('');
-    const searchedTrain = ref('');
-    const countFromIndex = ref(0);
-    const countLimit = 15;
-
-    provide('searchedTrain', searchedTrain);
-    provide('searchedDriver', searchedDriver);
-    provide('sorterActive', sorterActive);
-    provide('journalFilterActive', journalFilterActive);
-
-    const scrollElement: Ref<HTMLElement | null> = ref(null);
-
+  data() {
     return {
-      historyList: ref([]) as Ref<TimetableHistory[]>,
-      historyDataStatus,
-
-      isDataLoading: computed(() => historyDataStatus.value.status === DataStatus.Loading),
-      isDataError: computed(() => historyDataStatus.value.status === DataStatus.Error),
-      isDataInit: computed(() => historyDataStatus.value.status === DataStatus.Initialized),
-
-      searchedDriver,
-      searchedTrain,
-      sorterActive,
-      journalFilterActive,
-
-      countFromIndex,
-      countLimit,
-
-      scrollElement,
-      maxCount: ref(15),
+      journalTypeChosen: 'dispatchers',
     };
   },
 
-  mounted() {
-    this.fetchHistoryData();
-  },
-
-  activated() {
-    window.addEventListener('scroll', this.handleScroll);
-  },
-
-  deactivated() {
-    window.removeEventListener('scroll', this.handleScroll);
-  },
-
   methods: {
-    getSceneryList(historyItem: TimetableHistory) {
-      return historyItem.sceneriesString
-        .split('%')
-        .map((name, i) => ({ name, confirmed: i < historyItem.confirmedStopsCount }));
-    },
-
-    navigateToTrain(trainNo: number | null) {
-      if (!trainNo) return;
-
-      this.$router.push({
-        name: 'TrainsView',
-        query: { train: trainNo.toString() },
-      });
-    },
-
-    handleScroll() {
-      this.showReturnButton = window.scrollY > window.innerHeight;
-
-      const element = this.$refs.scrollElement as HTMLElement;
-
-      if (
-        element.getBoundingClientRect().bottom * 0.85 < window.innerHeight &&
-        this.scrollDataLoaded &&
-        !this.scrollNoMoreData
-      )
-        this.addHistoryData();
-    },
-
-    scrollToTop() {
-      window.scrollTo({ top: 0 });
-    },
-
-    search() {
-      this.fetchHistoryData({
-        searchedDriver: this.searchedDriver,
-        searchedTrain: this.searchedTrain,
-        filter: this.journalFilterActive,
-      });
-
-      this.scrollNoMoreData = false;
-      this.scrollDataLoaded = true;
-    },
-
-    keyPressed({ keyCode }) {
-      if (keyCode == 13) this.search();
-    },
-
-    async addHistoryData() {
-      this.scrollDataLoaded = false;
-
-      const countFrom = this.historyList.length;
-
-      const responseData: APIResponse | null = await (
-        await axios.get(`${API_URL}?${this.currentQuery}&countFrom=${countFrom}`)
-      ).data;
-
-      console.log('Loading...');
-
-      if (!responseData?.response) return;
-
-      if (responseData.response.length == 0) {
-        this.scrollNoMoreData = true;
-        return;
-      }
-
-      this.historyList.push(...responseData.response);
-      this.scrollDataLoaded = true;
-    },
-
-    async fetchHistoryData(
-      props: {
-        searchedDriver?: string;
-        searchedTrain?: string;
-        filter?: JournalFilter;
-      } = {}
-    ) {
-      this.historyDataStatus.status = DataStatus.Loading;
-
-      const queries: string[] = [];
-
-      if (props.searchedDriver) queries.push(`driver=${props.searchedDriver}`);
-      if (props.searchedTrain) queries.push(`train=${props.searchedTrain}`);
-
-      // Z API: const SORT_TYPES = ['allStopsCount', 'endDate', 'beginDate', 'routeDistance'];
-      if (this.sorterActive.id == 'distance') queries.push('sortBy=routeDistance');
-      else if (this.sorterActive.id == 'total-stops') queries.push('sortBy=allStopsCount');
-      else if (this.sorterActive.id == 'beginDate') queries.push('sortBy=beginDate');
-      else queries.push('sortBy=timetableId');
-
-      queries.push('countLimit=15');
-
-      switch (props.filter?.id) {
-        case JournalFilterType.abandoned:
-          queries.push('fulfilled=0', 'terminated=1');
-          break;
-
-        case JournalFilterType.active:
-          queries.push('terminated=0');
-          break;
-
-        case JournalFilterType.fulfilled:
-          queries.push('fulfilled=1');
-          break;
-
-        default:
-          break;
-      }
-
-      this.currentQuery = queries.join('&');
-
-      try {
-        const responseData: APIResponse | null = await (await axios.get(`${API_URL}?${this.currentQuery}`)).data;
-
-        if (!responseData) {
-          this.historyDataStatus.status = DataStatus.Error;
-          this.historyDataStatus.error = 'Brak danych!';
-          return;
-        }
-
-        if (responseData.errorMessage) {
-          this.historyDataStatus.status = DataStatus.Error;
-          this.historyDataStatus.error = responseData.errorMessage;
-
-          return;
-        }
-
-        if (!responseData.response) return;
-
-        // Response data exists
-        this.historyList = responseData.response;
-
-        this.historyDataStatus.status = DataStatus.Loaded;
-      } catch (error) {
-        this.historyDataStatus.status = DataStatus.Error;
-        this.historyDataStatus.error = 'Ups! Coś poszło nie tak!';
-      }
+    changeJournalType(type: string) {
+      this.journalTypeChosen = type;
     },
   },
 });
 </script>
 
 <style lang="scss" scoped>
-@import '../styles/responsive.scss';
-@import '../styles/option.scss';
-
-// Animations
-.warning {
-  &-enter-from,
-  &-leave-to {
-    opacity: 0;
-  }
-
-  &-enter-active {
-    transition: all 200ms ease-in-out;
-  }
-
-  &-leave-active {
-    transition: all 200ms ease-in-out;
-  }
-}
-
-.history-list-anim {
-  &-enter-active,
-  &-leave-active {
-    transition: all 0.5s ease;
-  }
-
-  &-enter-from,
-  &-leave-to {
-    opacity: 0;
-  }
-}
-
-// Style
-
-.return-btn {
+.journal-type-options {
   display: flex;
   justify-content: center;
-  align-items: center;
 
-  position: fixed;
-  right: 0;
-  bottom: 0;
+  background-color: #2c2c2c;
+  width: 350px;
 
-  margin: 0 1em 1em 0;
+  font-size: 1.2em;
+  margin: 0 auto;
 
-  width: 2em;
-  height: 2em;
-
-  font-size: 1.7em;
-
-  background-color: #333;
-  color: white;
-
-  border-radius: 50%;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #3c3c3c;
-  }
-
-  img {
-    width: 1.3em;
-  }
+  border-radius: 0 0 0.5em 0.5em;
+  padding: 0.1em 0;
 }
 
-.history-view {
+.journal-section > section {
   height: 100%;
 
   display: flex;
   justify-content: center;
-}
-
-.history-wrapper {
-  width: 1350px;
-
-  padding: 1em 0;
-}
-
-.history_item {
-  &-top {
-    display: flex;
-    justify-content: space-between;
-
-    padding: 0.2em 0;
-
-    .scenery-list {
-      span {
-        color: #adadad;
-
-        &.confirmed {
-          color: #a3eba3;
-        }
-      }
-    }
-  }
-
-  &-status {
-    &.terminated {
-      color: salmon;
-    }
-
-    &.fulfilled {
-      color: lightgreen;
-    }
-
-    &.active {
-      color: lightblue;
-    }
-  }
-}
-
-.history_search {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-
-  @include smallScreen() {
-    justify-content: center;
-    flex-direction: column;
-  }
-}
-
-.history_warning {
-  text-align: center;
-  font-size: 1.3em;
-
-  &.error {
-    background-color: var(--clr-error);
-  }
-}
-
-.schedule-dates > * {
-  margin-right: 0.25em;
-}
-
-li,
-.history_warning {
-  background: #202020;
-  padding: 1em;
-  margin: 1em 0;
-}
-
-@include smallScreen() {
-  .history-view {
-    font-size: 1.25em;
-  }
-}
-
-.history_loading {
-  margin-top: 2em;
-
-  img {
-    margin: 0 auto;
-    display: block;
-
-    width: 8em;
-  }
-
-  text-align: center;
-
-  .loading-label {
-    background: #333;
-    color: white;
-
-    padding: 0.5em 0.5em;
-    font-size: 1.3em;
-
-    border-radius: 1em;
-  }
 }
 </style>
