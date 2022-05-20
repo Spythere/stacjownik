@@ -55,7 +55,7 @@ export default defineComponent({
   justify-content: center;
 
   background-color: #2c2c2c;
-  width: 350px;
+  max-width: 18em;
 
   font-size: 1.2em;
   margin: 0 auto;

@@ -188,7 +188,7 @@ $sceneryBgCol: #333;
     max-width: 1200px;
 
     @include midScreen {
-      width: 95%;
+      width: 100%;
     }
 
     background: #292929;
