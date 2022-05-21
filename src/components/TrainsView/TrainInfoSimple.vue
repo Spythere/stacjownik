@@ -29,7 +29,7 @@
             v-if="getSceneriesWithComments(train.timetableData).length > 0"
             class="image-warning"
             :src="icons.warning"
-            :title="`${$t('trains.timetable-comments')} (${getSceneriesWithComments(train.timetableData).join(',')})`"
+            :title="`${$t('trains.timetable-comments')} (${getSceneriesWithComments(train.timetableData)})`"
           />
         </div>
 

@@ -42,7 +42,7 @@ export default defineComponent({
             ],
         },
     }),
-    
+
     methods: {
         displayStopList(stops: TrainStop[]): string | undefined {
             if (!stops) return '';
@@ -91,13 +91,16 @@ export default defineComponent({
         },
 
         getSceneriesWithComments(timetableData: Train['timetableData']) {
-            return (
-                timetableData?.followingStops.reduce((acc, stop) => {
-                    if (stop.comments) acc.push(stop.stopNameRAW);
+            const commentList = timetableData?.followingStops.reduce((acc, stop, i) => {
+                if (stop.comments) acc.push(stop.stopNameRAW);
 
-                    return acc;
-                }, [] as string[]) || []
-            );
+                return acc;
+            }, [] as string[]) || []
+
+            const moreCount = commentList.length - 10;
+
+
+            return commentList.slice(0,10).join(", ") + (moreCount > 0 ? `... (+${moreCount})` : '');
         },
 
         displayDistance(distance: number) {

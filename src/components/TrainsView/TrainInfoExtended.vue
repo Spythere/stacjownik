@@ -59,7 +59,7 @@
         </div>
 
         <div class="timetable_comments" v-if="getSceneriesWithComments(train.timetableData).length > 0 && isInfoShown">
-          {{ $t('trains.comment') }} <b>{{ getSceneriesWithComments(train.timetableData).join(',') }}</b>
+          {{ $t('trains.comment') }} <b>{{ getSceneriesWithComments(train.timetableData) }}</b>
         </div>
       </div>
     </section>
