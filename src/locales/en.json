@@ -185,8 +185,14 @@
     "loading": "Loading dispatcher history data...",
     "no-history": "No dispatcher history found!",
 
+    "section-timetables": "TIMETABLES",
+    "section-dispatchers": "DISPATCHERS",
+
+    "search": "Search",
     "search-train": "Train no.",
     "search-driver": "Driver name",
+    "search-dispatcher": "Dispatcher name",
+    "search-station": "Scenery name",
 
     "sort-prefix": "Sort: ",
 
@@ -194,6 +200,8 @@
     "option-total-stops": "total stops",
     "option-beginDate": "date",
     "option-timetableId": "timetable ID",
+    "option-timestampFrom": "date",
+    "option-duration": "duration",
 
     "filter-all": "ALL ENTRIES",
     "filter-abandoned": "ABANDONED",
@@ -201,7 +209,20 @@
     "filter-active": "ACTIVE",
 
     "no-further-data": "No further data for current parameters",
-    "loading-further-data": "Loading..."
+    "loading-further-data": "Loading...",
+
+    "route-length": "Route length:",
+    "station-count": "Stations:",
+    "dispatcher-name": "Created by",
+    "timetable-day": "Timetable created at",
+    "timetable-active": "ACTIVE",
+    "timetable-fulfilled": "FULFILLED",
+    "timetable-abandoned": "ABANDONED",
+
+    "online-since": "ONLINE SINCE",
+    "duty-lasted": "The duty lasted",
+    "minutes": "{minutes} mins",
+    "hours": "{hours}h {minutes} mins"
   },
   "scenery": {
     "users": "PLAYERS ONLINE",
@@ -228,20 +249,7 @@
   },
   "history": {
     "title": "TIMETABLE JOURNAL",
-    "search": "Search",
     "search-train": "Train no.",
-    "search-driver": "Driver name",
-    "route-length": "Route length:",
-    "station-count": "Stations:",
-    "dispatcher-name": "Created by",
-    "timetable-day": "Timetable created at",
-    "timetable-active": "ACTIVE",
-    "timetable-fulfilled": "FULFILLED",
-    "timetable-abandoned": "ABANDONED",
-
-    "online-since": "ONLINE SINCE",
-    "duty-lasted": "The duty lasted",
-    "minutes": "{minutes} mins",
-    "hours": "{hours}h {minutes} mins"
+    "search-driver": "Driver name"
   }
 }

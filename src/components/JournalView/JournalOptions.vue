@@ -6,13 +6,23 @@
           <select-box
             :itemList="translatedSorterOptions"
             :defaultItemIndex="0"
-            @selected="changeSorter"
+            @selected="onSorterChange"
             :prefix="$t('journal.sort-prefix')"
           />
         </div>
 
         <div class="content_search">
-          <div class="search-box">
+          <div class="search-box" v-for="search in searchersValues" :key="search.id">
+            <input
+              class="search-input"
+              :placeholder="$t(`journal.${search.id}`)"
+              v-model="search.value"
+              @keydown.enter="onInputSearch"
+            />
+
+            <img class="search-exit" :src="exitIcon" alt="exit-icon" @click="onInputClear(search.id)" />
+          </div>
+          <!-- <div class="search-box">
             <input
               class="search-input"
               v-model="searchedTrain"
@@ -32,21 +42,21 @@
             />
 
             <img class="search-exit" :src="exitIcon" alt="exit-icon" @click="clearDriver" />
-          </div>
+          </div> -->
 
-          <action-button class="search-button" @click="search">
-            {{ $t('history.search') }}
+          <action-button class="search-button" @click="onInputSearch">
+            {{ $t('journal.search') }}
           </action-button>
         </div>
       </div>
 
       <div class="options_filters">
         <button
-          v-for="filter in journalFilters"
+          v-for="filter in filters"
           class="journal-filter-option btn--option"
           :class="{ checked: journalFilterActive.id === filter.id }"
           :id="filter.id"
-          @click="changeJournalFilter(filter)"
+          @click="onFilterChange(filter)"
         >
           {{ $t(`journal.filter-${filter.id}`) }}
         </button>
@@ -56,68 +66,66 @@
 </template>
 
 <script lang="ts">
-import { journalFilters } from '@/data/journalFilters';
-import { computed, defineComponent, inject, JournalFilter } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { defineComponent, inject, JournalFilter, PropType } from 'vue';
 import ActionButton from '../Global/ActionButton.vue';
 import SelectBox from '../Global/SelectBox.vue';
 
 export default defineComponent({
   components: { SelectBox, ActionButton },
-  emits: ['changedOptions', 'changedFilter'],
+  emits: ['onSorterChange', 'onInputChange', 'onFilterChange'],
+  props: {
+    sorterOptionIds: {
+      type: Array as PropType<Array<string>>,
+      required: true,
+    },
+
+    filters: {
+      type: Array as PropType<JournalFilter[]>,
+      default: [],
+    },
+  },
 
   data: () => ({
     exitIcon: require('@/assets/icon-exit.svg'),
-    journalFilters,
   }),
 
   setup() {
-    const { t } = useI18n();
-
-    const sorterOptions = ['timetableId', 'beginDate', 'distance', 'total-stops'];
-
-    const translatedSorterOptions = computed(() =>
-      sorterOptions.map((id) => ({
-        id,
-        value: t(`journal.option-${id}`),
-      }))
-    );
-
     return {
-      translatedSorterOptions,
-
-      searchedTrain: inject('searchedTrain') as string,
-      searchedDriver: inject('searchedDriver') as string,
+      searchersValues: inject('searchersValues') as {id: string; value: string}[],
       sorterActive: inject('sorterActive') as { id: string | number; dir: number },
-      journalFilterActive: inject('journalFilterActive') as JournalFilter
+      journalFilterActive: inject('journalFilterActive') as JournalFilter,
     };
   },
 
+  computed: {
+    translatedSorterOptions() {
+      return this.$props.sorterOptionIds.map((id) => ({
+        id,
+        value: this.$t(`journal.option-${id}`),
+      }));
+    },
+  },
+
   methods: {
-    changeSorter(item: { id: string | number; value: string }) {
+    onSorterChange(item: { id: string | number; value: string }) {
       this.sorterActive.id = item.id;
       this.sorterActive.dir = -1;
 
-      this.$emit('changedOptions');
+      this.$emit('onSorterChange');
     },
 
-    changeJournalFilter(filter: JournalFilter) {
+    onFilterChange(filter: JournalFilter) {
       this.journalFilterActive = filter;
-      this.$emit('changedFilter');
+      this.$emit('onFilterChange');
     },
 
-    search() {
-      this.$emit('changedOptions');
+    onInputSearch() {      
+      this.$emit('onInputChange');
     },
 
-    clearDriver() {
-      this.searchedDriver = '';
-      this.search();
-    },
-
-    clearTrain() {
-      this.searchedTrain = '';
-      this.search();
+    onInputClear(id: string) {
+      this.searchersValues.find(s => s.id == id)!.value = "";
+      this.onInputSearch();
     },
   },
 });

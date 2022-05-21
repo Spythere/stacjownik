@@ -1,6 +1,13 @@
 <template>
   <section class="journal-timetables">
     <div class="journal-wrapper">
+      <journal-options
+        @on-filter-change="search"
+        @on-input-change="search"
+        @on-sorter-change="search"
+        :sorter-option-ids="['timestampFrom', 'duration']"
+      />
+
       <button class="return-btn" @click="scrollToTop" v-if="showReturnButton">
         <img :src="icons.arrow" alt="return arrow" />
       </button>
@@ -43,7 +50,7 @@
                       </span>
                       <span>
                         <span :data-status="doc.isOnline"
-                          >{{ doc.isOnline ? $t('history.online-since') : 'OFFLINE' }}&nbsp;</span
+                          >{{ doc.isOnline ? $t('journal.online-since') : 'OFFLINE' }}&nbsp;</span
                         >
                         <span>
                           {{ new Date(doc.timestampFrom).toLocaleTimeString('pl-PL', { timeStyle: 'short' }) }}
@@ -56,7 +63,7 @@
                         <span v-if="doc.timestampTo">
                           &gt;
                           {{ new Date(doc.timestampTo).toLocaleTimeString('pl-PL', { timeStyle: 'short' }) }}
-                          ({{ $t('history.duty-lasted') }} {{ calculateDuration(doc.currentDuration!) }})
+                          ({{ $t('journal.duty-lasted') }} {{ calculateDuration(doc.currentDuration!) }})
                         </span>
                       </span>
                     </div>
@@ -81,7 +88,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, provide, Ref, ref } from 'vue';
+import { computed, defineComponent, JournalFilter, JournalSearcher, provide, reactive, Ref, ref } from 'vue';
 import axios from 'axios';
 
 import SearchBox from '@/components/Global/SearchBox.vue';
@@ -92,7 +99,6 @@ import ActionButton from '@/components/Global/ActionButton.vue';
 import JournalOptions from '@/components/JournalView/JournalOptions.vue';
 
 import { URLs } from '@/scripts/utils/apiURLs';
-import { journalFilters } from '@/data/journalFilters';
 
 const DEV_MODE = true;
 const PROD_MODE = !DEV_MODE || process.env.NODE_ENV === 'production';
@@ -146,18 +152,16 @@ export default defineComponent({
       error: null,
     });
 
-    const sorterActive = ref({ id: 'timetableId', dir: -1 });
-    const journalFilterActive = ref(journalFilters[0]);
+    const sorterActive = ref({ id: 'timestampFrom', dir: -1 });
+    const journalFilterActive = ref({});
+    const searchersValues = reactive([{ id: 'search-dispatcher', value: '' }, { id: 'search-station', value: '' }])
 
-    const searchedDriver = ref('');
-    const searchedTrain = ref('');
     const countFromIndex = ref(0);
     const countLimit = 15;
 
-    provide('searchedTrain', searchedTrain);
-    provide('searchedDriver', searchedDriver);
     provide('sorterActive', sorterActive);
     provide('journalFilterActive', journalFilterActive);
+    provide('searchersValues', searchersValues);
 
     const scrollElement: Ref<HTMLElement | null> = ref(null);
 
@@ -169,10 +173,8 @@ export default defineComponent({
       isDataError: computed(() => historyDataStatus.value.status === DataStatus.Error),
       isDataInit: computed(() => historyDataStatus.value.status === DataStatus.Initialized),
 
-      searchedDriver,
-      searchedTrain,
       sorterActive,
-      journalFilterActive,
+      searchersValues,
 
       countFromIndex,
       countLimit,
@@ -199,7 +201,7 @@ export default defineComponent({
   },
 
   deactivated() {
-    window.removeEventListener('scroll', this.handleScroll);
+    window.removeEventListener('scroll', this.handleScroll);    
   },
 
   methods: {
@@ -215,8 +217,8 @@ export default defineComponent({
       const minsInHour = minsTotal % 60;
 
       return minsTotal > 60
-        ? this.$t('history.hours', { hours: hoursTotal, minutes: minsInHour })
-        : this.$t('history.minutes', { minutes: minsTotal });
+        ? this.$t('journal.hours', { hours: hoursTotal, minutes: minsInHour })
+        : this.$t('journal.minutes', { minutes: minsTotal });
     },
 
     isAnotherDay(prevIndex: number, currIndex: number) {
@@ -246,7 +248,9 @@ export default defineComponent({
     },
 
     search() {
-      this.fetchHistoryData();
+      this.fetchHistoryData({
+        searchers: this.searchersValues
+      });
 
       this.scrollNoMoreData = false;
       this.scrollDataLoaded = true;
@@ -272,21 +276,33 @@ export default defineComponent({
       this.scrollDataLoaded = true;
     },
 
-    async fetchHistoryData() {
+    async fetchHistoryData(
+      props: {
+        searchers?: JournalSearcher[];
+        filter?: JournalFilter;
+      } = {}
+    ) {
       this.historyDataStatus.status = DataStatus.Loading;
 
       const queries: string[] = [];
+
+      const dispatcher = props.searchers?.find((s) => s.id == 'search-dispatcher')?.value.trim();
+      const station = props.searchers?.find((s) => s.id == 'search-station')?.value.trim();
+      
+      if (dispatcher) queries.push(`dispatcherName=${dispatcher}`);
+      if (station) queries.push(`stationName=${station}`);
+
+      // Z API: const SORT_TYPES = ['allStopsCount', 'endDate', 'beginDate', 'routeDistance'];
+      if (this.sorterActive.id == 'timestampFrom') queries.push('sortBy=timestampFrom');
+      else if (this.sorterActive.id == 'duration') queries.push('sortBy=duration');
+      else queries.push('sortBy=timestampFrom');
+
       queries.push('countLimit=15');
 
       this.currentQuery = queries.join('&');
 
-      // sorters; sortBy: duration, timestampFrom (default)
-      // filters; dispatcherName, stationName
-
       try {
-        const responseData: APIResponse | null = await (
-          await axios.get(`${DISPATCHERS_API_URL}?${this.currentQuery}`)
-        ).data;
+        const responseData: APIResponse | null = await (await axios.get(`${DISPATCHERS_API_URL}?${this.currentQuery}`)).data;
 
         if (!responseData) {
           this.historyDataStatus.status = DataStatus.Error;
@@ -330,8 +346,8 @@ export default defineComponent({
   }
 }
 
-.journal-wrapper {
-  max-width: 1100px;
+.list-wrapper {
+  margin-top: 1em;
 }
 
 .journal_item {
@@ -353,15 +369,6 @@ export default defineComponent({
     color: salmon;
   }
 }
-
-.journal-current-day {
-  position: sticky;
-  top: -1px;
-
-  padding: 0.5em 0;
-  background-color: salmon;
-}
-
 .journal_day {
   position: relative;
   text-align: center;

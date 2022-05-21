@@ -187,8 +187,14 @@
     "loading": "Ładowanie historii dyżurów...",
     "no-history": "Brak historii dyżurów dla tej scenerii!",
 
+    "section-timetables": "ROZKŁADY JAZDY",
+    "section-dispatchers": "DYŻURNI",
+
+    "search": "Szukaj",
     "search-train": "Numer pociągu",
     "search-driver": "Nick maszynisty",
+    "search-dispatcher": "Nick dyżurnego",
+    "search-station": "Nazwa scenerii",
 
     "sort-prefix": "Sortuj: ",
 
@@ -196,6 +202,8 @@
     "option-total-stops": "stacje",
     "option-beginDate": "data",
     "option-timetableId": "ID rozkładu",
+    "option-timestampFrom": "data",
+    "option-duration": "czas dyżuru",
 
     "filter-all": "WSZYSTKIE",
     "filter-abandoned": "PORZUCONE",
@@ -203,7 +211,20 @@
     "filter-active": "AKTYWNE",
 
     "no-further-data": "Brak dalszych wyników dla podanych parametrów",
-    "loading-further-data": "Ładowanie..."
+    "loading-further-data": "Ładowanie...",
+
+    "online-since": "ONLINE OD",
+    "duty-lasted": "Dyżur trwał",
+    "minutes": "{minutes} min.",
+    "hours": "{hours} godz. {minutes} min.",
+
+    "route-length": "Kilometraż:",
+    "station-count": "Stacje:",
+    "dispatcher-name": "Wystawiony przez dyżurnego",
+    "timetable-day": "Rozkład z dnia",
+    "timetable-active": "AKTYWNY",
+    "timetable-fulfilled": "WYPEŁNIONY",
+    "timetable-abandoned": "PORZUCONY"
   },
   "scenery": {
     "users": "GRACZE ONLINE",
@@ -229,21 +250,6 @@
     "terminates": "KOŃCZY BIEG"
   },
   "history": {
-    "title": "DZIENNIK ROZKŁADÓW JAZDY",
-    "search": "Szukaj",
-    "search-train": "Numer pociągu",
-    "search-driver": "Nick maszynisty",
-    "route-length": "Kilometraż:",
-    "station-count": "Stacje:",
-    "dispatcher-name": "Wystawiony przez dyżurnego",
-    "timetable-day": "Rozkład z dnia",
-    "timetable-active": "AKTYWNY",
-    "timetable-fulfilled": "WYPEŁNIONY",
-    "timetable-abandoned": "PORZUCONY",
-
-    "online-since": "ONLINE OD",
-    "duty-lasted": "Dyżur trwał",
-    "minutes": "{minutes} min.",
-    "hours": "{hours} godz. {minutes} min."
+    "title": "DZIENNIK ROZKŁADÓW JAZDY"
   }
 }

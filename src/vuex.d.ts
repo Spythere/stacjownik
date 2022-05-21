@@ -25,4 +25,9 @@ declare module '@vue/runtime-core' {
     filterSection: string;
     isActive: boolean;
   }
+
+  interface JournalSearcher {
+    id: string;
+    value: string;
+  }
 }

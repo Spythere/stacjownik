@@ -1,7 +1,7 @@
 import { JournalFilterType } from "@/scripts/enums/JournalFilterType";
 import { JournalFilter } from "vue";
 
-export const journalFilters: JournalFilter[] = [
+export const journalTimetableFilters: JournalFilter[] = [
     {
         id: JournalFilterType.all,
         filterSection: "timetable-status",
@@ -25,5 +25,6 @@ export const journalFilters: JournalFilter[] = [
         filterSection: "timetable-status",
         isActive: false
     },
-
 ]
+
+export const journalDispatcherFilters: JournalFilter[] = []

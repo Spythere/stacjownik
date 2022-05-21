@@ -6,7 +6,7 @@
         :class="{ checked: journalTypeChosen == 'timetables' }"
         @click="changeJournalType('timetables')"
       >
-        ROZKŁADY JAZDY
+        {{ $t('journal.section-timetables') }}
       </button>
       &nbsp;&bull;&nbsp;
       <button
@@ -14,7 +14,7 @@
         :class="{ checked: journalTypeChosen == 'dispatchers' }"
         @click="changeJournalType('dispatchers')"
       >
-        DYŻURNI
+        {{ $t('journal.section-dispatchers') }}
       </button>
     </div>
 

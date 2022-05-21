@@ -1,7 +1,13 @@
 <template>
   <section class="journal-timetables">
     <div class="journal-wrapper">
-      <JournalOptions @changedOptions="search" @changedFilter="search" />
+      <JournalOptions
+        @on-input-change="search"
+        @on-filter-change="search"
+        @on-sorter-change="search"
+        :sorter-option-ids="['timetableId', 'beginDate', 'distance', 'total-stops']"
+        :filters="journalTimetableFilters"
+      />
 
       <button class="return-btn" @click="scrollToTop" v-if="showReturnButton">
         <img :src="icons.arrow" alt="return arrow" />
@@ -69,7 +75,7 @@
                           <b v-if="(item.fulfilled && item.terminated) || !item.terminated">
                             {{ item.route.split('|').slice(-1)[0] }}:
                           </b>
-                          <i v-else>{{ $t('history.timetable-abandoned') }} </i>
+                          <i v-else>{{ $t('journal.timetable-abandoned') }} </i>
 
                           <s v-if="item.endDate != item.scheduledEndDate && item.terminated" class="text--grayed">
                             {{ localeTime(item.fulfilled ? item.endDate : item.scheduledEndDate, $i18n.locale) }}
@@ -90,35 +96,35 @@
                       >
                         {{
                           !item.terminated
-                            ? $t('history.timetable-active')
+                            ? $t('journal.timetable-active')
                             : item.fulfilled || item.currentDistance >= item.routeDistance * 0.9
-                            ? $t('history.timetable-fulfilled')
-                            : $t('history.timetable-abandoned')
+                            ? $t('journal.timetable-fulfilled')
+                            : $t('journal.timetable-abandoned')
                         }}
                       </b>
                     </div>
 
-                    <div style="margin-top: 1em;">
+                    <div style="margin-top: 1em">
                       <div>
-                        {{ $t('history.timetable-day') }} <b>{{ localeDay(item.beginDate, $i18n.locale) }}</b>
+                        {{ $t('journal.timetable-day') }} <b>{{ localeDay(item.beginDate, $i18n.locale) }}</b>
                       </div>
 
                       <!-- Nick dyżurnego -->
                       <div v-if="item.authorName">
-                        <b class="text--grayed">{{ $t('history.dispatcher-name') }}&nbsp;</b>
+                        <b class="text--grayed">{{ $t('journal.dispatcher-name') }}&nbsp;</b>
                         <b>{{ item.authorName }}</b>
                       </div>
                     </div>
 
-                    <div style="margin-top: 1em;">
+                    <div style="margin-top: 1em">
                       <div>
-                        <b>{{ $t('history.route-length') }}</b>
+                        <b>{{ $t('journal.route-length') }}</b>
                         {{ !item.fulfilled ? item.currentDistance + ' /' : '' }}
                         {{ item.routeDistance }} km
                       </div>
 
                       <div>
-                        <b>{{ $t('history.station-count') }}</b>
+                        <b>{{ $t('journal.station-count') }}</b>
                         {{ item.confirmedStopsCount }} /
                         {{ item.allStopsCount }}
                       </div>
@@ -138,7 +144,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, JournalFilter, provide, Ref, ref } from 'vue';
+import { computed, defineComponent, JournalFilter, JournalSearcher, provide, reactive, Ref, ref } from 'vue';
 import axios from 'axios';
 
 import SearchBox from '@/components/Global/SearchBox.vue';
@@ -149,7 +155,7 @@ import ActionButton from '@/components/Global/ActionButton.vue';
 import JournalOptions from '@/components/JournalView/JournalOptions.vue';
 
 import { URLs } from '@/scripts/utils/apiURLs';
-import { journalFilters } from '@/data/journalFilters';
+import { journalTimetableFilters } from '@/data/journalFilters';
 import { JournalFilterType } from '@/scripts/enums/JournalFilterType';
 
 const PROD_MODE = true;
@@ -206,6 +212,8 @@ export default defineComponent({
     scrollNoMoreData: false,
 
     showReturnButton: false,
+
+    journalTimetableFilters
   }),
 
   setup() {
@@ -215,15 +223,13 @@ export default defineComponent({
     });
 
     const sorterActive = ref({ id: 'timetableId', dir: -1 });
-    const journalFilterActive = ref(journalFilters[0]);
+    const journalFilterActive = ref(journalTimetableFilters[0]);
 
-    const searchedDriver = ref('');
-    const searchedTrain = ref('');
+    const searchersValues = reactive([{ id: 'search-train', value: '' }, { id: 'search-driver', value: '' }])
     const countFromIndex = ref(0);
     const countLimit = 15;
 
-    provide('searchedTrain', searchedTrain);
-    provide('searchedDriver', searchedDriver);
+    provide('searchersValues', searchersValues);
     provide('sorterActive', sorterActive);
     provide('journalFilterActive', journalFilterActive);
 
@@ -237,10 +243,9 @@ export default defineComponent({
       isDataError: computed(() => historyDataStatus.value.status === DataStatus.Error),
       isDataInit: computed(() => historyDataStatus.value.status === DataStatus.Initialized),
 
-      searchedDriver,
-      searchedTrain,
       sorterActive,
       journalFilterActive,
+      searchersValues,
 
       countFromIndex,
       countLimit,
@@ -297,8 +302,7 @@ export default defineComponent({
 
     search() {
       this.fetchHistoryData({
-        searchedDriver: this.searchedDriver,
-        searchedTrain: this.searchedTrain,
+        searchers: this.searchersValues,
         filter: this.journalFilterActive,
       });
 
@@ -330,8 +334,7 @@ export default defineComponent({
 
     async fetchHistoryData(
       props: {
-        searchedDriver?: string;
-        searchedTrain?: string;
+        searchers?: JournalSearcher[],
         filter?: JournalFilter;
       } = {}
     ) {
@@ -339,8 +342,11 @@ export default defineComponent({
 
       const queries: string[] = [];
 
-      if (props.searchedDriver) queries.push(`driver=${props.searchedDriver}`);
-      if (props.searchedTrain) queries.push(`train=${props.searchedTrain}`);
+      const driver = props.searchers?.find(s => s.id == "search-driver")?.value.trim();
+      const train = props.searchers?.find(s => s.id == "search-train")?.value.trim();
+
+      if (driver) queries.push(`driver=${driver}`);
+      if (train) queries.push(`train=${train}`);
 
       // Z API: const SORT_TYPES = ['allStopsCount', 'endDate', 'beginDate', 'routeDistance'];
       if (this.sorterActive.id == 'distance') queries.push('sortBy=routeDistance');
@@ -435,6 +441,4 @@ export default defineComponent({
     }
   }
 }
-
-
 </style>
