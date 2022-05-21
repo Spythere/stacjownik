@@ -100,7 +100,7 @@ import JournalOptions from '@/components/JournalView/JournalOptions.vue';
 
 import { URLs } from '@/scripts/utils/apiURLs';
 
-const DEV_MODE = true;
+const DEV_MODE = false;
 const PROD_MODE = !DEV_MODE || process.env.NODE_ENV === 'production';
 
 const DISPATCHERS_API_URL = (PROD_MODE ? `${URLs.stacjownikAPI}/api` : 'http://localhost:3001/api') + '/getDispatchers';
