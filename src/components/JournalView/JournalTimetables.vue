@@ -158,10 +158,9 @@ import { URLs } from '@/scripts/utils/apiURLs';
 import { journalTimetableFilters } from '@/data/journalFilters';
 import { JournalFilterType } from '@/scripts/enums/JournalFilterType';
 
-const DEV_MODE = true;
-const PROD_MODE = !DEV_MODE || process.env.NODE_ENV === "production";
+const PROD_MODE = process.env.VUE_APP_JOURNAL_TIMETABLES_DEV != "1" || process.env.NODE_ENV === "production";
 
-const API_URL = PROD_MODE ? `${URLs.stacjownikAPI}/api/getTimetables` : 'http://localhost:3001/api/getTimetables';
+const TIMETABLES_API_URL = PROD_MODE ? `${URLs.stacjownikAPI}/api/getTimetables` : 'http://localhost:3001/api/getTimetables';
 
 interface APIResponse {
   errorMessage: string | null;
@@ -317,7 +316,7 @@ export default defineComponent({
       const countFrom = this.historyList.length;
 
       const responseData: APIResponse | null = await (
-        await axios.get(`${API_URL}?${this.currentQuery}&countFrom=${countFrom}`)
+        await axios.get(`${TIMETABLES_API_URL}?${this.currentQuery}&countFrom=${countFrom}`)
       ).data;
 
       console.log('Loading...');
@@ -377,7 +376,7 @@ export default defineComponent({
       this.currentQuery = queries.join('&');
 
       try {
-        const responseData: APIResponse | null = await (await axios.get(`${API_URL}?${this.currentQuery}`)).data;
+        const responseData: APIResponse | null = await (await axios.get(`${TIMETABLES_API_URL}?${this.currentQuery}`)).data;
 
         if (!responseData) {
           this.historyDataStatus.status = DataStatus.Error;
