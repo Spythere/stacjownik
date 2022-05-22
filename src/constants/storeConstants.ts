@@ -24,5 +24,7 @@ export const GETTERS = {
     swdrDataStatus: "swdrDataStatus",
     trainsDataStatus: "trainsDataStatus",
 
-    currentRegion: "currentRegion"
+    currentRegion: "currentRegion",
+
+    webSocket: "webSocket"
 }

@@ -17,7 +17,7 @@ import { getLocoURL, getScheduledTrain, getStatusID, getStatusTimestamp, parseSp
 import { URLs } from '@/scripts/utils/apiURLs';
 import ScheduledTrain from '@/scripts/interfaces/ScheduledTrain';
 import StationRoutes from '@/scripts/interfaces/StationRoutes';
-import { io } from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
 import { APIData, State, StationJSONData } from './types';
 
 const connectToDevAPI = false;
@@ -66,7 +66,9 @@ export const store = createStore<State>({
     trainsDataStatus: (state): DataStatus => state.trainsDataStatus,
     dataStatus: (state): DataStatus => state.dataConnectionStatus,
 
-    currentRegion: (state): { id: string; value: string } => state.region
+    currentRegion: (state): { id: string; value: string } => state.region,
+
+    webSocket: (state): Socket | undefined => state.webSocket
   },
 
   actions: {

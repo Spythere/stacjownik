@@ -158,7 +158,8 @@ import { URLs } from '@/scripts/utils/apiURLs';
 import { journalTimetableFilters } from '@/data/journalFilters';
 import { JournalFilterType } from '@/scripts/enums/JournalFilterType';
 
-const PROD_MODE = true;
+const DEV_MODE = true;
+const PROD_MODE = !DEV_MODE || process.env.NODE_ENV === "production";
 
 const API_URL = PROD_MODE ? `${URLs.stacjownikAPI}/api/getTimetables` : 'http://localhost:3001/api/getTimetables';
 
