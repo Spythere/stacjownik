@@ -18,13 +18,18 @@
         <img :src="icons.back" alt="Back to scenery" />
       </button>
 
-      <!-- <button
-        v-if="!timetableOnly && currentRegion.id == 'eu'"
+      <button
+        v-if="!timetableOnly && currentRegion.id == 'eu' && stationInfo"
         class="history-btn btn btn--image"
-        @click="navigateTo('/journal')"
+        @click="
+          navigateTo('/journal', {
+            view: 'dispatchers',
+            sceneryName: stationInfo?.name,
+          })
+        "
       >
         <img :src="viewMode == 'history' ? icons.user : icons.history" alt="icon" />
-      </button> -->
+      </button>
 
       <SceneryHeader :station="stationInfo" />
 
@@ -106,8 +111,11 @@ export default defineComponent({
       this.viewMode = mode;
     },
 
-    navigateTo(path: string) {
-      this.$router.push(path);
+    navigateTo(path: string, query?: {}) {
+      this.$router.push({
+        path,
+        query,
+      });
     },
   },
 

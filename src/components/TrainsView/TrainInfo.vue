@@ -43,13 +43,18 @@
         </div>
 
         <div class="timetable_progress" style="margin-top: 0.5em" v-if="train.timetableData">
+          <!-- <span> </span> -->
           <span class="timetable_progress-bar">
+            <!-- {{ confirmedPercentage(train.timetableData.followingStops) }}%&nbsp; -->
             <span class="bar-bg"></span>
-            <span class="bar-fg" :style="{ width: `${Math.floor(confirmedPercentage(train.timetableData.followingStops))}%` }"></span>
+            <span
+              class="bar-fg"
+              :style="{ width: `${Math.floor(confirmedPercentage(train.timetableData.followingStops))}%` }"
+            ></span>
           </span>
 
           <span>
-            &nbsp;{{ currentDistance(train.timetableData.followingStops) }} km /
+            &nbsp; {{ currentDistance(train.timetableData.followingStops) }} km /
             <span class="text--primary"> {{ train.timetableData.routeDistance }} km </span>
             |
             <span v-html="currentDelay(train.timetableData.followingStops)"></span>
@@ -123,24 +128,6 @@ export default defineComponent({
       offline: require('@/assets/icon-offline.svg'),
     },
   }),
-
-  methods: {
-    generateProgressBar(train: Train) {
-      if (!train.timetableData) return '';
-
-      const percentage = Math.floor(Number(this.confirmedPercentage(train.timetableData.followingStops)));
-
-      let progressBarString = `<span style="color: white"> ${percentage}% </span> `;
-
-      for (let i = 0; i < 5; i++) {
-        progressBarString += `<span style="color: ${
-          i < Math.round(percentage / 20) ? 'springgreen' : 'gray'
-        }">▉</span>`;
-      }
-
-      return progressBarString;
-    },
-  },
 });
 </script>
 

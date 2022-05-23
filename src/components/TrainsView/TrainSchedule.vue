@@ -30,7 +30,7 @@ p
             alt="car"
           />
 
-          <div>{{ car.replace(/_/g, ' ').split(":")[0] }}</div>
+          <div>{{ car.replace(/_/g, ' ').split(':')[0] }}</div>
         </li>
       </ul>
     </div>
@@ -203,6 +203,7 @@ ul.stock-list {
     color: #aaa;
     font-size: 0.9em;
   }
+
 }
 
 .schedule-wrapper {
