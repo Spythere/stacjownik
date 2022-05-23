@@ -1,5 +1,5 @@
 <template>
-  <div class="train-table" @keydown.esc="closeTimetableCard">
+  <div class="train-table" @keydown.esc="closeTimetable" v-click-outside="closeTimetable">
     <transition name="anim" mode="out-in">
       <div :key="trainsDataStatus">
         <!-- <div class="traffic-warning" v-if="data.">
@@ -19,18 +19,21 @@
             class="train-row"
             v-for="train in currentTrains"
             :key="train.trainNo + train.driverId"
-            @click="showTrainTimetable(train)"
-            @keydown.enter="showTrainTimetable(train)"
+            @click="toggleTimetable(train)"
+            @keydown.enter="toggleTimetable(train)"
           >
-            <TrainInfo :train="train" :simpleView="true" />
+            <TrainInfo :train="train" />
+
+            <TrainSchedule
+              v-if="train.timetableData && chosenTrainId == getTrainId(train)"
+              :train="train"
+              ref="card-inner"
+              tabindex="0"
+            />
           </li>
         </ul>
       </div>
     </transition>
-
-    <span v-if="chosenTrain">
-      <train-timetable-card :train="chosenTrain" @close="closeTimetableCard" ref="card" />
-    </span>
   </div>
 </template>
 
@@ -47,13 +50,11 @@ import TrainInfo from '@/components/TrainsView/TrainInfo.vue';
 
 import { DataStatus } from '@/scripts/enums/DataStatus';
 import { GETTERS } from '@/constants/storeConstants';
-import TrainTimetableCard from './TrainTimetableCard.vue';
 import { ref } from 'vue';
 
 export default defineComponent({
   components: {
     TrainSchedule,
-    TrainTimetableCard,
     TrainInfo,
   },
 
@@ -85,23 +86,12 @@ export default defineComponent({
 
     const currentTrains = computed(() => {
       return props.trains;
-
-      //.slice(currentPage.value * PAGE_CAPACITY, currentPage.value * PAGE_CAPACITY + PAGE_CAPACITY);
     });
 
     const chosenTrainId = ref(null) as Ref<string | null>;
     const chosenTrain = computed(() =>
-      props.trains.find((train) => train.trainNo + train.driverName === chosenTrainId.value)
+      props.trains.find((train: Train) => train.trainNo + train.driverName === chosenTrainId.value)
     );
-
-    // watch([searchedTrain, searchedDriver], () => {
-    //   currentPage.value = 0;
-    // });
-
-    // watch(paginatorPageCount, (value) => {
-    //   if (currentPage.value >= value)
-    //     currentPage.value = paginatorPageCount.value - 1 < 0 ? 0 : paginatorPageCount.value - 1;
-    // });
 
     return {
       searchedTrain,
@@ -144,13 +134,21 @@ export default defineComponent({
       }, 10);
     },
 
-    showTrainTimetable(train: Train) {
-      this.chosenTrainId = train.trainNo + train.driverName;
+    toggleTimetable(train: Train) {
+      this.chosenTrainId = this.chosenTrainId && this.chosenTrainId == this.getTrainId(train) ? null : this.getTrainId(train);
     },
 
-    closeTimetableCard() {
+    closeTimetable() {
       this.chosenTrainId = null;
     },
+
+    showTrainId(train: Train) {
+      console.log(this.getTrainId(train));
+    },
+
+    getTrainId(train: Train) {
+      return train.driverId.toString() + train.trainNo.toString();
+    }
   },
 });
 </script>

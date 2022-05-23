@@ -25,7 +25,6 @@ export default defineComponent({});
   font-size: 1em;
   font-weight: 500;
 
-  outline: none;
   padding: 0.35em 0.65em;
   cursor: pointer;
 
