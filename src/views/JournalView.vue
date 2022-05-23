@@ -21,7 +21,7 @@
     <div class="journal-section">
       <keep-alive>
         <JournalTimetables v-if="journalTypeChosen == 'timetables'" />
-        <JournalDispatchers v-else-if="journalTypeChosen == 'dispatchers'" />
+        <JournalDispatchers v-else-if="journalTypeChosen == 'dispatchers'" :searchedSceneryName="$route.query.sceneryName?.toString()" />
       </keep-alive>
     </div>
   </section>
@@ -46,6 +46,13 @@ export default defineComponent({
       this.journalTypeChosen = type;
     },
   },
+
+  activated() {
+    const query = this.$route.query;
+    console.log(this.$route.query);
+    
+    if(query.sceneryName) this.journalTypeChosen = 'dispatchers';
+  }
 });
 </script>
 

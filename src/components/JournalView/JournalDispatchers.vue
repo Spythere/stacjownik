@@ -100,7 +100,7 @@ import JournalOptions from '@/components/JournalView/JournalOptions.vue';
 
 import { URLs } from '@/scripts/utils/apiURLs';
 
-const PROD_MODE = process.env.VUE_APP_JORUNAL_DISPATCHERS_DEV != "1" || process.env.NODE_ENV === 'production';
+const PROD_MODE = process.env.VUE_APP_JORUNAL_DISPATCHERS_DEV != '1' || process.env.NODE_ENV === 'production';
 
 const DISPATCHERS_API_URL = (PROD_MODE ? `${URLs.stacjownikAPI}/api` : 'http://localhost:3001/api') + '/getDispatchers';
 
@@ -132,6 +132,13 @@ export default defineComponent({
   components: { SearchBox, ActionButton, JournalOptions },
   mixins: [dateMixin],
 
+  props: {
+    searchedSceneryName: {
+      type: String,
+      required: false,
+    },
+  },
+
   data: () => ({
     icons: {
       loading: require('@/assets/icon-loading.svg'),
@@ -153,7 +160,10 @@ export default defineComponent({
 
     const sorterActive = ref({ id: 'timestampFrom', dir: -1 });
     const journalFilterActive = ref({});
-    const searchersValues = reactive([{ id: 'search-dispatcher', value: '' }, { id: 'search-station', value: '' }])
+    const searchersValues = reactive([
+      { id: 'search-dispatcher', value: '' },
+      { id: 'search-station', value: '' },
+    ]);
 
     const countFromIndex = ref(0);
     const countLimit = 15;
@@ -197,10 +207,15 @@ export default defineComponent({
 
   activated() {
     window.addEventListener('scroll', this.handleScroll);
+
+    if (this.searchedSceneryName) {
+      this.searchersValues[1].value = this.searchedSceneryName;
+      this.search();
+    }
   },
 
   deactivated() {
-    window.removeEventListener('scroll', this.handleScroll);    
+    window.removeEventListener('scroll', this.handleScroll);
   },
 
   methods: {
@@ -248,7 +263,7 @@ export default defineComponent({
 
     search() {
       this.fetchHistoryData({
-        searchers: this.searchersValues
+        searchers: this.searchersValues,
       });
 
       this.scrollNoMoreData = false;
@@ -287,7 +302,7 @@ export default defineComponent({
 
       const dispatcher = props.searchers?.find((s) => s.id == 'search-dispatcher')?.value.trim();
       const station = props.searchers?.find((s) => s.id == 'search-station')?.value.trim();
-      
+
       if (dispatcher) queries.push(`dispatcherName=${dispatcher}`);
       if (station) queries.push(`stationName=${station}`);
 
@@ -301,7 +316,9 @@ export default defineComponent({
       this.currentQuery = queries.join('&');
 
       try {
-        const responseData: APIResponse | null = await (await axios.get(`${DISPATCHERS_API_URL}?${this.currentQuery}`)).data;
+        const responseData: APIResponse | null = await (
+          await axios.get(`${DISPATCHERS_API_URL}?${this.currentQuery}`)
+        ).data;
 
         if (!responseData) {
           this.historyDataStatus.status = DataStatus.Error;
