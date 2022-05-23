@@ -50,13 +50,11 @@ import TrainInfo from '@/components/TrainsView/TrainInfo.vue';
 
 import { DataStatus } from '@/scripts/enums/DataStatus';
 import { GETTERS } from '@/constants/storeConstants';
-import TrainTimetableCard from './TrainTimetableCard.vue';
 import { ref } from 'vue';
 
 export default defineComponent({
   components: {
     TrainSchedule,
-    TrainTimetableCard,
     TrainInfo,
   },
 

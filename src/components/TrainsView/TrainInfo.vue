@@ -41,12 +41,19 @@
             <span v-html="displayStopList(train.timetableData.followingStops)"></span>
           </span>
         </div>
-        <div style="margin-top: 0.5em" v-if="train.timetableData">
-          <span style="color: gray" v-html="generateProgressBar(train)"></span>
-          &nbsp;{{ currentDistance(train.timetableData.followingStops) }} km /
-          <span class="text--primary"> {{ train.timetableData.routeDistance }} km </span>
-          |
-          <span v-html="currentDelay(train.timetableData.followingStops)"></span>
+
+        <div class="timetable_progress" style="margin-top: 0.5em" v-if="train.timetableData">
+          <span class="timetable_progress-bar">
+            <span class="bar-bg"></span>
+            <span class="bar-fg" :style="{ width: `${Math.floor(confirmedPercentage(train.timetableData.followingStops))}%` }"></span>
+          </span>
+
+          <span>
+            &nbsp;{{ currentDistance(train.timetableData.followingStops) }} km /
+            <span class="text--primary"> {{ train.timetableData.routeDistance }} km </span>
+            |
+            <span v-html="currentDelay(train.timetableData.followingStops)"></span>
+          </span>
         </div>
 
         <div class="driver_position text--grayed" style="margin-top: 0.25em">
@@ -93,8 +100,6 @@
       </div>
     </section>
   </div>
-
-
 </template>
 
 <script lang="ts">
@@ -203,6 +208,34 @@ export default defineComponent({
   }
 }
 
+.timetable_progress {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.timetable_progress-bar {
+  position: relative;
+
+  width: 100px;
+  height: 1em;
+
+  .bar-fg,
+  .bar-bg {
+    position: absolute;
+    height: 1em;
+    width: 100%;
+  }
+
+  .bar-fg {
+    background-color: springgreen;
+  }
+
+  .bar-bg {
+    background-color: #5b5b5b;
+  }
+}
+
 .comments {
   display: flex;
   align-items: center;
@@ -228,6 +261,10 @@ export default defineComponent({
   }
 
   .timetable_route {
+    justify-content: center;
+  }
+
+  .timetable_progress {
     justify-content: center;
   }
 

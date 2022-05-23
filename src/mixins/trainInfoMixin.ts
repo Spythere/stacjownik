@@ -68,7 +68,7 @@ export default defineComponent({
         },
 
         confirmedPercentage(stops: TrainStop[]) {
-            return ((stops.filter((stop) => stop.confirmed).length / stops.length) * 100).toFixed(0);
+            return Number(((stops.filter((stop) => stop.confirmed).length / stops.length) * 100).toFixed(0));
         },
 
         currentDelay(stops: TrainStop[]) {
@@ -100,7 +100,7 @@ export default defineComponent({
             const moreCount = commentList.length - 10;
 
 
-            return commentList.slice(0,10).join(", ") + (moreCount > 0 ? `... (+${moreCount})` : '');
+            return commentList.slice(0, 10).join(", ") + (moreCount > 0 ? `... (+${moreCount})` : '');
         },
 
         displayDistance(distance: number) {
