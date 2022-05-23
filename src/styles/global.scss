@@ -29,6 +29,11 @@ body {
   overflow-x: hidden;
 }
 
+*:focus-visible {
+  outline: 1px solid white;
+  outline-offset: 1px;
+}
+
 :root {
   font-size: 16px;
 }
@@ -164,7 +169,6 @@ a {
   &:focus {
     color: $accentCol;
     border: none;
-    outline: none;
   }
 }
 
