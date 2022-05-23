@@ -18,29 +18,18 @@
         <img :src="icons.back" alt="Back to scenery" />
       </button>
 
-      <button
+      <!-- <button
         v-if="!timetableOnly && currentRegion.id == 'eu'"
         class="history-btn btn btn--image"
-        @click="setCardViewMode(viewMode == 'history' ? 'info' : 'history')"
-        :title="viewMode == 'history' ? $t('scenery.info-btn') : $t('scenery.history-btn')"
+        @click="navigateTo('/journal')"
       >
         <img :src="viewMode == 'history' ? icons.user : icons.history" alt="icon" />
-      </button>
+      </button> -->
 
       <SceneryHeader :station="stationInfo" />
 
-      <transition name="scenery-view-anim" mode="out-in">
-        <div :key="viewMode">
-          <div v-if="viewMode == 'info'">
-            <SceneryInfo :station="stationInfo" :timetableOnly="timetableOnly" />
-            <SceneryTimetable :station="stationInfo" :timetableOnly="timetableOnly" />
-          </div>
-
-          <div v-else-if="viewMode == 'history'">
-            <SceneryHistory :name="stationInfo.name" />
-          </div>
-        </div>
-      </transition>
+      <SceneryInfo :station="stationInfo" :timetableOnly="timetableOnly" />
+      <SceneryTimetable :station="stationInfo" :timetableOnly="timetableOnly" />
     </div>
   </div>
 </template>
