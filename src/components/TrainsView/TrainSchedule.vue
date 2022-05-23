@@ -35,9 +35,9 @@ p
       </ul>
     </div>
 
-    <div class="schedule-wrapper">
+    <div class="schedule-wrapper" v-if="train.timetableData">
       <ul class="stop_list">
-        <li v-for="(stop, i) in train.timetableData!.followingStops" :key="i" class="stop" :class="addClasses(stop, i)">
+        <li v-for="(stop, i) in train.timetableData.followingStops" :key="i" class="stop" :class="addClasses(stop, i)">
           <span class="stop_info">
             <div class="indicator"></div>
 

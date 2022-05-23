@@ -25,7 +25,7 @@
             <TrainInfo :train="train" />
 
             <TrainSchedule
-              v-if="train.timetableData && chosenTrainId == getTrainId(train)"
+              v-if="chosenTrainId == getTrainId(train)"
               :train="train"
               ref="card-inner"
               tabindex="0"
