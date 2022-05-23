@@ -1,8 +1,9 @@
 <template>
   <div class="train-info">
     <div class="wrapper">
-      <train-info-simple :train="train" v-if="simpleView" />
-      <train-info-extended :train="train" v-else />
+      <train-info-simple :train="train" />
+   
+      <!-- <train-info-extended :train="train" v-else /> -->
     </div>
   </div>
 </template>
@@ -21,11 +22,6 @@ export default defineComponent({
       type: Object as () => Train,
       required: true,
     },
-
-    simpleView: {
-      type: Boolean,
-      default: false,
-    },
   },
 });
 </script>
@@ -35,10 +31,9 @@ export default defineComponent({
 
 .wrapper {
   font-size: 1em;
-  
+
   @include smallScreen() {
     font-size: 1.2em;
   }
-
 }
 </style>

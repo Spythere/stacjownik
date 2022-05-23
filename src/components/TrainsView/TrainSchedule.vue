@@ -138,11 +138,15 @@ $stopNameClr: #22a8d1;
 }
 
 .train-schedule {
-  min-height: 400px;
+  max-height: 500px;
+  width: 100%;
 
   overflow-y: auto;
 
   z-index: 5;
+
+  background-color: #202020;
+  padding: 0 0.25em;
 
   @include smallScreen() {
     font-size: 1.1em;
@@ -324,7 +328,7 @@ ul.stop_list > li.stop {
 
     margin-left: -1.75rem;
 
-    font-size: 0.85em;
+    font-size: 0.75em;
     color: #d6d6d6;
   }
 

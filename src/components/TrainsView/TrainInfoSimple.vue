@@ -72,7 +72,7 @@
       </span>
     </section>
 
-    <section class="train-image" style="display: flex; justify-content: center; align-items: center;">
+    <section class="train-image" style="display: flex; justify-content: center; align-items: center">
       <img :src="train.locoURL" alt="Not Found" @error="onImageError" />
 
       <div class="text--grayed">
@@ -93,6 +93,8 @@
       </div>
     </section>
   </div>
+
+
 </template>
 
 <script lang="ts">
@@ -126,7 +128,9 @@ export default defineComponent({
       let progressBarString = `<span style="color: white"> ${percentage}% </span> `;
 
       for (let i = 0; i < 5; i++) {
-        progressBarString += `<span style="color: ${i < Math.round(percentage / 20) ? 'springgreen' : 'gray'}">▉</span>`;
+        progressBarString += `<span style="color: ${
+          i < Math.round(percentage / 20) ? 'springgreen' : 'gray'
+        }">▉</span>`;
       }
 
       return progressBarString;
@@ -163,11 +167,6 @@ export default defineComponent({
   padding: 1em;
   background-color: #202020;
   gap: 0.5em;
-
-  &:hover,
-  &:focus {
-    background: #292929;
-  }
 }
 
 .driver_position:first-letter {
