@@ -22,11 +22,11 @@
             @click="toggleTimetable(train)"
             @keydown.enter="toggleTimetable(train)"
           >
-            <TrainInfo :train="train" :simpleView="true" />
+            <TrainInfo :train="train" />
 
-            <train-schedule
+            <TrainSchedule
               v-if="train.timetableData && chosenTrainId == getTrainId(train)"
-              :followingStops="train.timetableData.followingStops"
+              :train="train"
               ref="card-inner"
               tabindex="0"
             />

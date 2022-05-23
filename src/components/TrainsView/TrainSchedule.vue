@@ -1,8 +1,43 @@
-p<template>
+p
+<template>
   <div class="train-schedule" @click="toggleShowState">
+    <div class="train-stock">
+      <ul class="stock-list">
+        <li>
+          <img class="train-image" :src="train.locoURL" alt="loco" @error="onImageError" />
+          <div>{{ train.locoType }}</div>
+        </li>
+
+        <li v-if="train.locoType.startsWith('EN')">
+          <img :src="train.locoURL.replace('rb', 's')" @error="onImageError" alt="" />
+          <div>{{ train.locoType }}S</div>
+        </li>
+
+        <li v-if="train.locoType.startsWith('EN71')">
+          <img :src="train.locoURL.replace('rb', 's')" @error="onImageError" alt="" />
+          <div>{{ train.locoType }}S</div>
+        </li>
+
+        <li v-if="train.locoType.startsWith('EN')">
+          <img :src="train.locoURL.replace('rb', 'ra')" @error="onImageError" alt="" />
+          <div>{{ train.locoType }}RA</div>
+        </li>
+
+        <li v-for="(car, i) in train.cars" :key="i">
+          <img
+            :src="`https://rj.td2.info.pl/dist/img/thumbnails/${car.split(':')[0]}.png`"
+            @error="onImageError"
+            alt="car"
+          />
+
+          <div>{{ car.replace(/_/g, ' ').split(":")[0] }}</div>
+        </li>
+      </ul>
+    </div>
+
     <div class="schedule-wrapper">
       <ul class="stop_list">
-        <li v-for="(stop, i) in followingStops" :key="i" class="stop" :class="addClasses(stop, i)">
+        <li v-for="(stop, i) in train.timetableData!.followingStops" :key="i" class="stop" :class="addClasses(stop, i)">
           <span class="stop_info">
             <div class="indicator"></div>
 
@@ -19,25 +54,25 @@ p<template>
             <stop-date :stop="stop" />
           </span>
 
-          <div class="stop_line" v-if="i < followingStops.length - 1">
+          <div class="stop_line" v-if="i < train.timetableData!.followingStops.length - 1">
             <div class="progress-bar"></div>
 
-            <div v-if="stop.comments" style="color: salmon;">
+            <div v-if="stop.comments" style="color: salmon">
               <b>{{ stop.stopNameRAW }} </b>: <span v-html="stop.comments"></span>
             </div>
 
-            <span v-if="stop.departureLine == followingStops[i + 1].arrivalLine">
+            <span v-if="stop.departureLine == train.timetableData!.followingStops[i + 1].arrivalLine">
               {{ stop.departureLine }}
             </span>
 
             <span v-else>
               {{ stop.departureLine }} /
-              {{ followingStops[i + 1].arrivalLine }}
+              {{ train.timetableData!.followingStops[i + 1].arrivalLine }}
             </span>
           </div>
 
           <div class="stop_line" v-else>
-            <div v-if="stop.comments" style="color: salmon;">
+            <div v-if="stop.comments" style="color: salmon">
               <b>{{ stop.stopNameRAW }} </b>: <span v-html="stop.comments"></span>
             </div>
           </div>
@@ -48,16 +83,17 @@ p<template>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@vue/runtime-core';
+import { computed, defineComponent, PropType } from '@vue/runtime-core';
 import dateMixin from '@/mixins/dateMixin';
 import TrainStop from '@/scripts/interfaces/TrainStop';
 import StopDate from '../Global/StopDate.vue';
+import Train from '@/scripts/interfaces/Train';
 
 export default defineComponent({
   components: { StopDate },
   props: {
-    followingStops: {
-      type: Array as () => TrainStop[],
+    train: {
+      type: Object as PropType<Train>,
       required: true,
     },
   },
@@ -75,20 +111,20 @@ export default defineComponent({
   setup(props) {
     return {
       lastConfirmed: computed(() => {
-        return props.followingStops.findIndex(
+        return props.train.timetableData!.followingStops.findIndex(
           (stop, i, stops) => stop.confirmed && !stops[i + 1]?.confirmed && !stops[i + 1]?.stopped
         );
       }),
       activeMinorStops: computed(() => {
-        const lastMajorConfirmed = props.followingStops.findIndex(
+        const lastMajorConfirmed = props.train.timetableData!.followingStops.findIndex(
           (stop, i, stops) => stop.confirmed && !stops[i + 1]?.confirmed
         );
 
         const activeMinorStopList: number[] = [];
-        if (lastMajorConfirmed + 1 >= props.followingStops.length) return activeMinorStopList;
+        if (lastMajorConfirmed + 1 >= props.train.timetableData!.followingStops.length) return activeMinorStopList;
 
-        for (let i = lastMajorConfirmed + 1; i < props.followingStops.length; i++) {
-          if (props.followingStops[i].stopNameRAW.includes('po.')) activeMinorStopList.push(i);
+        for (let i = lastMajorConfirmed + 1; i < props.train.timetableData!.followingStops.length; i++) {
+          if (props.train.timetableData!.followingStops[i].stopNameRAW.includes('po.')) activeMinorStopList.push(i);
           else break;
         }
 
@@ -115,6 +151,11 @@ export default defineComponent({
         'last-confirmed': index == this.lastConfirmed && !stop.terminatesHere,
       };
     },
+
+    onImageError(e: Event) {
+      const imageEl = e.target as HTMLImageElement;
+      imageEl.src = require('@/assets/unknown.png');
+    },
   },
 });
 </script>
@@ -138,13 +179,6 @@ $stopNameClr: #22a8d1;
 }
 
 .train-schedule {
-  max-height: 500px;
-  width: 100%;
-
-  overflow-y: auto;
-
-  z-index: 5;
-
   background-color: #202020;
   padding: 0 0.25em;
 
@@ -153,8 +187,31 @@ $stopNameClr: #22a8d1;
   }
 }
 
+.train-stock {
+  padding: 0.25em 0.5em;
+  display: flex;
+  justify-content: center;
+}
+ul.stock-list {
+  display: flex;
+  align-items: end;
+  overflow-x: auto;
+  padding-bottom: 1em;
+
+  li > div {
+    text-align: center;
+    color: #aaa;
+    font-size: 0.9em;
+  }
+}
+
 .schedule-wrapper {
-  margin-left: 2.5rem;
+  overflow-y: auto;
+  max-height: 500px;
+  width: 100%;
+  z-index: 5;
+
+  margin-top: 1em;
 }
 
 .progress-bar {
@@ -202,6 +259,10 @@ $stopNameClr: #22a8d1;
   span {
     font-size: 0.8em;
   }
+}
+
+ul.stop_list {
+  margin-left: 2.5em;
 }
 
 ul.stop_list > li.stop {
