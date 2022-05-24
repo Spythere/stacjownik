@@ -158,6 +158,7 @@ export const store = createStore<State>({
       const onlineStationNames: string[] = [];
       const prevDispatcherStatuses: State['lastDispatcherStatuses'] = [];
 
+      console.log(data.dispatchers);
       data.stations?.forEach((stationAPI) => {
         if (stationAPI.region !== this.state.region.id || !stationAPI.isOnline) return;
 
@@ -167,7 +168,7 @@ export const store = createStore<State>({
         const station = this.state.stationList.find(s => s.name == stationAPI.stationName);
 
         const prevDispatcherStatus = this.state.lastDispatcherStatuses.find(dispatcher => dispatcher.hash === stationAPI.stationHash);
-        const stationStatus = data.dispatchers?.find((status: string[]) => status[0] == stationAPI.stationHash && status[1] == this.state.region.id) || -1;
+        const stationStatus = !data.dispatchers ? undefined : data.dispatchers.find((status: string[]) => status[0] == stationAPI.stationHash && status[1] == this.state.region.id) || -1;
         
         const statusTimestamp = prevDispatcherStatus && !data.dispatchers ? prevDispatcherStatus.statusTimestamp : getStatusTimestamp(stationStatus);
         const statusID = prevDispatcherStatus && !data.dispatchers ? prevDispatcherStatus.statusID : getStatusID(stationStatus);
