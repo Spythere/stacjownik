@@ -44,8 +44,8 @@
           v-for="(scheduledTrain, i) in computedScheduledTrains"
           :key="i + 1"
           tabindex="0"
-          @click="navigateToTrain(scheduledTrain.trainNo)"
-          @keydown.enter="navigateToTrain(scheduledTrain.trainNo)"
+          @click="navigateToTrain(scheduledTrain.trainNo, scheduledTrain.driverName)"
+          @keydown.enter="navigateToTrain(scheduledTrain.trainNo, scheduledTrain.driverName)"
         >
           <span class="timetable-general">
             <span class="general-info">
@@ -90,7 +90,7 @@
                   <span>{{ timestampToString(scheduledTrain.stopInfo.arrivalTimestamp) }}</span>
                 </div>
                 <div v-else>
-                  <s style="margin-right: 0.2em;" class="text--grayed">{{
+                  <s style="margin-right: 0.2em" class="text--grayed">{{
                     timestampToString(scheduledTrain.stopInfo.arrivalTimestamp)
                   }}</s>
                   <span>
@@ -120,7 +120,7 @@
                   <span>{{ timestampToString(scheduledTrain.stopInfo.departureTimestamp) }}</span>
                 </div>
                 <div v-else>
-                  <s style="margin-right: 0.2em;" class="text--grayed">{{
+                  <s style="margin-right: 0.2em" class="text--grayed">{{
                     timestampToString(scheduledTrain.stopInfo.departureTimestamp)
                   }}</s>
 
@@ -149,12 +149,12 @@ import { GETTERS } from '@/constants/storeConstants';
 import { DataStatus } from '@/scripts/enums/DataStatus';
 import { ComputedRef } from 'vue';
 import dateMixin from '@/mixins/dateMixin';
-import TrainStop from '@/scripts/interfaces/TrainStop';
+import routerMixin from '@/mixins/routerMixin';
 
 export default defineComponent({
   components: { SelectBox },
 
-  mixins: [dateMixin],
+  mixins: [dateMixin, routerMixin],
 
   props: {
     station: {
@@ -192,10 +192,12 @@ export default defineComponent({
     const computedScheduledTrains = computed(() => {
       if (!props.station) return [];
 
+      const station = props.station as Station;
+
       let scheduledTrains =
-        props.station.generalInfo?.checkpoints.find((cp) => cp.checkpointName === selectedCheckpoint.value)
+        station.generalInfo?.checkpoints.find((cp) => cp.checkpointName === selectedCheckpoint.value)
           ?.scheduledTrains ||
-        props.station.onlineInfo?.scheduledTrains ||
+        station.onlineInfo?.scheduledTrains ||
         [];
 
       return (
@@ -233,13 +235,6 @@ export default defineComponent({
 
     selectCheckpoint(cp: { checkpointName: string }) {
       this.selectedCheckpoint = cp.checkpointName;
-    },
-
-    navigateToTrain(trainNo: number) {
-      this.$router.push({
-        name: 'TrainsView',
-        query: { train: trainNo.toString() },
-      });
     },
   },
 

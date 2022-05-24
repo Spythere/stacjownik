@@ -24,12 +24,7 @@
           >
             <TrainInfo :train="train" />
 
-            <TrainSchedule
-              v-if="chosenTrainId == getTrainId(train)"
-              :train="train"
-              ref="card-inner"
-              tabindex="0"
-            />
+            <TrainSchedule v-if="chosenTrainId == getTrainId(train)" :train="train" ref="card-inner" tabindex="0" />
           </li>
         </ul>
       </div>
@@ -38,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, inject, Ref } from '@vue/runtime-core';
+import { computed, ComputedRef, defineComponent, inject, Ref, watchEffect } from '@vue/runtime-core';
 import { useStore } from '@/store';
 
 import defaultVehicleIconsJSON from '@/data/defaultVehicleIcons.json';
@@ -50,7 +45,6 @@ import TrainInfo from '@/components/TrainsView/TrainInfo.vue';
 
 import { DataStatus } from '@/scripts/enums/DataStatus';
 import { GETTERS } from '@/constants/storeConstants';
-import { ref } from 'vue';
 
 export default defineComponent({
   components: {
@@ -74,6 +68,7 @@ export default defineComponent({
     },
 
     defaultVehicleIcons: defaultVehicleIconsJSON,
+    chosenTrainId: null as string | null,
   }),
 
   setup(props) {
@@ -88,18 +83,10 @@ export default defineComponent({
       return props.trains;
     });
 
-    const chosenTrainId = ref(null) as Ref<string | null>;
-    const chosenTrain = computed(() =>
-      props.trains.find((train: Train) => train.trainNo + train.driverName === chosenTrainId.value)
-    );
-
     return {
       searchedTrain,
       searchedDriver,
       currentTrains,
-
-      chosenTrain,
-      chosenTrainId,
 
       sorterActive: inject('sorterActive') as { id: string | number; dir: number },
       trainsDataStatus: computed(() => trainsDataStatus.value),
@@ -107,6 +94,27 @@ export default defineComponent({
         () => props.trains.findIndex(({ timetableData }) => timetableData && timetableData.routeDistance > 200) != -1
       ),
     };
+  },
+
+  activated() {
+    const query = this.$route.query;
+
+    if (query.trainNo && query.driverName) {
+      const train = (this.$store.getters[GETTERS.trainList] as Train[]).find(
+        (train) => train.trainNo == Number(query.trainNo) && train.driverName == query.driverName!.toString()
+      );
+
+      this.searchedDriver = query.driverName.toString();
+      this.searchedTrain = query.trainNo.toString();
+
+        setTimeout(() => {
+          this.chosenTrainId = query.driverName + <string>query.trainNo;
+        }, 20);
+    }
+  },
+
+  deactivated() {
+    this.chosenTrainId = null;
   },
 
   methods: {
@@ -134,8 +142,16 @@ export default defineComponent({
       }, 10);
     },
 
-    toggleTimetable(train: Train) {
-      this.chosenTrainId = this.chosenTrainId && this.chosenTrainId == this.getTrainId(train) ? null : this.getTrainId(train);
+    toggleTimetable(train: Train, state?: boolean) {
+      const id = this.getTrainId(train);
+      console.log(id, this);
+
+      if (state !== undefined) {
+        this.chosenTrainId = state ? id : null;
+        return;
+      }
+
+      this.chosenTrainId = this.chosenTrainId && this.chosenTrainId == id ? null : id;
     },
 
     closeTimetable() {
@@ -147,8 +163,8 @@ export default defineComponent({
     },
 
     getTrainId(train: Train) {
-      return train.driverId.toString() + train.trainNo.toString();
-    }
+      return train.driverName + train.trainNo.toString();
+    },
   },
 });
 </script>

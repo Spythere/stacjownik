@@ -180,7 +180,7 @@ export const store = createStore<State>({
 
         const stationTrains = data.trains
           ?.filter(train => train?.region === this.state.region.id && train.online && train.currentStationName === stationAPI.stationName)
-          .map(train => ({ driverName: train.driverName, trainNo: train.trainNo }));
+          .map(train => ({ driverName: train.driverName, driverId: train.driverId, trainNo: train.trainNo }));
 
         station?.generalInfo?.checkpoints.forEach(cp => cp.scheduledTrains.length = 0);
 

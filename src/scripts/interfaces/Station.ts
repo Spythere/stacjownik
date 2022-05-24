@@ -52,6 +52,7 @@ export default interface Station {
 
     stationTrains?: {
       driverName: string;
+      driverId: number;
       trainNo: number;
       stopStatus?: string;
     }[];

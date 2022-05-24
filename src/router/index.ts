@@ -10,7 +10,7 @@ const routes: Array<RouteRecordRaw> = [
     path: "/trains",
     name: "TrainsView",
     component: () => import("@/views/TrainsView.vue"),
-    props: route => ({ train: route.query.train })
+    props: route => ({ train: route.query.train, driver: route.query.driver })
   },
   {
     path: "/scenery",

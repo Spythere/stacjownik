@@ -132,6 +132,8 @@ export default defineComponent({
 
     resetFilters() {
       this.filterList.forEach((f) => (f.isActive = true));
+      this.searchedDriver = "";
+      this.searchedTrain = "";
     },
   },
 });

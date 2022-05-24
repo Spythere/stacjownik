@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, provide, reactive, ref, TrainFilter } from 'vue';
+import { computed, ComputedRef, defineComponent, PropType, provide, reactive, ref, TrainFilter } from 'vue';
 import { filteredTrainList } from '@/scripts/managers/trainFilterManager';
 import  { trainFilters } from "@/data/trainOptions";
 
@@ -32,7 +32,17 @@ export default defineComponent({
     TrainOptions,
   },
 
-  props: ['train'],
+  props: {
+    train: {
+      type: String,
+      required: false
+    },
+
+    driver: {
+      type: String,
+      required: false
+    }
+  },
 
   data: () => ({
     statsIcon: require('@/assets/icon-stats.svg'),
@@ -77,18 +87,15 @@ export default defineComponent({
     };
   },
 
-  mounted() {
-    if (this.train) {
-      this.searchedTrain = this.train;
-      this.searchedDriver = '';
-    }
-  },
-
   activated() {
-    if (this.train) {
+    if(this.train) {
       this.searchedTrain = this.train;
-      this.searchedDriver = '';
+      this.searchedDriver = this.driver || "";
     }
+    // if (this.train) {
+    //   this.searchedTrain = this.train;
+    //   if(this.x) this.searchedDriver = this.x;
+    // }
   },
 });
 </script>

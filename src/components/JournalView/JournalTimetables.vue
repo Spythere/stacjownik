@@ -37,8 +37,8 @@
                       <span>
                         <span
                           tabindex="0"
-                          @click="navigateToTrain(!item.terminated ? item.trainNo : null)"
-                          @keydown.enter="navigateToTrain(!item.terminated ? item.trainNo : null)"
+                          @click="navigateToTimetable(item)"
+                          @keydown.enter="navigateToTimetable(item)"
                           style="cursor: pointer"
                         >
                           <b class="text--primary">{{ item.trainCategoryCode }}&nbsp;</b>
@@ -157,6 +157,7 @@ import JournalOptions from '@/components/JournalView/JournalOptions.vue';
 import { URLs } from '@/scripts/utils/apiURLs';
 import { journalTimetableFilters } from '@/data/journalFilters';
 import { JournalFilterType } from '@/scripts/enums/JournalFilterType';
+import routerMixin from '@/mixins/routerMixin';
 
 const PROD_MODE = process.env.VUE_APP_JOURNAL_TIMETABLES_DEV != "1" || process.env.NODE_ENV === "production";
 
@@ -199,7 +200,7 @@ interface TimetableHistory {
 
 export default defineComponent({
   components: { SearchBox, ActionButton, JournalOptions },
-  mixins: [dateMixin],
+  mixins: [dateMixin, routerMixin],
 
   data: () => ({
     icons: {
@@ -268,19 +269,16 @@ export default defineComponent({
   },
 
   methods: {
+    navigateToTimetable(historyItem: TimetableHistory) {
+        if(historyItem.terminated) return;
+
+        this.navigateToTrain(historyItem.trainNo, historyItem.driverName);
+    },
+
     getSceneryList(historyItem: TimetableHistory) {
       return historyItem.sceneriesString
         .split('%')
         .map((name, i) => ({ name, confirmed: i < historyItem.confirmedStopsCount }));
-    },
-
-    navigateToTrain(trainNo: number | null) {
-      if (!trainNo) return;
-
-      this.$router.push({
-        name: 'TrainsView',
-        query: { train: trainNo.toString() },
-      });
     },
 
     handleScroll() {

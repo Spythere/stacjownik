@@ -12,8 +12,8 @@
       :class="train.stopStatus"
       :key="train.trainNo + i"
       tabindex="0"
-      @click="() => navigateToTrain(train.trainNo)"
-      @keydown.enter="navigateToTrain(train.trainNo)"
+      @click="() => navigateToTrain(train.trainNo, train.driverName)"
+      @keydown.enter="navigateToTrain(train.trainNo, train.driverName)"
     >
       <span class="user_train">{{ train.trainNo }}</span>
       <span class="user_name">{{ train.driverName }}</span>
@@ -26,10 +26,13 @@
 </template>
 
 <script lang="ts">
+import routerMixin from '@/mixins/routerMixin';
 import Station from '@/scripts/interfaces/Station';
 import { computed, defineComponent } from 'vue';
 
 export default defineComponent({
+  mixins: [routerMixin],
+
   props: {
     station: {
       type: Object as () => Station,
@@ -38,13 +41,15 @@ export default defineComponent({
   },
 
   setup(props) {
-    const computedStationTrains = computed(() => {
+    const computedStationTrains= computed(() => {
       if (!props.station) return [];
-      if (!props.station.onlineInfo) return [];
-      if (!props.station.onlineInfo.stationTrains) return [];
 
-      return props.station.onlineInfo.stationTrains.map((train) => {
-        const scheduledTrainStatus = props.station.onlineInfo?.scheduledTrains?.find(
+      const station = props.station as Station;
+      if (!station.onlineInfo) return [];
+      if (!station.onlineInfo.stationTrains) return [];
+
+      return station.onlineInfo.stationTrains.map((train) => {
+        const scheduledTrainStatus = station.onlineInfo?.scheduledTrains?.find(
           (st) => st.trainNo === train.trainNo
         );
 
@@ -63,15 +68,6 @@ export default defineComponent({
       user: require('@/assets/icon-user.svg'),
     },
   }),
-
-  methods: {
-    navigateToTrain(trainNo: number) {
-      this.$router.push({
-        name: 'TrainsView',
-        query: { train: trainNo.toString() },
-      });
-    },
-  },
 });
 </script>
 
