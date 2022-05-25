@@ -158,7 +158,6 @@ export const store = createStore<State>({
       const onlineStationNames: string[] = [];
       const prevDispatcherStatuses: State['lastDispatcherStatuses'] = [];
 
-      console.log(data.dispatchers);
       data.stations?.forEach((stationAPI) => {
         if (stationAPI.region !== this.state.region.id || !stationAPI.isOnline) return;
 

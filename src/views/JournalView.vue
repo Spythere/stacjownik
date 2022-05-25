@@ -49,7 +49,6 @@ export default defineComponent({
 
   activated() {
     const query = this.$route.query;
-    console.log(this.$route.query);
     
     if(query.sceneryName) this.journalTypeChosen = 'dispatchers';
   }

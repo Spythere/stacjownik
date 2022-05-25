@@ -204,7 +204,7 @@ export default defineComponent({
 .timetable_progress-bar {
   position: relative;
 
-  width: 100px;
+  width: 6em;
   height: 1em;
 
   .bar-fg,
@@ -212,6 +212,8 @@ export default defineComponent({
     position: absolute;
     height: 1em;
     width: 100%;
+
+    left: 0;
   }
 
   .bar-fg {

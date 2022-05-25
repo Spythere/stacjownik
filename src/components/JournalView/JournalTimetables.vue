@@ -317,8 +317,6 @@ export default defineComponent({
         await axios.get(`${TIMETABLES_API_URL}?${this.currentQuery}&countFrom=${countFrom}`)
       ).data;
 
-      console.log('Loading...');
-
       if (!responseData?.response) return;
 
       if (responseData.response.length == 0) {

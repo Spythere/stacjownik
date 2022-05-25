@@ -118,8 +118,6 @@ export default defineComponent({
 
       if (apiResult.errorMessage) return;
 
-      console.log(apiResult);
-
       const dispatcherHistoryResult = apiResult.response;
       this.savedSceneryHistory = dispatcherHistoryResult;
 

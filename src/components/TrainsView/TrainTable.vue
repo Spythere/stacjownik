@@ -144,7 +144,6 @@ export default defineComponent({
 
     toggleTimetable(train: Train, state?: boolean) {
       const id = this.getTrainId(train);
-      console.log(id, this);
 
       if (state !== undefined) {
         this.chosenTrainId = state ? id : null;
@@ -156,10 +155,6 @@ export default defineComponent({
 
     closeTimetable() {
       this.chosenTrainId = null;
-    },
-
-    showTrainId(train: Train) {
-      console.log(this.getTrainId(train));
     },
 
     getTrainId(train: Train) {
