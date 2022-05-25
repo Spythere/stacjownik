@@ -85,7 +85,7 @@
     </section>
 
     <section class="train-image" style="display: flex; justify-content: center; align-items: center">
-      <img :src="train.locoURL" alt="Not Found" @error="onImageError" />
+      <img :src="train.locoURL" loading="lazy" alt="Loco image not found" @error="onImageError" />
 
       <div class="text--grayed">
         {{ train.locoType }}
