@@ -133,7 +133,12 @@ export default defineComponent({
   mixins: [dateMixin],
 
   props: {
-    searchedSceneryName: {
+    sceneryName: {
+      type: String,
+      required: false,
+    },
+
+    dispatcherName: {
       type: String,
       required: false,
     },
@@ -202,16 +207,25 @@ export default defineComponent({
   },
 
   mounted() {
+    const query = this.$route.query;
+
+    console.log("Mounted");
+    
+
+    if (query.sceneryName || query.dispatcherName) {
+      this.searchersValues[1].value = query.sceneryName?.toString() || "";
+      this.searchersValues[0].value = query.dispatcherName?.toString() || "";
+      
+      this.search();
+
+      return;
+    }
+
     this.fetchHistoryData();
   },
 
   activated() {
     window.addEventListener('scroll', this.handleScroll);
-
-    if (this.searchedSceneryName) {
-      this.searchersValues[1].value = this.searchedSceneryName;
-      this.search();
-    }
   },
 
   deactivated() {

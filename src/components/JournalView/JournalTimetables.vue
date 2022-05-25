@@ -112,7 +112,7 @@
                       <!-- Nick dyżurnego -->
                       <div v-if="item.authorName">
                         <b class="text--grayed">{{ $t('journal.dispatcher-name') }}&nbsp;</b>
-                        <b>{{ item.authorName }}</b>
+                        <router-link class="dispatcher-link" :to="`/journal?view=dispatchers&dispatcherName=${item.authorName}`">{{ item.authorName }}</router-link>
                       </div>
                     </div>
 
@@ -436,5 +436,9 @@ export default defineComponent({
       color: lightblue;
     }
   }
+}
+
+.dispatcher-link {
+  font-weight: bold;
 }
 </style>

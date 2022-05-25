@@ -70,7 +70,7 @@
               /
               <router-link class="route" active-class="route-active" to="/trains">{{ $t('app.trains') }} </router-link>
               /
-              <router-link class="route" active-class="route-active" to="/journal"
+              <router-link class="route" active-class="route-active" to="/journal?view=timetables"
                 >{{ $t('app.journal') }}
               </router-link>
             </span>
@@ -79,7 +79,7 @@
       </header>
 
       <main class="app_main">
-        <router-view v-slot="{ Component }">
+        <router-view v-slot="{ Component }" :key="$route.fullPath">
           <!-- <transition name="view-anim" mode="out-in"> -->
           <keep-alive>
             <component :is="Component" />

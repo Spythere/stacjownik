@@ -1,27 +1,30 @@
 <template>
   <section class="journal-view">
     <div class="journal-type-options">
-      <button
-        class="btn btn--text"
-        :class="{ checked: journalTypeChosen == 'timetables' }"
-        @click="changeJournalType('timetables')"
+      <router-link
+        class="router-link"
+        :class="{ active: journalTypeChosen == 'timetables' }"
+        to="/journal?view=timetables"
       >
         {{ $t('journal.section-timetables') }}
-      </button>
+      </router-link>
       &nbsp;&bull;&nbsp;
-      <button
-        class="btn btn--text"
-        :class="{ checked: journalTypeChosen == 'dispatchers' }"
-        @click="changeJournalType('dispatchers')"
+      <router-link
+        class="router-link"
+        :class="{ active: journalTypeChosen == 'dispatchers' }"
+        to="/journal?view=dispatchers"
       >
         {{ $t('journal.section-dispatchers') }}
-      </button>
+      </router-link>
     </div>
 
     <div class="journal-section">
       <keep-alive>
         <JournalTimetables v-if="journalTypeChosen == 'timetables'" />
-        <JournalDispatchers v-else-if="journalTypeChosen == 'dispatchers'" :searchedSceneryName="$route.query.sceneryName?.toString()" />
+        <JournalDispatchers
+          v-else-if="journalTypeChosen == 'dispatchers'"
+          :sceneryName="$route.query.sceneryName?.toString()"
+        />
       </keep-alive>
     </div>
   </section>
@@ -29,15 +32,17 @@
 
 <script lang="ts">
 import JournalTimetables from '@/components/JournalView/JournalTimetables.vue';
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 import JournalDispatchers from '@/components/JournalView/JournalDispatchers.vue';
 
 export default defineComponent({
   components: { JournalTimetables, JournalDispatchers },
 
-  data() {
+  setup() {
+    const journalTypeChosen = ref('timetables');
+
     return {
-      journalTypeChosen: 'timetables',
+      journalTypeChosen,
     };
   },
 
@@ -49,9 +54,9 @@ export default defineComponent({
 
   activated() {
     const query = this.$route.query;
-    
-    if(query.sceneryName) this.journalTypeChosen = 'dispatchers';
-  }
+
+    if (query.view == 'dispatchers') this.journalTypeChosen = 'dispatchers';
+  },
 });
 </script>
 
@@ -75,5 +80,9 @@ export default defineComponent({
 
   display: flex;
   justify-content: center;
+}
+
+.router-link.active {
+  color: gold;
 }
 </style>
