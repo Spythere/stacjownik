@@ -59,10 +59,10 @@
       </header>
 
       <main class="app_main">
-        <router-view v-slot="{ Component }" :key="$route.fullPath">
+        <router-view v-slot="{ Component }">
           <!-- <transition name="view-anim" mode="out-in"> -->
           <keep-alive>
-            <component :is="Component" />
+            <component :is="Component" :key="$route.fullPath" />
           </keep-alive>
           <!-- </transition> -->
         </router-view>

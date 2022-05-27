@@ -111,7 +111,7 @@ export default defineComponent({
   methods: {
     toggleCardsState(name: string): void {
       if (name == 'filter') {
-        this.filterCardOpen = !this.filterCardOpen;
+        this.filterCardOpen = !this.filterCardOpen;        
       }
     },
     changeSorter(index: number) {
