@@ -297,7 +297,7 @@ export default defineComponent({
         element.getBoundingClientRect().bottom * 0.85 < window.innerHeight &&
         this.scrollDataLoaded &&
         !this.scrollNoMoreData &&
-        window.scrollY > window.innerHeight
+        this.historyDataStatus.status == DataStatus.Loaded
       )
         this.addHistoryData();
     },

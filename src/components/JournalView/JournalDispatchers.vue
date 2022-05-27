@@ -258,13 +258,15 @@ export default defineComponent({
     handleScroll() {
       this.showReturnButton = window.scrollY > window.innerHeight;
 
+      console.log(window.scrollY > window.innerHeight);
+
       const element = this.$refs.scrollElement as HTMLElement;
 
       if (
         element.getBoundingClientRect().bottom * 0.85 < window.innerHeight &&
         this.scrollDataLoaded &&
         !this.scrollNoMoreData &&
-        window.scrollY > window.innerHeight
+        this.historyDataStatus.status == DataStatus.Loaded
       )
         this.addHistoryData();
     },

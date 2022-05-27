@@ -1,5 +1,9 @@
 <template>
   <section class="station_table">
+    <button class="return-btn" @click="scrollToTop" v-if="showReturnButton">
+      <img :src="icons.arrow" alt="return arrow" />
+    </button>
+
     <div class="table_wrapper">
       <table>
         <thead>
@@ -231,6 +235,7 @@
 import styleMixin from '@/mixins/styleMixin';
 import dateMixin from '@/mixins/dateMixin';
 import stationInfoMixin from '@/mixins/stationInfoMixin';
+import returnBtnMixin from '@/mixins/returnBtnMixin';
 
 import { DataStatus } from '@/scripts/enums/DataStatus';
 import { computed, ComputedRef, defineComponent } from '@vue/runtime-core';
@@ -255,7 +260,7 @@ export default defineComponent({
     changeSorter: { type: Function, required: true },
   },
 
-  mixins: [styleMixin, dateMixin, stationInfoMixin],
+  mixins: [styleMixin, dateMixin, stationInfoMixin, returnBtnMixin],
 
   data: () => ({
     likeIcon: require('@/assets/icon-like.svg'),

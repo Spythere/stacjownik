@@ -69,8 +69,8 @@
       </main>
 
       <footer class="app_footer">
-        &copy;&nbsp;
-        <a href="https://td2.info.pl/profile/?u=20777" target="_blank">Spythere</a>&nbsp;
+        &copy;
+        <a href="https://td2.info.pl/profile/?u=20777" target="_blank">Spythere</a>
         {{ new Date().getUTCFullYear() }} | v{{ VERSION }}
       </footer>
     </div>

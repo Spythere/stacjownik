@@ -1,5 +1,9 @@
 <template>
   <div class="train-table" @keydown.esc="closeTimetable" v-click-outside="closeTimetable">
+    <button class="return-btn" @click="scrollToTop" v-if="showReturnButton">
+      <img :src="icons.arrowAsc" alt="return arrow" />
+    </button>
+
     <transition name="anim" mode="out-in">
       <div :key="trainsDataStatus">
         <!-- <div class="traffic-warning" v-if="data.">
@@ -45,12 +49,15 @@ import TrainInfo from '@/components/TrainsView/TrainInfo.vue';
 
 import { DataStatus } from '@/scripts/enums/DataStatus';
 import { GETTERS } from '@/constants/storeConstants';
+import returnBtnMixin from '@/mixins/returnBtnMixin';
 
 export default defineComponent({
   components: {
     TrainSchedule,
     TrainInfo,
   },
+
+  mixins: [returnBtnMixin],
 
   props: {
     trains: {
@@ -107,9 +114,9 @@ export default defineComponent({
       this.searchedDriver = query.driverName.toString();
       this.searchedTrain = query.trainNo.toString();
 
-        setTimeout(() => {
-          this.chosenTrainId = query.driverName + <string>query.trainNo;
-        }, 20);
+      setTimeout(() => {
+        this.chosenTrainId = query.driverName + <string>query.trainNo;
+      }, 20);
     }
   },
 
