@@ -8,11 +8,16 @@
       </div> -->
       <header class="app_header">
         <div class="header_container">
-          <div class="header_icons-container">
-            <span class="icons">
+          <div class="header_icons">
+            <span class="icons-top">
+              <img :src="icons.pl" alt="icon-pl" @click="changeLang('en')" v-if="currentLang == 'pl'" />
+              <img :src="icons.en" alt="icon-en" @click="changeLang('pl')" v-else />
+            </span>
+            <span class="icons-bottom">
               <a href="https://www.paypal.com/paypalme/spythere" target="_blank">
                 <img :src="icons.dollar" alt="icon paypal" />
               </a>
+
               <a href="https://discord.gg/x2mpNN3svk" target="_blank">
                 <img :src="icons.discord" alt="icon discord" />
               </a>
@@ -22,32 +27,7 @@
           <div class="header_body">
             <status-indicator />
             <span class="header_brand">
-              <span>
-                <span>S</span>
-                <span>tacj</span>
-                <span class="train-logo">
-                  <img class="logo-image" src="@/assets/stacjownik-logo.svg" alt="stacjownik logo" />
-                </span>
-                <span>wnik</span>
-              </span>
-              <span class="brand_lang">
-                <span
-                  class="lang pl"
-                  @click="changeLang('en')"
-                  :class="{ current: currentLang == 'pl' }"
-                  v-if="currentLang == 'pl'"
-                >
-                  <img :src="icons.pl" alt="icon-pl" />
-                </span>
-                <span
-                  class="lang en"
-                  @click="changeLang('pl')"
-                  :class="{ current: currentLang == 'en' }"
-                  v-if="currentLang == 'en'"
-                >
-                  <img :src="icons.en" alt="icon-en" />
-                </span>
-              </span>
+              <img :src="brand_logo" alt="Stacjownik" />
             </span>
 
             <span class="header_info">
@@ -89,10 +69,8 @@
       </main>
 
       <footer class="app_footer">
-        &copy;
-        <a href="https://td2.info.pl/profile/?u=20777" target="_blank">
-          Spythere
-        </a>
+        &copy;&nbsp;
+        <a href="https://td2.info.pl/profile/?u=20777" target="_blank">Spythere</a>&nbsp;
         {{ new Date().getUTCFullYear() }} | v{{ VERSION }}
       </footer>
     </div>
@@ -155,6 +133,8 @@ export default defineComponent({
     updateModalVisible: false,
     hasReleaseNotes: false,
     currentLang: 'pl',
+
+    brand_logo: require('@/assets/stacjownik-header-logo.svg'),
 
     icons: {
       en: require('@/assets/icon-en.jpg'),

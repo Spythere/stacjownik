@@ -1,8 +1,7 @@
-@import "./styles/responsive.scss";
-@import "./styles/variables.scss";
-@import "./styles/global.scss";
-@import "./styles/scenery_status.scss";
-
+@import './styles/responsive.scss';
+@import './styles/variables.scss';
+@import './styles/global.scss';
+@import './styles/scenery_status.scss';
 
 // VUE ROUTE CHANGE ANIMATION
 .view-anim {
@@ -49,7 +48,6 @@
   min-width: 0;
   min-height: 100vh;
 
-
   header {
     flex: 0 0 auto;
   }
@@ -80,7 +78,7 @@
 .app_header {
   display: flex;
   justify-content: center;
-  
+
   position: relative;
   background-color: $primaryCol;
 }
@@ -94,35 +92,13 @@
     width: 1350px;
     padding: 0.5em 0.3em 0 0.3em;
     border-radius: 0 0 1em 1em;
-
   }
 
   &_brand {
-    position: relative;
-    width: 100%;
-    font-size: 4.25em;
-
-    text-align: center;
-
-    .logo-image {
-      width: 0.6em;
-      margin: 0 0.05em;
-    }
-
-    .brand_lang {
-      position: absolute;
-      right: 0;
-
-      transform: translate(110%, -35%);
-
-      img {
-        width: 0.6em;
-      }
-
-      cursor: pointer;
+    img {
+      width: 22em;
     }
   }
-  
 
   &_info {
     display: flex;
@@ -144,37 +120,62 @@
     padding: 0.5em;
   }
 
+  &_icons {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-end;
+    padding: 1em 0.5em;
+
+    @include smallScreen() {
+      right: auto;
+      left: 0.5em;
+      padding: 0.5em 0;
+
+      align-items: center;
+    }
+  }
 }
 
 // ICONS
 .icons {
-  display: flex;
-  position: absolute;
-  right: 0.5em;
-  bottom: 0;
+  position: relative;
 
-  a {      
-    margin: 0.5em 0;
-    margin-left: 0.6em;
-    user-select: none;
-  }
-  
-  img {
-    width: 1.9em;
+  &-top {
+    img {
+      width: 2.5em;
+
+      cursor: pointer;
+    }
+
+    margin-bottom: 0.5em;
   }
 
-  @include smallScreen() {
-    flex-direction: column;
-    right: 0.25em;
-    right: auto;
-    left: 0.5em;
-
+  &-bottom {
+    display: flex;
 
     a {
-      margin: 0.25em 0;
+      margin-left: 0.6em;
+      user-select: none;
+    }
+
+    img {
+      width: 1.9em;
+    }
+
+    @include smallScreen() {
+      flex-direction: column;
+      
+      a {
+        margin: 0.25em 0;
+      }
     }
   }
-      
 }
 
 // COUNTER

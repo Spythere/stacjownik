@@ -206,6 +206,7 @@ export default defineComponent({
 
   width: 6em;
   height: 1em;
+  margin: 0.5em 0;
 
   .bar-fg,
   .bar-bg {
@@ -243,6 +244,8 @@ export default defineComponent({
     grid-template-columns: 1fr;
     gap: 1em 0;
     text-align: center;
+
+    font-size: 1.25em;
   }
 
   .info-stats {
