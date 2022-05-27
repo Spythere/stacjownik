@@ -16,9 +16,8 @@
         <div class="list-wrapper" ref="scrollElement">
           <transition name="warning" mode="out-in">
             <div :key="historyDataStatus.status">
-              <div class="journal_loading" v-if="isDataLoading || isDataInit">
-                <img :src="icons.loading" alt="loading icon" />
-                <span class="loading-label">{{ $t('app.loading') }}</span>
+              <div class="journal_warning loading" v-if="isDataLoading || isDataInit">
+               {{ $t('app.loading') }}
               </div>
 
               <div v-else-if="isDataError" class="journal_warning error">

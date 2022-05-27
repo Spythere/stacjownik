@@ -18,8 +18,7 @@
           <transition name="warning" mode="out-in">
             <div :key="historyDataStatus.status">
               <div class="journal_loading" v-if="isDataLoading || isDataInit">
-                <img :src="icons.loading" alt="loading icon" />
-                <span class="loading-label">{{ $t('app.loading') }}</span>
+                {{ $t('app.loading') }}
               </div>
 
               <div v-else-if="isDataError" class="journal_warning error">
@@ -112,7 +111,11 @@
                       <!-- Nick dyżurnego -->
                       <div v-if="item.authorName">
                         <b class="text--grayed">{{ $t('journal.dispatcher-name') }}&nbsp;</b>
-                        <router-link class="dispatcher-link" :to="`/journal?view=dispatchers&dispatcherName=${item.authorName}`">{{ item.authorName }}</router-link>
+                        <router-link
+                          class="dispatcher-link"
+                          :to="`/journal?view=dispatchers&dispatcherName=${item.authorName}`"
+                          >{{ item.authorName }}</router-link
+                        >
                       </div>
                     </div>
 
@@ -159,9 +162,11 @@ import { journalTimetableFilters } from '@/data/journalFilters';
 import { JournalFilterType } from '@/scripts/enums/JournalFilterType';
 import routerMixin from '@/mixins/routerMixin';
 
-const PROD_MODE = process.env.VUE_APP_JOURNAL_TIMETABLES_DEV != "1" || process.env.NODE_ENV === "production";
+const PROD_MODE = process.env.VUE_APP_JOURNAL_TIMETABLES_DEV != '1' || process.env.NODE_ENV === 'production';
 
-const TIMETABLES_API_URL = PROD_MODE ? `${URLs.stacjownikAPI}/api/getTimetables` : 'http://localhost:3001/api/getTimetables';
+const TIMETABLES_API_URL = PROD_MODE
+  ? `${URLs.stacjownikAPI}/api/getTimetables`
+  : 'http://localhost:3001/api/getTimetables';
 
 interface APIResponse {
   errorMessage: string | null;
@@ -214,7 +219,7 @@ export default defineComponent({
 
     showReturnButton: false,
 
-    journalTimetableFilters
+    journalTimetableFilters,
   }),
 
   setup() {
@@ -226,7 +231,10 @@ export default defineComponent({
     const sorterActive = ref({ id: 'timetableId', dir: -1 });
     const journalFilterActive = ref(journalTimetableFilters[0]);
 
-    const searchersValues = reactive([{ id: 'search-train', value: '' }, { id: 'search-driver', value: '' }])
+    const searchersValues = reactive([
+      { id: 'search-train', value: '' },
+      { id: 'search-driver', value: '' },
+    ]);
     const countFromIndex = ref(0);
     const countLimit = 15;
 
@@ -270,9 +278,9 @@ export default defineComponent({
 
   methods: {
     navigateToTimetable(historyItem: TimetableHistory) {
-        if(historyItem.terminated) return;
+      if (historyItem.terminated) return;
 
-        this.navigateToTrain(historyItem.trainNo, historyItem.driverName);
+      this.navigateToTrain(historyItem.trainNo, historyItem.driverName);
     },
 
     getSceneryList(historyItem: TimetableHistory) {
@@ -330,7 +338,7 @@ export default defineComponent({
 
     async fetchHistoryData(
       props: {
-        searchers?: JournalSearcher[],
+        searchers?: JournalSearcher[];
         filter?: JournalFilter;
       } = {}
     ) {
@@ -338,8 +346,8 @@ export default defineComponent({
 
       const queries: string[] = [];
 
-      const driver = props.searchers?.find(s => s.id == "search-driver")?.value.trim();
-      const train = props.searchers?.find(s => s.id == "search-train")?.value.trim();
+      const driver = props.searchers?.find((s) => s.id == 'search-driver')?.value.trim();
+      const train = props.searchers?.find((s) => s.id == 'search-train')?.value.trim();
 
       if (driver) queries.push(`driver=${driver}`);
       if (train) queries.push(`train=${train}`);
@@ -372,7 +380,9 @@ export default defineComponent({
       this.currentQuery = queries.join('&');
 
       try {
-        const responseData: APIResponse | null = await (await axios.get(`${TIMETABLES_API_URL}?${this.currentQuery}`)).data;
+        const responseData: APIResponse | null = await (
+          await axios.get(`${TIMETABLES_API_URL}?${this.currentQuery}`)
+        ).data;
 
         if (!responseData) {
           this.historyDataStatus.status = DataStatus.Error;
