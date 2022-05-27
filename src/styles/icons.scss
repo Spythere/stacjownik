@@ -1,0 +1,41 @@
+.scenery-icon {
+  display: inline-block;
+
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+
+  text-align: center;
+
+  font-weight: bold;
+
+  background-color: #888;
+
+  &.SPK,
+  &.mechaniczne-SPK,
+  &.ręczne-SPK {
+    color: gold;
+  }
+
+  &.SCS,
+  &.mechaniczne-SCS,
+  &.ręczne-SCS {
+    color: #00fff2;
+  }
+
+  &.SPE {
+    color: lawngreen;
+  }
+
+  &.mechaniczne {
+    color: rgb(255, 170, 42);
+  }
+
+  &.ręczne {
+    color: #111;
+  }
+
+  &.SCS-SPK {
+    color: white;
+  }
+}

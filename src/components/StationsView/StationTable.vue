@@ -53,7 +53,7 @@
                 unavailable: station.generalInfo?.unavailable,
               }"
             >
-              <b v-if="station.generalInfo?.project" style="color: salmon;">{{ station.generalInfo.project }}</b>
+              <b v-if="station.generalInfo?.project" style="color: salmon">{{ station.generalInfo.project }}</b>
               {{ station.name }}
             </td>
 
@@ -62,8 +62,8 @@
                 <span
                   v-if="
                     station.generalInfo.reqLevel > -1 &&
-                      !station.generalInfo.nonPublic &&
-                      !station.generalInfo.unavailable
+                    !station.generalInfo.nonPublic &&
+                    !station.generalInfo.unavailable
                   "
                   :style="calculateExpStyle(station.generalInfo.reqLevel)"
                 >
@@ -83,9 +83,7 @@
                 </span>
               </span>
 
-              <span v-else>
-                ?
-              </span>
+              <span v-else> ? </span>
             </td>
 
             <td class="station_status">
@@ -115,9 +113,7 @@
               <span
                 v-if="station.generalInfo && station.generalInfo.routes.twoWayCatenaryRouteNames.length > 0"
                 class="track catenary"
-                :title="
-                  `Liczba zelektryfikowanych szlaków dwutorowych: ${station.generalInfo.routes.twoWayCatenaryRouteNames.length}`
-                "
+                :title="`Liczba zelektryfikowanych szlaków dwutorowych: ${station.generalInfo.routes.twoWayCatenaryRouteNames.length}`"
               >
                 {{ station.generalInfo.routes.twoWayCatenaryRouteNames.length }}
               </span>
@@ -125,9 +121,7 @@
               <span
                 v-if="station.generalInfo && station.generalInfo.routes.twoWayNoCatenaryRouteNames.length > 0"
                 class="track no-catenary"
-                :title="
-                  `Liczba niezelektryfikowanych szlaków dwutorowych: ${station.generalInfo.routes.twoWayNoCatenaryRouteNames.length}`
-                "
+                :title="`Liczba niezelektryfikowanych szlaków dwutorowych: ${station.generalInfo.routes.twoWayNoCatenaryRouteNames.length}`"
               >
                 {{ station.generalInfo.routes.twoWayNoCatenaryRouteNames.length }}
               </span>
@@ -137,9 +131,7 @@
               <span
                 v-if="station.generalInfo && station.generalInfo.routes.oneWayCatenaryRouteNames.length > 0"
                 class="track catenary"
-                :title="
-                  `Liczba zelektryfikowanych szlaków jednotorowych: ${station.generalInfo.routes.oneWayCatenaryRouteNames.length}`
-                "
+                :title="`Liczba zelektryfikowanych szlaków jednotorowych: ${station.generalInfo.routes.oneWayCatenaryRouteNames.length}`"
               >
                 {{ station.generalInfo.routes.oneWayCatenaryRouteNames.length }}
               </span>
@@ -147,47 +139,54 @@
               <span
                 v-if="station.generalInfo && station.generalInfo.routes.oneWayNoCatenaryRouteNames.length > 0"
                 class="track no-catenary"
-                :title="
-                  `Liczba niezelektryfikowanych szlaków jednotorowych: ${station.generalInfo.routes.oneWayNoCatenaryRouteNames.length}`
-                "
+                :title="`Liczba niezelektryfikowanych szlaków jednotorowych: ${station.generalInfo.routes.oneWayNoCatenaryRouteNames.length}`"
               >
                 {{ station.generalInfo.routes.oneWayNoCatenaryRouteNames.length }}
               </span>
             </td>
 
             <td class="station_info">
-              <img
+              <span v-if="station.generalInfo">
+                <span
+                  class="scenery-icon icon-info"
+                  :class="station.generalInfo.controlType.replace('+', '-')"
+                  :title="$t('desc.control-type') + $t(`controls.${station.generalInfo.controlType}`)"
+                  v-html="getControlTypeAbbrev(station.generalInfo.controlType)"
+                >
+                </span>
+                <!-- <img
                 class="icon-info"
                 v-if="station.generalInfo?.controlType"
                 :src="require(`@/assets/icon-${station.generalInfo.controlType}.svg`)"
                 :alt="station.generalInfo.controlType"
                 :title="$t('desc.control-type') + $t(`controls.${station.generalInfo.controlType}`)"
-              />
+              /> -->
+                <img
+                  class="icon-info"
+                  v-if="station.generalInfo.SUP"
+                  :src="require(`@/assets/icon-SUP.svg`)"
+                  alt="SUP (RASP-UZK)"
+                  :title="$t('desc.SUP')"
+                />
 
-              <img
-                class="icon-info"
-                v-if="station.generalInfo?.SUP"
-                :src="require(`@/assets/icon-SUP.svg`)"
-                alt="SUP (RASP-UZK)"
-                :title="$t('desc.SUP')"
-              />
+                <img
+                  class="icon-info"
+                  v-if="station.generalInfo.signalType"
+                  :src="require(`@/assets/icon-${station.generalInfo.signalType}.svg`)"
+                  :alt="station.generalInfo.signalType"
+                  :title="$t('desc.signals-type') + $t(`signals.${station.generalInfo.signalType}`)"
+                />
 
-              <img
-                class="icon-info"
-                v-if="station.generalInfo?.signalType"
-                :src="require(`@/assets/icon-${station.generalInfo.signalType}.svg`)"
-                :alt="station.generalInfo.signalType"
-                :title="$t('desc.signals-type') + $t(`signals.${station.generalInfo.signalType}`)"
-              />
+                <img
+                  class="icon-info"
+                  v-if="station.generalInfo && station.generalInfo.routes.sblRouteNames.length > 0"
+                  :src="SBLIcon"
+                  alt="SBL"
+                  :title="$t('desc.SBL') + `${station.generalInfo.routes.sblRouteNames.join(',')}`"
+                />
+              </span>
 
-              <img
-                v-if="station.generalInfo && station.generalInfo.routes.sblRouteNames.length > 0"
-                :src="SBLIcon"
-                alt="SBL"
-                :title="$t('desc.SBL') + `${station.generalInfo.routes.sblRouteNames.join(',')}`"
-              />
-
-              <img v-if="!station.generalInfo" :src="unknownIcon" alt="icon-unknown" :title="$t('desc.unknown')" />
+              <img v-else class="icon-info" :src="unknownIcon" alt="icon-unknown" :title="$t('desc.unknown')" />
             </td>
 
             <td class="station_users" :class="{ inactive: !station.onlineInfo }">
@@ -230,6 +229,8 @@
 
 <script lang="ts">
 import styleMixin from '@/mixins/styleMixin';
+import dateMixin from '@/mixins/dateMixin';
+import stationInfoMixin from '@/mixins/stationInfoMixin';
 
 import { DataStatus } from '@/scripts/enums/DataStatus';
 import { computed, ComputedRef, defineComponent } from '@vue/runtime-core';
@@ -237,7 +238,6 @@ import { useStore } from '@/store';
 import { GETTERS } from '@/constants/storeConstants';
 import Station from '@/scripts/interfaces/Station';
 import { StoreData } from '@/scripts/interfaces/StoreData';
-import dateMixin from '@/mixins/dateMixin';
 
 export default defineComponent({
   props: {
@@ -255,7 +255,7 @@ export default defineComponent({
     changeSorter: { type: Function, required: true },
   },
 
-  mixins: [styleMixin, dateMixin],
+  mixins: [styleMixin, dateMixin, stationInfoMixin],
 
   data: () => ({
     likeIcon: require('@/assets/icon-like.svg'),
@@ -269,7 +269,6 @@ export default defineComponent({
     unavailableIcon: require('@/assets/icon-unavailable.svg'),
     unknownIcon: require('@/assets/icon-unknown.svg'),
     abandonedIcon: require('@/assets/icon-abandoned.svg'),
-
 
     ascIcon: require('@/assets/icon-arrow-asc.svg'),
     descIcon: require('@/assets/icon-arrow-desc.svg'),
@@ -322,6 +321,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '../../styles/responsive.scss';
 @import '../../styles/variables.scss';
+@import '../../styles/icons.scss';
 
 $rowCol: #4b4b4b;
 
@@ -461,12 +461,22 @@ td.station {
     }
   }
 
-  &_info,
-  &_tracks {
-    img {
-      width: 2.2em;
+  &_info {
+    display: flex;
+    justify-content: center;
+
+    .icon-info {
+      font-size: 0.8rem;
+      width: 2rem;
+      height: 2rem;
+
+      line-height: 2rem;
+
       margin: 0 0.2em;
       vertical-align: middle;
+
+      outline: 2px solid #444;
+      border-radius: 0.5em;
     }
   }
 

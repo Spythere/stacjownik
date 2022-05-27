@@ -17,7 +17,7 @@
           <transition name="warning" mode="out-in">
             <div :key="historyDataStatus.status">
               <div class="journal_warning loading" v-if="isDataLoading || isDataInit">
-               {{ $t('app.loading') }}
+                {{ $t('app.loading') }}
               </div>
 
               <div v-else-if="isDataError" class="journal_warning error">
@@ -145,7 +145,6 @@ export default defineComponent({
 
   data: () => ({
     icons: {
-      loading: require('@/assets/icon-loading.svg'),
       arrow: require('@/assets/icon-arrow-asc.svg'),
     },
 
@@ -208,13 +207,12 @@ export default defineComponent({
   mounted() {
     const query = this.$route.query;
 
-    console.log("Mounted");
-    
+    console.log('Mounted');
 
     if (query.sceneryName || query.dispatcherName) {
-      this.searchersValues[1].value = query.sceneryName?.toString() || "";
-      this.searchersValues[0].value = query.dispatcherName?.toString() || "";
-      
+      this.searchersValues[1].value = query.sceneryName?.toString() || '';
+      this.searchersValues[0].value = query.dispatcherName?.toString() || '';
+
       this.search();
 
       return;
@@ -265,7 +263,8 @@ export default defineComponent({
       if (
         element.getBoundingClientRect().bottom * 0.85 < window.innerHeight &&
         this.scrollDataLoaded &&
-        !this.scrollNoMoreData
+        !this.scrollNoMoreData &&
+        window.scrollY > window.innerHeight
       )
         this.addHistoryData();
     },

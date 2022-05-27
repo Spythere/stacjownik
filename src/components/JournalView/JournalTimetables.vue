@@ -209,7 +209,6 @@ export default defineComponent({
 
   data: () => ({
     icons: {
-      loading: require('@/assets/icon-loading.svg'),
       arrow: require('@/assets/icon-arrow-asc.svg'),
     },
 
@@ -297,7 +296,8 @@ export default defineComponent({
       if (
         element.getBoundingClientRect().bottom * 0.85 < window.innerHeight &&
         this.scrollDataLoaded &&
-        !this.scrollNoMoreData
+        !this.scrollNoMoreData &&
+        window.scrollY > window.innerHeight
       )
         this.addHistoryData();
     },

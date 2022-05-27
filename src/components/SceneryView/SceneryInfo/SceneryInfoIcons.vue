@@ -1,43 +1,55 @@
 <template>
-  <section class="info-icons">
-    <img
-      v-if="station.generalInfo?.controlType"
-      :src="require(`@/assets/icon-${station.generalInfo.controlType}.svg`)"
-      :alt="station.generalInfo.controlType"
+  <section class="info-icons" v-if="station.generalInfo">
+    <span
+      class="scenery-icon icon-info"
+      :class="station.generalInfo.controlType.replace('+', '-')"
       :title="$t('desc.control-type') + $t(`controls.${station.generalInfo.controlType}`)"
-    />
+      v-html="getControlTypeAbbrev(station.generalInfo.controlType)"
+    >
+    </span>
 
     <img
-      v-if="station.generalInfo?.SUP"
+      class="icon-info"
+      v-if="station.generalInfo.SUP"
       :src="require(`@/assets/icon-SUP.svg`)"
       alt="SUP (RASP-UZK)"
       :title="$t('desc.SUP')"
     />
 
     <img
-      v-if="station.generalInfo?.signalType"
+      class="icon-info"
+      v-if="station.generalInfo.signalType"
       :src="require(`@/assets/icon-${station.generalInfo.signalType}.svg`)"
       :alt="station.generalInfo.signalType"
       :title="$t('desc.signals-type') + $t(`signals.${station.generalInfo.signalType}`)"
     />
 
-    <img v-if="station.generalInfo?.default" :src="icons.td2" alt="default scenery" :title="$t('desc.default')" />
+    <img
+      v-if="station.generalInfo.default"
+      class="icon-info"
+      :src="icons.td2"
+      alt="default scenery"
+      :title="$t('desc.default')"
+    />
 
     <img
-      v-if="station.generalInfo?.nonPublic"
+      class="icon-info"
+      v-if="station.generalInfo.nonPublic"
       :src="icons.lock"
       alt="non public scenery"
       :title="$t('desc.non-public')"
     />
 
     <img
-      v-if="station.generalInfo?.unavailable"
+      class="icon-info"
+      v-if="station.generalInfo.unavailable"
       :src="icons.unavailable"
       alt="icon unavailable"
       :title="$t('desc.unavailable')"
     />
 
     <img
+      class="icon-info"
       v-if="station.generalInfo && station.generalInfo.lines != ''"
       :src="icons.real"
       alt="real scenery"
@@ -50,10 +62,12 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import stationInfoMixin from '@/mixins/stationInfoMixin';
 
 import Station from '@/scripts/interfaces/Station';
 
 export default defineComponent({
+  mixins: [stationInfoMixin],
   props: {
     station: {
       type: Object as () => Station,
@@ -75,13 +89,22 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import "../../../styles/icons.scss";
 .info-icons {
-  img {
-    width: 3.5em;
-    margin: 1em 0.5em;
+  display: flex;
+  justify-content: center;
+}
+.icon-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-    border: 2px solid #4e4e4e;
-    border-radius: 0.5em;
-  }
+  width: 3em;
+  font-size: 1.2em;
+
+  margin: 1em 0.5em;
+
+  border: 2px solid #4e4e4e;
+  border-radius: 0.5em;
 }
 </style>
