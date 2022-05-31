@@ -6,7 +6,9 @@
     "loading": "Loading data...",
     "support": "Support the project",
     "error": "An error occured while loading data!",
-    "no-result": "No results for current search!"
+    "no-result": "No results for current search!",
+    "migration-warning": "Stacjownik services will be unavailable 2/06/2022 between 1-3am due to the migration of API hostings!",
+    "migration-confirm": "Roger that!"
   },
   "data-status": {
     "S1a-connection": "<b>S1a signal</b> <br> Cannot connect with SWDR API service!",

@@ -6,7 +6,9 @@
     "loading": "Pobieranie danych...",
     "support": "Wspomóż projekt",
     "error": "Wystąpił problem z załadowaniem danych!",
-    "no-result": "Brak wyników o podanych kryteriach!"
+    "no-result": "Brak wyników o podanych kryteriach!",
+    "migration-warning": "Usługi Stacjownika będą niedostępne w godzinach 1:00-3:00 2 czerwca 2022r. z powodu migracji hostingów API!",
+    "migration-confirm": "Przyjąłem!"
   },
 
   "data-status": {

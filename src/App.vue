@@ -59,6 +59,13 @@
       </header>
 
       <main class="app_main">
+        <div class="warning" v-if="!warningConfirmed">
+          {{ $t('app.migration-warning') }}
+          <button @click="confirmWarning" class="btn btn--text" style="text-decoration: underline">
+            {{ $t('app.migration-confirm') }}
+          </button>
+        </div>
+
         <router-view v-slot="{ Component }">
           <!-- <transition name="view-anim" mode="out-in"> -->
           <keep-alive>
@@ -132,6 +139,8 @@ export default defineComponent({
     VERSION: packageInfo.version,
     updateModalVisible: false,
     hasReleaseNotes: false,
+    warningConfirmed: false,
+
     currentLang: 'pl',
 
     brand_logo: require('@/assets/stacjownik-header-logo.svg'),
@@ -147,6 +156,7 @@ export default defineComponent({
 
   created() {
     this.loadLang();
+    this.warningConfirmed = StorageManager.getBooleanValue('warning-confirmed') || false;
   },
 
   async mounted() {
@@ -162,6 +172,11 @@ export default defineComponent({
   },
 
   methods: {
+    confirmWarning() {
+      this.warningConfirmed = true;
+      StorageManager.setBooleanValue('warning-confirmed', true);
+    },
+
     toggleUpdateModal() {
       this.updateModalVisible = !this.updateModalVisible;
       StorageManager.setBooleanValue('version_notes_read', true);
