@@ -5,6 +5,8 @@ import Station from "@/scripts/interfaces/Station";
 import Train from "@/scripts/interfaces/Train";
 import { Socket } from "socket.io-client";
 
+export type Availability = 'default' | 'unavailable' | 'nonPublic' | 'abandoned' | 'nonDefault';
+
 export interface State {
     stationList: Station[],
     trainList: Train[],
@@ -46,8 +48,6 @@ export interface StationJSONData {
 
     reqLevel: number;
 
-    // supportersOnly: boolean;
-
     signalType: string;
     controlType: string;
 
@@ -56,7 +56,5 @@ export interface StationJSONData {
     routes: string;
     checkpoints: string | null;
 
-    default: boolean;
-    nonPublic: boolean;
-    unavailable: boolean;
+    availability: Availability;
 }

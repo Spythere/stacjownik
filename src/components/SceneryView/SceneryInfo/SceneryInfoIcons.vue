@@ -25,27 +25,27 @@
     />
 
     <img
-      v-if="station.generalInfo.default"
       class="icon-info"
-      :src="icons.td2"
-      alt="default scenery"
-      :title="$t('desc.default')"
-    />
-
-    <img
-      class="icon-info"
-      v-if="station.generalInfo.nonPublic"
+      v-if="station.generalInfo.availability == 'nonPublic'"
       :src="icons.lock"
-      alt="non public scenery"
+      alt="Non-public scenery"
       :title="$t('desc.non-public')"
     />
 
     <img
       class="icon-info"
-      v-if="station.generalInfo.unavailable"
+      v-if="station.generalInfo.availability == 'unavailable'"
       :src="icons.unavailable"
-      alt="icon unavailable"
+      alt="Unavailable scenery"
       :title="$t('desc.unavailable')"
+    />
+
+    <img
+      class="icon-info"
+      v-if="station.generalInfo.availability == 'abandoned'"
+      :src="icons.abandoned"
+      alt="Abandoned scenery"
+      :title="$t('desc.abandoned')"
     />
 
     <img
@@ -81,6 +81,7 @@ export default defineComponent({
       lock: require('@/assets/icon-lock.svg'),
       unavailable: require('@/assets/icon-unavailable.svg'),
       unknown: require('@/assets/icon-unknown.svg'),
+      abandoned: require('@/assets/icon-abandoned.svg'),
 
       real: require('@/assets/icon-real.svg'),
     },
@@ -89,7 +90,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import "../../../styles/icons.scss";
+@import '../../../styles/icons.scss';
 .info-icons {
   display: flex;
   justify-content: center;

@@ -50,12 +50,7 @@
           >
             <td
               class="station_name"
-              :class="{
-                default: station.generalInfo?.default,
-                'non-public': station.generalInfo?.nonPublic,
-                online: station.onlineInfo,
-                unavailable: station.generalInfo?.unavailable,
-              }"
+              :class="station.generalInfo?.availability"
             >
               <b v-if="station.generalInfo?.project" style="color: salmon">{{ station.generalInfo.project }}</b>
               {{ station.name }}
@@ -66,19 +61,19 @@
                 <span
                   v-if="
                     station.generalInfo.reqLevel > -1 &&
-                    !station.generalInfo.nonPublic &&
-                    !station.generalInfo.unavailable
+                    station.generalInfo.availability != 'nonPublic' &&
+                    station.generalInfo.availability != 'unavailable'
                   "
                   :style="calculateExpStyle(station.generalInfo.reqLevel)"
                 >
                   {{ station.generalInfo.reqLevel >= 2 ? station.generalInfo.reqLevel : 'L' }}
                 </span>
 
-                <span v-else-if="station.generalInfo.abandoned">
+                <span v-else-if="station.generalInfo.availability == 'abandoned'">
                   <img :src="abandonedIcon" alt="non-public" :title="$t('desc.abandoned')" />
                 </span>
 
-                <span v-else-if="station.generalInfo.nonPublic">
+                <span v-else-if="station.generalInfo.availability == 'nonPublic'">
                   <img :src="lockIcon" alt="non-public" :title="$t('desc.non-public')" />
                 </span>
 
@@ -432,7 +427,7 @@ td.station {
       color: $accentCol;
     }
 
-    &.non-public {
+    &.nonPublic {
       color: #bebebe;
     }
 

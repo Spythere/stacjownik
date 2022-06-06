@@ -1,3 +1,4 @@
+import { Availability } from "@/store/types";
 import ScheduledTrain from "./ScheduledTrain";
 import StationRoutes from "./StationRoutes";
 
@@ -19,11 +20,7 @@ export default interface Station {
 
     SUP: boolean;
 
-    default: boolean;
-    nonPublic: boolean;
-    unavailable: boolean;
-    abandoned?: boolean;
-
+    availability: Availability;
     routes: StationRoutes;
 
     checkpoints: {
