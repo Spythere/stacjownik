@@ -48,10 +48,7 @@
             @keydown.space="openForumSite($event, station.generalInfo?.url)"
             tabindex="0"
           >
-            <td
-              class="station_name"
-              :class="station.generalInfo?.availability"
-            >
+            <td class="station_name" :class="station.generalInfo?.availability">
               <b v-if="station.generalInfo?.project" style="color: salmon">{{ station.generalInfo.project }}</b>
               {{ station.name }}
             </td>
@@ -144,22 +141,16 @@
               </span>
             </td>
 
-            <td class="station_info">
-              <span v-if="station.generalInfo">
-                <span
-                  class="scenery-icon icon-info"
-                  :class="station.generalInfo.controlType.replace('+', '-')"
-                  :title="$t('desc.control-type') + $t(`controls.${station.generalInfo.controlType}`)"
-                  v-html="getControlTypeAbbrev(station.generalInfo.controlType)"
-                >
-                </span>
-                <!-- <img
-                class="icon-info"
-                v-if="station.generalInfo?.controlType"
-                :src="require(`@/assets/icon-${station.generalInfo.controlType}.svg`)"
-                :alt="station.generalInfo.controlType"
+            <td class="station_info" v-if="station.generalInfo">
+              <span
+                class="scenery-icon icon-info"
+                :class="station.generalInfo.controlType.replace('+', '-')"
                 :title="$t('desc.control-type') + $t(`controls.${station.generalInfo.controlType}`)"
-              /> -->
+                v-html="getControlTypeAbbrev(station.generalInfo.controlType)"
+              >
+              </span>
+
+              <span>
                 <img
                   class="icon-info"
                   v-if="station.generalInfo.SUP"
@@ -167,7 +158,9 @@
                   alt="SUP (RASP-UZK)"
                   :title="$t('desc.SUP')"
                 />
+              </span>
 
+              <span>
                 <img
                   class="icon-info"
                   v-if="station.generalInfo.signalType"
@@ -175,7 +168,9 @@
                   :alt="station.generalInfo.signalType"
                   :title="$t('desc.signals-type') + $t(`signals.${station.generalInfo.signalType}`)"
                 />
+              </span>
 
+              <span>
                 <img
                   class="icon-info"
                   v-if="station.generalInfo && station.generalInfo.routes.sblRouteNames.length > 0"
@@ -184,8 +179,10 @@
                   :title="$t('desc.SBL') + `${station.generalInfo.routes.sblRouteNames.join(',')}`"
                 />
               </span>
+            </td>
 
-              <img v-else class="icon-info" :src="unknownIcon" alt="icon-unknown" :title="$t('desc.unknown')" />
+            <td class="station_info" v-else>
+              <img class="icon-info" :src="unknownIcon" alt="icon-unknown" :title="$t('desc.unknown')" />
             </td>
 
             <td class="station_users" :class="{ inactive: !station.onlineInfo }">
@@ -414,7 +411,8 @@ tr.station {
 
     @include smallScreen() {
       margin: 0;
-      padding: 0.1em 0.5em;
+      padding: 0.3em 0.5em;
+      font-size: 1.1em;
     }
   }
 }
@@ -463,20 +461,26 @@ td.station {
 
   &_info {
     display: flex;
+    align-items: center;
     justify-content: center;
 
+    /* Images */
     .icon-info {
-      font-size: 0.8rem;
-      width: 2rem;
-      height: 2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
 
-      line-height: 2rem;
+      width: 32px;
+      height: 32px;
+      font-size: 12px;
 
       margin: 0 0.2em;
-      vertical-align: middle;
 
       outline: 2px solid #444;
       border-radius: 0.5em;
+
+      @include smallScreen() {
+      }
     }
   }
 
@@ -519,4 +523,5 @@ td.station {
 
   background: #333;
 }
+
 </style>

@@ -1,4 +1,3 @@
-p
 <template>
   <div class="train-schedule" @click="toggleShowState">
     <div class="train-stock">
@@ -51,7 +50,7 @@ p
 
             <span class="stop-name" v-html="stop.stopName"> </span>
 
-            <stop-date :stop="stop" />
+            <StopDate :stop="stop" />
           </span>
 
           <div class="stop_line" v-if="i < train.timetableData!.followingStops.length - 1">
@@ -194,7 +193,7 @@ $stopNameClr: #22a8d1;
 }
 ul.stock-list {
   display: flex;
-  align-items: end;
+  align-items: flex-end;
   overflow-x: auto;
   padding-bottom: 1em;
 
@@ -203,7 +202,6 @@ ul.stock-list {
     color: #aaa;
     font-size: 0.9em;
   }
-
 }
 
 .schedule-wrapper {
