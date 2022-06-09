@@ -1,17 +1,20 @@
 <template>
   <section class="info-header">
     <div class="scenery-name">
-      <div v-if="station.generalInfo?.project" style="color: salmon; font-size: 0.6em; line-height: 0.7em;">
-        {{ station.generalInfo.project }}
-      </div>
-
-      <a v-if="station.generalInfo?.url" :href="station.generalInfo.url" target="_blank" rel="noopener noreferrer">{{
-        station.name
-      }}</a>
+      <a v-if="station.generalInfo?.url" :href="station.generalInfo.url" target="_blank" rel="noopener noreferrer">
+        {{ station.name }}
+        <sup v-if="station.generalInfo?.project" style="color: salmon; font-size: 0.5em; vertical-align: text-top">
+          {{ station.generalInfo.project }}
+        </sup>
+      </a>
 
       <span v-else>{{ station.name }}</span>
     </div>
-    <div class="scenery-hash" v-if="station.onlineInfo?.hash">#{{ station.onlineInfo.hash }}</div>
+
+    <div class="scenery-authors" v-if="station.generalInfo?.authors">
+      Autorzy: {{ station.generalInfo?.authors?.join(', ') }}
+    </div>
+    <!-- <div class="scenery-hash" v-if="station.onlineInfo?.hash">#{{ station.onlineInfo.hash }}</div> -->
   </section>
 </template>
 
@@ -36,25 +39,35 @@ export default defineComponent({
 
 .info-header {
   padding-top: 2em;
+}
 
-  & > .scenery-name {
-    font-weight: bold;
-    color: $accentCol;
+.scenery-name {
+  font-weight: bold;
+  color: $accentCol;
 
-    font-size: 3.5em;
+  position: relative;
 
-    text-transform: uppercase;
+  font-size: 3.5em;
+  margin-top: 0.25em;
 
-    @include smallScreen() {
-      font-size: 2.75em;
-    }
-  }
+  text-transform: uppercase;
 
-  & > .scenery-hash {
-    line-height: 0.8em;
-    color: #aaa;
-
-    font-size: 1.5em;
+  @include smallScreen() {
+    font-size: 2.75em;
   }
 }
+
+.scenery-hash {
+  color: #aaa;
+  font-size: 0.3em;
+
+  position: absolute;
+  top: 0;
+
+}
+
+.scenery-authors {
+  color: #999;
+}
 </style>
+

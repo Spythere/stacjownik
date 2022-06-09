@@ -56,7 +56,7 @@
           </section>
 
           <section class="card_authors-search">
-            <input type="text" :placeholder="$t('filters.authors-search')" name="authors" @input="handleAuthorsInput" />
+            <input type="text" :placeholder="$t('filters.authors-search')" name="authors" v-model="authorsInputValue" @input="handleAuthorsInput" />
           </section>
 
           <section class="card_sliders">
@@ -125,6 +125,7 @@ export default defineComponent({
     saveOptions: false,
     STORAGE_KEY: 'options_saved',
 
+    authorsInputValue: '',
     minimumHours: 0,
 
     currentRegion: { id: '', value: '' },
@@ -174,7 +175,7 @@ export default defineComponent({
     },
 
     handleAuthorsInput(e: Event) {
-      if ((e.target as HTMLInputElement).value.length < 3) return;
+      // if ((e.target as HTMLInputElement).value.length < 3) return;
 
       clearTimeout(this.delayInputTimer);
 
@@ -243,6 +244,8 @@ export default defineComponent({
         slider.value = slider.defaultValue;
         StorageManager.setNumericValue(slider.name, slider.value);
       });
+
+      this.authorsInputValue = '';
 
       this.minimumHours = 0;
       this.changeNumericFilterValue('onlineFromHours', this.minimumHours, true);
