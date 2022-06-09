@@ -140,12 +140,12 @@
     flex-direction: column;
     justify-content: flex-end;
     align-items: flex-end;
-    padding: 1em 0.5em;
+    padding: 0.5em 0.5em;
 
     @include smallScreen() {
       right: auto;
-      left: 0.5em;
-      padding: 0.5em 0;
+      left: 0.75em;
+      padding: 0;
 
       align-items: center;
     }
