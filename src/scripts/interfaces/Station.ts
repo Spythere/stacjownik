@@ -19,6 +19,7 @@ export default interface Station {
     controlType: string;
 
     SUP: boolean;
+    authors?: string[];
 
     availability: Availability;
     routes: StationRoutes;

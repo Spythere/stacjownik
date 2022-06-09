@@ -1,98 +1,104 @@
 <template>
   <section class="filter-card" v-click-outside="closeCard">
     <div class="card_btn">
-      <action-button @click="toggleCard">
+      <button class="btn btn--option" @click="toggleCard">
         <img class="button_icon" :src="filterIcon" alt="icon-filter" />
-        <p>{{ $t('options.filters') }}</p>
-      </action-button>
+        {{ $t('options.filters') }}
+      </button>
     </div>
 
     <transition name="card-anim">
-      <div class="card_content card" v-if="isVisible">
-        <div class="card_exit" @click="closeCard"></div>
+      <div class="card" v-if="isVisible">
+        <!-- <div class="card_exit" @click="closeCard"></div> -->
 
-        <div class="card_title flex">{{ $t('filters.title') }}</div>
-
-        <section class="card_regions">
-          <div class="regions_content">
-            <span v-for="region in inputs.regions" :key="region.id" :class="`region-${region.id}`">
-              <label>
-                <input
-                  type="radio"
-                  name="region"
-                  :id="region.id"
-                  :value="region"
-                  v-model="currentRegion"
-                  @change="handleChangeRegion"
-                />
-
-                <span :class="{ checked: currentRegion.id === region.id }">
-                  {{ region.value }}
-                </span>
-              </label>
-            </span>
-          </div>
-        </section>
-
-        <section class="card_options">
-          <filter-option v-for="(option, i) in inputs.options" :option="option" :key="i" @optionChange="handleChange" />
-        </section>
-
-        <section class="card_timestamp" style="text-align: center">
-          <div>{{ $t('filters.minimum-hours-title') }}</div>
-          <span class="clock">
-            <button @click="subHour">-</button>
-            <span>{{
-              minimumHours == 0
-                ? $t('filters.now')
-                : minimumHours < 8
-                ? minimumHours + $t('filters.hour')
-                : $t('filters.no-limit')
-            }}</span>
-            <button @click="addHour">+</button>
-          </span>
-        </section>
-
-        <section class="card_sliders">
-          <div class="slider" v-for="(slider, i) in inputs.sliders" :key="i">
-            <input
-              class="slider-input"
-              type="range"
-              :name="slider.name"
-              :id="slider.id"
-              :min="slider.minRange"
-              :max="slider.maxRange"
-              v-model="slider.value"
-              @change="handleInput"
-            />
-
-            <span class="slider-value">{{ slider.value }}</span>
-
-            <div class="slider-content">
-              {{ $t(`filters.sliders.${slider.id}`) }}
+        <div class="card_content">
+          <div class="card_title flex">{{ $t('filters.title') }}</div>
+          <section class="card_regions">
+            <div class="regions_content">
+              <span v-for="region in inputs.regions" :key="region.id" :class="`region-${region.id}`">
+                <label>
+                  <input
+                    type="radio"
+                    name="region"
+                    :id="region.id"
+                    :value="region"
+                    v-model="currentRegion"
+                    @change="handleChangeRegion"
+                  />
+                  <span :class="{ checked: currentRegion.id === region.id }">
+                    {{ region.value }}
+                  </span>
+                </label>
+              </span>
             </div>
-          </div>
-        </section>
+          </section>
+          <section class="card_options">
+            <filter-option
+              v-for="(option, i) in inputs.options"
+              :option="option"
+              :key="i"
+              @optionChange="handleChange"
+            />
+          </section>
+          <section class="card_timestamp" style="text-align: center">
+            <div>{{ $t('filters.minimum-hours-title') }}</div>
+            <span class="clock">
+              <button @click="subHour">-</button>
+              <span>{{
+                minimumHours == 0
+                  ? $t('filters.now')
+                  : minimumHours < 8
+                  ? minimumHours + $t('filters.hour')
+                  : $t('filters.no-limit')
+              }}</span>
+              <button @click="addHour">+</button>
+            </span>
+          </section>
 
-        <section class="card_save">
-          <filter-option
-            @optionChange="saveFilters"
-            :option="{
-              id: 'save',
-              name: 'save',
-              section: 'mode',
-              value: saveOptions,
-              defaultValue: true,
-            }"
-          />
-        </section>
+          <section class="card_authors-search">
+            <input type="text" :placeholder="$t('filters.authors-search')" name="authors" @input="handleAuthorsInput" />
+          </section>
 
-        <section class="card_actions flex">
-          <action-button class="outlined" @click="resetFilters">
-            {{ $t('filters.reset') }}
-          </action-button>
-          <action-button class="outlined" @click="closeCard">{{ $t('filters.close') }}</action-button>
-        </section>
+          <section class="card_sliders">
+            <div class="slider" v-for="(slider, i) in inputs.sliders" :key="i">
+              <input
+                class="slider-input"
+                type="range"
+                :name="slider.name"
+                :id="slider.id"
+                :min="slider.minRange"
+                :max="slider.maxRange"
+                v-model="slider.value"
+                @change="handleInput"
+              />
+              <span class="slider-value">{{ slider.value }}</span>
+              <div class="slider-content">
+                {{ $t(`filters.sliders.${slider.id}`) }}
+              </div>
+            </div>
+          </section>
+
+          <section class="card_actions">
+            <div>
+              <filter-option
+                @optionChange="saveFilters"
+                :option="{
+                  id: 'save',
+                  name: 'save',
+                  section: 'mode',
+                  value: saveOptions,
+                  defaultValue: true,
+                }"
+              />
+            </div>
+            <div>
+              <action-button class="outlined" @click="resetFilters">
+                {{ $t('filters.reset') }}
+              </action-button>
+              <action-button class="outlined" @click="closeCard">{{ $t('filters.close') }}</action-button>
+            </div>
+          </section>
+        </div>
       </div>
     </transition>
   </section>
@@ -101,7 +107,7 @@
 <script lang="ts">
 import { defineComponent, inject } from '@vue/runtime-core';
 
-import { ACTIONS, GETTERS, MUTATIONS } from '@/constants/storeConstants';
+import { GETTERS, MUTATIONS } from '@/constants/storeConstants';
 import inputData from '@/data/options.json';
 
 import StorageManager from '@/scripts/managers/storageManager';
@@ -122,6 +128,8 @@ export default defineComponent({
     minimumHours: 0,
 
     currentRegion: { id: '', value: '' },
+
+    delayInputTimer: -1,
   }),
 
   setup() {
@@ -163,6 +171,16 @@ export default defineComponent({
       });
 
       if (this.saveOptions) StorageManager.setStringValue(target.name, target.value);
+    },
+
+    handleAuthorsInput(e: Event) {
+      if ((e.target as HTMLInputElement).value.length < 3) return;
+
+      clearTimeout(this.delayInputTimer);
+
+      this.delayInputTimer = setTimeout(() => {
+        this.handleInput(e);
+      }, 400);
     },
 
     handleChangeRegion() {
@@ -244,8 +262,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/responsive';
-@import '../../styles/card';
+@import '../../styles/responsive.scss';
+@import '../../styles/card.scss';
 
 .card-anim {
   &-enter-active,
@@ -255,14 +273,41 @@ export default defineComponent({
 
   &-enter-from,
   &-leave-to {
-    transform: translate(-50%, -50%) scale(0.85);
+    transform: translate(-100%, -50%);
     opacity: 0;
   }
 }
 
+.filter-card {
+  font-size: 0.95em;
+
+  @include smallScreen() {
+    font-size: 1em;
+  }
+}
 .card {
-  > section {
-    margin: 0.5em 0;
+  &_btn {
+    button {
+      display: flex;
+      align-items: center;
+
+      padding: 0.5em;
+      border-radius: 1em 1em 0 0;
+
+      /* border-radius: 0 0.9em 0.9em 0; */
+      /* outline: 2px solid white; */
+    }
+
+    img {
+      width: 1.5em;
+    }
+  }
+
+  &_content {
+    display: grid;
+    grid-template-rows: 70px 35px 1fr 100px 50px auto;
+    min-height: 0;
+    max-height: 100vh;
   }
 
   &_title {
@@ -319,7 +364,6 @@ export default defineComponent({
       align-items: center;
       justify-content: center;
 
-      padding: 0.15em 0;
       font-size: 1.15em;
 
       color: $accentCol;
@@ -358,22 +402,31 @@ export default defineComponent({
     }
   }
 
-  &_actions button {
-    margin: 0 0.3em;
-  }
+  &_authors-search {
+    display: inline-block;
+    margin: 0 auto;
+    width: 60%;
+    min-width: 200px;
 
-  &_save {
-    display: flex;
-    justify-content: center;
-
-    .option {
-      font-size: 1.1em;
+    input {
+      width: 100%;
+      padding: 0.5em;
     }
   }
 
-  &_exit {
-    img {
-      width: 2em;
+  &_actions {
+    margin-top: 1em;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    button {
+      margin: 1em 0.25em;
+    }
+
+    .option {
+      font-size: 1.1em;
     }
   }
 }
@@ -416,16 +469,16 @@ export default defineComponent({
       border: 4px solid $accentCol;
 
       @include smallScreen() {
-        width: 15px;
-        height: 15px;
+        width: 1em;
+        height: 1em;
         margin-top: -5px;
         border: 3px solid $accentCol;
       }
     }
 
     &::-moz-range-thumb {
-      height: 15px;
-      width: 15px;
+      height: 1em;
+      width: 1em;
 
       border-radius: 50%;
 
@@ -435,8 +488,8 @@ export default defineComponent({
       cursor: pointer;
 
       @include smallScreen() {
-        width: 15px;
-        height: 15px;
+        width: 1em;
+        height: 1em;
         border: 3px solid $accentCol;
       }
     }

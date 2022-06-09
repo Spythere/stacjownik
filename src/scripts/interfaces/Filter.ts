@@ -1,5 +1,5 @@
 export default interface Filter {
-  [key: string]: (boolean | number),
+  [key: string]: (boolean | number | string),
   default: boolean;
   notDefault: boolean;
   real: boolean;
@@ -35,6 +35,8 @@ export default interface Filter {
   noSpaceStatus: boolean;
   unavailableStatus: boolean;
   unsignedStatus: boolean;
+
+  authors: string;
 
   onlineFromHours: number;
 }

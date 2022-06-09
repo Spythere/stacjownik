@@ -103,12 +103,13 @@
       "routes-2t-cat": "SZLAKI DWUTOROWE ZELEKTR. (MINIMUM)",
       "routes-2t-other": "SZLAKI DWUTOROWE NIEZELEKTR. (MINIMUM)"
     },
+    "authors-search": "Szukaj autora (uwzględnia inne filtry)",
     "minimum-hours-title": "POKAŻ TYLKO SCENERIE DOSTĘPNE MINIMUM DO:",
     "now": "TERAZ",
     "hour": " godz.",
     "no-limit": "BEZ LIMITU",
     "include-selected": "POKAŻ ZAZNACZONE",
-    "save": "ZAPISZ FILTRY",
+    "save": "🗸 ZAPISZ FILTRY",
     "reset": "RESETUJ FILTRY",
     "close": "ZAMKNIJ FILTRY"
   },

@@ -2,29 +2,25 @@
 @import './responsive.scss';
 
 .card {
-  display: flex;
-  flex-direction: column;
-
   position: fixed;
   top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  left: 0;
   z-index: 100;
 
-  overflow: auto;
-  background: $primaryCol;
+  transform: translateY(-50%);
 
-  outline: 2px solid white;
+  overflow-x: hidden;
+  background: #202020da;
 
-  box-shadow: 0 0 15px 5px #292929;
 
-  width: 650px;
-  max-height: 95%;
+  box-shadow: 0 0 20px 10px #292929;
+
+  width: 550px;
 
   padding: 0.5em 1em;
 
   @include smallScreen {
-    width: 95%;
+    width: 100%;
   }
 
   &-exit {

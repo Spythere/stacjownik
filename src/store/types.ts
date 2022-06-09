@@ -55,6 +55,7 @@ export interface StationJSONData {
 
     routes: string;
     checkpoints: string | null;
+    authors?: string;
 
     availability: Availability;
 }

@@ -15,8 +15,10 @@ const sortStations = (a: Station, b: Station, sorter: { index: number; dir: numb
       break;
 
     case 3:
-      if ((a.onlineInfo?.dispatcherName.toLowerCase() || "") > (b.onlineInfo?.dispatcherName.toLowerCase() || "")) return sorter.dir;
-      if ((a.onlineInfo?.dispatcherName.toLowerCase() || "") < (b.onlineInfo?.dispatcherName.toLowerCase() || "")) return -sorter.dir;
+      if ((a.onlineInfo?.dispatcherName.toLowerCase() || '') > (b.onlineInfo?.dispatcherName.toLowerCase() || ''))
+        return sorter.dir;
+      if ((a.onlineInfo?.dispatcherName.toLowerCase() || '') < (b.onlineInfo?.dispatcherName.toLowerCase() || ''))
+        return -sorter.dir;
       break;
 
     case 4:
@@ -39,8 +41,10 @@ const sortStations = (a: Station, b: Station, sorter: { index: number; dir: numb
       break;
 
     case 9:
-      if ((a.onlineInfo?.scheduledTrains?.length || 0) > (b.onlineInfo?.scheduledTrains?.length || 0)) return sorter.dir;
-      if ((a.onlineInfo?.scheduledTrains?.length || 0) < (b.onlineInfo?.scheduledTrains?.length || 0)) return -sorter.dir;
+      if ((a.onlineInfo?.scheduledTrains?.length || 0) > (b.onlineInfo?.scheduledTrains?.length || 0))
+        return sorter.dir;
+      if ((a.onlineInfo?.scheduledTrains?.length || 0) < (b.onlineInfo?.scheduledTrains?.length || 0))
+        return -sorter.dir;
 
     default:
       break;
@@ -49,32 +53,41 @@ const sortStations = (a: Station, b: Station, sorter: { index: number; dir: numb
   if (a.name.toLowerCase() >= b.name.toLowerCase()) return sorter.dir;
 
   return -sorter.dir;
-}
+};
 
 const filterStations = (station: Station, filters: Filter) => {
   const returnMode = false;
 
-  if ((station.generalInfo?.availability == 'nonPublic' || !station.generalInfo) && filters['nonPublic']) return returnMode;
+  if ((station.generalInfo?.availability == 'nonPublic' || !station.generalInfo) && filters['nonPublic'])
+    return returnMode;
 
   if (station.onlineInfo?.statusID == 'ending' && filters['ending']) return returnMode;
 
-  if (station.onlineInfo
-    && station.onlineInfo.statusTimestamp > 0
-    && filters['onlineFromHours'] < 8
-    && station.onlineInfo.statusTimestamp <= Date.now() + filters['onlineFromHours'] * 3600000)
+  if (
+    station.onlineInfo &&
+    station.onlineInfo.statusTimestamp > 0 &&
+    filters['onlineFromHours'] < 8 &&
+    station.onlineInfo.statusTimestamp <= Date.now() + filters['onlineFromHours'] * 3600000
+  )
     return returnMode;
 
-  if (filters['onlineFromHours'] > 0 && station.onlineInfo && station.onlineInfo.statusTimestamp <= 0) return returnMode;
+  if (filters['onlineFromHours'] > 0 && station.onlineInfo && station.onlineInfo.statusTimestamp <= 0)
+    return returnMode;
   if (filters['onlineFromHours'] == 8 && station.onlineInfo?.statusID != 'no-limit') return returnMode;
 
   if (station.onlineInfo?.statusID == 'ending' && filters['endingStatus']) return returnMode;
-  if ((station.onlineInfo?.statusID == 'not-signed' || station.onlineInfo?.statusID == 'unavailable') && filters['unavailableStatus']) return returnMode;
+  if (
+    (station.onlineInfo?.statusID == 'not-signed' || station.onlineInfo?.statusID == 'unavailable') &&
+    filters['unavailableStatus']
+  )
+    return returnMode;
   if (station.onlineInfo?.statusID == 'brb' && filters['afkStatus']) return returnMode;
   if (station.onlineInfo?.statusID == 'no-space' && filters['noSpaceStatus']) return returnMode;
 
   if (station.onlineInfo && filters['occupied']) return returnMode;
   if (!station.onlineInfo && filters['free']) return returnMode;
-  if (station.generalInfo?.availability == 'unavailable' && filters['unavailable'] && !station.onlineInfo) return returnMode;
+  if (station.generalInfo?.availability == 'unavailable' && filters['unavailable'] && !station.onlineInfo)
+    return returnMode;
 
   if (station.generalInfo) {
     const routes = station.generalInfo.routes;
@@ -83,13 +96,28 @@ const filterStations = (station: Station, filters: Filter) => {
     if (filters['abandoned'] && availability == 'abandoned') return returnMode;
 
     if (availability == 'default' && filters['default']) return returnMode;
-    if (availability != 'default' && filters['notDefault'] && !(availability == 'abandoned' || availability == 'unavailable')) return returnMode;
+    if (
+      availability != 'default' &&
+      filters['notDefault'] &&
+      !(availability == 'abandoned' || availability == 'unavailable')
+    )
+      return returnMode;
 
     if (filters['real'] && station.generalInfo.lines != '') return returnMode;
-    if (filters['fictional'] && station.generalInfo.lines == '' && (availability != 'abandoned' && availability != 'unavailable')) return returnMode;
+    if (
+      filters['fictional'] &&
+      station.generalInfo.lines == '' &&
+      availability != 'abandoned' &&
+      availability != 'unavailable'
+    )
+      return returnMode;
 
-
-    if (station.generalInfo.reqLevel + ((availability == 'nonPublic' || availability == 'unavailable' || availability == 'abandoned') ? 1 : 0) < filters['minLevel']) return returnMode;
+    if (
+      station.generalInfo.reqLevel +
+        (availability == 'nonPublic' || availability == 'unavailable' || availability == 'abandoned' ? 1 : 0) <
+      filters['minLevel']
+    )
+      return returnMode;
     if (
       station.generalInfo.reqLevel +
         (availability == 'nonPublic' || availability == 'unavailable' || availability == 'abandoned' ? 1 : 0) >
@@ -97,8 +125,16 @@ const filterStations = (station: Station, filters: Filter) => {
     )
       return returnMode;
 
-    if (filters['no-1track'] && (routes.oneWayCatenaryRouteNames.length != 0 || routes.oneWayNoCatenaryRouteNames.length != 0)) return returnMode;
-    if (filters['no-2track'] && (routes.twoWayCatenaryRouteNames.length != 0 || routes.twoWayNoCatenaryRouteNames.length != 0)) return returnMode;
+    if (
+      filters['no-1track'] &&
+      (routes.oneWayCatenaryRouteNames.length != 0 || routes.oneWayNoCatenaryRouteNames.length != 0)
+    )
+      return returnMode;
+    if (
+      filters['no-2track'] &&
+      (routes.twoWayCatenaryRouteNames.length != 0 || routes.twoWayNoCatenaryRouteNames.length != 0)
+    )
+      return returnMode;
 
     if (routes.oneWayCatenaryRouteNames.length < filters['minOneWayCatenary']) return returnMode;
     if (routes.oneWayNoCatenaryRouteNames.length < filters['minOneWay']) return returnMode;
@@ -109,22 +145,45 @@ const filterStations = (station: Station, filters: Filter) => {
     if (filters[station.generalInfo.controlType]) return returnMode;
     if (filters[station.generalInfo.signalType]) return returnMode;
 
-    if (filters['SPK'] && (station.generalInfo.controlType === 'SPK' || station.generalInfo.controlType.includes('+SPK'))) return returnMode;
-    if (filters['SCS'] && (station.generalInfo.controlType === 'SCS' || station.generalInfo.controlType.includes('+SCS'))) return returnMode;
-    if (filters['SPE'] && (station.generalInfo.controlType === 'SPE' || station.generalInfo.controlType.includes('+SPE'))) return returnMode;
+    if (
+      filters['SPK'] &&
+      (station.generalInfo.controlType === 'SPK' || station.generalInfo.controlType.includes('+SPK'))
+    )
+      return returnMode;
+    if (
+      filters['SCS'] &&
+      (station.generalInfo.controlType === 'SCS' || station.generalInfo.controlType.includes('+SCS'))
+    )
+      return returnMode;
+    if (
+      filters['SPE'] &&
+      (station.generalInfo.controlType === 'SPE' || station.generalInfo.controlType.includes('+SPE'))
+    )
+      return returnMode;
     if (filters['SUP'] && station.generalInfo.SUP) return returnMode;
 
-    if (filters['SCS'] && filters['SPK'] && (station.generalInfo.controlType.includes('SPK') || station.generalInfo.controlType.includes('SCS'))) return returnMode;
+    if (
+      filters['SCS'] &&
+      filters['SPK'] &&
+      (station.generalInfo.controlType.includes('SPK') || station.generalInfo.controlType.includes('SCS'))
+    )
+      return returnMode;
 
     if (filters['mechaniczne'] && station.generalInfo.controlType.includes('mechaniczne')) return returnMode;
 
     if (filters['ręczne'] && station.generalInfo.controlType.includes('ręczne')) return returnMode;
 
     if (filters['SBL'] && routes.sblRouteNames.length > 0) return returnMode;
+
+    if (
+      filters['authors'].length > 3 &&
+      !station.generalInfo.authors?.map((a) => a.toLocaleLowerCase()).includes(filters['authors'].toLocaleLowerCase())
+    )
+      return returnMode;
   }
 
   return true;
-}
+};
 
 export default class StationFilterManager {
   private filterInitStates: Filter = {
@@ -164,7 +223,9 @@ export default class StationFilterManager {
     unavailableStatus: false,
     unsignedStatus: false,
 
-    onlineFromHours: 0
+    authors: '',
+
+    onlineFromHours: 0,
   };
 
   private filters: Filter = { ...this.filterInitStates };
@@ -172,29 +233,31 @@ export default class StationFilterManager {
   private sorter: { index: number; dir: number } = { index: 0, dir: 1 };
 
   checkFilters() {
-    if (!StorageManager.isRegistered("options_saved")) return;
+    if (!StorageManager.isRegistered('options_saved')) return;
 
-    Object.keys(this.filterInitStates).forEach(filterKey => {
+    Object.keys(this.filterInitStates).forEach((filterKey) => {
       if (StorageManager.isRegistered(filterKey)) return;
 
       const filterType = typeof this.filterInitStates[filterKey];
 
-      if (filterType === "boolean")
+      if (filterType === 'boolean')
         StorageManager.setBooleanValue(filterKey, !this.filterInitStates[filterKey] as boolean);
 
-      if (filterType === "number")
+      if (filterType === 'number')
         StorageManager.setNumericValue(filterKey, this.filterInitStates[filterKey] as number);
     });
   }
 
   getFilteredStationList(stationList: Station[]): Station[] {
     return stationList
-      .filter(station => filterStations(station, this.filters))
+      .filter((station) => filterStations(station, this.filters))
       .sort((a, b) => sortStations(a, b, this.sorter));
   }
 
   changeFilterValue(filter: { name: string; value: number }) {
     this.filters[filter.name] = filter.value;
+
+    // if(filter.name == 'authors')
   }
 
   resetFilters() {
@@ -202,12 +265,11 @@ export default class StationFilterManager {
   }
 
   invertFilters() {
-    Object.keys(this.filters).forEach(prop => {
-      if (typeof this.filters[prop] !== "boolean") return;
+    Object.keys(this.filters).forEach((prop) => {
+      if (typeof this.filters[prop] !== 'boolean') return;
 
       this.filters[prop] = !this.filters[prop];
-
-    })
+    });
   }
 
   changeSorter(index: number) {

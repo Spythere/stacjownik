@@ -60,6 +60,7 @@ $saveCol: #28a826;
 $routesCol: #9049c0;
 
 .option span {
+  font-size: 0.9em;
   &.checked {
     &.access {
       background-color: $accessCol;

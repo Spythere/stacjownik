@@ -103,8 +103,6 @@ export const store = createStore<State>({
         await axios.get(`${URLs.stacjownikAPI}/api/getSceneryData?timestamp=${Math.floor(Date.now() / 1800000)}`)
       ).data.response;
 
-      
-
       if (!sceneryData) commit(MUTATIONS.SET_SCENERY_DATA_STATUS, DataStatus.Error);
       else commit(MUTATIONS.SET_SCENERY_DATA, sceneryData);
     },
@@ -323,6 +321,7 @@ export const store = createStore<State>({
 
         generalInfo: {
           ...stationData,
+          authors: stationData.authors?.split(',').map(a => a.trim()),
           routes:
             stationData.routes
               ?.split(';')

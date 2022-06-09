@@ -17,7 +17,7 @@ export default defineComponent({
         },
 
         handleScroll() {
-            this.showReturnButton = window.scrollY > window.innerHeight;            
+            this.showReturnButton = window.scrollY > window.innerHeight * 0.35;            
         }
     },
 
