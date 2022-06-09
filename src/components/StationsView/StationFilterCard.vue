@@ -409,7 +409,7 @@ export default defineComponent({
     display: inline-block;
     margin: 0 auto;
     width: 60%;
-    min-width: 200px;
+    min-width: 240px;
 
     input {
       width: 100%;
@@ -458,6 +458,7 @@ export default defineComponent({
     outline: none;
 
     min-width: 25%;
+    max-width: 120px;
 
     &::-webkit-slider-thumb {
       -webkit-appearance: none;
@@ -472,8 +473,8 @@ export default defineComponent({
       border: 4px solid $accentCol;
 
       @include smallScreen() {
-        width: 1em;
-        height: 1em;
+        width: 15px;
+        height: 15px;
         margin-top: -5px;
         border: 3px solid $accentCol;
       }
