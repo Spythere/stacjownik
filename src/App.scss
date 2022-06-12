@@ -69,7 +69,7 @@
   padding: 0.5em 0.4em;
   max-width: 1100px;
   margin: 0 auto;
-  
+
   border-radius: 0 0 1em 1em;
 }
 
@@ -180,7 +180,7 @@
 
     @include smallScreen() {
       flex-direction: column;
-      
+
       a {
         margin: 0.25em 0;
       }
@@ -201,8 +201,9 @@
     width: 1.35em;
   }
 
-  & > .region {
+  .region {
     color: paleturquoise;
+    font-weight: bold;
   }
 }
 

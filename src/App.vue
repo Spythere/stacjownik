@@ -33,13 +33,13 @@
             <span class="header_info">
               <Clock />
               <div class="info_counter">
-                <span class="region" @click="openFilterCard">
-                  {{ currentRegion.value }}
+                <span class="region" @click="changeRegion">
+                  {{ store.region.value }}
                 </span>
                 <img src="@/assets/icon-dispatcher.svg" alt="icon dispatcher" />
-                <span class="text--primary">{{ dispatcherCount }}</span>
+                <span class="text--primary">{{ onlineDispatchers.length }}</span>
                 <span class="text--grayed">|</span>
-                <span class="text--primary">{{ trainCount }}</span>
+                <span class="text--primary">{{ store.trainList.length }}</span>
                 <img src="@/assets/icon-train.svg" alt="icon train" />
               </div>
             </span>
@@ -99,8 +99,6 @@ export default defineComponent({
     const store = useStore();
     store.connectToAPI();
 
-    const currentRegion = store.region;
-
     // const sceneryDataStatus = computed(() => data.value.sceneryDataStatus);
 
     const isFilterCardVisible = ref(false);
@@ -108,18 +106,13 @@ export default defineComponent({
     provide('isFilterCardVisible', isFilterCardVisible);
 
     return {
-      currentRegion,
+      store,
       isFilterCardVisible,
+      onlineDispatchers: computed(() =>
+        store.stationList.filter((station) => station.onlineInfo && station.onlineInfo.region == store.region.id)
+      ),
 
       dispatcherDataStatus: store.dataStatuses.dispatchers,
-
-      trainCount: store.trainCount,
-
-      dispatcherCount: store.stationList.filter((station) => station.onlineInfo).length,
-
-      openFilterCard() {
-        isFilterCardVisible.value = true;
-      },
     };
   },
 
@@ -161,6 +154,10 @@ export default defineComponent({
     toggleUpdateModal() {
       this.updateModalVisible = !this.updateModalVisible;
       StorageManager.setBooleanValue('version_notes_read', true);
+    },
+
+    changeRegion() {
+      this.store.changeRegion({ id: 'cae', value: 'PL2' });
     },
 
     changeLang(lang: string) {

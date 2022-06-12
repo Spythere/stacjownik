@@ -71,19 +71,16 @@ export default defineComponent({
     const filterManager = reactive(new StationFilterManager());
     const focusedStationName = '';
 
-    const computedStations: ComputedRef<Station[]> = computed(() => {
-      return filterManager.getFilteredStationList(store.stationList);
-    });
-
-    const focusedStationInfo = computed(() =>
-      computedStations.value.find((station) => station.name === focusedStationName)
+    const computedStations: ComputedRef<Station[]> = computed(() =>
+      filterManager
+        .getFilteredStationList(store.stationList)
+        .filter((station) => !station.onlineInfo || station.onlineInfo.region == store.region.id)
     );
 
     return {
       computedStations,
       filterManager,
       focusedStationName,
-      focusedStationInfo,
     };
   },
   mounted() {

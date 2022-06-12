@@ -13,7 +13,7 @@
 
         <div class="card_content">
           <div class="card_title flex">{{ $t('filters.title') }}</div>
-          <section class="card_regions">
+          <!-- <section class="card_regions">
             <div class="regions_content">
               <span v-for="region in inputs.regions" :key="region.id" :class="`region-${region.id}`">
                 <label>
@@ -31,7 +31,7 @@
                 </label>
               </span>
             </div>
-          </section>
+          </section> -->
           <section class="card_options">
             <filter-option
               v-for="(option, i) in inputs.options"
@@ -190,11 +190,6 @@ export default defineComponent({
       }, 400);
     },
 
-    handleChangeRegion() {
-      this.store.region = this.currentRegion;
-      this.closeCard();
-    },
-
     changeNumericFilterValue(name: string, value: number, saveToStorage = false) {
       this.$emit('changeFilterValue', {
         name,
@@ -314,7 +309,7 @@ export default defineComponent({
 
   &_content {
     display: grid;
-    grid-template-rows: 70px 35px 1fr 100px 50px auto;
+    grid-template-rows: 70px 1fr 100px 50px auto;
     min-height: 0;
     max-height: 100vh;
   }

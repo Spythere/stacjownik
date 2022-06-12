@@ -33,6 +33,7 @@ export default interface Station {
   onlineInfo?: {
     hash: string;
     name: string;
+    region: string;
 
     maxUsers: number;
     currentUsers: number;
@@ -57,38 +58,4 @@ export default interface Station {
 
     scheduledTrains?: ScheduledTrain[];
   }
-
-  // stationName: string;
-  // stationHash: string;
-  // stationURL: string;
-
-  // maxUsers: number;
-  // currentUsers: number;
-
-
-  // stationLines: string;
-  // stationProject: string;
-
-  // reqLevel: number;
-  // supportersOnly: boolean;
-
-  // SBL: string;
-  // TWB: string;
-  // signalType: string;
-  // controlType: string;
-
-  // default: boolean;
-  // nonPublic: boolean;
-  // unavailable: boolean;
-
-  // routes: {
-  //   oneWay: { catenary: number; noCatenary: number };
-  //   twoWay: { catenary: number; noCatenary: number };
-  // };
-
-  // checkpoints: {
-  //   checkpointName: string;
-  //   scheduledTrains: ScheduledTrain[];
-  // }[];
-
 }

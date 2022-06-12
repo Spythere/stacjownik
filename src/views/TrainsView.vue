@@ -2,8 +2,6 @@
   <section class="trains-view">
     <div class="wrapper">
       <div class="options-bar">
-        <!-- <TrainStats :trains="trainList" :trainStatsOpen="trainStatsOpen" /> -->
-
         <train-options />
       </div>
 
@@ -51,8 +49,6 @@ export default defineComponent({
   setup() {
     const store = useStore();
 
-    const trainList = store.trainList;
-
     const sorterActive = ref({ id: 'distance', dir: -1 });
     const filterList = reactive([...trainFilters]) as TrainFilter[];
     const isTrainOptionsCardVisible = ref(false);
@@ -67,11 +63,16 @@ export default defineComponent({
     provide('isTrainOptionsCardVisible', isTrainOptionsCardVisible);
 
     const computedTrains: ComputedRef<Train[]> = computed(() => {
-      return filteredTrainList(trainList, searchedTrain.value, searchedDriver.value, sorterActive.value, filterList);
+      return filteredTrainList(
+        store.trainList,
+        searchedTrain.value,
+        searchedDriver.value,
+        sorterActive.value,
+        filterList
+      );
     });
 
     return {
-      trainList,
       computedTrains,
       searchedTrain,
       searchedDriver,

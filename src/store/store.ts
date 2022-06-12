@@ -22,6 +22,8 @@ import { APIData, StationJSONData, StoreState } from './storeTypes';
 export const useStore = defineStore('store', {
   state: () =>
     ({
+      apiData: {} as unknown,
+
       stationList: [],
       trainList: [],
 
@@ -47,7 +49,9 @@ export const useStore = defineStore('store', {
     } as StoreState),
 
   actions: {
-    setTrainsOnlineData(trains?: TrainAPIData[]) {
+    setTrainsOnlineData() {
+      const { trains } = this.apiData;
+
       if (!trains) return [];
 
       this.trainList = trains
@@ -93,15 +97,17 @@ export const useStore = defineStore('store', {
         }) as Train[];
     },
 
-    getDispatcherStatus(dispatchers: any[][] | undefined, stationAPIData: StationAPIData) {
+    getDispatcherStatus(onlineStationData: StationAPIData) {
+      const { dispatchers } = this.apiData;
+
       const prevDispatcherStatus = this.lastDispatcherStatuses.find(
-        (dispatcher) => dispatcher.hash === stationAPIData.stationHash
+        (dispatcher) => dispatcher.hash === onlineStationData.stationHash
       );
 
       const stationStatus = !dispatchers
         ? undefined
         : dispatchers.find(
-            (status: string[]) => status[0] == stationAPIData.stationHash && status[1] == this.region.id
+            (status: string[]) => status[0] == onlineStationData.stationHash && status[1] == this.region.id
           ) || -1;
 
       const statusTimestamp =
@@ -110,7 +116,7 @@ export const useStore = defineStore('store', {
         prevDispatcherStatus && !dispatchers ? prevDispatcherStatus.statusID : getStatusID(stationStatus);
 
       return {
-        hash: stationAPIData.stationHash,
+        hash: onlineStationData.stationHash,
         statusID,
         statusTimestamp,
       };
@@ -188,17 +194,17 @@ export const useStore = defineStore('store', {
         .map((train) => ({ driverName: train.driverName, driverId: train.driverId, trainNo: train.trainNo }));
     },
 
-    setStationsOnlineInfo(data: APIData) {
+    setStationsOnlineInfo() {
       const onlineStationNames: string[] = [];
-      const prevDispatcherStatuses: StoreState['lastDispatcherStatuses'] = [];
+      const prevDispatcherStatuses: StoreState['lastDispatcherStatuses'] = [];      
 
-      data.stations?.forEach((stationAPIData) => {
+      this.apiData.stations?.forEach((stationAPIData) => {
         if (stationAPIData.region !== this.region.id || !stationAPIData.isOnline) return;
         const station = this.stationList.find((s) => s.name === stationAPIData.stationName);
 
         onlineStationNames.push(stationAPIData.stationName);
 
-        const dispatcherStatus = this.getDispatcherStatus(data.dispatchers, stationAPIData);
+        const dispatcherStatus = this.getDispatcherStatus(stationAPIData);
         prevDispatcherStatuses.push(dispatcherStatus);
 
         const stationTrains = this.getStationTrains(stationAPIData);
@@ -207,6 +213,7 @@ export const useStore = defineStore('store', {
         const onlineInfo = {
           name: stationAPIData.stationName,
           hash: stationAPIData.stationHash,
+          region: stationAPIData.region,
           maxUsers: stationAPIData.maxUsers,
           currentUsers: stationAPIData.currentUsers,
           spawns: parseSpawns(stationAPIData.spawnString),
@@ -239,7 +246,7 @@ export const useStore = defineStore('store', {
           });
       });
 
-      if (data.dispatchers != null) this.lastDispatcherStatuses = prevDispatcherStatuses;
+      if (this.apiData.dispatchers != null) this.lastDispatcherStatuses = prevDispatcherStatuses;
     },
 
     async fetchStationsGeneralInfo() {
@@ -324,7 +331,9 @@ export const useStore = defineStore('store', {
       );
 
       socket.on('UPDATE', (data: APIData) => {
-        this.fetchOnlineData(data);
+        this.apiData = data;
+
+        this.setOnlineData();
       });
 
       socket.emit('connection');
@@ -337,8 +346,14 @@ export const useStore = defineStore('store', {
       this.connectToWebsocket();
     },
 
-    async fetchOnlineData(data: APIData) {
-      if (!data.stations) {
+    async changeRegion(region: StoreState['region']) {
+      this.region = region;
+
+      await this.setOnlineData();
+    },
+
+    async setOnlineData() {
+      if (!this.apiData.stations) {
         this.dataStatuses.sceneries = DataStatus.Error;
         this.dataStatuses.trains = DataStatus.Error;
         this.dataStatuses.dispatchers = DataStatus.Error;
@@ -347,11 +362,14 @@ export const useStore = defineStore('store', {
       }
 
       this.dataStatuses.sceneries = DataStatus.Loaded;
-      this.dataStatuses.trains = !data.trains ? DataStatus.Warning : DataStatus.Loaded;
-      this.dataStatuses.dispatchers = !data.dispatchers ? DataStatus.Warning : DataStatus.Loaded;
+      this.dataStatuses.trains = !this.apiData.trains ? DataStatus.Warning : DataStatus.Loaded;
+      this.dataStatuses.dispatchers = !this.apiData.dispatchers ? DataStatus.Warning : DataStatus.Loaded;
 
-      this.setStationsOnlineInfo(data);
-      this.setTrainsOnlineData(data.trains);
+      this.setTrainsOnlineData();
+      this.setStationsOnlineInfo();
+
+      console.log("Loading");
+      
     },
   },
 });

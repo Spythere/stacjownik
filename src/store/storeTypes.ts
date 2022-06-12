@@ -10,6 +10,7 @@ export type Availability = 'default' | 'unavailable' | 'nonPublic' | 'abandoned'
 export interface StoreState {
   stationList: Station[];
   trainList: Train[];
+  apiData: APIData;
 
   lastDispatcherStatuses: { hash: string; statusTimestamp: number; statusID: string }[];
 
