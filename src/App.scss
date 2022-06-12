@@ -36,7 +36,7 @@
   font-size: 1rem;
 
   @include smallScreen() {
-    font-size: calc(0.45rem + 1vw);
+    font-size: calc(0.3rem + 2vw);
   }
 }
 

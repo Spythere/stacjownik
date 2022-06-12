@@ -409,7 +409,7 @@ tr.station {
     @include smallScreen() {
       margin: 0;
       padding: 0.3em 0.5em;
-      font-size: 1.1em;
+      font-size: 1em;
     }
   }
 }
@@ -477,6 +477,9 @@ td.station {
       border-radius: 0.5em;
 
       @include smallScreen() {
+        width: 24px;
+        height: 24px;
+        font-size: 10px;
       }
     }
   }

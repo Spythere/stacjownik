@@ -277,17 +277,13 @@ export default defineComponent({
 
   &-enter-from,
   &-leave-to {
-    transform: translate(-100%, -50%);
+    transform: translate(-50%, -50%) scale(0.8);
     opacity: 0;
   }
 }
 
 .filter-card {
-  font-size: 0.95em;
-
-  @include smallScreen() {
-    font-size: 1em;
-  }
+  font-size: 1em;
 }
 .card {
   &_btn {
@@ -295,7 +291,7 @@ export default defineComponent({
       display: flex;
       align-items: center;
 
-      padding: 0.5em;
+      padding: 0.5em 1em;
       border-radius: 1em 1em 0 0;
 
       /* border-radius: 0 0.9em 0.9em 0; */
@@ -304,6 +300,7 @@ export default defineComponent({
 
     img {
       width: 1.5em;
+      margin-right: 0.5em;
     }
   }
 

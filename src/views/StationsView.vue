@@ -179,9 +179,4 @@ export default defineComponent({
   margin-bottom: 0.5em;
 }
 
-@include smallScreen {
-  .options-bar {
-    font-size: 1.1em;
-  }
-}
 </style>
