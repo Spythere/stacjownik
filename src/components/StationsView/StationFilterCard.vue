@@ -56,7 +56,13 @@
           </section>
 
           <section class="card_authors-search">
-            <input type="text" :placeholder="$t('filters.authors-search')" name="authors" v-model="authorsInputValue" @input="handleAuthorsInput" />
+            <input
+              type="text"
+              :placeholder="$t('filters.authors-search')"
+              name="authors"
+              v-model="authorsInputValue"
+              @input="handleAuthorsInput"
+            />
           </section>
 
           <section class="card_sliders">
@@ -107,12 +113,12 @@
 <script lang="ts">
 import { defineComponent, inject } from '@vue/runtime-core';
 
-import { GETTERS, MUTATIONS } from '@/constants/storeConstants';
 import inputData from '@/data/options.json';
 
 import StorageManager from '@/scripts/managers/storageManager';
 import ActionButton from '../Global/ActionButton.vue';
 import FilterOption from './FilterOption.vue';
+import { useStore } from '@/store/store';
 
 export default defineComponent({
   components: { ActionButton, FilterOption },
@@ -135,9 +141,11 @@ export default defineComponent({
 
   setup() {
     const isVisible = inject('isFilterCardVisible');
+    const store = useStore();
 
     return {
       isVisible,
+      store,
     };
   },
 
@@ -150,7 +158,7 @@ export default defineComponent({
       this.changeNumericFilterValue('onlineFromHours', this.minimumHours);
     }
 
-    this.currentRegion = this.$store.getters[GETTERS.currentRegion];
+    this.currentRegion = this.store.region;
   },
 
   methods: {
@@ -175,8 +183,6 @@ export default defineComponent({
     },
 
     handleAuthorsInput(e: Event) {
-      // if ((e.target as HTMLInputElement).value.length < 3) return;
-
       clearTimeout(this.delayInputTimer);
 
       this.delayInputTimer = setTimeout(() => {
@@ -185,7 +191,7 @@ export default defineComponent({
     },
 
     handleChangeRegion() {
-      this.$store.commit(MUTATIONS.SET_REGION, this.currentRegion);
+      this.store.region = this.currentRegion;
       this.closeCard();
     },
 

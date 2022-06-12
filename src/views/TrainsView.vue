@@ -15,15 +15,14 @@
 <script lang="ts">
 import { computed, ComputedRef, defineComponent, PropType, provide, reactive, ref, TrainFilter } from 'vue';
 import { filteredTrainList } from '@/scripts/managers/trainFilterManager';
-import  { trainFilters } from "@/data/trainOptions";
+import { trainFilters } from '@/data/trainOptions';
 
 import Train from '@/scripts/interfaces/Train';
 import TrainTable from '@/components/TrainsView/TrainTable.vue';
 import TrainStats from '@/components/TrainsView/TrainStats.vue';
 import TrainOptions from '@/components/TrainsView/TrainOptions.vue';
 
-import { useStore } from '@/store';
-import { GETTERS } from '@/constants/storeConstants';
+import { useStore } from '@/store/store';
 
 export default defineComponent({
   components: {
@@ -35,13 +34,13 @@ export default defineComponent({
   props: {
     train: {
       type: String,
-      required: false
+      required: false,
     },
 
     driver: {
       type: String,
-      required: false
-    }
+      required: false,
+    },
   },
 
   data: () => ({
@@ -52,7 +51,7 @@ export default defineComponent({
   setup() {
     const store = useStore();
 
-    const trainList: ComputedRef<Train[]> = computed(() => store.getters[GETTERS.trainList]);
+    const trainList = store.trainList;
 
     const sorterActive = ref({ id: 'distance', dir: -1 });
     const filterList = reactive([...trainFilters]) as TrainFilter[];
@@ -68,15 +67,8 @@ export default defineComponent({
     provide('isTrainOptionsCardVisible', isTrainOptionsCardVisible);
 
     const computedTrains: ComputedRef<Train[]> = computed(() => {
-      return filteredTrainList(
-        trainList.value,
-        searchedTrain.value,
-        searchedDriver.value,
-        sorterActive.value,
-        filterList
-      );
+      return filteredTrainList(trainList, searchedTrain.value, searchedDriver.value, sorterActive.value, filterList);
     });
-
 
     return {
       trainList,
@@ -88,9 +80,9 @@ export default defineComponent({
   },
 
   activated() {
-    if(this.train) {
+    if (this.train) {
       this.searchedTrain = this.train;
-      this.searchedDriver = this.driver || "";
+      this.searchedDriver = this.driver || '';
     }
     // if (this.train) {
     //   this.searchedTrain = this.train;

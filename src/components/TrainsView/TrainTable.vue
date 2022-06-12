@@ -38,7 +38,6 @@
 
 <script lang="ts">
 import { computed, ComputedRef, defineComponent, inject, Ref, watchEffect } from '@vue/runtime-core';
-import { useStore } from '@/store';
 
 import defaultVehicleIconsJSON from '@/data/defaultVehicleIcons.json';
 
@@ -48,8 +47,8 @@ import TrainSchedule from '@/components/TrainsView/TrainSchedule.vue';
 import TrainInfo from '@/components/TrainsView/TrainInfo.vue';
 
 import { DataStatus } from '@/scripts/enums/DataStatus';
-import { GETTERS } from '@/constants/storeConstants';
 import returnBtnMixin from '@/mixins/returnBtnMixin';
+import { useStore } from '@/store/store';
 
 export default defineComponent({
   components: {
@@ -81,7 +80,7 @@ export default defineComponent({
   setup(props) {
     const store = useStore();
 
-    const trainsDataStatus: ComputedRef<DataStatus> = computed(() => store.getters[GETTERS.trainsDataStatus]);
+    const trainsDataStatus = store.dataStatuses.trains;
 
     const searchedTrain = inject('searchedTrain') as Ref<string>;
     const searchedDriver = inject('searchedDriver') as Ref<string>;
@@ -94,9 +93,9 @@ export default defineComponent({
       searchedTrain,
       searchedDriver,
       currentTrains,
+      trainsDataStatus,
 
       sorterActive: inject('sorterActive') as { id: string | number; dir: number },
-      trainsDataStatus: computed(() => trainsDataStatus.value),
       distanceLimitExceeded: computed(
         () => props.trains.findIndex(({ timetableData }) => timetableData && timetableData.routeDistance > 200) != -1
       ),
@@ -107,10 +106,6 @@ export default defineComponent({
     const query = this.$route.query;
 
     if (query.trainNo && query.driverName) {
-      const train = (this.$store.getters[GETTERS.trainList] as Train[]).find(
-        (train) => train.trainNo == Number(query.trainNo) && train.driverName == query.driverName!.toString()
-      );
-
       this.searchedDriver = query.driverName.toString();
       this.searchedTrain = query.trainNo.toString();
 

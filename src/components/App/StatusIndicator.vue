@@ -154,25 +154,20 @@
       </svg>
 
       <transition name="tooltip-anim">
-        <div v-html="$t(indicator.message)" class="indicator-tooltip" v-if="tooltipActive">
-          
-        </div>
+        <div v-html="$t(indicator.message)" class="indicator-tooltip" v-if="tooltipActive"></div>
       </transition>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { GETTERS } from '@/constants/storeConstants';
 import { DataStatus } from '@/scripts/enums/DataStatus';
 import { StoreData } from '@/scripts/interfaces/StoreData';
-import { useStore } from '@/store';
-import { State } from '@/store/types';
-import { computed, defineComponent } from 'vue';
-import { Store } from 'vuex';
+import { useStore } from '@/store/store';
+import { StoreState } from '@/store/storeTypes';
+import { computed, defineComponent, watch } from 'vue';
 
 export default defineComponent({
-
   data() {
     return {
       icons: {
@@ -197,46 +192,50 @@ export default defineComponent({
   },
 
   setup() {
-      const store: Store<State> = useStore();
+    const store = useStore();
 
-      return {
-        dataStatus: computed(() => store.getters[GETTERS.allData] as StoreData)
-      }
+    return {
+      dataStatus: store.dataStatuses,
+    };
   },
 
   watch: {
-    dataStatus(storeData: StoreData) {
-      const sceneryDataStatus = storeData.sceneryDataStatus;
-      const trainsDataStatus = storeData.trainsDataStatus;
-      const dispatcherDataStatus = storeData.dispatcherDataStatus;            
+    dataStatus: {
+      deep: true,
 
-      if (sceneryDataStatus == DataStatus.Error) {
-        this.setSignalStatus(sceneryDataStatus);
-        this.indicator.status = sceneryDataStatus;
-        this.indicator.message = 'data-status.S1a-sceneries';
-        return;
-      }
+      handler(statuses: StoreState['dataStatuses']) {
+        const sceneryDataStatus = statuses.sceneries;
+        const trainsDataStatus = statuses.trains;
+        const dispatcherDataStatus = statuses.dispatchers;
 
-      if (trainsDataStatus == DataStatus.Warning) {
-        this.setSignalStatus(trainsDataStatus);
-        this.indicator.status = trainsDataStatus;
-        this.indicator.message = 'data-status.S5-trains';
-        return;
-      }
+        if (sceneryDataStatus == DataStatus.Error) {
+          this.setSignalStatus(sceneryDataStatus);
+          this.indicator.status = sceneryDataStatus;
+          this.indicator.message = 'data-status.S1a-sceneries';
+          return;
+        }
 
-      if (dispatcherDataStatus == DataStatus.Warning) {
-        this.setSignalStatus(dispatcherDataStatus);
-        this.indicator.status = dispatcherDataStatus;
-        this.indicator.message = 'data-status.S5-dispatchers';
-        return;
-      }
+        if (trainsDataStatus == DataStatus.Warning) {
+          this.setSignalStatus(trainsDataStatus);
+          this.indicator.status = trainsDataStatus;
+          this.indicator.message = 'data-status.S5-trains';
+          return;
+        }
 
-      if (sceneryDataStatus == DataStatus.Loaded) {
-        this.setSignalStatus(DataStatus.Loaded);
-  
-        this.indicator.status = DataStatus.Loaded;
-        this.indicator.message = 'data-status.S2';
-      }
+        if (dispatcherDataStatus == DataStatus.Warning) {
+          this.setSignalStatus(dispatcherDataStatus);
+          this.indicator.status = dispatcherDataStatus;
+          this.indicator.message = 'data-status.S5-dispatchers';
+          return;
+        }
+
+        if (sceneryDataStatus == DataStatus.Loaded) {
+          this.setSignalStatus(DataStatus.Loaded);
+
+          this.indicator.status = DataStatus.Loaded;
+          this.indicator.message = 'data-status.S2';
+        }
+      },
     },
   },
 

@@ -144,12 +144,11 @@ import Station from '@/scripts/interfaces/Station';
 import SelectBox from '../Global/SelectBox.vue';
 import { computed, defineComponent, ref } from '@vue/runtime-core';
 import { useRoute } from 'vue-router';
-import { useStore } from '@/store';
-import { GETTERS } from '@/constants/storeConstants';
 import { DataStatus } from '@/scripts/enums/DataStatus';
 import { ComputedRef } from 'vue';
 import dateMixin from '@/mixins/dateMixin';
 import routerMixin from '@/mixins/routerMixin';
+import { useStore } from '@/store/store';
 
 export default defineComponent({
   components: { SelectBox },
@@ -181,7 +180,7 @@ export default defineComponent({
 
     const store = useStore();
 
-    const trainsDataStatus = computed(() => store.getters[GETTERS.trainsDataStatus]) as ComputedRef<DataStatus>;
+    const trainsDataStatus = store.dataStatuses.trains;
 
     const selectedCheckpoint = ref(
       props.station?.generalInfo?.checkpoints?.length == 0

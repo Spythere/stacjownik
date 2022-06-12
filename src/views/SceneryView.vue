@@ -50,13 +50,12 @@ import SceneryHeader from '@/components/SceneryView/SceneryHeader.vue';
 import ActionButton from '@/components/Global/ActionButton.vue';
 
 import { computed, ComputedRef, defineComponent, provide, reactive } from '@vue/runtime-core';
-import { useStore } from '@/store';
-import { GETTERS } from '@/constants/storeConstants';
 import { useRoute } from 'vue-router';
 
 import axios from 'axios';
 import { URLs } from '@/scripts/utils/apiURLs';
 import Station from '@/scripts/interfaces/Station';
+import { useStore } from '@/store/store';
 
 export default defineComponent({
   components: { SceneryInfo, SceneryTimetable, SceneryHistory, ActionButton, SceneryHeader },
@@ -79,16 +78,13 @@ export default defineComponent({
     const store = useStore();
 
     const savedSceneryHistory = reactive({});
-    const data: ComputedRef<StoreData> = computed(() => store.getters[GETTERS.allData]);
 
     const timetableOnly = computed(() => (route.query['timetable_only'] == '1' ? true : false));
 
     const isComponentVisible = computed(() => route.path === '/scenery');
 
     const stationInfo = computed(() => {
-      return data.value.stationList.find(
-        (station) => station.name === route.query.station?.toString().replace(/_/g, ' ')
-      );
+      return store.stationList.find((station) => station.name === route.query.station?.toString().replace(/_/g, ' '));
     });
 
     provide('savedSceneryHistory', savedSceneryHistory);
@@ -98,8 +94,7 @@ export default defineComponent({
     // });
 
     return {
-      data,
-      currentRegion: computed(() => store.getters[GETTERS.currentRegion]),
+      currentRegion: store.region,
       timetableOnly,
       isComponentVisible,
       stationInfo,
@@ -117,10 +112,6 @@ export default defineComponent({
         query,
       });
     },
-  },
-
-  async mounted() {
-    // this.stationInfo = (this.$store.getters[GETTERS.allData] as StoreData).stationList.find((station) => station.name === this.$route.query.station?.toString().replace(/_/g, ' '))
   },
 
   async activated() {

@@ -84,12 +84,10 @@ import Clock from '@/components/App/Clock.vue';
 
 import StorageManager from '@/scripts/managers/storageManager';
 import { computed, ComputedRef, defineComponent, provide, ref } from 'vue';
-import { ACTIONS, GETTERS } from './constants/storeConstants';
-import { StoreData } from './scripts/interfaces/StoreData';
-import { useStore } from './store';
 
 import packageInfo from '.././package.json';
 import StatusIndicator from './components/App/StatusIndicator.vue';
+import { useStore } from './store/store';
 
 export default defineComponent({
   components: {
@@ -99,13 +97,9 @@ export default defineComponent({
 
   setup() {
     const store = useStore();
-    store.dispatch(ACTIONS.connectToAPI);
+    store.connectToAPI();
 
-    const data: ComputedRef<StoreData> = computed(() => store.getters[GETTERS.allData]);
-
-    const currentRegion: ComputedRef<{ id: string; value: string }> = computed(
-      () => store.getters[GETTERS.currentRegion]
-    );
+    const currentRegion = store.region;
 
     // const sceneryDataStatus = computed(() => data.value.sceneryDataStatus);
 
@@ -114,15 +108,14 @@ export default defineComponent({
     provide('isFilterCardVisible', isFilterCardVisible);
 
     return {
-      data,
       currentRegion,
       isFilterCardVisible,
 
-      dispatcherDataStatus: computed(() => data.value.dispatcherDataStatus),
+      dispatcherDataStatus: store.dataStatuses.dispatchers,
 
-      trainCount: computed(() => data.value.trainList.length),
+      trainCount: store.trainCount,
 
-      dispatcherCount: computed(() => data.value.stationList.filter((station) => station.onlineInfo).length),
+      dispatcherCount: store.stationList.filter((station) => station.onlineInfo).length,
 
       openFilterCard() {
         isFilterCardVisible.value = true;

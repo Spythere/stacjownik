@@ -1,4 +1,4 @@
-import { Availability } from "@/store/types";
+import { Availability } from "@/store/storeTypes";
 import ScheduledTrain from "./ScheduledTrain";
 import StationRoutes from "./StationRoutes";
 

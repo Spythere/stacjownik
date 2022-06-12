@@ -231,10 +231,9 @@ import returnBtnMixin from '@/mixins/returnBtnMixin';
 
 import { DataStatus } from '@/scripts/enums/DataStatus';
 import { computed, ComputedRef, defineComponent } from '@vue/runtime-core';
-import { useStore } from '@/store';
-import { GETTERS } from '@/constants/storeConstants';
 import Station from '@/scripts/interfaces/Station';
 import { StoreData } from '@/scripts/interfaces/StoreData';
+import { useStore } from '@/store/store';
 
 export default defineComponent({
   props: {
@@ -280,10 +279,8 @@ export default defineComponent({
   setup() {
     const store = useStore();
 
-    const data: ComputedRef<StoreData> = computed(() => store.getters[GETTERS.allData]);
-
     const isDataLoaded = computed(() => {
-      return data.value.sceneryDataStatus != DataStatus.Loading;
+      return store.dataStatuses.sceneries != DataStatus.Loading;
     });
 
     return {
@@ -523,5 +520,4 @@ td.station {
 
   background: #333;
 }
-
 </style>

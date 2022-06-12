@@ -36,10 +36,8 @@ import StationTable from '@/components/StationsView/StationTable.vue';
 import FilterCard from '@/components/StationsView/StationFilterCard.vue';
 import SelectBox from '@/components/Global/SelectBox.vue';
 
-import { StoreData } from '@/scripts/interfaces/StoreData';
 import { computed, ComputedRef, defineComponent, reactive } from 'vue';
-import { useStore } from '@/store';
-import { GETTERS } from '@/constants/storeConstants';
+import { useStore } from '@/store/store';
 
 export default defineComponent({
   components: {
@@ -73,10 +71,8 @@ export default defineComponent({
     const filterManager = reactive(new StationFilterManager());
     const focusedStationName = '';
 
-    const data: ComputedRef<StoreData> = computed(() => store.getters[GETTERS.allData]);
-
     const computedStations: ComputedRef<Station[]> = computed(() => {
-      return filterManager.getFilteredStationList(store.getters[GETTERS.stationList]);
+      return filterManager.getFilteredStationList(store.stationList);
     });
 
     const focusedStationInfo = computed(() =>
@@ -84,7 +80,6 @@ export default defineComponent({
     );
 
     return {
-      data,
       computedStations,
       filterManager,
       focusedStationName,
@@ -111,7 +106,7 @@ export default defineComponent({
   methods: {
     toggleCardsState(name: string): void {
       if (name == 'filter') {
-        this.filterCardOpen = !this.filterCardOpen;        
+        this.filterCardOpen = !this.filterCardOpen;
       }
     },
     changeSorter(index: number) {
@@ -186,7 +181,6 @@ export default defineComponent({
 
   margin-bottom: 0.5em;
 }
-
 
 @include smallScreen {
   .options-bar {
