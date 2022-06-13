@@ -31,7 +31,6 @@ export default defineComponent({
 
 .clock {
   display: flex;
-  justify-content: center;
   align-items: center;
 }
 </style>

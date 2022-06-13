@@ -32,17 +32,20 @@
 
             <span class="header_info">
               <Clock />
+
               <div class="info_counter">
-                <span class="region" @click="changeRegion">
-                  {{ store.region.value }}
-                </span>
                 <img src="@/assets/icon-dispatcher.svg" alt="icon dispatcher" />
                 <span class="text--primary">{{ onlineDispatchers.length }}</span>
-                <span class="text--grayed">|</span>
+                <span class="text--grayed"> / </span>
                 <span class="text--primary">{{ store.trainList.length }}</span>
                 <img src="@/assets/icon-train.svg" alt="icon train" />
               </div>
+
+              <span class="info_region">
+                <SelectBox :itemList="options.regions" :defaultItemIndex="0" @selected="changeRegion" />
+              </span>
             </span>
+
             <span class="header_links">
               <router-link class="route" active-class="route-active" to="/" exact
                 >{{ $t('app.sceneries') }}
@@ -74,25 +77,31 @@
         &copy;
         <a href="https://td2.info.pl/profile/?u=20777" target="_blank">Spythere</a>
         {{ new Date().getUTCFullYear() }} | v{{ VERSION }}
+
+        <div style="display: none">&int; ukryta taktyczna całka do programowania w HTMLu</div>
       </footer>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import Clock from '@/components/App/Clock.vue';
+import { computed, defineComponent, provide, ref } from 'vue';
 
+import Clock from '@/components/App/Clock.vue';
 import StorageManager from '@/scripts/managers/storageManager';
-import { computed, ComputedRef, defineComponent, provide, ref } from 'vue';
 
 import packageInfo from '.././package.json';
-import StatusIndicator from './components/App/StatusIndicator.vue';
+import options from '@/data/options.json';
+
+import StatusIndicator from '@/components/App/StatusIndicator.vue';
+import SelectBox from '@/components/Global/SelectBox.vue';
 import { useStore } from './store/store';
 
 export default defineComponent({
   components: {
     Clock,
     StatusIndicator,
+    SelectBox,
   },
 
   setup() {
@@ -120,6 +129,7 @@ export default defineComponent({
     VERSION: packageInfo.version,
     updateModalVisible: false,
     hasReleaseNotes: false,
+    options,
 
     currentLang: 'pl',
 
@@ -156,8 +166,8 @@ export default defineComponent({
       StorageManager.setBooleanValue('version_notes_read', true);
     },
 
-    changeRegion() {
-      this.store.changeRegion({ id: 'cae', value: 'PL2' });
+    changeRegion(region: { id: string; value: string }) {
+      this.store.changeRegion(region);
     },
 
     changeLang(lang: string) {
