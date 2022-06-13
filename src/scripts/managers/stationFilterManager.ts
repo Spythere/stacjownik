@@ -50,9 +50,7 @@ const sortStations = (a: Station, b: Station, sorter: { index: number; dir: numb
       break;
   }
 
-  if (a.name.toLowerCase() >= b.name.toLowerCase()) return sorter.dir;
-
-  return -sorter.dir;
+  return sorter.dir == 1 ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
 };
 
 const filterStations = (station: Station, filters: Filter) => {

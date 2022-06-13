@@ -271,7 +271,6 @@ export default defineComponent({
       padding: 0.5em 1em;
       border-radius: 0.75em 0.75em 0 0;
 
-      font-size: 0.9em;
       font-weight: bold;
     }
 

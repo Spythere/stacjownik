@@ -196,7 +196,7 @@ export const useStore = defineStore('store', {
 
     setStationsOnlineInfo() {
       const onlineStationNames: string[] = [];
-      const prevDispatcherStatuses: StoreState['lastDispatcherStatuses'] = [];      
+      const prevDispatcherStatuses: StoreState['lastDispatcherStatuses'] = [];
 
       this.apiData.stations?.forEach((stationAPIData) => {
         if (stationAPIData.region !== this.region.id || !stationAPIData.isOnline) return;
@@ -322,7 +322,9 @@ export const useStore = defineStore('store', {
 
     connectToWebsocket() {
       const socket = io(
-        process.env.NODE_ENV !== 'production' && process.env.DEV_API == 1 ? URLs.stacjownikAPIDev : URLs.stacjownikAPI,
+        process.env.NODE_ENV !== 'production' && process.env.VUE_APP_WS_DEV == 1
+          ? URLs.stacjownikAPIDev
+          : URLs.stacjownikAPI,
         {
           transports: ['websocket', 'polling'],
           rememberUpgrade: true,
@@ -332,6 +334,8 @@ export const useStore = defineStore('store', {
 
       socket.on('UPDATE', (data: APIData) => {
         this.apiData = data;
+
+        console.dir(data);
 
         this.setOnlineData();
       });
@@ -367,9 +371,6 @@ export const useStore = defineStore('store', {
 
       this.setTrainsOnlineData();
       this.setStationsOnlineInfo();
-
-      console.log("Loading");
-      
     },
   },
 });
