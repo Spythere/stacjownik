@@ -37,10 +37,6 @@ export interface APIData {
   stations?: StationAPIData[];
   dispatchers?: string[][];
   trains?: TrainAPIData[];
-
-  stationsSWDRStatus: string;
-  trainsSWDRStatus: string;
-  dispatchersSWDRStatus: string;
 }
 
 export interface StationJSONData {
