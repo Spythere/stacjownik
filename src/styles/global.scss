@@ -14,7 +14,6 @@
   --clr-warning: #c59429;
 }
 
-
 html {
   scroll-behavior: smooth;
   width: 100vw;
@@ -24,7 +23,7 @@ body {
   width: 100%;
   margin: 0;
   // font-family: "Open Sans", sans-serif;
-  font-family: "Quicksand", sans-serif;
+  font-family: 'Quicksand', sans-serif;
 
   overflow-x: hidden;
 }
@@ -52,7 +51,6 @@ body {
   }
 }
 
-
 .g-tooltip {
   position: relative;
 
@@ -75,14 +73,14 @@ body {
 
     background-color: gray;
     text-align: center;
-    
-    border-radius: .5em;
+
+    border-radius: 0.5em;
 
     transition: opacity 0.3s;
     padding: 0.25em;
 
     &::after {
-      content: "";
+      content: '';
       position: absolute;
       top: 100%;
       left: 50%;
@@ -112,15 +110,13 @@ body {
   }
 }
 
-
 button,
 input,
 select {
   // font-family: "Open Sans", sans-serif;
   border: none;
-  font-family: "Quicksand", sans-serif;
+  font-family: 'Quicksand', sans-serif;
   font-size: 1em;
-
 }
 
 input {
@@ -152,13 +148,12 @@ input {
   color: $accentCol;
   font-weight: 600;
 
-  padding: .35em 0;
-
+  padding: 0.35em 0;
 }
 
 a {
   display: inline-block;
-  
+
   color: white;
   text-decoration: none;
 
@@ -211,7 +206,8 @@ ul {
     color: white;
     transition: color 0.3s;
 
-    &:hover, &:focus {
+    &:hover,
+    &:focus {
       color: $accentCol;
     }
 
@@ -249,23 +245,22 @@ ul {
 }
 
 .return-btn {
-  display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
 
   position: fixed;
-  right: 2rem;
-  bottom: 2rem;
+  right: 2.5rem;
+  bottom: 4rem;
 
   z-index: 100;
-  
 
-  width: 1.5em;
-  height: 1.5em;
+  width: 3.5rem;
 
-  font-size: 2.3em;
+  font-size: 3rem;
 
-  background-color: #333;
+  background-color: #555;
+  outline: 3px solid #222;
   color: white;
 
   border-radius: 50%;
@@ -277,5 +272,16 @@ ul {
 
   img {
     width: 1.3em;
+  }
+
+  @include smallScreen() {
+    bottom: 1em;
+    right: 0;
+    left: 50%;
+
+    width: 1em;
+    height: 1em;
+
+    transform: translateX(-50%);
   }
 }

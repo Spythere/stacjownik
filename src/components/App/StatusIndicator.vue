@@ -288,7 +288,7 @@ export default defineComponent({
   position: absolute;
   left: 50%;
   bottom: 0;
-  transform: translateX(11.6em);
+  transform: translateX(12em);
   z-index: 100;
 }
 

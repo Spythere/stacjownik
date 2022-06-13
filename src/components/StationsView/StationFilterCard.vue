@@ -9,29 +9,9 @@
 
     <transition name="card-anim">
       <div class="card" v-if="isVisible">
-        <!-- <div class="card_exit" @click="closeCard"></div> -->
-
         <div class="card_content">
           <div class="card_title flex">{{ $t('filters.title') }}</div>
-          <!-- <section class="card_regions">
-            <div class="regions_content">
-              <span v-for="region in inputs.regions" :key="region.id" :class="`region-${region.id}`">
-                <label>
-                  <input
-                    type="radio"
-                    name="region"
-                    :id="region.id"
-                    :value="region"
-                    v-model="currentRegion"
-                    @change="handleChangeRegion"
-                  />
-                  <span :class="{ checked: currentRegion.id === region.id }">
-                    {{ region.value }}
-                  </span>
-                </label>
-              </span>
-            </div>
-          </section> -->
+
           <section class="card_options">
             <filter-option
               v-for="(option, i) in inputs.options"
@@ -282,9 +262,6 @@ export default defineComponent({
   }
 }
 
-.filter-card {
-  font-size: 1em;
-}
 .card {
   &_btn {
     button {
@@ -292,15 +269,15 @@ export default defineComponent({
       align-items: center;
 
       padding: 0.5em 1em;
-      border-radius: 1em 1em 0 0;
+      border-radius: 0.75em 0.75em 0 0;
 
-      /* border-radius: 0 0.9em 0.9em 0; */
-      /* outline: 2px solid white; */
+      font-size: 0.9em;
+      font-weight: bold;
     }
 
     img {
-      width: 1.5em;
-      margin-right: 0.5em;
+      width: 1.3em;
+      margin-right: 0.25em;
     }
   }
 

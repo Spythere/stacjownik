@@ -36,7 +36,7 @@
   font-size: 1rem;
 
   @include smallScreen() {
-    font-size: calc(0.3rem + 2vw);
+    font-size: calc(0.4rem + 1.4vw);
   }
 }
 
@@ -94,6 +94,10 @@
 }
 
 .header {
+  &_body {
+    max-width: 21em;
+  }
+  
   &_container {
     display: flex;
     justify-content: center;
@@ -106,18 +110,16 @@
 
   &_brand {
     img {
-      width: 22em;
+      width: 100%;
     }
   }
 
   &_info {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    max-width: 100%;
 
-    font-size: 1.25em;
-
-    margin: 0 0.3em;
-    padding: 0.2em;
+    font-size: 1.2em;
   }
 
   &_links {
@@ -191,6 +193,7 @@
 // COUNTER
 .info_counter {
   display: flex;
+  justify-content: center;
   align-items: center;
 
   span {
@@ -200,10 +203,29 @@
   img {
     width: 1.35em;
   }
+}
 
-  .region {
-    color: paleturquoise;
+// REGION SELECTION
+.info_region {
+  color: white;
+  font-weight: bold;
+
+  display: flex;
+  justify-content: flex-end;
+
+  .select-box_content button {
+    background-color: transparent;
     font-weight: bold;
+    padding: 0.1em 0.5em;
+    color: paleturquoise;
+  }
+
+  .options {
+    font-size: 0.9em;
+  }
+
+  .arrow {
+    padding: 0;
   }
 }
 

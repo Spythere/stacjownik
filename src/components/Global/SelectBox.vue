@@ -5,15 +5,13 @@
         <span class="text--primary">{{ prefix }}</span> {{ computedSelectedItem.value }}
       </button>
 
-      <ul class="options" :ref="(el) => (listRef = el)">
+      <ul class="options" :ref="(el) => (listRef = el as Element)">
         <li class="option" v-for="(item, i) in itemList" :key="item.id">
           <transition
             name="unfold"
-            :style="
-              `
+            :style="`
             --delay-in: ${i * 55}ms; 
-            --delay-out: ${(itemList.length - 1 - i) * 55}ms`
-            "
+            --delay-out: ${(itemList.length - 1 - i) * 55}ms`"
           >
             <label :for="item.id" v-if="listOpen">
               <input type="button" :id="item.id" name="select-box" @click="selectOption(item)" />
@@ -36,7 +34,7 @@
 import { computed, defineComponent, Ref, ref } from '@vue/runtime-core';
 
 interface Item {
-  id: string | number;
+  id: string;
   value: string;
 }
 
@@ -141,7 +139,8 @@ export default defineComponent({
 .arrow {
   position: absolute;
   top: 50%;
-  right: 0.5em;
+  right: 0;
+  padding: 0.5em;
 
   img {
     vertical-align: middle;
@@ -160,7 +159,7 @@ button.selected {
   font-size: 1em;
 
   padding: 0.35em 0.5em;
-  padding-right: 2em;
+  margin-right: 1.4em;
 
   width: 100%;
   cursor: pointer;
@@ -180,8 +179,6 @@ button.selected {
   margin: 0 auto;
 
   height: 100%;
-
-  min-width: 12em;
 
   text-align: center;
 }
