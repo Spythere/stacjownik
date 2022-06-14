@@ -334,9 +334,6 @@ export const useStore = defineStore('store', {
 
       socket.on('UPDATE', (data: APIData) => {
         this.apiData = data;
-
-        console.dir(data);
-
         this.setOnlineData();
       });
 

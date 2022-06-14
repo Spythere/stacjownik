@@ -8,6 +8,8 @@
         :sorter-option-ids="['timestampFrom', 'duration']"
       />
 
+      <DispatcherStats />
+
       <button class="return-btn" @click="scrollToTop" v-if="showReturnButton">
         <img :src="icons.arrow" alt="return arrow" />
       </button>
@@ -96,6 +98,7 @@ import { DataStatus } from '@/scripts/enums/DataStatus';
 
 import ActionButton from '@/components/Global/ActionButton.vue';
 import JournalOptions from '@/components/JournalView/JournalOptions.vue';
+import DispatcherStats from '@/components/JournalView/DispatcherStats.vue';
 
 import { URLs } from '@/scripts/utils/apiURLs';
 
@@ -128,7 +131,7 @@ interface DispatcherHistoryItem {
 }
 
 export default defineComponent({
-  components: { SearchBox, ActionButton, JournalOptions },
+  components: { SearchBox, ActionButton, JournalOptions, DispatcherStats },
   mixins: [dateMixin],
 
   props: {

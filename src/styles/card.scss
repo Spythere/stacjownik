@@ -1,6 +1,18 @@
 @import './variables.scss';
 @import './responsive.scss';
 
+.card-dimmer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+
+  z-index: 100;
+
+  background: rgba(black, 0.65);
+}
+
 .card {
   position: fixed;
   top: 50%;
@@ -12,8 +24,7 @@
   overflow-x: hidden;
   background: #202020da;
 
-
-  box-shadow: 0 0 20px 10px #292929;
+  box-shadow: 0 0 15px 5px #303030;
 
   width: 600px;
 
