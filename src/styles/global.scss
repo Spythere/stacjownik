@@ -206,8 +206,8 @@ ul {
     color: white;
     transition: color 0.3s;
 
-    &:hover,
-    &:focus {
+    &:hover:not(:disabled),
+    &:focus:not(:disabled) {
       color: $accentCol;
     }
 
@@ -231,7 +231,7 @@ ul {
     border-radius: 0.25em;
     padding: 0.25em 0.5em;
 
-    &:hover {
+    &:hover:not(:disabled) {
       background-color: #3c3c3c;
     }
 
@@ -241,6 +241,10 @@ ul {
 
       background-color: #3c3c3c;
     }
+  }
+
+  &:disabled {
+    opacity: 0.65;
   }
 }
 

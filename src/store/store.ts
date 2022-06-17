@@ -1,4 +1,5 @@
 import { DataStatus } from '@/scripts/enums/DataStatus';
+import { DispatcherStatsAPIData } from '@/scripts/interfaces/api/DispatcherStatsAPIData';
 import StationAPIData from '@/scripts/interfaces/api/StationAPIData';
 import TrainAPIData from '@/scripts/interfaces/api/TrainAPIData';
 import ScheduledTrain from '@/scripts/interfaces/ScheduledTrain';
@@ -36,6 +37,9 @@ export const useStore = defineStore('store', {
       stationCount: 0,
 
       webSocket: undefined,
+      
+      dispatcherStatsName: '',
+      dispatcherStatsData: undefined,
 
       dataStatuses: {
         connection: DataStatus.Loading,

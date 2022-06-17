@@ -1,18 +1,33 @@
 <template>
   <section class="journal-timetables">
+    <keep-alive>
+      <DispatcherStats v-if="statsCardOpen" @close-card="closeDispatcherStatsCard" />
+    </keep-alive>
+
     <div class="journal-wrapper">
-      <journal-options
-        @on-filter-change="search"
-        @on-input-change="search"
-        @on-sorter-change="search"
-        :sorter-option-ids="['timestampFrom', 'duration']"
-      />
+      <div class="journal_top-bar">
+        <journal-options
+          @on-filter-change="search"
+          @on-input-change="search"
+          @on-sorter-change="search"
+          :sorter-option-ids="['timestampFrom', 'duration']"
+        />
 
-      <DispatcherStats />
+        <button
+          class="btn btn--option"
+          :disabled="store.dispatcherStatsName == ''"
+          @click="() => (statsCardOpen = !statsCardOpen)"
+        >
+          <span v-if="store.dispatcherStatsName">
+            Statystyki dyżurnego <b>{{ store.dispatcherStatsName }}</b>
+          </span>
+          <span v-else>Statystyki dyżurnego niedostępne</span>
+        </button>
+      </div>
 
-      <button class="return-btn" @click="scrollToTop" v-if="showReturnButton">
+      <!-- <button class="return-btn" @click="scrollToTop" v-if="showReturnButton">
         <img :src="icons.arrow" alt="return arrow" />
-      </button>
+      </button> -->
 
       <div class="journal-list">
         <div class="list-wrapper" ref="scrollElement">
@@ -68,12 +83,6 @@
                         </span>
                       </span>
                     </div>
-
-                    <!-- <div>{{ new Date(doc.timestampFrom).toLocaleDateString('pl-PL') }}</div> -->
-
-                    <!-- <div v-if="doc.timestampTo && doc.currentDuration && doc.currentDuration <= 30*60*1000">
-                      Wpis zostanie usunięty za {{ ~~((Date.now() - doc.currentDuration)) }} min.
-                    </div> -->
                   </li>
                 </transition-group>
               </ul>
@@ -101,6 +110,8 @@ import JournalOptions from '@/components/JournalView/JournalOptions.vue';
 import DispatcherStats from '@/components/JournalView/DispatcherStats.vue';
 
 import { URLs } from '@/scripts/utils/apiURLs';
+import { useStore } from '@/store/store';
+import { DispatcherStatsAPIData } from '@/scripts/interfaces/api/DispatcherStatsAPIData';
 
 const PROD_MODE = process.env.VUE_APP_JORUNAL_DISPATCHERS_DEV != '1' || process.env.NODE_ENV === 'production';
 
@@ -156,6 +167,7 @@ export default defineComponent({
     scrollNoMoreData: false,
 
     showReturnButton: false,
+    statsCardOpen: false,
   }),
 
   setup() {
@@ -181,6 +193,8 @@ export default defineComponent({
     const scrollElement: Ref<HTMLElement | null> = ref(null);
 
     return {
+      store: useStore(),
+
       historyList: ref([]) as Ref<DispatcherHistoryItem[]>,
       historyDataStatus,
 
@@ -210,8 +224,6 @@ export default defineComponent({
   mounted() {
     const query = this.$route.query;
 
-    console.log('Mounted');
-
     if (query.sceneryName || query.dispatcherName) {
       this.searchersValues[1].value = query.sceneryName?.toString() || '';
       this.searchersValues[0].value = query.dispatcherName?.toString() || '';
@@ -233,6 +245,10 @@ export default defineComponent({
   },
 
   methods: {
+    closeDispatcherStatsCard() {
+      this.statsCardOpen = false;
+    },
+    
     navigateToScenery(name: string, isOnline: boolean) {
       if (!isOnline) return;
 
@@ -260,8 +276,6 @@ export default defineComponent({
 
     handleScroll() {
       this.showReturnButton = window.scrollY > window.innerHeight;
-
-      console.log(window.scrollY > window.innerHeight);
 
       const element = this.$refs.scrollElement as HTMLElement;
 
@@ -355,6 +369,10 @@ export default defineComponent({
         // Response data exists
         this.historyList = responseData.response;
 
+        // Stats display
+        this.store.dispatcherStatsName =
+          this.historyList.length > 0 && this.searchersValues[0].value.trim() ? this.historyList[0].dispatcherName : '';
+
         this.historyDataStatus.status = DataStatus.Loaded;
       } catch (error) {
         this.historyDataStatus.status = DataStatus.Error;
@@ -440,6 +458,7 @@ export default defineComponent({
 
     span {
       margin-top: 0.25em;
+      text-align: center;
     }
   }
 }

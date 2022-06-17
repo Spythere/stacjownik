@@ -1,89 +1,93 @@
 <template>
-  <div class="card-dimmer"></div>
+  <div class="card-dimmer" @click="closeCard"></div>
 
   <div class="dispatcher-stats-card card">
-    <h2 class="card-title">STATYSTYKI DYŻURNEGO <span class="text--primary">SPYTHERE</span></h2>
+    <div>
+      <h2 class="card-title">
+        STATYSTYKI DYŻURNEGO <span class="text--primary">{{ store.dispatcherStatsName.toUpperCase() }}</span>
+      </h2>
 
-    <h3>Rozkłady jazdy dyżurnego</h3>
-    <div class="info-stats">
-      <span class="stat-badge">
-        <span>SUMA</span>
-        <span>15</span>
-      </span>
-      <span class="stat-badge">
-        <span>REKORD</span>
-        <span>322km</span>
-      </span>
-      <span class="stat-badge">
-        <span>ŚREDNIO</span>
-        <span>72km</span>
-      </span>
-      <span class="stat-badge">
-        <span>NAJKRÓTSZY</span>
-        <span>8.5km</span>
-      </span>
-    </div>
+      <div class="loading" v-if="!store.dispatcherStatsData">Ładowanie...</div>
+      <div v-else>
+        <h3>STATYSTYKI WYSTAWIONYCH ROZKŁADÓW</h3>
+        <div class="info-stats">
+          <span class="stat-badge">
+            <span>LICZBA</span>
+            <span>{{ store.dispatcherStatsData.count }}</span>
+          </span>
+          <span class="stat-badge">
+            <span>SUMA (KM)</span>
+            <span>{{ store.dispatcherStatsData.sumDistance.toFixed(2) }}km</span>
+          </span>
+          <span class="stat-badge">
+            <span>NAJDŁUŻSZY</span>
+            <span>{{ store.dispatcherStatsData.maxTimetableDistance }}km</span>
+          </span>
+          <span class="stat-badge">
+            <span>ŚREDNIO</span>
+            <span>{{ store.dispatcherStatsData.avgTimetableDistance }}km</span>
+          </span>
+        </div>
 
-    <h3>Historia wystawionych rozkładów</h3>
-    <div class="last-timetables">
-      <div class="timetable-row">
-        <span>213000&nbsp;<b>lolz12345</b></span>
-        <span>#333331</span>
-        <span>Grabów Miasto - Aleksandrów Kujawski</span>
-        <span>14/06 23:09</span>
+        <h3>OSTATNIE WYSTAWIONE ROZKŁADY</h3>
+
+        <div class="last-timetables">
+          <div class="timetable-row" v-for="timetable in store.dispatcherStatsData.timetables">
+            <span>#{{ timetable.timetableId }}</span>
+            <span>{{ timetable.routeDistance }}km</span>
+            <span>
+              <b>{{ timetable.trainNo }}</b
+              >&nbsp;{{ timetable.driverName }}
+            </span>
+            <span>{{ timetable.route.replace('|', ' > ') }}</span>
+          </div>
+        </div>
       </div>
-
-      <div class="timetable-row">
-        <span>213000&nbsp;<b>Waffel</b></span>
-        <span>#333327</span>
-        <span>STARE LIPOWO - Testowo</span>
-        <span>14/06 22:57</span>
-      </div>
-
-      <div class="timetable-row">
-        <span>213000&nbsp;<b>Waffel</b></span>
-        <span>#333327</span>
-        <span>STARE LIPOWO - Testowo</span>
-        <span>14/06 22:57</span>
-      </div>
-
-      <div class="timetable-row">
-        <span>213000&nbsp;<b>Waffel</b></span>
-        <span>#333327</span>
-        <span>STARE LIPOWO - Testowo</span>
-        <span>14/06 22:57</span>
-      </div>
-
-      <div class="timetable-row">
-        <span>213000&nbsp;<b>Waffel</b></span>
-        <span>#333327</span>
-        <span>STARE LIPOWO - Testowo</span>
-        <span>14/06 22:57</span>
-      </div>
-
-      <div class="timetable-row">
-        <span>213000&nbsp;<b>Waffel</b></span>
-        <span>#333327</span>
-        <span>STARE LIPOWO - Testowo</span>
-        <span>14/06 22:57</span>
-      </div>
-
-      <!-- <div class="timetable-row">
-        <span>21370</span>
-        <span>nwm12345t6</span>
-        <span>Grabów Miasto - Aleksandrów Kujawski</span>
-        <span>23:09</span>
-      </div> -->
     </div>
   </div>
 </template>
 
 <script lang="ts">
+import { DispatcherStatsAPIData } from '@/scripts/interfaces/api/DispatcherStatsAPIData';
+import { URLs } from '@/scripts/utils/apiURLs';
+import { useStore } from '@/store/store';
+import axios from 'axios';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
+  emits: ['closeCard'],
+
   setup() {
-    return {};
+    const store = useStore();
+    return {
+      store,
+    };
+  },
+
+  data() {
+    return {
+      lastDispatcherName: ''
+    }
+  },
+
+  activated() {
+    this.fetchDispatcherStats();
+  },
+
+  methods: {
+    async fetchDispatcherStats() {
+      this.store.dispatcherStatsData = undefined;
+
+      const statsData: DispatcherStatsAPIData = await (
+        await axios.get(`${URLs.stacjownikAPI}/api/getDispatcherInfo?name=${this.store.dispatcherStatsName}`)
+      ).data;
+
+      this.store.dispatcherStatsData = statsData.response;
+    },
+
+    closeCard() {      
+      this.$emit('closeCard');
+    }
   },
 });
 </script>
@@ -95,23 +99,43 @@ export default defineComponent({
 
 .dispatcher-stats-card {
   padding: 1em;
-  max-width: 800px;
+  max-width: 850px;
   width: 100vw;
+  max-height: 750px;
+  min-height: 600px;
+}
+
+.loading {
+  font-size: 1.4em;
+  padding: 0.6em;
+  text-align: center;
+  margin: 1em 0 400px 0;
+
+  background-color: #4d4d4d;
 }
 
 h2.card-title {
-  text-align: center;
   font-size: 1.8em;
 }
 
 h3 {
-  margin: 0.5em 0;
+  margin-top: 1em;
+}
+
+h2,
+h3 {
+  text-align: center;
 }
 
 .info-stats {
   display: flex;
+  justify-content: center;
   flex-wrap: wrap;
   margin-top: 1em;
+}
+
+.last-timetables {
+  overflow-y: scroll;
 }
 
 .stat-badge {
@@ -135,15 +159,15 @@ h3 {
 
 .timetable-row {
   display: grid;
-  grid-template-columns: 2fr 1fr 3fr 1fr;
+  grid-template-columns: 1fr 1fr 3fr 4fr;
   gap: 0.2em;
   margin: 0.5em 0;
   text-align: center;
 
   span {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    min-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
     background-color: #4d4d4d;
     padding: 0.5em 0.2em;
@@ -153,15 +177,15 @@ h3 {
 @include smallScreen() {
   .dispatcher-stats-card {
     text-align: center;
-  }
-  .info-stats {
-    justify-content: center;
+    font-size: 1.2em;
   }
 
   .timetable-row {
-    grid-template-columns: 2fr 1fr;
-    grid-template-rows: 1fr 1fr;
-    gap: 0;
+    // display: flex;
+    // flex-wrap: wrap;
+    // justify-content: center;
+    grid-template-columns: 1fr 1fr;
+    background-color: #4d4d4d;
   }
 }
 </style>

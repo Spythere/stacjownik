@@ -1,4 +1,5 @@
 import { DataStatus } from '@/scripts/enums/DataStatus';
+import { Response } from '@/scripts/interfaces/api/DispatcherStatsAPIData';
 import StationAPIData from '@/scripts/interfaces/api/StationAPIData';
 import TrainAPIData from '@/scripts/interfaces/api/TrainAPIData';
 import Station from '@/scripts/interfaces/Station';
@@ -21,6 +22,8 @@ export interface StoreState {
   stationCount: number;
 
   webSocket?: Socket;
+  dispatcherStatsName: string;
+  dispatcherStatsData?: Response; 
 
   dataStatuses: {
     connection: DataStatus;
