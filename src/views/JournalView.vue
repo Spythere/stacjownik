@@ -3,16 +3,16 @@
     <div class="journal-type-options">
       <router-link
         class="router-link"
-        :class="{ active: journalTypeChosen == 'timetables' }"
         to="/journal?view=timetables"
+        :class="{ active: activeJournalComponent == 'journalTimetables' }"
       >
         {{ $t('journal.section-timetables') }}
       </router-link>
       &nbsp;&bull;&nbsp;
       <router-link
         class="router-link"
-        :class="{ active: journalTypeChosen == 'dispatchers' }"
         to="/journal?view=dispatchers"
+        :class="{ active: activeJournalComponent == 'journalDispatchers' }"
       >
         {{ $t('journal.section-dispatchers') }}
       </router-link>
@@ -20,13 +20,14 @@
 
     <div class="journal-section">
       <keep-alive>
-        <JournalTimetables v-if="journalTypeChosen == 'timetables'" />
+        <component :is="activeJournalComponent"></component>
+      </keep-alive>
+    </div>
+    <!-- <JournalTimetables v-if="journalTypeChosen == 'timetables'" />
         <JournalDispatchers
           v-else-if="journalTypeChosen == 'dispatchers'"
           :sceneryName="$route.query.sceneryName?.toString()"
-        />
-      </keep-alive>
-    </div>
+        /> -->
   </section>
 </template>
 
@@ -39,28 +40,32 @@ export default defineComponent({
   components: { JournalTimetables, JournalDispatchers },
 
   setup() {
-    const journalTypeChosen = ref('timetables');
+    const journalTypeChosen = ref('journalTimetables');
 
     return {
-      journalTypeChosen,
+      activeJournalComponent: journalTypeChosen,
     };
   },
 
   methods: {
     changeJournalType(type: string) {
-      this.journalTypeChosen = type;
+      this.activeJournalComponent = type;
     },
   },
 
   activated() {
     const query = this.$route.query;
 
-    if (query.view == 'dispatchers') this.journalTypeChosen = 'dispatchers';
+    if (query.view == 'dispatchers') this.activeJournalComponent = 'journalDispatchers';
   },
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+@import '../styles/card.scss';
+@import '../styles/variables.scss';
+@import '../styles/responsive.scss';
+
 .journal-type-options {
   display: flex;
   justify-content: center;
@@ -84,5 +89,73 @@ export default defineComponent({
 
 .router-link.active {
   color: gold;
+}
+
+// Stats cards
+.stats-card {
+  padding: 1em;
+  max-width: 850px;
+  width: 100vw;
+  max-height: 750px;
+  min-height: 600px;
+}
+
+.loading {
+  font-size: 1.4em;
+  padding: 0.6em;
+  text-align: center;
+  margin: 1em 0 400px 0;
+
+  background-color: #4d4d4d;
+}
+
+h2.card-title {
+  font-size: 1.8em;
+}
+
+h3 {
+  margin-top: 1em;
+}
+
+h2,
+h3 {
+  text-align: center;
+}
+
+.info-stats {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 1em;
+}
+
+.last-timetables {
+  overflow-y: auto;
+}
+
+.stat-badge {
+  margin-right: 0.5em;
+  padding-bottom: 1em;
+
+  span {
+    padding: 0.25em 0.3em;
+  }
+
+  span:first-child {
+    background-color: #4d4d4d;
+  }
+
+  span:last-child {
+    background-color: $accentCol;
+    color: black;
+    font-weight: bold;
+  }
+}
+
+@include smallScreen() {
+  .stats-card {
+    text-align: center;
+    font-size: 1.2em;
+  }
 }
 </style>

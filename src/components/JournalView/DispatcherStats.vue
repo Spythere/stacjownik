@@ -1,7 +1,7 @@
 <template>
   <div class="card-dimmer" @click="closeCard"></div>
 
-  <div class="dispatcher-stats-card card">
+  <div class="stats-card card">
     <div>
       <h2 class="card-title">
         STATYSTYKI DYŻURNEGO <span class="text--primary">{{ store.dispatcherStatsName.toUpperCase() }}</span>
@@ -66,8 +66,8 @@ export default defineComponent({
 
   data() {
     return {
-      lastDispatcherName: ''
-    }
+      lastDispatcherName: '',
+    };
   },
 
   activated() {
@@ -85,77 +85,15 @@ export default defineComponent({
       this.store.dispatcherStatsData = statsData.response;
     },
 
-    closeCard() {      
+    closeCard() {
       this.$emit('closeCard');
-    }
+    },
   },
 });
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/card.scss';
-@import '../../styles/variables.scss';
 @import '../../styles/responsive.scss';
-
-.dispatcher-stats-card {
-  padding: 1em;
-  max-width: 850px;
-  width: 100vw;
-  max-height: 750px;
-  min-height: 600px;
-}
-
-.loading {
-  font-size: 1.4em;
-  padding: 0.6em;
-  text-align: center;
-  margin: 1em 0 400px 0;
-
-  background-color: #4d4d4d;
-}
-
-h2.card-title {
-  font-size: 1.8em;
-}
-
-h3 {
-  margin-top: 1em;
-}
-
-h2,
-h3 {
-  text-align: center;
-}
-
-.info-stats {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-top: 1em;
-}
-
-.last-timetables {
-  overflow-y: scroll;
-}
-
-.stat-badge {
-  margin-right: 0.5em;
-  padding-bottom: 1em;
-
-  span {
-    padding: 0.25em 0.3em;
-  }
-
-  span:first-child {
-    background-color: #4d4d4d;
-  }
-
-  span:last-child {
-    background-color: $accentCol;
-    color: black;
-    font-weight: bold;
-  }
-}
 
 .timetable-row {
   display: grid;
@@ -172,18 +110,8 @@ h3 {
     background-color: #4d4d4d;
     padding: 0.5em 0.2em;
   }
-}
 
-@include smallScreen() {
-  .dispatcher-stats-card {
-    text-align: center;
-    font-size: 1.2em;
-  }
-
-  .timetable-row {
-    // display: flex;
-    // flex-wrap: wrap;
-    // justify-content: center;
+  @include smallScreen() {
     grid-template-columns: 1fr 1fr;
     background-color: #4d4d4d;
   }

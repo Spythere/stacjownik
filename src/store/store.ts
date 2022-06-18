@@ -41,6 +41,9 @@ export const useStore = defineStore('store', {
       dispatcherStatsName: '',
       dispatcherStatsData: undefined,
 
+      driverStatsName: '',
+      driverStatsData: undefined,
+
       dataStatuses: {
         connection: DataStatus.Loading,
         sceneries: DataStatus.Loading,

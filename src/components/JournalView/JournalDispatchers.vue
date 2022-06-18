@@ -144,6 +144,7 @@ interface DispatcherHistoryItem {
 export default defineComponent({
   components: { SearchBox, ActionButton, JournalOptions, DispatcherStats },
   mixins: [dateMixin],
+  name: 'JournalDispatchers',
 
   props: {
     sceneryName: {

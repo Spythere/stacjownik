@@ -1,17 +1,30 @@
 <template>
   <section class="journal-timetables">
-    <div class="journal-wrapper">
-      <JournalOptions
-        @on-input-change="search"
-        @on-filter-change="search"
-        @on-sorter-change="search"
-        :sorter-option-ids="['timetableId', 'beginDate', 'distance', 'total-stops']"
-        :filters="journalTimetableFilters"
-      />
+    <keep-alive>
+      <DriverStats v-if="statsCardOpen" @close-card="closeCard" />
+    </keep-alive>
 
-      <button class="return-btn" @click="scrollToTop" v-if="showReturnButton">
-        <img :src="icons.arrow" alt="return arrow" />
-      </button>
+    <div class="journal-wrapper">
+      <div class="journal_top-bar">
+        <JournalOptions
+          @on-input-change="search"
+          @on-filter-change="search"
+          @on-sorter-change="search"
+          :sorter-option-ids="['timetableId', 'beginDate', 'distance', 'total-stops']"
+          :filters="journalTimetableFilters"
+        />
+
+        <button
+          class="btn btn--option"
+          :disabled="store.driverStatsName == ''"
+          @click="() => (statsCardOpen = !statsCardOpen)"
+        >
+          <span v-if="store.driverStatsName">
+            Statystyki maszynisty <b>{{ store.driverStatsName }}</b>
+          </span>
+          <span v-else>Statystyki maszynisty niedostępne</span>
+        </button>
+      </div>
 
       <div class="journal-list">
         <div class="list-wrapper" ref="scrollElement">
@@ -161,6 +174,9 @@ import { URLs } from '@/scripts/utils/apiURLs';
 import { journalTimetableFilters } from '@/data/journalFilters';
 import { JournalFilterType } from '@/scripts/enums/JournalFilterType';
 import routerMixin from '@/mixins/routerMixin';
+import { useStore } from '@/store/store';
+import DriverStats from './DriverStats.vue';
+import { TimetableHistory, TimetablesAPIData } from '@/scripts/interfaces/api/TimetablesAPIData';
 
 const PROD_MODE = process.env.VUE_APP_JOURNAL_TIMETABLES_DEV != '1' || process.env.NODE_ENV === 'production';
 
@@ -168,44 +184,11 @@ const TIMETABLES_API_URL = PROD_MODE
   ? `${URLs.stacjownikAPI}/api/getTimetables`
   : 'http://localhost:3001/api/getTimetables';
 
-interface APIResponse {
-  errorMessage: string | null;
-  response: TimetableHistory[] | null;
-}
-
-interface TimetableHistory {
-  timetableId: number;
-  trainNo: number;
-  trainCategoryCode: string;
-  driverId: number;
-  driverName: string;
-  route: string;
-  twr: number;
-  skr: number;
-  sceneriesString: string;
-
-  routeDistance: number;
-  currentDistance: number;
-
-  confirmedStopsCount: number;
-  allStopsCount: number;
-
-  beginDate: string;
-  endDate: string;
-
-  scheduledBeginDate: string;
-  scheduledEndDate: string;
-
-  terminated: boolean;
-  fulfilled: boolean;
-
-  authorName?: string;
-  authorId?: number;
-}
-
 export default defineComponent({
-  components: { SearchBox, ActionButton, JournalOptions },
+  components: { SearchBox, ActionButton, JournalOptions, DriverStats },
   mixins: [dateMixin, routerMixin],
+
+  name: 'JournalTimetables',
 
   data: () => ({
     icons: {
@@ -217,6 +200,7 @@ export default defineComponent({
     scrollNoMoreData: false,
 
     showReturnButton: false,
+    statsCardOpen: false,
 
     journalTimetableFilters,
   }),
@@ -260,6 +244,7 @@ export default defineComponent({
 
       scrollElement,
       maxCount: ref(15),
+      store: useStore(),
     };
   },
 
@@ -280,6 +265,10 @@ export default defineComponent({
       if (historyItem.terminated) return;
 
       this.navigateToTrain(historyItem.trainNo, historyItem.driverName);
+    },
+
+    closeCard() {
+      this.statsCardOpen = false;
     },
 
     getSceneryList(historyItem: TimetableHistory) {
@@ -321,7 +310,7 @@ export default defineComponent({
 
       const countFrom = this.historyList.length;
 
-      const responseData: APIResponse | null = await (
+      const responseData: TimetablesAPIData | null = await (
         await axios.get(`${TIMETABLES_API_URL}?${this.currentQuery}&countFrom=${countFrom}`)
       ).data;
 
@@ -380,7 +369,7 @@ export default defineComponent({
       this.currentQuery = queries.join('&');
 
       try {
-        const responseData: APIResponse | null = await (
+        const responseData: TimetablesAPIData = await (
           await axios.get(`${TIMETABLES_API_URL}?${this.currentQuery}`)
         ).data;
 
@@ -401,6 +390,10 @@ export default defineComponent({
 
         // Response data exists
         this.historyList = responseData.response;
+
+        // Stats display
+        this.store.driverStatsName =
+          this.historyList.length > 0 && this.searchersValues[1].value.trim() ? this.historyList[1].driverName : '';
 
         this.historyDataStatus.status = DataStatus.Loaded;
       } catch (error) {

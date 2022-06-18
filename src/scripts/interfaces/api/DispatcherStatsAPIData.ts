@@ -22,7 +22,7 @@ export interface DispatcherTimetable {
   authorId?: number;
 }
 
-export interface Response {
+export interface DispatcherStatsResponse {
   dispatcherName?: string;
   lastSceneryName?: string;
   maxTimetableDistance: number;
@@ -34,7 +34,7 @@ export interface Response {
 }
 
 export interface DispatcherStatsAPIData {
-  response: Response;
+  response: DispatcherStatsResponse;
   errorMessage?: string;
 }
 
