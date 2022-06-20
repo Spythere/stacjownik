@@ -6,6 +6,12 @@ export interface DriverStatsResponse {
   confirmedDistance: number;
   totalStops: number;
   confirmedStops: number;
+  maxServiceDuration: number;
+  avgServiceDuration: number;
+  maxDistance: number;
+  avgDistance: number;
+  maxDelay: number;
+  avgDelay: number;
 }
 
 export interface DriverStatsAPIData {
