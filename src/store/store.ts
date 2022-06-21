@@ -37,7 +37,7 @@ export const useStore = defineStore('store', {
       stationCount: 0,
 
       webSocket: undefined,
-      
+
       dispatcherStatsName: '',
       dispatcherStatsData: undefined,
 
@@ -258,8 +258,8 @@ export const useStore = defineStore('store', {
 
     async fetchStationsGeneralInfo() {
       const sceneryData: StationJSONData[] = await (
-        await axios.get(`${URLs.stacjownikAPI}/api/getSceneryData?timestamp=${Math.floor(Date.now() / 1800000)}`)
-      ).data.response;
+        await axios.get(`${URLs.stacjownikAPI}/api/getSceneries?timestamp=${Math.floor(Date.now() / 1800000)}`)
+      ).data;
 
       if (!sceneryData) {
         this.dataStatuses.sceneries = DataStatus.Error;
@@ -342,9 +342,16 @@ export const useStore = defineStore('store', {
       socket.on('UPDATE', (data: APIData) => {
         this.apiData = data;
         this.setOnlineData();
+
+        console.log(data);
+        
       });
 
-      socket.emit('connection');
+      socket.emit('FETCH_DATA', {}, (data: APIData) => {
+        this.apiData = data;
+        this.setOnlineData();
+      });
+
       this.webSocket = socket;
     },
 

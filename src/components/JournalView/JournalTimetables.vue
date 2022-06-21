@@ -176,7 +176,7 @@ import { JournalFilterType } from '@/scripts/enums/JournalFilterType';
 import routerMixin from '@/mixins/routerMixin';
 import { useStore } from '@/store/store';
 import DriverStats from './DriverStats.vue';
-import { TimetableHistory, TimetablesAPIData } from '@/scripts/interfaces/api/TimetablesAPIData';
+import { TimetableHistory } from '@/scripts/interfaces/api/TimetablesAPIData';
 
 const PROD_MODE = process.env.VUE_APP_JOURNAL_TIMETABLES_DEV != '1' || process.env.NODE_ENV === 'production';
 
@@ -310,18 +310,18 @@ export default defineComponent({
 
       const countFrom = this.historyList.length;
 
-      const responseData: TimetablesAPIData | null = await (
+      const responseData: TimetableHistory[] = await (
         await axios.get(`${TIMETABLES_API_URL}?${this.currentQuery}&countFrom=${countFrom}`)
       ).data;
 
-      if (!responseData?.response) return;
+      if (!responseData) return;
 
-      if (responseData.response.length == 0) {
+      if (responseData.length == 0) {
         this.scrollNoMoreData = true;
         return;
       }
 
-      this.historyList.push(...responseData.response);
+      this.historyList.push(...responseData);
       this.scrollDataLoaded = true;
     },
 
@@ -338,8 +338,8 @@ export default defineComponent({
       const driver = props.searchers?.find((s) => s.id == 'search-driver')?.value.trim();
       const train = props.searchers?.find((s) => s.id == 'search-train')?.value.trim();
 
-      if (driver) queries.push(`driver=${driver}`);
-      if (train) queries.push(`train=${train}`);
+      if (driver) queries.push(`driverName=${driver}`);
+      if (train) queries.push(`trainNo=${train}`);
 
       // Z API: const SORT_TYPES = ['allStopsCount', 'endDate', 'beginDate', 'routeDistance'];
       if (this.sorterActive.id == 'distance') queries.push('sortBy=routeDistance');
@@ -369,7 +369,7 @@ export default defineComponent({
       this.currentQuery = queries.join('&');
 
       try {
-        const responseData: TimetablesAPIData = await (
+        const responseData: TimetableHistory[] = await (
           await axios.get(`${TIMETABLES_API_URL}?${this.currentQuery}`)
         ).data;
 
@@ -379,17 +379,17 @@ export default defineComponent({
           return;
         }
 
-        if (responseData.errorMessage) {
-          this.historyDataStatus.status = DataStatus.Error;
-          this.historyDataStatus.error = responseData.errorMessage;
+        // if (responseData) {
+        //   this.historyDataStatus.status = DataStatus.Error;
+        //   this.historyDataStatus.error = responseData;
 
-          return;
-        }
+        //   return;
+        // }
 
-        if (!responseData.response) return;
+        if (!responseData) return;
 
         // Response data exists
-        this.historyList = responseData.response;
+        this.historyList = responseData;
 
         // Stats display
         this.store.driverStatsName =

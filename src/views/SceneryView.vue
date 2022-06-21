@@ -40,25 +40,20 @@
 </template>
 
 <script lang="ts">
-import { StoreData } from '@/scripts/interfaces/StoreData';
-
 import SceneryInfo from '@/components/SceneryView/SceneryInfo.vue';
 import SceneryTimetable from '@/components/SceneryView/SceneryTimetable.vue';
-import SceneryHistory from '@/components/SceneryView/SceneryHistory.vue';
 import SceneryHeader from '@/components/SceneryView/SceneryHeader.vue';
 
 import ActionButton from '@/components/Global/ActionButton.vue';
 
-import { computed, ComputedRef, defineComponent, provide, reactive } from '@vue/runtime-core';
+import { computed, defineComponent, provide, reactive } from '@vue/runtime-core';
 import { useRoute } from 'vue-router';
 
-import axios from 'axios';
-import { URLs } from '@/scripts/utils/apiURLs';
 import Station from '@/scripts/interfaces/Station';
 import { useStore } from '@/store/store';
 
 export default defineComponent({
-  components: { SceneryInfo, SceneryTimetable, SceneryHistory, ActionButton, SceneryHeader },
+  components: { SceneryInfo, SceneryTimetable, ActionButton, SceneryHeader },
 
   data: () => ({
     icons: {
@@ -112,14 +107,6 @@ export default defineComponent({
         query,
       });
     },
-  },
-
-  async activated() {
-    if (this.currentRegion.id != 'eu' && this.viewMode == 'history') this.viewMode = 'info';
-
-    const onlineFrom = await (
-      await axios.get(`${URLs.stacjownikAPI}/api/getSceneryHistory?name=${this.$route.query.station}&historyCount=0`)
-    ).data;
   },
 });
 </script>

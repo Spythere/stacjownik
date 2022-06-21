@@ -47,7 +47,7 @@
 
               <ul v-else>
                 <transition-group name="journal-list-anim">
-                  <li v-for="(doc, i) in computedHistoryList" :key="doc._id">
+                  <li v-for="(doc, i) in computedHistoryList" :key="doc.id">
                     <div class="journal_day" v-if="isAnotherDay(i - 1, i)">
                       <span>{{ new Date(doc.timestampFrom).toLocaleDateString('pl-PL') }}</span>
                     </div>
@@ -117,13 +117,8 @@ const PROD_MODE = process.env.VUE_APP_JORUNAL_DISPATCHERS_DEV != '1' || process.
 
 const DISPATCHERS_API_URL = (PROD_MODE ? `${URLs.stacjownikAPI}/api` : 'http://localhost:3001/api') + '/getDispatchers';
 
-interface APIResponse {
-  errorMessage: string | null;
-  response: DispatcherHistoryItem[] | null;
-}
-
 interface DispatcherHistoryItem {
-  _id: string;
+  id: string;
 
   stationName: string;
   stationHash: string;
@@ -249,7 +244,7 @@ export default defineComponent({
     closeDispatcherStatsCard() {
       this.statsCardOpen = false;
     },
-    
+
     navigateToScenery(name: string, isOnline: boolean) {
       if (!isOnline) return;
 
@@ -307,18 +302,18 @@ export default defineComponent({
 
       const countFrom = this.historyList.length;
 
-      const responseData: APIResponse | null = await (
+      const responseData: DispatcherHistoryItem[] = await (
         await axios.get(`${DISPATCHERS_API_URL}?${this.currentQuery}&countFrom=${countFrom}`)
       ).data;
 
-      if (!responseData?.response) return;
+      if (!responseData) return;
 
-      if (responseData.response.length == 0) {
+      if (responseData.length == 0) {
         this.scrollNoMoreData = true;
         return;
       }
 
-      this.historyList.push(...responseData.response);
+      this.historyList.push(...responseData);
       this.scrollDataLoaded = true;
     },
 
@@ -340,7 +335,7 @@ export default defineComponent({
 
       // Z API: const SORT_TYPES = ['allStopsCount', 'endDate', 'beginDate', 'routeDistance'];
       if (this.sorterActive.id == 'timestampFrom') queries.push('sortBy=timestampFrom');
-      else if (this.sorterActive.id == 'duration') queries.push('sortBy=duration');
+      else if (this.sorterActive.id == 'duration') queries.push('sortBy=currentDuration');
       else queries.push('sortBy=timestampFrom');
 
       queries.push('countLimit=15');
@@ -348,7 +343,7 @@ export default defineComponent({
       this.currentQuery = queries.join('&');
 
       try {
-        const responseData: APIResponse | null = await (
+        const responseData: DispatcherHistoryItem[] = await (
           await axios.get(`${DISPATCHERS_API_URL}?${this.currentQuery}`)
         ).data;
 
@@ -358,17 +353,17 @@ export default defineComponent({
           return;
         }
 
-        if (responseData.errorMessage) {
-          this.historyDataStatus.status = DataStatus.Error;
-          this.historyDataStatus.error = responseData.errorMessage;
+        // if (responseData.errorMessage) {
+        //   this.historyDataStatus.status = DataStatus.Error;
+        //   this.historyDataStatus.error = responseData.errorMessage;
 
-          return;
-        }
+        //   return;
+        // }
 
-        if (!responseData.response) return;
+        if (!responseData) return;
 
         // Response data exists
-        this.historyList = responseData.response;
+        this.historyList = responseData;
 
         // Stats display
         this.store.dispatcherStatsName =

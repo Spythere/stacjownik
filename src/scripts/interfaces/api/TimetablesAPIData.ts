@@ -1,7 +1,3 @@
-export interface TimetablesAPIData {
-  errorMessage: string | null;
-  response: TimetableHistory[] | null;
-}
 
 export interface TimetableHistory {
   timetableId: number;

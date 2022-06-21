@@ -49,7 +49,7 @@
 
 <script lang="ts">
 import { DriverStatsAPIData } from '@/scripts/interfaces/api/DriverStatsAPIData';
-import { TimetableHistory, TimetablesAPIData } from '@/scripts/interfaces/api/TimetablesAPIData';
+import { TimetableHistory } from '@/scripts/interfaces/api/TimetablesAPIData';
 import { URLs } from '@/scripts/utils/apiURLs';
 import { useStore } from '@/store/store';
 import axios from 'axios';
@@ -86,12 +86,12 @@ export default defineComponent({
         await axios.get(`${URLs.stacjownikAPI}/api/getDriverInfo?name=${this.store.driverStatsName}`)
       ).data;
 
-      const recentTimetablesData: TimetablesAPIData = await (
+      const recentTimetablesData: TimetableHistory[] = await (
         await axios.get(`${URLs.stacjownikAPI}/api/getTimetables?driver=${this.store.driverStatsName}`)
       ).data;
 
       this.store.driverStatsData = statsData.response;
-      this.lastTimetables = recentTimetablesData.response || [];
+      this.lastTimetables = recentTimetablesData || [];
     },
 
     closeCard() {
