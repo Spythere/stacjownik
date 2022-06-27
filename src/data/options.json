@@ -1,5 +1,6 @@
 {
-  "options": [{
+  "options": [
+    {
       "id": "default",
       "name": "default",
       "iconName": "td2",
@@ -32,12 +33,12 @@
       "defaultValue": true
     },
     {
-     "id": "non-public",
-     "name": "nonPublic",
-     "iconName": "user",
-     "section": "access",
-     "value": true,
-     "defaultValue": true
+      "id": "non-public",
+      "name": "nonPublic",
+      "iconName": "user",
+      "section": "access",
+      "value": true,
+      "defaultValue": true
     },
     {
       "id": "unavailable",
@@ -47,7 +48,7 @@
       "value": false,
       "defaultValue": false
     },
-     {
+    {
       "id": "abandoned",
       "name": "abandoned",
       "iconName": "user",
@@ -162,7 +163,7 @@
       "value": true,
       "defaultValue": true
     },
-     {
+    {
       "id": "endingStatus",
       "name": "endingStatus",
       "iconName": "",
@@ -181,25 +182,35 @@
       "defaultValue": true
     },
     {
-     "id": "noSpaceStatus",
-     "name": "noSpaceStatus",
-     "iconName": "",
+      "id": "noSpaceStatus",
+      "name": "noSpaceStatus",
+      "iconName": "",
 
-     "section": "status",
-     "value": true,
-     "defaultValue": true
-   },
-   {
-    "id": "unavailableStatus",
-    "name": "unavailableStatus",
-    "iconName": "",
+      "section": "status",
+      "value": true,
+      "defaultValue": true
+    },
+    {
+      "id": "unavailableStatus",
+      "name": "unavailableStatus",
+      "iconName": "",
 
-    "section": "status",
-    "value": true,
-    "defaultValue": true
-   }
+      "section": "status",
+      "value": true,
+      "defaultValue": true
+    },
+    {
+      "id": "troll",
+      "name": "troll",
+      "iconName": "",
+
+      "section": "troll",
+      "value": true,
+      "defaultValue": true
+    }
   ],
-  "sliders": [{
+  "sliders": [
+    {
       "id": "min-lvl",
       "name": "minLevel",
       "minRange": 0,
@@ -248,39 +259,44 @@
       "defaultValue": 0
     }
   ],
-  "modes": [{
-    "id": "include-selected",
-    "name": "include-selected",
-    "iconName": "",
-    "section": "mode",
-    "value": true,
-    "defaultValue": true
-  }, {
-    "id": "save",
-    "name": "save",
-    "iconName": "",
-    "section": "mode",
-    "value": true,
-    "defaultValue": true
-  }],
-  "regions": [{
-    "id": "eu",
-    "value": "PL1"
-  },
-  {
-    "id": "cae",
-    "value": "PL2"
-  },
-  {
-    "id": "usw",
-    "value": "DE"
-  },
-  {
-    "id": "us",
-    "value": "CZE"
-  },
-  {
-    "id": "ru",
-    "value": "ENG"
-  }]
+  "modes": [
+    {
+      "id": "include-selected",
+      "name": "include-selected",
+      "iconName": "",
+      "section": "mode",
+      "value": true,
+      "defaultValue": true
+    },
+    {
+      "id": "save",
+      "name": "save",
+      "iconName": "",
+      "section": "mode",
+      "value": true,
+      "defaultValue": true
+    }
+  ],
+  "regions": [
+    {
+      "id": "eu",
+      "value": "PL1"
+    },
+    {
+      "id": "cae",
+      "value": "PL2"
+    },
+    {
+      "id": "usw",
+      "value": "DE"
+    },
+    {
+      "id": "us",
+      "value": "CZE"
+    },
+    {
+      "id": "ru",
+      "value": "ENG"
+    }
+  ]
 }

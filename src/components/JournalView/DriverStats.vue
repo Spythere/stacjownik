@@ -10,36 +10,39 @@
       <div class="loading" v-if="!store.driverStatsData">Ładowanie...</div>
 
       <div v-else>
-        <div class="info-stats">
+        <div class="info-stats" v-if="store.driverStatsData._sum.routeDistance != null">
           <span class="stat-badge">
             <span>PRZEBYTO</span>
-            <span>{{ store.driverStatsData.confirmedDistance.toFixed(2) }}km</span>
+            <span>{{ store.driverStatsData._sum.routeDistance.toFixed(2) }}km</span>
           </span>
           <span class="stat-badge">
             <span>PORZUCONO</span>
             <span>
-              {{ (store.driverStatsData.totalDistance - store.driverStatsData.confirmedDistance).toFixed(2) }}km
+              {{ (store.driverStatsData._sum.routeDistance - store.driverStatsData._sum.currentDistance).toFixed(2) }}km
             </span>
           </span>
 
           <span class="stat-badge">
             <span>WYPEŁNIONO</span>
-            <span>{{ store.driverStatsData.fulfilled }} RJ</span>
+            <span>{{ store.driverStatsData._count.fulfilled }} RJ</span>
           </span>
 
           <span class="stat-badge">
             <span>PORZUCONO</span>
-            <span>{{ store.driverStatsData.abandoned }} RJ</span>
+            <span>{{ store.driverStatsData._count._all - store.driverStatsData._count.fulfilled }} RJ</span>
           </span>
 
           <span class="stat-badge">
             <span>ZATWIERDZONO</span>
-            <span>{{ store.driverStatsData.confirmedStops }} stacji</span>
+            <span>{{ store.driverStatsData._sum.confirmedStopsCount }} stacji</span>
           </span>
 
           <span class="stat-badge">
             <span>PORZUCONO</span>
-            <span>{{ store.driverStatsData.totalStops - store.driverStatsData.confirmedStops }} stacji</span>
+            <span>
+              {{ store.driverStatsData._sum.allStopsCount - store.driverStatsData._sum.confirmedStopsCount }}
+              stacji
+            </span>
           </span>
         </div>
       </div>
@@ -87,10 +90,10 @@ export default defineComponent({
       ).data;
 
       const recentTimetablesData: TimetableHistory[] = await (
-        await axios.get(`${URLs.stacjownikAPI}/api/getTimetables?driver=${this.store.driverStatsName}`)
+        await axios.get(`${URLs.stacjownikAPI}/api/getTimetables?driverName=${this.store.driverStatsName}`)
       ).data;
 
-      this.store.driverStatsData = statsData.response;
+      this.store.driverStatsData = statsData;
       this.lastTimetables = recentTimetablesData || [];
     },
 

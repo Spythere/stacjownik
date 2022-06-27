@@ -62,7 +62,7 @@ export const useStore = defineStore('store', {
       if (!trains) return [];
 
       this.trainList = trains
-        .filter((train) => train.region === this.region.id && train.online)
+        .filter((train) => train.region === this.region.id)
         .map((train) => {
           const stock = train.stockString.split(';');
           const locoType = stock ? stock[0] : train.stockString;
@@ -206,6 +206,7 @@ export const useStore = defineStore('store', {
       const prevDispatcherStatuses: StoreState['lastDispatcherStatuses'] = [];
 
       this.apiData.stations?.forEach((stationAPIData) => {
+        
         if (stationAPIData.region !== this.region.id || !stationAPIData.isOnline) return;
         const station = this.stationList.find((s) => s.name === stationAPIData.stationName);
 

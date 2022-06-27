@@ -1,40 +1,27 @@
-export interface DispatcherTimetable {
-  timetableId: number;
-  trainNo: number;
-  trainCategoryCode: string;
-  driverId: number;
-  driverName: string;
-  route: string;
-  twr: boolean;
-  skr: boolean;
-  sceneriesString: string;
+export interface Sum {
   routeDistance: number;
-  currentDistance: number;
-  confirmedStopsCount: number;
-  allStopsCount: number;
-  beginDate: Date;
-  endDate: Date;
-  scheduledBeginDate: Date;
-  scheduledEndDate: Date;
-  terminated: boolean;
-  fulfilled: boolean;
-  authorName?: string;
-  authorId?: number;
 }
 
-export interface DispatcherStatsResponse {
-  dispatcherName?: string;
-  lastSceneryName?: string;
-  maxTimetableDistance: number;
-  minTimetableDistance: number;
-  avgTimetableDistance: number;
-  count: number;
-  sumDistance: number;
-  timetables?: DispatcherTimetable[];
+export interface Max {
+  routeDistance: number;
+}
+
+export interface Min {
+  routeDistance: number;
+}
+
+export interface Avg {
+  routeDistance: number;
+}
+
+export interface Count {
+  _all: number;
 }
 
 export interface DispatcherStatsAPIData {
-  response: DispatcherStatsResponse;
-  errorMessage?: string;
+  _sum: Sum;
+  _max: Max;
+  _min: Min;
+  _avg: Avg;
+  _count: Count;
 }
-

@@ -8,31 +8,32 @@
       </h2>
 
       <div class="loading" v-if="!store.dispatcherStatsData">Ładowanie...</div>
+      <div class="loading" v-else-if="!store.dispatcherStatsData._count._all">Ten dyżurny nie ma jeszcze szczegółowych statystyk!</div>
       <div v-else>
         <h3>STATYSTYKI WYSTAWIONYCH ROZKŁADÓW</h3>
-        <div class="info-stats">
+        <div class="info-stats" v-if="store.dispatcherStatsData._count._all">
           <span class="stat-badge">
             <span>LICZBA</span>
-            <span>{{ store.dispatcherStatsData.count }}</span>
+            <span>{{ store.dispatcherStatsData._count._all }}</span>
           </span>
           <span class="stat-badge">
             <span>SUMA (KM)</span>
-            <span>{{ store.dispatcherStatsData.sumDistance.toFixed(2) }}km</span>
+            <span>{{ store.dispatcherStatsData._sum.routeDistance.toFixed(2) }}km</span>
           </span>
           <span class="stat-badge">
             <span>NAJDŁUŻSZY</span>
-            <span>{{ store.dispatcherStatsData.maxTimetableDistance }}km</span>
+            <span>{{ store.dispatcherStatsData._max.routeDistance.toFixed(2) }}km</span>
           </span>
           <span class="stat-badge">
             <span>ŚREDNIO</span>
-            <span>{{ store.dispatcherStatsData.avgTimetableDistance }}km</span>
+            <span>{{ store.dispatcherStatsData._avg.routeDistance.toFixed(2) }}km</span>
           </span>
         </div>
 
         <h3>OSTATNIE WYSTAWIONE ROZKŁADY</h3>
 
         <div class="last-timetables">
-          <div class="timetable-row" v-for="timetable in store.dispatcherStatsData.timetables">
+          <div class="timetable-row" v-for="timetable in timetables">
             <span>#{{ timetable.timetableId }}</span>
             <span>{{ timetable.routeDistance }}km</span>
             <span>
@@ -49,6 +50,7 @@
 
 <script lang="ts">
 import { DispatcherStatsAPIData } from '@/scripts/interfaces/api/DispatcherStatsAPIData';
+import { TimetableHistory } from '@/scripts/interfaces/api/TimetablesAPIData';
 import { URLs } from '@/scripts/utils/apiURLs';
 import { useStore } from '@/store/store';
 import axios from 'axios';
@@ -67,6 +69,7 @@ export default defineComponent({
   data() {
     return {
       lastDispatcherName: '',
+      timetables: [] as TimetableHistory[],
     };
   },
 
@@ -82,7 +85,12 @@ export default defineComponent({
         await axios.get(`${URLs.stacjownikAPI}/api/getDispatcherInfo?name=${this.store.dispatcherStatsName}`)
       ).data;
 
-      this.store.dispatcherStatsData = statsData.response;
+      const timetables: TimetableHistory[] = await (
+        await axios.get(`${URLs.stacjownikAPI}/api/getTimetables?authorName=${this.store.dispatcherStatsName}`)
+      ).data;
+
+      this.timetables = timetables;
+      this.store.dispatcherStatsData = statsData;
     },
 
     closeCard() {

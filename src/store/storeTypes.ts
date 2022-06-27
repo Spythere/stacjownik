@@ -1,6 +1,6 @@
 import { DataStatus } from '@/scripts/enums/DataStatus';
-import { DispatcherStatsResponse } from '@/scripts/interfaces/api/DispatcherStatsAPIData';
-import { DriverStatsResponse } from '@/scripts/interfaces/api/DriverStatsAPIData';
+import { DispatcherStatsAPIData } from '@/scripts/interfaces/api/DispatcherStatsAPIData';
+import { DriverStatsAPIData } from '@/scripts/interfaces/api/DriverStatsAPIData';
 import StationAPIData from '@/scripts/interfaces/api/StationAPIData';
 import TrainAPIData from '@/scripts/interfaces/api/TrainAPIData';
 import Station from '@/scripts/interfaces/Station';
@@ -25,10 +25,10 @@ export interface StoreState {
   webSocket?: Socket;
 
   dispatcherStatsName: string;
-  dispatcherStatsData?: DispatcherStatsResponse;
+  dispatcherStatsData?: DispatcherStatsAPIData;
 
   driverStatsName: string;
-  driverStatsData?: DriverStatsResponse;
+  driverStatsData?: DriverStatsAPIData;
 
   dataStatuses: {
     connection: DataStatus;

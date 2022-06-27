@@ -14,7 +14,7 @@
           :filters="journalTimetableFilters"
         />
 
-        <button
+        <!-- <button
           class="btn btn--option"
           :disabled="store.driverStatsName == ''"
           @click="() => (statsCardOpen = !statsCardOpen)"
@@ -23,7 +23,7 @@
             Statystyki maszynisty <b>{{ store.driverStatsName }}</b>
           </span>
           <span v-else>Statystyki maszynisty niedostępne</span>
-        </button>
+        </button> -->
       </div>
 
       <div class="journal-list">

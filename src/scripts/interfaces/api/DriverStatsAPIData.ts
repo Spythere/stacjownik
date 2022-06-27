@@ -1,20 +1,27 @@
-export interface DriverStatsResponse {
-  driverName: string;
+export interface Sum {
+  routeDistance: number;
+  confirmedStopsCount: number;
+  allStopsCount: number;
+  currentDistance: number;
+}
+
+export interface Count {
   fulfilled: number;
-  abandoned: number;
-  totalDistance: number;
-  confirmedDistance: number;
-  totalStops: number;
-  confirmedStops: number;
-  maxServiceDuration: number;
-  avgServiceDuration: number;
-  maxDistance: number;
-  avgDistance: number;
-  maxDelay: number;
-  avgDelay: number;
+  terminated: number;
+  _all: number;
+}
+
+export interface Max {
+  routeDistance: number;
+}
+
+export interface Avg {
+  routeDistance: number;
 }
 
 export interface DriverStatsAPIData {
-  response?: DriverStatsResponse;
-  errorMessage?: string;
+  _sum: Sum;
+  _count: Count;
+  _max: Max;
+  _avg: Avg;
 }

@@ -9,8 +9,8 @@
         v-model="option.value"
         @change="handleChange"
       />
-      <span :class="option.section + (option.value ? ' checked' : '')"
-        >{{ $t(`filters.${option.id}`) }}
+      <span v-if="option.id != 'troll'" :class="option.section + (option.value ? ' checked' : '')"
+        >{{ option.id != 'troll' ? $t(`filters.${option.id}`) : 'ARKADIA ZDRÓJ' }}
       </span>
     </label>
   </div>
@@ -37,6 +37,11 @@ export default defineComponent({
   emits: ['optionChange'],
   methods: {
     handleChange() {
+      if (this.option.name == 'troll') {
+        location.href = 'https://www.youtube.com/watch?v=HIcSWuKMwOw';
+        return;
+      }
+
       this.$emit('optionChange', {
         name: this.option.name,
         value: this.option.value,
@@ -50,7 +55,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import "../../styles/option.scss";
+@import '../../styles/option.scss';
 
 $accessCol: #e03b07;
 $controlCol: #0085ff;
@@ -107,6 +112,14 @@ $routesCol: #9049c0;
 
       &::before {
         box-shadow: 0 0 6px 1px $saveCol;
+      }
+    }
+
+    &.troll {
+      background-color: firebrick;
+
+      &::before {
+        box-shadow: 0 0 6px 1px firebrick;
       }
     }
 
