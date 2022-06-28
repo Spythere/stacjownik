@@ -15,6 +15,7 @@ export default interface Train {
   locoURL: string;
   locoType: string;
   online: boolean;
+  lastSeen: number;
   region: string;
 
   cars: string[];

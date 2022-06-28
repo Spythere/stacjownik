@@ -61,6 +61,10 @@
           </span>
         </div>
 
+        <div v-if="!train.online" style="color: salmon">
+          Offline - {{ lastSeenMessage(train.lastSeen) }}
+        </div>
+
         <div class="driver_position text--grayed" style="margin-top: 0.25em">
           <span v-if="train.currentStationHash">
             {{ $t('trains.current-scenery') }} <span>{{ train['currentStationName'] }}&nbsp;</span>

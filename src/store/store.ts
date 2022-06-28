@@ -1,11 +1,8 @@
 import { DataStatus } from '@/scripts/enums/DataStatus';
-import { DispatcherStatsAPIData } from '@/scripts/interfaces/api/DispatcherStatsAPIData';
 import StationAPIData from '@/scripts/interfaces/api/StationAPIData';
-import TrainAPIData from '@/scripts/interfaces/api/TrainAPIData';
 import ScheduledTrain from '@/scripts/interfaces/ScheduledTrain';
 import Station from '@/scripts/interfaces/Station';
 import StationRoutes from '@/scripts/interfaces/StationRoutes';
-import { StoreData } from '@/scripts/interfaces/StoreData';
 import Train from '@/scripts/interfaces/Train';
 import { URLs } from '@/scripts/utils/apiURLs';
 import {
@@ -62,7 +59,10 @@ export const useStore = defineStore('store', {
       if (!trains) return [];
 
       this.trainList = trains
-        .filter((train) => train.region === this.region.id)
+        .filter(
+          (train) =>
+            train.region === this.region.id && (train.online || train.timetable || train.lastSeen > Date.now() - 180000)
+        )
         .map((train) => {
           const stock = train.stockString.split(';');
           const locoType = stock ? stock[0] : train.stockString;
@@ -87,6 +87,8 @@ export const useStore = defineStore('store', {
             locoType,
             locoURL: getLocoURL(locoType),
             cars: stock.slice(1),
+
+            lastSeen: train.lastSeen,
 
             timetableData: timetable
               ? {
@@ -206,7 +208,6 @@ export const useStore = defineStore('store', {
       const prevDispatcherStatuses: StoreState['lastDispatcherStatuses'] = [];
 
       this.apiData.stations?.forEach((stationAPIData) => {
-        
         if (stationAPIData.region !== this.region.id || !stationAPIData.isOnline) return;
         const station = this.stationList.find((s) => s.name === stationAPIData.stationName);
 
@@ -345,7 +346,6 @@ export const useStore = defineStore('store', {
         this.setOnlineData();
 
         console.log(data);
-        
       });
 
       socket.emit('FETCH_DATA', {}, (data: APIData) => {

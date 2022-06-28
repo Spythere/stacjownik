@@ -37,7 +37,7 @@
                 <img src="@/assets/icon-dispatcher.svg" alt="icon dispatcher" />
                 <span class="text--primary">{{ onlineDispatchers.length }}</span>
                 <span class="text--grayed"> / </span>
-                <span class="text--primary">{{ store.trainList.length }}</span>
+                <span class="text--primary">{{ trainList.length }}</span>
                 <img src="@/assets/icon-train.svg" alt="icon train" />
               </div>
 
@@ -123,6 +123,12 @@ export default defineComponent({
 
       dispatcherDataStatus: store.dataStatuses.dispatchers,
     };
+  },
+
+  computed: {
+    trainList() {
+      return this.store.trainList.filter(train => train.online);
+    }
   },
 
   data: () => ({

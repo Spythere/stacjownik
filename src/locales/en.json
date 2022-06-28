@@ -181,7 +181,11 @@
     "loco-diesel": "Diesel locomotive",
     "timetable-comments": "Exploitation comments available for this train",
     "comment": "Exploitation comments for: ",
-    "table-limit": "For performance reasons there's a limit of 10 trains shown at the same time."
+    "table-limit": "For performance reasons there's a limit of 10 trains shown at the same time.",
+
+    "last-seen-now": "last seen: just now",
+    "last-seen-min": "last seen: one minute ago",
+    "last-seen-ago": "last seen: {minutes} mins ago"
   },
   "journal": {
     "title": "DISPATCHER HISTORY",

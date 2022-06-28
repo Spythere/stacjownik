@@ -3,7 +3,8 @@
     <h3 class="user-header section-header">
       <img :src="icons.user" alt="icon-user" />
       &nbsp;{{ $t('scenery.users') }} &nbsp;
-      <span class="text--primary">{{ station.onlineInfo?.currentUsers || '0' }}</span>&nbsp;/&nbsp;<span class="text--primary">{{ station.onlineInfo?.maxUsers || '0' }}</span>
+      <span class="text--primary">{{ station.onlineInfo?.currentUsers || '0' }}</span
+      >&nbsp;/&nbsp;<span class="text--primary">{{ station.onlineInfo?.maxUsers || '0' }}</span>
     </h3>
 
     <div
@@ -41,7 +42,7 @@ export default defineComponent({
   },
 
   setup(props) {
-    const computedStationTrains= computed(() => {
+    const computedStationTrains = computed(() => {
       if (!props.station) return [];
 
       const station = props.station as Station;
@@ -49,9 +50,7 @@ export default defineComponent({
       if (!station.onlineInfo.stationTrains) return [];
 
       return station.onlineInfo.stationTrains.map((train) => {
-        const scheduledTrainStatus = station.onlineInfo?.scheduledTrains?.find(
-          (st) => st.trainNo === train.trainNo
-        );
+        const scheduledTrainStatus = station.onlineInfo?.scheduledTrains?.find((st) => st.trainNo === train.trainNo);
 
         return {
           ...train,
