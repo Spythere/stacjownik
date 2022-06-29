@@ -213,12 +213,10 @@
       </table>
     </div>
 
-    <div class="no-stations" v-if="isDataLoaded && stations.length == 0">
-      {{ $t('sceneries.no-stations') }}
-    </div>
+    <Loading v-if="!isDataLoaded && stations.length == 0" />
 
-    <div class="no-stations" v-if="!isDataLoaded && stations.length == 0">
-      {{ $t('app.loading') }}
+    <div class="no-stations" v-else-if="stations.length == 0">
+      {{ $t('sceneries.no-stations') }}
     </div>
   </section>
 </template>
@@ -234,6 +232,7 @@ import { computed, ComputedRef, defineComponent } from '@vue/runtime-core';
 import Station from '@/scripts/interfaces/Station';
 import { StoreData } from '@/scripts/interfaces/StoreData';
 import { useStore } from '@/store/store';
+import Loading from '../Global/Loading.vue';
 
 export default defineComponent({
   props: {
@@ -241,18 +240,17 @@ export default defineComponent({
       type: Array as () => Station[],
       required: true,
     },
-
     sorterActive: {
-      type: Object as () => { index: number; dir: number },
+      type: Object as () => {
+        index: number;
+        dir: number;
+      },
       required: true,
     },
-
     setFocusedStation: { type: Function, required: true },
     changeSorter: { type: Function, required: true },
   },
-
   mixins: [styleMixin, dateMixin, stationInfoMixin, returnBtnMixin],
-
   data: () => ({
     likeIcon: require('@/assets/icon-like.svg'),
     spawnIcon: require('@/assets/icon-spawn.svg'),
@@ -265,50 +263,38 @@ export default defineComponent({
     unavailableIcon: require('@/assets/icon-unavailable.svg'),
     unknownIcon: require('@/assets/icon-unknown.svg'),
     abandonedIcon: require('@/assets/icon-abandoned.svg'),
-
     ascIcon: require('@/assets/icon-arrow-asc.svg'),
     descIcon: require('@/assets/icon-arrow-desc.svg'),
-
     headIds: ['station', 'min-lvl', 'status', 'dispatcher', 'dispatcher-lvl', 'routes', 'general'],
-
     headIconsIds: ['user', 'spawn', 'timetable'],
-
     lastSelectedStationName: '',
   }),
-
   setup() {
     const store = useStore();
-
     const isDataLoaded = computed(() => {
       return store.dataStatuses.sceneries != DataStatus.Loading;
     });
-
     return {
       isDataLoaded,
     };
   },
-
   methods: {
     setScenery(name: string) {
       const station = this.stations.find((station) => station.name === name);
-
       if (!station) return;
-
       this.lastSelectedStationName = station.name;
-
       this.$router.push({
         name: 'SceneryView',
         query: { station: station.name.replaceAll(' ', '_') },
       });
     },
-
     openForumSite(e: Event, url: string | undefined) {
       if (!url) return;
-
       e.preventDefault();
       window.open(url, '_blank');
     },
   },
+  components: { Loading },
 });
 </script>
 

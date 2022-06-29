@@ -30,9 +30,7 @@
         <div class="list-wrapper" ref="scrollElement">
           <transition name="warning" mode="out-in">
             <div :key="historyDataStatus.status">
-              <div class="journal_loading" v-if="isDataLoading || isDataInit">
-                {{ $t('app.loading') }}
-              </div>
+              <Loading v-if="isDataLoading || isDataInit" />
 
               <div v-else-if="isDataError" class="journal_warning error">
                 {{ $t('app.error') }}
@@ -177,6 +175,7 @@ import routerMixin from '@/mixins/routerMixin';
 import { useStore } from '@/store/store';
 import DriverStats from './DriverStats.vue';
 import { TimetableHistory } from '@/scripts/interfaces/api/TimetablesAPIData';
+import Loading from '../Global/Loading.vue';
 
 const PROD_MODE = process.env.VUE_APP_JOURNAL_TIMETABLES_DEV != '1' || process.env.NODE_ENV === 'production';
 
@@ -185,7 +184,7 @@ const TIMETABLES_API_URL = PROD_MODE
   : 'http://localhost:3001/api/getTimetables';
 
 export default defineComponent({
-  components: { SearchBox, ActionButton, JournalOptions, DriverStats },
+  components: { SearchBox, ActionButton, JournalOptions, DriverStats, Loading },
   mixins: [dateMixin, routerMixin],
 
   name: 'JournalTimetables',
@@ -401,7 +400,6 @@ export default defineComponent({
         this.historyDataStatus.error = 'Ups! Coś poszło nie tak!';
 
         console.error(error);
-        
       }
     },
   },

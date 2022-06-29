@@ -5,17 +5,11 @@
     </button>
 
     <transition name="anim" mode="out-in">
-      <div :key="trainsDataStatus">
-        <!-- <div class="traffic-warning" v-if="data.">
-          {{ $t('trains.distance-exceeded') }}
-        </div> -->
+      <div :key="store.dataStatuses.trains">
+        <Loading v-if="trains.length == 0 && store.dataStatuses.trains == 0" />
 
-        <div class="table-info no-trains" v-if="trains.length == 0 && trainsDataStatus != 0">
+        <div class="table-info no-trains" v-if="trains.length == 0 && store.dataStatuses.trains != 0">
           {{ $t('trains.no-trains') }}
-        </div>
-
-        <div class="table-info loading" v-if="trains.length == 0 && trainsDataStatus == 0">
-          {{ $t('trains.loading') }}
         </div>
 
         <ul class="train-list">
@@ -37,7 +31,7 @@
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, inject, Ref, watchEffect } from '@vue/runtime-core';
+import { computed, defineComponent, inject, Ref } from '@vue/runtime-core';
 
 import defaultVehicleIconsJSON from '@/data/defaultVehicleIcons.json';
 
@@ -46,14 +40,15 @@ import Train from '@/scripts/interfaces/Train';
 import TrainSchedule from '@/components/TrainsView/TrainSchedule.vue';
 import TrainInfo from '@/components/TrainsView/TrainInfo.vue';
 
-import { DataStatus } from '@/scripts/enums/DataStatus';
 import returnBtnMixin from '@/mixins/returnBtnMixin';
 import { useStore } from '@/store/store';
+import Loading from '../Global/Loading.vue';
 
 export default defineComponent({
   components: {
     TrainSchedule,
     TrainInfo,
+    Loading,
   },
 
   mixins: [returnBtnMixin],
@@ -80,8 +75,6 @@ export default defineComponent({
   setup(props) {
     const store = useStore();
 
-    const trainsDataStatus = store.dataStatuses.trains;
-
     const searchedTrain = inject('searchedTrain') as Ref<string>;
     const searchedDriver = inject('searchedDriver') as Ref<string>;
 
@@ -93,7 +86,7 @@ export default defineComponent({
       searchedTrain,
       searchedDriver,
       currentTrains,
-      trainsDataStatus,
+      store,
 
       sorterActive: inject('sorterActive') as { id: string | number; dir: number },
       distanceLimitExceeded: computed(

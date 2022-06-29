@@ -30,10 +30,10 @@
     </div>
 
     <transition name="scenery-timetable-list-anim" mode="out-in">
-      <div :key="trainsDataStatus + selectedCheckpoint">
-        <span class="timetable-item loading" v-if="trainsDataStatus == 0 && computedScheduledTrains.length == 0">
-          {{ $t('app.loading') }}
-        </span>
+      <div :key="store.dataStatuses.trains + selectedCheckpoint">
+        <div style="padding-bottom: 5em" v-if="store.dataStatuses.trains == 0 && computedScheduledTrains.length == 0">
+          <Loading />
+        </div>
 
         <span class="timetable-item empty" v-else-if="computedScheduledTrains.length == 0">
           {{ $t('scenery.no-timetables') }}
@@ -144,14 +144,13 @@ import Station from '@/scripts/interfaces/Station';
 import SelectBox from '../Global/SelectBox.vue';
 import { computed, defineComponent, ref } from '@vue/runtime-core';
 import { useRoute } from 'vue-router';
-import { DataStatus } from '@/scripts/enums/DataStatus';
-import { ComputedRef } from 'vue';
 import dateMixin from '@/mixins/dateMixin';
 import routerMixin from '@/mixins/routerMixin';
 import { useStore } from '@/store/store';
+import Loading from '../Global/Loading.vue';
 
 export default defineComponent({
-  components: { SelectBox },
+  components: { SelectBox, Loading },
 
   mixins: [dateMixin, routerMixin],
 
@@ -179,8 +178,6 @@ export default defineComponent({
     const currentURL = computed(() => `${location.origin}${route.fullPath}`);
 
     const store = useStore();
-
-    const trainsDataStatus = store.dataStatuses.trains;
 
     const selectedCheckpoint = ref(
       props.station?.generalInfo?.checkpoints?.length == 0
@@ -216,7 +213,7 @@ export default defineComponent({
       currentURL,
       selectedCheckpoint,
       computedScheduledTrains,
-      trainsDataStatus,
+      store,
     };
   },
 
@@ -317,13 +314,9 @@ h3.timetable-header {
     cursor: pointer;
     z-index: 10;
 
-    &.loading,
     &.empty {
       padding: 1rem;
       font-size: 1.2em;
-    }
-
-    &.empty {
       color: #bbb;
     }
   }

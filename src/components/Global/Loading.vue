@@ -30,8 +30,8 @@ export default defineComponent({
 }
 
 .loading-circle {
-  width: 1.25em;
-  padding-top: 1.25em;
+  width: 1.25rem;
+  padding-top: 1.25rem;
 
   border-radius: 50%;
 

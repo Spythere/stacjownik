@@ -33,9 +33,7 @@
         <div class="list-wrapper" ref="scrollElement">
           <transition name="warning" mode="out-in">
             <div :key="historyDataStatus.status">
-              <div class="journal_warning loading" v-if="isDataLoading || isDataInit">
-                {{ $t('app.loading') }}
-              </div>
+              <Loading v-if="isDataLoading || isDataInit" />
 
               <div v-else-if="isDataError" class="journal_warning error">
                 {{ $t('app.error') }}
@@ -112,6 +110,7 @@ import DispatcherStats from '@/components/JournalView/DispatcherStats.vue';
 import { URLs } from '@/scripts/utils/apiURLs';
 import { useStore } from '@/store/store';
 import { DispatcherStatsAPIData } from '@/scripts/interfaces/api/DispatcherStatsAPIData';
+import Loading from '../Global/Loading.vue';
 
 const PROD_MODE = process.env.VUE_APP_JORUNAL_DISPATCHERS_DEV != '1' || process.env.NODE_ENV === 'production';
 
@@ -137,7 +136,7 @@ interface DispatcherHistoryItem {
 }
 
 export default defineComponent({
-  components: { SearchBox, ActionButton, JournalOptions, DispatcherStats },
+  components: { SearchBox, ActionButton, JournalOptions, DispatcherStats, Loading },
   mixins: [dateMixin],
   name: 'JournalDispatchers',
 
