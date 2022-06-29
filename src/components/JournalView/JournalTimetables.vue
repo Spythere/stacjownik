@@ -124,7 +124,7 @@
                         <b class="text--grayed">{{ $t('journal.dispatcher-name') }}&nbsp;</b>
                         <router-link
                           class="dispatcher-link"
-                          :to="`/journal?view=dispatchers&dispatcherName=${item.authorName}`"
+                          :to="`/journal/dispatchers?dispatcherName=${item.authorName}`"
                           >{{ item.authorName }}</router-link
                         >
                       </div>
@@ -247,12 +247,12 @@ export default defineComponent({
     };
   },
 
-  mounted() {
-    this.fetchHistoryData();
-  },
-
   activated() {
     window.addEventListener('scroll', this.handleScroll);
+  },
+
+  mounted() {
+    this.search();
   },
 
   deactivated() {
@@ -263,7 +263,10 @@ export default defineComponent({
     navigateToTimetable(historyItem: TimetableHistory) {
       if (historyItem.terminated) return;
 
-      this.navigateToTrain(historyItem.trainNo, historyItem.driverName);
+      this.navigateTo('/trains', {
+        trainNo: historyItem.trainNo,
+        driverName: historyItem.driverName,
+      });
     },
 
     closeCard() {

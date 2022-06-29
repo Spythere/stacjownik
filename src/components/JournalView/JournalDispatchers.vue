@@ -96,7 +96,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, JournalFilter, JournalSearcher, provide, reactive, Ref, ref } from 'vue';
+import { computed, defineComponent, JournalFilter, JournalSearcher, provide, reactive, Ref, ref, watch } from 'vue';
 import axios from 'axios';
 
 import SearchBox from '@/components/Global/SearchBox.vue';
@@ -111,6 +111,7 @@ import { URLs } from '@/scripts/utils/apiURLs';
 import { useStore } from '@/store/store';
 import { DispatcherStatsAPIData } from '@/scripts/interfaces/api/DispatcherStatsAPIData';
 import Loading from '../Global/Loading.vue';
+import { useRoute, useRouter } from 'vue-router';
 
 const PROD_MODE = process.env.VUE_APP_JORUNAL_DISPATCHERS_DEV != '1' || process.env.NODE_ENV === 'production';
 
@@ -165,7 +166,11 @@ export default defineComponent({
     statsCardOpen: false,
   }),
 
-  setup() {
+  setup(props) {
+    watch(props, (val) => {
+      console.log(val.dispatcherName);
+    });
+
     const historyDataStatus: Ref<{ status: DataStatus; error: string | null }> = ref({
       status: DataStatus.Loading,
       error: null,
@@ -216,23 +221,20 @@ export default defineComponent({
     },
   },
 
-  mounted() {
-    const query = this.$route.query;
-
-    if (query.sceneryName || query.dispatcherName) {
-      this.searchersValues[1].value = query.sceneryName?.toString() || '';
-      this.searchersValues[0].value = query.dispatcherName?.toString() || '';
-
+activated() {
+    if (this.sceneryName || this.dispatcherName) {
+      this.searchersValues[1].value = this.sceneryName?.toString() || '';
+      this.searchersValues[0].value = this.dispatcherName?.toString() || '';
       this.search();
-
-      return;
     }
 
-    this.fetchHistoryData();
+    window.addEventListener('scroll', this.handleScroll);
   },
 
-  activated() {
-    window.addEventListener('scroll', this.handleScroll);
+  mounted() {
+    if (!this.sceneryName && !this.dispatcherName) {
+      this.search();
+    }
   },
 
   deactivated() {

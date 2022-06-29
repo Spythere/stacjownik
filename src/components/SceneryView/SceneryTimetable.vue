@@ -44,8 +44,13 @@
           v-for="(scheduledTrain, i) in computedScheduledTrains"
           :key="i + 1"
           tabindex="0"
-          @click="navigateToTrain(scheduledTrain.trainNo, scheduledTrain.driverName)"
-          @keydown.enter="navigateToTrain(scheduledTrain.trainNo, scheduledTrain.driverName)"
+          @click="navigateTo('/trains', { trainNo: scheduledTrain.trainNo, driverName: scheduledTrain.driverName })"
+          @keydown.enter="
+            navigateTo('/trains', {
+              trainNo: scheduledTrain.trainNo,
+              driverName: scheduledTrain.driverName,
+            })
+          "
         >
           <span class="timetable-general">
             <span class="general-info">

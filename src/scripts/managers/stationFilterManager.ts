@@ -246,8 +246,15 @@ export default class StationFilterManager {
     });
   }
 
-  getFilteredStationList(stationList: Station[]): Station[] {
+  getFilteredStationList(stationList: Station[], region: string): Station[] {
     return stationList
+      .map((station) => {
+        if (station.onlineInfo && station.onlineInfo.region != region) {
+          delete station.onlineInfo;
+        }
+
+        return station;
+      })
       .filter((station) => filterStations(station, this.filters))
       .sort((a, b) => sortStations(a, b, this.sorter));
   }

@@ -1,12 +1,13 @@
-import { defineComponent } from "vue";
+import { defineComponent } from 'vue';
 
 export default defineComponent({
-    methods: {
-        navigateToTrain(trainNo: number, driverName: string) {
-            this.$router.push({
-                name: 'TrainsView',
-                query: { trainNo, driverName },
-            });
-        }
-    }
-})
+  methods: {
+
+    navigateTo(path: string, query?: {}) {
+      this.$router.push({
+        path,
+        query,
+      });
+    },
+  },
+});

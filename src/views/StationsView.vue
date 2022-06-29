@@ -53,17 +53,6 @@ export default defineComponent({
     modalHidden: true,
     STORAGE_KEY: 'options_saved',
     inputs: inputData,
-
-    regions: [
-      {
-        id: 'eu',
-        value: 'PL1',
-      },
-      {
-        id: 'ru',
-        value: 'ENG',
-      },
-    ],
   }),
 
   setup() {
@@ -71,10 +60,9 @@ export default defineComponent({
     const filterManager = reactive(new StationFilterManager());
     const focusedStationName = '';
 
-    const computedStations: ComputedRef<Station[]> = computed(() =>
-      filterManager
-        .getFilteredStationList(store.stationList)
-        .filter((station) => !station.onlineInfo || station.onlineInfo.region == store.region.id)
+    const computedStations: ComputedRef<Station[]> = computed(
+      () => filterManager.getFilteredStationList(store.stationList, store.region.id)
+      // .filter((station) => !station.onlineInfo || station.onlineInfo.region == store.region.id)
     );
 
     return {
@@ -178,5 +166,4 @@ export default defineComponent({
 
   margin-bottom: 0.5em;
 }
-
 </style>

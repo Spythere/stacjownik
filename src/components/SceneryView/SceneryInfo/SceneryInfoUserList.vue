@@ -13,8 +13,8 @@
       :class="train.stopStatus"
       :key="train.trainNo + i"
       tabindex="0"
-      @click="() => navigateToTrain(train.trainNo, train.driverName)"
-      @keydown.enter="navigateToTrain(train.trainNo, train.driverName)"
+      @click="navigateTo('/trains', { trainNo: train.trainNo, driverName: train.driverName })"
+      @keydown.enter="navigateTo('/trains', { trainNo: train.trainNo, driverName: train.driverName })"
     >
       <span class="user_train">{{ train.trainNo }}</span>
       <span class="user_name">{{ train.driverName }}</span>

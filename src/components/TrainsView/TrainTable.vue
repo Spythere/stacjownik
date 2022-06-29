@@ -1,5 +1,5 @@
 <template>
-  <div class="train-table" @keydown.esc="closeTimetable" v-click-outside="closeTimetable">
+  <div class="train-table" @keydown.esc="closeTimetable">
     <button class="return-btn" @click="scrollToTop" v-if="showReturnButton">
       <img :src="icons.arrowAsc" alt="return arrow" />
     </button>

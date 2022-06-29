@@ -5,7 +5,12 @@
         {{ station.onlineInfo.dispatcherExp > 1 ? station.onlineInfo.dispatcherExp : 'L' }}
       </span>
 
-      <span class="dispatcher_name">{{ station.onlineInfo.dispatcherName }}</span>
+      <router-link
+        class="dispatcher_name"
+        :to="`/journal/dispatchers?dispatcherName=${station.onlineInfo.dispatcherName}`"
+      >
+        {{ station.onlineInfo.dispatcherName }}
+      </router-link>
 
       <span class="dispatcher_likes text--primary">
         <img :src="icons.like" alt="icon-like" />
@@ -34,9 +39,10 @@ import { defineComponent } from 'vue';
 import styleMixin from '@/mixins/styleMixin';
 import Station from '@/scripts/interfaces/Station';
 import dateMixin from '@/mixins/dateMixin';
+import routerMixin from '@/mixins/routerMixin';
 
 export default defineComponent({
-  mixins: [styleMixin, dateMixin],
+  mixins: [styleMixin, dateMixin, routerMixin],
   props: {
     station: {
       type: Object as () => Station,
@@ -84,6 +90,7 @@ export default defineComponent({
 
     &_name {
       margin-right: 0.4em;
+      cursor: pointer;
     }
 
     &_likes {

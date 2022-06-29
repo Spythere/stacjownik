@@ -1,33 +1,22 @@
 <template>
   <section class="journal-view">
     <div class="journal-type-options">
-      <router-link
-        class="router-link"
-        to="/journal?view=timetables"
-        :class="{ active: activeJournalComponent == 'journalTimetables' }"
-      >
+      <router-link class="router-link" active-class="route-active" to="/journal/timetables" exact>
         {{ $t('journal.section-timetables') }}
       </router-link>
       &nbsp;&bull;&nbsp;
-      <router-link
-        class="router-link"
-        to="/journal?view=dispatchers"
-        :class="{ active: activeJournalComponent == 'journalDispatchers' }"
-      >
+      <router-link class="router-link" active-class="route-active" to="/journal/dispatchers">
         {{ $t('journal.section-dispatchers') }}
       </router-link>
     </div>
 
     <div class="journal-section">
-      <keep-alive>
-        <component :is="activeJournalComponent"></component>
-      </keep-alive>
+      <router-view v-slot="{ Component }">
+        <keep-alive>
+          <component :is="Component" :key="$route.path" />
+        </keep-alive>
+      </router-view>
     </div>
-    <!-- <JournalTimetables v-if="journalTypeChosen == 'timetables'" />
-        <JournalDispatchers
-          v-else-if="journalTypeChosen == 'dispatchers'"
-          :sceneryName="$route.query.sceneryName?.toString()"
-        /> -->
   </section>
 </template>
 

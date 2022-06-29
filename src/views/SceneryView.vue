@@ -22,8 +22,7 @@
         v-if="!timetableOnly && store.region.id == 'eu' && stationInfo"
         class="history-btn btn btn--image"
         @click="
-          navigateTo('/journal', {
-            view: 'dispatchers',
+          navigateTo('/journal/dispatchers', {
             sceneryName: stationInfo?.name,
           })
         "
@@ -46,13 +45,16 @@ import SceneryHeader from '@/components/SceneryView/SceneryHeader.vue';
 
 import ActionButton from '@/components/Global/ActionButton.vue';
 
-import { computed, defineComponent, reactive } from '@vue/runtime-core';
+import { computed, defineComponent } from '@vue/runtime-core';
 import { useRoute } from 'vue-router';
 
 import { useStore } from '@/store/store';
+import routerMixin from '@/mixins/routerMixin';
 
 export default defineComponent({
   components: { SceneryInfo, SceneryTimetable, ActionButton, SceneryHeader },
+
+  mixins: [routerMixin],
 
   data: () => ({
     icons: {
@@ -91,13 +93,6 @@ export default defineComponent({
   methods: {
     setCardViewMode(mode: string) {
       this.viewMode = mode;
-    },
-
-    navigateTo(path: string, query?: {}) {
-      this.$router.push({
-        path,
-        query,
-      });
     },
   },
 });

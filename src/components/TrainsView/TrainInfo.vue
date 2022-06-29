@@ -4,13 +4,23 @@
       <span>
         <div>
           <span>
+            <!-- <router-link
+              v-if="train.timetableData"
+              :to="`/journal/timetables?timetableId=${train.timetableData.timetableId}`"
+              style="color: #ddd; margin-right: 0.3em"
+            >
+              #{{ train.timetableData.timetableId }}
+            </router-link> -->
+
+            <span class="timetable-id" v-if="train.timetableData">#{{ train.timetableData.timetableId }}</span>
+
             <span class="timetable_warnings">
               <span class="warning twr" v-if="train.timetableData?.TWR">TWR</span>
               <span class="warning skr" v-if="train.timetableData?.SKR">SKR</span>
             </span>
             <strong v-if="train.timetableData">{{ train.timetableData.category }}&nbsp;</strong>
             <strong>{{ train.trainNo }}</strong>
-            <span>&nbsp;| {{ train.driverName }}</span>
+            <span>&nbsp;| {{ train.driverName }}&nbsp;</span>
           </span>
 
           <img
@@ -23,8 +33,8 @@
           />
         </div>
 
-        <div class="timetable_route">
-          <strong v-if="train.timetableData">{{ train.timetableData.route.replace('|', ' - ') }}</strong>
+        <div class="timetable_route" v-if="train.timetableData">
+          <strong>{{ train.timetableData.route.replace('|', ' - ') }}</strong>
           <img
             v-if="getSceneriesWithComments(train.timetableData).length > 0"
             class="image-warning"
@@ -61,9 +71,7 @@
           </span>
         </div>
 
-        <div v-if="!train.online" style="color: salmon">
-          Offline - {{ lastSeenMessage(train.lastSeen) }}
-        </div>
+        <div v-if="!train.online" style="color: salmon">Offline - {{ lastSeenMessage(train.lastSeen) }}</div>
 
         <div class="driver_position text--grayed" style="margin-top: 0.25em">
           <span v-if="train.currentStationHash">
@@ -169,6 +177,11 @@ export default defineComponent({
   text-transform: capitalize;
 }
 
+.timetable-id {
+  margin-right: 0.3em;
+  color: #d2d2d2;
+}
+
 .timetable_stops {
   font-size: 0.75em;
 }
@@ -184,8 +197,9 @@ export default defineComponent({
   color: black;
 
   .warning {
-    padding: 0.1em 0.5em;
-    margin-right: 0.2em;
+    padding: 0.1em 0.3em;
+    margin-right: 0.3em;
+    border-radius: 1em;
 
     font-weight: bold;
 
