@@ -393,12 +393,15 @@ export default defineComponent({
 
         // Stats display
         this.store.driverStatsName =
-          this.historyList.length > 0 && this.searchersValues[1].value.trim() ? this.historyList[1].driverName : '';
+          this.historyList.length > 0 && this.searchersValues[1].value.trim() ? this.historyList[0].driverName : '';
 
         this.historyDataStatus.status = DataStatus.Loaded;
       } catch (error) {
         this.historyDataStatus.status = DataStatus.Error;
         this.historyDataStatus.error = 'Ups! Coś poszło nie tak!';
+
+        console.error(error);
+        
       }
     },
   },
