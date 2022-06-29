@@ -47,14 +47,14 @@
             </span>
 
             <span class="header_links">
-              <router-link class="route" active-class="route-active" to="/" exact
-                >{{ $t('app.sceneries') }}
+              <router-link class="route" active-class="route-active" to="/" exact>
+                {{ $t('app.sceneries') }}
               </router-link>
               /
-              <router-link class="route" active-class="route-active" to="/trains">{{ $t('app.trains') }} </router-link>
+              <router-link class="route" active-class="route-active" to="/trains">{{ $t('app.trains') }}</router-link>
               /
-              <router-link class="route" active-class="route-active" to="/journal?view=timetables"
-                >{{ $t('app.journal') }}
+              <router-link class="route" active-class="route-active" to="/journal">
+                {{ $t('app.journal') }}
               </router-link>
             </span>
           </div>
@@ -65,13 +65,10 @@
         <router-view v-slot="{ Component }">
           <!-- <transition name="view-anim" mode="out-in"> -->
           <keep-alive>
-            <component :is="Component" :key="$route.fullPath" />
+            <component :is="Component" :key="$route.path" />
           </keep-alive>
-          <!-- </transition> -->
         </router-view>
       </main>
-
-      <!-- <MobileNav /> -->
 
       <footer class="app_footer">
         &copy;
@@ -108,8 +105,6 @@ export default defineComponent({
     const store = useStore();
     store.connectToAPI();
 
-    // const sceneryDataStatus = computed(() => data.value.sceneryDataStatus);
-
     const isFilterCardVisible = ref(false);
 
     provide('isFilterCardVisible', isFilterCardVisible);
@@ -127,8 +122,8 @@ export default defineComponent({
 
   computed: {
     trainList() {
-      return this.store.trainList.filter(train => train.online);
-    }
+      return this.store.trainList.filter((train) => train.online);
+    },
   },
 
   data: () => ({
