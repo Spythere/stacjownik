@@ -50,11 +50,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
-@import '../styles/card.scss';
-@import '../styles/variables.scss';
-@import '../styles/responsive.scss';
-
+<style lang="scss" scoped>
 .journal-type-options {
   display: flex;
   justify-content: center;
@@ -78,73 +74,5 @@ export default defineComponent({
 
 .router-link.active {
   color: gold;
-}
-
-// Stats cards
-.stats-card {
-  padding: 1em;
-  max-width: 850px;
-  width: 100vw;
-  max-height: 750px;
-  min-height: 600px;
-}
-
-.loading {
-  font-size: 1.4em;
-  padding: 0.6em;
-  text-align: center;
-  margin: 1em 0 400px 0;
-
-  background-color: #4d4d4d;
-}
-
-h2.card-title {
-  font-size: 1.8em;
-}
-
-h3 {
-  margin-top: 1em;
-}
-
-h2,
-h3 {
-  text-align: center;
-}
-
-.info-stats {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-top: 1em;
-}
-
-.last-timetables {
-  overflow-y: auto;
-}
-
-.stat-badge {
-  margin-right: 0.5em;
-  padding-bottom: 1em;
-
-  span {
-    padding: 0.25em 0.3em;
-  }
-
-  span:first-child {
-    background-color: #4d4d4d;
-  }
-
-  span:last-child {
-    background-color: $accentCol;
-    color: black;
-    font-weight: bold;
-  }
-}
-
-@include smallScreen() {
-  .stats-card {
-    text-align: center;
-    font-size: 1.2em;
-  }
 }
 </style>

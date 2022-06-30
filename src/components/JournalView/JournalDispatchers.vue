@@ -1,19 +1,17 @@
 <template>
   <section class="journal-timetables">
-    <keep-alive>
-      <DispatcherStats v-if="statsCardOpen" @close-card="closeDispatcherStatsCard" />
-    </keep-alive>
-
     <div class="journal-wrapper">
       <div class="journal_top-bar">
-        <journal-options
+        <JournalOptions
           @on-filter-change="search"
           @on-input-change="search"
           @on-sorter-change="search"
           :sorter-option-ids="['timestampFrom', 'duration']"
         />
 
-        <button
+        <DispatcherStats />
+
+        <!-- <button
           class="btn btn--option"
           :disabled="store.dispatcherStatsName == ''"
           @click="() => (statsCardOpen = !statsCardOpen)"
@@ -22,7 +20,7 @@
             Statystyki dyżurnego <b>{{ store.dispatcherStatsName }}</b>
           </span>
           <span v-else>Statystyki dyżurnego niedostępne</span>
-        </button>
+        </button> -->
       </div>
 
       <!-- <button class="return-btn" @click="scrollToTop" v-if="showReturnButton">
@@ -221,7 +219,7 @@ export default defineComponent({
     },
   },
 
-activated() {
+  activated() {
     if (this.sceneryName || this.dispatcherName) {
       this.searchersValues[1].value = this.sceneryName?.toString() || '';
       this.searchersValues[0].value = this.dispatcherName?.toString() || '';

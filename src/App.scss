@@ -31,9 +31,8 @@
   background: $bgCol;
   color: white;
 
-  overflow: hidden;
-
   font-size: 1rem;
+  overflow-y: scroll;
 
   @include smallScreen() {
     font-size: calc(0.4rem + 1.4vw);
@@ -44,9 +43,8 @@
 .app_container {
   display: flex;
   flex-flow: column;
-
-  min-width: 0;
-  min-height: 100vh;
+  height: 100vh;
+  min-height: 800px;
 
   header {
     flex: 0 0 auto;
@@ -97,7 +95,7 @@
   &_body {
     max-width: 21em;
   }
-  
+
   &_container {
     display: flex;
     justify-content: center;

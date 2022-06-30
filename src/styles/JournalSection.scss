@@ -47,7 +47,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
 }
 
 button.btn {
@@ -61,5 +60,6 @@ button.btn {
 
   .journal_top-bar {
     justify-content: center;
+    flex-wrap: wrap;
   }
 }
