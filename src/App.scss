@@ -28,11 +28,8 @@
 
 // APP
 .app {
-  background: $bgCol;
   color: white;
-
   font-size: 1rem;
-  overflow-y: scroll;
 
   @include smallScreen() {
     font-size: calc(0.4rem + 1.4vw);
