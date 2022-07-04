@@ -53,7 +53,7 @@ import { TimetableHistory } from '@/scripts/interfaces/api/TimetablesAPIData';
 import { URLs } from '@/scripts/utils/apiURLs';
 import { useStore } from '@/store/store';
 import axios from 'axios';
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 import Loading from '../Global/Loading.vue';
 
 export default defineComponent({
@@ -61,10 +61,19 @@ export default defineComponent({
 
   setup() {
     const store = useStore();
+
+    const statsData2 = computed(async () => {
+      return await (
+        await axios.get(`${URLs.stacjownikAPI}/api/getDispatcherInfo?name=${store.dispatcherStatsName}`)
+      ).data;
+    });
+
     return {
       store,
+      statsData2,
     };
   },
+
   data() {
     return {
       cardVisible: false,
@@ -72,6 +81,7 @@ export default defineComponent({
       timetables: [] as TimetableHistory[],
     };
   },
+
   methods: {
     toggleCard() {
       if (!this.store.dispatcherStatsName) return;

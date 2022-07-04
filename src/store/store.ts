@@ -330,16 +330,11 @@ export const useStore = defineStore('store', {
     },
 
     connectToWebsocket() {
-      const socket = io(
-        process.env.NODE_ENV !== 'production' && process.env.VUE_APP_WS_DEV == 1
-          ? URLs.stacjownikAPIDev
-          : URLs.stacjownikAPI,
-        {
-          transports: ['websocket', 'polling'],
-          rememberUpgrade: true,
-          reconnection: true,
-        }
-      );
+      const socket = io(URLs.stacjownikAPI, {
+        transports: ['websocket', 'polling'],
+        rememberUpgrade: true,
+        reconnection: true,
+      });
 
       socket.on('UPDATE', (data: APIData) => {
         this.apiData = data;
