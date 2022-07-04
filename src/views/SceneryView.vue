@@ -121,7 +121,7 @@ $sceneryBgCol: #333;
 
 .scenery {
   &-view {
-    min-height: 100%;
+    min-height: 550px;
 
     display: flex;
     justify-content: center;
