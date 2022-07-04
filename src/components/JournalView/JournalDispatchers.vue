@@ -9,23 +9,8 @@
           :sorter-option-ids="['timestampFrom', 'duration']"
         />
 
-        <DispatcherStats />
-
-        <!-- <button
-          class="btn btn--option"
-          :disabled="store.dispatcherStatsName == ''"
-          @click="() => (statsCardOpen = !statsCardOpen)"
-        >
-          <span v-if="store.dispatcherStatsName">
-            Statystyki dyżurnego <b>{{ store.dispatcherStatsName }}</b>
-          </span>
-          <span v-else>Statystyki dyżurnego niedostępne</span>
-        </button> -->
+        <!-- <DispatcherStats /> -->
       </div>
-
-      <!-- <button class="return-btn" @click="scrollToTop" v-if="showReturnButton">
-        <img :src="icons.arrow" alt="return arrow" />
-      </button> -->
 
       <div class="journal-list">
         <div class="list-wrapper" ref="scrollElement">
