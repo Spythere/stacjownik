@@ -1,8 +1,9 @@
 <template>
-  <div class="select-box">
+  <div class="select-box" >
     <div class="select-box_content">
       <button class="selected" @click="toggleBox">
-        <span class="text--primary">{{ prefix }}</span> {{ computedSelectedItem.value }}
+        <span class="text--primary">{{ prefix }}</span>
+        <span>{{ computedSelectedItem.selectedValue || computedSelectedItem.value }}</span>
       </button>
 
       <ul class="options" :ref="(el) => (listRef = el as Element)">
@@ -15,9 +16,7 @@
           >
             <label :for="item.id" v-if="listOpen">
               <input type="button" :id="item.id" name="select-box" @click="selectOption(item)" />
-              <span :style="computedSelectedItem.id == item.id ? 'color: gold;' : ''">
-                {{ item.value }}
-              </span>
+              <span :style="computedSelectedItem.id == item.id ? 'color: gold;' : ''" v-html="item.value"> </span>
             </label>
           </transition>
         </li>
@@ -36,6 +35,7 @@ import { computed, defineComponent, Ref, ref } from '@vue/runtime-core';
 interface Item {
   id: string;
   value: string;
+  selectedValue?: string;
 }
 
 export default defineComponent({
@@ -193,8 +193,6 @@ ul.options {
   z-index: 10;
 
   width: 100%;
-
-  margin-top: 0.25em;
 }
 
 li.option {
@@ -207,10 +205,11 @@ li.option {
     -moz-appearance: none;
     appearance: none;
     border: none;
+    outline: none;
 
     &:focus + span {
       color: $accentCol;
-      font-weight: bold;
+      font-weight: 800;
     }
   }
 
@@ -229,7 +228,7 @@ li.option {
       background-color: hsla(0, 0%, 20%, 0.95);
     }
 
-    padding: 0.75em 0;
+    padding: 0.5em 0;
 
     width: 100%;
 

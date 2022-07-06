@@ -42,7 +42,7 @@
               </div>
 
               <span class="info_region">
-                <SelectBox :itemList="options.regions" :defaultItemIndex="0" @selected="changeRegion" />
+                <SelectBox :itemList="computedRegions" :defaultItemIndex="0" @selected="changeRegion" />
               </span>
             </span>
 
@@ -124,6 +124,20 @@ export default defineComponent({
     trainList() {
       return this.store.trainList.filter((train) => train.online);
     },
+
+    computedRegions() {
+      return this.options.regions.map((region) => {
+        const regionStationCount =
+          this.store.apiData.stations?.filter((station) => station.region == region.id && station.isOnline).length || 0;
+        const regionTrainCount = this.store.apiData.trains?.filter((train) => train.region == region.id && train.online).length || 0;
+
+        return {
+          id: region.id,
+          value: `${region.value} <div class='text--grayed'>${regionStationCount} / ${regionTrainCount}</div>`,
+          selectedValue: region.value,
+        };
+      });
+    },
   },
 
   data: () => ({
@@ -141,6 +155,8 @@ export default defineComponent({
       pl: require('@/assets/icon-pl.svg'),
       error: require('@/assets/icon-error.svg'),
       dollar: require('@/assets/icon-dollar.svg'),
+      dispatcher: require('@/assets/icon-dispatcher.svg'),
+      train: require('@/assets/icon-train.svg'),
       discord: require('@/assets/icon-discord.png'),
     },
   }),
