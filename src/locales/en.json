@@ -108,7 +108,7 @@
     "hour": "h",
     "no-limit": "NO LIMIT",
     "include-selected": "INCLUDE SELECTED",
-    "save": "🗸 SAVE FILTERS",
+    "save": "↵ SAVE FILTERS",
     "reset": "RESET FILTERS",
     "close": "CLOSE FILTERS"
   },
