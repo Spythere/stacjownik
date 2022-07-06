@@ -56,7 +56,7 @@ export const useStore = defineStore('store', {
     setTrainsOnlineData() {
       const { trains } = this.apiData;
 
-      if (!trains) return [];
+      if (!trains) return [];      
 
       this.trainList = trains
         .filter(
@@ -377,10 +377,11 @@ export const useStore = defineStore('store', {
         return;
       }
 
+      
       this.dataStatuses.sceneries = DataStatus.Loaded;
       this.dataStatuses.trains = !this.apiData.trains ? DataStatus.Warning : DataStatus.Loaded;
       this.dataStatuses.dispatchers = !this.apiData.dispatchers ? DataStatus.Warning : DataStatus.Loaded;
-
+      
       this.setTrainsOnlineData();
       this.setStationsOnlineInfo();
     },

@@ -95,9 +95,12 @@
                   <span>{{ timestampToString(scheduledTrain.stopInfo.arrivalTimestamp) }}</span>
                 </div>
                 <div v-else>
-                  <s style="margin-right: 0.2em" class="text--grayed">{{
-                    timestampToString(scheduledTrain.stopInfo.arrivalTimestamp)
-                  }}</s>
+                  <div>
+                    <s style="margin-right: 0.2em" class="text--grayed">{{
+                      timestampToString(scheduledTrain.stopInfo.arrivalTimestamp)
+                    }}</s>
+                  </div>
+
                   <span>
                     {{ timestampToString(scheduledTrain.stopInfo.arrivalRealTimestamp) }}
                     ({{ scheduledTrain.stopInfo.arrivalDelay > 0 ? '+' : ''
@@ -108,11 +111,22 @@
             </span>
 
             <span class="schedule-stop">
-              <span class="stop-time" v-if="scheduledTrain.stopInfo.stopTime">
-                {{ scheduledTrain.stopInfo.stopTime }}
-                {{ scheduledTrain.stopInfo.stopType || 'pt' }}
+              <span class="stop-time">
+                <span v-if="scheduledTrain.stopInfo.stopTime">
+                  {{ scheduledTrain.stopInfo.stopTime }}
+                  {{ scheduledTrain.stopInfo.stopType || 'pt' }}
+                </span>
+
+                <span v-else>&nbsp;</span>
               </span>
-              <span class="stop-arrow arrow"></span>
+
+              <span class="arrow"></span>
+
+              <span class="stop-line">
+                {{ scheduledTrain.arrivingLine }}
+                {{ scheduledTrain.arrivingLine && scheduledTrain.departureLine && '&gt;' }}
+                {{ scheduledTrain.departureLine }}
+              </span>
             </span>
 
             <span class="schedule-departure">
@@ -125,9 +139,11 @@
                   <span>{{ timestampToString(scheduledTrain.stopInfo.departureTimestamp) }}</span>
                 </div>
                 <div v-else>
-                  <s style="margin-right: 0.2em" class="text--grayed">{{
-                    timestampToString(scheduledTrain.stopInfo.departureTimestamp)
-                  }}</s>
+                  <div>
+                    <s style="margin-right: 0.2em" class="text--grayed">{{
+                      timestampToString(scheduledTrain.stopInfo.departureTimestamp)
+                    }}</s>
+                  </div>
 
                   <span>
                     {{ timestampToString(scheduledTrain.stopInfo.departureRealTimestamp) }}
@@ -201,13 +217,15 @@ export default defineComponent({
         station.onlineInfo?.scheduledTrains ||
         [];
 
+      if (!scheduledTrains) return [];
+
       return (
-        scheduledTrains?.sort((a, b) => {
+        scheduledTrains.sort((a, b) => {
           if (a.stopStatusID > b.stopStatusID) return 1;
-          else if (a.stopStatusID < b.stopStatusID) return -1;
+          if (a.stopStatusID < b.stopStatusID) return -1;
 
           if (a.stopInfo.arrivalTimestamp > b.stopInfo.arrivalTimestamp) return 1;
-          else if (a.stopInfo.arrivalTimestamp < b.stopInfo.arrivalTimestamp) return -1;
+          if (a.stopInfo.arrivalTimestamp < b.stopInfo.arrivalTimestamp) return -1;
 
           return a.stopInfo.departureTimestamp > b.stopInfo.departureTimestamp ? 1 : -1;
         }) || []
@@ -459,10 +477,15 @@ h3.timetable-header {
     position: relative;
     display: flex;
     flex-direction: column;
+    font-size: 0.85em;
+
+    padding: 0.3em 0;
+
+    .stop-line {
+      margin-top: 0.25em;
+    }
 
     .stop-time {
-      font-size: 0.85em;
-      // position: absolute;
       transform: translateY(-0.25em);
     }
   }
