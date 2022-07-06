@@ -15,6 +15,9 @@ export default interface ScheduledTrain {
     prevStationName: string;
     nextStationName: string;
 
+    arrivingLine: string | null;
+    departureLine: string | null;
+
     stopLabel: string;
     stopStatus: string;
     stopStatusID: number;

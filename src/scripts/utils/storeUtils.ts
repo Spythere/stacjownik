@@ -1,37 +1,38 @@
-import ScheduledTrain from "../interfaces/ScheduledTrain";
-import Train from "../interfaces/Train";
-import TrainStop from "../interfaces/TrainStop";
+import ScheduledTrain from '../interfaces/ScheduledTrain';
+import Train from '../interfaces/Train';
+import TrainStop from '../interfaces/TrainStop';
 
-export const getLocoURL = (locoType: string): string => (`https://rj.td2.info.pl/dist/img/thumbnails/${locoType.includes("EN") ? locoType + "rb" : locoType}.png`)
+export const getLocoURL = (locoType: string): string =>
+  `https://rj.td2.info.pl/dist/img/thumbnails/${locoType.includes('EN') ? locoType + 'rb' : locoType}.png`;
 
 export const getStatusID = (stationStatus: any): string => {
-  if (!stationStatus) return "unknown";
-  if (stationStatus == -1) return "not-signed";
+  if (!stationStatus) return 'unknown';
+  if (stationStatus == -1) return 'not-signed';
 
   const statusCode = stationStatus[2];
   const statusTimestamp = stationStatus[3];
 
   switch (statusCode) {
     case 0:
-      if (statusTimestamp - Date.now() > 21000000) return "no-limit";
+      if (statusTimestamp - Date.now() > 21000000) return 'no-limit';
 
-      return "online";
+      return 'online';
 
     case 1:
-      return "brb";
+      return 'brb';
 
     case 2:
-      if (statusTimestamp == 0) return "ending";
+      if (statusTimestamp == 0) return 'ending';
       break;
 
     case 3:
-      return "no-space";
+      return 'no-space';
 
     default:
       break;
   }
 
-  return "unavailable";
+  return 'unavailable';
 };
 
 export const getStatusTimestamp = (stationStatus: any): number => {
@@ -59,10 +60,10 @@ export const getStatusTimestamp = (stationStatus: any): number => {
 
 export const parseSpawns = (spawnString: string) => {
   if (!spawnString) return [];
-  if (spawnString === "NO_SPAWN") return [];
+  if (spawnString === 'NO_SPAWN') return [];
 
-  return spawnString.split(";").map(spawn => {
-    const spawnArray = spawn.split(",");
+  return spawnString.split(';').map((spawn) => {
+    const spawnArray = spawn.split(',');
     const spawnName = spawnArray[6] ? spawnArray[6] : spawnArray[0];
     const spawnLength = parseInt(spawnArray[2]);
 
@@ -73,39 +74,38 @@ export const parseSpawns = (spawnString: string) => {
 export const getTimestamp = (date: string | null): number => (date ? new Date(date).getTime() : 0);
 
 export const getTrainStopStatus = (stopInfo: TrainStop, currentStationName: string, stationName: string) => {
-  let stopStatus = "",
-    stopLabel = "",
+  let stopStatus = '',
+    stopLabel = '',
     stopStatusID = -1;
 
   if (stopInfo.terminatesHere && stopInfo.confirmed) {
-    stopStatus = "terminated";
-    stopLabel = "Skończył bieg";
+    stopStatus = 'terminated';
+    stopLabel = 'Skończył bieg';
     stopStatusID = 5;
   } else if (!stopInfo.terminatesHere && stopInfo.confirmed && currentStationName == stationName) {
-    stopStatus = "departed";
-    stopLabel = "Odprawiony";
+    stopStatus = 'departed';
+    stopLabel = 'Odprawiony';
     stopStatusID = 2;
   } else if (!stopInfo.terminatesHere && stopInfo.confirmed && currentStationName != stationName) {
-    stopStatus = "departed-away";
-    stopLabel = "Odjechał";
+    stopStatus = 'departed-away';
+    stopLabel = 'Odjechał';
     stopStatusID = 4;
   } else if (currentStationName == stationName && !stopInfo.stopped) {
-    stopStatus = "online";
-    stopLabel = "Na stacji";
+    stopStatus = 'online';
+    stopLabel = 'Na stacji';
     stopStatusID = 0;
   } else if (currentStationName == stationName && stopInfo.stopped) {
-    stopStatus = "stopped";
-    stopLabel = "Postój";
+    stopStatus = 'stopped';
+    stopLabel = 'Postój';
     stopStatusID = 1;
   } else if (currentStationName != stationName) {
-    stopStatus = "arriving";
-    stopLabel = "W drodze";
+    stopStatus = 'arriving';
+    stopLabel = 'W drodze';
     stopStatusID = 3;
   }
 
   return { stopStatus, stopLabel, stopStatusID };
 };
-
 
 export function getScheduledTrain(train: Train, trainStopIndex: number, stationName: string): ScheduledTrain {
   const timetable = train.timetableData!;
@@ -114,18 +114,44 @@ export function getScheduledTrain(train: Train, trainStopIndex: number, stationN
 
   const trainStopStatus = getTrainStopStatus(trainStop, train.currentStationName, stationName);
 
-  let prevStationName = "", nextStationName = "";  
+  let prevStationName = '',
+    nextStationName = '';
 
   for (let i = trainStopIndex - 1; i >= 0; i--) {
-    if (followingStops[i].stopName.startsWith("<strong>")) {
+    if (followingStops[i].stopName.startsWith('<strong>')) {
       prevStationName = followingStops[i].stopNameRAW;
       break;
     }
   }
 
   for (let i = trainStopIndex + 1; i < followingStops.length; i++) {
-    if (followingStops[i].stopName.startsWith("<strong>")) {
+    if (followingStops[i].stopName.startsWith('<strong>')) {
       nextStationName = followingStops[i].stopNameRAW;
+      break;
+    }
+  }
+
+  let departureLine: string | null = trainStop.departureLine;
+  let arrivingLine: string | null = trainStop.arrivalLine;
+
+  for (let i = trainStopIndex; i < followingStops.length; i++) {
+    const currentStop = followingStops[i];
+
+    if (currentStop.departureLine == null) break;
+
+    if (!/-|_|it|sbl/gi.test(currentStop.departureLine)) {
+      departureLine = currentStop.departureLine;
+      break;
+    }
+  }
+
+  for (let i = trainStopIndex; i >= 0; i--) {
+    const currentStop = followingStops[i];
+
+    if (currentStop.arrivalLine == null) break;
+
+    if (!/-|_|it|sbl/gi.test(currentStop.arrivalLine)) {
+      arrivingLine = currentStop.arrivalLine;
       break;
     }
   }
@@ -139,13 +165,16 @@ export function getScheduledTrain(train: Train, trainStopIndex: number, stationN
     category: timetable.category,
     beginsAt: timetable.followingStops[0].stopNameRAW,
     terminatesAt: timetable.followingStops[timetable.followingStops.length - 1].stopNameRAW,
-    
+
     nextStationName,
     prevStationName,
 
     stopInfo: trainStop,
     stopLabel: trainStopStatus.stopLabel,
     stopStatus: trainStopStatus.stopStatus,
-    stopStatusID: trainStopStatus.stopStatusID
-  }
+    stopStatusID: trainStopStatus.stopStatusID,
+
+    arrivingLine,
+    departureLine,
+  };
 }

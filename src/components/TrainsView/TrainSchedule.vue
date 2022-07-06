@@ -123,7 +123,7 @@ export default defineComponent({
         if (lastMajorConfirmed + 1 >= props.train.timetableData!.followingStops.length) return activeMinorStopList;
 
         for (let i = lastMajorConfirmed + 1; i < props.train.timetableData!.followingStops.length; i++) {
-          if (props.train.timetableData!.followingStops[i].stopNameRAW.includes('po.')) activeMinorStopList.push(i);
+          if (/po\.|sbl/gi.test(props.train.timetableData!.followingStops[i].stopNameRAW)) activeMinorStopList.push(i);
           else break;
         }
 
@@ -144,6 +144,7 @@ export default defineComponent({
         begin: stop.beginsHere,
         end: stop.terminatesHere,
         delayed: stop.departureDelay > 0,
+        sbl: /sbl/gi.test(stop.stopName),
         [stop.stopType.replaceAll(', ', '-')]:
           stop.stopType.match(new RegExp('ph|pm|pt')) && !stop.confirmed && !stop.beginsHere,
         'minor-stop-active': this.activeMinorStops.includes(index),
@@ -232,6 +233,10 @@ ul.stock-list {
 
   display: flex;
   align-items: center;
+
+  &.misc {
+    background: gray;
+  }
 }
 
 .stop-comment {
@@ -271,6 +276,17 @@ ul.stop_list > li.stop {
   flex-direction: column;
 
   padding: 0 0.5em;
+
+  &.sbl {
+    .stop-name,
+    .stop-date {
+      opacity: 0.7;
+    }
+
+    .stop-name {
+      background-color: #333;
+    }
+  }
 
   &[class*='ph'] > .stop_info > .indicator {
     border-color: $stopNameClr;

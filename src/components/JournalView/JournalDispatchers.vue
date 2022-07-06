@@ -149,11 +149,7 @@ export default defineComponent({
     statsCardOpen: false,
   }),
 
-  setup(props) {
-    watch(props, (val) => {
-      console.log(val.dispatcherName);
-    });
-
+  setup() {
     const historyDataStatus: Ref<{ status: DataStatus; error: string | null }> = ref({
       status: DataStatus.Loading,
       error: null,

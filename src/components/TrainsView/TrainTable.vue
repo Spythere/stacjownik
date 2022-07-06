@@ -183,9 +183,9 @@ export default defineComponent({
   padding: 1em 0;
   margin: 1em 0;
 
-  font-size: 1.35em;
+  font-size: 1.5em;
 
-  background: var(--clr-bg);
+  background: #333;
 }
 
 img.train-image {

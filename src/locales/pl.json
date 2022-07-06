@@ -12,7 +12,7 @@
   },
 
   "data-status": {
-    "S1a-connection": "<b>Sygnał S1a</b> <br> Błąd podczas próby połączenia się z serwisem SWDR!",
+    "S1a-connection": "<b>Sygnał S1a</b> <br> Błąd podczas próby połączenia się z API Stacjownika!",
     "S1a-sceneries": "<b>Sygnał S1a</b> <br> Błąd podczas pobierania danych o sceneriach online!",
     "S2": "<b>Sygnał S2</b> <br> Pomyślnie załadowano dane!",
     "S3": "<b>Sygnał S3</b> <br> Pobieranie danych...",
@@ -109,7 +109,7 @@
     "hour": " godz.",
     "no-limit": "BEZ LIMITU",
     "include-selected": "POKAŻ ZAZNACZONE",
-    "save": "🗸 ZAPISZ FILTRY",
+    "save": "↵ ZAPISZ FILTRY",
     "reset": "RESETUJ FILTRY",
     "close": "ZAMKNIJ FILTRY"
   },

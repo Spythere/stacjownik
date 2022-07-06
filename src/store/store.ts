@@ -56,7 +56,7 @@ export const useStore = defineStore('store', {
     setTrainsOnlineData() {
       const { trains } = this.apiData;
 
-      if (!trains) return [];
+      if (!trains) return [];      
 
       this.trainList = trains
         .filter(
@@ -334,6 +334,12 @@ export const useStore = defineStore('store', {
         transports: ['websocket', 'polling'],
         rememberUpgrade: true,
         reconnection: true,
+        timeout: 10000
+      });
+
+      socket.on('connect_error', (err) => {
+        this.dataStatuses.connection = DataStatus.Error;
+        this.webSocket = undefined;
       });
 
       socket.on('UPDATE', (data: APIData) => {
@@ -347,6 +353,7 @@ export const useStore = defineStore('store', {
       });
 
       this.webSocket = socket;
+      this.dataStatuses.connection = DataStatus.Loaded;
     },
 
     async connectToAPI() {
@@ -370,10 +377,11 @@ export const useStore = defineStore('store', {
         return;
       }
 
+      
       this.dataStatuses.sceneries = DataStatus.Loaded;
       this.dataStatuses.trains = !this.apiData.trains ? DataStatus.Warning : DataStatus.Loaded;
       this.dataStatuses.dispatchers = !this.apiData.dispatchers ? DataStatus.Warning : DataStatus.Loaded;
-
+      
       this.setTrainsOnlineData();
       this.setStationsOnlineInfo();
     },
