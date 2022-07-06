@@ -11,7 +11,7 @@
     "migration-confirm": "Roger that!"
   },
   "data-status": {
-    "S1a-connection": "<b>S1a signal</b> <br> Cannot connect with SWDR API service!",
+    "S1a-connection": "<b>S1a signal</b> <br> Cannot connect with Stacjownik API service!",
     "S1a-sceneries": "<b>S1a signal</b> <br> Cannot load online stations data!",
     "S2": "<b>S2 signal</b> <br> All data loaded successfully!",
     "S3": "<b>S3 signal</b> <br> Loading data...",

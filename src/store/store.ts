@@ -334,6 +334,12 @@ export const useStore = defineStore('store', {
         transports: ['websocket', 'polling'],
         rememberUpgrade: true,
         reconnection: true,
+        timeout: 10000
+      });
+
+      socket.on('connect_error', (err) => {
+        this.dataStatuses.connection = DataStatus.Error;
+        this.webSocket = undefined;
       });
 
       socket.on('UPDATE', (data: APIData) => {
@@ -347,6 +353,7 @@ export const useStore = defineStore('store', {
       });
 
       this.webSocket = socket;
+      this.dataStatuses.connection = DataStatus.Loaded;
     },
 
     async connectToAPI() {

@@ -204,9 +204,17 @@ export default defineComponent({
       deep: true,
 
       handler(statuses: StoreState['dataStatuses']) {
+        const connectionStatus = statuses.connection;
         const sceneryDataStatus = statuses.sceneries;
         const trainsDataStatus = statuses.trains;
         const dispatcherDataStatus = statuses.dispatchers;
+
+        if (connectionStatus == DataStatus.Error) {
+          this.setSignalStatus(connectionStatus);
+          this.indicator.status = connectionStatus;
+          this.indicator.message = 'data-status.S1a-connection';
+          return;
+        }
 
         if (sceneryDataStatus == DataStatus.Error) {
           this.setSignalStatus(sceneryDataStatus);
