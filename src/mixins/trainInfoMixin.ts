@@ -65,8 +65,7 @@ export default defineComponent({
           else if (
             i > 0 &&
             i < stops.length - 1 &&
-            !stop.stopNameRAW.includes('po.') &&
-            !stop.stopNameRAW.includes('SBL')
+            !/po\.|sbl/gi.test(stop.stopNameRAW)
           )
             acc.push(`<span style='color:${stop.confirmed ? 'springgreen' : 'lightgray'}'>${stop.stopName}</span>`);
           return acc;
