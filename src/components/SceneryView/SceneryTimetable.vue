@@ -30,7 +30,7 @@
     </div>
 
     <transition name="scenery-timetable-list-anim" mode="out-in">
-      <div :key="store.dataStatuses.trains + selectedCheckpoint">
+      <div :key="store.dataStatuses.trains + selectedCheckpoint" class="scenery-timetable-list">
         <div style="padding-bottom: 5em" v-if="store.dataStatuses.trains == 0 && computedScheduledTrains.length == 0">
           <Loading />
         </div>
@@ -63,11 +63,11 @@
                   <span class="content" v-html="scheduledTrain.stopInfo.comments"> </span>
                 </span>
               </span>
-              |
+              &nbsp;|&nbsp;
               <span style="color: white">
                 {{ scheduledTrain.driverName }}
               </span>
-              |
+              &nbsp;|&nbsp;
               <span class="general-status">
                 <span :class="scheduledTrain.stopStatus">
                   {{ $t(`timetables.${scheduledTrain.stopStatus}`) }}
@@ -272,15 +272,13 @@ export default defineComponent({
 @import '../../styles/variables.scss';
 
 h3.timetable-header {
-  margin: 0.5em 0;
-  padding: 0.3em;
-
   display: flex;
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
 
   font-size: 1.5em;
+  margin: 1em 0;
 
   a {
     display: flex;
@@ -316,6 +314,13 @@ h3.timetable-header {
   &-leave-active {
     transition: all 100ms ease-out 100ms;
   }
+}
+
+.scenery-timetable-list {
+  max-height: 75vh;
+  overflow: auto;
+
+  padding: 0 0.5em;
 }
 
 .timetable {
@@ -358,7 +363,6 @@ h3.timetable-header {
   &-schedule {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(30px, 1fr));
-    font-size: 1.15em;
   }
 }
 
@@ -367,8 +371,8 @@ h3.timetable-header {
   justify-content: center;
 
   flex-wrap: wrap;
-
-  font-size: 1.2em;
+  font-size: 1.1em;
+  margin: 0.75em 0;
 
   .checkpoint_item {
     &.current {
@@ -412,6 +416,9 @@ h3.timetable-header {
 }
 
 .general-info {
+  display: flex;
+  flex-wrap: wrap;
+
   .info-number {
     color: $accentCol;
   }

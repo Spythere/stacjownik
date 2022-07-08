@@ -20,6 +20,12 @@
         <!-- spawn list -->
         <scenery-info-spawn-list :station="station" />
       </div>
+
+      <div class="info-actions">
+        <button class="btn btn--option">Pokaż historię obecnego dyżurnego</button>
+        <button class="btn btn--option">Pokaż historię dyżurów tej scenerii</button>
+        <button class="btn btn--option">Pokaż temat forum scenerii</button>
+      </div>
     </section>
   </div>
 </template>
@@ -81,8 +87,20 @@ h3.section-header {
 
 .info-lists {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 400px));
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   justify-content: space-around;
+}
+
+.info-actions {
+  display: flex;
+  justify-content: center;
+
+  margin-top: 1em;
+
+  .btn {
+    margin: 0.5em;
+    box-shadow: 0 0 10px 4px #242424;
+  }
 }
 
 .badge {

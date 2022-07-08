@@ -9,31 +9,37 @@
     </div>
 
     <div class="scenery-wrapper" v-if="stationInfo" ref="card-wrapper">
-      <button
-        v-if="!timetableOnly"
-        class="back-btn btn btn--image"
-        :title="$t('scenery.return-btn')"
-        @click="navigateTo('/')"
-      >
-        <img :src="icons.back" alt="Back to scenery" />
-      </button>
+      <div class="scenery-left">
+        <div class="scenery-actions">
+          <button
+            v-if="!timetableOnly"
+            class="back-btn btn btn--image"
+            :title="$t('scenery.return-btn')"
+            @click="navigateTo('/')"
+          >
+            <img :src="icons.back" alt="Back to scenery" />
+          </button>
 
-      <button
-        v-if="!timetableOnly && store.region.id == 'eu' && stationInfo"
-        class="history-btn btn btn--image"
-        @click="
-          navigateTo('/journal/dispatchers', {
-            sceneryName: stationInfo?.name,
-          })
-        "
-      >
-        <img :src="viewMode == 'history' ? icons.user : icons.history" alt="icon" />
-      </button>
+          <!-- <button
+            v-if="!timetableOnly && store.region.id == 'eu' && stationInfo"
+            class="history-btn btn btn--image"
+            @click="
+              navigateTo('/journal/dispatchers', {
+                sceneryName: stationInfo?.name,
+              })
+            "
+          >
+            <img :src="viewMode == 'history' ? icons.user : icons.history" alt="icon" />
+          </button> -->
+        </div>
 
-      <SceneryHeader :station="stationInfo" />
+        <SceneryHeader :station="stationInfo" />
+        <SceneryInfo :station="stationInfo" :timetableOnly="timetableOnly" />
+      </div>
 
-      <SceneryInfo :station="stationInfo" :timetableOnly="timetableOnly" />
-      <SceneryTimetable :station="stationInfo" :timetableOnly="timetableOnly" />
+      <div class="scenery-right">
+        <SceneryTimetable :station="stationInfo" :timetableOnly="timetableOnly" />
+      </div>
     </div>
   </div>
 </template>
@@ -121,8 +127,6 @@ $sceneryBgCol: #333;
 
 .scenery {
   &-view {
-    min-height: 550px;
-
     display: flex;
     justify-content: center;
   }
@@ -142,42 +146,52 @@ $sceneryBgCol: #333;
       margin: 1em auto;
     }
   }
+}
 
-  &-wrapper {
-    position: relative;
+.scenery-wrapper {
+  display: grid;
+  grid-template-columns: 4fr 5fr;
+  gap: 0 1em;
 
-    width: 100%;
-    max-width: 1100px;
+  position: relative;
 
-    @include midScreen {
-      width: 100%;
-    }
+  width: 100%;
+  max-width: 1500px;
 
-    background: #292929;
-    padding: 1em;
-    margin: 1rem 0;
+  background: #292929;
+  padding: 1.5em;
+  margin: 1rem 0;
 
-    border-radius: 1.5em;
+  border-radius: 1.5em;
 
-    text-align: center;
-  }
+  text-align: center;
+}
+
+.scenery-left {
+  height: 80vh;
+  max-height: 1000px;
+}
+
+.scenery-actions {
+  display: flex;
+  justify-content: space-between;
 }
 
 button.btn {
-  position: absolute;
-  padding: 0.25em;
-
-  top: 0.5em;
   img {
     width: 2em;
   }
 }
 
-button.history-btn {
-  right: 0.5em;
-}
+@include midScreen {
+  .scenery-wrapper {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
 
-button.back-btn {
-  left: 0.5em;
+  .scenery-left { 
+    height: auto;
+    margin-bottom: 2em;
+  }
 }
 </style>

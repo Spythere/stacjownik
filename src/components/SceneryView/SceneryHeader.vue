@@ -37,10 +37,6 @@ export default defineComponent({
 @import '../../styles/variables.scss';
 @import '../../styles/responsive.scss';
 
-.info-header {
-  padding-top: 2em;
-}
-
 .scenery-name {
   font-weight: bold;
   color: $accentCol;
@@ -48,7 +44,6 @@ export default defineComponent({
   position: relative;
 
   font-size: 3.5em;
-  margin-top: 0.25em;
 
   text-transform: uppercase;
 
@@ -63,11 +58,9 @@ export default defineComponent({
 
   position: absolute;
   top: 0;
-
 }
 
 .scenery-authors {
   color: #999;
 }
 </style>
-
