@@ -34,12 +34,14 @@
     "real": "Scenery with real lines: "
   },
   "signals": {
+    "title": "Signal type",
     "współczesna": "modern",
     "mieszana": "mixed",
     "kształtowa": "mechanical",
     "historyczna": "historyczna"
   },
   "controls": {
+    "title": "Control type",
     "SPK": "SPK",
     "SCS": "SCS",
     "SCS-SPK": "SCS/SPK",
@@ -241,7 +243,20 @@
     "no-scenery": "Oops! This scenery doesn't exist!",
     "return-btn": "Return to main site",
     "history-btn": "View the dispatcher history",
-    "info-btn": "Return to the scenery view"
+    "info-btn": "Return to the scenery view",
+    "authors-title": "Scenery author | Scenery authors",
+    "lines-title": "Real lines",
+    "project-title": "Project name",
+    "one-way-routes": "One way routes",
+    "two-way-routes": "Two way routes"
+  },
+  "availability": {
+    "title": "Availability",
+    "default": "in-game",
+    "nonDefault": "downloadable",
+    "unavailable": "unavailable",
+    "nonPublic": "private",
+    "abandoned": "abandoned"
   },
   "timetables": {
     "timetable-only": "Switch to timetable-only view",

@@ -1,15 +1,48 @@
 <template>
   <div class="scenery-info">
     <section v-if="!timetableOnly">
+      <div class="info-general" v-if="station.generalInfo">
+        <scenery-info-icons :station="station" />
+
+        <div class="general-list">
+          <span>
+            <b>{{ $t('availability.title') }}:</b> {{ $t(`availability.${station.generalInfo.availability}`) }}
+
+            <span v-if="station.generalInfo.reqLevel > 0">
+              - minimum {{ station.generalInfo.reqLevel }} poziom dyżurnego
+            </span>
+            <span v-else-if="station.generalInfo.reqLevel == 0">- dla wszystkich poziomów</span>
+          </span>
+
+          <span>
+            &bull; <b>{{ $t('controls.title') }}:</b> {{ $t(`controls.${station.generalInfo.controlType}`) }}
+          </span>
+
+          <span>
+            &bull; <b>{{ $t('signals.title') }}:</b> {{ $t(`signals.${station.generalInfo.signalType}`) }}
+          </span>
+
+          <span v-if="station.generalInfo.lines">
+            &bull; <b>{{ $t('scenery.lines-title') }}:</b> {{ station.generalInfo.lines }}
+          </span>
+          <span v-if="station.generalInfo.project">
+            &bull; <b>{{ $t('scenery.project-title') }}: </b>
+            <b style="color: salmon">{{ station.generalInfo.project }}</b>
+          </span>
+        </div>
+
+        <scenery-info-routes :station="station" />
+
+        <div class="scenery-authors" v-if="station.generalInfo.authors && station.generalInfo.authors.length > 0">
+          <b> {{ $tc('scenery.authors-title', station.generalInfo.authors.length) }}: </b>
+          {{ station.generalInfo.authors.join(', ') }}
+        </div>
+      </div>
+
+      <div style="margin: 2em 0; height: 2px; background-color: white" />
+
       <!-- info stats -->
       <!-- <scenery-info-stats :station="station" /> -->
-
-      <!-- info icons -->
-      <scenery-info-icons :station="station" />
-
-      <!-- info routes -->
-      <scenery-info-routes :station="station" />
-
       <!-- info dispatcher -->
       <scenery-info-dispatcher :station="station" :onlineFrom="onlineFrom" />
 
@@ -21,11 +54,9 @@
         <scenery-info-spawn-list :station="station" />
       </div>
 
-      <div class="info-actions">
-        <button class="btn btn--option">Pokaż historię obecnego dyżurnego</button>
-        <button class="btn btn--option">Pokaż historię dyżurów tej scenerii</button>
-        <button class="btn btn--option">Pokaż temat forum scenerii</button>
-      </div>
+      <!-- info icons -->
+
+      <!-- info routes -->
     </section>
   </div>
 </template>
@@ -86,20 +117,25 @@ h3.section-header {
 }
 
 .info-lists {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  justify-content: space-around;
-}
-
-.info-actions {
   display: flex;
-  justify-content: center;
+  flex-wrap: wrap;
+  justify-content: space-around;
 
   margin-top: 1em;
+}
 
-  .btn {
-    margin: 0.5em;
-    box-shadow: 0 0 10px 4px #242424;
+.info-general {
+  margin-top: 1em;
+  font-size: 1.1em;
+}
+
+.general-list {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+
+  span {
+    margin: 0 0.15em;
   }
 }
 

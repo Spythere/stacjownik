@@ -35,22 +35,24 @@
     "abandoned": "Sceneria wycofana z rozgrywki"
   },
   "signals": {
+    "title": "Sygnalizacja",
     "współczesna": "współczesna",
     "mieszana": "mieszana",
     "kształtowa": "kształtowa",
     "historyczna": "historyczna"
   },
   "controls": {
+    "title": "Sterowanie",
     "SPK": "SPK",
     "SCS": "SCS",
     "SCS-SPK": "SCS/SPK",
     "SPE": "SPE",
     "ręczne": "ręczne",
-    "ręczne+SPK": "ręczne + SPK",
-    "ręczne+SCS": "ręczne + SCS",
+    "ręczne+SPK": "ręczne z SPK",
+    "ręczne+SCS": "ręczne z SCS",
     "mechaniczne": "mechaniczne",
-    "mechaniczne+SPK": "mechaniczne + SPK",
-    "mechaniczne+SCS": "mechaniczne + SCS"
+    "mechaniczne+SPK": "mechaniczne z SPK",
+    "mechaniczne+SCS": "mechaniczne z SCS"
   },
   "status": {
     "online": "DO ",
@@ -242,7 +244,20 @@
     "no-scenery": "Ups! Ta sceneria nie istnieje!",
     "return-btn": "Wróć na stronę główną",
     "history-btn": "Przejdź do widoku historii dyżurnych ruchu",
-    "info-btn": "Wróc do widoku scenerii"
+    "info-btn": "Wróc do widoku scenerii",
+    "authors-title": "Autor scenerii | Autorzy scenerii",
+    "lines-title": "Rzeczywiste linie",
+    "project-title": "Projekt",
+    "one-way-routes": "Szlaki jednotorowe",
+    "two-way-routes": "Szlaki dwutorowe"
+  },
+  "availability": {
+    "title": "Dostępność",
+    "default": "w paczce",
+    "nonDefault": "poza paczką",
+    "unavailable": "niedostępna",
+    "nonPublic": "niepubliczna",
+    "abandoned": "wycofana"
   },
   "timetables": {
     "timetable-only": "Wyodrębnij rozkłady jazdy",

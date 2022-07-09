@@ -11,26 +11,9 @@
     <div class="scenery-wrapper" v-if="stationInfo" ref="card-wrapper">
       <div class="scenery-left">
         <div class="scenery-actions">
-          <button
-            v-if="!timetableOnly"
-            class="back-btn btn btn--image"
-            :title="$t('scenery.return-btn')"
-            @click="navigateTo('/')"
-          >
+          <button v-if="!timetableOnly" class="back-btn btn" :title="$t('scenery.return-btn')" @click="navigateTo('/')">
             <img :src="icons.back" alt="Back to scenery" />
           </button>
-
-          <!-- <button
-            v-if="!timetableOnly && store.region.id == 'eu' && stationInfo"
-            class="history-btn btn btn--image"
-            @click="
-              navigateTo('/journal/dispatchers', {
-                sceneryName: stationInfo?.name,
-              })
-            "
-          >
-            <img :src="viewMode == 'history' ? icons.user : icons.history" alt="icon" />
-          </button> -->
         </div>
 
         <SceneryHeader :station="stationInfo" />
@@ -38,7 +21,17 @@
       </div>
 
       <div class="scenery-right">
-        <SceneryTimetable :station="stationInfo" :timetableOnly="timetableOnly" />
+        <div class="info-actions">
+          <button class="btn btn--option checked">Aktywne rozkłady jazdy</button>
+          <button class="btn btn--option">Historia rozkładów scenerii</button>
+          <button class="btn btn--option">Historia dyżurów scenerii</button>
+        </div>
+
+        <SceneryTimetable
+          :station="stationInfo"
+          :timetableOnly="timetableOnly"
+          :selectedCheckpoint="selectedCheckpoint"
+        />
       </div>
     </div>
   </div>
@@ -51,7 +44,7 @@ import SceneryHeader from '@/components/SceneryView/SceneryHeader.vue';
 
 import ActionButton from '@/components/Global/ActionButton.vue';
 
-import { computed, defineComponent } from '@vue/runtime-core';
+import { computed, defineComponent, ref } from '@vue/runtime-core';
 import { useRoute } from 'vue-router';
 
 import { useStore } from '@/store/store';
@@ -69,12 +62,16 @@ export default defineComponent({
       back: require('@/assets/icon-back.svg'),
     },
 
+    selectedCheckpoint: '',
+
     viewMode: 'info',
 
     onlineFrom: -1,
   }),
 
-  activated() {},
+  activated() {
+    this.loadSelectedCheckpoint();
+  },
 
   setup() {
     const route = useRoute();
@@ -100,6 +97,17 @@ export default defineComponent({
     setCardViewMode(mode: string) {
       this.viewMode = mode;
     },
+
+    loadSelectedCheckpoint() {
+      if (!this.stationInfo?.generalInfo?.checkpoints) return;
+      if (this.stationInfo.generalInfo.checkpoints.length == 0) return;
+
+      this.selectedCheckpoint = this.stationInfo.generalInfo.checkpoints[0].checkpointName;
+    },
+
+    selectCheckpoint(cp: { checkpointName: string }) {
+      this.selectedCheckpoint = cp.checkpointName;
+    },
   },
 });
 </script>
@@ -108,20 +116,9 @@ export default defineComponent({
 @import '../styles/responsive.scss';
 @import '../styles/variables.scss';
 
-$sceneryBgCol: #333;
-
-.scenery-view-anim {
-  &-enter-from,
-  &-leave-to {
-    opacity: 0;
-  }
-
-  &-enter-active {
-    transition: all 100ms ease-out;
-  }
-
-  &-leave-active {
-    transition: all 100ms ease-out 100ms;
+button.back-btn {
+  img {
+    width: 2em;
   }
 }
 
@@ -129,6 +126,8 @@ $sceneryBgCol: #333;
   &-view {
     display: flex;
     justify-content: center;
+
+    min-height: 100vh;
   }
 
   &-offline {
@@ -156,30 +155,75 @@ $sceneryBgCol: #333;
   position: relative;
 
   width: 100%;
-  max-width: 1500px;
+  max-width: 1700px;
 
-  background: #292929;
-  padding: 1.5em;
+  padding: 1em;
   margin: 1rem 0;
-
-  border-radius: 1.5em;
 
   text-align: center;
 }
 
 .scenery-left {
-  height: 80vh;
+  position: relative;
+  background-color: #181818;
+  padding: 1em 0.5em;
+
+  height: 95vh;
+  min-height: 550px;
   max-height: 1000px;
+
+  overflow: auto;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.scenery-right {
+  background: #181818;
+  padding: 2em 0.5em;
+
+  height: 95vh;
+  min-height: 550px;
+  max-height: 1000px;
+
+  display: grid;
+  grid-template-rows: 50px 1fr;
+  gap: 1em;
 }
 
 .scenery-actions {
   display: flex;
-  justify-content: space-between;
 }
 
-button.btn {
-  img {
-    width: 2em;
+.info-actions {
+  display: flex;
+  justify-content: center;
+
+  .btn {
+    margin: 0.5em;
+    box-shadow: 0 0 10px 4px #242424;
+  }
+}
+
+.timetable-checkpoints {
+  display: flex;
+  justify-content: center;
+
+  flex-wrap: wrap;
+  font-size: 1.1em;
+  margin: 0.75em 0;
+
+  .checkpoint_item {
+    &.current {
+      font-weight: bold;
+      color: $accentCol;
+    }
+
+    &:not(:last-child)::after {
+      margin: 0 0.5em;
+      content: '•';
+      color: white;
+    }
   }
 }
 
@@ -189,7 +233,7 @@ button.btn {
     gap: 0;
   }
 
-  .scenery-left { 
+  .scenery-left {
     height: auto;
     margin-bottom: 2em;
   }

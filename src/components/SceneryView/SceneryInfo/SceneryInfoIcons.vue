@@ -1,6 +1,14 @@
 <template>
   <section class="info-icons">
     <span
+      v-if="station.generalInfo && station.generalInfo.reqLevel >= 0"
+      class="scenery-icon icon-info level"
+      :style="calculateExpStyle(station.generalInfo.reqLevel)"
+    >
+      {{ station.generalInfo.reqLevel >= 2 ? station.generalInfo.reqLevel : 'L' }}
+    </span>
+
+    <span
       v-if="station.generalInfo"
       class="scenery-icon icon-info"
       :class="station.generalInfo.controlType.replace('+', '-')"
@@ -72,9 +80,10 @@ import { defineComponent } from 'vue';
 import stationInfoMixin from '@/mixins/stationInfoMixin';
 
 import Station from '@/scripts/interfaces/Station';
+import styleMixin from '@/mixins/styleMixin';
 
 export default defineComponent({
-  mixins: [stationInfoMixin],
+  mixins: [stationInfoMixin, styleMixin],
   props: {
     station: {
       type: Object as () => Station,
@@ -101,6 +110,9 @@ export default defineComponent({
 .info-icons {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
+
+  margin: 1em;
 }
 .icon-info {
   display: flex;
@@ -108,11 +120,13 @@ export default defineComponent({
   align-items: center;
 
   width: 3em;
-  font-size: 1.2em;
-
-  margin: 1em 0.5em;
+  margin: 0.25em;
 
   border: 2px solid #4e4e4e;
   border-radius: 0.5em;
+
+  &.level {
+    border-radius: 50%;
+  }
 }
 </style>
