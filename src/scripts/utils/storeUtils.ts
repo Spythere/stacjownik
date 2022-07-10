@@ -117,15 +117,16 @@ export function getScheduledTrain(train: Train, trainStopIndex: number, stationN
   let prevStationName = '',
     nextStationName = '';
 
+
   for (let i = trainStopIndex - 1; i >= 0; i--) {
-    if (followingStops[i].stopName.startsWith('<strong>')) {
+    if (/strong|podg/g.test(followingStops[i].stopName)) {
       prevStationName = followingStops[i].stopNameRAW;
       break;
     }
   }
 
   for (let i = trainStopIndex + 1; i < followingStops.length; i++) {
-    if (followingStops[i].stopName.startsWith('<strong>')) {
+    if (/strong|podg/g.test(followingStops[i].stopName)) {
       nextStationName = followingStops[i].stopNameRAW;
       break;
     }
@@ -139,7 +140,7 @@ export function getScheduledTrain(train: Train, trainStopIndex: number, stationN
 
     if (currentStop.departureLine == null) break;
 
-    if (!/-|_|it|sbl/gi.test(currentStop.departureLine)) {
+    if (!/_|it|sbl/gi.test(currentStop.departureLine)) {
       departureLine = currentStop.departureLine;
       break;
     }
@@ -150,7 +151,7 @@ export function getScheduledTrain(train: Train, trainStopIndex: number, stationN
 
     if (currentStop.arrivalLine == null) break;
 
-    if (!/-|_|it|sbl/gi.test(currentStop.arrivalLine)) {
+    if (!/_|it|sbl/gi.test(currentStop.arrivalLine)) {
       arrivingLine = currentStop.arrivalLine;
       break;
     }
