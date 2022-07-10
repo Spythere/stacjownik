@@ -344,6 +344,7 @@ export const useStore = defineStore('store', {
 
       socket.on('UPDATE', (data: APIData) => {
         this.apiData = data;
+        this.dataStatuses.connection = DataStatus.Loaded;
         this.setOnlineData();
       });
 
@@ -353,7 +354,6 @@ export const useStore = defineStore('store', {
       });
 
       this.webSocket = socket;
-      this.dataStatuses.connection = DataStatus.Loaded;
     },
 
     async connectToAPI() {

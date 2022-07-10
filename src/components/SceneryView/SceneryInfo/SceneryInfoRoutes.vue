@@ -1,24 +1,49 @@
 <template>
   <section class="info-routes" v-if="station.generalInfo">
-    <div
+    <div class="routes one-way" v-if="station.generalInfo.routes.oneWay.length > 0">
+      <b>{{ $t('scenery.one-way-routes') }}</b>
+
+      <ul class="routes-list">
+        <li
+          v-for="route in station.generalInfo.routes.oneWay"
+          :class="{ 'no-catenary': !route.catenary, internal: route.isInternal }"
+        >
+          {{ route.name }}
+          <b v-if="route.SBL">SBL</b>
+        </li>
+      </ul>
+    </div>
+
+    <div class="routes two-way" v-if="station.generalInfo.routes.twoWay.length > 0">
+      <b>{{ $t('scenery.two-way-routes') }}</b>
+
+      <ul class="routes-list">
+        <li
+          v-for="route in station.generalInfo.routes.twoWay"
+          :class="{ 'no-catenary': !route.catenary, internal: route.isInternal }"
+        >
+          {{ route.name }} <b v-if="route.SBL">SBL</b>
+        </li>
+      </ul>
+    </div>
+
+    <!-- <div
       class="route-info"
       :class="{ 'no-catenary': !route.catenary, internal: route.isInternal }"
       v-for="route in [...station.generalInfo.routes.oneWay, ...station.generalInfo.routes.twoWay].filter(
         (route) => route.name != '-'
       )"
       :key="route.name"
-      :title="
-        `Szlak ${route.name}: ${route.isInternal ? 'wewnętrzny' : 'zewnętrzny'}, ${
-          route.tracks == 2 ? 'dwutorowy' : 'jednotorowy'
-        }, ${route.catenary ? 'zelektryfikowany' : 'niezelektryfikowany'} z ${route.SBL ? 'SBL' : 'PBL'} ${
-          route.TWB ? 'i blokadą dwukierunkową' : ''
-        }`
-      "
-    >
-      <span class="track-name">
+      :title="`Szlak ${route.name}: ${route.isInternal ? 'wewnętrzny' : 'zewnętrzny'}, ${
+        route.tracks == 2 ? 'dwutorowy' : 'jednotorowy'
+      }, ${route.catenary ? 'zelektryfikowany' : 'niezelektryfikowany'} z ${route.SBL ? 'SBL' : 'PBL'} ${
+        route.TWB ? 'i blokadą dwukierunkową' : ''
+      }`"
+    > -->
+    <!-- <span class="track-name">
         <b>{{ route.name }}</b>
-      </span>
-
+      </span> -->
+    <!--
       <span class="track-specs">
         {{ route.tracks }}tor
         <img v-if="route.catenary" :src="icons.trackCatenary" alt="icon track catenary" />
@@ -26,8 +51,8 @@
 
         <img v-if="route.TWB" :src="icons.trackTWB" alt="icon track twb" />
         <img v-if="route.SBL" :src="icons.trackSBL" alt="icon track sbl" />
-      </span>
-    </div>
+      </span> -->
+    <!-- </div> -->
   </section>
 </template>
 
@@ -42,52 +67,48 @@ export default defineComponent({
       default: {},
     },
   },
-
-  data() {
-    return {
-      icons: {
-        trackTWB: require('@/assets/icon-track-twb.svg'),
-        trackSBL: require('@/assets/icon-track-sbl.svg'),
-        trackCatenary: require('@/assets/icon-track-catenary.svg'),
-        trackNoCatenary: require('@/assets/icon-track-nocatenary.svg'),
-      },
-    };
-  },
 });
 </script>
 
 <style lang="scss" scoped>
 .info-routes {
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
+  flex-wrap: wrap;
 
-  padding: 1em 3em;
+  margin: 1em 0;
 }
 
-.route-info {
-  margin: 0.45em 0.25em;
-  font-size: 1.05em;
-  cursor: help;
+.routes {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
 
-  span {
-    height: 100%;
-    background-color: #009dce;
+  padding: 0.25em;
+}
+
+ul.routes-list {
+  margin: 0.45em 0.25em;
+  display: flex;
+
+  li {
+    background-color: #007599;
 
     padding: 0.2em 0.25em;
-  }
+    margin-left: 0.25em;
 
-  &.no-catenary > span {
-    background-color: #686868;
-  }
+    &.no-catenary {
+      background-color: #686868;
+    }
 
-  &.internal > .track-name {
-    text-decoration: underline;
-  }
+    &.internal {
+      text-decoration: underline;
+    }
 
-  img {
-    height: 1.2em;
-    vertical-align: text-bottom;
+    b {
+      color: var(--clr-primary);
+    }
   }
 }
 </style>

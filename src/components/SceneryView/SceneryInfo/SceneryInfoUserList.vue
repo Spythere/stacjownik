@@ -79,6 +79,7 @@ $terminated: salmon;
 $disconnected: slategray;
 
 .info-user-list {
+  width: 100%;
 
   ul {
     display: flex;

@@ -46,9 +46,9 @@
                         <span class="region-badge" :class="doc.region">PL1</span>
                       </span>
                       <span>
-                        <span :data-status="doc.isOnline"
-                          >{{ doc.isOnline ? $t('journal.online-since') : 'OFFLINE' }}&nbsp;</span
-                        >
+                        <span :data-status="doc.isOnline">
+                          {{ doc.isOnline ? $t('journal.online-since') : 'OFFLINE' }}&nbsp;
+                        </span>
                         <span>
                           {{ new Date(doc.timestampFrom).toLocaleTimeString('pl-PL', { timeStyle: 'short' }) }}
                         </span>
@@ -196,7 +196,7 @@ export default defineComponent({
     computedHistoryList() {
       return this.historyList.filter(
         (doc) => doc.isOnline || (doc.currentDuration && doc.currentDuration > 10 * 60000)
-      ); //.sort((a, b) => (b.isOnline ? 1 : 0) - (a.isOnline ? 1 : 0));
+      );
     },
   },
 
@@ -229,16 +229,6 @@ export default defineComponent({
       if (!isOnline) return;
 
       this.$router.push(`/scenery?station=${name.trim().replace(/ /g, '_')}`);
-    },
-
-    calculateDuration(timestampMs: number) {
-      const minsTotal = Math.round(timestampMs / 60000);
-      const hoursTotal = Math.floor(minsTotal / 60);
-      const minsInHour = minsTotal % 60;
-
-      return minsTotal > 60
-        ? this.$t('journal.hours', { hours: hoursTotal, minutes: minsInHour })
-        : this.$t('journal.minutes', { minutes: minsTotal });
     },
 
     isAnotherDay(prevIndex: number, currIndex: number) {
@@ -332,13 +322,6 @@ export default defineComponent({
           this.historyDataStatus.error = 'Brak danych!';
           return;
         }
-
-        // if (responseData.errorMessage) {
-        //   this.historyDataStatus.status = DataStatus.Error;
-        //   this.historyDataStatus.error = responseData.errorMessage;
-
-        //   return;
-        // }
 
         if (!responseData) return;
 
@@ -439,3 +422,4 @@ export default defineComponent({
   }
 }
 </style>
+

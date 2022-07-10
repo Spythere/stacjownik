@@ -9,31 +9,33 @@
     </div>
 
     <div class="scenery-wrapper" v-if="stationInfo" ref="card-wrapper">
-      <button
-        v-if="!timetableOnly"
-        class="back-btn btn btn--image"
-        :title="$t('scenery.return-btn')"
-        @click="navigateTo('/')"
-      >
-        <img :src="icons.back" alt="Back to scenery" />
-      </button>
+      <div class="scenery-left">
+        <div class="scenery-actions">
+          <button v-if="!timetableOnly" class="back-btn btn" :title="$t('scenery.return-btn')" @click="navigateTo('/')">
+            <img :src="icons.back" alt="Back to scenery" />
+          </button>
+        </div>
 
-      <button
-        v-if="!timetableOnly && store.region.id == 'eu' && stationInfo"
-        class="history-btn btn btn--image"
-        @click="
-          navigateTo('/journal/dispatchers', {
-            sceneryName: stationInfo?.name,
-          })
-        "
-      >
-        <img :src="viewMode == 'history' ? icons.user : icons.history" alt="icon" />
-      </button>
+        <SceneryHeader :station="stationInfo" />
+        <SceneryInfo :station="stationInfo" :timetableOnly="timetableOnly" />
+      </div>
 
-      <SceneryHeader :station="stationInfo" />
+      <div class="scenery-right">
+        <div class="info-actions">
+          <button
+            v-for="viewMode in viewModes"
+            class="btn btn--option"
+            @click="setViewMode(viewMode.component)"
+            :data-checked="currentViewCompontent == viewMode.component"
+          >
+            {{ $t(viewMode.id) }}
+          </button>
+        </div>
 
-      <SceneryInfo :station="stationInfo" :timetableOnly="timetableOnly" />
-      <SceneryTimetable :station="stationInfo" :timetableOnly="timetableOnly" />
+        <keep-alive>
+          <component :is="currentViewCompontent" :station="stationInfo" :key="currentViewCompontent"></component>
+        </keep-alive>
+      </div>
     </div>
   </div>
 </template>
@@ -41,34 +43,69 @@
 <script lang="ts">
 import SceneryInfo from '@/components/SceneryView/SceneryInfo.vue';
 import SceneryTimetable from '@/components/SceneryView/SceneryTimetable.vue';
+import SceneryTimetablesHistory from '../components/SceneryView/SceneryTimetablesHistory.vue';
+import SceneryDispatchersHistory from '@/components/SceneryView/SceneryDispatchersHistory.vue';
 import SceneryHeader from '@/components/SceneryView/SceneryHeader.vue';
 
 import ActionButton from '@/components/Global/ActionButton.vue';
 
-import { computed, defineComponent } from '@vue/runtime-core';
+import { computed, defineComponent, ref } from '@vue/runtime-core';
 import { useRoute } from 'vue-router';
 
 import { useStore } from '@/store/store';
 import routerMixin from '@/mixins/routerMixin';
 
+enum SceneryViewMode {
+  'TIMETABLES_ACTIVE',
+  'TIMETABLES_HISTORY',
+  'SCENERY_HISTORY',
+}
+
 export default defineComponent({
-  components: { SceneryInfo, SceneryTimetable, ActionButton, SceneryHeader },
+  components: {
+    SceneryInfo,
+    SceneryTimetable,
+    ActionButton,
+    SceneryHeader,
+    SceneryTimetablesHistory,
+    SceneryDispatchersHistory,
+  },
 
   mixins: [routerMixin],
 
   data: () => ({
     icons: {
-      history: require('@/assets/icon-history.svg'),
       user: require('@/assets/icon-user.svg'),
       back: require('@/assets/icon-back.svg'),
     },
 
-    viewMode: 'info',
+    viewModes: [
+      {
+        id: 'scenery.option-active-timetables',
+        component: 'SceneryTimetable',
+      },
+      {
+        id: 'scenery.option-timetables-history',
+        component: 'SceneryTimetablesHistory',
+      },
+      {
+        id: 'scenery.option-dispatchers-history',
+        component: 'SceneryDispatchersHistory',
+      },
+    ],
+
+    sceneryViewMode: SceneryViewMode,
+
+    selectedCheckpoint: '',
+
+    currentViewCompontent: 'SceneryTimetable',
 
     onlineFrom: -1,
   }),
 
-  activated() {},
+  activated() {
+    this.loadSelectedCheckpoint();
+  },
 
   setup() {
     const route = useRoute();
@@ -91,8 +128,19 @@ export default defineComponent({
   },
 
   methods: {
-    setCardViewMode(mode: string) {
-      this.viewMode = mode;
+    setViewMode(componentName: string) {
+      this.currentViewCompontent = componentName;
+    },
+
+    loadSelectedCheckpoint() {
+      if (!this.stationInfo?.generalInfo?.checkpoints) return;
+      if (this.stationInfo.generalInfo.checkpoints.length == 0) return;
+
+      this.selectedCheckpoint = this.stationInfo.generalInfo.checkpoints[0].checkpointName;
+    },
+
+    selectCheckpoint(cp: { checkpointName: string }) {
+      this.selectedCheckpoint = cp.checkpointName;
     },
   },
 });
@@ -102,29 +150,18 @@ export default defineComponent({
 @import '../styles/responsive.scss';
 @import '../styles/variables.scss';
 
-$sceneryBgCol: #333;
-
-.scenery-view-anim {
-  &-enter-from,
-  &-leave-to {
-    opacity: 0;
-  }
-
-  &-enter-active {
-    transition: all 100ms ease-out;
-  }
-
-  &-leave-active {
-    transition: all 100ms ease-out 100ms;
+button.back-btn {
+  img {
+    width: 2em;
   }
 }
 
 .scenery {
   &-view {
-    min-height: 550px;
-
     display: flex;
     justify-content: center;
+
+    min-height: 100vh;
   }
 
   &-offline {
@@ -142,42 +179,119 @@ $sceneryBgCol: #333;
       margin: 1em auto;
     }
   }
+}
 
-  &-wrapper {
-    position: relative;
+.scenery-wrapper {
+  display: grid;
+  grid-template-columns: 4fr 5fr;
+  gap: 0 1em;
 
-    width: 100%;
-    max-width: 1100px;
+  position: relative;
 
-    @include midScreen {
-      width: 100%;
+  width: 100%;
+  max-width: 1700px;
+
+  margin: 1rem 0;
+
+  text-align: center;
+}
+
+.scenery-left {
+  position: relative;
+  background-color: #181818;
+  padding: 1em 0.5em;
+
+  height: 95vh;
+  min-height: 550px;
+  max-height: 1000px;
+
+  overflow: auto;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.scenery-right {
+  background: #181818;
+  padding: 2em 0.5em;
+
+  height: 95vh;
+  min-height: 550px;
+  max-height: 1000px;
+
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 1em;
+}
+
+.scenery-actions {
+  display: flex;
+}
+
+.info-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .btn {
+    margin: 0.5em;
+    padding: 0.5em;
+    box-shadow: 0 0 10px 4px #242424;
+
+    &[data-checked='true'] {
+      color: var(--clr-primary);
+      font-weight: bold;
+    }
+  }
+}
+
+.timetable-checkpoints {
+  display: flex;
+  justify-content: center;
+
+  flex-wrap: wrap;
+  font-size: 1.1em;
+  margin: 0.75em 0;
+
+  .checkpoint_item {
+    &.current {
+      font-weight: bold;
+      color: $accentCol;
     }
 
-    background: #292929;
-    padding: 1em;
-    margin: 1rem 0;
-
-    border-radius: 1.5em;
-
-    text-align: center;
+    &:not(:last-child)::after {
+      margin: 0 0.5em;
+      content: '•';
+      color: white;
+    }
   }
 }
 
-button.btn {
-  position: absolute;
-  padding: 0.25em;
+@include midScreen {
+  .scenery-wrapper {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
 
-  top: 0.5em;
-  img {
-    width: 2em;
+  .scenery-left {
+    border-radius: 1em;
+    margin-bottom: 1em;
+    height: auto;
+  }
+
+  .scenery-right {
+    border-radius: 1em;
+    height: auto;
+  }
+
+  .info-actions {
+    flex-wrap: wrap;
   }
 }
 
-button.history-btn {
-  right: 0.5em;
-}
-
-button.back-btn {
-  left: 0.5em;
+@include smallScreen {
+  .scenery-left, .scenery-right {
+    max-height: 100vh;
+  }
 }
 </style>

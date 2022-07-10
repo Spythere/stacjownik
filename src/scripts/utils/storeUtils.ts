@@ -117,15 +117,16 @@ export function getScheduledTrain(train: Train, trainStopIndex: number, stationN
   let prevStationName = '',
     nextStationName = '';
 
+
   for (let i = trainStopIndex - 1; i >= 0; i--) {
-    if (followingStops[i].stopName.startsWith('<strong>')) {
+    if (/strong|podg/g.test(followingStops[i].stopName)) {
       prevStationName = followingStops[i].stopNameRAW;
       break;
     }
   }
 
   for (let i = trainStopIndex + 1; i < followingStops.length; i++) {
-    if (followingStops[i].stopName.startsWith('<strong>')) {
+    if (/strong|podg/g.test(followingStops[i].stopName)) {
       nextStationName = followingStops[i].stopNameRAW;
       break;
     }
