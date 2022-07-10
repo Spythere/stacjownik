@@ -190,7 +190,7 @@ ul.options {
 
   height: auto;
 
-  z-index: 10;
+  z-index: 100;
 
   width: 100%;
 }

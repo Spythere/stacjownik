@@ -22,16 +22,26 @@
 
       <div class="scenery-right">
         <div class="info-actions">
-          <button class="btn btn--option checked">Aktywne rozkłady jazdy</button>
-          <button class="btn btn--option">Historia rozkładów scenerii</button>
-          <button class="btn btn--option">Historia dyżurów scenerii</button>
+          <button
+            v-for="viewMode in viewModes"
+            class="btn btn--option"
+            @click="setViewMode(viewMode.component)"
+            :data-checked="currentViewCompontent == viewMode.component"
+          >
+            {{ viewMode.value }}
+          </button>
         </div>
 
-        <SceneryTimetable
-          :station="stationInfo"
-          :timetableOnly="timetableOnly"
-          :selectedCheckpoint="selectedCheckpoint"
-        />
+        <keep-alive>
+          <component :is="currentViewCompontent" :station="stationInfo" :key="currentViewCompontent"></component>
+        </keep-alive>
+          <!-- Timetables active -->
+          <!-- <SceneryTimetable />
+
+          <SceneryTimetablesHistory
+            v-if="currentViewMode == sceneryViewMode.TIMETABLES_HISTORY"
+            :stationName="stationInfo.name"
+          /> -->
       </div>
     </div>
   </div>
@@ -49,22 +59,48 @@ import { useRoute } from 'vue-router';
 
 import { useStore } from '@/store/store';
 import routerMixin from '@/mixins/routerMixin';
+import SceneryTimetablesHistory from '../components/SceneryView/SceneryTimetablesHistory.vue';
+
+enum SceneryViewMode {
+  'TIMETABLES_ACTIVE',
+  'TIMETABLES_HISTORY',
+  'SCENERY_HISTORY',
+}
 
 export default defineComponent({
-  components: { SceneryInfo, SceneryTimetable, ActionButton, SceneryHeader },
+  components: { SceneryInfo, SceneryTimetable, ActionButton, SceneryHeader, SceneryTimetablesHistory },
 
   mixins: [routerMixin],
 
   data: () => ({
     icons: {
-      history: require('@/assets/icon-history.svg'),
       user: require('@/assets/icon-user.svg'),
       back: require('@/assets/icon-back.svg'),
     },
 
+    viewModes: [
+      {
+        name: SceneryViewMode.TIMETABLES_ACTIVE,
+        value: 'Aktywne rozkłady jazdy',
+        component: 'SceneryTimetable',
+      },
+      {
+        name: SceneryViewMode.TIMETABLES_HISTORY,
+        value: 'Historia rozkładów scenerii',
+        component: 'SceneryTimetablesHistory',
+      },
+      {
+        name: SceneryViewMode.SCENERY_HISTORY,
+        value: 'Historia dyżurów scenerii',
+        component: 'SceneryDispatchersHistory',
+      },
+    ],
+
+    sceneryViewMode: SceneryViewMode,
+
     selectedCheckpoint: '',
 
-    viewMode: 'info',
+    currentViewCompontent: 'SceneryTimetable',
 
     onlineFrom: -1,
   }),
@@ -94,8 +130,8 @@ export default defineComponent({
   },
 
   methods: {
-    setCardViewMode(mode: string) {
-      this.viewMode = mode;
+    setViewMode(componentName: string) {
+      this.currentViewCompontent = componentName;
     },
 
     loadSelectedCheckpoint() {
@@ -157,7 +193,6 @@ button.back-btn {
   width: 100%;
   max-width: 1700px;
 
-  padding: 1em;
   margin: 1rem 0;
 
   text-align: center;
@@ -187,7 +222,7 @@ button.back-btn {
   max-height: 1000px;
 
   display: grid;
-  grid-template-rows: 50px 1fr;
+  grid-template-rows: auto 1fr;
   gap: 1em;
 }
 
@@ -198,10 +233,17 @@ button.back-btn {
 .info-actions {
   display: flex;
   justify-content: center;
+  align-items: center;
 
   .btn {
     margin: 0.5em;
+    padding: 0.5em;
     box-shadow: 0 0 10px 4px #242424;
+
+    &[data-checked='true'] {
+      color: var(--clr-primary);
+      font-weight: bold;
+    }
   }
 }
 
@@ -234,8 +276,18 @@ button.back-btn {
   }
 
   .scenery-left {
+    border-radius: 1em;
+    margin-bottom: 1em;
     height: auto;
-    margin-bottom: 2em;
+  }
+
+  .scenery-right {
+    border-radius: 1em;
+    height: auto;
+  }
+
+  .info-actions {
+    flex-wrap: wrap;
   }
 }
 </style>

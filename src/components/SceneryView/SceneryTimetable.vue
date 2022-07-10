@@ -1,15 +1,28 @@
 <template>
-  <div class="scenery-timetable">
-    <div class="timetable-checkpoints" v-if="station && station.generalInfo?.checkpoints">
-      <button
-        v-for="cp in station.generalInfo.checkpoints"
-        :key="cp.checkpointName"
-        class="checkpoint_item btn btn--text"
-        :class="{ current: selectedCheckpoint === cp.checkpointName }"
-        @click="selectCheckpoint(cp)"
-      >
-        {{ cp.checkpointName }}
-      </button>
+  <section class="scenery-timetable">
+    <div class="timetable-header">
+      <h3>
+        <img :src="icons.timetable" alt="icon-timetable" />&nbsp;
+        <span>{{ $t('scenery.timetables') }}</span>
+        &nbsp;
+        <span class="text--primary">{{ station.onlineInfo?.scheduledTrains?.length || '0' }}</span>
+        <span>&nbsp;/&nbsp;</span>
+        <span class="text--grayed">
+          {{ station.onlineInfo?.scheduledTrains?.filter((train) => train.stopInfo.confirmed).length || '0' }}
+        </span>
+      </h3>
+
+      <div class="timetable-checkpoints" v-if="station && station.generalInfo?.checkpoints">
+        <button
+          v-for="cp in station.generalInfo.checkpoints"
+          :key="cp.checkpointName"
+          class="checkpoint_item btn btn--text"
+          :class="{ current: selectedCheckpoint === cp.checkpointName }"
+          @click="selectCheckpoint(cp)"
+        >
+          {{ cp.checkpointName }}
+        </button>
+      </div>
     </div>
 
     <div class="timetable-list">
@@ -141,13 +154,13 @@
     </div>
 
     <!-- </transition> -->
-  </div>
+  </section>
 </template>
 
 <script lang="ts">
 import Station from '@/scripts/interfaces/Station';
 import SelectBox from '../Global/SelectBox.vue';
-import { computed, defineComponent, ref } from '@vue/runtime-core';
+import { computed, defineComponent, PropType, ref } from '@vue/runtime-core';
 import { useRoute } from 'vue-router';
 import dateMixin from '@/mixins/dateMixin';
 import routerMixin from '@/mixins/routerMixin';
@@ -155,17 +168,16 @@ import { useStore } from '@/store/store';
 import Loading from '../Global/Loading.vue';
 
 export default defineComponent({
+  name: 'SceneryTimetable',
+
   components: { SelectBox, Loading },
 
   mixins: [dateMixin, routerMixin],
 
   props: {
     station: {
-      type: Object as () => Station,
+      type: Object as PropType<Station>,
       required: true,
-    },
-    timetableOnly: {
-      type: Boolean,
     },
   },
 
@@ -271,9 +283,19 @@ export default defineComponent({
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
 
-  font-size: 1.3em;
-  margin-top: 1em;
+  position: sticky;
+  top: 0;
+  z-index: 99;
+
+  background-color: #181818;
+
+  h3 {
+    display: flex;
+    align-items: center;
+    font-size: 1.4em;
+  }
 }
 
 .timetable {
@@ -282,7 +304,7 @@ export default defineComponent({
   }
 
   &-item {
-    margin: 1em auto;
+    margin: 0.5em auto;
     padding: 0 0.5em;
     max-width: 1100px;
 
@@ -290,7 +312,7 @@ export default defineComponent({
     grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
     gap: 0 0.5em;
 
-    background: $bgCol;
+    background: #353535;
 
     cursor: pointer;
     z-index: 10;
@@ -319,6 +341,10 @@ export default defineComponent({
   }
 }
 
+.timetable-list {
+  position: relative;
+}
+
 .timetable-checkpoints {
   display: flex;
   justify-content: center;
@@ -326,13 +352,6 @@ export default defineComponent({
   flex-wrap: wrap;
   font-size: 1.1em;
   padding: 0.75em 0;
-
-  position: sticky;
-  top: 0;
-  z-index: 555;
-
-  background-color: #181818;
-
   .checkpoint_item {
     &.current {
       font-weight: bold;

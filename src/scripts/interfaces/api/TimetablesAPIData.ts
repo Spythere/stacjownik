@@ -1,4 +1,3 @@
-
 export interface TimetableHistory {
   timetableId: number;
   trainNo: number;
@@ -27,4 +26,10 @@ export interface TimetableHistory {
 
   authorName?: string;
   authorId?: number;
+}
+
+export interface SceneryTimetableHistory {
+  sceneryTimetables: TimetableHistory[];
+  totalCount: number;
+  sceneryName: string;
 }
