@@ -249,7 +249,17 @@
     "lines-title": "Rzeczywiste linie",
     "project-title": "Projekt",
     "one-way-routes": "Szlaki jednotorowe",
-    "two-way-routes": "Szlaki dwutorowe"
+    "two-way-routes": "Szlaki dwutorowe",
+
+    "option-active-timetables": "Aktywne rozkłady jazdy",
+    "option-timetables-history": "Historia rozkładów scenerii",
+    "option-dispatchers-history": "Historia dyżurów scenerii",
+
+    "timetable-author-title": "Wydany przez",
+    "timetable-author-unknown": "Autor nieznany",
+
+    "req-level": "ogólnodostępna | minimum {lvl} poziom dyżurnego | minimum {lvl} poziom dyżurnego",
+    "history-list-empty": "Brak historii dla tej scenerii!"
   },
   "availability": {
     "title": "Dostępność",

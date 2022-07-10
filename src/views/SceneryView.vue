@@ -28,20 +28,13 @@
             @click="setViewMode(viewMode.component)"
             :data-checked="currentViewCompontent == viewMode.component"
           >
-            {{ viewMode.value }}
+            {{ $t(viewMode.id) }}
           </button>
         </div>
 
         <keep-alive>
           <component :is="currentViewCompontent" :station="stationInfo" :key="currentViewCompontent"></component>
         </keep-alive>
-          <!-- Timetables active -->
-          <!-- <SceneryTimetable />
-
-          <SceneryTimetablesHistory
-            v-if="currentViewMode == sceneryViewMode.TIMETABLES_HISTORY"
-            :stationName="stationInfo.name"
-          /> -->
       </div>
     </div>
   </div>
@@ -50,6 +43,8 @@
 <script lang="ts">
 import SceneryInfo from '@/components/SceneryView/SceneryInfo.vue';
 import SceneryTimetable from '@/components/SceneryView/SceneryTimetable.vue';
+import SceneryTimetablesHistory from '../components/SceneryView/SceneryTimetablesHistory.vue';
+import SceneryDispatchersHistory from '@/components/SceneryView/SceneryDispatchersHistory.vue';
 import SceneryHeader from '@/components/SceneryView/SceneryHeader.vue';
 
 import ActionButton from '@/components/Global/ActionButton.vue';
@@ -59,7 +54,6 @@ import { useRoute } from 'vue-router';
 
 import { useStore } from '@/store/store';
 import routerMixin from '@/mixins/routerMixin';
-import SceneryTimetablesHistory from '../components/SceneryView/SceneryTimetablesHistory.vue';
 
 enum SceneryViewMode {
   'TIMETABLES_ACTIVE',
@@ -68,7 +62,14 @@ enum SceneryViewMode {
 }
 
 export default defineComponent({
-  components: { SceneryInfo, SceneryTimetable, ActionButton, SceneryHeader, SceneryTimetablesHistory },
+  components: {
+    SceneryInfo,
+    SceneryTimetable,
+    ActionButton,
+    SceneryHeader,
+    SceneryTimetablesHistory,
+    SceneryDispatchersHistory,
+  },
 
   mixins: [routerMixin],
 
@@ -80,18 +81,15 @@ export default defineComponent({
 
     viewModes: [
       {
-        name: SceneryViewMode.TIMETABLES_ACTIVE,
-        value: 'Aktywne rozkłady jazdy',
+        id: 'scenery.option-active-timetables',
         component: 'SceneryTimetable',
       },
       {
-        name: SceneryViewMode.TIMETABLES_HISTORY,
-        value: 'Historia rozkładów scenerii',
+        id: 'scenery.option-timetables-history',
         component: 'SceneryTimetablesHistory',
       },
       {
-        name: SceneryViewMode.SCENERY_HISTORY,
-        value: 'Historia dyżurów scenerii',
+        id: 'scenery.option-dispatchers-history',
         component: 'SceneryDispatchersHistory',
       },
     ],
@@ -288,6 +286,12 @@ button.back-btn {
 
   .info-actions {
     flex-wrap: wrap;
+  }
+}
+
+@include smallScreen {
+  .scenery-left, .scenery-right {
+    max-height: 100vh;
   }
 }
 </style>

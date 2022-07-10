@@ -507,7 +507,7 @@ export default defineComponent({
       flex-direction: column;
       align-items: center;
 
-      font-size: 1.2em;
+      font-size: 1.05em;
     }
 
     &-general {
@@ -516,7 +516,6 @@ export default defineComponent({
 
     &-schedule {
       width: 100%;
-      margin: 0.5em 0;
     }
   }
 }

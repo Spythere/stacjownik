@@ -140,7 +140,7 @@ export function getScheduledTrain(train: Train, trainStopIndex: number, stationN
 
     if (currentStop.departureLine == null) break;
 
-    if (!/_|it|sbl/gi.test(currentStop.departureLine)) {
+    if (!/-|_|it|sbl/gi.test(currentStop.departureLine)) {
       departureLine = currentStop.departureLine;
       break;
     }
@@ -151,7 +151,7 @@ export function getScheduledTrain(train: Train, trainStopIndex: number, stationN
 
     if (currentStop.arrivalLine == null) break;
 
-    if (!/_|it|sbl/gi.test(currentStop.arrivalLine)) {
+    if (!/-|_|it|sbl/gi.test(currentStop.arrivalLine)) {
       arrivingLine = currentStop.arrivalLine;
       break;
     }

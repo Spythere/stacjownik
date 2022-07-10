@@ -1,23 +1,28 @@
 <template>
-  <section class="scenery-timetables-history">
+  <section class="scenery-timetables-history scenery-section">
     <Loading v-if="dataStatus != 2" />
+
+    <div class="list-warning" v-else-if="sceneryHistoryList.length == 0">{{ $t('scenery.history-list-empty') }}</div>
     <ul class="history-list" v-else>
       <li class="list-item" v-for="historyItem in sceneryHistoryList">
         <div>
+          <b>{{ localeDay(historyItem.beginDate, $i18n.locale) }}</b>
+          {{ localeTime(historyItem.beginDate, $i18n.locale) }}
+        </div>
+        <div>
           <span class="text--grayed"> #{{ historyItem.timetableId }} </span>
           <b class="text--primary">&nbsp;{{ historyItem.trainCategoryCode }} {{ historyItem.trainNo }}</b>
-          {{ historyItem.driverName }}
-
-          <div>Odjazd: {{ localeDate(historyItem.beginDate, $i18n.locale) }}</div>
+          <div>{{ historyItem.driverName }}</div>
         </div>
 
-        <div style="text-align: right">
-          {{ historyItem.route.replace('|', ' -> ') }} | {{ historyItem.routeDistance }} km
-          <div v-if="historyItem.authorName">
-            Autor:
-            <b>{{ historyItem.authorName }}</b>
-          </div>
+        <div>{{ historyItem.route.replace('|', ' -> ') }}</div>
+        <!-- <div>{{ historyItem.routeDistance }} km</div> -->
+        <div>
+          {{ $t('scenery.timetable-author-title') }}:
+          <b v-if="historyItem.authorName">{{ historyItem.authorName }}</b>
+          <i v-else>{{ $t('scenery.timetable-author-unknown') }}</i>
         </div>
+
         <!-- <div v-if="historyItem.authorId">{{ historyItem.authorName }}</div> -->
       </li>
     </ul>
@@ -70,10 +75,13 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.scenery-timetables-history {
-  position: relative;
-  height: 100%;
-  overflow-y: scroll;
+@import '../../styles/responsive.scss';
+@import '../../styles/SceneryView/styles.scss';
+
+.list-warning {
+  padding: 1em 0.5em;
+  background-color: #444;
+  font-size: 1.2em;
 }
 
 .history-list {
@@ -81,15 +89,22 @@ export default defineComponent({
 }
 
 .list-item {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr 2fr 2fr 1fr;
+  gap: 1em;
+  align-items: center;
 
-  text-align: left;
   background-color: #353535;
   padding: 0.5em;
   margin: 0.5em 0;
 
   line-height: 1.5em;
+}
+
+@include smallScreen {
+  .list-item {
+    grid-template-columns: 1fr 1fr;
+    font-size: 1.05em;
+  }
 }
 </style>

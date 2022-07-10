@@ -8,10 +8,14 @@
           <span>
             <b>{{ $t('availability.title') }}:</b> {{ $t(`availability.${station.generalInfo.availability}`) }}
 
-            <span v-if="station.generalInfo.reqLevel > 0">
+            <span v-if="station.generalInfo.reqLevel > -1">
+              - {{ $tc('scenery.req-level', station.generalInfo.reqLevel, { lvl: station.generalInfo.reqLevel }) }}
+            </span>
+
+            <!-- <span v-if="station.generalInfo.reqLevel > 0">
               - minimum {{ station.generalInfo.reqLevel }} poziom dyżurnego
             </span>
-            <span v-else-if="station.generalInfo.reqLevel == 0">- dla wszystkich poziomów</span>
+            <span v-else-if="station.generalInfo.reqLevel == 0">- dla wszystkich poziomów</span> -->
           </span>
 
           <span>
