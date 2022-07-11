@@ -207,7 +207,6 @@ ul.stock-list {
 
 .schedule-wrapper {
   overflow-y: auto;
-  max-height: 500px;
   width: 100%;
   z-index: 5;
 

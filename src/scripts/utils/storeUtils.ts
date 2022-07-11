@@ -159,6 +159,8 @@ export function getScheduledTrain(train: Train, trainStopIndex: number, stationN
 
   return {
     trainNo: train.trainNo,
+    trainId: train.trainId,
+    
     driverName: train.driverName,
     driverId: train.driverId,
     currentStationName: train.currentStationName,

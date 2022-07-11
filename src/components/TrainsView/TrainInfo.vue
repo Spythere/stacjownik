@@ -1,17 +1,9 @@
 <template>
-  <div class="train-info simple" tabindex="0">
-    <section>
+  <div class="train-info" tabindex="0">
+    <section class="train-route">
       <span>
         <div>
           <span>
-            <!-- <router-link
-              v-if="train.timetableData"
-              :to="`/journal/timetables?timetableId=${train.timetableData.timetableId}`"
-              style="color: #ddd; margin-right: 0.3em"
-            >
-              #{{ train.timetableData.timetableId }}
-            </router-link> -->
-
             <span class="timetable-id" v-if="train.timetableData">#{{ train.timetableData.timetableId }}</span>
 
             <span class="timetable_warnings">
@@ -96,8 +88,10 @@
       </span>
     </section>
 
-    <section class="train-image" style="display: flex; justify-content: center; align-items: center">
-      <img :src="train.locoURL" loading="lazy" alt="Loco image not found" @error="onImageError" />
+    <section class="train-stats">
+      <div>
+        <img :src="train.locoURL" loading="lazy" alt="Loco image not found" @error="onImageError" />
+      </div>
 
       <div class="text--grayed">
         {{ train.locoType }}
@@ -108,12 +102,10 @@
       </div>
 
       <div>
-        <div>
-          <span v-for="(stat, i) in STATS.main" :key="stat.name">
-            <span v-if="i > 0"> &bull; </span>
-            <span>{{ `${~~(train[stat.name] * (stat.multiplier || 1))}${stat.unit}` }} </span>
-          </span>
-        </div>
+        <span v-for="(stat, i) in STATS.main" :key="stat.name">
+          <span v-if="i > 0"> &bull; </span>
+          <span>{{ `${~~(train[stat.name] * (stat.multiplier || 1))}${stat.unit}` }} </span>
+        </span>
       </div>
     </section>
   </div>
@@ -129,6 +121,11 @@ export default defineComponent({
     train: {
       type: Object as () => Train,
       required: true,
+    },
+
+    extended: {
+      type: Boolean,
+      default: true,
     },
   },
 
@@ -153,9 +150,13 @@ export default defineComponent({
   margin-left: 0.5em;
 }
 
-.train-image {
+.train-stats {
   display: flex;
+  justify-content: center;
+  align-content: center;
+
   flex-direction: column;
+  text-align: center;
 
   img {
     margin: 0.5em 0;
@@ -163,7 +164,7 @@ export default defineComponent({
   }
 }
 
-.simple {
+.train-info {
   display: grid;
   grid-template-columns: 2fr 1fr;
   grid-template-rows: 1fr;
@@ -258,16 +259,20 @@ export default defineComponent({
 }
 
 @include smallScreen() {
-  .simple {
+  .train-info {
     grid-template-columns: 1fr;
     gap: 1em 0;
     text-align: center;
 
-    font-size: 1.25em;
+    font-size: 1.15em;
   }
 
-  .info-stats {
-    text-align: center;
+  .train-stats {
+    font-size: 1.1em;
+
+    img {
+      display: none;
+    }
   }
 
   .timetable_route {

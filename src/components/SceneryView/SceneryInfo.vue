@@ -103,6 +103,7 @@ export default defineComponent({
 
 <style lang="scss">
 @import '../../styles/responsive.scss';
+@import '../../styles/badge.scss';
 
 h3.section-header {
   margin: 0.5em 0;
@@ -143,32 +144,5 @@ h3.section-header {
   }
 }
 
-.badge {
-  font-weight: 600;
 
-  display: inline-block;
-  padding: 0;
-
-  background: #585858;
-
-  margin: 0.25em;
-
-  span {
-    display: inline-block;
-    padding: 0.2em 0.4em;
-  }
-
-  &-none {
-    font-weight: 600;
-
-    padding: 0.2em 0.4em;
-    background: firebrick;
-
-    text-align: center;
-
-    @include smallScreen() {
-      font-size: 1em;
-    }
-  }
-}
 </style>

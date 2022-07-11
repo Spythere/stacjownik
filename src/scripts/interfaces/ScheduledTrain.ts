@@ -1,7 +1,9 @@
 import TrainStop from "./TrainStop";
 
 export default interface ScheduledTrain {
+    trainId: string;
     trainNo: number;
+    
     driverName: string;
     driverId: number;
     currentStationName: string;

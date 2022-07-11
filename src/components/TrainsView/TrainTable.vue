@@ -1,4 +1,8 @@
 <template>
+  <keep-alive>
+    <TrainModal v-if="chosenTrain" :chosen-train="chosenTrain" @close-modal="closeTimetable" />
+  </keep-alive>
+
   <div class="train-table" @keydown.esc="closeTimetable">
     <button class="return-btn" @click="scrollToTop" v-if="showReturnButton">
       <img :src="icons.arrowAsc" alt="return arrow" />
@@ -17,12 +21,10 @@
             class="train-row"
             v-for="train in currentTrains"
             :key="train.trainNo + train.driverId"
-            @click="toggleTimetable(train)"
+            @click.stop="toggleTimetable(train)"
             @keydown.enter="toggleTimetable(train)"
           >
             <TrainInfo :train="train" />
-
-            <TrainSchedule v-if="chosenTrainId == getTrainId(train)" :train="train" ref="card-inner" tabindex="0" />
           </li>
         </ul>
       </div>
@@ -43,12 +45,14 @@ import TrainInfo from '@/components/TrainsView/TrainInfo.vue';
 import returnBtnMixin from '@/mixins/returnBtnMixin';
 import { useStore } from '@/store/store';
 import Loading from '../Global/Loading.vue';
+import TrainModal from '../Global/TrainModal.vue';
 
 export default defineComponent({
   components: {
     TrainSchedule,
     TrainInfo,
     Loading,
+    TrainModal,
   },
 
   mixins: [returnBtnMixin],
@@ -95,6 +99,12 @@ export default defineComponent({
     };
   },
 
+  computed: {
+    chosenTrain() {
+      return this.trains.find((train) => train.trainId == this.chosenTrainId);
+    },
+  },
+
   activated() {
     const query = this.$route.query;
 
@@ -138,22 +148,16 @@ export default defineComponent({
     },
 
     toggleTimetable(train: Train, state?: boolean) {
-      const id = this.getTrainId(train);
-
       if (state !== undefined) {
-        this.chosenTrainId = state ? id : null;
+        this.chosenTrainId = train.trainId;
         return;
       }
 
-      this.chosenTrainId = this.chosenTrainId && this.chosenTrainId == id ? null : id;
+      this.chosenTrainId = this.chosenTrainId && this.chosenTrainId == train.trainId ? null : train.trainId;
     },
 
     closeTimetable() {
       this.chosenTrainId = null;
-    },
-
-    getTrainId(train: Train) {
-      return train.driverName + train.trainNo.toString();
     },
   },
 });

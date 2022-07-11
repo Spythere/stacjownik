@@ -1,6 +1,8 @@
 import TrainStop from "@/scripts/interfaces/TrainStop";
 
 export default interface Train {
+  trainId: string;
+
   mass: number;
   length: number;
   speed: number;

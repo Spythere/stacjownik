@@ -25,6 +25,10 @@
       </div>
     </div>
 
+    <keep-alive>
+      <TrainModal v-if="chosenTrain" :chosen-train="chosenTrain" @close-modal="closeTrainModal" />
+    </keep-alive>
+
     <div class="timetable-list">
       <!-- <transition name="scenery-timetable-list-anim" mode="out-in"> -->
       <!-- <div :key="store.dataStatuses.trains + selectedCheckpoint" class="scenery-timetable-list"> -->
@@ -41,13 +45,8 @@
         v-for="(scheduledTrain, i) in computedScheduledTrains"
         :key="i + 1"
         tabindex="0"
-        @click="navigateTo('/trains', { trainNo: scheduledTrain.trainNo, driverName: scheduledTrain.driverName })"
-        @keydown.enter="
-          navigateTo('/trains', {
-            trainNo: scheduledTrain.trainNo,
-            driverName: scheduledTrain.driverName,
-          })
-        "
+        @click.prevent.stop="selectTrain(scheduledTrain.trainId)"
+        @keydown.enter.prevent="selectTrain(scheduledTrain.trainId)"
       >
         <span class="timetable-general">
           <span class="general-info">
@@ -166,11 +165,12 @@ import dateMixin from '@/mixins/dateMixin';
 import routerMixin from '@/mixins/routerMixin';
 import { useStore } from '@/store/store';
 import Loading from '../Global/Loading.vue';
+import TrainModal from '../Global/TrainModal.vue';
 
 export default defineComponent({
   name: 'SceneryTimetable',
 
-  components: { SelectBox, Loading },
+  components: { SelectBox, Loading, TrainModal },
 
   mixins: [dateMixin, routerMixin],
 
@@ -188,6 +188,8 @@ export default defineComponent({
       warning: require('@/assets/icon-warning.svg'),
       timetable: require('@/assets/icon-timetable.svg'),
     },
+
+    chosenTrainId: null as string | null,
   }),
 
   setup(props) {
@@ -236,6 +238,12 @@ export default defineComponent({
     };
   },
 
+  computed: {
+    chosenTrain() {
+      return this.store.trainList.find((train) => train.trainId == this.chosenTrainId);
+    },
+  },
+
   methods: {
     loadSelectedOption() {
       if (!this.station) return;
@@ -250,6 +258,14 @@ export default defineComponent({
 
     selectCheckpoint(cp: { checkpointName: string }) {
       this.selectedCheckpoint = cp.checkpointName;
+    },
+
+    selectTrain(trainId: string) {
+      this.chosenTrainId = trainId;
+    },
+
+    closeTrainModal() {
+      this.chosenTrainId = null;
     },
   },
 

@@ -70,6 +70,8 @@ export const useStore = defineStore('store', {
           const timetable = train.timetable;
 
           return {
+            trainId: train.driverName + train.trainNo.toString(),
+            
             trainNo: train.trainNo,
             mass: train.mass,
             length: train.length,
