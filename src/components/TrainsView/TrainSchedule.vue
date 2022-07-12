@@ -277,13 +277,14 @@ ul.stop_list > li.stop {
   padding: 0 0.5em;
 
   &.sbl {
-    .stop-name,
     .stop-date {
-      opacity: 0.7;
+      display: none;
     }
 
     .stop-name {
-      background-color: #333;
+      background: none;
+      color: #aaa;
+      padding-left: 0;
     }
   }
 
@@ -380,8 +381,6 @@ ul.stop_list > li.stop {
     text-align: center;
 
     flex-wrap: wrap;
-
-    padding: 0.15em 0;
   }
 
   .stop-bar {
