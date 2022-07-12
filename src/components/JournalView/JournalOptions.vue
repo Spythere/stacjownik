@@ -12,15 +12,15 @@
         </div>
 
         <div class="content_search">
-          <div class="search-box" v-for="search in searchersValues" :key="search.id">
+          <div class="search-box" v-for="(value, propName) in searchersValues" :key="propName">
             <input
               class="search-input"
-              :placeholder="$t(`journal.${search.id}`)"
-              v-model="search.value"
+              :placeholder="$t(`journal.${propName}`)"
+              v-model="searchersValues[propName]"
               @keydown.enter="onInputSearch"
             />
 
-            <img class="search-exit" :src="exitIcon" alt="exit-icon" @click="onInputClear(search.id)" />
+            <img class="search-exit" :src="exitIcon" alt="exit-icon" @click="onInputClear(propName)" />
           </div>
           <!-- <div class="search-box">
             <input
@@ -91,7 +91,7 @@ export default defineComponent({
 
   setup() {
     return {
-      searchersValues: inject('searchersValues') as {id: string; value: string}[],
+      searchersValues: inject('searchersValues') as {[key: string]: string},
       sorterActive: inject('sorterActive') as { id: string | number; dir: number },
       journalFilterActive: inject('journalFilterActive') as JournalFilter,
     };
@@ -123,8 +123,8 @@ export default defineComponent({
       this.$emit('onInputChange');
     },
 
-    onInputClear(id: string) {
-      this.searchersValues.find(s => s.id == id)!.value = "";
+    onInputClear(id: any) {
+      this.searchersValues[id] = '';
       this.onInputSearch();
     },
   },
