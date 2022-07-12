@@ -59,24 +59,7 @@
       </div>
 
       <div class="driver_position text--grayed" style="margin-top: 0.25em">
-        <span v-if="train.currentStationHash">
-          {{ $t('trains.current-scenery') }} <span>{{ train['currentStationName'] }}&nbsp;</span>
-        </span>
-
-        <span v-else>
-          {{ $t('trains.current-scenery') }}
-          <span>{{ train['currentStationName'].replace(/.[a-zA-Z0-9]+.sc/, '') }} (offline)&nbsp;</span>
-        </span>
-
-        <span v-if="train.signal">
-          {{ $t('trains.current-signal') }} <span>{{ train['signal'] }}&nbsp;</span>
-        </span>
-
-        <span v-if="train.connectedTrack">
-          {{ $t('trains.current-track') }} <span>{{ train['connectedTrack'] }}&nbsp;</span>
-        </span>
-
-        <span v-if="train.distance">({{ displayDistance(train.distance) }})</span>
+          {{ displayTrainPosition(train) }}
       </div>
     </section>
 
@@ -160,12 +143,9 @@ export default defineComponent({
   grid-template-rows: 1fr;
 
   padding: 1em;
+
   background-color: #202020;
   gap: 0.5em;
-}
-
-.driver_position:first-letter {
-  text-transform: capitalize;
 }
 
 .timetable-id {

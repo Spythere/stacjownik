@@ -55,6 +55,21 @@ export default defineComponent({
         : this.$t('trains.last-seen-ago', { minutes: diffMins });
     },
 
+    displayTrainPosition(train: Train) {
+      let positionString = '';
+
+      if (train.currentStationHash)
+        positionString += this.$t('trains.current-scenery') + ' ' + train.currentStationName + ' ';
+
+      if (train.signal) positionString += this.$t('trains.current-signal') + ' ' + train.signal + ' ';
+
+      if (train.connectedTrack) positionString += this.$t('trains.current-track') + ' ' + train.connectedTrack + ' ';
+
+      if (train.distance) positionString += `(${this.displayDistance(train.distance)})`;
+      
+      return positionString.charAt(0).toUpperCase() + positionString.slice(1);
+    },
+
     displayStopList(stops: TrainStop[]): string | undefined {
       if (!stops) return '';
 
@@ -62,11 +77,7 @@ export default defineComponent({
         .reduce((acc: string[], stop: TrainStop, i: number) => {
           if (stop.stopType.includes('ph') && !stop.stopNameRAW.includes('po.'))
             acc.push(`<strong style='color:${stop.confirmed ? 'springgreen' : 'white'}'>${stop.stopName}</strong>`);
-          else if (
-            i > 0 &&
-            i < stops.length - 1 &&
-            !/po\.|sbl/gi.test(stop.stopNameRAW)
-          )
+          else if (i > 0 && i < stops.length - 1 && !/po\.|sbl/gi.test(stop.stopNameRAW))
             acc.push(`<span style='color:${stop.confirmed ? 'springgreen' : 'lightgray'}'>${stop.stopName}</span>`);
           return acc;
         }, [])
