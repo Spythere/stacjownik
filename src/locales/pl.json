@@ -186,9 +186,11 @@
     "comment": "Uwagi eksploatacyjne dla: ",
     "table-limit": "Dla płynności działania strony pokazanych jest tylko 10 pociągów zgodnie z wybranymi filtrami.",
 
-    "last-seen-now": "ostatnio widziany: przed chwilą",
-    "last-seen-min": "ostatnio widziany: minutę temu",
-    "last-seen-ago": "ostatnio widziany: {minutes} min. temu"
+    "last-seen-now": "od niedawna",
+    "last-seen-min": "od minuty",
+    "last-seen-ago": "od {minutes} minut",
+
+    "scenery-offline": "Przejazd offline"
   },
   "journal": {
     "title": "HISTORIA DYŻURÓW",

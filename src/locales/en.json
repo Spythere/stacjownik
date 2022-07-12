@@ -185,9 +185,11 @@
     "comment": "Exploitation comments for: ",
     "table-limit": "For performance reasons there's a limit of 10 trains shown at the same time.",
 
-    "last-seen-now": "last seen: just now",
-    "last-seen-min": "last seen: one minute ago",
-    "last-seen-ago": "last seen: {minutes} mins ago"
+    "last-seen-now": "since now",
+    "last-seen-min": "since one minute",
+    "last-seen-ago": "since {minutes} minutes",
+
+    "scenery-offline": "Offline ride"
   },
   "journal": {
     "title": "DISPATCHER HISTORY",

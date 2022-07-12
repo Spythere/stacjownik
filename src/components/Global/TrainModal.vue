@@ -1,7 +1,7 @@
 <template>
   <div class="card-dimmer"></div>
-  <div class="train-modal" v-click-outside="closeModal" @keydown.esc="closeModal"  >
-    <button class="btn exit" @click="closeModal" >
+  <div class="train-modal" v-click-outside="closeModal" @keydown.esc="closeModal">
+    <button class="btn exit" @click="closeModal">
       <img :src="icons.exit" alt="close card" />
     </button>
 
@@ -40,7 +40,6 @@ export default defineComponent({
 
   activated() {
     this.$nextTick(() => {
-      
       (this.$refs['content'] as HTMLElement).focus();
     });
   },
@@ -60,11 +59,12 @@ export default defineComponent({
 .exit {
   position: absolute;
   top: 0;
-
   right: 0;
+
   margin: 1em 2em;
 
-  background-color: white;
+  background-color: #00000077;
+  outline: 2px solid white;
   padding: 0.25em;
   border-radius: 50%;
 
@@ -73,9 +73,6 @@ export default defineComponent({
   img {
     width: 1.5rem;
     vertical-align: middle;
-
-    filter: invert(100%);
-    -moz-filter: invert(100%);
   }
 }
 
@@ -100,5 +97,18 @@ export default defineComponent({
 .content {
   overflow: auto;
   max-height: 95vh;
+}
+
+@include smallScreen {
+  .exit {
+    top: auto;
+    bottom: 0;
+
+    margin: 1em;
+
+    img {
+      width: 1.75rem;
+    }
+  }
 }
 </style>
