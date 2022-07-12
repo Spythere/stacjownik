@@ -58,15 +58,17 @@ export default defineComponent({
     displayTrainPosition(train: Train) {
       let positionString = '';
 
-      if (train.currentStationHash)
-        positionString += this.$t('trains.current-scenery') + ' ' + train.currentStationName + ' ';
+      positionString += this.$t('trains.current-scenery') + ' ';
+
+      if (train.currentStationHash) positionString += train.currentStationName + ' ';
+      else positionString += train['currentStationName'].replace(/.[a-zA-Z0-9]+.sc/, '') + ' (offline) ';
 
       if (train.signal) positionString += this.$t('trains.current-signal') + ' ' + train.signal + ' ';
 
       if (train.connectedTrack) positionString += this.$t('trains.current-track') + ' ' + train.connectedTrack + ' ';
 
       if (train.distance) positionString += `(${this.displayDistance(train.distance)})`;
-      
+
       return positionString.charAt(0).toUpperCase() + positionString.slice(1);
     },
 
