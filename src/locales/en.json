@@ -263,7 +263,7 @@
   "availability": {
     "title": "Availability",
     "default": "in-game",
-    "nonDefault": "downloadable",
+    "nonDefault": "additional",
     "unavailable": "unavailable",
     "nonPublic": "private",
     "abandoned": "abandoned"
