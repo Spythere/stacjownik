@@ -9,10 +9,13 @@
           <b>{{ localeDay(historyItem.beginDate, $i18n.locale) }}</b>
           {{ localeTime(historyItem.beginDate, $i18n.locale) }}
         </div>
+
         <div>
-          <span class="text--grayed"> #{{ historyItem.timetableId }} </span>
-          <b class="text--primary">&nbsp;{{ historyItem.trainCategoryCode }} {{ historyItem.trainNo }}</b>
-          <div>{{ historyItem.driverName }}</div>
+          <router-link :to="`/journal/timetables?timetableId=${historyItem.timetableId}`">
+            <span class="text--grayed"> #{{ historyItem.timetableId }} </span>
+            <b class="text--primary">&nbsp;{{ historyItem.trainCategoryCode }} {{ historyItem.trainNo }}</b>
+            <div>{{ historyItem.driverName }}</div>
+          </router-link>
         </div>
 
         <div>{{ historyItem.route.replace('|', ' -> ') }}</div>
@@ -108,3 +111,4 @@ export default defineComponent({
   }
 }
 </style>
+
