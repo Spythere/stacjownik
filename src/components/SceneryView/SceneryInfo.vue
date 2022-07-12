@@ -11,11 +11,6 @@
             <span v-if="station.generalInfo.reqLevel > -1">
               - {{ $tc('scenery.req-level', station.generalInfo.reqLevel, { lvl: station.generalInfo.reqLevel }) }}
             </span>
-
-            <!-- <span v-if="station.generalInfo.reqLevel > 0">
-              - minimum {{ station.generalInfo.reqLevel }} poziom dyżurnego
-            </span>
-            <span v-else-if="station.generalInfo.reqLevel == 0">- dla wszystkich poziomów</span> -->
           </span>
 
           <span>
@@ -41,12 +36,17 @@
           <b> {{ $tc('scenery.authors-title', station.generalInfo.authors.length) }}: </b>
           {{ station.generalInfo.authors.join(', ') }}
         </div>
+
+        <br />
+        <div class="scenery-topic" v-if="station.generalInfo.url">
+          <a :href="station.generalInfo.url" target="_blank">
+            &gt; {{ $t('scenery.forum-topic', { name: station.name }) }} &lt;
+          </a>
+        </div>
       </div>
 
       <div style="margin: 2em 0; height: 2px; background-color: white" />
 
-      <!-- info stats -->
-      <!-- <scenery-info-stats :station="station" /> -->
       <!-- info dispatcher -->
       <scenery-info-dispatcher :station="station" :onlineFrom="onlineFrom" />
 
@@ -57,10 +57,6 @@
         <!-- spawn list -->
         <scenery-info-spawn-list :station="station" />
       </div>
-
-      <!-- info icons -->
-
-      <!-- info routes -->
     </section>
   </div>
 </template>
@@ -144,5 +140,7 @@ h3.section-header {
   }
 }
 
-
+.scenery-topic a {
+  font-weight: bold;
+}
 </style>

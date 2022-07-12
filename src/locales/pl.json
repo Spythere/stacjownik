@@ -259,7 +259,9 @@
     "timetable-author-unknown": "Autor nieznany",
 
     "req-level": "ogólnodostępna | minimum {lvl} poziom dyżurnego | minimum {lvl} poziom dyżurnego",
-    "history-list-empty": "Brak historii dla tej scenerii!"
+    "history-list-empty": "Brak historii dla tej scenerii!",
+
+    "forum-topic": "Oficjalny wątek scenerii {name}"
   },
   "availability": {
     "title": "Dostępność",

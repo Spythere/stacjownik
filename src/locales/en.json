@@ -258,7 +258,9 @@
     "timetable-author-unknown": "Author unknown",
 
     "req-level": "all dispatcher levels | dispatcher level {lvl} required | dispatcher level {lvl} required",
-    "history-list-empty": "No recorded scenery history!"
+    "history-list-empty": "No recorded scenery history!",
+
+    "forum-topic": "Official {name} forum topic"
   },
   "availability": {
     "title": "Availability",
