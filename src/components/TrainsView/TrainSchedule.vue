@@ -60,11 +60,11 @@
               <b>{{ stop.stopNameRAW }} </b>: <span v-html="stop.comments"></span>
             </div>
 
-            <span v-if="stop.departureLine == train.timetableData!.followingStops[i + 1].arrivalLine">
+            <span v-if="stop.departureLine == train.timetableData!.followingStops[i + 1].arrivalLine && !/sbl/gi.test(stop.departureLine!)">
               {{ stop.departureLine }}
             </span>
 
-            <span v-else>
+            <span v-else-if="!/sbl/gi.test(stop.departureLine!)">
               {{ stop.departureLine }} /
               {{ train.timetableData!.followingStops[i + 1].arrivalLine }}
             </span>
@@ -284,7 +284,7 @@ ul.stop_list > li.stop {
     .stop-name {
       background: none;
       color: #aaa;
-      padding-left: 0;
+      padding: 0;
     }
   }
 
