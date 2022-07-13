@@ -1,83 +1,81 @@
 <template>
-  <div class="app">
-    <div class="app_container">
-      <!-- <div class="wip-alert">
+  <div class="app_container">
+    <!-- <div class="wip-alert">
         <img class="icon-error" :src="iconError" alt="error" />
         <h2>Stacjownik tymczasowo nieaktywny!</h2>
         <p>Absolutny zakaz wjazdu!</p>
       </div> -->
-      <header class="app_header">
-        <div class="header_container">
-          <div class="header_icons">
-            <span class="icons-top">
-              <img :src="icons.pl" alt="icon-pl" @click="changeLang('en')" v-if="currentLang == 'pl'" />
-              <img :src="icons.en" alt="icon-en" @click="changeLang('pl')" v-else />
-            </span>
-            <span class="icons-bottom">
-              <a href="https://www.paypal.com/paypalme/spythere" target="_blank">
-                <img :src="icons.dollar" alt="icon paypal" />
-              </a>
+    <header class="app_header">
+      <div class="header_container">
+        <div class="header_icons">
+          <span class="icons-top">
+            <img :src="icons.pl" alt="icon-pl" @click="changeLang('en')" v-if="currentLang == 'pl'" />
+            <img :src="icons.en" alt="icon-en" @click="changeLang('pl')" v-else />
+          </span>
+          <span class="icons-bottom">
+            <a href="https://www.paypal.com/paypalme/spythere" target="_blank">
+              <img :src="icons.dollar" alt="icon paypal" />
+            </a>
 
-              <a href="https://discord.gg/x2mpNN3svk" target="_blank">
-                <img :src="icons.discord" alt="icon discord" />
-              </a>
-            </span>
-          </div>
-
-          <div class="header_body">
-            <status-indicator />
-            <span class="header_brand">
-              <img :src="brand_logo" alt="Stacjownik" />
-            </span>
-
-            <span class="header_info">
-              <Clock />
-
-              <div class="info_counter">
-                <img src="@/assets/icon-dispatcher.svg" alt="icon dispatcher" />
-                <span class="text--primary">{{ onlineDispatchers.length }}</span>
-                <span class="text--grayed"> / </span>
-                <span class="text--primary">{{ trainList.length }}</span>
-                <img src="@/assets/icon-train.svg" alt="icon train" />
-              </div>
-
-              <span class="info_region">
-                <SelectBox :itemList="computedRegions" :defaultItemIndex="0" @selected="changeRegion" />
-              </span>
-            </span>
-
-            <span class="header_links">
-              <router-link class="route" active-class="route-active" to="/" exact>
-                {{ $t('app.sceneries') }}
-              </router-link>
-              /
-              <router-link class="route" active-class="route-active" to="/trains">{{ $t('app.trains') }}</router-link>
-              /
-              <router-link class="route" active-class="route-active" to="/journal">
-                {{ $t('app.journal') }}
-              </router-link>
-            </span>
-          </div>
+            <a href="https://discord.gg/x2mpNN3svk" target="_blank">
+              <img :src="icons.discord" alt="icon discord" />
+            </a>
+          </span>
         </div>
-      </header>
 
-      <main class="app_main">
-        <router-view v-slot="{ Component }">
-          <!-- <transition name="view-anim" mode="out-in"> -->
-          <keep-alive>
-            <component :is="Component" :key="$route.path" />
-          </keep-alive>
-        </router-view>
-      </main>
+        <div class="header_body">
+          <status-indicator />
+          <span class="header_brand">
+            <img :src="brand_logo" alt="Stacjownik" />
+          </span>
 
-      <footer class="app_footer">
-        &copy;
-        <a href="https://td2.info.pl/profile/?u=20777" target="_blank">Spythere</a>
-        {{ new Date().getUTCFullYear() }} | v{{ VERSION }}
+          <span class="header_info">
+            <Clock />
 
-        <div style="display: none">&int; ukryta taktyczna całka do programowania w HTMLu</div>
-      </footer>
-    </div>
+            <div class="info_counter">
+              <img src="@/assets/icon-dispatcher.svg" alt="icon dispatcher" />
+              <span class="text--primary">{{ onlineDispatchers.length }}</span>
+              <span class="text--grayed"> / </span>
+              <span class="text--primary">{{ trainList.length }}</span>
+              <img src="@/assets/icon-train.svg" alt="icon train" />
+            </div>
+
+            <span class="info_region">
+              <SelectBox :itemList="computedRegions" :defaultItemIndex="0" @selected="changeRegion" />
+            </span>
+          </span>
+
+          <span class="header_links">
+            <router-link class="route" active-class="route-active" to="/" exact>
+              {{ $t('app.sceneries') }}
+            </router-link>
+            /
+            <router-link class="route" active-class="route-active" to="/trains">{{ $t('app.trains') }}</router-link>
+            /
+            <router-link class="route" active-class="route-active" to="/journal">
+              {{ $t('app.journal') }}
+            </router-link>
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <main class="app_main">
+      <router-view v-slot="{ Component }">
+        <!-- <transition name="view-anim" mode="out-in"> -->
+        <keep-alive>
+          <component :is="Component" :key="$route.path" />
+        </keep-alive>
+      </router-view>
+    </main>
+
+    <footer class="app_footer">
+      &copy;
+      <a href="https://td2.info.pl/profile/?u=20777" target="_blank">Spythere</a>
+      {{ new Date().getUTCFullYear() }} | v{{ VERSION }}
+
+      <div style="display: none">&int; ukryta taktyczna całka do programowania w HTMLu</div>
+    </footer>
   </div>
 </template>
 
@@ -129,7 +127,8 @@ export default defineComponent({
       return this.options.regions.map((region) => {
         const regionStationCount =
           this.store.apiData.stations?.filter((station) => station.region == region.id && station.isOnline).length || 0;
-        const regionTrainCount = this.store.apiData.trains?.filter((train) => train.region == region.id && train.online).length || 0;
+        const regionTrainCount =
+          this.store.apiData.trains?.filter((train) => train.region == region.id && train.online).length || 0;
 
         return {
           id: region.id,

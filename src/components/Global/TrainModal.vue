@@ -1,28 +1,28 @@
 <template>
-  <div class="card-dimmer"></div>
-  <div class="train-modal" v-click-outside="closeModal" @keydown.esc="closeModal">
-    <transition name="top-info-bar-anim">
-      <div class="top-info-bar" v-if="isTopBarVisible">
-        <span v-if="chosenTrain.timetableData">
-          <b class="text--primary">{{ chosenTrain.timetableData.category }} {{ chosenTrain.trainNo }}</b>
-          {{ chosenTrain.driverName }} &bull;
-          <b>{{ chosenTrain.timetableData.route.replace('|', ' > ') }}</b>
-          &bull;
-          {{ currentDistance(chosenTrain.timetableData.followingStops) }} km /
-          <span class="text--primary">{{ chosenTrain.timetableData.routeDistance }} km</span>
-          &bull;
-          <span class="text--grayed">{{ displayTrainPosition(chosenTrain) }}</span>
-          &bull;
-          {{ chosenTrain.speed }}km/h
-        </span>
-      </div>
-    </transition>
+  <div class="train-modal" @keydown.esc="closeModal">
+    <div class="modal_background" @click="closeModal"></div>
+    <div class="modal_content" ref="content" tabindex="0">
+      <!-- <transition name="top-info-bar-anim">
+        <div class="top-info-bar" v-if="isTopBarVisible">
+          <span v-if="chosenTrain.timetableData">
+            <b class="text--primary">{{ chosenTrain.timetableData.category }} {{ chosenTrain.trainNo }}</b>
+            {{ chosenTrain.driverName }} &bull;
+            <b>{{ chosenTrain.timetableData.route.replace('|', ' > ') }}</b>
+            &bull;
+            {{ currentDistance(chosenTrain.timetableData.followingStops) }} km /
+            <span class="text--primary">{{ chosenTrain.timetableData.routeDistance }} km</span>
+            &bull;
+            <span class="text--grayed">{{ displayTrainPosition(chosenTrain) }}</span>
+            &bull;
+            {{ chosenTrain.speed }}km/h
+          </span>
+        </div>
+      </transition> -->
 
-    <button class="btn exit" @click="closeModal">
-      <img :src="icons.exit" alt="close card" />
-    </button>
+      <button class="btn exit" @click="closeModal">
+        <img :src="icons.exit" alt="close card" />
+      </button>
 
-    <div class="content" tabindex="0" ref="content">
       <TrainInfo :train="chosenTrain" :extended="false" ref="trainInfo" />
       <TrainSchedule :train="chosenTrain" tabindex="0" />
     </div>
@@ -66,13 +66,17 @@ export default defineComponent({
       contentEl.focus();
     });
 
+    document.body.style.overflowY = 'hidden';
+    // document.body.blur();
 
-    contentEl.addEventListener('scroll', this.handleContentScroll);
+    // contentEl.addEventListener('scroll', this.handleContentScroll);
   },
 
   deactivated() {
-    (this.$refs['content'] as HTMLElement).removeEventListener('scroll', this.handleContentScroll);
-    this.isTopBarVisible = false;
+    document.body.style.overflowY = 'scroll';
+
+    // (this.$refs['content'] as HTMLElement).removeEventListener('scroll', this.handleContentScroll);
+    // this.isTopBarVisible = false;
   },
 
   methods: {
@@ -112,12 +116,9 @@ export default defineComponent({
   top: 0;
   right: 0;
 
-  margin: 1em 2em;
+  margin: 0.5em 1em;
 
-  background-color: #000000;
-  outline: 2px solid white;
   padding: 0.25em;
-  border-radius: 50%;
 
   z-index: 101;
 
@@ -129,22 +130,44 @@ export default defineComponent({
 
 .train-modal {
   position: fixed;
-  top: 1em;
-  left: 50%;
+  top: 0;
+  left: 0;
 
-  text-align: left;
+  width: 100%;
+  height: 100%;
 
-  transform: translateX(-50%);
-  background-color: #202020;
-
+  color: white;
   z-index: 100;
 
-  width: 95vw;
+  display: flex;
+  justify-content: center;
 
-  border: 1px solid gray;
-  overflow: hidden;
+  text-align: left;
 }
 
+.modal_background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  cursor: pointer;
+
+  background-color: rgba(0, 0, 0, 0.55);
+}
+
+.modal_content {
+  position: relative;
+  overflow-y: scroll;
+
+  margin-top: 1em;
+
+  width: 95vw;
+  height: 95vh;
+
+  background-color: #1a1a1a;
+}
 .top-info-bar {
   position: absolute;
   top: 0;
@@ -163,29 +186,27 @@ export default defineComponent({
   background-color: #000000dd;
 }
 
-.content {
-  overflow: auto;
-  max-height: 95vh;
-}
-
 @include midScreen {
   .exit {
-    top: auto;
-    bottom: 0;
-
-    margin: 1em;
+    margin: 0.5em;
 
     img {
       width: 1.75rem;
     }
   }
 
-  .content {
-    padding-bottom: 3em;
-  }
-
   .top-info-bar {
     padding: 0.5em 1em;
+  }
+}
+
+@include smallScreen {
+  .train-modal {
+    font-size: 1.05em;
+  }
+
+  .modal_content {
+    max-height: 75vh;
   }
 }
 </style>

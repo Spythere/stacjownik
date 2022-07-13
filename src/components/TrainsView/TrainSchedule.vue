@@ -179,7 +179,6 @@ $stopNameClr: #22a8d1;
 }
 
 .train-schedule {
-  background-color: #202020;
   padding: 0 0.25em;
 
   @include smallScreen() {

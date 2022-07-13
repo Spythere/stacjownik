@@ -27,7 +27,7 @@
 }
 
 // APP
-.app {
+#app {
   color: white;
   font-size: 1rem;
 
@@ -40,8 +40,8 @@
 .app_container {
   display: flex;
   flex-flow: column;
-  height: 100vh;
-  min-height: 800px;
+
+  min-height: 100vh;
 
   header {
     flex: 0 0 auto;
@@ -213,7 +213,6 @@
     font-weight: bold;
     padding: 0.1em 0.5em;
     color: paleturquoise;
-
   }
 
   .options {
