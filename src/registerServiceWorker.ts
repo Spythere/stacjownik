@@ -5,28 +5,25 @@ import { register } from 'register-service-worker'
 if (process.env.NODE_ENV === 'production') {
   register(`${process.env.BASE_URL}service-worker.js`, {
     ready () {
-      console.log(
-        'App is being served from cache by a service worker.\n' +
-        'For more details, visit https://goo.gl/AFskqB'
-      )
+      console.log('SW gotowy')
     },
     registered () {
-      console.log('Service worker has been registered.')
+      console.log('SW: zarejestrowano')
     },
     cached () {
-      console.log('Content has been cached for offline use.')
+      console.log('SW: cached')
     },
     updatefound () {
-      console.log('New content is downloading.')
+      console.log('SW: aktualizacja danych')
     },
     updated () {
-      console.log('New content is available; please refresh.')
+      console.log('SW: zaktualizowano dane');
     },
     offline () {
-      console.log('No internet connection found. App is running in offline mode.')
+      console.log('SW: tryb offline')
     },
     error (error) {
-      console.error('Error during service worker registration:', error)
+      console.error('SW: wystąpił błąd - ', error)
     }
   })
 }
