@@ -1,10 +1,7 @@
 <template>
   <div class="app_container">
-    <!-- <div class="wip-alert">
-        <img class="icon-error" :src="iconError" alt="error" />
-        <h2>Stacjownik tymczasowo nieaktywny!</h2>
-        <p>Absolutny zakaz wjazdu!</p>
-      </div> -->
+    <!-- <UpdateModal /> -->
+    
     <header class="app_header">
       <div class="header_container">
         <div class="header_icons">
@@ -91,13 +88,15 @@ import options from '@/data/options.json';
 import StatusIndicator from '@/components/App/StatusIndicator.vue';
 import SelectBox from '@/components/Global/SelectBox.vue';
 import { useStore } from './store/store';
+import UpdateModal from './components/App/UpdateModal.vue';
 
 export default defineComponent({
   components: {
     Clock,
     StatusIndicator,
     SelectBox,
-  },
+    UpdateModal
+},
 
   setup() {
     const store = useStore();

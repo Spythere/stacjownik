@@ -2,7 +2,7 @@
 
 import { register } from 'register-service-worker'
 
-if (process.env.NODE_ENV === 'production') {
+// if (process.env.NODE_ENV === 'production') {
   register(`${process.env.BASE_URL}service-worker.js`, {
     ready () {
       console.log('SW gotowy')
@@ -14,10 +14,10 @@ if (process.env.NODE_ENV === 'production') {
       console.log('SW: cached')
     },
     updatefound () {
-      console.log('SW: aktualizacja danych')
+      console.log('SW: nowa aktualizacja wykryta')
     },
     updated () {
-      console.log('SW: zaktualizowano dane');
+      console.log('SW: zaktualizowano dane, odśwież aplikację');
     },
     offline () {
       console.log('SW: tryb offline')
@@ -26,4 +26,4 @@ if (process.env.NODE_ENV === 'production') {
       console.error('SW: wystąpił błąd - ', error)
     }
   })
-}
+// }
