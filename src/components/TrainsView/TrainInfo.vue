@@ -144,7 +144,7 @@ export default defineComponent({
 
   padding: 1em;
 
-  background-color: #202020;
+  background-color: #1a1a1a;
   gap: 0.5em;
 }
 
