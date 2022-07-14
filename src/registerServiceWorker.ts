@@ -17,7 +17,9 @@ import { register } from 'register-service-worker'
       console.log('SW: nowa aktualizacja wykryta')
     },
     updated () {
-      console.log('SW: zaktualizowano dane, odśwież aplikację');
+      console.log('SW: nowe dane, potrzebne odświeżenie strony!');
+
+      window.location.reload();
     },
     offline () {
       console.log('SW: tryb offline')
