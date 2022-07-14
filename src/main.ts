@@ -7,6 +7,7 @@ import plLang from '@/locales/pl.json';
 
 import { createI18n } from 'vue-i18n';
 import { createPinia } from 'pinia';
+import './registerServiceWorker'
 
 const i18n = createI18n({
   locale: 'pl',
