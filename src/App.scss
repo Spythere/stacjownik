@@ -17,6 +17,19 @@
   }
 }
 
+.modal-anim {
+  &-enter-active,
+  &-leave-active {
+    transition: all $animDuration $animType;
+  }
+
+  &-enter-from,
+  &-leave-to {
+    transform: translateY(-25%);
+    opacity: 0;
+  }
+}
+
 .route {
   margin: 0 0.2em;
 

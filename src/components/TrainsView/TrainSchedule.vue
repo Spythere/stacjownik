@@ -191,10 +191,11 @@ $stopNameClr: #22a8d1;
   display: flex;
   justify-content: center;
 }
+
 ul.stock-list {
   display: flex;
   align-items: flex-end;
-  overflow-x: auto;
+  overflow: auto;
   padding-bottom: 1em;
 
   li > div {

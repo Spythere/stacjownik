@@ -30,6 +30,8 @@ export interface StoreState {
   driverStatsName: string;
   driverStatsData?: DriverStatsAPIData;
 
+  chosenModalTrain?: Train;
+
   dataStatuses: {
     connection: DataStatus;
     sceneries: DataStatus;

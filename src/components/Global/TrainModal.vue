@@ -1,46 +1,27 @@
 <template>
-  <div class="train-modal" @keydown.esc="closeModal">
+  <div class="train-modal" v-if="store.chosenModalTrain" @keydown.esc="closeModal">
     <div class="modal_background" @click="closeModal"></div>
     <div class="modal_content" ref="content" tabindex="0">
-      <!-- <transition name="top-info-bar-anim">
-        <div class="top-info-bar" v-if="isTopBarVisible">
-          <span v-if="chosenTrain.timetableData">
-            <b class="text--primary">{{ chosenTrain.timetableData.category }} {{ chosenTrain.trainNo }}</b>
-            {{ chosenTrain.driverName }} &bull;
-            <b>{{ chosenTrain.timetableData.route.replace('|', ' > ') }}</b>
-            &bull;
-            {{ currentDistance(chosenTrain.timetableData.followingStops) }} km /
-            <span class="text--primary">{{ chosenTrain.timetableData.routeDistance }} km</span>
-            &bull;
-            <span class="text--grayed">{{ displayTrainPosition(chosenTrain) }}</span>
-            &bull;
-            {{ chosenTrain.speed }}km/h
-          </span>
-        </div>
-      </transition> -->
-
       <button class="btn exit" @click="closeModal">
         <img :src="icons.exit" alt="close card" />
       </button>
 
-      <TrainInfo :train="chosenTrain" :extended="false" ref="trainInfo" />
-      <TrainSchedule :train="chosenTrain" tabindex="0" />
+      <TrainInfo :train="store.chosenModalTrain" :extended="false" ref="trainInfo" />
+      <TrainSchedule :train="store.chosenModalTrain" tabindex="0" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import trainInfoMixin from '@/mixins/trainInfoMixin';
-import Train from '@/scripts/interfaces/Train';
-import { defineComponent, PropType } from 'vue';
+import { useStore } from '@/store/store';
+import { defineComponent } from 'vue';
 import TrainInfo from '../TrainsView/TrainInfo.vue';
 import TrainSchedule from '../TrainsView/TrainSchedule.vue';
 
 export default defineComponent({
   components: { TrainInfo, TrainSchedule },
   mixins: [trainInfoMixin],
-
-  emits: ['closeModal'],
 
   data() {
     return {
@@ -52,11 +33,12 @@ export default defineComponent({
     };
   },
 
-  props: {
-    chosenTrain: {
-      type: Object as PropType<Train>,
-      required: true,
-    },
+  setup() {
+    const store = useStore();
+
+    return {
+      store,
+    };
   },
 
   activated() {
@@ -65,23 +47,11 @@ export default defineComponent({
     this.$nextTick(() => {
       contentEl.focus();
     });
-
-    document.body.style.overflowY = 'hidden';
-    // document.body.blur();
-
-    // contentEl.addEventListener('scroll', this.handleContentScroll);
-  },
-
-  deactivated() {
-    document.body.style.overflowY = 'scroll';
-
-    // (this.$refs['content'] as HTMLElement).removeEventListener('scroll', this.handleContentScroll);
-    // this.isTopBarVisible = false;
   },
 
   methods: {
     closeModal() {
-      this.$emit('closeModal');
+      this.store.chosenModalTrain = undefined;
     },
 
     handleContentScroll(e: Event) {
@@ -120,7 +90,7 @@ export default defineComponent({
 
   padding: 0.25em;
 
-  z-index: 101;
+  z-index: 201;
 
   img {
     width: 1.5rem;
@@ -134,10 +104,9 @@ export default defineComponent({
   left: 0;
 
   width: 100%;
-  height: 100%;
 
   color: white;
-  z-index: 100;
+  z-index: 200;
 
   display: flex;
   justify-content: center;
@@ -149,8 +118,8 @@ export default defineComponent({
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
 
   cursor: pointer;
 
@@ -164,26 +133,10 @@ export default defineComponent({
   margin-top: 1em;
 
   width: 95vw;
-  height: 95vh;
+  max-height: 96vh;
 
   background-color: #1a1a1a;
-}
-.top-info-bar {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-
-  padding: 0.5em 1em;
-  padding-right: 4em;
-  text-align: center;
-
-  overflow: hidden;
-
-  z-index: 101;
-
-  background-color: #000000dd;
+  box-shadow: 0 0 15px 10px #0e0e0e;
 }
 
 @include midScreen {
@@ -194,10 +147,6 @@ export default defineComponent({
       width: 1.75rem;
     }
   }
-
-  .top-info-bar {
-    padding: 0.5em 1em;
-  }
 }
 
 @include smallScreen {
@@ -206,7 +155,7 @@ export default defineComponent({
   }
 
   .modal_content {
-    max-height: 75vh;
+    max-height: 85vh;
   }
 }
 </style>

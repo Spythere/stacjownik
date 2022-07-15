@@ -1,9 +1,5 @@
 <template>
-  <keep-alive>
-    <TrainModal v-if="chosenTrain" :chosen-train="chosenTrain" @close-modal="closeTimetable" />
-  </keep-alive>
-
-  <div class="train-table" @keydown.esc="closeTimetable">
+  <div class="train-table">
     <button class="return-btn" @click="scrollToTop" v-if="showReturnButton">
       <img :src="icons.arrowAsc" alt="return arrow" />
     </button>
@@ -20,9 +16,9 @@
           <li
             class="train-row"
             v-for="train in currentTrains"
-            :key="train.trainNo + train.driverId"
-            @click.stop="toggleTimetable(train)"
-            @keydown.enter="toggleTimetable(train)"
+            :key="train.trainId"
+            @click.stop="selectTrain(train.trainId)"
+            @keydown.enter="selectTrain(train.trainId)"
           >
             <TrainInfo :train="train" />
           </li>
@@ -73,7 +69,6 @@ export default defineComponent({
     },
 
     defaultVehicleIcons: defaultVehicleIconsJSON,
-    chosenTrainId: null as string | null,
   }),
 
   setup(props) {
@@ -99,12 +94,6 @@ export default defineComponent({
     };
   },
 
-  computed: {
-    chosenTrain() {
-      return this.trains.find((train) => train.trainId == this.chosenTrainId);
-    },
-  },
-
   activated() {
     const query = this.$route.query;
 
@@ -113,13 +102,9 @@ export default defineComponent({
       this.searchedTrain = query.trainNo.toString();
 
       setTimeout(() => {
-        this.chosenTrainId = query.driverName + <string>query.trainNo;
+        this.selectTrain(query.driverName + <string>query.trainNo);
       }, 20);
     }
-  },
-
-  deactivated() {
-    this.chosenTrainId = null;
   },
 
   methods: {
@@ -147,17 +132,8 @@ export default defineComponent({
       }, 10);
     },
 
-    toggleTimetable(train: Train, state?: boolean) {
-      if (state !== undefined) {
-        this.chosenTrainId = train.trainId;
-        return;
-      }
-
-      this.chosenTrainId = this.chosenTrainId && this.chosenTrainId == train.trainId ? null : train.trainId;
-    },
-
-    closeTimetable() {
-      this.chosenTrainId = null;
+    selectTrain(trainId: string) {
+      this.store.chosenModalTrain = this.store.trainList.find((train) => train.trainId == trainId);
     },
   },
 });

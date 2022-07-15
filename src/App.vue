@@ -1,7 +1,13 @@
 <template>
   <div class="app_container">
     <UpdateModal />
-    
+
+    <transition name="modal-anim">
+      <keep-alive>
+        <TrainModal v-if="store.chosenModalTrain" />
+      </keep-alive>
+    </transition>
+
     <header class="app_header">
       <div class="header_container">
         <div class="header_icons">
@@ -59,7 +65,6 @@
 
     <main class="app_main">
       <router-view v-slot="{ Component }">
-        <!-- <transition name="view-anim" mode="out-in"> -->
         <keep-alive>
           <component :is="Component" :key="$route.path" />
         </keep-alive>
@@ -89,14 +94,16 @@ import StatusIndicator from '@/components/App/StatusIndicator.vue';
 import SelectBox from '@/components/Global/SelectBox.vue';
 import { useStore } from './store/store';
 import UpdateModal from './components/App/UpdateModal.vue';
+import TrainModal from './components/Global/TrainModal.vue';
 
 export default defineComponent({
   components: {
     Clock,
     StatusIndicator,
     SelectBox,
-    UpdateModal
-},
+    UpdateModal,
+    TrainModal,
+  },
 
   setup() {
     const store = useStore();

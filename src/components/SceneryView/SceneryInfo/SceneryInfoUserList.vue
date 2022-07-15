@@ -11,10 +11,10 @@
       v-for="(train, i) in computedStationTrains"
       class="badge user"
       :class="train.stopStatus"
-      :key="train.trainNo + i"
+      :key="train.trainId"
       tabindex="0"
-      @click="navigateTo('/trains', { trainNo: train.trainNo, driverName: train.driverName })"
-      @keydown.enter="navigateTo('/trains', { trainNo: train.trainNo, driverName: train.driverName })"
+      @click="selectTrain(train.trainId)"
+      @keydown.enter="selectTrain(train.trainId)"
     >
       <span class="user_train">{{ train.trainNo }}</span>
       <span class="user_name">{{ train.driverName }}</span>
@@ -29,6 +29,7 @@
 <script lang="ts">
 import routerMixin from '@/mixins/routerMixin';
 import Station from '@/scripts/interfaces/Station';
+import { useStore } from '@/store/store';
 import { computed, defineComponent } from 'vue';
 
 export default defineComponent({
@@ -42,6 +43,8 @@ export default defineComponent({
   },
 
   setup(props) {
+    const store = useStore();
+
     const computedStationTrains = computed(() => {
       if (!props.station) return [];
 
@@ -59,7 +62,7 @@ export default defineComponent({
       });
     });
 
-    return { computedStationTrains };
+    return { computedStationTrains, store };
   },
 
   data: () => ({
@@ -67,6 +70,12 @@ export default defineComponent({
       user: require('@/assets/icon-user.svg'),
     },
   }),
+
+  methods: {
+    selectTrain(trainId: string) {
+      this.store.chosenModalTrain = this.store.trainList.find((train) => train.trainId == trainId);
+    },
+  },
 });
 </script>
 
@@ -130,3 +139,4 @@ $disconnected: slategray;
   }
 }
 </style>
+

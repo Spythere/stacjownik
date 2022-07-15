@@ -25,10 +25,6 @@
       </div>
     </div>
 
-    <keep-alive>
-      <TrainModal v-if="chosenTrain" :chosen-train="chosenTrain" @close-modal="closeTrainModal" />
-    </keep-alive>
-
     <div class="timetable-list">
       <!-- <transition name="scenery-timetable-list-anim" mode="out-in"> -->
       <!-- <div :key="store.dataStatuses.trains + selectedCheckpoint" class="scenery-timetable-list"> -->
@@ -188,8 +184,6 @@ export default defineComponent({
       warning: require('@/assets/icon-warning.svg'),
       timetable: require('@/assets/icon-timetable.svg'),
     },
-
-    chosenTrainId: null as string | null,
   }),
 
   setup(props) {
@@ -238,12 +232,6 @@ export default defineComponent({
     };
   },
 
-  computed: {
-    chosenTrain() {
-      return this.store.trainList.find((train) => train.trainId == this.chosenTrainId);
-    },
-  },
-
   methods: {
     loadSelectedOption() {
       if (!this.station) return;
@@ -261,11 +249,7 @@ export default defineComponent({
     },
 
     selectTrain(trainId: string) {
-      this.chosenTrainId = trainId;
-    },
-
-    closeTrainModal() {
-      this.chosenTrainId = null;
+      this.store.chosenModalTrain = this.store.trainList.find((train) => train.trainId == trainId);
     },
   },
 

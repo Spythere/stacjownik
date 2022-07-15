@@ -41,6 +41,8 @@ export const useStore = defineStore('store', {
       driverStatsName: '',
       driverStatsData: undefined,
 
+      chosenModalTrain: undefined as Train | undefined,
+
       dataStatuses: {
         connection: DataStatus.Loading,
         sceneries: DataStatus.Loading,
@@ -202,7 +204,7 @@ export const useStore = defineStore('store', {
           (train) =>
             train?.region === this.region.id && train.online && train.currentStationName === stationAPIData.stationName
         )
-        .map((train) => ({ driverName: train.driverName, driverId: train.driverId, trainNo: train.trainNo }));
+        .map((train) => ({ driverName: train.driverName, driverId: train.driverId, trainNo: train.trainNo, trainId: train.trainId }));
     },
 
     setStationsOnlineInfo() {
