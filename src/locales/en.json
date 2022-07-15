@@ -12,9 +12,9 @@
   },
   "update": {
       "title": "New Stacjownik version is available!",
-      "paragraph1": "Refresh the page with the button below to apply all changes!",
+      "paragraph1": "Enjoy the application and may the green signal be with you!",
       "release-link": "Click here to browse version changelog (GitHub)",
-      "refresh-button": "Refresh the page" 
+      "confirm-button": "Understood!" 
   },
   "data-status": {
     "S1a-connection": "<b>S1a signal</b> <br> Cannot connect with Stacjownik API service!",

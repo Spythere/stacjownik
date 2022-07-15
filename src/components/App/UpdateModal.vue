@@ -1,6 +1,6 @@
 <template>
   <transition name="card-anim">
-    <section class="update-modal card" v-if="releaseData && !isUpToDate">
+    <section class="update-modal card" v-if="releaseData && modalOpen">
       <h2 class="modal_header text--primary">
         <img :src="icons.logo" alt="stacjownik logo" />
 
@@ -20,7 +20,7 @@
       </div>
 
       <div class="modal_actions">
-        <button class="btn btn--option" @click="reload">{{ $t('update.refresh-button') }}</button>
+        <button class="btn btn--option" @click="modalOpen = false">{{ $t('update.confirm-button') }}</button>
       </div>
     </section>
   </transition>
@@ -31,6 +31,7 @@ import { ReleaseAPIData } from '@/scripts/interfaces/github_api/ReleaseAPIData';
 import { defineComponent } from '@vue/runtime-core';
 import packageInfo from '../../../package.json';
 import axios from 'axios';
+import StorageManager from '@/scripts/managers/storageManager';
 
 const GH_LASTEST_RELEASE_URL = 'https://api.github.com/repos/Spythere/stacjownik/releases/latest';
 
@@ -41,10 +42,9 @@ export default defineComponent({
 
   data() {
     return {
-      cardOpen: false,
+      modalOpen: false,
 
       releaseData: null as ReleaseAPIData | null,
-      isUpToDate: true,
 
       icons: {
         logo: require('@/assets/stacjownik-header-logo.svg'),
@@ -54,23 +54,31 @@ export default defineComponent({
 
   methods: {
     async fetchReleases() {
-      try {
-        const releaseData: ReleaseAPIData = await (await axios.get(GH_LASTEST_RELEASE_URL)).data;
-        if (!releaseData) return;
+      const storedVersion = StorageManager.getStringValue('appVersion');
+      const appVersion = packageInfo.version;
 
-        const tagVersion = releaseData.tag_name.slice(1);
+      console.log(storedVersion, appVersion);
+      
 
-        setTimeout(() => {
-          this.releaseData = releaseData;
-          this.isUpToDate = packageInfo.version == tagVersion;
-        }, 1500);
-      } catch (error) {
-        console.error(`Wystąpił błąd podczas pobierania danych z API GitHuba: ${error}`);
+      // Zmiana
+      if (appVersion != storedVersion) {
+        StorageManager.setStringValue('appVersion', appVersion);
+
+        // Znajdź changelog na GitHubie, jeśli jest pokaż modal
+        try {
+          const releaseData: ReleaseAPIData = await (await axios.get(GH_LASTEST_RELEASE_URL)).data;
+          if (!releaseData) return;
+
+          const lastReleaseVersion = releaseData.tag_name.slice(1);
+
+          if (lastReleaseVersion == appVersion) {
+            this.releaseData = releaseData;
+            this.modalOpen = true;
+          }
+        } catch (error) {
+          console.error(`Wystąpił błąd podczas pobierania danych z API GitHuba: ${error}`);
+        }
       }
-    },
-
-    reload() {
-      window.location.reload();
     },
   },
 });

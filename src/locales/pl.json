@@ -13,9 +13,9 @@
 
   "update": {
     "title": "Nowa wersja Stacjownika jest dostępna!",
-    "paragraph1": "Odśwież stronę, aby zaaplikować zmiany!",
+    "paragraph1": "Miłego korzystania z aplikacji i niech S2 będzie z wami!",
     "release-link": "Kliknij, aby przejrzeć listę zmian (GitHub)",
-    "refresh-button": "Odśwież stronę"
+    "confirm-button": "Przyjąłem!"
   },
 
   "data-status": {
