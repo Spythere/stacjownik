@@ -1,6 +1,6 @@
 <template>
   <div class="app_container">
-    <!-- <UpdateModal /> -->
+    <UpdateModal />
     
     <header class="app_header">
       <div class="header_container">

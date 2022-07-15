@@ -10,6 +10,12 @@
     "migration-warning": "Stacjownik services will be unavailable 2/06/2022 between 1-3am (CEST time) due to the migration of API hostings!",
     "migration-confirm": "Roger that!"
   },
+  "update": {
+      "title": "New Stacjownik version is available!",
+      "paragraph1": "Refresh the page with the button below to apply all changes!",
+      "release-link": "Click here to browse version changelog (GitHub)",
+      "refresh-button": "Refresh the page" 
+  },
   "data-status": {
     "S1a-connection": "<b>S1a signal</b> <br> Cannot connect with Stacjownik API service!",
     "S1a-sceneries": "<b>S1a signal</b> <br> Cannot load online stations data!",

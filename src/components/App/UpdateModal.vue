@@ -1,19 +1,29 @@
 <template>
-  <section>
-    <!-- <h2>Ostatnie aktualizacje w Stacjowniku</h2>
-    <p>Tutaj będą pojawiać się informacje o kolejnych nowościach na stronie :)</p>
+  <transition name="card-anim">
+    <section class="update-modal card" v-if="releaseData && !isUpToDate">
+      <h2 class="modal_header text--primary">
+        <img :src="icons.logo" alt="stacjownik logo" />
 
-    <ul>
-      <li v-for="update in updates">
-        <div>{{ update.date }}</div>
+        {{ releaseData.tag_name }}
+      </h2>
 
-        <div>
-          <span v-for="(line, l) in update.content" :key="l">{{ line }}</span>
-        </div>
-      </li>
-    </ul> -->
+      <div class="horizontal"></div>
 
-  </section>
+      <div class="modal_content">
+        <h3>{{ $t('update.title') }}</h3>
+        <a :href="releaseData.html_url" target="_blank">{{ $t('update.release-link') }}</a>
+
+        <br />
+        <br />
+
+        <p>{{ $t('update.paragraph1') }}</p>
+      </div>
+
+      <div class="modal_actions">
+        <button class="btn btn--option" @click="reload">{{ $t('update.refresh-button') }}</button>
+      </div>
+    </section>
+  </transition>
 </template>
 
 <script lang="ts">
@@ -33,7 +43,12 @@ export default defineComponent({
     return {
       cardOpen: false,
 
-      updateBody: '',
+      releaseData: null as ReleaseAPIData | null,
+      isUpToDate: true,
+
+      icons: {
+        logo: require('@/assets/stacjownik-header-logo.svg'),
+      },
     };
   },
 
@@ -41,19 +56,78 @@ export default defineComponent({
     async fetchReleases() {
       try {
         const releaseData: ReleaseAPIData = await (await axios.get(GH_LASTEST_RELEASE_URL)).data;
-        if(!releaseData) return;
+        if (!releaseData) return;
 
         const tagVersion = releaseData.tag_name.slice(1);
 
-        console.log(packageInfo.version == tagVersion);
-
-        this.updateBody = releaseData.body;
+        setTimeout(() => {
+          this.releaseData = releaseData;
+          this.isUpToDate = packageInfo.version == tagVersion;
+        }, 1500);
       } catch (error) {
         console.error(`Wystąpił błąd podczas pobierania danych z API GitHuba: ${error}`);
       }
+    },
+
+    reload() {
+      window.location.reload();
     },
   },
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+@import '../../styles/card.scss';
+@import '../../styles/responsive.scss';
+
+.update-modal {
+  text-align: center;
+  background-color: var(--clr-secondary);
+
+  padding: 1em;
+}
+
+.horizontal {
+  margin: 1em 0;
+
+  height: 2px;
+  width: 100%;
+  background-color: white;
+}
+
+.modal_header {
+  font-size: 1.6em;
+
+  img {
+    width: 50%;
+    vertical-align: text-top;
+  }
+}
+
+.modal_content {
+  font-size: 1.1em;
+
+  a {
+    text-decoration: underline;
+  }
+}
+
+.modal_actions {
+  margin-top: 2em;
+
+  button {
+    color: white;
+    padding: 0.5em;
+    font-size: 1.2em;
+
+    background-color: black;
+  }
+}
+
+@include smallScreen {
+  .update-modal {
+    height: auto;
+    max-width: 95%;
+  }
+}
+</style>

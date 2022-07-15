@@ -11,6 +11,13 @@
     "migration-confirm": "Przyjąłem!"
   },
 
+  "update": {
+    "title": "Nowa wersja Stacjownika jest dostępna!",
+    "paragraph1": "Odśwież stronę, aby zaaplikować zmiany!",
+    "release-link": "Kliknij, aby przejrzeć listę zmian (GitHub)",
+    "refresh-button": "Odśwież stronę"
+  },
+
   "data-status": {
     "S1a-connection": "<b>Sygnał S1a</b> <br> Błąd podczas próby połączenia się z API Stacjownika!",
     "S1a-sceneries": "<b>Sygnał S1a</b> <br> Błąd podczas pobierania danych o sceneriach online!",
