@@ -12,7 +12,7 @@
       <div class="scenery-left">
         <div class="scenery-actions">
           <button v-if="!timetableOnly" class="back-btn btn" :title="$t('scenery.return-btn')" @click="navigateTo('/')">
-            <img :src="getImage('back')" alt="Back to scenery" />
+            <img :src="getIcon('back')" alt="Back to scenery" />
           </button>
         </div>
 

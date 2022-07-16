@@ -1,6 +1,6 @@
-import { Availability } from "@/store/storeTypes";
-import ScheduledTrain from "./ScheduledTrain";
-import StationRoutes from "./StationRoutes";
+import { Availability } from '../../store/storeTypes';
+import ScheduledTrain from './ScheduledTrain';
+import StationRoutes from './StationRoutes';
 
 export default interface Station {
   name: string;
@@ -58,5 +58,5 @@ export default interface Station {
     }[];
 
     scheduledTrains?: ScheduledTrain[];
-  }
+  };
 }
