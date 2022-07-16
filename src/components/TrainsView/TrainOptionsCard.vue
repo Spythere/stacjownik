@@ -128,18 +128,6 @@ export default defineComponent({
 @import '../../styles/responsive';
 @import '../../styles/card';
 
-.card-anim {
-  &-enter-active,
-  &-leave-active {
-    transition: all $animDuration $animType;
-  }
-
-  &-enter-from,
-  &-leave-to {
-    transform: translate(-50%, -50%) scale(0.85);
-    opacity: 0;
-  }
-}
 
 .card {
   section {

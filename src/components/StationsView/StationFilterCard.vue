@@ -257,8 +257,8 @@ export default defineComponent({
 
   &-enter-from,
   &-leave-to {
-    transform: translate(-50%, -50%) scale(0.8);
     opacity: 0;
+    transform: translate(-50%, -50%) scale(0.45);
   }
 }
 

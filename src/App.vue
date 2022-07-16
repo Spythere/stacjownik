@@ -74,7 +74,7 @@
     <footer class="app_footer">
       &copy;
       <a href="https://td2.info.pl/profile/?u=20777" target="_blank">Spythere</a>
-      {{ new Date().getUTCFullYear() }} | v{{ VERSION }}
+      {{ new Date().getUTCFullYear() }} | <a :href="releaseURL" target="_blank">v{{ VERSION }}</a>
 
       <div style="display: none">&int; ukryta taktyczna całka do programowania w HTMLu</div>
     </footer>
@@ -147,11 +147,10 @@ export default defineComponent({
 
   data: () => ({
     VERSION: packageInfo.version,
-    updateModalVisible: false,
-    hasReleaseNotes: false,
     options,
 
     currentLang: 'pl',
+    releaseURL: '',
 
     brand_logo: require('@/assets/stacjownik-header-logo.svg'),
 
@@ -171,23 +170,11 @@ export default defineComponent({
   },
 
   async mounted() {
-    if (StorageManager.getStringValue('version') != this.VERSION) {
-      StorageManager.setStringValue('version', this.VERSION);
-
-      if (this.hasReleaseNotes) StorageManager.setBooleanValue('version_notes_read', false);
-    }
-
-    this.updateModalVisible = this.hasReleaseNotes && !StorageManager.getBooleanValue('version_notes_read');
-
-    this.updateToNewestVersion();
+    this.updateStorage();
+    this.setReleaseURL();
   },
 
   methods: {
-    toggleUpdateModal() {
-      this.updateModalVisible = !this.updateModalVisible;
-      StorageManager.setBooleanValue('version_notes_read', true);
-    },
-
     changeRegion(region: { id: string; value: string }) {
       this.store.changeRegion(region);
     },
@@ -199,7 +186,13 @@ export default defineComponent({
       StorageManager.setStringValue('lang', lang);
     },
 
-    updateToNewestVersion() {
+    setReleaseURL() {
+      const releaseURL = StorageManager.getStringValue('releaseURL');
+
+      this.releaseURL = releaseURL || '';
+    },
+
+    updateStorage() {
       if (!StorageManager.isRegistered('unavailable-status')) {
         StorageManager.setBooleanValue('unavailable-status', true);
         StorageManager.setBooleanValue('ending-status', true);

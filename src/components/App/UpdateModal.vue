@@ -1,5 +1,5 @@
 <template>
-  <transition name="card-anim">
+  <transition name="modal-anim">
     <section class="update-modal card" v-if="releaseData && modalOpen">
       <h2 class="modal_header text--primary">
         <img :src="icons.logo" alt="stacjownik logo" />
@@ -17,6 +17,8 @@
         <br />
 
         <p>{{ $t('update.paragraph1') }}</p>
+
+        <!-- <div class="modal_changelog" v-html="markdownReleaseBody"></div> -->
       </div>
 
       <div class="modal_actions">
@@ -27,11 +29,14 @@
 </template>
 
 <script lang="ts">
+import axios from 'axios';
+import packageInfo from '../../../package.json';
+
 import { ReleaseAPIData } from '@/scripts/interfaces/github_api/ReleaseAPIData';
 import { defineComponent } from '@vue/runtime-core';
-import packageInfo from '../../../package.json';
-import axios from 'axios';
+
 import StorageManager from '@/scripts/managers/storageManager';
+import { useStore } from '@/store/store';
 
 const GH_LASTEST_RELEASE_URL = 'https://api.github.com/repos/Spythere/stacjownik/releases/latest';
 
@@ -52,13 +57,16 @@ export default defineComponent({
     };
   },
 
+  setup() {
+    return {
+      store: useStore()
+    }
+  },
+
   methods: {
     async fetchReleases() {
       const storedVersion = StorageManager.getStringValue('appVersion');
       const appVersion = packageInfo.version;
-
-      console.log(storedVersion, appVersion);
-      
 
       // Zmiana
       if (appVersion != storedVersion) {
@@ -72,8 +80,10 @@ export default defineComponent({
           const lastReleaseVersion = releaseData.tag_name.slice(1);
 
           if (lastReleaseVersion == appVersion) {
-            this.releaseData = releaseData;
+            this.releaseData = releaseData;        
             this.modalOpen = true;
+
+            StorageManager.setStringValue('releaseURL', releaseData.html_url);
           }
         } catch (error) {
           console.error(`Wystąpił błąd podczas pobierania danych z API GitHuba: ${error}`);
@@ -87,6 +97,20 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '../../styles/card.scss';
 @import '../../styles/responsive.scss';
+
+
+.modal-anim {
+  &-enter-active,
+  &-leave-active {
+    transition: all $animDuration $animType;
+  }
+
+  &-enter-from,
+  &-leave-to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.45);
+  }
+}
 
 .update-modal {
   text-align: center;
@@ -130,6 +154,11 @@ export default defineComponent({
 
     background-color: black;
   }
+}
+
+.modal_changelog {
+  font-size: 0.8em;
+  margin-top: 2em;
 }
 
 @include smallScreen {
