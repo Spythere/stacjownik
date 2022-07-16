@@ -11,16 +11,14 @@
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, PropType, provide, reactive, ref, TrainFilter } from 'vue';
-import { filteredTrainList } from '@/scripts/managers/trainFilterManager';
-import { trainFilters } from '@/data/trainOptions';
-
-import Train from '@/scripts/interfaces/Train';
-import TrainTable from '@/components/TrainsView/TrainTable.vue';
-import TrainStats from '@/components/TrainsView/TrainStats.vue';
-import TrainOptions from '@/components/TrainsView/TrainOptions.vue';
-
-import { useStore } from '@/store/store';
+import { computed, ComputedRef, defineComponent, provide, reactive, ref, TrainFilter } from 'vue';
+import TrainOptions from '../components/TrainsView/TrainOptions.vue';
+import TrainStats from '../components/TrainsView/TrainStats.vue';
+import TrainTable from '../components/TrainsView/TrainTable.vue';
+import { trainFilters } from '../data/trainOptions';
+import Train from '../scripts/interfaces/Train';
+import { filteredTrainList } from '../scripts/managers/trainFilterManager';
+import { useStore } from '../store/store';
 
 export default defineComponent({
   components: {
@@ -42,7 +40,6 @@ export default defineComponent({
   },
 
   data: () => ({
-    statsIcon: require('@/assets/icon-stats.svg'),
     trainStatsOpen: false,
   }),
 

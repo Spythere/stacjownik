@@ -1,29 +1,27 @@
 <template>
   <div class="train-stats" v-click-outside="closeStats">
     <action-button class="stats_button" @click="toggleStatsOpen">
-      <img :src="statsIcon" :alt="$t('trains.stats')" />
-      <p>{{ $t("trains.stats") }}</p>
+      <img :src="getIcon('stats')" :alt="$t('trains.stats')" />
+      <p>{{ $t('trains.stats') }}</p>
     </action-button>
 
     <transition name="stats-anim" class="stats_wrapper" tag="div">
       <div class="stats-body" v-if="trainStatsOpen">
         <h2 class="stats-header">
-          <img :src="statsIcon" :alt="$t('trains.stats')" />
-          {{ $t("trains.stats") }}
+          <img :src="getIcon('stats')" :alt="$t('trains.stats')" />
+          {{ $t('trains.stats') }}
         </h2>
 
         <div class="stats-speed">
           <div class="title stats-title">
-            {{ $t("trains.stats-speed") }}
+            {{ $t('trains.stats-speed') }}
           </div>
-          <div class="stats-content">
-            {{ speedStats.min }} | {{ speedStats.avg }} | {{ speedStats.max }}
-          </div>
+          <div class="stats-content">{{ speedStats.min }} | {{ speedStats.avg }} | {{ speedStats.max }}</div>
         </div>
 
         <div class="stats-length">
           <div class="title stats-title">
-            {{ $t("trains.stats-length") }}
+            {{ $t('trains.stats-length') }}
           </div>
           <div class="stats-content">
             {{ timetableStats.min }} | {{ timetableStats.avg }} |
@@ -33,15 +31,11 @@
 
         <div class="stats-categories">
           <div class="title stats-title">
-            {{ $t("trains.stats-categories") }}
+            {{ $t('trains.stats-categories') }}
           </div>
 
           <div class="category-list">
-            <span
-              class="category"
-              v-for="[key, value] of categoryList"
-              :key="key"
-            >
+            <span class="category" v-for="[key, value] of categoryList" :key="key">
               <span class="category-type">{{ key }}</span>
               <span class="category-count">{{ value }}</span>
             </span>
@@ -49,28 +43,22 @@
 
           <div class="special-list">
             <span class="special twr">
-              <span class="special-type">{{
-                $t("trains.stats-special-twr")
-              }}</span>
+              <span class="special-type">{{ $t('trains.stats-special-twr') }}</span>
               <span class="special-count">{{ specialTrainCount[0] }}</span>
             </span>
 
             <span class="special skr">
-              <span class="special-type">{{
-                $t("trains.stats-special-skr")
-              }}</span>
+              <span class="special-type">{{ $t('trains.stats-special-skr') }}</span>
               <span class="special-count">{{ specialTrainCount[1] }}</span>
             </span>
           </div>
         </div>
 
         <div class="stats-locos">
-          <div class="title stats-title">{{ $t("trains.stats-locos") }}</div>
+          <div class="title stats-title">{{ $t('trains.stats-locos') }}</div>
 
           <div class="loco-list stats-content">
-            <div class="loco-item" v-for="(loco, i) in locoList" :key="i">
-              {{ loco[0] }} | {{ loco[1] }}
-            </div>
+            <div class="loco-item" v-for="(loco, i) in locoList" :key="i">{{ loco[0] }} | {{ loco[1] }}</div>
           </div>
         </div>
       </div>
@@ -79,13 +67,15 @@
 </template>
 
 <script lang="ts">
-import ActionButton from "@/components/Global/ActionButton.vue";
-
-import Train from "@/scripts/interfaces/Train";
-import { computed, defineComponent, inject } from "@vue/runtime-core";
+import { defineComponent, computed, inject } from 'vue';
+import imageMixin from '../../mixins/imageMixin';
+import Train from '../../scripts/interfaces/Train';
+import ActionButton from '../Global/ActionButton.vue';
 
 export default defineComponent({
   components: { ActionButton },
+  mixins: [imageMixin],
+
   props: {
     trains: {
       type: Array as () => Train[],
@@ -95,7 +85,6 @@ export default defineComponent({
 
   data: () => ({
     trainStatsOpen: false,
-    statsIcon: require("@/assets/icon-stats.svg"),
   }),
 
   methods: {
@@ -110,14 +99,11 @@ export default defineComponent({
 
   setup(props) {
     const speedStats = computed(() => {
-      if (props.trains.length == 0) return { avg: "0", min: "0", max: "0" };
+      if (props.trains.length == 0) return { avg: '0', min: '0', max: '0' };
 
       const trainList = props.trains.filter((train) => train.timetableData);
 
-      const avg = (
-        trainList.reduce((acc, train) => acc + train.speed, 0) /
-        trainList.length
-      ).toFixed(2);
+      const avg = (trainList.reduce((acc, train) => acc + train.speed, 0) / trainList.length).toFixed(2);
 
       const minMaxSpeed = trainList.reduce((acc, train) => {
         if (!train.timetableData) return acc;
@@ -136,32 +122,21 @@ export default defineComponent({
     });
 
     const timetableStats = computed(() => {
-      if (props.trains.length == 0) return { avg: "0", min: "0", max: "0" };
+      if (props.trains.length == 0) return { avg: '0', min: '0', max: '0' };
 
-      const activeTrainsLength = props.trains.filter(
-        (train) => train.timetableData
-      ).length;
+      const activeTrainsLength = props.trains.filter((train) => train.timetableData).length;
 
       const avg = (
-        props.trains.reduce(
-          (acc, train) =>
-            train.timetableData ? acc + train.timetableData.routeDistance : acc,
-          0
-        ) / activeTrainsLength
+        props.trains.reduce((acc, train) => (train.timetableData ? acc + train.timetableData.routeDistance : acc), 0) /
+        activeTrainsLength
       ).toFixed(2);
 
       const minMaxDistance = props.trains.reduce((acc, train) => {
         if (!train.timetableData) return acc;
 
-        acc[0] =
-          !acc[0] || train.timetableData.routeDistance < acc[0]
-            ? train.timetableData.routeDistance
-            : acc[0];
+        acc[0] = !acc[0] || train.timetableData.routeDistance < acc[0] ? train.timetableData.routeDistance : acc[0];
 
-        acc[1] =
-          !acc[1] || train.timetableData.routeDistance > acc[1]
-            ? train.timetableData.routeDistance
-            : acc[1];
+        acc[1] = !acc[1] || train.timetableData.routeDistance > acc[1] ? train.timetableData.routeDistance : acc[1];
         return acc;
       }, [] as any);
 
@@ -178,9 +153,7 @@ export default defineComponent({
 
         acc.set(
           train.timetableData.category,
-          acc.get(train.timetableData.category)
-            ? acc.get(train.timetableData.category) + 1
-            : 1
+          acc.get(train.timetableData.category) ? acc.get(train.timetableData.category) + 1 : 1
         );
 
         return acc;
@@ -193,35 +166,26 @@ export default defineComponent({
       const map: Map<string, number> = props.trains.reduce((acc, train) => {
         if (!train.timetableData || !train.locoType) return acc;
 
-        acc.set(
-          train.locoType,
-          acc.get(train.locoType) ? acc.get(train.locoType) + 1 : 1
-        );
+        acc.set(train.locoType, acc.get(train.locoType) ? acc.get(train.locoType) + 1 : 1);
 
         return acc;
       }, new Map());
 
-      const sorted = [...map.entries()]
-        .sort((a, b) => b[1] - a[1])
-        .filter((v, i) => i < 3);
+      const sorted = [...map.entries()].sort((a, b) => b[1] - a[1]).filter((v, i) => i < 3);
 
       return sorted;
     });
 
     const specialTrainCount = computed(() => {
-      const twrList = props.trains.filter(
-        (train) => train.timetableData && train.timetableData.TWR
-      );
+      const twrList = props.trains.filter((train) => train.timetableData && train.timetableData.TWR);
 
-      const skrList = props.trains.filter(
-        (train) => train.timetableData && train.timetableData.SKR
-      );
+      const skrList = props.trains.filter((train) => train.timetableData && train.timetableData.SKR);
 
       return [twrList.length, skrList.length];
     });
 
     /* Inject list from TrainsView for category filter */
-    const chosenTrainCategories = inject("chosenTrainCategories") as string[];
+    const chosenTrainCategories = inject('chosenTrainCategories') as string[];
 
     return {
       speedStats,
@@ -229,14 +193,14 @@ export default defineComponent({
       categoryList,
       locoList,
       specialTrainCount,
-      chosenTrainCategories
+      chosenTrainCategories,
     };
   },
 });
 </script>
 
 <style lang="scss" scoped>
-@import "../../styles/responsive";
+@import '../../styles/responsive';
 
 .stats-anim {
   &-enter-active,

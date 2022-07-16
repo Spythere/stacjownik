@@ -1,5 +1,5 @@
-import { JournalFilterType } from "@/scripts/enums/JournalFilterType";
 import { JournalFilter } from "vue";
+import { JournalFilterType } from "../scripts/enums/JournalFilterType";
 
 export const journalTimetableFilters: JournalFilter[] = [
     {

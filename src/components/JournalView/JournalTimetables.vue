@@ -150,34 +150,26 @@
 import { computed, defineComponent, JournalFilter, provide, reactive, Ref, ref } from 'vue';
 import axios from 'axios';
 
-import SearchBox from '@/components/Global/SearchBox.vue';
-import dateMixin from '@/mixins/dateMixin';
-import { DataStatus } from '@/scripts/enums/DataStatus';
-
-import ActionButton from '@/components/Global/ActionButton.vue';
-import JournalOptions from '@/components/JournalView/JournalOptions.vue';
-
-import { URLs } from '@/scripts/utils/apiURLs';
-import { journalTimetableFilters } from '@/data/journalFilters';
-import { JournalFilterType } from '@/scripts/enums/JournalFilterType';
-import routerMixin from '@/mixins/routerMixin';
-import { useStore } from '@/store/store';
 import DriverStats from './DriverStats.vue';
-import { TimetableHistory } from '@/scripts/interfaces/api/TimetablesAPIData';
 import Loading from '../Global/Loading.vue';
+import { journalTimetableFilters } from '../../data/journalFilters';
+import dateMixin from '../../mixins/dateMixin';
+import routerMixin from '../../mixins/routerMixin';
+import { DataStatus } from '../../scripts/enums/DataStatus';
+import { JournalFilterType } from '../../scripts/enums/JournalFilterType';
+import { TimetableHistory } from '../../scripts/interfaces/api/TimetablesAPIData';
+import { URLs } from '../../scripts/utils/apiURLs';
+import { useStore } from '../../store/store';
+import JournalOptions from './JournalOptions.vue';
 
-const PROD_MODE = process.env.VUE_APP_JOURNAL_TIMETABLES_DEV != '1' || process.env.NODE_ENV === 'production';
-
-const TIMETABLES_API_URL = PROD_MODE
-  ? `${URLs.stacjownikAPI}/api/getTimetables`
-  : 'http://localhost:3001/api/getTimetables';
+const TIMETABLES_API_URL = `${URLs.stacjownikAPI}/api/getTimetables`;
 
 type JournalTimetableSearcher = {
   [key in 'search-driver' | 'search-train']: string;
 };
 
 export default defineComponent({
-  components: { SearchBox, ActionButton, JournalOptions, DriverStats, Loading },
+  components: { DriverStats, Loading, JournalOptions },
   mixins: [dateMixin, routerMixin],
 
   name: 'JournalTimetables',
@@ -189,10 +181,6 @@ export default defineComponent({
   },
 
   data: () => ({
-    icons: {
-      arrow: require('@/assets/icon-arrow-asc.svg'),
-    },
-
     currentQuery: '',
     scrollDataLoaded: true,
     scrollNoMoreData: false,

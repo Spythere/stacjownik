@@ -83,10 +83,11 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType } from '@vue/runtime-core';
-import dateMixin from '@/mixins/dateMixin';
-import TrainStop from '@/scripts/interfaces/TrainStop';
+import dateMixin from '../../mixins/dateMixin';
+import imageMixin from '../../mixins/imageMixin';
+import Train from '../../scripts/interfaces/Train';
+import TrainStop from '../../scripts/interfaces/TrainStop';
 import StopDate from '../Global/StopDate.vue';
-import Train from '@/scripts/interfaces/Train';
 
 export default defineComponent({
   components: { StopDate },
@@ -97,15 +98,9 @@ export default defineComponent({
     },
   },
 
-  mixins: [dateMixin],
+  mixins: [dateMixin, imageMixin],
 
   emits: ['click'],
-
-  data: () => ({
-    icons: {
-      warning: require('@/assets/icon-warning.svg'),
-    },
-  }),
 
   setup(props) {
     return {
@@ -154,7 +149,7 @@ export default defineComponent({
 
     onImageError(e: Event) {
       const imageEl = e.target as HTMLImageElement;
-      imageEl.src = require('@/assets/unknown.png');
+      imageEl.src = this.getImage('unknown.png');
     },
   },
 });

@@ -33,13 +33,14 @@
 </template>
 
 <script lang="ts">
-import dateMixin from '@/mixins/dateMixin';
-import { DataStatus } from '@/scripts/enums/DataStatus';
-import { SceneryTimetableHistory, TimetableHistory } from '@/scripts/interfaces/api/TimetablesAPIData';
-import Station from '@/scripts/interfaces/Station';
-import { URLs } from '@/scripts/utils/apiURLs';
+
 import axios from 'axios';
 import { defineComponent, PropType } from 'vue';
+import dateMixin from '../../mixins/dateMixin';
+import { DataStatus } from '../../scripts/enums/DataStatus';
+import { TimetableHistory, SceneryTimetableHistory } from '../../scripts/interfaces/api/TimetablesAPIData';
+import Station from '../../scripts/interfaces/Station';
+import { URLs } from '../../scripts/utils/apiURLs';
 import Loading from '../Global/Loading.vue';
 
 export default defineComponent({

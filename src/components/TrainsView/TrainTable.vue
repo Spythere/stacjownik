@@ -1,9 +1,5 @@
 <template>
   <div class="train-table">
-    <button class="return-btn" @click="scrollToTop" v-if="showReturnButton">
-      <img :src="icons.arrowAsc" alt="return arrow" />
-    </button>
-
     <transition name="anim" mode="out-in">
       <div :key="store.dataStatuses.trains">
         <Loading v-if="trains.length == 0 && store.dataStatuses.trains == 0" />
@@ -29,19 +25,14 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, inject, Ref } from '@vue/runtime-core';
-
-import defaultVehicleIconsJSON from '@/data/defaultVehicleIcons.json';
-
-import Train from '@/scripts/interfaces/Train';
-
-import TrainSchedule from '@/components/TrainsView/TrainSchedule.vue';
-import TrainInfo from '@/components/TrainsView/TrainInfo.vue';
-
-import returnBtnMixin from '@/mixins/returnBtnMixin';
-import { useStore } from '@/store/store';
+import { defineComponent, inject, Ref, computed } from 'vue';
+import returnBtnMixin from '../../mixins/returnBtnMixin';
+import Train from '../../scripts/interfaces/Train';
+import { useStore } from '../../store/store';
 import Loading from '../Global/Loading.vue';
 import TrainModal from '../Global/TrainModal.vue';
+import TrainInfo from './TrainInfo.vue';
+import TrainSchedule from './TrainSchedule.vue';
 
 export default defineComponent({
   components: {
@@ -59,17 +50,6 @@ export default defineComponent({
       required: true,
     },
   },
-
-  data: () => ({
-    defaultLocoImage: require('@/assets/unknown.png'),
-
-    icons: {
-      arrowAsc: require('@/assets/icon-arrow-asc.svg'),
-      arrowDesc: require('@/assets/icon-arrow-desc.svg'),
-    },
-
-    defaultVehicleIcons: defaultVehicleIconsJSON,
-  }),
 
   setup(props) {
     const store = useStore();

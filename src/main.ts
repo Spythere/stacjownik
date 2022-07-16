@@ -2,12 +2,11 @@ import { createApp, Directive, ref } from 'vue';
 import App from './App.vue';
 import router from './router';
 
-import enLang from '@/locales/en.json';
-import plLang from '@/locales/pl.json';
+import enLang from './locales/en.json';
+import plLang from './locales/pl.json';
 
 import { createI18n } from 'vue-i18n';
 import { createPinia } from 'pinia';
-import './registerServiceWorker'
 
 const i18n = createI18n({
   locale: 'pl',

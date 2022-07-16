@@ -3,7 +3,7 @@
     <div class="wrapper">
       <div class="body">
         <div class="options-bar">
-          <FilterCard
+          <StationFilterCard
             :showCard="filterCardOpen"
             :exit="closeCard"
             @changeFilterValue="changeFilterValue"
@@ -25,30 +25,25 @@
 </template>
 
 <script lang="ts">
-import Station from '@/scripts/interfaces/Station';
 
-import StorageManager from '@/scripts/managers/storageManager';
-import StationFilterManager from '@/scripts/managers/stationFilterManager';
-
-import inputData from '@/data/options.json';
-
-import StationTable from '@/components/StationsView/StationTable.vue';
-import FilterCard from '@/components/StationsView/StationFilterCard.vue';
-import SelectBox from '@/components/Global/SelectBox.vue';
+import inputData from '../data/options.json';
 
 import { computed, ComputedRef, defineComponent, reactive } from 'vue';
-import { useStore } from '@/store/store';
+import { useStore } from '../store/store';
+import StationFilterManager from '../scripts/managers/stationFilterManager';
+import Station from '../scripts/interfaces/Station';
+import StorageManager from '../scripts/managers/storageManager';
+import StationTable from '../components/StationsView/StationTable.vue';
+import StationFilterCard from '../components/StationsView/StationFilterCard.vue';
+import SelectBox from '../components/Global/SelectBox.vue';
 
 export default defineComponent({
   components: {
     StationTable,
-    FilterCard,
+    StationFilterCard,
     SelectBox,
   },
   data: () => ({
-    trainIcon: require('@/assets/icon-train.svg'),
-    timetableIcon: require('@/assets/icon-timetable.svg'),
-    dolarIcon: require('@/assets/icon-dolar.svg'),
     filterCardOpen: false,
     modalHidden: true,
     STORAGE_KEY: 'options_saved',

@@ -2,7 +2,7 @@
   <section class="filter-card" v-click-outside="closeCard">
     <div class="card_btn">
       <action-button @click="toggleCard">
-        <img class="button_icon" :src="filterIcon" alt="icon-filter" />
+        <img class="button_icon" :src="getIcon('filter2')" alt="icon-filter" />
         <p>{{ $t('options.filters') }}</p>
       </action-button>
     </div>
@@ -26,13 +26,13 @@
               <div class="search-box">
                 <input class="search-input" v-model="searchedTrain" :placeholder="$t('trains.search-train')" />
 
-                <img class="search-exit" :src="exitIcon" alt="exit-icon" @click="() => (searchedTrain = '')" />
+                <img class="search-exit" :src="getIcon('exit')" alt="exit-icon" @click="() => (searchedTrain = '')" />
               </div>
 
               <div class="search-box">
                 <input class="search-input" v-model="searchedDriver" :placeholder="$t('trains.search-driver')" />
 
-                <img class="search-exit" :src="exitIcon" alt="exit-icon" @click="() => (searchedDriver = '')" />
+                <img class="search-exit" :src="getIcon('exit')" alt="exit-icon" @click="() => (searchedDriver = '')" />
               </div>
             </div>
           </div>
@@ -50,24 +50,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject } from '@vue/runtime-core';
+import inputData from "../../data/options.json";
 
-import inputData from '@/data/options.json';
-
-import ActionButton from '@/components/Global/ActionButton.vue';
-import { sorterOptions } from '@/data/trainOptions';
-import { TrainFilter, computed } from 'vue';
+import { TrainFilter, computed, defineComponent, inject } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SelectBox from '../Global/SelectBox.vue';
+import ActionButton from '../Global/ActionButton.vue';
+import { sorterOptions } from '../../data/trainOptions';
+import imageMixin from "../../mixins/imageMixin";
 
 export default defineComponent({
   components: { ActionButton, SelectBox },
   emits: ['changeFilterValue', 'invertFilters', 'resetFilters'],
+  mixins: [imageMixin],
 
   data: () => ({
-    filterIcon: require('@/assets/icon-filter2.svg'),
-    exitIcon: require('@/assets/icon-exit.svg'),
-
     inputs: { ...inputData },
   }),
 

@@ -47,9 +47,9 @@
 </template>
 
 <script lang="ts">
-import dateMixin from '@/mixins/dateMixin';
-import TrainStop from '@/scripts/interfaces/TrainStop';
 import { defineComponent } from 'vue';
+import dateMixin from '../../mixins/dateMixin';
+import TrainStop from '../../scripts/interfaces/TrainStop';
 
 export default defineComponent({
   mixins: [dateMixin],

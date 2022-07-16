@@ -12,16 +12,16 @@
       <div class="header_container">
         <div class="header_icons">
           <span class="icons-top">
-            <img :src="icons.pl" alt="icon-pl" @click="changeLang('en')" v-if="currentLang == 'pl'" />
-            <img :src="icons.en" alt="icon-en" @click="changeLang('pl')" v-else />
+            <img :src="getIcon('pl')" alt="icon-pl" @click="changeLang('en')" v-if="currentLang == 'pl'" />
+            <img :src="getIcon('en', 'jpg')" alt="icon-en" @click="changeLang('pl')" v-else />
           </span>
           <span class="icons-bottom">
             <a href="https://www.paypal.com/paypalme/spythere" target="_blank">
-              <img :src="icons.dollar" alt="icon paypal" />
+              <img :src="getIcon('dollar')" alt="icon paypal" />
             </a>
 
             <a href="https://discord.gg/x2mpNN3svk" target="_blank">
-              <img :src="icons.discord" alt="icon discord" />
+              <img :src="getIcon('discord', 'png')" alt="icon discord" />
             </a>
           </span>
         </div>
@@ -29,18 +29,18 @@
         <div class="header_body">
           <status-indicator />
           <span class="header_brand">
-            <img :src="brand_logo" alt="Stacjownik" />
+            <img :src="getImage('stacjownik-header-logo.svg')" alt="Stacjownik" />
           </span>
 
           <span class="header_info">
             <Clock />
 
             <div class="info_counter">
-              <img src="@/assets/icon-dispatcher.svg" alt="icon dispatcher" />
+              <img :src="getIcon('dispatcher')" alt="icon dispatcher" />
               <span class="text--primary">{{ onlineDispatchers.length }}</span>
               <span class="text--grayed"> / </span>
               <span class="text--primary">{{ trainList.length }}</span>
-              <img src="@/assets/icon-train.svg" alt="icon train" />
+              <img :src="getIcon('train')" alt="icon train" />
             </div>
 
             <span class="info_region">
@@ -55,7 +55,7 @@
             /
             <router-link class="route" active-class="route-active" to="/trains">{{ $t('app.trains') }}</router-link>
             /
-            <router-link class="route" active-class="route-active" to="/journal">
+            <router-link class="route" active-class="route-active" to="/journal/timetables">
               {{ $t('app.journal') }}
             </router-link>
           </span>
@@ -84,17 +84,18 @@
 <script lang="ts">
 import { computed, defineComponent, provide, ref } from 'vue';
 
-import Clock from '@/components/App/Clock.vue';
-import StorageManager from '@/scripts/managers/storageManager';
+import Clock from './components/App/Clock.vue';
 
 import packageInfo from '.././package.json';
-import options from '@/data/options.json';
+import options from './data/options.json';
 
-import StatusIndicator from '@/components/App/StatusIndicator.vue';
-import SelectBox from '@/components/Global/SelectBox.vue';
+import StatusIndicator from './components/App/StatusIndicator.vue';
+import SelectBox from './components/Global/SelectBox.vue';
 import { useStore } from './store/store';
 import UpdateModal from './components/App/UpdateModal.vue';
 import TrainModal from './components/Global/TrainModal.vue';
+import StorageManager from './scripts/managers/storageManager';
+import imageMixin from './mixins/imageMixin';
 
 export default defineComponent({
   components: {
@@ -104,6 +105,8 @@ export default defineComponent({
     UpdateModal,
     TrainModal,
   },
+
+  mixins: [imageMixin],
 
   setup() {
     const store = useStore();
@@ -151,18 +154,6 @@ export default defineComponent({
 
     currentLang: 'pl',
     releaseURL: '',
-
-    brand_logo: require('@/assets/stacjownik-header-logo.svg'),
-
-    icons: {
-      en: require('@/assets/icon-en.jpg'),
-      pl: require('@/assets/icon-pl.svg'),
-      error: require('@/assets/icon-error.svg'),
-      dollar: require('@/assets/icon-dollar.svg'),
-      dispatcher: require('@/assets/icon-dispatcher.svg'),
-      train: require('@/assets/icon-train.svg'),
-      discord: require('@/assets/icon-discord.png'),
-    },
   }),
 
   created() {

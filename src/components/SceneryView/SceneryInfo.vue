@@ -70,8 +70,8 @@ import SceneryInfoStats from './SceneryInfo/SceneryInfoStats.vue';
 import SceneryInfoUserList from './SceneryInfo/SceneryInfoUserList.vue';
 import SceneryInfoSpawnList from './SceneryInfo/SceneryInfoSpawnList.vue';
 import SceneryInfoRoutes from './SceneryInfo/SceneryInfoRoutes.vue';
+import Station from '../../scripts/interfaces/Station';
 
-import Station from '@/scripts/interfaces/Station';
 
 export default defineComponent({
   components: {

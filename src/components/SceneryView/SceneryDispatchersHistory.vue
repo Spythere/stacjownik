@@ -31,13 +31,14 @@
 </template>
 
 <script lang="ts">
-import dateMixin from '@/mixins/dateMixin';
-import { DataStatus } from '@/scripts/enums/DataStatus';
-import { DispatcherHistory } from '@/scripts/interfaces/api/DispatchersAPIData';
-import Station from '@/scripts/interfaces/Station';
-import { URLs } from '@/scripts/utils/apiURLs';
+
 import axios from 'axios';
 import { defineComponent, PropType } from 'vue';
+import dateMixin from '../../mixins/dateMixin';
+import { DataStatus } from '../../scripts/enums/DataStatus';
+import { DispatcherHistory } from '../../scripts/interfaces/api/DispatchersAPIData';
+import Station from '../../scripts/interfaces/Station';
+import { URLs } from '../../scripts/utils/apiURLs';
 import Loading from '../Global/Loading.vue';
 
 export default defineComponent({

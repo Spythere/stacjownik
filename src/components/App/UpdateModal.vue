@@ -2,7 +2,7 @@
   <transition name="modal-anim">
     <section class="update-modal card" v-if="releaseData && modalOpen">
       <h2 class="modal_header text--primary">
-        <img :src="icons.logo" alt="stacjownik logo" />
+        <img :src="getImage('stacjownik-header-logo.svg')" alt="stacjownik logo" />
 
         {{ releaseData.tag_name }}
       </h2>
@@ -30,17 +30,19 @@
 
 <script lang="ts">
 import axios from 'axios';
+import { defineComponent } from 'vue';
 import packageInfo from '../../../package.json';
+import imageMixin from '../../mixins/imageMixin';
+import { ReleaseAPIData } from '../../scripts/interfaces/github_api/ReleaseAPIData';
+import StorageManager from '../../scripts/managers/storageManager';
+import { useStore } from '../../store/store';
 
-import { ReleaseAPIData } from '@/scripts/interfaces/github_api/ReleaseAPIData';
-import { defineComponent } from '@vue/runtime-core';
-
-import StorageManager from '@/scripts/managers/storageManager';
-import { useStore } from '@/store/store';
 
 const GH_LASTEST_RELEASE_URL = 'https://api.github.com/repos/Spythere/stacjownik/releases/latest';
 
 export default defineComponent({
+  mixins: [imageMixin],
+
   mounted() {
     this.fetchReleases();
   },
@@ -50,10 +52,6 @@ export default defineComponent({
       modalOpen: false,
 
       releaseData: null as ReleaseAPIData | null,
-
-      icons: {
-        logo: require('@/assets/stacjownik-header-logo.svg'),
-      },
     };
   },
 

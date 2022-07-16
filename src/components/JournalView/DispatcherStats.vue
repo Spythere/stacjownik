@@ -48,12 +48,13 @@
 </template>
 
 <script lang="ts">
-import { DispatcherStatsAPIData } from '@/scripts/interfaces/api/DispatcherStatsAPIData';
-import { TimetableHistory } from '@/scripts/interfaces/api/TimetablesAPIData';
-import { URLs } from '@/scripts/utils/apiURLs';
-import { useStore } from '@/store/store';
+
 import axios from 'axios';
 import { computed, defineComponent } from 'vue';
+import { DispatcherStatsAPIData } from '../../scripts/interfaces/api/DispatcherStatsAPIData';
+import { TimetableHistory } from '../../scripts/interfaces/api/TimetablesAPIData';
+import { URLs } from '../../scripts/utils/apiURLs';
+import { useStore } from '../../store/store';
 import Loading from '../Global/Loading.vue';
 
 export default defineComponent({

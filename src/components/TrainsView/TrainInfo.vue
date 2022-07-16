@@ -20,7 +20,7 @@
         <img
           v-if="getSceneriesWithComments(train.timetableData).length > 0"
           class="image-warning"
-          :src="icons.warning"
+          :src="getIcon('warning')"
           :title="`${$t('trains.timetable-comments')} (${getSceneriesWithComments(train.timetableData)})`"
         />
       </div>
@@ -59,7 +59,7 @@
       </div>
 
       <div class="driver_position text--grayed" style="margin-top: 0.25em">
-          {{ displayTrainPosition(train) }}
+        {{ displayTrainPosition(train) }}
       </div>
     </section>
 
@@ -79,7 +79,7 @@
       <div>
         <span v-for="(stat, i) in STATS.main" :key="stat.name">
           <span v-if="i > 0"> &bull; </span>
-          <span>{{ `${~~(train[stat.name] * (stat.multiplier || 1))}${stat.unit}` }} </span>
+          <span>{{ `${~~((train as any)[stat.name] * (stat.multiplier || 1))}${stat.unit}` }} </span>
         </span>
       </div>
     </section>
@@ -87,9 +87,10 @@
 </template>
 
 <script lang="ts">
-import trainInfoMixin from '@/mixins/trainInfoMixin';
-import Train from '@/scripts/interfaces/Train';
 import { defineComponent } from 'vue';
+import imageMixin from '../../mixins/imageMixin';
+import trainInfoMixin from '../../mixins/trainInfoMixin';
+import Train from '../../scripts/interfaces/Train';
 
 export default defineComponent({
   props: {
@@ -104,13 +105,7 @@ export default defineComponent({
     },
   },
 
-  mixins: [trainInfoMixin],
-
-  data: () => ({
-    icons: {
-      warning: require('@/assets/icon-warning.svg'),
-    },
-  }),
+  mixins: [trainInfoMixin, imageMixin],
 });
 </script>
 
@@ -165,7 +160,6 @@ export default defineComponent({
 .train-status-badges {
   display: flex;
   flex-wrap: wrap;
-
 }
 
 .train-badge {
@@ -204,7 +198,6 @@ export default defineComponent({
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-
 }
 
 .timetable_progress-bar {

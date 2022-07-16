@@ -20,7 +20,7 @@
               @keydown.enter="onInputSearch"
             />
 
-            <img class="search-exit" :src="exitIcon" alt="exit-icon" @click="onInputClear(propName)" />
+            <img class="search-exit" :src="getIcon('exit')" alt="exit-icon" @click="onInputClear(propName)" />
           </div>
           <!-- <div class="search-box">
             <input
@@ -67,12 +67,15 @@
 
 <script lang="ts">
 import { defineComponent, inject, JournalFilter, PropType } from 'vue';
+import imageMixin from '../../mixins/imageMixin';
 import ActionButton from '../Global/ActionButton.vue';
 import SelectBox from '../Global/SelectBox.vue';
 
 export default defineComponent({
   components: { SelectBox, ActionButton },
   emits: ['onSorterChange', 'onInputChange', 'onFilterChange'],
+  mixins: [imageMixin],
+
   props: {
     sorterOptionIds: {
       type: Array as PropType<Array<string>>,
@@ -85,9 +88,6 @@ export default defineComponent({
     },
   },
 
-  data: () => ({
-    exitIcon: require('@/assets/icon-exit.svg'),
-  }),
 
   setup() {
     return {

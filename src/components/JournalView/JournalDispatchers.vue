@@ -82,21 +82,18 @@
 import { computed, defineComponent, JournalFilter, provide, reactive, Ref, ref } from 'vue';
 import axios from 'axios';
 
-import SearchBox from '@/components/Global/SearchBox.vue';
-import dateMixin from '@/mixins/dateMixin';
-import { DataStatus } from '@/scripts/enums/DataStatus';
+import ActionButton from '../../components/Global/ActionButton.vue';
+import JournalOptions from '../../components/JournalView/JournalOptions.vue';
+import DispatcherStats from '../../components/JournalView/DispatcherStats.vue';
+import SearchBox from '../Global/SearchBox.vue';
 
-import ActionButton from '@/components/Global/ActionButton.vue';
-import JournalOptions from '@/components/JournalView/JournalOptions.vue';
-import DispatcherStats from '@/components/JournalView/DispatcherStats.vue';
-
-import { URLs } from '@/scripts/utils/apiURLs';
-import { useStore } from '@/store/store';
 import Loading from '../Global/Loading.vue';
+import { URLs } from '../../scripts/utils/apiURLs';
+import dateMixin from '../../mixins/dateMixin';
+import { DataStatus } from '../../scripts/enums/DataStatus';
+import { useStore } from '../../store/store';
 
-const PROD_MODE = process.env.VUE_APP_JORUNAL_DISPATCHERS_DEV != '1' || process.env.NODE_ENV === 'production';
-
-const DISPATCHERS_API_URL = (PROD_MODE ? `${URLs.stacjownikAPI}/api` : 'http://localhost:3001/api') + '/getDispatchers';
+const DISPATCHERS_API_URL = `${URLs.stacjownikAPI}/api/getDispatchers`;
 
 interface DispatcherHistoryItem {
   id: string;
@@ -139,10 +136,6 @@ export default defineComponent({
   },
 
   data: () => ({
-    icons: {
-      arrow: require('@/assets/icon-arrow-asc.svg'),
-    },
-
     currentQuery: '',
     scrollDataLoaded: true,
     scrollNoMoreData: false,

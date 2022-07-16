@@ -15,7 +15,7 @@
                 <img
                   class="sort-icon"
                   v-if="sorterActive.index == i"
-                  :src="sorterActive.dir == 1 ? ascIcon : descIcon"
+                  :src="sorterActive.dir == 1 ? getIcon('arrow-asc') : getIcon('arrow-desc')"
                   alt="sort icon"
                 />
               </span>
@@ -23,12 +23,12 @@
 
             <th v-for="(id, i) in headIconsIds" :key="id" @click="() => changeSorter(i + 7)">
               <span class="header_wrapper">
-                <img :src="require(`@/assets/icon-${id}.svg`)" :alt="id" :title="$t(`sceneries.${id}s`)" />
+                <img :src="getIcon(id)" :alt="id" :title="$t(`sceneries.${id}s`)" />
 
                 <img
                   class="sort-icon"
                   v-if="sorterActive.index == i + 7"
-                  :src="sorterActive.dir == 1 ? ascIcon : descIcon"
+                  :src="sorterActive.dir == 1 ? getIcon('arrow-asc') : getIcon('arrow-desc')"
                   alt="sort icon"
                 />
               </span>
@@ -67,15 +67,15 @@
                 </span>
 
                 <span v-else-if="station.generalInfo.availability == 'abandoned'">
-                  <img :src="abandonedIcon" alt="non-public" :title="$t('desc.abandoned')" />
+                  <img :src="getIcon('abandoned')" alt="non-public" :title="$t('desc.abandoned')" />
                 </span>
 
                 <span v-else-if="station.generalInfo.availability == 'nonPublic'">
-                  <img :src="lockIcon" alt="non-public" :title="$t('desc.non-public')" />
+                  <img :src="getIcon('lock')" alt="non-public" :title="$t('desc.non-public')" />
                 </span>
 
                 <span v-else>
-                  <img :src="unavailableIcon" alt="unavailable" :title="$t('desc.unavailable')" />
+                  <img :src="getIcon('unavailable')" alt="unavailable" :title="$t('desc.unavailable')" />
                 </span>
               </span>
 
@@ -154,7 +154,7 @@
                 <img
                   class="icon-info"
                   v-if="station.generalInfo.SUP"
-                  :src="require(`@/assets/icon-SUP.svg`)"
+                  :src="getIcon('SUP')"
                   alt="SUP (RASP-UZK)"
                   :title="$t('desc.SUP')"
                 />
@@ -164,7 +164,7 @@
                 <img
                   class="icon-info"
                   v-if="station.generalInfo.signalType"
-                  :src="require(`@/assets/icon-${station.generalInfo.signalType}.svg`)"
+                  :src="getIcon(station.generalInfo.signalType)"
                   :alt="station.generalInfo.signalType"
                   :title="$t('desc.signals-type') + $t(`signals.${station.generalInfo.signalType}`)"
                 />
@@ -174,7 +174,7 @@
                 <img
                   class="icon-info"
                   v-if="station.generalInfo && station.generalInfo.routes.sblRouteNames.length > 0"
-                  :src="SBLIcon"
+                  :src="getIcon('SBL')"
                   alt="SBL"
                   :title="$t('desc.SBL') + `${station.generalInfo.routes.sblRouteNames.join(',')}`"
                 />
@@ -182,7 +182,7 @@
             </td>
 
             <td class="station_info" v-else>
-              <img class="icon-info" :src="unknownIcon" alt="icon-unknown" :title="$t('desc.unknown')" />
+              <img class="icon-info" :src="getImage('unknown.png')" alt="icon-unknown" :title="$t('desc.unknown')" />
             </td>
 
             <td class="station_users" :class="{ inactive: !station.onlineInfo }">
@@ -222,16 +222,15 @@
 </template>
 
 <script lang="ts">
-import styleMixin from '@/mixins/styleMixin';
-import dateMixin from '@/mixins/dateMixin';
-import stationInfoMixin from '@/mixins/stationInfoMixin';
-import returnBtnMixin from '@/mixins/returnBtnMixin';
-
-import { DataStatus } from '@/scripts/enums/DataStatus';
-import { computed, ComputedRef, defineComponent } from '@vue/runtime-core';
-import Station from '@/scripts/interfaces/Station';
-import { StoreData } from '@/scripts/interfaces/StoreData';
-import { useStore } from '@/store/store';
+import { defineComponent, computed } from 'vue';
+import dateMixin from '../../mixins/dateMixin';
+import imageMixin from '../../mixins/imageMixin';
+import returnBtnMixin from '../../mixins/returnBtnMixin';
+import stationInfoMixin from '../../mixins/stationInfoMixin';
+import styleMixin from '../../mixins/styleMixin';
+import { DataStatus } from '../../scripts/enums/DataStatus';
+import Station from '../../scripts/interfaces/Station';
+import { useStore } from '../../store/store';
 import Loading from '../Global/Loading.vue';
 
 export default defineComponent({
@@ -250,21 +249,8 @@ export default defineComponent({
     setFocusedStation: { type: Function, required: true },
     changeSorter: { type: Function, required: true },
   },
-  mixins: [styleMixin, dateMixin, stationInfoMixin, returnBtnMixin],
+  mixins: [styleMixin, dateMixin, stationInfoMixin, returnBtnMixin, imageMixin],
   data: () => ({
-    likeIcon: require('@/assets/icon-like.svg'),
-    spawnIcon: require('@/assets/icon-spawn.svg'),
-    timetableIcon: require('@/assets/icon-timetable.svg'),
-    userIcon: require('@/assets/icon-user.svg'),
-    trainIcon: require('@/assets/icon-train.svg'),
-    SBLIcon: require('@/assets/icon-SBL.svg'),
-    SUPIcon: require('@/assets/icon-SUP.svg'),
-    lockIcon: require('@/assets/icon-lock.svg'),
-    unavailableIcon: require('@/assets/icon-unavailable.svg'),
-    unknownIcon: require('@/assets/icon-unknown.svg'),
-    abandonedIcon: require('@/assets/icon-abandoned.svg'),
-    ascIcon: require('@/assets/icon-arrow-asc.svg'),
-    descIcon: require('@/assets/icon-arrow-desc.svg'),
     headIds: ['station', 'min-lvl', 'status', 'dispatcher', 'dispatcher-lvl', 'routes', 'general'],
     headIconsIds: ['user', 'spawn', 'timetable'],
     lastSelectedStationName: '',

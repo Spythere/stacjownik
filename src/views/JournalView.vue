@@ -21,13 +21,12 @@
 </template>
 
 <script lang="ts">
-import JournalTimetables from '@/components/JournalView/JournalTimetables.vue';
 import { defineComponent, ref } from 'vue';
-import JournalDispatchers from '@/components/JournalView/JournalDispatchers.vue';
+import JournalDispatchers from '../components/JournalView/JournalDispatchers.vue';
+import JournalTimetables from '../components/JournalView/JournalTimetables.vue';
 
 export default defineComponent({
-  components: { JournalTimetables, JournalDispatchers },
-
+  components: { JournalDispatchers, JournalTimetables },
   setup() {
     const journalTypeChosen = ref('journalTimetables');
 

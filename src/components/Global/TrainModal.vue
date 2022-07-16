@@ -3,7 +3,7 @@
     <div class="modal_background" @click="closeModal"></div>
     <div class="modal_content" ref="content" tabindex="0">
       <button class="btn exit" @click="closeModal">
-        <img :src="icons.exit" alt="close card" />
+        <img :src="getIcon('exit')" alt="close card" />
       </button>
 
       <TrainInfo :train="store.chosenModalTrain" :extended="false" ref="trainInfo" />
@@ -13,23 +13,20 @@
 </template>
 
 <script lang="ts">
-import trainInfoMixin from '@/mixins/trainInfoMixin';
-import { useStore } from '@/store/store';
 import { defineComponent } from 'vue';
+import imageMixin from '../../mixins/imageMixin';
+import trainInfoMixin from '../../mixins/trainInfoMixin';
+import { useStore } from '../../store/store';
 import TrainInfo from '../TrainsView/TrainInfo.vue';
 import TrainSchedule from '../TrainsView/TrainSchedule.vue';
 
 export default defineComponent({
   components: { TrainInfo, TrainSchedule },
-  mixins: [trainInfoMixin],
+  mixins: [trainInfoMixin, imageMixin],
 
   data() {
     return {
       isTopBarVisible: false,
-
-      icons: {
-        exit: require('@/assets/icon-exit.svg'),
-      },
     };
   },
 
