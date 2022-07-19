@@ -41,7 +41,7 @@ export const useStore = defineStore('store', {
       driverStatsName: '',
       driverStatsData: undefined,
 
-      chosenModalTrain: undefined as Train | undefined,
+      chosenModalTrainId: undefined,
 
       dataStatuses: {
         connection: DataStatus.Loading,

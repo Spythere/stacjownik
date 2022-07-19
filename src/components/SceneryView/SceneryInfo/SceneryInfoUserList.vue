@@ -13,8 +13,8 @@
       :class="train.stopStatus"
       :key="train.trainId"
       tabindex="0"
-      @click="selectTrain(train.trainId)"
-      @keydown.enter="selectTrain(train.trainId)"
+      @click="selectModalTrain(train.trainId)"
+      @keydown.enter="selectModalTrain(train.trainId)"
     >
       <span class="user_train">{{ train.trainNo }}</span>
       <span class="user_name">{{ train.driverName }}</span>
@@ -30,12 +30,13 @@
 
 import { computed, defineComponent } from 'vue';
 import imageMixin from '../../../mixins/imageMixin';
+import modalTrainMixin from '../../../mixins/modalTrainMixin';
 import routerMixin from '../../../mixins/routerMixin';
 import Station from '../../../scripts/interfaces/Station';
 import { useStore } from '../../../store/store';
 
 export default defineComponent({
-  mixins: [routerMixin, imageMixin],
+  mixins: [routerMixin, imageMixin, modalTrainMixin],
 
   props: {
     station: {
@@ -65,12 +66,6 @@ export default defineComponent({
     });
 
     return { computedStationTrains, store };
-  },
-
-  methods: {
-    selectTrain(trainId: string) {
-      this.store.chosenModalTrain = this.store.trainList.find((train) => train.trainId == trainId);
-    },
   },
 });
 </script>

@@ -31,7 +31,7 @@ export interface StoreState {
   driverStatsName: string;
   driverStatsData?: DriverStatsAPIData;
 
-  chosenModalTrain?: Train;
+  chosenModalTrainId?: string;
 
   dataStatuses: {
     connection: DataStatus;

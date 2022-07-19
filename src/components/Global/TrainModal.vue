@@ -1,13 +1,13 @@
 <template>
-  <div class="train-modal" v-if="store.chosenModalTrain" @keydown.esc="closeModal">
+  <div class="train-modal" v-if="chosenTrain" @keydown.esc="closeModal">
     <div class="modal_background" @click="closeModal"></div>
     <div class="modal_content" ref="content" tabindex="0">
       <button class="btn exit" @click="closeModal">
         <img :src="getIcon('exit')" alt="close card" />
       </button>
 
-      <TrainInfo :train="store.chosenModalTrain" :extended="false" ref="trainInfo" />
-      <TrainSchedule :train="store.chosenModalTrain" tabindex="0" />
+      <TrainInfo :train="chosenTrain" :extended="false" ref="trainInfo" />
+      <TrainSchedule :train="chosenTrain" tabindex="0" />
     </div>
   </div>
 </template>
@@ -15,6 +15,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import imageMixin from '../../mixins/imageMixin';
+import modalTrainMixin from '../../mixins/modalTrainMixin';
 import trainInfoMixin from '../../mixins/trainInfoMixin';
 import { useStore } from '../../store/store';
 import TrainInfo from '../TrainsView/TrainInfo.vue';
@@ -22,7 +23,7 @@ import TrainSchedule from '../TrainsView/TrainSchedule.vue';
 
 export default defineComponent({
   components: { TrainInfo, TrainSchedule },
-  mixins: [trainInfoMixin, imageMixin],
+  mixins: [trainInfoMixin, modalTrainMixin, imageMixin],
 
   data() {
     return {
@@ -47,10 +48,6 @@ export default defineComponent({
   },
 
   methods: {
-    closeModal() {
-      this.store.chosenModalTrain = undefined;
-    },
-
     handleContentScroll(e: Event) {
       const trainInfoCompHeight: number = (this.$refs['trainInfo'] as any).$el.getBoundingClientRect().height;
 

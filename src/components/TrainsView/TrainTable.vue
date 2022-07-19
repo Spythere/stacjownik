@@ -13,8 +13,8 @@
             class="train-row"
             v-for="train in currentTrains"
             :key="train.trainId"
-            @click.stop="selectTrain(train.trainId)"
-            @keydown.enter="selectTrain(train.trainId)"
+            @click.stop="selectModalTrain(train.trainId)"
+            @keydown.enter="selectModalTrain(train.trainId)"
           >
             <TrainInfo :train="train" />
           </li>
@@ -26,6 +26,7 @@
 
 <script lang="ts">
 import { defineComponent, inject, Ref, computed } from 'vue';
+import modalTrainMixin from '../../mixins/modalTrainMixin';
 import returnBtnMixin from '../../mixins/returnBtnMixin';
 import Train from '../../scripts/interfaces/Train';
 import { useStore } from '../../store/store';
@@ -42,7 +43,7 @@ export default defineComponent({
     TrainModal,
   },
 
-  mixins: [returnBtnMixin],
+  mixins: [returnBtnMixin, modalTrainMixin],
 
   props: {
     trains: {
@@ -82,7 +83,7 @@ export default defineComponent({
       this.searchedTrain = query.trainNo.toString();
 
       setTimeout(() => {
-        this.selectTrain(query.driverName + <string>query.trainNo);
+        this.selectModalTrain(query.driverName + <string>query.trainNo);
       }, 20);
     }
   },
@@ -112,9 +113,6 @@ export default defineComponent({
       }, 10);
     },
 
-    selectTrain(trainId: string) {
-      this.store.chosenModalTrain = this.store.trainList.find((train) => train.trainId == trainId);
-    },
   },
 });
 </script>

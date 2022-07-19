@@ -45,8 +45,8 @@
         v-for="(scheduledTrain, i) in computedScheduledTrains"
         :key="i + 1"
         tabindex="0"
-        @click.prevent.stop="selectTrain(scheduledTrain.trainId)"
-        @keydown.enter.prevent="selectTrain(scheduledTrain.trainId)"
+        @click.prevent.stop="selectModalTrain(scheduledTrain.trainId)"
+        @keydown.enter.prevent="selectModalTrain(scheduledTrain.trainId)"
       >
         <span class="timetable-general">
           <span class="general-info">
@@ -168,13 +168,14 @@ import routerMixin from '../../mixins/routerMixin';
 import Station from '../../scripts/interfaces/Station';
 import { useStore } from '../../store/store';
 import imageMixin from '../../mixins/imageMixin';
+import modalTrainMixin from '../../mixins/modalTrainMixin';
 
 export default defineComponent({
   name: 'SceneryTimetable',
 
   components: { SelectBox, Loading, TrainModal },
 
-  mixins: [dateMixin, routerMixin, imageMixin],
+  mixins: [dateMixin, routerMixin, imageMixin, modalTrainMixin],
 
   props: {
     station: {
@@ -248,10 +249,6 @@ export default defineComponent({
 
     selectCheckpoint(cp: { checkpointName: string }) {
       this.selectedCheckpoint = cp.checkpointName;
-    },
-
-    selectTrain(trainId: string) {
-      this.store.chosenModalTrain = this.store.trainList.find((train) => train.trainId == trainId);
     },
   },
 
