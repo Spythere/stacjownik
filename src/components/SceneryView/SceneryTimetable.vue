@@ -32,7 +32,11 @@
         <Loading />
       </div>
 
-      <span class="timetable-item empty" v-else-if="computedScheduledTrains.length == 0">
+      <span class="timetable-item empty" v-else-if="computedScheduledTrains.length == 0 && !station.onlineInfo">
+        {{ $t('scenery.offline') }}
+      </span>
+
+       <span class="timetable-item empty" v-else-if="computedScheduledTrains.length == 0">
         {{ $t('scenery.no-timetables') }}
       </span>
 

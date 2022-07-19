@@ -246,6 +246,7 @@
     "spawns": "OPEN SPAWNS",
     "timetables": "ACTIVE TIMETABLES",
     "no-timetables": "No active timetables!",
+    "offline": "Scenery is offline",
     "no-users": "NO ACTIVE PLAYERS",
     "no-spawns": "NO OPEN SPAWNS",
     "no-scenery": "Oops! This scenery doesn't exist!",
