@@ -9,10 +9,13 @@
           <b>{{ localeDay(historyItem.beginDate, $i18n.locale) }}</b>
           {{ localeTime(historyItem.beginDate, $i18n.locale) }}
         </div>
+
         <div>
-          <span class="text--grayed"> #{{ historyItem.timetableId }} </span>
-          <b class="text--primary">&nbsp;{{ historyItem.trainCategoryCode }} {{ historyItem.trainNo }}</b>
-          <div>{{ historyItem.driverName }}</div>
+          <router-link :to="`/journal/timetables?timetableId=${historyItem.timetableId}`">
+            <span class="text--grayed"> #{{ historyItem.timetableId }} </span>
+            <b class="text--primary">&nbsp;{{ historyItem.trainCategoryCode }} {{ historyItem.trainNo }}</b>
+            <div>{{ historyItem.driverName }}</div>
+          </router-link>
         </div>
 
         <div>{{ historyItem.route.replace('|', ' -> ') }}</div>
@@ -30,13 +33,14 @@
 </template>
 
 <script lang="ts">
-import dateMixin from '@/mixins/dateMixin';
-import { DataStatus } from '@/scripts/enums/DataStatus';
-import { SceneryTimetableHistory, TimetableHistory } from '@/scripts/interfaces/api/TimetablesAPIData';
-import Station from '@/scripts/interfaces/Station';
-import { URLs } from '@/scripts/utils/apiURLs';
+
 import axios from 'axios';
 import { defineComponent, PropType } from 'vue';
+import dateMixin from '../../mixins/dateMixin';
+import { DataStatus } from '../../scripts/enums/DataStatus';
+import { TimetableHistory, SceneryTimetableHistory } from '../../scripts/interfaces/api/TimetablesAPIData';
+import Station from '../../scripts/interfaces/Station';
+import { URLs } from '../../scripts/utils/apiURLs';
 import Loading from '../Global/Loading.vue';
 
 export default defineComponent({
@@ -102,9 +106,13 @@ export default defineComponent({
 }
 
 @include smallScreen {
+  .history-list {
+    font-size: 1.1em;
+  }
   .list-item {
     grid-template-columns: 1fr 1fr;
     font-size: 1.05em;
   }
 }
 </style>
+

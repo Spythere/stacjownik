@@ -57,8 +57,8 @@
 </template>
 
 <script lang="ts">
-import Station from '@/scripts/interfaces/Station';
 import { defineComponent } from 'vue';
+import Station from '../../../scripts/interfaces/Station';
 
 export default defineComponent({
   props: {

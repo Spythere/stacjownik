@@ -51,12 +51,13 @@
 </template>
 
 <script lang="ts">
-import { DriverStatsAPIData } from '@/scripts/interfaces/api/DriverStatsAPIData';
-import { TimetableHistory } from '@/scripts/interfaces/api/TimetablesAPIData';
-import { URLs } from '@/scripts/utils/apiURLs';
-import { useStore } from '@/store/store';
+
 import axios from 'axios';
 import { defineComponent } from 'vue';
+import { DriverStatsAPIData } from '../../scripts/interfaces/api/DriverStatsAPIData';
+import { TimetableHistory } from '../../scripts/interfaces/api/TimetablesAPIData';
+import { URLs } from '../../scripts/utils/apiURLs';
+import { useStore } from '../../store/store';
 
 export default defineComponent({
   emits: ['closeCard'],

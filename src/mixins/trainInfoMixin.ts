@@ -1,8 +1,11 @@
-import Train from '@/scripts/interfaces/Train';
-import TrainStop from '@/scripts/interfaces/TrainStop';
 import { defineComponent } from 'vue';
+import Train from '../scripts/interfaces/Train';
+import TrainStop from '../scripts/interfaces/TrainStop';
+import imageMixin from './imageMixin';
 
 export default defineComponent({
+  mixins: [imageMixin],
+
   data: () => ({
     STATS: {
       main: [
@@ -55,6 +58,23 @@ export default defineComponent({
         : this.$t('trains.last-seen-ago', { minutes: diffMins });
     },
 
+    displayTrainPosition(train: Train) {
+      let positionString = '';
+
+      positionString += this.$t('trains.current-scenery') + ' ';
+
+      if (train.currentStationHash) positionString += train.currentStationName + ' ';
+      else positionString += train['currentStationName'].replace(/.[a-zA-Z0-9]+.sc/, '') + ' (offline) ';
+
+      if (train.signal) positionString += this.$t('trains.current-signal') + ' ' + train.signal + ' ';
+
+      if (train.connectedTrack) positionString += this.$t('trains.current-track') + ' ' + train.connectedTrack + ' ';
+
+      if (train.distance) positionString += `(${this.displayDistance(train.distance)})`;
+
+      return positionString.charAt(0).toUpperCase() + positionString.slice(1);
+    },
+
     displayStopList(stops: TrainStop[]): string | undefined {
       if (!stops) return '';
 
@@ -62,11 +82,7 @@ export default defineComponent({
         .reduce((acc: string[], stop: TrainStop, i: number) => {
           if (stop.stopType.includes('ph') && !stop.stopNameRAW.includes('po.'))
             acc.push(`<strong style='color:${stop.confirmed ? 'springgreen' : 'white'}'>${stop.stopName}</strong>`);
-          else if (
-            i > 0 &&
-            i < stops.length - 1 &&
-            !/po\.|sbl/gi.test(stop.stopNameRAW)
-          )
+          else if (i > 0 && i < stops.length - 1 && !/po\.|sbl/gi.test(stop.stopNameRAW))
             acc.push(`<span style='color:${stop.confirmed ? 'springgreen' : 'lightgray'}'>${stop.stopName}</span>`);
           return acc;
         }, [])
@@ -121,7 +137,7 @@ export default defineComponent({
 
     onImageError(e: Event) {
       const imageEl = e.target as HTMLImageElement;
-      imageEl.src = require('@/assets/unknown.png');
+      imageEl.src = this.getImage('unknown.png');
     },
   },
 });

@@ -1,11 +1,7 @@
 <template>
   <section class="info-header">
     <div class="scenery-name">
-      <a v-if="station.generalInfo?.url" :href="station.generalInfo.url" target="_blank" rel="noopener noreferrer">
-        {{ station.name }}
-      </a>
-
-      <span v-else>{{ station.name }}</span>
+      {{ station.name }}
     </div>
 
     <div class="scenery-hash" v-if="station.onlineInfo?.hash">#{{ station.onlineInfo.hash }}</div>
@@ -14,8 +10,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import Station from '../../scripts/interfaces/Station';
 
-import Station from '@/scripts/interfaces/Station';
 
 export default defineComponent({
   props: {
@@ -33,7 +29,6 @@ export default defineComponent({
 
 .scenery-name {
   font-weight: bold;
-  color: $accentCol;
 
   position: relative;
 
@@ -52,3 +47,4 @@ export default defineComponent({
   font-size: 1.2em;
 }
 </style>
+

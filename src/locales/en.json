@@ -10,6 +10,12 @@
     "migration-warning": "Stacjownik services will be unavailable 2/06/2022 between 1-3am (CEST time) due to the migration of API hostings!",
     "migration-confirm": "Roger that!"
   },
+  "update": {
+      "title": "New Stacjownik version is available!",
+      "paragraph1": "Enjoy the application and may the green signal be with you!",
+      "release-link": "Click here to browse version changelog (GitHub)",
+      "confirm-button": "Understood!" 
+  },
   "data-status": {
     "S1a-connection": "<b>S1a signal</b> <br> Cannot connect with Stacjownik API service!",
     "S1a-sceneries": "<b>S1a signal</b> <br> Cannot load online stations data!",
@@ -185,9 +191,11 @@
     "comment": "Exploitation comments for: ",
     "table-limit": "For performance reasons there's a limit of 10 trains shown at the same time.",
 
-    "last-seen-now": "last seen: just now",
-    "last-seen-min": "last seen: one minute ago",
-    "last-seen-ago": "last seen: {minutes} mins ago"
+    "last-seen-now": "since now",
+    "last-seen-min": "since one minute",
+    "last-seen-ago": "since {minutes} minutes",
+
+    "scenery-offline": "Offline ride"
   },
   "journal": {
     "title": "DISPATCHER HISTORY",
@@ -198,7 +206,7 @@
     "section-dispatchers": "DISPATCHERS",
 
     "search": "Search",
-    "search-train": "Train no.",
+    "search-train": "Train no. / #",
     "search-driver": "Driver name",
     "search-dispatcher": "Dispatcher name",
     "search-station": "Scenery name",
@@ -238,6 +246,7 @@
     "spawns": "OPEN SPAWNS",
     "timetables": "ACTIVE TIMETABLES",
     "no-timetables": "No active timetables!",
+    "offline": "Scenery is offline",
     "no-users": "NO ACTIVE PLAYERS",
     "no-spawns": "NO OPEN SPAWNS",
     "no-scenery": "Oops! This scenery doesn't exist!",
@@ -258,12 +267,14 @@
     "timetable-author-unknown": "Author unknown",
 
     "req-level": "all dispatcher levels | dispatcher level {lvl} required | dispatcher level {lvl} required",
-    "history-list-empty": "No recorded scenery history!"
+    "history-list-empty": "No recorded scenery history!",
+
+    "forum-topic": "Official {name} forum topic"
   },
   "availability": {
     "title": "Availability",
     "default": "in-game",
-    "nonDefault": "downloadable",
+    "nonDefault": "additional",
     "unavailable": "unavailable",
     "nonPublic": "private",
     "abandoned": "abandoned"

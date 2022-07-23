@@ -11,6 +11,13 @@
     "migration-confirm": "Przyjąłem!"
   },
 
+  "update": {
+    "title": "Nowa wersja Stacjownika jest dostępna!",
+    "paragraph1": "Miłego korzystania z aplikacji i niech S2 będzie z wami!",
+    "release-link": "Kliknij, aby przejrzeć listę zmian (GitHub)",
+    "confirm-button": "Przyjąłem!"
+  },
+
   "data-status": {
     "S1a-connection": "<b>Sygnał S1a</b> <br> Błąd podczas próby połączenia się z API Stacjownika!",
     "S1a-sceneries": "<b>Sygnał S1a</b> <br> Błąd podczas pobierania danych o sceneriach online!",
@@ -186,9 +193,11 @@
     "comment": "Uwagi eksploatacyjne dla: ",
     "table-limit": "Dla płynności działania strony pokazanych jest tylko 10 pociągów zgodnie z wybranymi filtrami.",
 
-    "last-seen-now": "ostatnio widziany: przed chwilą",
-    "last-seen-min": "ostatnio widziany: minutę temu",
-    "last-seen-ago": "ostatnio widziany: {minutes} min. temu"
+    "last-seen-now": "od niedawna",
+    "last-seen-min": "od minuty",
+    "last-seen-ago": "od {minutes} minut",
+
+    "scenery-offline": "Przejazd offline"
   },
   "journal": {
     "title": "HISTORIA DYŻURÓW",
@@ -199,7 +208,7 @@
     "section-dispatchers": "DYŻURNI",
 
     "search": "Szukaj",
-    "search-train": "Numer pociągu",
+    "search-train": "Nr pociągu / #",
     "search-driver": "Nick maszynisty",
     "search-dispatcher": "Nick dyżurnego",
     "search-station": "Nazwa scenerii",
@@ -239,6 +248,7 @@
     "spawns": "OTWARTE SPAWNY",
     "timetables": "AKTYWNE ROZKŁADY JAZDY",
     "no-timetables": "Brak aktywnych rozkładów!",
+    "offline": "Sceneria jest offline",
     "no-users": "BRAK AKTYWNYCH GRACZY",
     "no-spawns": "BRAK OTWARTYCH SPAWNÓW",
     "no-scenery": "Ups! Ta sceneria nie istnieje!",
@@ -259,7 +269,9 @@
     "timetable-author-unknown": "Autor nieznany",
 
     "req-level": "ogólnodostępna | minimum {lvl} poziom dyżurnego | minimum {lvl} poziom dyżurnego",
-    "history-list-empty": "Brak historii dla tej scenerii!"
+    "history-list-empty": "Brak historii dla tej scenerii!",
+
+    "forum-topic": "Oficjalny wątek scenerii {name}"
   },
   "availability": {
     "title": "Dostępność",

@@ -1,20 +1,20 @@
-import { DataStatus } from '@/scripts/enums/DataStatus';
-import StationAPIData from '@/scripts/interfaces/api/StationAPIData';
-import ScheduledTrain from '@/scripts/interfaces/ScheduledTrain';
-import Station from '@/scripts/interfaces/Station';
-import StationRoutes from '@/scripts/interfaces/StationRoutes';
-import Train from '@/scripts/interfaces/Train';
-import { URLs } from '@/scripts/utils/apiURLs';
-import {
-  getLocoURL,
-  getScheduledTrain,
-  getStatusID,
-  getStatusTimestamp,
-  parseSpawns,
-} from '@/scripts/utils/storeUtils';
 import axios from 'axios';
 import { defineStore } from 'pinia';
 import { io } from 'socket.io-client';
+import { DataStatus } from '../scripts/enums/DataStatus';
+import StationAPIData from '../scripts/interfaces/api/StationAPIData';
+import ScheduledTrain from '../scripts/interfaces/ScheduledTrain';
+import Station from '../scripts/interfaces/Station';
+import StationRoutes from '../scripts/interfaces/StationRoutes';
+import Train from '../scripts/interfaces/Train';
+import { URLs } from '../scripts/utils/apiURLs';
+import {
+  getLocoURL,
+  getStatusTimestamp,
+  getStatusID,
+  getScheduledTrain,
+  parseSpawns,
+} from '../scripts/utils/storeUtils';
 import { APIData, StationJSONData, StoreState } from './storeTypes';
 
 export const useStore = defineStore('store', {
@@ -41,6 +41,8 @@ export const useStore = defineStore('store', {
       driverStatsName: '',
       driverStatsData: undefined,
 
+      chosenModalTrainId: undefined,
+
       dataStatuses: {
         connection: DataStatus.Loading,
         sceneries: DataStatus.Loading,
@@ -56,7 +58,7 @@ export const useStore = defineStore('store', {
     setTrainsOnlineData() {
       const { trains } = this.apiData;
 
-      if (!trains) return [];      
+      if (!trains) return [];
 
       this.trainList = trains
         .filter(
@@ -70,6 +72,8 @@ export const useStore = defineStore('store', {
           const timetable = train.timetable;
 
           return {
+            trainId: train.driverName + train.trainNo.toString(),
+
             trainNo: train.trainNo,
             mass: train.mass,
             length: train.length,
@@ -200,7 +204,12 @@ export const useStore = defineStore('store', {
           (train) =>
             train?.region === this.region.id && train.online && train.currentStationName === stationAPIData.stationName
         )
-        .map((train) => ({ driverName: train.driverName, driverId: train.driverId, trainNo: train.trainNo }));
+        .map((train) => ({
+          driverName: train.driverName,
+          driverId: train.driverId,
+          trainNo: train.trainNo,
+          trainId: train.trainId,
+        }));
     },
 
     setStationsOnlineInfo() {
@@ -334,7 +343,7 @@ export const useStore = defineStore('store', {
         transports: ['websocket', 'polling'],
         rememberUpgrade: true,
         reconnection: true,
-        timeout: 10000
+        timeout: 10000,
       });
 
       socket.on('connect_error', (err) => {
@@ -377,13 +386,13 @@ export const useStore = defineStore('store', {
         return;
       }
 
-      
       this.dataStatuses.sceneries = DataStatus.Loaded;
       this.dataStatuses.trains = !this.apiData.trains ? DataStatus.Warning : DataStatus.Loaded;
       this.dataStatuses.dispatchers = !this.apiData.dispatchers ? DataStatus.Warning : DataStatus.Loaded;
-      
+
       this.setTrainsOnlineData();
       this.setStationsOnlineInfo();
     },
   },
 });
+

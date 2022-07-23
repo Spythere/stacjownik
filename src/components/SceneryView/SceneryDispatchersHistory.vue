@@ -1,5 +1,5 @@
 <template>
-  <section class="scenery-dispatchers-history  scenery-section">
+  <section class="scenery-dispatchers-history scenery-section">
     <Loading v-if="dataStatus != 2" />
 
     <div class="list-warning" v-else-if="dispatcherHistoryList.length == 0">{{ $t('scenery.history-list-empty') }}</div>
@@ -7,8 +7,10 @@
     <ul class="history-list" v-else>
       <li class="list-item" v-for="historyItem in dispatcherHistoryList">
         <div>
-          <span class="text--grayed">#{{ historyItem.stationHash }}&nbsp;</span>
-          <b class="text--primary">{{ historyItem.dispatcherName }}</b>
+          <router-link :to="`/journal/dispatchers?dispatcherName=${historyItem.dispatcherName}`">
+            <span class="text--grayed">#{{ historyItem.stationHash }}&nbsp;</span>
+            <b>{{ historyItem.dispatcherName }}</b>
+          </router-link>
         </div>
 
         <div v-if="historyItem.timestampTo">
@@ -22,7 +24,6 @@
           {{ $t('journal.online-since') }}
           <b>{{ timestampToString(historyItem.timestampFrom) }}</b>
           ({{ calculateDuration(historyItem.currentDuration) }})
-          <span></span>
         </div>
       </li>
     </ul>
@@ -30,13 +31,14 @@
 </template>
 
 <script lang="ts">
-import dateMixin from '@/mixins/dateMixin';
-import { DataStatus } from '@/scripts/enums/DataStatus';
-import { DispatcherHistory } from '@/scripts/interfaces/api/DispatchersAPIData';
-import Station from '@/scripts/interfaces/Station';
-import { URLs } from '@/scripts/utils/apiURLs';
+
 import axios from 'axios';
 import { defineComponent, PropType } from 'vue';
+import dateMixin from '../../mixins/dateMixin';
+import { DataStatus } from '../../scripts/enums/DataStatus';
+import { DispatcherHistory } from '../../scripts/interfaces/api/DispatchersAPIData';
+import Station from '../../scripts/interfaces/Station';
+import { URLs } from '../../scripts/utils/apiURLs';
 import Loading from '../Global/Loading.vue';
 
 export default defineComponent({
@@ -80,7 +82,6 @@ export default defineComponent({
 @import '../../styles/responsive.scss';
 @import '../../styles/SceneryView/styles.scss';
 
-
 .history-list {
   padding: 0 0.5em;
 }
@@ -103,6 +104,9 @@ export default defineComponent({
 }
 
 @include smallScreen {
+  .history-list {
+    font-size: 1.2em;
+  }
   .list-item {
     align-items: center;
     flex-direction: column;

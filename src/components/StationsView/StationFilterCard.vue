@@ -2,7 +2,7 @@
   <section class="filter-card" v-click-outside="closeCard">
     <div class="card_btn">
       <button class="btn btn--option" @click="toggleCard">
-        <img class="button_icon" :src="filterIcon" alt="icon-filter" />
+        <img class="button_icon" :src="getIcon('filter2')" alt="icon-filter" />
         {{ $t('options.filters') }}
       </button>
     </div>
@@ -91,21 +91,22 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject } from '@vue/runtime-core';
 
-import inputData from '@/data/options.json';
+import { defineComponent, inject } from 'vue';
+import inputData from '../../data/options.json';
+import imageMixin from '../../mixins/imageMixin';
+import StorageManager from '../../scripts/managers/storageManager';
+import { useStore } from '../../store/store';
 
-import StorageManager from '@/scripts/managers/storageManager';
 import ActionButton from '../Global/ActionButton.vue';
 import FilterOption from './FilterOption.vue';
-import { useStore } from '@/store/store';
 
 export default defineComponent({
   components: { ActionButton, FilterOption },
   emits: ['changeFilterValue', 'invertFilters', 'resetFilters'],
+  mixins: [imageMixin],
 
   data: () => ({
-    filterIcon: require('@/assets/icon-filter2.svg'),
 
     inputs: { ...inputData },
     saveOptions: false,
@@ -165,7 +166,7 @@ export default defineComponent({
     handleAuthorsInput(e: Event) {
       clearTimeout(this.delayInputTimer);
 
-      this.delayInputTimer = setTimeout(() => {
+      this.delayInputTimer = window.setTimeout(() => {
         this.handleInput(e);
       }, 400);
     },
@@ -200,7 +201,7 @@ export default defineComponent({
       this.$emit('invertFilters');
     },
 
-    saveFilters(change: { value }) {
+    saveFilters(change: { value: any }) {
       this.saveOptions = change.value;
 
       if (!this.saveOptions) {
@@ -257,8 +258,8 @@ export default defineComponent({
 
   &-enter-from,
   &-leave-to {
-    transform: translate(-50%, -50%) scale(0.8);
     opacity: 0;
+    transform: translate(-50%, -50%) scale(0.45);
   }
 }
 

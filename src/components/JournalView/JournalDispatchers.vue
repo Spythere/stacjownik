@@ -79,26 +79,21 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, JournalFilter, JournalSearcher, provide, reactive, Ref, ref, watch } from 'vue';
+import { computed, defineComponent, JournalFilter, provide, reactive, Ref, ref } from 'vue';
 import axios from 'axios';
 
-import SearchBox from '@/components/Global/SearchBox.vue';
-import dateMixin from '@/mixins/dateMixin';
-import { DataStatus } from '@/scripts/enums/DataStatus';
+import ActionButton from '../../components/Global/ActionButton.vue';
+import JournalOptions from '../../components/JournalView/JournalOptions.vue';
+import DispatcherStats from '../../components/JournalView/DispatcherStats.vue';
+import SearchBox from '../Global/SearchBox.vue';
 
-import ActionButton from '@/components/Global/ActionButton.vue';
-import JournalOptions from '@/components/JournalView/JournalOptions.vue';
-import DispatcherStats from '@/components/JournalView/DispatcherStats.vue';
-
-import { URLs } from '@/scripts/utils/apiURLs';
-import { useStore } from '@/store/store';
-import { DispatcherStatsAPIData } from '@/scripts/interfaces/api/DispatcherStatsAPIData';
 import Loading from '../Global/Loading.vue';
-import { useRoute, useRouter } from 'vue-router';
+import { URLs } from '../../scripts/utils/apiURLs';
+import dateMixin from '../../mixins/dateMixin';
+import { DataStatus } from '../../scripts/enums/DataStatus';
+import { useStore } from '../../store/store';
 
-const PROD_MODE = process.env.VUE_APP_JORUNAL_DISPATCHERS_DEV != '1' || process.env.NODE_ENV === 'production';
-
-const DISPATCHERS_API_URL = (PROD_MODE ? `${URLs.stacjownikAPI}/api` : 'http://localhost:3001/api') + '/getDispatchers';
+const DISPATCHERS_API_URL = `${URLs.stacjownikAPI}/api/getDispatchers`;
 
 interface DispatcherHistoryItem {
   id: string;
@@ -119,6 +114,10 @@ interface DispatcherHistoryItem {
   isOnline: boolean;
 }
 
+type JournalDispatcherSearcher = {
+  [key in 'search-dispatcher' | 'search-station']: string;
+};
+
 export default defineComponent({
   components: { SearchBox, ActionButton, JournalOptions, DispatcherStats, Loading },
   mixins: [dateMixin],
@@ -137,10 +136,6 @@ export default defineComponent({
   },
 
   data: () => ({
-    icons: {
-      arrow: require('@/assets/icon-arrow-asc.svg'),
-    },
-
     currentQuery: '',
     scrollDataLoaded: true,
     scrollNoMoreData: false,
@@ -157,10 +152,10 @@ export default defineComponent({
 
     const sorterActive = ref({ id: 'timestampFrom', dir: -1 });
     const journalFilterActive = ref({});
-    const searchersValues = reactive([
-      { id: 'search-dispatcher', value: '' },
-      { id: 'search-station', value: '' },
-    ]);
+    const searchersValues = reactive({
+      'search-dispatcher': '',
+      'search-station': '',
+    } as JournalDispatcherSearcher);
 
     const countFromIndex = ref(0);
     const countLimit = 15;
@@ -202,8 +197,8 @@ export default defineComponent({
 
   activated() {
     if (this.sceneryName || this.dispatcherName) {
-      this.searchersValues[1].value = this.sceneryName?.toString() || '';
-      this.searchersValues[0].value = this.dispatcherName?.toString() || '';
+      this.searchersValues['search-station'] = this.sceneryName?.toString() || '';
+      this.searchersValues['search-dispatcher'] = this.dispatcherName?.toString() || '';
       this.search();
     }
 
@@ -289,7 +284,7 @@ export default defineComponent({
 
     async fetchHistoryData(
       props: {
-        searchers?: JournalSearcher[];
+        searchers?: JournalDispatcherSearcher;
         filter?: JournalFilter;
       } = {}
     ) {
@@ -297,8 +292,11 @@ export default defineComponent({
 
       const queries: string[] = [];
 
-      const dispatcher = props.searchers?.find((s) => s.id == 'search-dispatcher')?.value.trim();
-      const station = props.searchers?.find((s) => s.id == 'search-station')?.value.trim();
+      // const dispatcher = props.searchers?.find((s) => s.id == 'search-dispatcher')?.value.trim();
+      // const station = props.searchers?.find((s) => s.id == 'search-station')?.value.trim();
+
+      const dispatcher = props.searchers?.['search-dispatcher'].trim();
+      const station = props.searchers?.['search-station'].trim();
 
       if (dispatcher) queries.push(`dispatcherName=${dispatcher}`);
       if (station) queries.push(`stationName=${station}`);
@@ -330,7 +328,9 @@ export default defineComponent({
 
         // Stats display
         this.store.dispatcherStatsName =
-          this.historyList.length > 0 && this.searchersValues[0].value.trim() ? this.historyList[0].dispatcherName : '';
+          this.historyList.length > 0 && this.searchersValues['search-dispatcher'].trim()
+            ? this.historyList[0].dispatcherName
+            : '';
 
         this.historyDataStatus.status = DataStatus.Loaded;
       } catch (error) {

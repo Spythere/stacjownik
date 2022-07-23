@@ -60,11 +60,11 @@
               <b>{{ stop.stopNameRAW }} </b>: <span v-html="stop.comments"></span>
             </div>
 
-            <span v-if="stop.departureLine == train.timetableData!.followingStops[i + 1].arrivalLine">
+            <span v-if="stop.departureLine == train.timetableData!.followingStops[i + 1].arrivalLine && !/sbl/gi.test(stop.departureLine!)">
               {{ stop.departureLine }}
             </span>
 
-            <span v-else>
+            <span v-else-if="!/sbl/gi.test(stop.departureLine!)">
               {{ stop.departureLine }} /
               {{ train.timetableData!.followingStops[i + 1].arrivalLine }}
             </span>
@@ -83,10 +83,11 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType } from '@vue/runtime-core';
-import dateMixin from '@/mixins/dateMixin';
-import TrainStop from '@/scripts/interfaces/TrainStop';
+import dateMixin from '../../mixins/dateMixin';
+import imageMixin from '../../mixins/imageMixin';
+import Train from '../../scripts/interfaces/Train';
+import TrainStop from '../../scripts/interfaces/TrainStop';
 import StopDate from '../Global/StopDate.vue';
-import Train from '@/scripts/interfaces/Train';
 
 export default defineComponent({
   components: { StopDate },
@@ -97,15 +98,9 @@ export default defineComponent({
     },
   },
 
-  mixins: [dateMixin],
+  mixins: [dateMixin, imageMixin],
 
   emits: ['click'],
-
-  data: () => ({
-    icons: {
-      warning: require('@/assets/icon-warning.svg'),
-    },
-  }),
 
   setup(props) {
     return {
@@ -154,7 +149,7 @@ export default defineComponent({
 
     onImageError(e: Event) {
       const imageEl = e.target as HTMLImageElement;
-      imageEl.src = require('@/assets/unknown.png');
+      imageEl.src = this.getImage('unknown.png');
     },
   },
 });
@@ -179,7 +174,6 @@ $stopNameClr: #22a8d1;
 }
 
 .train-schedule {
-  background-color: #202020;
   padding: 0 0.25em;
 
   @include smallScreen() {
@@ -192,10 +186,11 @@ $stopNameClr: #22a8d1;
   display: flex;
   justify-content: center;
 }
+
 ul.stock-list {
   display: flex;
   align-items: flex-end;
-  overflow-x: auto;
+  overflow: auto;
   padding-bottom: 1em;
 
   li > div {
@@ -207,7 +202,6 @@ ul.stock-list {
 
 .schedule-wrapper {
   overflow-y: auto;
-  max-height: 500px;
   width: 100%;
   z-index: 5;
 
@@ -278,13 +272,14 @@ ul.stop_list > li.stop {
   padding: 0 0.5em;
 
   &.sbl {
-    .stop-name,
     .stop-date {
-      opacity: 0.7;
+      display: none;
     }
 
     .stop-name {
-      background-color: #333;
+      background: none;
+      color: #aaa;
+      padding: 0;
     }
   }
 
@@ -381,8 +376,6 @@ ul.stop_list > li.stop {
     text-align: center;
 
     flex-wrap: wrap;
-
-    padding: 0.15em 0;
   }
 
   .stop-bar {

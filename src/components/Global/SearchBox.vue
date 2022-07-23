@@ -9,7 +9,7 @@
 
     <img
       class="search-exit"
-      :src="exitIcon"
+      :src="getIcon('exit')"
       alt="exit-icon"
       @click="clearValue"
     />
@@ -18,11 +18,11 @@
 
 <script lang="ts">
 import { defineComponent, ref, watch } from "vue";
+import imageMixin from "../../mixins/imageMixin";
 
 export default defineComponent({
-  data: () => ({
-    exitIcon: require("@/assets/icon-exit.svg"),
-  }),
+  mixins: [imageMixin],
+
   emits: ["update:searchedValue", "clearValue"],
   props: {
     searchedValue: {
@@ -59,7 +59,7 @@ export default defineComponent({
       emit("clearValue");
     };
 
-    const updateValue = (e) => {
+    const updateValue = (e: any) => {
       if (!props.updateOnInput && e.keyCode == 13)
         emit("update:searchedValue", compSearchedValue.value);
     };

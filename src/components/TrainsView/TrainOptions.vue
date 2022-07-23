@@ -15,13 +15,13 @@
           <div class="search-box">
             <input class="search-input" v-model="searchedTrain" :placeholder="$t('trains.search-train')" />
 
-            <img class="search-exit" :src="exitIcon" alt="exit-icon" @click="() => (searchedTrain = '')" />
+            <img class="search-exit" :src="getIcon('exit')" alt="exit-icon" @click="() => (searchedTrain = '')" />
           </div>
 
           <div class="search-box">
             <input class="search-input" v-model="searchedDriver" :placeholder="$t('trains.search-driver')" />
 
-            <img class="search-exit" :src="exitIcon" alt="exit-icon" @click="() => (searchedDriver = '')" />
+            <img class="search-exit" :src="getIcon('exit')" alt="exit-icon" @click="() => (searchedDriver = '')" />
           </div>
         </div>
       </div>
@@ -58,15 +58,13 @@
 <script lang="ts">
 import { computed, defineComponent, inject, TrainFilter } from 'vue';
 import { useI18n } from 'vue-i18n';
+import imageMixin from '../../mixins/imageMixin';
 import SelectBox from '../Global/SelectBox.vue';
 
 export default defineComponent({
   components: { SelectBox },
   emits: ['changeSearchedTrain', 'changeSearchedDriver', 'changeSorter'],
-
-  data: () => ({
-    exitIcon: require('@/assets/icon-exit.svg'),
-  }),
+  mixins: [imageMixin],
 
   setup() {
     const { t } = useI18n();

@@ -26,8 +26,5 @@ declare module '@vue/runtime-core' {
     isActive: boolean;
   }
 
-  interface JournalSearcher {
-    id: string;
-    value: string;
-  }
+
 }

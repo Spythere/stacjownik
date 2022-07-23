@@ -1,5 +1,5 @@
-import Station from '@/scripts/interfaces/Station';
-import Filter from '@/scripts/interfaces/Filter';
+import Filter from '../interfaces/Filter';
+import Station from '../interfaces/Station';
 import StorageManager from './storageManager';
 
 const sortStations = (a: Station, b: Station, sorter: { index: number; dir: number }) => {

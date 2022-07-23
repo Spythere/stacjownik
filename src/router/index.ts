@@ -1,42 +1,45 @@
-import JournalDispatchersVue from '@/components/JournalView/JournalDispatchers.vue';
-import JournalTimetablesVue from '@/components/JournalView/JournalTimetables.vue';
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
+import JournalDispatchersVue from '../components/JournalView/JournalDispatchers.vue';
+import JournalTimetablesVue from '../components/JournalView/JournalTimetables.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'StationsView',
-    component: () => import('@/views/StationsView.vue'),
+    component: () => import('../views/StationsView.vue'),
   },
   {
     path: '/trains',
     name: 'TrainsView',
-    component: () => import('@/views/TrainsView.vue'),
+    component: () => import('../views/TrainsView.vue'),
     props: (route) => ({ train: route.query.train, driver: route.query.driver }),
   },
   {
     path: '/scenery',
     name: 'SceneryView',
-    component: () => import('@/views/SceneryView.vue'),
+    component: () => import('../views/SceneryView.vue'),
     props: true,
   },
   {
     path: '/journal',
     name: 'JournalView',
-    component: () => import('@/views/JournalView.vue'),
+    component: () => import('../views/JournalView.vue'),
     children: [
       {
         path: '',
-        redirect: '/journal/timetables',
+        name: 'JournalTimetables',
         component: JournalTimetablesVue,
+        alias: '/timetables',
       },
       {
         path: 'dispatchers',
+        name: 'JournalDispatchers',
         component: JournalDispatchersVue,
         props: (route) => ({ sceneryName: route.query.sceneryName, dispatcherName: route.query.dispatcherName }),
       },
       {
         path: 'timetables',
+        name: 'JournalTimetables',
         component: JournalTimetablesVue,
         props: (route) => ({
           trainNo: route.query.trainNo,

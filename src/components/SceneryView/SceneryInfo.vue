@@ -11,11 +11,6 @@
             <span v-if="station.generalInfo.reqLevel > -1">
               - {{ $tc('scenery.req-level', station.generalInfo.reqLevel, { lvl: station.generalInfo.reqLevel }) }}
             </span>
-
-            <!-- <span v-if="station.generalInfo.reqLevel > 0">
-              - minimum {{ station.generalInfo.reqLevel }} poziom dyżurnego
-            </span>
-            <span v-else-if="station.generalInfo.reqLevel == 0">- dla wszystkich poziomów</span> -->
           </span>
 
           <span>
@@ -41,12 +36,17 @@
           <b> {{ $tc('scenery.authors-title', station.generalInfo.authors.length) }}: </b>
           {{ station.generalInfo.authors.join(', ') }}
         </div>
+
+        <br />
+        <div class="scenery-topic" v-if="station.generalInfo.url">
+          <a :href="station.generalInfo.url" target="_blank">
+            &gt; {{ $t('scenery.forum-topic', { name: station.name }) }} &lt;
+          </a>
+        </div>
       </div>
 
       <div style="margin: 2em 0; height: 2px; background-color: white" />
 
-      <!-- info stats -->
-      <!-- <scenery-info-stats :station="station" /> -->
       <!-- info dispatcher -->
       <scenery-info-dispatcher :station="station" :onlineFrom="onlineFrom" />
 
@@ -57,10 +57,6 @@
         <!-- spawn list -->
         <scenery-info-spawn-list :station="station" />
       </div>
-
-      <!-- info icons -->
-
-      <!-- info routes -->
     </section>
   </div>
 </template>
@@ -74,8 +70,8 @@ import SceneryInfoStats from './SceneryInfo/SceneryInfoStats.vue';
 import SceneryInfoUserList from './SceneryInfo/SceneryInfoUserList.vue';
 import SceneryInfoSpawnList from './SceneryInfo/SceneryInfoSpawnList.vue';
 import SceneryInfoRoutes from './SceneryInfo/SceneryInfoRoutes.vue';
+import Station from '../../scripts/interfaces/Station';
 
-import Station from '@/scripts/interfaces/Station';
 
 export default defineComponent({
   components: {
@@ -103,6 +99,7 @@ export default defineComponent({
 
 <style lang="scss">
 @import '../../styles/responsive.scss';
+@import '../../styles/badge.scss';
 
 h3.section-header {
   margin: 0.5em 0;
@@ -143,32 +140,7 @@ h3.section-header {
   }
 }
 
-.badge {
-  font-weight: 600;
-
-  display: inline-block;
-  padding: 0;
-
-  background: #585858;
-
-  margin: 0.25em;
-
-  span {
-    display: inline-block;
-    padding: 0.2em 0.4em;
-  }
-
-  &-none {
-    font-weight: 600;
-
-    padding: 0.2em 0.4em;
-    background: firebrick;
-
-    text-align: center;
-
-    @include smallScreen() {
-      font-size: 1em;
-    }
-  }
+.scenery-topic a {
+  font-weight: bold;
 }
 </style>

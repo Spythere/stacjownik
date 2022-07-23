@@ -13,7 +13,7 @@
       </router-link>
 
       <span class="dispatcher_likes text--primary">
-        <img :src="icons.like" alt="icon-like" />
+        <img :src="getIcon('like')" alt="icon-like" />
         <span>{{ station.onlineInfo?.dispatcherRate || '0' }}</span>
       </span>
     </div>
@@ -35,14 +35,14 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-
-import styleMixin from '@/mixins/styleMixin';
-import Station from '@/scripts/interfaces/Station';
-import dateMixin from '@/mixins/dateMixin';
-import routerMixin from '@/mixins/routerMixin';
+import dateMixin from '../../../mixins/dateMixin';
+import imageMixin from '../../../mixins/imageMixin';
+import routerMixin from '../../../mixins/routerMixin';
+import styleMixin from '../../../mixins/styleMixin';
+import Station from '../../../scripts/interfaces/Station';
 
 export default defineComponent({
-  mixins: [styleMixin, dateMixin, routerMixin],
+  mixins: [styleMixin, dateMixin, routerMixin, imageMixin],
   props: {
     station: {
       type: Object as () => Station,
@@ -54,13 +54,6 @@ export default defineComponent({
       default: -1,
     },
   },
-
-  data: () => ({
-    icons: {
-      spawn: require('@/assets/icon-spawn.svg'),
-      like: require('@/assets/icon-like.svg'),
-    },
-  }),
 });
 </script>
 

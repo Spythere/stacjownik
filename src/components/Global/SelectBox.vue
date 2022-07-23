@@ -1,5 +1,5 @@
 <template>
-  <div class="select-box" >
+  <div class="select-box">
     <div class="select-box_content">
       <button class="selected" @click="toggleBox">
         <span class="text--primary">{{ prefix }}</span>
@@ -24,13 +24,14 @@
     </div>
 
     <div class="arrow">
-      <img :src="listOpen ? ascIcon : descIcon" alt="arrow-icon" />
+      <img :src="listOpen ? getIcon('arrow-asc') : getIcon('arrow-desc')" alt="arrow-icon" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, Ref, ref } from '@vue/runtime-core';
+import { defineComponent, Ref, ref, computed } from 'vue';
+import imageMixin from '../../mixins/imageMixin';
 
 interface Item {
   id: string;
@@ -40,6 +41,7 @@ interface Item {
 
 export default defineComponent({
   emits: ['selected'],
+  mixins: [imageMixin],
 
   props: {
     itemList: {
@@ -57,11 +59,6 @@ export default defineComponent({
       default: '',
     },
   },
-
-  data: () => ({
-    ascIcon: require('@/assets/icon-arrow-asc.svg'),
-    descIcon: require('@/assets/icon-arrow-desc.svg'),
-  }),
 
   setup(props) {
     let listRef: Ref<Element | null> = ref(null);

@@ -161,18 +161,15 @@
 </template>
 
 <script lang="ts">
-import { DataStatus } from '@/scripts/enums/DataStatus';
-import { StoreData } from '@/scripts/interfaces/StoreData';
-import { useStore } from '@/store/store';
-import { StoreState } from '@/store/storeTypes';
-import { computed, defineComponent, watch } from 'vue';
+
+import { defineComponent } from 'vue';
+import { DataStatus } from '../../scripts/enums/DataStatus';
+import { useStore } from '../../store/store';
+import { StoreState } from '../../store/storeTypes';
 
 export default defineComponent({
   data() {
     return {
-      icons: {
-        statusIndicator: require('@/assets/signal-status-indicator.svg'),
-      },
       tooltipActive: false,
       indicator: {
         status: DataStatus.Loading,

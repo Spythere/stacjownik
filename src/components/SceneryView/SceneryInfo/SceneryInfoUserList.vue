@@ -1,7 +1,7 @@
 <template>
   <section class="info-user-list">
     <h3 class="user-header section-header">
-      <img :src="icons.user" alt="icon-user" />
+      <img :src="getIcon('user')" alt="icon-user" />
       &nbsp;{{ $t('scenery.users') }} &nbsp;
       <span class="text--primary">{{ station.onlineInfo?.currentUsers || '0' }}</span
       >&nbsp;/&nbsp;<span class="text--primary">{{ station.onlineInfo?.maxUsers || '0' }}</span>
@@ -11,10 +11,10 @@
       v-for="(train, i) in computedStationTrains"
       class="badge user"
       :class="train.stopStatus"
-      :key="train.trainNo + i"
+      :key="train.trainId"
       tabindex="0"
-      @click="navigateTo('/trains', { trainNo: train.trainNo, driverName: train.driverName })"
-      @keydown.enter="navigateTo('/trains', { trainNo: train.trainNo, driverName: train.driverName })"
+      @click="selectModalTrain(train.trainId)"
+      @keydown.enter="selectModalTrain(train.trainId)"
     >
       <span class="user_train">{{ train.trainNo }}</span>
       <span class="user_name">{{ train.driverName }}</span>
@@ -27,12 +27,16 @@
 </template>
 
 <script lang="ts">
-import routerMixin from '@/mixins/routerMixin';
-import Station from '@/scripts/interfaces/Station';
+
 import { computed, defineComponent } from 'vue';
+import imageMixin from '../../../mixins/imageMixin';
+import modalTrainMixin from '../../../mixins/modalTrainMixin';
+import routerMixin from '../../../mixins/routerMixin';
+import Station from '../../../scripts/interfaces/Station';
+import { useStore } from '../../../store/store';
 
 export default defineComponent({
-  mixins: [routerMixin],
+  mixins: [routerMixin, imageMixin, modalTrainMixin],
 
   props: {
     station: {
@@ -42,6 +46,8 @@ export default defineComponent({
   },
 
   setup(props) {
+    const store = useStore();
+
     const computedStationTrains = computed(() => {
       if (!props.station) return [];
 
@@ -59,14 +65,8 @@ export default defineComponent({
       });
     });
 
-    return { computedStationTrains };
+    return { computedStationTrains, store };
   },
-
-  data: () => ({
-    icons: {
-      user: require('@/assets/icon-user.svg'),
-    },
-  }),
 });
 </script>
 
@@ -130,3 +130,4 @@ $disconnected: slategray;
   }
 }
 </style>
+

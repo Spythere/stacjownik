@@ -1,9 +1,5 @@
 <template>
-  <div class="train-table" @keydown.esc="closeTimetable">
-    <button class="return-btn" @click="scrollToTop" v-if="showReturnButton">
-      <img :src="icons.arrowAsc" alt="return arrow" />
-    </button>
-
+  <div class="train-table">
     <transition name="anim" mode="out-in">
       <div :key="store.dataStatuses.trains">
         <Loading v-if="trains.length == 0 && store.dataStatuses.trains == 0" />
@@ -16,13 +12,11 @@
           <li
             class="train-row"
             v-for="train in currentTrains"
-            :key="train.trainNo + train.driverId"
-            @click="toggleTimetable(train)"
-            @keydown.enter="toggleTimetable(train)"
+            :key="train.trainId"
+            @click.stop="selectModalTrain(train.trainId)"
+            @keydown.enter="selectModalTrain(train.trainId)"
           >
             <TrainInfo :train="train" />
-
-            <TrainSchedule v-if="chosenTrainId == getTrainId(train)" :train="train" ref="card-inner" tabindex="0" />
           </li>
         </ul>
       </div>
@@ -31,27 +25,25 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, inject, Ref } from '@vue/runtime-core';
-
-import defaultVehicleIconsJSON from '@/data/defaultVehicleIcons.json';
-
-import Train from '@/scripts/interfaces/Train';
-
-import TrainSchedule from '@/components/TrainsView/TrainSchedule.vue';
-import TrainInfo from '@/components/TrainsView/TrainInfo.vue';
-
-import returnBtnMixin from '@/mixins/returnBtnMixin';
-import { useStore } from '@/store/store';
+import { defineComponent, inject, Ref, computed } from 'vue';
+import modalTrainMixin from '../../mixins/modalTrainMixin';
+import returnBtnMixin from '../../mixins/returnBtnMixin';
+import Train from '../../scripts/interfaces/Train';
+import { useStore } from '../../store/store';
 import Loading from '../Global/Loading.vue';
+import TrainModal from '../Global/TrainModal.vue';
+import TrainInfo from './TrainInfo.vue';
+import TrainSchedule from './TrainSchedule.vue';
 
 export default defineComponent({
   components: {
     TrainSchedule,
     TrainInfo,
     Loading,
+    TrainModal,
   },
 
-  mixins: [returnBtnMixin],
+  mixins: [returnBtnMixin, modalTrainMixin],
 
   props: {
     trains: {
@@ -59,18 +51,6 @@ export default defineComponent({
       required: true,
     },
   },
-
-  data: () => ({
-    defaultLocoImage: require('@/assets/unknown.png'),
-
-    icons: {
-      arrowAsc: require('@/assets/icon-arrow-asc.svg'),
-      arrowDesc: require('@/assets/icon-arrow-desc.svg'),
-    },
-
-    defaultVehicleIcons: defaultVehicleIconsJSON,
-    chosenTrainId: null as string | null,
-  }),
 
   setup(props) {
     const store = useStore();
@@ -103,13 +83,9 @@ export default defineComponent({
       this.searchedTrain = query.trainNo.toString();
 
       setTimeout(() => {
-        this.chosenTrainId = query.driverName + <string>query.trainNo;
+        this.selectModalTrain(query.driverName + <string>query.trainNo);
       }, 20);
     }
-  },
-
-  deactivated() {
-    this.chosenTrainId = null;
   },
 
   methods: {
@@ -137,24 +113,6 @@ export default defineComponent({
       }, 10);
     },
 
-    toggleTimetable(train: Train, state?: boolean) {
-      const id = this.getTrainId(train);
-
-      if (state !== undefined) {
-        this.chosenTrainId = state ? id : null;
-        return;
-      }
-
-      this.chosenTrainId = this.chosenTrainId && this.chosenTrainId == id ? null : id;
-    },
-
-    closeTimetable() {
-      this.chosenTrainId = null;
-    },
-
-    getTrainId(train: Train) {
-      return train.driverName + train.trainNo.toString();
-    },
   },
 });
 </script>

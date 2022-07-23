@@ -20,7 +20,7 @@
     <img
       v-if="station.generalInfo?.SUP"
       class="icon-info"
-      :src="require(`@/assets/icon-SUP.svg`)"
+      :src="getIcon('SUP')"
       alt="SUP (RASP-UZK)"
       :title="$t('desc.SUP')"
     />
@@ -28,7 +28,7 @@
     <img
       v-if="station.generalInfo?.signalType"
       class="icon-info"
-      :src="require(`@/assets/icon-${station.generalInfo.signalType}.svg`)"
+      :src="getIcon(station.generalInfo.signalType)"
       :alt="station.generalInfo.signalType"
       :title="$t('desc.signals-type') + $t(`signals.${station.generalInfo.signalType}`)"
     />
@@ -36,7 +36,7 @@
     <img
       v-if="station.generalInfo?.availability == 'nonPublic'"
       class="icon-info"
-      :src="icons.lock"
+      :src="getIcon('lock')"
       alt="Non-public scenery"
       :title="$t('desc.non-public')"
     />
@@ -44,7 +44,7 @@
     <img
       v-if="station.generalInfo?.availability == 'unavailable'"
       class="icon-info"
-      :src="icons.unavailable"
+      :src="getIcon('unavailable')"
       alt="Unavailable scenery"
       :title="$t('desc.unavailable')"
     />
@@ -52,7 +52,7 @@
     <img
       v-if="station.generalInfo?.availability == 'abandoned'"
       class="icon-info"
-      :src="icons.abandoned"
+      :src="getIcon('abandoned')"
       alt="Abandoned scenery"
       :title="$t('desc.abandoned')"
     />
@@ -60,7 +60,7 @@
     <img
       v-if="station.generalInfo?.lines"
       class="icon-info"
-      :src="icons.real"
+      :src="getIcon('real')"
       alt="real scenery"
       :title="`${$t('desc.real')} ${station.generalInfo.lines}`"
     />
@@ -68,7 +68,7 @@
     <img
       v-if="!station.generalInfo"
       class="icon-info"
-      :src="icons.unknown"
+      :src="getImage('unknown.png')"
       alt="icon-unknown"
       :title="$t('desc.unknown')"
     />
@@ -77,31 +77,19 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import stationInfoMixin from '@/mixins/stationInfoMixin';
-
-import Station from '@/scripts/interfaces/Station';
-import styleMixin from '@/mixins/styleMixin';
+import imageMixin from '../../../mixins/imageMixin';
+import stationInfoMixin from '../../../mixins/stationInfoMixin';
+import styleMixin from '../../../mixins/styleMixin';
+import Station from '../../../scripts/interfaces/Station';
 
 export default defineComponent({
-  mixins: [stationInfoMixin, styleMixin],
+  mixins: [stationInfoMixin, styleMixin, imageMixin],
   props: {
     station: {
       type: Object as () => Station,
       default: {},
     },
   },
-
-  data: () => ({
-    icons: {
-      td2: require('@/assets/icon-td2.svg'),
-      lock: require('@/assets/icon-lock.svg'),
-      unavailable: require('@/assets/icon-unavailable.svg'),
-      unknown: require('@/assets/icon-unknown.svg'),
-      abandoned: require('@/assets/icon-abandoned.svg'),
-
-      real: require('@/assets/icon-real.svg'),
-    },
-  }),
 });
 </script>
 
@@ -130,3 +118,4 @@ export default defineComponent({
   }
 }
 </style>
+

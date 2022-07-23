@@ -12,7 +12,7 @@
       <div class="scenery-left">
         <div class="scenery-actions">
           <button v-if="!timetableOnly" class="back-btn btn" :title="$t('scenery.return-btn')" @click="navigateTo('/')">
-            <img :src="icons.back" alt="Back to scenery" />
+            <img :src="getIcon('back')" alt="Back to scenery" />
           </button>
         </div>
 
@@ -41,19 +41,17 @@
 </template>
 
 <script lang="ts">
-import SceneryInfo from '@/components/SceneryView/SceneryInfo.vue';
-import SceneryTimetable from '@/components/SceneryView/SceneryTimetable.vue';
-import SceneryTimetablesHistory from '../components/SceneryView/SceneryTimetablesHistory.vue';
-import SceneryDispatchersHistory from '@/components/SceneryView/SceneryDispatchersHistory.vue';
-import SceneryHeader from '@/components/SceneryView/SceneryHeader.vue';
-
-import ActionButton from '@/components/Global/ActionButton.vue';
-
-import { computed, defineComponent, ref } from '@vue/runtime-core';
+import { computed, defineComponent } from 'vue';
 import { useRoute } from 'vue-router';
-
-import { useStore } from '@/store/store';
-import routerMixin from '@/mixins/routerMixin';
+import routerMixin from '../mixins/routerMixin';
+import { useStore } from '../store/store';
+import SceneryInfo from '../components/SceneryView/SceneryInfo.vue';
+import SceneryHeader from '../components/SceneryView/SceneryHeader.vue';
+import SceneryTimetable from '../components/SceneryView/SceneryTimetable.vue';
+import SceneryTimetablesHistory from '../components/SceneryView/SceneryTimetablesHistory.vue';
+import SceneryDispatchersHistory from '../components/SceneryView/SceneryDispatchersHistory.vue';
+import ActionButton from '../components/Global/ActionButton.vue';
+import imageMixin from '../mixins/imageMixin';
 
 enum SceneryViewMode {
   'TIMETABLES_ACTIVE',
@@ -70,15 +68,8 @@ export default defineComponent({
     SceneryTimetablesHistory,
     SceneryDispatchersHistory,
   },
-
-  mixins: [routerMixin],
-
+  mixins: [routerMixin, imageMixin],
   data: () => ({
-    icons: {
-      user: require('@/assets/icon-user.svg'),
-      back: require('@/assets/icon-back.svg'),
-    },
-
     viewModes: [
       {
         id: 'scenery.option-active-timetables',
@@ -93,32 +84,22 @@ export default defineComponent({
         component: 'SceneryDispatchersHistory',
       },
     ],
-
     sceneryViewMode: SceneryViewMode,
-
     selectedCheckpoint: '',
-
     currentViewCompontent: 'SceneryTimetable',
-
     onlineFrom: -1,
   }),
-
   activated() {
     this.loadSelectedCheckpoint();
   },
-
   setup() {
     const route = useRoute();
     const store = useStore();
-
     const timetableOnly = computed(() => (route.query['timetable_only'] == '1' ? true : false));
-
     const isComponentVisible = computed(() => route.path === '/scenery');
-
     const stationInfo = computed(() => {
       return store.stationList.find((station) => station.name === route.query.station?.toString().replace(/_/g, ' '));
     });
-
     return {
       timetableOnly,
       isComponentVisible,
@@ -126,19 +107,15 @@ export default defineComponent({
       store,
     };
   },
-
   methods: {
     setViewMode(componentName: string) {
       this.currentViewCompontent = componentName;
     },
-
     loadSelectedCheckpoint() {
       if (!this.stationInfo?.generalInfo?.checkpoints) return;
       if (this.stationInfo.generalInfo.checkpoints.length == 0) return;
-
       this.selectedCheckpoint = this.stationInfo.generalInfo.checkpoints[0].checkpointName;
     },
-
     selectCheckpoint(cp: { checkpointName: string }) {
       this.selectedCheckpoint = cp.checkpointName;
     },
@@ -283,15 +260,15 @@ button.back-btn {
     border-radius: 1em;
     height: auto;
   }
-
-  .info-actions {
-    flex-wrap: wrap;
-  }
 }
 
 @include smallScreen {
-  .scenery-left, .scenery-right {
+  .scenery-left {
     max-height: 100vh;
+  }
+
+  .scenery-right {
+    height: 100vh;
   }
 }
 </style>

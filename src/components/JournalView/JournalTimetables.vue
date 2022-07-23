@@ -13,17 +13,6 @@
           :sorter-option-ids="['timetableId', 'beginDate', 'distance', 'total-stops']"
           :filters="journalTimetableFilters"
         />
-
-        <!-- <button
-          class="btn btn--option"
-          :disabled="store.driverStatsName == ''"
-          @click="() => (statsCardOpen = !statsCardOpen)"
-        >
-          <span v-if="store.driverStatsName">
-            Statystyki maszynisty <b>{{ store.driverStatsName }}</b>
-          </span>
-          <span v-else>Statystyki maszynisty niedostępne</span>
-        </button> -->
       </div>
 
       <div class="journal-list">
@@ -158,42 +147,40 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, JournalFilter, JournalSearcher, provide, reactive, Ref, ref } from 'vue';
+import { computed, defineComponent, JournalFilter, provide, reactive, Ref, ref } from 'vue';
 import axios from 'axios';
 
-import SearchBox from '@/components/Global/SearchBox.vue';
-import dateMixin from '@/mixins/dateMixin';
-import { DataStatus } from '@/scripts/enums/DataStatus';
-
-import ActionButton from '@/components/Global/ActionButton.vue';
-import JournalOptions from '@/components/JournalView/JournalOptions.vue';
-
-import { URLs } from '@/scripts/utils/apiURLs';
-import { journalTimetableFilters } from '@/data/journalFilters';
-import { JournalFilterType } from '@/scripts/enums/JournalFilterType';
-import routerMixin from '@/mixins/routerMixin';
-import { useStore } from '@/store/store';
 import DriverStats from './DriverStats.vue';
-import { TimetableHistory } from '@/scripts/interfaces/api/TimetablesAPIData';
 import Loading from '../Global/Loading.vue';
+import { journalTimetableFilters } from '../../data/journalFilters';
+import dateMixin from '../../mixins/dateMixin';
+import routerMixin from '../../mixins/routerMixin';
+import { DataStatus } from '../../scripts/enums/DataStatus';
+import { JournalFilterType } from '../../scripts/enums/JournalFilterType';
+import { TimetableHistory } from '../../scripts/interfaces/api/TimetablesAPIData';
+import { URLs } from '../../scripts/utils/apiURLs';
+import { useStore } from '../../store/store';
+import JournalOptions from './JournalOptions.vue';
 
-const PROD_MODE = process.env.VUE_APP_JOURNAL_TIMETABLES_DEV != '1' || process.env.NODE_ENV === 'production';
+const TIMETABLES_API_URL = `${URLs.stacjownikAPI}/api/getTimetables`;
 
-const TIMETABLES_API_URL = PROD_MODE
-  ? `${URLs.stacjownikAPI}/api/getTimetables`
-  : 'http://localhost:3001/api/getTimetables';
+type JournalTimetableSearcher = {
+  [key in 'search-driver' | 'search-train']: string;
+};
 
 export default defineComponent({
-  components: { SearchBox, ActionButton, JournalOptions, DriverStats, Loading },
+  components: { DriverStats, Loading, JournalOptions },
   mixins: [dateMixin, routerMixin],
 
   name: 'JournalTimetables',
 
-  data: () => ({
-    icons: {
-      arrow: require('@/assets/icon-arrow-asc.svg'),
+  props: {
+    timetableId: {
+      type: String,
     },
+  },
 
+  data: () => ({
     currentQuery: '',
     scrollDataLoaded: true,
     scrollNoMoreData: false,
@@ -213,10 +200,11 @@ export default defineComponent({
     const sorterActive = ref({ id: 'timetableId', dir: -1 });
     const journalFilterActive = ref(journalTimetableFilters[0]);
 
-    const searchersValues = reactive([
-      { id: 'search-train', value: '' },
-      { id: 'search-driver', value: '' },
-    ]);
+    const searchersValues = reactive({
+      'search-train': '',
+      'search-driver': '',
+    } as JournalTimetableSearcher);
+
     const countFromIndex = ref(0);
     const countLimit = 15;
 
@@ -249,10 +237,15 @@ export default defineComponent({
 
   activated() {
     window.addEventListener('scroll', this.handleScroll);
+
+    if (this.timetableId) {
+      this.searchersValues['search-train'] = `#${this.timetableId}`;
+      this.search();
+    }
   },
 
   mounted() {
-    this.search();
+    if (!this.timetableId) this.search();
   },
 
   deactivated() {
@@ -329,7 +322,7 @@ export default defineComponent({
 
     async fetchHistoryData(
       props: {
-        searchers?: JournalSearcher[];
+        searchers?: JournalTimetableSearcher;
         filter?: JournalFilter;
       } = {}
     ) {
@@ -337,11 +330,11 @@ export default defineComponent({
 
       const queries: string[] = [];
 
-      const driver = props.searchers?.find((s) => s.id == 'search-driver')?.value.trim();
-      const train = props.searchers?.find((s) => s.id == 'search-train')?.value.trim();
+      const driver = props.searchers?.['search-driver'].trim();
+      const train = props.searchers?.['search-train'].trim();
 
       if (driver) queries.push(`driverName=${driver}`);
-      if (train) queries.push(`trainNo=${train}`);
+      if (train) queries.push(train.startsWith('#') ? `timetableId=${train.replace('#', '')}` : `trainNo=${train}`);
 
       // Z API: const SORT_TYPES = ['allStopsCount', 'endDate', 'beginDate', 'routeDistance'];
       if (this.sorterActive.id == 'distance') queries.push('sortBy=routeDistance');
@@ -381,13 +374,6 @@ export default defineComponent({
           return;
         }
 
-        // if (responseData) {
-        //   this.historyDataStatus.status = DataStatus.Error;
-        //   this.historyDataStatus.error = responseData;
-
-        //   return;
-        // }
-
         if (!responseData) return;
 
         // Response data exists
@@ -395,7 +381,9 @@ export default defineComponent({
 
         // Stats display
         this.store.driverStatsName =
-          this.historyList.length > 0 && this.searchersValues[1].value.trim() ? this.historyList[0].driverName : '';
+          this.historyList.length > 0 && this.searchersValues['search-driver'].trim()
+            ? this.historyList[0].driverName
+            : '';
 
         this.historyDataStatus.status = DataStatus.Loaded;
       } catch (error) {

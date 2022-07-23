@@ -2,7 +2,7 @@
   <section class="scenery-timetable">
     <div class="timetable-header">
       <h3>
-        <img :src="icons.timetable" alt="icon-timetable" />&nbsp;
+        <img :src="getIcon('timetable')" alt="icon-timetable" />&nbsp;
         <span>{{ $t('scenery.timetables') }}</span>
         &nbsp;
         <span class="text--primary">{{ station.onlineInfo?.scheduledTrains?.length || '0' }}</span>
@@ -32,7 +32,11 @@
         <Loading />
       </div>
 
-      <span class="timetable-item empty" v-else-if="computedScheduledTrains.length == 0">
+      <span class="timetable-item empty" v-else-if="computedScheduledTrains.length == 0 && !station.onlineInfo">
+        {{ $t('scenery.offline') }}
+      </span>
+
+       <span class="timetable-item empty" v-else-if="computedScheduledTrains.length == 0">
         {{ $t('scenery.no-timetables') }}
       </span>
 
@@ -41,13 +45,8 @@
         v-for="(scheduledTrain, i) in computedScheduledTrains"
         :key="i + 1"
         tabindex="0"
-        @click="navigateTo('/trains', { trainNo: scheduledTrain.trainNo, driverName: scheduledTrain.driverName })"
-        @keydown.enter="
-          navigateTo('/trains', {
-            trainNo: scheduledTrain.trainNo,
-            driverName: scheduledTrain.driverName,
-          })
-        "
+        @click.prevent.stop="selectModalTrain(scheduledTrain.trainId)"
+        @keydown.enter.prevent="selectModalTrain(scheduledTrain.trainId)"
       >
         <span class="timetable-general">
           <span class="general-info">
@@ -56,7 +55,7 @@
               {{ scheduledTrain.trainNo }}
 
               <span class="g-tooltip" v-if="scheduledTrain.stopInfo.comments">
-                <img :src="icons.warning" />
+                <img :src="getIcon('warning')" />
                 <span class="content" v-html="scheduledTrain.stopInfo.comments"> </span>
               </span>
             </span>
@@ -158,21 +157,25 @@
 </template>
 
 <script lang="ts">
-import Station from '@/scripts/interfaces/Station';
 import SelectBox from '../Global/SelectBox.vue';
 import { computed, defineComponent, PropType, ref } from '@vue/runtime-core';
 import { useRoute } from 'vue-router';
-import dateMixin from '@/mixins/dateMixin';
-import routerMixin from '@/mixins/routerMixin';
-import { useStore } from '@/store/store';
+
 import Loading from '../Global/Loading.vue';
+import TrainModal from '../Global/TrainModal.vue';
+import dateMixin from '../../mixins/dateMixin';
+import routerMixin from '../../mixins/routerMixin';
+import Station from '../../scripts/interfaces/Station';
+import { useStore } from '../../store/store';
+import imageMixin from '../../mixins/imageMixin';
+import modalTrainMixin from '../../mixins/modalTrainMixin';
 
 export default defineComponent({
   name: 'SceneryTimetable',
 
-  components: { SelectBox, Loading },
+  components: { SelectBox, Loading, TrainModal },
 
-  mixins: [dateMixin, routerMixin],
+  mixins: [dateMixin, routerMixin, imageMixin, modalTrainMixin],
 
   props: {
     station: {
@@ -182,12 +185,8 @@ export default defineComponent({
   },
 
   data: () => ({
-    viewIcon: require('@/assets/icon-view.svg'),
     listOpen: false,
-    icons: {
-      warning: require('@/assets/icon-warning.svg'),
-      timetable: require('@/assets/icon-timetable.svg'),
-    },
+
   }),
 
   setup(props) {
