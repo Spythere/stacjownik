@@ -1,6 +1,6 @@
 {
   "name": "stacjownik",
-  "version": "1.10.2-alpha",
+  "version": "1.10.0",
   "private": true,
   "scripts": {
     "dev": "vite",
