@@ -106,6 +106,9 @@ export default defineComponent({
 }
 
 @include smallScreen {
+  .history-list {
+    font-size: 1.1em;
+  }
   .list-item {
     grid-template-columns: 1fr 1fr;
     font-size: 1.05em;

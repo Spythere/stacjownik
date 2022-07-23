@@ -104,6 +104,9 @@ export default defineComponent({
 }
 
 @include smallScreen {
+  .history-list {
+    font-size: 1.2em;
+  }
   .list-item {
     align-items: center;
     flex-direction: column;

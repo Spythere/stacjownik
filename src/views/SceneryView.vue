@@ -260,16 +260,15 @@ button.back-btn {
     border-radius: 1em;
     height: auto;
   }
-
-  .info-actions {
-    flex-wrap: wrap;
-  }
 }
 
 @include smallScreen {
-  .scenery-left,
-  .scenery-right {
+  .scenery-left {
     max-height: 100vh;
+  }
+
+  .scenery-right {
+    height: 100vh;
   }
 }
 </style>
