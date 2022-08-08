@@ -68,7 +68,7 @@
     <img
       v-if="!station.generalInfo"
       class="icon-info"
-      :src="getImage('unknown.png')"
+      :src="getIcon('unknown')"
       alt="icon-unknown"
       :title="$t('desc.unknown')"
     />
