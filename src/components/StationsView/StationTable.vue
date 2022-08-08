@@ -182,7 +182,7 @@
             </td>
 
             <td class="station_info" v-else>
-              <img class="icon-info" :src="getImage('unknown.png')" alt="icon-unknown" :title="$t('desc.unknown')" />
+              <img class="icon-info" :src="getIcon('unknown')" alt="icon-unknown" :title="$t('desc.unknown')" />
             </td>
 
             <td class="station_users" :class="{ inactive: !station.onlineInfo }">
@@ -249,12 +249,15 @@ export default defineComponent({
     setFocusedStation: { type: Function, required: true },
     changeSorter: { type: Function, required: true },
   },
+
   mixins: [styleMixin, dateMixin, stationInfoMixin, returnBtnMixin, imageMixin],
+
   data: () => ({
     headIds: ['station', 'min-lvl', 'status', 'dispatcher', 'dispatcher-lvl', 'routes', 'general'],
     headIconsIds: ['user', 'spawn', 'timetable'],
     lastSelectedStationName: '',
   }),
+
   setup() {
     const store = useStore();
     const isDataLoaded = computed(() => {
@@ -264,6 +267,7 @@ export default defineComponent({
       isDataLoaded,
     };
   },
+
   methods: {
     setScenery(name: string) {
       const station = this.stations.find((station) => station.name === name);
