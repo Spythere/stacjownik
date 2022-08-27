@@ -64,8 +64,6 @@ export default defineComponent({
     computedStationList() {
       const list = this.filterManager.getFilteredStationList(this.store.stationList, this.store.region.id);
 
-      console.log(list.map((station) => `${station.name} ${station.onlineInfo?.statusTimestamp}`));
-
       return list;
     },
   },

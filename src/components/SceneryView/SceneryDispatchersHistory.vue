@@ -31,7 +31,6 @@
 </template>
 
 <script lang="ts">
-
 import axios from 'axios';
 import { defineComponent, PropType } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
@@ -67,8 +66,6 @@ export default defineComponent({
 
         this.dispatcherHistoryList = historyAPIData;
         this.dataStatus = DataStatus.Loaded;
-
-        console.log(this.dispatcherHistoryList);
       } catch (error) {
         console.error(error);
       }
@@ -113,4 +110,3 @@ export default defineComponent({
   }
 }
 </style>
-

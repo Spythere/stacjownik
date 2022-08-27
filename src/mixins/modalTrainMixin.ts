@@ -8,10 +8,6 @@ export default defineComponent({
     };
   },
 
-  mounted() {
-    console.log('Mixin mounted');
-  },
-
   computed: {
     chosenTrain() {
       return this.store.trainList.find((train) => train.trainId == this.store.chosenModalTrainId);
