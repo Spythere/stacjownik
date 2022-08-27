@@ -25,32 +25,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, Ref, computed } from 'vue';
+import { computed, defineComponent, inject, PropType, Ref } from 'vue';
 import modalTrainMixin from '../../mixins/modalTrainMixin';
 import returnBtnMixin from '../../mixins/returnBtnMixin';
 import Train from '../../scripts/interfaces/Train';
 import { useStore } from '../../store/store';
-import Loading from '../Global/Loading.vue';
-import TrainModal from '../Global/TrainModal.vue';
-import TrainInfo from './TrainInfo.vue';
-import TrainSchedule from './TrainSchedule.vue';
 
 export default defineComponent({
-  components: {
-    TrainSchedule,
-    TrainInfo,
-    Loading,
-    TrainModal,
-  },
-
-  mixins: [returnBtnMixin, modalTrainMixin],
-
   props: {
     trains: {
-      type: Array as () => Train[],
+      type: Array as PropType<Train[]>,
       required: true,
     },
   },
+
+  mixins: [returnBtnMixin, modalTrainMixin],
 
   setup(props) {
     const store = useStore();
@@ -67,7 +56,6 @@ export default defineComponent({
       searchedDriver,
       currentTrains,
       store,
-
       sorterActive: inject('sorterActive') as { id: string | number; dir: number },
       distanceLimitExceeded: computed(
         () => props.trains.findIndex(({ timetableData }) => timetableData && timetableData.routeDistance > 200) != -1
@@ -83,7 +71,7 @@ export default defineComponent({
       this.searchedTrain = query.trainNo.toString();
 
       setTimeout(() => {
-        this.selectModalTrain(query.driverName + <string>query.trainNo);
+        this.selectModalTrain(query.driverName! + query.trainNo!.toString());
       }, 20);
     }
   },
@@ -112,7 +100,6 @@ export default defineComponent({
         el.style.height = '0px';
       }, 10);
     },
-
   },
 });
 </script>
