@@ -4,6 +4,9 @@ import StorageManager from './storageManager';
 
 const sortStations = (a: Station, b: Station, sorter: { index: number; dir: number }) => {
   switch (sorter.index) {
+    case 0:
+      return sorter.dir == 1 ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
+
     case 1:
       if ((a.generalInfo?.reqLevel || 0) > (b.generalInfo?.reqLevel || 0)) return sorter.dir;
       if ((a.generalInfo?.reqLevel || 0) < (b.generalInfo?.reqLevel || 0)) return -sorter.dir;
@@ -49,8 +52,8 @@ const sortStations = (a: Station, b: Station, sorter: { index: number; dir: numb
     default:
       break;
   }
-
-  return sorter.dir == 1 ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
+ 
+  return a.name.localeCompare(b.name);
 };
 
 const filterStations = (station: Station, filters: Filter) => {

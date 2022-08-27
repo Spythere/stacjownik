@@ -14,7 +14,7 @@
         </div>
 
         <StationTable
-          :stations="computedStations"
+          :stations="computedStationList"
           :sorterActive="filterManager.getSorter()"
           :setFocusedStation="setFocusedStation"
           :changeSorter="changeSorter"
@@ -25,13 +25,11 @@
 </template>
 
 <script lang="ts">
-
 import inputData from '../data/options.json';
 
-import { computed, ComputedRef, defineComponent, reactive } from 'vue';
+import { defineComponent, reactive } from 'vue';
 import { useStore } from '../store/store';
 import StationFilterManager from '../scripts/managers/stationFilterManager';
-import Station from '../scripts/interfaces/Station';
 import StorageManager from '../scripts/managers/storageManager';
 import StationTable from '../components/StationsView/StationTable.vue';
 import StationFilterCard from '../components/StationsView/StationFilterCard.vue';
@@ -43,29 +41,35 @@ export default defineComponent({
     StationFilterCard,
     SelectBox,
   },
+
   data: () => ({
     filterCardOpen: false,
     modalHidden: true,
     STORAGE_KEY: 'options_saved',
     inputs: inputData,
+    focusedStationName: '',
   }),
 
   setup() {
     const store = useStore();
     const filterManager = reactive(new StationFilterManager());
-    const focusedStationName = '';
-
-    const computedStations: ComputedRef<Station[]> = computed(
-      () => filterManager.getFilteredStationList(store.stationList, store.region.id)
-      // .filter((station) => !station.onlineInfo || station.onlineInfo.region == store.region.id)
-    );
 
     return {
-      computedStations,
       filterManager,
-      focusedStationName,
+      store,
     };
   },
+
+  computed: {
+    computedStationList() {
+      const list = this.filterManager.getFilteredStationList(this.store.stationList, this.store.region.id);
+
+      console.log(list.map((station) => `${station.name} ${station.onlineInfo?.statusTimestamp}`));
+
+      return list;
+    },
+  },
+
   mounted() {
     if (!StorageManager.isRegistered(this.STORAGE_KEY)) return;
 
@@ -83,27 +87,34 @@ export default defineComponent({
       slider.value = value;
     });
   },
+
   methods: {
     toggleCardsState(name: string): void {
       if (name == 'filter') {
         this.filterCardOpen = !this.filterCardOpen;
       }
     },
+
     changeSorter(index: number) {
       this.filterManager.changeSorter(index);
     },
+
     changeFilterValue(filter: { name: string; value: number }) {
       this.filterManager.changeFilterValue(filter);
     },
+
     resetFilters() {
       this.filterManager.resetFilters();
     },
+
     invertFilters() {
       this.filterManager.invertFilters();
     },
+
     closeCard() {
       this.filterCardOpen = false;
     },
+
     setFocusedStation(name: string) {
       this.focusedStationName = this.focusedStationName == name ? '' : name;
     },
