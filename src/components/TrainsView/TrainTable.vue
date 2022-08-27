@@ -30,72 +30,64 @@ import modalTrainMixin from '../../mixins/modalTrainMixin';
 import returnBtnMixin from '../../mixins/returnBtnMixin';
 import Train from '../../scripts/interfaces/Train';
 import { useStore } from '../../store/store';
+import Loading from '../Global/Loading.vue';
+import TrainInfo from './TrainInfo.vue';
 
 export default defineComponent({
+  components: { Loading, TrainInfo },
+
   props: {
     trains: {
       type: Array as PropType<Train[]>,
       required: true,
     },
   },
-
   mixins: [returnBtnMixin, modalTrainMixin],
-
   setup(props) {
     const store = useStore();
-
     const searchedTrain = inject('searchedTrain') as Ref<string>;
     const searchedDriver = inject('searchedDriver') as Ref<string>;
-
     const currentTrains = computed(() => {
       return props.trains;
     });
-
     return {
       searchedTrain,
       searchedDriver,
       currentTrains,
       store,
-      sorterActive: inject('sorterActive') as { id: string | number; dir: number },
+      sorterActive: inject('sorterActive') as {
+        id: string | number;
+        dir: number;
+      },
       distanceLimitExceeded: computed(
         () => props.trains.findIndex(({ timetableData }) => timetableData && timetableData.routeDistance > 200) != -1
       ),
     };
   },
-
   activated() {
     const query = this.$route.query;
-
     if (query.trainNo && query.driverName) {
       this.searchedDriver = query.driverName.toString();
       this.searchedTrain = query.trainNo.toString();
-
       setTimeout(() => {
         this.selectModalTrain(query.driverName! + query.trainNo!.toString());
       }, 20);
     }
   },
-
   methods: {
     enter(el: HTMLElement) {
       const maxHeight = getComputedStyle(el).height;
-
       el.style.height = '0px';
-
       getComputedStyle(el);
-
       setTimeout(() => {
         el.style.height = maxHeight;
       }, 10);
     },
-
     afterEnter(el: HTMLElement) {
       el.style.height = 'auto';
     },
-
     leave(el: HTMLElement) {
       el.style.height = getComputedStyle(el).height;
-
       setTimeout(() => {
         el.style.height = '0px';
       }, 10);
