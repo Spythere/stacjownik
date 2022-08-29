@@ -25,6 +25,15 @@ body {
   padding: 0;
   font-family: 'Quicksand', sans-serif;
   overflow-y: scroll;
+
+  &.no-scroll {
+    overflow-y: hidden;
+    padding-right: 17px;
+
+    @include smallScreen() {
+      padding: 0;
+    }
+  }
 }
 
 *:focus-visible {
@@ -37,16 +46,15 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 0.5rem;
-  height: 0.5rem;
+  width: 17px;
+  height: 17px;
 
   &-track {
-    background: #222;
+    background-color: #222;
   }
 
   &-thumb {
-    border-radius: 1rem;
-    background: #777;
+    background-color: #777;
   }
 }
 

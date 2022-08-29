@@ -51,6 +51,7 @@ export const useStore = defineStore('store', {
         trains: DataStatus.Loading,
       },
 
+      blockScroll: false,
       listenerLaunched: false,
     } as StoreState),
 
@@ -395,4 +396,3 @@ export const useStore = defineStore('store', {
     },
   },
 });
-

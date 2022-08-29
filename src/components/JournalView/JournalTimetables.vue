@@ -236,7 +236,7 @@ export default defineComponent({
   },
 
   activated() {
-    window.addEventListener('scroll', this.handleScroll);
+    window.addEventListener('wheel', this.handleScroll);
 
     if (this.timetableId) {
       this.searchersValues['search-train'] = `#${this.timetableId}`;
@@ -249,7 +249,7 @@ export default defineComponent({
   },
 
   deactivated() {
-    window.removeEventListener('scroll', this.handleScroll);
+    window.removeEventListener('wheel', this.handleScroll);
   },
 
   methods: {

@@ -17,10 +17,15 @@ export default defineComponent({
   methods: {
     selectModalTrain(trainId: string) {
       this.store.chosenModalTrainId = trainId;
+      document.body.classList.add('no-scroll');
     },
 
     closeModal() {
       this.store.chosenModalTrainId = undefined;
+
+      setTimeout(() => {
+        document.body.classList.remove('no-scroll');
+      }, 150);
     },
   },
 });

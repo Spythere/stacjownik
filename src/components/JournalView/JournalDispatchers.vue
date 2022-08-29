@@ -202,7 +202,7 @@ export default defineComponent({
       this.search();
     }
 
-    window.addEventListener('scroll', this.handleScroll);
+    window.addEventListener('wheel', this.handleScroll);
   },
 
   mounted() {
@@ -212,7 +212,7 @@ export default defineComponent({
   },
 
   deactivated() {
-    window.removeEventListener('scroll', this.handleScroll);
+    window.removeEventListener('wheel', this.handleScroll);
   },
 
   methods: {

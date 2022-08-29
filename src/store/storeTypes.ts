@@ -42,6 +42,7 @@ export interface StoreState {
   };
 
   listenerLaunched: boolean;
+  blockScroll: boolean;
 }
 
 export interface APIData {

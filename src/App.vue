@@ -82,7 +82,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, provide, ref } from 'vue';
+import { computed, defineComponent, provide, ref, watch } from 'vue';
 
 import Clock from './components/App/Clock.vue';
 
@@ -163,6 +163,31 @@ export default defineComponent({
   async mounted() {
     this.updateStorage();
     this.setReleaseURL();
+
+    function preventScroll(e: Event) {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+
+      return false;
+    }
+
+    watch(
+      () => this.store.blockScroll,
+      (value) => {
+        if (value) {
+          document.body.classList.add('no-scroll');
+          // document.querySelector('#app')!.addEventListener('wheel', preventScroll, { passive: false,  });
+          // document.querySelector('#app')!.addEventListener('touchmove', preventScroll, { passive: false });
+          return;
+        }
+
+        document.body.classList.remove('no-scroll');
+
+        // document.querySelector('#app')!.removeEventListener('wheel', preventScroll);
+        // document.querySelector('#app')!.removeEventListener('touchmove', preventScroll);
+      }
+    );
   },
 
   methods: {
