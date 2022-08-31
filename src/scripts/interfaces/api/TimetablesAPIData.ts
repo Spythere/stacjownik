@@ -26,6 +26,11 @@ export interface TimetableHistory {
 
   authorName?: string;
   authorId?: number;
+
+  stockString?: string;
+  stockMass?: number;
+  stockLength?: number;
+  maxSpeed?: number;
 }
 
 export interface SceneryTimetableHistory {

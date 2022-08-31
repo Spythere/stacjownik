@@ -46,6 +46,25 @@
                           <span class="text--grayed">#{{ item.timetableId }}</span>
                         </span>
 
+                        &bull;
+
+                        <b
+                          class="journal_item-status"
+                          :class="{
+                            fulfilled: item.fulfilled || item.currentDistance >= item.routeDistance * 0.9,
+                            terminated: item.terminated && !item.fulfilled,
+                            active: !item.terminated,
+                          }"
+                        >
+                          {{
+                            !item.terminated
+                              ? $t('journal.timetable-active')
+                              : item.fulfilled || item.currentDistance >= item.routeDistance * 0.9
+                              ? $t('journal.timetable-fulfilled')
+                              : $t('journal.timetable-abandoned')
+                          }}
+                        </b>
+
                         <div>
                           <b>{{ item.route.replace('|', ' - ') }}</b>
                         </div>
@@ -58,49 +77,30 @@
                             :key="scenery.name"
                             :class="{ confirmed: scenery.confirmed }"
                           >
-                            {{ i > 0 ? ' > ' : '' }} {{ scenery.name }}
-                          </span>
-                        </div>
+                            <span v-if="i > 0"> &gt;</span>
+                            {{ scenery.name }}
 
-                        <div class="schedule-dates">
-                          <!-- Data odjazdu ze stacji początkowej -->
-                          <b>{{ item.route.split('|')[0] }}:</b>
-                          <s v-if="item.beginDate != item.scheduledBeginDate" class="text--grayed">
-                            {{ localeTime(item.beginDate, $i18n.locale) }}
-                          </s>
-                          <span>{{ localeTime(item.scheduledBeginDate, $i18n.locale) }} </span>&bull;
+                            <!-- Data odjazdu ze stacji początkowej -->
+                            <span v-if="i == 0" v-html="scenery.beginDateHTML"></span>
 
-                          <!-- Data przyjazdu na stację końcową / porzucenia -->
-                          <b v-if="(item.fulfilled && item.terminated) || !item.terminated">
-                            {{ item.route.split('|').slice(-1)[0] }}:
-                          </b>
-                          <i v-else>{{ $t('journal.timetable-abandoned') }} </i>
+                            <!-- Data porzucenia rozkładu jazdy -->
+                            <span
+                              v-if="
+                                !item.fulfilled &&
+                                item.terminated &&
+                                scenery.confirmed &&
+                                !getSceneryList(item)[i + 1]?.confirmed
+                              "
+                              style="color: salmon"
+                              v-html="scenery.abandonedDateHTML"
+                            >
+                            </span>
 
-                          <s v-if="item.endDate != item.scheduledEndDate && item.terminated" class="text--grayed">
-                            {{ localeTime(item.fulfilled ? item.endDate : item.scheduledEndDate, $i18n.locale) }}
-                          </s>
-                          <span
-                            >{{ localeTime(item.fulfilled ? item.scheduledEndDate : item.endDate, $i18n.locale) }}
+                            <!-- Data przyjazdu do stacji końcowej -->
+                            <span v-if="i == getSceneryList(item).length - 1" v-html="scenery.endDateHTML"> </span>
                           </span>
                         </div>
                       </span>
-
-                      <b
-                        class="journal_item-status"
-                        :class="{
-                          fulfilled: item.fulfilled || item.currentDistance >= item.routeDistance * 0.9,
-                          terminated: item.terminated && !item.fulfilled,
-                          active: !item.terminated,
-                        }"
-                      >
-                        {{
-                          !item.terminated
-                            ? $t('journal.timetable-active')
-                            : item.fulfilled || item.currentDistance >= item.routeDistance * 0.9
-                            ? $t('journal.timetable-fulfilled')
-                            : $t('journal.timetable-abandoned')
-                        }}
-                      </b>
                     </div>
 
                     <div style="margin-top: 1em">
@@ -120,17 +120,21 @@
                     </div>
 
                     <div style="margin-top: 1em">
-                      <div>
+                      <span>
                         <b>{{ $t('journal.route-length') }}</b>
                         {{ !item.fulfilled ? item.currentDistance + ' /' : '' }}
                         {{ item.routeDistance }} km
-                      </div>
-
-                      <div>
+                      </span>
+                      &bull;
+                      <span>
                         <b>{{ $t('journal.station-count') }}</b>
                         {{ item.confirmedStopsCount }} /
                         {{ item.allStopsCount }}
-                      </div>
+                      </span>
+                    </div>
+
+                    <div v-if="item.stockString">
+                      <!-- {{ item.stockString }} -->
                     </div>
                   </li>
                 </transition-group>
@@ -266,10 +270,35 @@ export default defineComponent({
       this.statsCardOpen = false;
     },
 
-    getSceneryList(historyItem: TimetableHistory) {
-      return historyItem.sceneriesString
-        .split('%')
-        .map((name, i) => ({ name, confirmed: i < historyItem.confirmedStopsCount }));
+    getSceneryList(item: TimetableHistory) {
+      return item.sceneriesString.split('%').map((name, i) => {
+        const beginDateHTML =
+          ' (o. ' +
+          (item.beginDate != item.scheduledBeginDate
+            ? `<s class='text--grayed'>${this.localeTime(item.beginDate, this.$i18n.locale)}</s> `
+            : '') +
+          `<span>${this.localeTime(item.scheduledBeginDate, this.$i18n.locale)}</span>)`;
+
+        const endDateHTML =
+          ' (p. ' +
+          (item.endDate != item.scheduledEndDate && item.fulfilled
+            ? `<s class='text--grayed'>${this.localeTime(
+                item.fulfilled ? item.endDate : item.scheduledEndDate,
+                this.$i18n.locale
+              )}</s> `
+            : '') +
+          `<span>${this.localeTime(
+            item.fulfilled || (item.terminated && !item.fulfilled) ? item.scheduledEndDate : item.endDate,
+            this.$i18n.locale
+          )}</span>)`;
+
+        const abandonedDateHTML = ` (porz. ${this.localeTime(
+          item.fulfilled ? item.scheduledEndDate : item.endDate,
+          this.$i18n.locale
+        )})`;
+
+        return { name, confirmed: i < item.confirmedStopsCount, beginDateHTML, endDateHTML, abandonedDateHTML };
+      });
     },
 
     handleScroll() {
@@ -408,12 +437,9 @@ export default defineComponent({
     padding: 0.2em 0;
 
     .scenery-list {
-      span {
-        color: #adadad;
-
-        &.confirmed {
-          color: #a3eba3;
-        }
+      color: #adadad;
+      span.confirmed {
+        color: #a3eba3;
       }
     }
   }
