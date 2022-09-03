@@ -121,13 +121,17 @@
                         </router-link>
                       </div>
 
-                      <button class="btn--option btn--show" @click="item.showStock.value = !item.showStock.value">
-                        {{ item.showStock.value ? 'UKRYJ' : 'POKAŻ' }} SKŁAD
+                      <button
+                        v-if="timetable.stockString"
+                        class="btn--option btn--show"
+                        @click="item.showStock.value = !item.showStock.value"
+                      >
+                        {{ $t(`journal.${item.showStock.value ? 'hide' : 'show'}-stock`) }}
                         <img :src="getIcon(`arrow-${item.showStock.value ? 'asc' : 'desc'}`)" alt="Arrow" />
                       </button>
 
-                      <div class="info-extended" v-show="item.showStock.value">
-                        <ul class="stock-list" v-if="timetable.stockString">
+                      <div class="info-extended" v-if="timetable.stockString" v-show="item.showStock.value">
+                        <ul class="stock-list">
                           <li v-for="(car, i) in timetable.stockString.split(';')" :key="i">
                             <img
                               @error="onImageError"
