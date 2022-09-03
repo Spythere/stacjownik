@@ -25,111 +25,119 @@
                 {{ $t('app.error') }}
               </div>
 
-              <div class="journal_warning" v-else-if="historyList.length == 0">
+              <div class="journal_warning" v-else-if="computedTimetableHistory.length == 0">
                 {{ $t('app.no-result') }}
               </div>
 
               <ul v-else>
                 <transition-group name="journal-list-anim">
-                  <li v-for="(item, i) in historyList" class="journal_item" :key="item.timetableId">
-                    <div class="journal_item-top">
-                      <span>
+                  <li
+                    v-for="{ timetable, sceneryList, ...item } in computedTimetableHistory"
+                    class="journal_item"
+                    :key="timetable.timetableId"
+                  >
+                    <div class="journal_item-info">
+                      <div class="info-top">
                         <span
                           tabindex="0"
-                          @click="navigateToTimetable(item)"
-                          @keydown.enter="navigateToTimetable(item)"
+                          @click="showTimetable(timetable)"
+                          @keydown.enter="showTimetable(timetable)"
                           style="cursor: pointer"
                         >
-                          <b class="text--primary">{{ item.trainCategoryCode }}&nbsp;</b>
-                          <b>{{ item.trainNo }}</b>
-                          | <span>{{ item.driverName }}</span> |
-                          <span class="text--grayed">#{{ item.timetableId }}</span>
+                          <b class="text--primary">{{ timetable.trainCategoryCode }}&nbsp;</b>
+                          <b>{{ timetable.trainNo }}</b>
+                          | <span>{{ timetable.driverName }}</span> |
+                          <span class="text--grayed">#{{ timetable.timetableId }}</span>
                         </span>
 
-                        <div>
-                          <b>{{ item.route.replace('|', ' - ') }}</b>
-                        </div>
-
-                        <hr style="margin: 0.25em 0" />
-
-                        <div class="scenery-list">
-                          <span
-                            v-for="(scenery, i) in getSceneryList(item)"
-                            :key="scenery.name"
-                            :class="{ confirmed: scenery.confirmed }"
+                        <span>
+                          <b class="info-date">{{ localeDay(timetable.beginDate, $i18n.locale) }}</b>
+                          <b
+                            class="info-status"
+                            :class="{
+                              fulfilled:
+                                timetable.fulfilled || timetable.currentDistance >= timetable.routeDistance * 0.9,
+                              terminated: timetable.terminated && !timetable.fulfilled,
+                              active: !timetable.terminated,
+                            }"
                           >
-                            {{ i > 0 ? ' > ' : '' }} {{ scenery.name }}
-                          </span>
-                        </div>
-
-                        <div class="schedule-dates">
-                          <!-- Data odjazdu ze stacji początkowej -->
-                          <b>{{ item.route.split('|')[0] }}:</b>
-                          <s v-if="item.beginDate != item.scheduledBeginDate" class="text--grayed">
-                            {{ localeTime(item.beginDate, $i18n.locale) }}
-                          </s>
-                          <span>{{ localeTime(item.scheduledBeginDate, $i18n.locale) }} </span>&bull;
-
-                          <!-- Data przyjazdu na stację końcową / porzucenia -->
-                          <b v-if="(item.fulfilled && item.terminated) || !item.terminated">
-                            {{ item.route.split('|').slice(-1)[0] }}:
+                            {{
+                              !timetable.terminated
+                                ? $t('journal.timetable-active')
+                                : timetable.fulfilled || timetable.currentDistance >= timetable.routeDistance * 0.9
+                                ? $t('journal.timetable-fulfilled')
+                                : `${$t('journal.timetable-abandoned')} ${localeTime(timetable.endDate, $i18n.locale)}`
+                            }}
                           </b>
-                          <i v-else>{{ $t('journal.timetable-abandoned') }} </i>
+                        </span>
+                      </div>
 
-                          <s v-if="item.endDate != item.scheduledEndDate && item.terminated" class="text--grayed">
-                            {{ localeTime(item.fulfilled ? item.endDate : item.scheduledEndDate, $i18n.locale) }}
-                          </s>
-                          <span
-                            >{{ localeTime(item.fulfilled ? item.scheduledEndDate : item.endDate, $i18n.locale) }}
-                          </span>
-                        </div>
-                      </span>
+                      <div class="info-route">
+                        <b>{{ timetable.route.replace('|', ' - ') }}</b>
+                      </div>
 
-                      <b
-                        class="journal_item-status"
-                        :class="{
-                          fulfilled: item.fulfilled || item.currentDistance >= item.routeDistance * 0.9,
-                          terminated: item.terminated && !item.fulfilled,
-                          active: !item.terminated,
-                        }"
-                      >
-                        {{
-                          !item.terminated
-                            ? $t('journal.timetable-active')
-                            : item.fulfilled || item.currentDistance >= item.routeDistance * 0.9
-                            ? $t('journal.timetable-fulfilled')
-                            : $t('journal.timetable-abandoned')
-                        }}
-                      </b>
-                    </div>
+                      <hr style="margin: 0.25em 0" />
 
-                    <div style="margin-top: 1em">
-                      <div>
-                        {{ $t('journal.timetable-day') }} <b>{{ localeDay(item.beginDate, $i18n.locale) }}</b>
+                      <div class="scenery-list">
+                        <span
+                          v-for="(scenery, i) in sceneryList"
+                          :key="scenery.name"
+                          :class="{ confirmed: scenery.confirmed }"
+                        >
+                          <span v-if="i > 0"> &gt;</span>
+                          {{ scenery.name }}
+
+                          <!-- Data odjazdu ze stacji początkowej -->
+                          <span v-if="i == 0" v-html="scenery.beginDateHTML"></span>
+
+                          <!-- Data przyjazdu do stacji końcowej -->
+                          <span v-if="i == sceneryList.length - 1" v-html="scenery.endDateHTML"> </span>
+                        </span>
+                      </div>
+
+                      <!-- Status RJ -->
+                      <div style="margin: 0.5em 0">
+                        <span>
+                          <b>{{ $t('journal.route-length') }}</b>
+                          {{ !timetable.fulfilled ? timetable.currentDistance + ' /' : '' }}
+                          {{ timetable.routeDistance }} km
+                        </span>
+                        &bull;
+                        <span>
+                          <b>{{ $t('journal.station-count') }}</b>
+                          {{ timetable.confirmedStopsCount }} /
+                          {{ timetable.allStopsCount }}
+                        </span>
                       </div>
 
                       <!-- Nick dyżurnego -->
-                      <div v-if="item.authorName">
+                      <div v-if="timetable.authorName">
                         <b class="text--grayed">{{ $t('journal.dispatcher-name') }}&nbsp;</b>
                         <router-link
                           class="dispatcher-link"
-                          :to="`/journal/dispatchers?dispatcherName=${item.authorName}`"
-                          >{{ item.authorName }}</router-link
+                          :to="`/journal/dispatchers?dispatcherName=${timetable.authorName}`"
                         >
-                      </div>
-                    </div>
-
-                    <div style="margin-top: 1em">
-                      <div>
-                        <b>{{ $t('journal.route-length') }}</b>
-                        {{ !item.fulfilled ? item.currentDistance + ' /' : '' }}
-                        {{ item.routeDistance }} km
+                          <b>{{ timetable.authorName }}</b>
+                        </router-link>
                       </div>
 
-                      <div>
-                        <b>{{ $t('journal.station-count') }}</b>
-                        {{ item.confirmedStopsCount }} /
-                        {{ item.allStopsCount }}
+                      <button class="btn--option btn--show" @click="item.showStock.value = !item.showStock.value">
+                        {{ item.showStock.value ? 'UKRYJ' : 'POKAŻ' }} SKŁAD
+                        <img :src="getIcon(`arrow-${item.showStock.value ? 'asc' : 'desc'}`)" alt="Arrow" />
+                      </button>
+
+                      <div class="info-extended" v-show="item.showStock.value">
+                        <ul class="stock-list" v-if="timetable.stockString">
+                          <li v-for="(car, i) in timetable.stockString.split(';')" :key="i">
+                            <img
+                              @error="onImageError"
+                              :src="`https://rj.td2.info.pl/dist/img/thumbnails/${car.split(':')[0]}.png`"
+                              :alt="car"
+                            />
+
+                            <div>{{ car.replace(/_/g, ' ').split(':')[0] }}</div>
+                          </li>
+                        </ul>
                       </div>
                     </div>
                   </li>
@@ -161,16 +169,15 @@ import { TimetableHistory } from '../../scripts/interfaces/api/TimetablesAPIData
 import { URLs } from '../../scripts/utils/apiURLs';
 import { useStore } from '../../store/store';
 import JournalOptions from './JournalOptions.vue';
+import { JournalTimetableSearcher } from '../../types/JournalTimetablesTypes';
+import modalTrainMixin from '../../mixins/modalTrainMixin';
+import imageMixin from '../../mixins/imageMixin';
 
 const TIMETABLES_API_URL = `${URLs.stacjownikAPI}/api/getTimetables`;
 
-type JournalTimetableSearcher = {
-  [key in 'search-driver' | 'search-train']: string;
-};
-
 export default defineComponent({
   components: { DriverStats, Loading, JournalOptions },
-  mixins: [dateMixin, routerMixin],
+  mixins: [dateMixin, routerMixin, modalTrainMixin, imageMixin],
 
   name: 'JournalTimetables',
 
@@ -187,6 +194,8 @@ export default defineComponent({
 
     showReturnButton: false,
     statsCardOpen: false,
+
+    timetableHistory: [] as TimetableHistory[],
 
     journalTimetableFilters,
   }),
@@ -215,7 +224,6 @@ export default defineComponent({
     const scrollElement: Ref<HTMLElement | null> = ref(null);
 
     return {
-      historyList: ref([]) as Ref<TimetableHistory[]>,
       historyDataStatus,
 
       isDataLoading: computed(() => historyDataStatus.value.status === DataStatus.Loading),
@@ -252,24 +260,67 @@ export default defineComponent({
     window.removeEventListener('wheel', this.handleScroll);
   },
 
-  methods: {
-    navigateToTimetable(historyItem: TimetableHistory) {
-      if (historyItem.terminated) return;
+  computed: {
+    computedTimetableHistory() {
+      return this.timetableHistory.map((timetable) => ({
+        timetable,
+        sceneryList: this.getSceneryList(timetable),
+        showStock: ref(false),
+      }));
+    },
+  },
 
-      this.navigateTo('/trains', {
-        trainNo: historyItem.trainNo,
-        driverName: historyItem.driverName,
-      });
+  methods: {
+    showTimetable(timetable: TimetableHistory) {
+      if (timetable.terminated) return;
+
+      this.selectModalTrain(timetable.driverName + timetable.trainNo.toString());
+      // this.navigateTo('/trains', {
+      //   trainNo: timetable.trainNo,
+      //   driverName: timetable.driverName,
+      // });
     },
 
     closeCard() {
       this.statsCardOpen = false;
     },
 
-    getSceneryList(historyItem: TimetableHistory) {
-      return historyItem.sceneriesString
-        .split('%')
-        .map((name, i) => ({ name, confirmed: i < historyItem.confirmedStopsCount }));
+    getSceneryList(timetable: TimetableHistory) {
+      return timetable.sceneriesString.split('%').map((name, i) => {
+        const beginDateHTML =
+          ' (o. ' +
+          (timetable.beginDate != timetable.scheduledBeginDate
+            ? `<s class='text--grayed'>${this.localeTime(timetable.beginDate, this.$i18n.locale)}</s> `
+            : '') +
+          `<span>${this.localeTime(timetable.scheduledBeginDate, this.$i18n.locale)}</span>)`;
+
+        const endDateHTML =
+          ' (p. ' +
+          (timetable.endDate != timetable.scheduledEndDate && timetable.fulfilled
+            ? `<s class='text--grayed'>${this.localeTime(
+                timetable.fulfilled ? timetable.endDate : timetable.scheduledEndDate,
+                this.$i18n.locale
+              )}</s> `
+            : '') +
+          `<span>${this.localeTime(
+            timetable.fulfilled || (timetable.terminated && !timetable.fulfilled)
+              ? timetable.scheduledEndDate
+              : timetable.endDate,
+            this.$i18n.locale
+          )}</span>)`;
+
+        const abandonedDateHTML = ` (porz. ${this.localeTime(
+          timetable.fulfilled ? timetable.scheduledEndDate : timetable.endDate,
+          this.$i18n.locale
+        )})`;
+
+        return { name, confirmed: i < timetable.confirmedStopsCount, beginDateHTML, endDateHTML, abandonedDateHTML };
+      });
+    },
+
+    onImageError(e: Event) {
+      const imageEl = e.target as HTMLImageElement;
+      imageEl.src = this.getImage('unknown.png');
     },
 
     handleScroll() {
@@ -303,7 +354,7 @@ export default defineComponent({
     async addHistoryData() {
       this.scrollDataLoaded = false;
 
-      const countFrom = this.historyList.length;
+      const countFrom = this.timetableHistory.length;
 
       const responseData: TimetableHistory[] = await (
         await axios.get(`${TIMETABLES_API_URL}?${this.currentQuery}&countFrom=${countFrom}`)
@@ -316,7 +367,7 @@ export default defineComponent({
         return;
       }
 
-      this.historyList.push(...responseData);
+      this.timetableHistory.push(...responseData);
       this.scrollDataLoaded = true;
     },
 
@@ -377,12 +428,12 @@ export default defineComponent({
         if (!responseData) return;
 
         // Response data exists
-        this.historyList = responseData;
+        this.timetableHistory = responseData;
 
         // Stats display
         this.store.driverStatsName =
-          this.historyList.length > 0 && this.searchersValues['search-driver'].trim()
-            ? this.historyList[0].driverName
+          this.timetableHistory.length > 0 && this.searchersValues['search-driver'].trim()
+            ? this.timetableHistory[0].driverName
             : '';
 
         this.historyDataStatus.status = DataStatus.Loaded;
@@ -399,41 +450,83 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '../../styles/JournalSection.scss';
-
-.journal_item {
-  &-top {
-    display: flex;
-    justify-content: space-between;
-
-    padding: 0.2em 0;
-
-    .scenery-list {
-      span {
-        color: #adadad;
-
-        &.confirmed {
-          color: #a3eba3;
-        }
-      }
-    }
+@import '../../styles/responsive.scss';
+.info {
+  &-date {
+    margin-right: 0.5em;
   }
 
   &-status {
+    padding: 0.05em 0.35em;
+    color: black;
+
     &.terminated {
-      color: salmon;
+      background-color: salmon;
     }
 
     &.fulfilled {
-      color: lightgreen;
+      background-color: lightgreen;
     }
 
     &.active {
-      color: lightblue;
+      background-color: lightblue;
     }
+  }
+
+  &-top {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  &-route {
+    margin: 0.25em 0;
   }
 }
 
-.dispatcher-link {
+ul.stock-list {
+  display: flex;
+  align-items: flex-end;
+  overflow: auto;
+  padding-bottom: 0.5em;
+  margin-top: 1em;
+
+  li > div {
+    text-align: center;
+    color: #aaa;
+    font-size: 0.9em;
+  }
+}
+
+.scenery-list {
+  color: #adadad;
+  span.confirmed {
+    color: #a3eba3;
+  }
+}
+
+.btn--show {
+  display: flex;
+  margin-top: 0.5em;
   font-weight: bold;
+
+  img {
+    height: 1.3em;
+  }
+}
+
+@include smallScreen {
+  .info-top {
+    flex-direction: column;
+
+    span {
+      margin: 0.1em auto;
+    }
+  }
+
+  .info-route {
+    display: flex;
+    justify-content: center;
+  }
 }
 </style>

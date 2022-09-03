@@ -282,3 +282,18 @@ ul {
     transform: translateX(-50%);
   }
 }
+
+@include smallScreen {
+  ::-webkit-scrollbar {
+    width: 0.5em;
+    height: 0.5em;
+
+    &-track {
+      background-color: #222;
+    }
+
+    &-thumb {
+      background-color: #777;
+    }
+  }
+}

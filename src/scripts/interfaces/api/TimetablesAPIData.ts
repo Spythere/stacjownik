@@ -26,6 +26,15 @@ export interface TimetableHistory {
 
   authorName?: string;
   authorId?: number;
+
+  stockString?: string;
+  stockMass?: number;
+  stockLength?: number;
+  maxSpeed?: number;
+
+  hashesString?: string;
+  currentSceneryName?: string;
+  currentSceneryHash?: string;
 }
 
 export interface SceneryTimetableHistory {

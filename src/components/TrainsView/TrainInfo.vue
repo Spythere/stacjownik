@@ -253,10 +253,6 @@ export default defineComponent({
 
   .train-stats {
     font-size: 1.1em;
-
-    img {
-      display: none;
-    }
   }
 
   .train_general {
