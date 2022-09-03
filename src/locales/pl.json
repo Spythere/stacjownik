@@ -241,7 +241,10 @@
     "timetable-day": "Rozkład z dnia",
     "timetable-active": "AKTYWNY",
     "timetable-fulfilled": "WYPEŁNIONY",
-    "timetable-abandoned": "PORZUCONY"
+    "timetable-abandoned": "PORZUCONY",
+
+    "show-stock": "POKAŻ SKŁAD",
+    "hide-stock": "UKRYJ SKŁAD"
   },
   "scenery": {
     "users": "GRACZE ONLINE",

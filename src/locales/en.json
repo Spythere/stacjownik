@@ -239,7 +239,10 @@
     "online-since": "ONLINE SINCE",
     "duty-lasted": "The duty lasted",
     "minutes": "{minutes} mins",
-    "hours": "{hours}h {minutes} mins"
+    "hours": "{hours}h {minutes} mins",
+
+    "show-stock": "SHOW STOCK",
+    "hide-stock": "HIDE STOCK"
   },
   "scenery": {
     "users": "PLAYERS ONLINE",
