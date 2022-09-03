@@ -32,45 +32,47 @@
               <ul v-else>
                 <transition-group name="journal-list-anim">
                   <li
-                    v-for="{ timetable, sceneryList } in computedTimetableHistory"
+                    v-for="{ timetable, sceneryList, ...item } in computedTimetableHistory"
                     class="journal_item"
                     :key="timetable.timetableId"
                   >
                     <div class="journal_item-info">
-                      <div style="margin-bottom: 0.5em">
-                        <b class="info-date">{{ localeDay(timetable.beginDate, $i18n.locale) }}</b>
-                        <b
-                          class="info-status"
-                          :class="{
-                            fulfilled:
-                              timetable.fulfilled || timetable.currentDistance >= timetable.routeDistance * 0.9,
-                            terminated: timetable.terminated && !timetable.fulfilled,
-                            active: !timetable.terminated,
-                          }"
+                      <div class="info-top">
+                        <span
+                          tabindex="0"
+                          @click="showTimetable(timetable)"
+                          @keydown.enter="showTimetable(timetable)"
+                          style="cursor: pointer"
                         >
-                          {{
-                            !timetable.terminated
-                              ? $t('journal.timetable-active')
-                              : timetable.fulfilled || timetable.currentDistance >= timetable.routeDistance * 0.9
-                              ? $t('journal.timetable-fulfilled')
-                              : `${$t('journal.timetable-abandoned')} ${localeTime(timetable.endDate, $i18n.locale)}`
-                          }}
-                        </b>
+                          <b class="text--primary">{{ timetable.trainCategoryCode }}&nbsp;</b>
+                          <b>{{ timetable.trainNo }}</b>
+                          | <span>{{ timetable.driverName }}</span> |
+                          <span class="text--grayed">#{{ timetable.timetableId }}</span>
+                        </span>
+
+                        <span>
+                          <b class="info-date">{{ localeDay(timetable.beginDate, $i18n.locale) }}</b>
+                          <b
+                            class="info-status"
+                            :class="{
+                              fulfilled:
+                                timetable.fulfilled || timetable.currentDistance >= timetable.routeDistance * 0.9,
+                              terminated: timetable.terminated && !timetable.fulfilled,
+                              active: !timetable.terminated,
+                            }"
+                          >
+                            {{
+                              !timetable.terminated
+                                ? $t('journal.timetable-active')
+                                : timetable.fulfilled || timetable.currentDistance >= timetable.routeDistance * 0.9
+                                ? $t('journal.timetable-fulfilled')
+                                : `${$t('journal.timetable-abandoned')} ${localeTime(timetable.endDate, $i18n.locale)}`
+                            }}
+                          </b>
+                        </span>
                       </div>
 
-                      <span
-                        tabindex="0"
-                        @click="showTimetable(timetable)"
-                        @keydown.enter="showTimetable(timetable)"
-                        style="cursor: pointer"
-                      >
-                        <b class="text--primary">{{ timetable.trainCategoryCode }}&nbsp;</b>
-                        <b>{{ timetable.trainNo }}</b>
-                        | <span>{{ timetable.driverName }}</span> |
-                        <span class="text--grayed">#{{ timetable.timetableId }}</span>
-                      </span>
-
-                      <div style="margin-top: 0.25em">
+                      <div class="info-route">
                         <b>{{ timetable.route.replace('|', ' - ') }}</b>
                       </div>
 
@@ -93,20 +95,8 @@
                         </span>
                       </div>
 
-                      <div style="margin-top: 1em">
-                        <!-- Nick dyżurnego -->
-                        <div v-if="timetable.authorName">
-                          <b class="text--grayed">{{ $t('journal.dispatcher-name') }}&nbsp;</b>
-                          <router-link
-                            class="dispatcher-link"
-                            :to="`/journal/dispatchers?dispatcherName=${timetable.authorName}`"
-                          >
-                            <b>{{ timetable.authorName }}</b>
-                          </router-link>
-                        </div>
-                      </div>
-
-                      <div style="margin-top: 1em">
+                      <!-- Status RJ -->
+                      <div style="margin: 0.5em 0">
                         <span>
                           <b>{{ $t('journal.route-length') }}</b>
                           {{ !timetable.fulfilled ? timetable.currentDistance + ' /' : '' }}
@@ -119,10 +109,36 @@
                           {{ timetable.allStopsCount }}
                         </span>
                       </div>
-                    </div>
 
-                    <div class="journal_item-stock" v-if="timetable.stockString">
-                      {{ timetable.stockString}}
+                      <!-- Nick dyżurnego -->
+                      <div v-if="timetable.authorName">
+                        <b class="text--grayed">{{ $t('journal.dispatcher-name') }}&nbsp;</b>
+                        <router-link
+                          class="dispatcher-link"
+                          :to="`/journal/dispatchers?dispatcherName=${timetable.authorName}`"
+                        >
+                          <b>{{ timetable.authorName }}</b>
+                        </router-link>
+                      </div>
+
+                      <button class="btn--option btn--show" @click="item.showStock.value = !item.showStock.value">
+                        {{ item.showStock.value ? 'UKRYJ' : 'POKAŻ' }} SKŁAD
+                        <img :src="getIcon(`arrow-${item.showStock.value ? 'asc' : 'desc'}`)" alt="Arrow" />
+                      </button>
+
+                      <div class="info-extended" v-show="item.showStock.value">
+                        <ul class="stock-list" v-if="timetable.stockString">
+                          <li v-for="(car, i) in timetable.stockString.split(';')" :key="i">
+                            <img
+                              @error="onImageError"
+                              :src="`https://rj.td2.info.pl/dist/img/thumbnails/${car.split(':')[0]}.png`"
+                              :alt="car"
+                            />
+
+                            <div>{{ car.replace(/_/g, ' ').split(':')[0] }}</div>
+                          </li>
+                        </ul>
+                      </div>
                     </div>
                   </li>
                 </transition-group>
@@ -155,12 +171,13 @@ import { useStore } from '../../store/store';
 import JournalOptions from './JournalOptions.vue';
 import { JournalTimetableSearcher } from '../../types/JournalTimetablesTypes';
 import modalTrainMixin from '../../mixins/modalTrainMixin';
+import imageMixin from '../../mixins/imageMixin';
 
 const TIMETABLES_API_URL = `${URLs.stacjownikAPI}/api/getTimetables`;
 
 export default defineComponent({
   components: { DriverStats, Loading, JournalOptions },
-  mixins: [dateMixin, routerMixin, modalTrainMixin],
+  mixins: [dateMixin, routerMixin, modalTrainMixin, imageMixin],
 
   name: 'JournalTimetables',
 
@@ -248,6 +265,7 @@ export default defineComponent({
       return this.timetableHistory.map((timetable) => ({
         timetable,
         sceneryList: this.getSceneryList(timetable),
+        showStock: ref(false),
       }));
     },
   },
@@ -298,6 +316,11 @@ export default defineComponent({
 
         return { name, confirmed: i < timetable.confirmedStopsCount, beginDateHTML, endDateHTML, abandonedDateHTML };
       });
+    },
+
+    onImageError(e: Event) {
+      const imageEl = e.target as HTMLImageElement;
+      imageEl.src = this.getImage('unknown.png');
     },
 
     handleScroll() {
@@ -427,22 +450,10 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '../../styles/JournalSection.scss';
-@import '../../styles/variables.scss';
-.journal_item {
-
-  &-stock {
-    overflow: auto;
-  }
-}
-
-
-
+@import '../../styles/responsive.scss';
 .info {
   &-date {
-    padding: 0.05em 0.35em;
-    background-color: lightcyan;
-
-    color: black;
+    margin-right: 0.5em;
   }
 
   &-status {
@@ -461,12 +472,61 @@ export default defineComponent({
       background-color: lightblue;
     }
   }
+
+  &-top {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  &-route {
+    margin: 0.25em 0;
+  }
+}
+
+ul.stock-list {
+  display: flex;
+  align-items: flex-end;
+  overflow: auto;
+  padding-bottom: 0.5em;
+  margin-top: 1em;
+
+  li > div {
+    text-align: center;
+    color: #aaa;
+    font-size: 0.9em;
+  }
 }
 
 .scenery-list {
   color: #adadad;
   span.confirmed {
     color: #a3eba3;
+  }
+}
+
+.btn--show {
+  display: flex;
+  margin-top: 0.5em;
+  font-weight: bold;
+
+  img {
+    height: 1.3em;
+  }
+}
+
+@include smallScreen {
+  .info-top {
+    flex-direction: column;
+
+    span {
+      margin: 0.1em auto;
+    }
+  }
+
+  .info-route {
+    display: flex;
+    justify-content: center;
   }
 }
 </style>
