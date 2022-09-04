@@ -241,8 +241,10 @@
     "minutes": "{minutes} mins",
     "hours": "{hours}h {minutes} mins",
 
-    "show-stock": "SHOW STOCK",
-    "hide-stock": "HIDE STOCK"
+    "stock-info": "STOCK INFO",
+    "stock-length": "Length",
+    "stock-mass": "Mass",
+    "stock-max-speed": "Maximum registered speed"
   },
   "scenery": {
     "users": "PLAYERS ONLINE",

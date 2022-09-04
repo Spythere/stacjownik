@@ -28,7 +28,7 @@ body {
 
   &.no-scroll {
     overflow-y: hidden;
-    padding-right: 17px;
+    padding-right: 1rem;
 
     @include smallScreen() {
       padding: 0;
@@ -46,8 +46,8 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 17px;
-  height: 17px;
+  width: 1rem;
+  height: 1rem;
 
   &-track {
     background-color: #222;

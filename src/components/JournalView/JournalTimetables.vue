@@ -76,7 +76,7 @@
                         <b>{{ timetable.route.replace('|', ' - ') }}</b>
                       </div>
 
-                      <hr style="margin: 0.25em 0" />
+                      <hr />
 
                       <div class="scenery-list">
                         <span
@@ -126,11 +126,19 @@
                         class="btn--option btn--show"
                         @click="item.showStock.value = !item.showStock.value"
                       >
-                        {{ $t(`journal.${item.showStock.value ? 'hide' : 'show'}-stock`) }}
+                        {{ $t('journal.stock-info') }}
                         <img :src="getIcon(`arrow-${item.showStock.value ? 'asc' : 'desc'}`)" alt="Arrow" />
                       </button>
 
                       <div class="info-extended" v-if="timetable.stockString" v-show="item.showStock.value">
+                        <hr />
+
+                        <div>
+                          {{ `${$t('journal.stock-max-speed')}: ${timetable.maxSpeed}km/h` }} &bull;
+                          {{ `${$t('journal.stock-length')}: ${timetable.stockLength}m` }} &bull;
+                          {{ `${$t('journal.stock-mass')}: ${Math.floor(timetable.stockMass! / 1000)}t` }}
+                        </div>
+
                         <ul class="stock-list">
                           <li v-for="(car, i) in timetable.stockString.split(';')" :key="i">
                             <img
@@ -455,6 +463,11 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '../../styles/JournalSection.scss';
 @import '../../styles/responsive.scss';
+
+hr {
+  margin: 0.25em 0;
+}
+
 .info {
   &-date {
     margin-right: 0.5em;
@@ -486,6 +499,10 @@ export default defineComponent({
   &-route {
     margin: 0.25em 0;
   }
+
+  &-extended {
+    margin-top: 0.5em;
+  }
 }
 
 ul.stock-list {
@@ -511,8 +528,9 @@ ul.stock-list {
 
 .btn--show {
   display: flex;
-  margin-top: 0.5em;
+  margin-top: 1em;
   font-weight: bold;
+  padding: 0.2em 0.45em;
 
   img {
     height: 1.3em;
@@ -528,9 +546,17 @@ ul.stock-list {
     }
   }
 
+  .info-extended {
+    text-align: center;
+  }
+
   .info-route {
     display: flex;
     justify-content: center;
+  }
+
+  .btn--show {
+    margin: 1em auto 0 auto;
   }
 }
 </style>

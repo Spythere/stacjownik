@@ -243,8 +243,10 @@
     "timetable-fulfilled": "WYPEŁNIONY",
     "timetable-abandoned": "PORZUCONY",
 
-    "show-stock": "POKAŻ SKŁAD",
-    "hide-stock": "UKRYJ SKŁAD"
+    "stock-info": "INFORMACJE O SKŁADZIE",
+    "stock-length": "Długość",
+    "stock-mass": "Masa",
+    "stock-max-speed": "Maks. zarejestrowana prędkość"
   },
   "scenery": {
     "users": "GRACZE ONLINE",
