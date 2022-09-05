@@ -131,6 +131,7 @@ export default defineComponent({
 
 .select-box {
   position: relative;
+  width: auto;
 }
 
 .arrow {

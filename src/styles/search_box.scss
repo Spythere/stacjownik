@@ -1,0 +1,51 @@
+@import 'responsive.scss';
+
+.search {
+  &-box {
+    position: relative;
+
+    display: flex;
+
+    border-radius: 0.5em;
+    min-width: 200px;
+    margin-right: 0.25em;
+    background-color: #333;
+  }
+
+  &-input {
+    border: none;
+    border-radius: 0.5em 0 0 0.5em;
+    background-color: #333;
+
+    padding: 0.35em 0.5em;
+    margin-right: 0.2em;
+    width: 100%;
+  }
+
+  &-exit {
+    background-color: #333;
+    padding: 0 0.5em;
+    border-radius: 0 0.5em 0.5em 0;
+
+    img {
+      vertical-align: middle;
+      height: 1.3em;
+    }
+  }
+
+  @include smallScreen {
+    &-box,
+    &-button {
+      margin: 0.5em 0 0 0;
+    }
+
+    &-box {
+      width: 100%;
+    }
+
+    &-button {
+      width: 80%;
+      max-width: 300px;
+    }
+  }
+}

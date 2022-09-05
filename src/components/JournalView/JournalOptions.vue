@@ -20,7 +20,9 @@
               @keydown.enter="onInputSearch"
             />
 
-            <img class="search-exit" :src="getIcon('exit')" alt="exit-icon" @click="onInputClear(propName)" />
+            <button class="search-exit">
+              <img :src="getIcon('exit')" alt="exit-icon" @click="onInputClear(propName)" />
+            </button>
           </div>
           <!-- <div class="search-box">
             <input
@@ -88,10 +90,9 @@ export default defineComponent({
     },
   },
 
-
   setup() {
     return {
-      searchersValues: inject('searchersValues') as {[key: string]: string},
+      searchersValues: inject('searchersValues') as { [key: string]: string },
       sorterActive: inject('sorterActive') as { id: string | number; dir: number },
       journalFilterActive: inject('journalFilterActive') as JournalFilter,
     };
@@ -119,7 +120,7 @@ export default defineComponent({
       this.$emit('onFilterChange');
     },
 
-    onInputSearch() {      
+    onInputSearch() {
       this.$emit('onInputChange');
     },
 
@@ -134,6 +135,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '../../styles/responsive';
 @import '../../styles/option.scss';
+@import '../../styles/search_box.scss';
 
 .options {
   &_wrapper {
@@ -178,39 +180,11 @@ export default defineComponent({
   }
 }
 
-.search {
-  &-box {
-    position: relative;
-
-    background: #333;
-    border-radius: 0.5em;
-    min-width: 200px;
-    margin-right: 0.25em;
-  }
-
-  &-input {
-    border: none;
-
-    min-width: 100%;
-    padding: 0.35em 0.5em;
-  }
-
-  &-exit {
-    position: absolute;
-    cursor: pointer;
-
-    top: 50%;
-    right: 10px;
-    transform: translateY(-50%);
-
-    width: 1em;
-  }
-}
-
 @include smallScreen() {
   .journal-options {
     width: 100%;
   }
+
   .options {
     &_wrapper {
       justify-content: center;
@@ -238,22 +212,6 @@ export default defineComponent({
       .journal-filter-option {
         margin: 0.25em 0.25em;
       }
-    }
-  }
-
-  .search {
-    &-box,
-    &-button {
-      margin: 0.5em 0 0 0;
-    }
-
-    &-box {
-      width: 100%;
-    }
-
-    &-button {
-      width: 80%;
-      max-width: 300px;
     }
   }
 }

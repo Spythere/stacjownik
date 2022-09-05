@@ -15,13 +15,17 @@
           <div class="search-box">
             <input class="search-input" v-model="searchedTrain" :placeholder="$t('trains.search-train')" />
 
-            <img class="search-exit" :src="getIcon('exit')" alt="exit-icon" @click="() => (searchedTrain = '')" />
+            <button class="search-exit">
+              <img :src="getIcon('exit')" alt="exit-icon" @click="() => (searchedTrain = '')" />
+            </button>
           </div>
 
           <div class="search-box">
             <input class="search-input" v-model="searchedDriver" :placeholder="$t('trains.search-driver')" />
 
-            <img class="search-exit" :src="getIcon('exit')" alt="exit-icon" @click="() => (searchedDriver = '')" />
+            <button class="search-exit">
+              <img :src="getIcon('exit')" alt="exit-icon" @click="() => (searchedDriver = '')" />
+            </button>
           </div>
         </div>
       </div>
@@ -130,8 +134,8 @@ export default defineComponent({
 
     resetFilters() {
       this.filterList.forEach((f) => (f.isActive = true));
-      this.searchedDriver = "";
-      this.searchedTrain = "";
+      this.searchedDriver = '';
+      this.searchedTrain = '';
     },
   },
 });
@@ -139,10 +143,12 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '../../styles/responsive';
+@import '../../styles/search_box.scss';
 
 .train-options {
   @include smallScreen() {
     width: 100%;
+    font-size: 1.25em;
   }
 }
 
@@ -166,34 +172,6 @@ export default defineComponent({
   }
 }
 
-.search {
-  &-box {
-    position: relative;
-
-    background: #333;
-    border-radius: 0.5em;
-    min-width: 200px;
-    margin-right: 0.25em;
-  }
-
-  &-input {
-    border: none;
-
-    min-width: 100%;
-    padding: 0.35em 0.5em;
-  }
-
-  &-exit {
-    position: absolute;
-    cursor: pointer;
-
-    top: 50%;
-    right: 10px;
-    transform: translateY(-50%);
-
-    width: 1em;
-  }
-}
 .filters {
   display: flex;
   flex-wrap: wrap;
@@ -227,6 +205,7 @@ export default defineComponent({
   .journal-options {
     width: 100%;
   }
+
   .options {
     &_wrapper {
       justify-content: center;
@@ -245,22 +224,6 @@ export default defineComponent({
       .content_search {
         justify-content: center;
       }
-    }
-  }
-
-  .search {
-    &-box,
-    &-button {
-      margin: 0.5em 0 0 0;
-    }
-
-    &-box {
-      width: 100%;
-    }
-
-    &-button {
-      width: 80%;
-      max-width: 300px;
     }
   }
 }

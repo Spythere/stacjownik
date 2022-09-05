@@ -103,9 +103,4 @@ export default defineComponent({
   max-width: 1350px;
 }
 
-@include smallScreen {
-  .options-bar {
-    font-size: 1.25em;
-  }
-}
 </style>
