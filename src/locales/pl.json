@@ -246,7 +246,9 @@
     "stock-info": "INFORMACJE O SKŁADZIE",
     "stock-length": "Długość",
     "stock-mass": "Masa",
-    "stock-max-speed": "Maks. zarejestrowana prędkość"
+    "stock-max-speed": "Maks. zarejestrowana prędkość",
+
+    "load-data": "Pobierz dalszą historię..."
   },
   "scenery": {
     "users": "GRACZE ONLINE",

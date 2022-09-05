@@ -244,7 +244,9 @@
     "stock-info": "STOCK INFO",
     "stock-length": "Length",
     "stock-mass": "Mass",
-    "stock-max-speed": "Maximum registered speed"
+    "stock-max-speed": "Maximum registered speed",
+
+    "load-data": "Load further data..."
   },
   "scenery": {
     "users": "PLAYERS ONLINE",
