@@ -95,9 +95,20 @@
           <hr />
 
           <div>
-            {{ `${$t('journal.stock-max-speed')}: ${timetable.maxSpeed}km/h` }} &bull;
-            {{ `${$t('journal.stock-length')}: ${timetable.stockLength}m` }} &bull;
-            {{ `${$t('journal.stock-mass')}: ${Math.floor(timetable.stockMass! / 1000)}t` }}
+            <span class="badge info-badge">
+              <span>{{ $t('journal.stock-max-speed') }}</span>
+              <span>{{ timetable.maxSpeed }}km/h</span>
+            </span>
+
+            <span class="badge info-badge">
+              <span>{{ $t('journal.stock-length') }}</span>
+              <span>{{ timetable.stockLength }}m</span>
+            </span>
+
+            <span class="badge info-badge">
+              <span>{{ $t('journal.stock-mass') }}</span>
+              <span>{{ Math.floor(timetable.stockMass! / 1000) }}t</span>
+            </span>
           </div>
 
           <ul class="stock-list">
@@ -193,7 +204,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '../../styles/variables.scss';
 @import '../../styles/responsive.scss';
+@import '../../styles/badge.scss';
 @import '../../styles/JournalSection.scss';
 
 hr {
@@ -266,6 +279,13 @@ ul.stock-list {
 
   img {
     height: 1.3em;
+  }
+}
+
+.info-badge {
+  span:last-child {
+    color: black;
+    background-color: $accentCol;
   }
 }
 
