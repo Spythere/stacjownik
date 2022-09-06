@@ -1,15 +1,29 @@
 <template>
   <div class="journal-options">
+    <button class="btn--open">
+      <img :src="getIcon('filter2')" alt="Open filters" />
+
+      FILTRY
+    </button>
+
     <div class="options_wrapper">
       <div class="options_content">
+        <h1>SORTUJ WG:</h1>
+
         <div class="content_select">
-          <select-box
+          <!-- <select-box
             :itemList="translatedSorterOptions"
             :defaultItemIndex="0"
             @selected="onSorterChange"
             :prefix="$t('journal.sort-prefix')"
-          />
+          /> -->
+
+          <div v-for="opt in translatedSorterOptions">
+            <button class="sort-option">{{ opt.value.toUpperCase() }}</button>
+          </div>
         </div>
+
+        <h1>SZUKAJ:</h1>
 
         <div class="content_search">
           <div class="search-box" v-for="(value, propName) in searchersValues" :key="propName">
@@ -24,27 +38,14 @@
               <img :src="getIcon('exit')" alt="exit-icon" @click="onInputClear(propName)" />
             </button>
           </div>
-          <!-- <div class="search-box">
-            <input
-              class="search-input"
-              v-model="searchedTrain"
-              :placeholder="$t('journal.search-train')"
-              @keydown.enter="search"
-            />
-
-            <img class="search-exit" :src="exitIcon" alt="exit-icon" @click="clearTrain" />
-          </div>
 
           <div class="search-box">
-            <input
-              class="search-input"
-              v-model="searchedDriver"
-              :placeholder="$t('journal.search-driver')"
-              @keydown.enter="search"
-            />
+            <input class="search-input" placeholder="Data" type="date" />
 
-            <img class="search-exit" :src="exitIcon" alt="exit-icon" @click="clearDriver" />
-          </div> -->
+            <button class="search-exit">
+              <img :src="getIcon('exit')" alt="exit-icon" />
+            </button>
+          </div>
 
           <action-button class="search-button" @click="onInputSearch">
             {{ $t('journal.search') }}
@@ -52,10 +53,11 @@
         </div>
       </div>
 
+      <h1>FILTRUJ WG:</h1>
       <div class="options_filters">
         <button
           v-for="filter in filters"
-          class="journal-filter-option btn--option"
+          class="filter-option btn--option"
           :class="{ checked: journalFilterActive.id === filter.id }"
           :id="filter.id"
           @click="onFilterChange(filter)"
@@ -133,50 +135,95 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/responsive';
-@import '../../styles/option.scss';
+@import '../../styles/responsive.scss';
 @import '../../styles/search_box.scss';
+@import '../../styles/variables.scss';
 
-.options {
-  &_wrapper {
-    display: flex;
-    flex-direction: column;
+.btn--open {
+  display: flex;
+
+  padding: 0.4em 1em;
+  font-weight: bold;
+  font-size: 1em;
+
+  border-radius: 0.75em 0.75em 0 0;
+
+  img {
+    height: 1.3em;
+    margin-right: 0.5em;
+  }
+}
+
+h1 {
+  position: relative;
+  font-size: 1.1em;
+  margin: 0.7em 0 0.25em 0;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+
+    width: 50%;
+    height: 2px;
+    background-color: white;
+    border-radius: 2px;
+  }
+}
+
+.journal-options {
+  position: relative;
+}
+
+.options_wrapper {
+  position: absolute;
+
+  background-color: #111111dd;
+  padding: 1em;
+
+  z-index: 100;
+}
+
+.content_select {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  padding: 0.25em 0.25em 0 0;
+}
+
+.content_search > div {
+  margin: 0.5em auto;
+}
+
+.content_search > button {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.options_filters {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0.5em 0 0 0;
+}
+
+.sort-option,
+.filter-option {
+  margin: 0 0.25em 0 0;
+}
+
+.filter-option {
+  &#abandoned {
+    color: salmon;
   }
 
-  &_content {
-    display: flex;
-    flex-wrap: wrap;
-
-    .content_search,
-    .content_select {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-
-      padding: 0.25em 0.25em 0 0;
-    }
+  &#fulfilled {
+    color: lightgreen;
   }
 
-  &_filters {
-    display: flex;
-    flex-wrap: wrap;
-    margin: 0.5em 0 0 0;
-
-    .journal-filter-option {
-      margin: 0 0.25em 0 0;
-
-      &#abandoned {
-        color: salmon;
-      }
-
-      &#fulfilled {
-        color: lightgreen;
-      }
-
-      &#active {
-        color: lightblue;
-      }
-    }
+  &#active {
+    color: lightblue;
   }
 }
 
@@ -209,7 +256,7 @@ export default defineComponent({
     &_filters {
       justify-content: center;
 
-      .journal-filter-option {
+      .filter-option {
         margin: 0.25em 0.25em;
       }
     }

@@ -13,7 +13,7 @@
         :filters="journalTimetableFilters"
       />
 
-      <div class="timetables_wrapper" ref="scrollElement">
+      <div class="list_wrapper" @scroll="handleScroll">
         <transition name="warning" mode="out-in">
           <div :key="dataStatus">
             <Loading v-if="dataStatus == (DataStatus.Loading || DataStatus.Initialized)" />
@@ -39,10 +39,10 @@
             </div>
           </div>
         </transition>
-      </div>
 
-      <div class="journal_warning" v-if="scrollNoMoreData">{{ $t('journal.no-further-data') }}</div>
-      <div class="journal_warning" v-else-if="!scrollDataLoaded">{{ $t('journal.loading-further-data') }}</div>
+        <div class="journal_warning" v-if="scrollNoMoreData">{{ $t('journal.no-further-data') }}</div>
+        <div class="journal_warning" v-else-if="!scrollDataLoaded">{{ $t('journal.loading-further-data') }}</div>
+      </div>
     </div>
   </section>
 </template>
@@ -130,16 +130,10 @@ export default defineComponent({
   },
 
   activated() {
-    window.addEventListener('scroll', this.handleScroll);
-
     if (this.timetableId) {
       this.searchersValues['search-train'] = `#${this.timetableId}`;
       this.searchHistory();
     }
-  },
-
-  deactivated() {
-    window.removeEventListener('scroll', this.handleScroll);
   },
 
   mounted() {
@@ -147,18 +141,14 @@ export default defineComponent({
   },
 
   methods: {
-    handleScroll() {
-      this.showReturnButton = window.scrollY > window.innerHeight;
+    handleScroll(e: Event) {
+      const listElement = e.target as HTMLElement;
+      const scrollTop = listElement.scrollTop;
+      const elementHeight = listElement.scrollHeight - listElement.offsetHeight;
 
-      const element = this.$refs.scrollElement as HTMLElement;
+      if (!this.scrollDataLoaded || this.scrollNoMoreData || this.dataStatus != DataStatus.Loaded) return;
 
-      if (
-        element.getBoundingClientRect().bottom * 0.85 < window.innerHeight &&
-        this.scrollDataLoaded &&
-        !this.scrollNoMoreData &&
-        this.dataStatus == DataStatus.Loaded
-      )
-        this.addHistoryData();
+      if (scrollTop > elementHeight * 0.85) this.addHistoryData();
     },
 
     searchHistory() {

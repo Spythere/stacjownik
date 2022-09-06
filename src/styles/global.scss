@@ -50,11 +50,13 @@ body {
   height: 1rem;
 
   &-track {
-    background-color: #222;
+    border-radius: 0.5em;
   }
 
   &-thumb {
-    background-color: #777;
+    border-radius: 0.5em;
+
+    background-color: #1b1b1b;
   }
 }
 
@@ -113,7 +115,6 @@ select {
 }
 
 input {
-  border: 1px solid white;
   background: none;
   color: white;
   font-size: 1em;
@@ -188,6 +189,16 @@ ul {
   &--grayed {
     color: #ccc;
   }
+}
+
+button {
+  cursor: pointer;
+
+  color: white;
+  background-color: #333;
+
+  border-radius: 0.25em;
+  padding: 0.25em 0.5em;
 }
 
 .btn {

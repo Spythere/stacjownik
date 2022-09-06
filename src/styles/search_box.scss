@@ -33,6 +33,12 @@
     }
   }
 
+  &-button {
+    width: 80%;
+    max-width: 300px;
+
+  }
+
   @include smallScreen {
     &-box,
     &-button {
@@ -41,11 +47,6 @@
 
     &-box {
       width: 100%;
-    }
-
-    &-button {
-      width: 80%;
-      max-width: 300px;
     }
   }
 }

@@ -18,6 +18,13 @@
 
 //Styles
 
+.list_wrapper {
+  overflow-y: scroll;
+  height: 90vh;
+
+  padding-right: 0.2em;
+}
+
 .journal_wrapper {
   max-width: 1350px;
   width: 100%;
@@ -42,7 +49,7 @@
 .journal_warning {
   background: #202020;
   padding: 1em;
-  margin: 1em 0;
+  margin-bottom: 1em;
 }
 
 .journal_top-bar {

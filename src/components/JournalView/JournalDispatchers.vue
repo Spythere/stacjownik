@@ -8,7 +8,7 @@
         :sorter-option-ids="['timestampFrom', 'duration']"
       />
 
-      <div class="timetables_wrapper" ref="scrollElement">
+      <div class="list_wrapper" @scroll="handleScroll">
         <transition name="warning" mode="out-in">
           <div :key="dataStatus">
             <Loading v-if="dataStatus == (DataStatus.Loading || DataStatus.Initialized)" />
@@ -34,10 +34,10 @@
             </div>
           </div>
         </transition>
-      </div>
 
-      <div class="journal_warning" v-if="scrollNoMoreData">{{ $t('journal.no-further-data') }}</div>
-      <div class="journal_warning" v-else-if="!scrollDataLoaded">{{ $t('journal.loading-further-data') }}</div>
+        <div class="journal_warning" v-if="scrollNoMoreData">{{ $t('journal.no-further-data') }}</div>
+        <div class="journal_warning" v-else-if="!scrollDataLoaded">{{ $t('journal.loading-further-data') }}</div>
+      </div>
     </div>
   </section>
 </template>
@@ -137,8 +137,6 @@ export default defineComponent({
       this.searchersValues['search-dispatcher'] = this.dispatcherName?.toString() || '';
       this.search();
     }
-
-    window.addEventListener('scroll', this.handleScroll);
   },
 
   mounted() {
@@ -147,27 +145,15 @@ export default defineComponent({
     }
   },
 
-  deactivated() {
-    window.removeEventListener('scroll', this.handleScroll);
-  },
-
   methods: {
-    closeDispatcherStatsCard() {
-      this.statsCardOpen = false;
-    },
+    handleScroll(e: Event) {
+      const listElement = e.target as HTMLElement;
+      const scrollTop = listElement.scrollTop;
+      const elementHeight = listElement.scrollHeight - listElement.offsetHeight;
 
-    handleScroll() {
-      this.showReturnButton = window.scrollY > window.innerHeight;
+      if (!this.scrollDataLoaded || this.scrollNoMoreData || this.dataStatus != DataStatus.Loaded) return;
 
-      const element = this.$refs.scrollElement as HTMLElement;
-
-      if (
-        element.getBoundingClientRect().bottom * 0.85 < window.innerHeight &&
-        this.scrollDataLoaded &&
-        !this.scrollNoMoreData &&
-        this.dataStatus == DataStatus.Loaded
-      )
-        this.addHistoryData();
+      if (scrollTop > elementHeight * 0.85) this.addHistoryData();
     },
 
     search() {
