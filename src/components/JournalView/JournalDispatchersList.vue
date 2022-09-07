@@ -112,7 +112,7 @@ export default defineComponent({
   text-align: center;
   background-color: #4d4d4d;
 
-  margin-top: 1em;
+  margin: 1em 0;
 
   span {
     position: relative;

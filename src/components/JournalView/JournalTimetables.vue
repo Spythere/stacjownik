@@ -6,39 +6,37 @@
 
     <div class="journal_wrapper">
       <JournalOptions
-        @on-input-change="searchHistory"
-        @on-filter-change="searchHistory"
-        @on-sorter-change="searchHistory"
+        @on-search-confirm="searchHistory"
         :sorter-option-ids="['timetableId', 'beginDate', 'distance', 'total-stops']"
         :filters="journalTimetableFilters"
       />
 
       <div class="list_wrapper" @scroll="handleScroll">
-        <transition name="warning" mode="out-in">
-          <div :key="dataStatus">
-            <Loading v-if="dataStatus == (DataStatus.Loading || DataStatus.Initialized)" />
+        <!-- <transition name="warning" mode="out-in"> -->
+        <!-- <div :key="dataStatus"> -->
+        <Loading v-if="dataStatus == DataStatus.Loading || dataStatus == DataStatus.Initialized" />
 
-            <div v-else-if="dataStatus == DataStatus.Error" class="journal_warning error">
-              {{ $t('app.error') }}
-            </div>
+        <div v-else-if="dataStatus == DataStatus.Error" class="journal_warning error">
+          {{ $t('app.error') }}
+        </div>
 
-            <div v-else-if="timetableHistory.length == 0" class="journal_warning">
-              {{ $t('app.no-result') }}
-            </div>
+        <div v-else-if="timetableHistory.length == 0" class="journal_warning">
+          {{ $t('app.no-result') }}
+        </div>
 
-            <div v-else>
-              <JournalTimetablesList :timetableHistory="timetableHistory" />
+        <div v-else>
+          <JournalTimetablesList :timetableHistory="timetableHistory" />
 
-              <button
-                class="btn btn--option btn--load-data"
-                v-if="!scrollNoMoreData && scrollDataLoaded"
-                @click="addHistoryData"
-              >
-                {{ $t('journal.load-data') }}
-              </button>
-            </div>
-          </div>
-        </transition>
+          <button
+            class="btn btn--option btn--load-data"
+            v-if="!scrollNoMoreData && scrollDataLoaded && timetableHistory.length >= 15"
+            @click="addHistoryData"
+          >
+            {{ $t('journal.load-data') }}
+          </button>
+        </div>
+        <!-- </div> -->
+        <!-- </transition> -->
 
         <div class="journal_warning" v-if="scrollNoMoreData">{{ $t('journal.no-further-data') }}</div>
         <div class="journal_warning" v-else-if="!scrollDataLoaded">{{ $t('journal.loading-further-data') }}</div>
@@ -105,6 +103,7 @@ export default defineComponent({
     const searchersValues = reactive({
       'search-train': '',
       'search-driver': '',
+      // 'search-date': '',
     } as JournalTimetableSearcher);
 
     const countFromIndex = ref(0);
@@ -193,6 +192,9 @@ export default defineComponent({
 
       const driver = props.searchers?.['search-driver'].trim();
       const train = props.searchers?.['search-train'].trim();
+      
+      // TODO: dodanie możliwości sortowania timestampem z API
+      // const date = props.searchers?.['search-date'].trim();
 
       if (driver) queries.push(`driverName=${driver}`);
       if (train) queries.push(train.startsWith('#') ? `timetableId=${train.replace('#', '')}` : `trainNo=${train}`);
@@ -247,8 +249,6 @@ export default defineComponent({
             : '';
 
         this.dataStatus = DataStatus.Loaded;
-
-        console.log(this.dataStatus);
       } catch (error) {
         this.dataStatus = DataStatus.Error;
         this.dataErrorMessage = 'Ups! Coś poszło nie tak!';

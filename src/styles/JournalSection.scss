@@ -8,11 +8,11 @@
   }
 
   &-enter-active {
-    transition: all 150ms ease-out;
+    transition: all 150ms 100ms ease-out;
   }
 
   &-leave-active {
-    transition: all 150ms ease-out;
+    transition: all 150ms 100ms ease-out;
   }
 }
 
@@ -47,7 +47,7 @@
 
 .journal_item,
 .journal_warning {
-  background: #202020;
+  background-color: #1a1a1a;
   padding: 1em;
   margin-bottom: 1em;
 }

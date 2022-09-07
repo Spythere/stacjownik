@@ -91,7 +91,7 @@
           <img :src="getIcon(`arrow-${item.showStock.value ? 'asc' : 'desc'}`)" alt="Arrow" />
         </button>
 
-        <div class="info-extended" v-if="timetable.stockString" v-show="item.showStock.value">
+        <div class="info-extended" v-if="timetable.stockString && item.showStock.value">
           <hr />
 
           <div>

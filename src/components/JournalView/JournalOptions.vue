@@ -1,26 +1,34 @@
 <template>
   <div class="journal-options">
-    <button class="btn--open">
+    <button class="btn--open" @click="showOptions = !showOptions">
       <img :src="getIcon('filter2')" alt="Open filters" />
-
       FILTRY
     </button>
 
-    <div class="options_wrapper">
+    <div class="options_wrapper" v-if="showOptions">
       <div class="options_content">
         <h1>SORTUJ WG:</h1>
 
-        <div class="content_select">
-          <!-- <select-box
-            :itemList="translatedSorterOptions"
-            :defaultItemIndex="0"
-            @selected="onSorterChange"
-            :prefix="$t('journal.sort-prefix')"
-          /> -->
-
+        <div class="options_sorters">
           <div v-for="opt in translatedSorterOptions">
-            <button class="sort-option">{{ opt.value.toUpperCase() }}</button>
+            <button class="sort-option" :data-selected="opt.id == sorterActive.id" @click="onSorterChange(opt)">
+              {{ opt.value.toUpperCase() }}
+            </button>
           </div>
+        </div>
+
+        <h1 v-if="filters.length != 0">FILTRUJ WG:</h1>
+
+        <div class="options_filters">
+          <button
+            v-for="filter in filters"
+            class="filter-option btn--option"
+            :class="{ checked: journalFilterActive.id === filter.id }"
+            :id="filter.id"
+            @click="onFilterChange(filter)"
+          >
+            {{ $t(`journal.filter-${filter.id}`) }}
+          </button>
         </div>
 
         <h1>SZUKAJ:</h1>
@@ -29,9 +37,10 @@
           <div class="search-box" v-for="(value, propName) in searchersValues" :key="propName">
             <input
               class="search-input"
+              :type="propName == 'search-date' ? 'date' : 'input'"
+              @keydown.enter="onSearchConfirm"
               :placeholder="$t(`journal.${propName}`)"
               v-model="searchersValues[propName]"
-              @keydown.enter="onInputSearch"
             />
 
             <button class="search-exit">
@@ -39,31 +48,19 @@
             </button>
           </div>
 
+          <!-- <label for="">Data</label>
           <div class="search-box">
-            <input class="search-input" placeholder="Data" type="date" />
+            <input class="search-input" placeholder="Data" type="date" v-model="searchDate" />
 
             <button class="search-exit">
               <img :src="getIcon('exit')" alt="exit-icon" />
             </button>
-          </div>
+          </div> -->
 
-          <action-button class="search-button" @click="onInputSearch">
+          <action-button class="search-button" @click="onSearchConfirm">
             {{ $t('journal.search') }}
           </action-button>
         </div>
-      </div>
-
-      <h1>FILTRUJ WG:</h1>
-      <div class="options_filters">
-        <button
-          v-for="filter in filters"
-          class="filter-option btn--option"
-          :class="{ checked: journalFilterActive.id === filter.id }"
-          :id="filter.id"
-          @click="onFilterChange(filter)"
-        >
-          {{ $t(`journal.filter-${filter.id}`) }}
-        </button>
       </div>
     </div>
   </div>
@@ -77,7 +74,7 @@ import SelectBox from '../Global/SelectBox.vue';
 
 export default defineComponent({
   components: { SelectBox, ActionButton },
-  emits: ['onSorterChange', 'onInputChange', 'onFilterChange'],
+  emits: ['onSearchConfirm'],
   mixins: [imageMixin],
 
   props: {
@@ -90,6 +87,12 @@ export default defineComponent({
       type: Array as PropType<JournalFilter[]>,
       default: [],
     },
+  },
+
+  data() {
+    return {
+      showOptions: false,
+    };
   },
 
   setup() {
@@ -113,22 +116,21 @@ export default defineComponent({
     onSorterChange(item: { id: string | number; value: string }) {
       this.sorterActive.id = item.id;
       this.sorterActive.dir = -1;
-
-      this.$emit('onSorterChange');
+      this.$emit('onSearchConfirm');
     },
 
     onFilterChange(filter: JournalFilter) {
       this.journalFilterActive = filter;
-      this.$emit('onFilterChange');
-    },
-
-    onInputSearch() {
-      this.$emit('onInputChange');
+      this.$emit('onSearchConfirm');
     },
 
     onInputClear(id: any) {
       this.searchersValues[id] = '';
-      this.onInputSearch();
+      this.$emit('onSearchConfirm');
+    },
+
+    onSearchConfirm() {
+      this.$emit('onSearchConfirm');
     },
   },
 });
@@ -138,6 +140,26 @@ export default defineComponent({
 @import '../../styles/responsive.scss';
 @import '../../styles/search_box.scss';
 @import '../../styles/variables.scss';
+
+.journal-options {
+  position: relative;
+
+  margin-bottom: 0.5em;
+}
+
+.options_wrapper {
+  position: absolute;
+
+  background-color: #111111ee;
+  box-shadow: 0 0 10px 2px #111;
+
+  width: 100%;
+  max-width: 500px;
+
+  padding: 1em;
+
+  z-index: 100;
+}
 
 .btn--open {
   display: flex;
@@ -171,20 +193,7 @@ h1 {
   }
 }
 
-.journal-options {
-  position: relative;
-}
-
-.options_wrapper {
-  position: absolute;
-
-  background-color: #111111dd;
-  padding: 1em;
-
-  z-index: 100;
-}
-
-.content_select {
+.options_sorters {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -213,6 +222,11 @@ h1 {
   margin: 0 0.25em 0 0;
 }
 
+.sort-option[data-selected='true'] {
+  color: $accentCol;
+  font-weight: bold;
+}
+
 .filter-option {
   &#abandoned {
     color: salmon;
@@ -228,38 +242,54 @@ h1 {
 }
 
 @include smallScreen() {
-  .journal-options {
-    width: 100%;
-  }
+  h1 {
+    text-align: center;
 
-  .options {
-    &_wrapper {
-      justify-content: center;
-      align-items: center;
-    }
-
-    &_content {
-      padding: 0 1em;
-
-      flex-direction: column;
-
-      .content_select {
-        margin: 0 auto;
-        padding: 0;
-      }
-
-      .content_search {
-        justify-content: center;
-      }
-    }
-
-    &_filters {
-      justify-content: center;
-
-      .filter-option {
-        margin: 0.25em 0.25em;
-      }
+    &::before {
+      width: 75%;
+      left: 50%;
+      transform: translateX(-50%);
     }
   }
+
+  .options_wrapper {
+    max-width: 100%;
+  }
+
+  .btn--open {
+    margin: 0 auto;
+  }
+
+  .filter-option,
+  .sort-option {
+    margin: 0.25em 0.25em;
+  }
+
+  .options_filters,
+  .options_sorters {
+    justify-content: center;
+  }
+
+  // .options {
+  //   &_wrapper {
+  //     justify-content: center;
+  //     align-items: center;
+  //   }
+
+  //   &_content {
+  //     padding: 0 1em;
+
+  //     flex-direction: column;
+
+  //     .content_select {
+  //       margin: 0 auto;
+  //       padding: 0;
+  //     }
+
+  //     .content_search {
+  //       justify-content: center;
+  //     }
+  //   }
+  // }
 }
 </style>

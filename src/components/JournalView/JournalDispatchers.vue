@@ -1,12 +1,7 @@
 <template>
   <section class="journal-timetables">
     <div class="journal_wrapper">
-      <JournalOptions
-        @on-filter-change="search"
-        @on-input-change="search"
-        @on-sorter-change="search"
-        :sorter-option-ids="['timestampFrom', 'duration']"
-      />
+      <JournalOptions @on-search-confirm="searchHistory" :sorter-option-ids="['timestampFrom', 'duration']" />
 
       <div class="list_wrapper" @scroll="handleScroll">
         <transition name="warning" mode="out-in">
@@ -135,13 +130,13 @@ export default defineComponent({
     if (this.sceneryName || this.dispatcherName) {
       this.searchersValues['search-station'] = this.sceneryName?.toString() || '';
       this.searchersValues['search-dispatcher'] = this.dispatcherName?.toString() || '';
-      this.search();
+      this.searchHistory();
     }
   },
 
   mounted() {
     if (!this.sceneryName && !this.dispatcherName) {
-      this.search();
+      this.searchHistory();
     }
   },
 
@@ -156,7 +151,7 @@ export default defineComponent({
       if (scrollTop > elementHeight * 0.85) this.addHistoryData();
     },
 
-    search() {
+    searchHistory() {
       this.fetchHistoryData({
         searchers: this.searchersValues,
       });
