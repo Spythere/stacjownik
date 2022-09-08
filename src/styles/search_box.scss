@@ -1,6 +1,12 @@
 @import 'responsive.scss';
 
 .search {
+  label {
+    display: block;
+    color: #ccc;
+    margin-bottom: 0.25em;
+  }
+
   &-box {
     position: relative;
 
@@ -9,7 +15,6 @@
     border-radius: 0.5em;
     min-width: 200px;
     margin-right: 0.25em;
-    background-color: #333;
   }
 
   &-input {
@@ -18,7 +23,6 @@
     background-color: #333;
 
     padding: 0.35em 0.5em;
-    margin-right: 0.2em;
     width: 100%;
   }
 
@@ -36,7 +40,6 @@
   &-button {
     width: 80%;
     max-width: 300px;
-
   }
 
   @include smallScreen {

@@ -192,12 +192,14 @@ export default defineComponent({
 
       const driver = props.searchers?.['search-driver'].trim();
       const train = props.searchers?.['search-train'].trim();
-      
-      // TODO: dodanie możliwości sortowania timestampem z API
-      // const date = props.searchers?.['search-date'].trim();
+
+      const dateString = props.searchers?.['search-date'].trim();
+      const timestampFrom = dateString ? Date.parse(new Date(dateString).toISOString()) : undefined;
+      const timestampTo = timestampFrom ? timestampFrom + 86400000 : undefined;
 
       if (driver) queries.push(`driverName=${driver}`);
       if (train) queries.push(train.startsWith('#') ? `timetableId=${train.replace('#', '')}` : `trainNo=${train}`);
+      if (timestampFrom && timestampTo) queries.push(`timestampFrom=${timestampFrom}`, `timestampTo=${timestampTo}`);
 
       // Z API: const SORT_TYPES = ['allStopsCount', 'endDate', 'beginDate', 'routeDistance'];
       if (this.sorterActive.id == 'distance') queries.push('sortBy=routeDistance');

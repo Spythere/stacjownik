@@ -35,17 +35,21 @@
 
           <h1>{{ $t('options.search-title') }}</h1>
           <div class="content_search">
-            <div class="search-box" v-for="(_, propName) in searchersValues" :key="propName">
-              <input
-                class="search-input"
-                :type="propName == 'search-date' ? 'date' : 'input'"
-                @keydown.enter="onSearchConfirm"
-                :placeholder="$t(`options.${propName}`)"
-                v-model="searchersValues[propName]"
-              />
-              <button class="search-exit">
-                <img :src="getIcon('exit')" alt="exit-icon" @click="onInputClear(propName)" />
-              </button>
+            <div class="search" v-for="(_, propName) in searchersValues" :key="propName">
+              <label v-if="propName == 'search-date'">{{ $t('options.search-date') }}</label>
+
+              <div class="search-box">
+                <input
+                  class="search-input"
+                  :type="propName == 'search-date' ? 'date' : 'input'"
+                  @keydown.enter="onSearchConfirm"
+                  :placeholder="$t(`options.${propName}`)"
+                  v-model="searchersValues[propName]"
+                />
+                <button class="search-exit">
+                  <img :src="getIcon('exit')" alt="exit-icon" @click="onInputClear(propName)" />
+                </button>
+              </div>
             </div>
 
             <action-button class="search-button" @click="onSearchConfirm">
