@@ -103,7 +103,7 @@ export default defineComponent({
     const searchersValues = reactive({
       'search-train': '',
       'search-driver': '',
-      // 'search-date': '',
+      'search-date': '',
     } as JournalTimetableSearcher);
 
     const countFromIndex = ref(0);

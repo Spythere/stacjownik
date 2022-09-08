@@ -10,7 +10,8 @@
     <transition name="options-anim">
       <div class="options_wrapper" v-if="showOptions">
         <div class="options_content">
-          <h1>SORTUJ WG:</h1>
+          <h1>{{ $t('options.sort-title') }}</h1>
+
           <div class="options_sorters">
             <div v-for="opt in translatedSorterOptions">
               <button class="sort-option" :data-selected="opt.id == sorterActive.id" @click="onSorterChange(opt)">
@@ -18,7 +19,8 @@
               </button>
             </div>
           </div>
-          <h1 v-if="filters.length != 0">FILTRUJ WG:</h1>
+
+          <h1 v-if="filters.length != 0">{{ $t('options.filter-title') }}</h1>
           <div class="options_filters">
             <button
               v-for="filter in filters"
@@ -30,7 +32,8 @@
               {{ $t(`options.filter-${filter.id}`) }}
             </button>
           </div>
-          <h1>SZUKAJ:</h1>
+
+          <h1>{{ $t('options.search-title') }}</h1>
           <div class="content_search">
             <div class="search-box" v-for="(_, propName) in searchersValues" :key="propName">
               <input
@@ -44,13 +47,7 @@
                 <img :src="getIcon('exit')" alt="exit-icon" @click="onInputClear(propName)" />
               </button>
             </div>
-            <!-- <label for="">Data</label>
-            <div class="search-box">
-              <input class="search-input" placeholder="Data" type="date" v-model="searchDate" />
-              <button class="search-exit">
-                <img :src="getIcon('exit')" alt="exit-icon" />
-              </button>
-            </div> -->
+
             <action-button class="search-button" @click="onSearchConfirm">
               {{ $t('options.search-button') }}
             </action-button>

@@ -84,7 +84,8 @@
     "search-train": "Train no.",
     "search-driver": "Driver name",
     "search-dispatcher": "Dispatcher name",
-    "search-scenery": "Scenery name",
+    "search-station": "Scenery name",
+    "search-date": "Timetable date",
 
     "sort-mass": "mass",
     "sort-speed": "speed",
@@ -107,7 +108,9 @@
     "filter-freight": "FREIGHT",
     "filter-other": "OTHER",
     "filter-noTimetable": "NO TIMETABLE",
-    "filter-reset": "X RESET",
+
+    "filter-reset": "RESET FILTERS",
+    "filter-clear": "CLEAR FILTERS",
 
     "filter-all": "ALL ENTRIES",
     "filter-abandoned": "ABANDONED",

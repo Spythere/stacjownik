@@ -18,6 +18,7 @@
               </button>
             </div>
           </div>
+          
           <h1 v-if="trainFilterList.length != 0">{{ $t('options.filter-title') }}</h1>
           <div class="options_filters">
             <div class="filter-option" v-for="filter in trainFilterList">
@@ -28,10 +29,10 @@
           </div>
           <div class="options_filters">
             <div class="filter-option">
-              <button @click="clearAllFilters">WYŁĄCZ WSZYSTKIE FILTRY</button>
+              <button @click="clearAllFilters">{{ $t('options.filter-clear') }}</button>
             </div>
             <div class="filter-option">
-              <button @click="resetAllFilters">ZRESETUJ FILTRY</button>
+              <button @click="resetAllFilters">{{ $t('options.filter-reset') }}</button>
             </div>
           </div>
           <h1>{{ $t('options.search-title') }}</h1>

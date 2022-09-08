@@ -87,6 +87,7 @@
     "search-driver": "Nick maszynisty",
     "search-dispatcher": "Nick dyżurnego",
     "search-station": "Nazwa scenerii",
+    "search-date": "Data rozkładu jazdy",
 
     "sort-distance": "kilometraż",
     "sort-total-stops": "stacje",
@@ -110,7 +111,9 @@
     "filter-freight": "TOWAROWE",
     "filter-other": "INNE",
     "filter-noTimetable": "BEZ RJ",
-    "filter-reset": "X RESETUJ",
+
+    "filter-reset": "ZRESETUJ FILTRY",
+    "filter-clear": "WYŁĄCZ FILTRY",
 
     "filter-all": "WSZYSTKIE",
     "filter-abandoned": "PORZUCONE",
