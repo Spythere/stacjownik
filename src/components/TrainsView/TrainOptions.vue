@@ -7,59 +7,51 @@
       FILTRY
     </button>
 
-    <div class="options_wrapper" v-if="showOptions">
-      <div class="options_content">
-        <h1>{{ $t('options.sort-title') }}</h1>
-
-        <div class="options_sorters">
-          <div v-for="opt in translatedSorterOptions">
-            <button class="sort-option" :data-selected="opt.id == sorterActive.id" @click="onSorterChange(opt)">
-              {{ opt.value.toUpperCase() }}
-            </button>
+    <transition name="options-anim">
+      <div class="options_wrapper" v-if="showOptions">
+        <div class="options_content">
+          <h1>{{ $t('options.sort-title') }}</h1>
+          <div class="options_sorters">
+            <div v-for="opt in translatedSorterOptions">
+              <button class="sort-option" :data-selected="opt.id == sorterActive.id" @click="onSorterChange(opt)">
+                {{ opt.value.toUpperCase() }}
+              </button>
+            </div>
           </div>
-        </div>
-
-        <h1 v-if="trainFilterList.length != 0">{{ $t('options.filter-title') }}</h1>
-
-        <div class="options_filters">
-          <div class="filter-option" v-for="filter in trainFilterList">
-            <button class="btn--option" :data-disabled="!filter.isActive" @click="onFilterChange(filter)">
-              {{ $t(`options.filter-${filter.id}`) }}
-            </button>
+          <h1 v-if="trainFilterList.length != 0">{{ $t('options.filter-title') }}</h1>
+          <div class="options_filters">
+            <div class="filter-option" v-for="filter in trainFilterList">
+              <button class="btn--option" :data-disabled="!filter.isActive" @click="onFilterChange(filter)">
+                {{ $t(`options.filter-${filter.id}`) }}
+              </button>
+            </div>
           </div>
-        </div>
-
-        <div class="options_filters">
-          <div class="filter-option">
-            <button @click="clearAllFilters">WYŁĄCZ WSZYSTKIE FILTRY</button>
+          <div class="options_filters">
+            <div class="filter-option">
+              <button @click="clearAllFilters">WYŁĄCZ WSZYSTKIE FILTRY</button>
+            </div>
+            <div class="filter-option">
+              <button @click="resetAllFilters">ZRESETUJ FILTRY</button>
+            </div>
           </div>
-
-          <div class="filter-option">
-            <button @click="resetAllFilters">ZRESETUJ FILTRY</button>
-          </div>
-        </div>
-
-        <h1>{{ $t('options.search-title') }}</h1>
-
-        <div class="content_search">
-          <div class="search-box">
-            <input class="search-input" :placeholder="$t(`options.search-train`)" v-model="searchedTrain" />
-
-            <button class="search-exit">
-              <img :src="getIcon('exit')" alt="exit-icon" @click="onInputClear('train')" />
-            </button>
-          </div>
-
-          <div class="search-box">
-            <input class="search-input" :placeholder="$t(`options.search-driver`)" v-model="searchedDriver" />
-
-            <button class="search-exit">
-              <img :src="getIcon('exit')" alt="exit-icon" @click="onInputClear('driver')" />
-            </button>
+          <h1>{{ $t('options.search-title') }}</h1>
+          <div class="content_search">
+            <div class="search-box">
+              <input class="search-input" :placeholder="$t(`options.search-train`)" v-model="searchedTrain" />
+              <button class="search-exit">
+                <img :src="getIcon('exit')" alt="exit-icon" @click="onInputClear('train')" />
+              </button>
+            </div>
+            <div class="search-box">
+              <input class="search-input" :placeholder="$t(`options.search-driver`)" v-model="searchedDriver" />
+              <button class="search-exit">
+                <img :src="getIcon('exit')" alt="exit-icon" @click="onInputClear('driver')" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </transition>
   </div>
 </template>
 
@@ -144,6 +136,19 @@ export default defineComponent({
 @import '../../styles/responsive.scss';
 @import '../../styles/search_box.scss';
 @import '../../styles/variables.scss';
+
+.options-anim {
+  &-enter-from,
+  &-leave-to {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  &-enter-active,
+  &-leave-active {
+    transition: all 150ms ease;
+  }
+}
 
 .bg {
   position: fixed;

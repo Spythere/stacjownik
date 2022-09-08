@@ -7,64 +7,57 @@
       FILTRY
     </button>
 
-    <div class="options_wrapper" v-if="showOptions">
-      <div class="options_content">
-        <h1>SORTUJ WG:</h1>
-
-        <div class="options_sorters">
-          <div v-for="opt in translatedSorterOptions">
-            <button class="sort-option" :data-selected="opt.id == sorterActive.id" @click="onSorterChange(opt)">
-              {{ opt.value.toUpperCase() }}
+    <transition name="options-anim">
+      <div class="options_wrapper" v-if="showOptions">
+        <div class="options_content">
+          <h1>SORTUJ WG:</h1>
+          <div class="options_sorters">
+            <div v-for="opt in translatedSorterOptions">
+              <button class="sort-option" :data-selected="opt.id == sorterActive.id" @click="onSorterChange(opt)">
+                {{ opt.value.toUpperCase() }}
+              </button>
+            </div>
+          </div>
+          <h1 v-if="filters.length != 0">FILTRUJ WG:</h1>
+          <div class="options_filters">
+            <button
+              v-for="filter in filters"
+              class="filter-option btn--option"
+              :class="{ checked: journalFilterActive.id === filter.id }"
+              :id="filter.id"
+              @click="onFilterChange(filter)"
+            >
+              {{ $t(`options.filter-${filter.id}`) }}
             </button>
           </div>
-        </div>
-
-        <h1 v-if="filters.length != 0">FILTRUJ WG:</h1>
-
-        <div class="options_filters">
-          <button
-            v-for="filter in filters"
-            class="filter-option btn--option"
-            :class="{ checked: journalFilterActive.id === filter.id }"
-            :id="filter.id"
-            @click="onFilterChange(filter)"
-          >
-            {{ $t(`options.filter-${filter.id}`) }}
-          </button>
-        </div>
-
-        <h1>SZUKAJ:</h1>
-
-        <div class="content_search">
-          <div class="search-box" v-for="(_, propName) in searchersValues" :key="propName">
-            <input
-              class="search-input"
-              :type="propName == 'search-date' ? 'date' : 'input'"
-              @keydown.enter="onSearchConfirm"
-              :placeholder="$t(`options.${propName}`)"
-              v-model="searchersValues[propName]"
-            />
-
-            <button class="search-exit">
-              <img :src="getIcon('exit')" alt="exit-icon" @click="onInputClear(propName)" />
-            </button>
+          <h1>SZUKAJ:</h1>
+          <div class="content_search">
+            <div class="search-box" v-for="(_, propName) in searchersValues" :key="propName">
+              <input
+                class="search-input"
+                :type="propName == 'search-date' ? 'date' : 'input'"
+                @keydown.enter="onSearchConfirm"
+                :placeholder="$t(`options.${propName}`)"
+                v-model="searchersValues[propName]"
+              />
+              <button class="search-exit">
+                <img :src="getIcon('exit')" alt="exit-icon" @click="onInputClear(propName)" />
+              </button>
+            </div>
+            <!-- <label for="">Data</label>
+            <div class="search-box">
+              <input class="search-input" placeholder="Data" type="date" v-model="searchDate" />
+              <button class="search-exit">
+                <img :src="getIcon('exit')" alt="exit-icon" />
+              </button>
+            </div> -->
+            <action-button class="search-button" @click="onSearchConfirm">
+              {{ $t('options.search-button') }}
+            </action-button>
           </div>
-
-          <!-- <label for="">Data</label>
-          <div class="search-box">
-            <input class="search-input" placeholder="Data" type="date" v-model="searchDate" />
-
-            <button class="search-exit">
-              <img :src="getIcon('exit')" alt="exit-icon" />
-            </button>
-          </div> -->
-
-          <action-button class="search-button" @click="onSearchConfirm">
-            {{ $t('options.search-button') }}
-          </action-button>
         </div>
       </div>
-    </div>
+    </transition>
   </div>
 </template>
 
@@ -143,6 +136,19 @@ export default defineComponent({
 @import '../../styles/search_box.scss';
 @import '../../styles/variables.scss';
 
+.options-anim {
+  &-enter-from,
+  &-leave-to {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  &-enter-active,
+  &-leave-active {
+    transition: all 150ms ease;
+  }
+}
+
 .bg {
   position: fixed;
   top: 0;
@@ -155,8 +161,6 @@ export default defineComponent({
 
 .journal-options {
   position: relative;
-
-  margin-bottom: 0.5em;
 }
 
 .options_wrapper {

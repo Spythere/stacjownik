@@ -139,8 +139,6 @@ img.train-image {
   &-list {
     overflow: auto;
 
-    margin-top: 1em;
-
     @include smallScreen() {
       width: 100%;
     }
