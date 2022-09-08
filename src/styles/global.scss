@@ -230,10 +230,6 @@ button {
     border-radius: 0.25em;
     padding: 0.25em 0.5em;
 
-    &:hover:not(:disabled) {
-      background-color: #3c3c3c;
-    }
-
     &.checked {
       color: var(--clr-primary);
       font-weight: bold;

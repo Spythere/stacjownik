@@ -22,15 +22,21 @@
         <h1 v-if="trainFilterList.length != 0">{{ $t('options.filter-title') }}</h1>
 
         <div class="options_filters">
-          <button
-            v-for="filter in trainFilterList"
-            class="filter-option btn--option"
-            :class="{ checked: filter.isActive }"
-            :id="filter.id"
-            @click="onFilterChange(filter)"
-          >
-            {{ $t(`options.filter-${filter.id}`) }}
-          </button>
+          <div class="filter-option" v-for="filter in trainFilterList">
+            <button class="btn--option" :data-disabled="!filter.isActive" @click="onFilterChange(filter)">
+              {{ $t(`options.filter-${filter.id}`) }}
+            </button>
+          </div>
+        </div>
+
+        <div class="options_filters">
+          <div class="filter-option">
+            <button @click="clearAllFilters">WYŁĄCZ WSZYSTKIE FILTRY</button>
+          </div>
+
+          <div class="filter-option">
+            <button @click="resetAllFilters">ZRESETUJ FILTRY</button>
+          </div>
         </div>
 
         <h1>{{ $t('options.search-title') }}</h1>
@@ -66,7 +72,6 @@ import SelectBox from '../Global/SelectBox.vue';
 
 export default defineComponent({
   components: { SelectBox, ActionButton },
-  emits: ['onSearchConfirm'],
   mixins: [imageMixin],
 
   props: {
@@ -105,11 +110,22 @@ export default defineComponent({
     onSorterChange(item: { id: string | number; value: string }) {
       this.sorterActive.id = item.id;
       this.sorterActive.dir = -1;
-      this.$emit('onSearchConfirm');
     },
 
     onFilterChange(filter: TrainFilter) {
       filter.isActive = !filter.isActive;
+    },
+
+    clearAllFilters() {
+      this.trainFilterList.forEach((filter) => {
+        filter.isActive = false;
+      });
+    },
+
+    resetAllFilters() {
+      this.trainFilterList.forEach((filter) => {
+        filter.isActive = true;
+      });
     },
 
     onInputClear(id: 'driver' | 'train') {
@@ -226,16 +242,13 @@ h1 {
 }
 
 .filter-option {
-  &#abandoned {
-    color: salmon;
-  }
+  button {
+    color: white;
+    font-weight: bold;
 
-  &#fulfilled {
-    color: lightgreen;
-  }
-
-  &#active {
-    color: lightblue;
+    &[data-disabled='true'] {
+      color: #888;
+    }
   }
 }
 
