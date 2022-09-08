@@ -1,5 +1,7 @@
 <template>
   <div class="journal-options">
+    <div class="bg" v-if="showOptions" @click="showOptions = false"></div>
+
     <button class="btn--open" @click="showOptions = !showOptions">
       <img :src="getIcon('filter2')" alt="Open filters" />
       FILTRY
@@ -27,19 +29,19 @@
             :id="filter.id"
             @click="onFilterChange(filter)"
           >
-            {{ $t(`journal.filter-${filter.id}`) }}
+            {{ $t(`options.filter-${filter.id}`) }}
           </button>
         </div>
 
         <h1>SZUKAJ:</h1>
 
         <div class="content_search">
-          <div class="search-box" v-for="(value, propName) in searchersValues" :key="propName">
+          <div class="search-box" v-for="(_, propName) in searchersValues" :key="propName">
             <input
               class="search-input"
               :type="propName == 'search-date' ? 'date' : 'input'"
               @keydown.enter="onSearchConfirm"
-              :placeholder="$t(`journal.${propName}`)"
+              :placeholder="$t(`options.${propName}`)"
               v-model="searchersValues[propName]"
             />
 
@@ -58,7 +60,7 @@
           </div> -->
 
           <action-button class="search-button" @click="onSearchConfirm">
-            {{ $t('journal.search') }}
+            {{ $t('options.search-button') }}
           </action-button>
         </div>
       </div>
@@ -107,7 +109,7 @@ export default defineComponent({
     translatedSorterOptions() {
       return this.$props.sorterOptionIds.map((id) => ({
         id,
-        value: this.$t(`journal.option-${id}`),
+        value: this.$t(`options.sort-${id}`),
       }));
     },
   },
@@ -140,6 +142,16 @@ export default defineComponent({
 @import '../../styles/responsive.scss';
 @import '../../styles/search_box.scss';
 @import '../../styles/variables.scss';
+
+.bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+
+  z-index: 10;
+}
 
 .journal-options {
   position: relative;

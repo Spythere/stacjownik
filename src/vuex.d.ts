@@ -14,11 +14,7 @@ declare module '@vue/runtime-core' {
     $store: Store<State>
   }
 
-  // Train filter for TrainView
-  interface TrainFilter {
-    id: TrainFilterType;
-    isActive: boolean;
-  }
+  
 
   interface JournalFilter {
     id: JournalFilterType;

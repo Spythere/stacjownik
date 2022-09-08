@@ -11,10 +11,10 @@
     "migration-confirm": "Roger that!"
   },
   "update": {
-      "title": "New Stacjownik version is available!",
-      "paragraph1": "Enjoy the application and may the green signal be with you!",
-      "release-link": "Click here to browse version changelog (GitHub)",
-      "confirm-button": "Understood!" 
+    "title": "New Stacjownik version is available!",
+    "paragraph1": "Enjoy the application and may the green signal be with you!",
+    "release-link": "Click here to browse version changelog (GitHub)",
+    "confirm-button": "Understood!"
   },
   "data-status": {
     "S1a-connection": "<b>S1a signal</b> <br> Cannot connect with Stacjownik API service!",
@@ -72,7 +72,47 @@
   },
   "options": {
     "filters": "FILTERS",
-    "donate": "DONATE"
+    "donate": "DONATE",
+
+    "search-button": "Search",
+
+    "sort-title": "SORT BY:",
+    "filter-title": "FILTER BY:",
+    "search-title": "SEARCH:",
+
+    "search-train-no": "Train no. / #",
+    "search-train": "Train no.",
+    "search-driver": "Driver name",
+    "search-dispatcher": "Dispatcher name",
+    "search-scenery": "Scenery name",
+
+    "sort-mass": "mass",
+    "sort-speed": "speed",
+    "sort-length": "length",
+    "sort-distance": "distance",
+    "sort-timetable": "train no.",
+    "sort-progress": "route progress",
+    "sort-delay": "current delay",
+
+    "sort-total-stops": "total stops",
+    "sort-beginDate": "date",
+    "sort-timetableId": "timetable ID",
+    "sort-timestampFrom": "date",
+    "sort-duration": "duration",
+
+    "filter-comments": "COMMENTS",
+    "filter-twr": "TWR",
+    "filter-skr": "SKR",
+    "filter-passenger": "PASSENGER",
+    "filter-freight": "FREIGHT",
+    "filter-other": "OTHER",
+    "filter-noTimetable": "NO TIMETABLE",
+    "filter-reset": "X RESET",
+
+    "filter-all": "ALL ENTRIES",
+    "filter-abandoned": "ABANDONED",
+    "filter-fulfilled": "FULFILLED",
+    "filter-active": "ACTIVE"
   },
   "filters": {
     "endingStatus": "ENDS SOON",
@@ -116,7 +156,7 @@
     "hour": "h",
     "no-limit": "NO LIMIT",
     "include-selected": "INCLUDE SELECTED",
-    "save": "↵ SAVE FILTERS",
+    "save": "SAVE FILTERS",
     "reset": "RESET FILTERS",
     "close": "CLOSE FILTERS"
   },
@@ -150,28 +190,6 @@
     "current-signal": "at signal",
     "current-track": "on track",
 
-    "option-mass": "mass",
-    "option-speed": "speed",
-    "option-length": "length",
-    "option-distance": "distance",
-    "option-timetable": "train no.",
-    "option-progress": "route progress",
-    "option-delay": "current delay",
-    "option-comments": "comments",
-
-    "filter-comments": "comments",
-    "filter-twr": "TWR",
-    "filter-skr": "SKR",
-    "filter-passenger": "passenger",
-    "filter-freight": "freight",
-    "filter-other": "other",
-    "filter-noTimetable": "no timetable",
-    "filter-reset": "X RESET",
-
-    "sorter-prefix": "Sort: ",
-    "search-train": "Train no.",
-    "search-driver": "Driver name",
-
     "delayed": "Delayed: ",
     "preponed": "Ahead of schedule: ",
     "on-time": "On time",
@@ -204,26 +222,6 @@
 
     "section-timetables": "TIMETABLES",
     "section-dispatchers": "DISPATCHERS",
-
-    "search": "Search",
-    "search-train": "Train no. / #",
-    "search-driver": "Driver name",
-    "search-dispatcher": "Dispatcher name",
-    "search-station": "Scenery name",
-
-    "sort-prefix": "Sort: ",
-
-    "option-distance": "distance",
-    "option-total-stops": "total stops",
-    "option-beginDate": "date",
-    "option-timetableId": "timetable ID",
-    "option-timestampFrom": "date",
-    "option-duration": "duration",
-
-    "filter-all": "ALL ENTRIES",
-    "filter-abandoned": "ABANDONED",
-    "filter-fulfilled": "FULFILLED",
-    "filter-active": "ACTIVE",
 
     "no-further-data": "No further data for current parameters",
     "loading-further-data": "Loading...",

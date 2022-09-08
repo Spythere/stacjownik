@@ -1,5 +1,5 @@
-import { TrainFilter } from "vue";
 import { TrainFilterType } from "../scripts/enums/TrainFilterType";
+import { TrainFilter } from "../types/TrainOptionsTypes";
 
 export const trainFilters: TrainFilter[] = [
   {
