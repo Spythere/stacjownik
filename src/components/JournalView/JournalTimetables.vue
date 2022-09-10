@@ -52,7 +52,7 @@ import axios from 'axios';
 
 import DriverStats from './DriverStats.vue';
 import Loading from '../Global/Loading.vue';
-import { JournalFilter } from '../../types/Journal/JournalTimetablesTypes';
+import { JournalFilter, JournalSorter } from '../../types/Journal/JournalTimetablesTypes';
 import dateMixin from '../../mixins/dateMixin';
 import routerMixin from '../../mixins/routerMixin';
 import { DataStatus } from '../../scripts/enums/DataStatus';
@@ -61,7 +61,7 @@ import { TimetableHistory } from '../../scripts/interfaces/api/TimetablesAPIData
 import { URLs } from '../../scripts/utils/apiURLs';
 import { useStore } from '../../store/store';
 import JournalOptions from './JournalOptions.vue';
-import { JournalTimetableSearcher } from '../../types/Journal/JournalTimetablesTypes';
+import { JorunalTimetableSearchType } from '../../types/Journal/JournalTimetablesTypes';
 import modalTrainMixin from '../../mixins/modalTrainMixin';
 import imageMixin from '../../mixins/imageMixin';
 import JournalTimetablesList from './JournalTimetablesList.vue';
@@ -99,14 +99,14 @@ export default defineComponent({
   }),
 
   setup() {
-    const sorterActive = ref({ id: 'timetableId', dir: -1 });
+    const sorterActive: JournalSorter = reactive({ id: 'timetableId', dir: 1 });
     const journalFilterActive = ref(journalTimetableFilters[0]);
 
     const searchersValues = reactive({
       'search-train': '',
       'search-driver': '',
       'search-date': '',
-    } as JournalTimetableSearcher);
+    } as JorunalTimetableSearchType);
 
     const countFromIndex = ref(0);
     const countLimit = 15;
@@ -153,9 +153,14 @@ export default defineComponent({
     },
 
     resetOptions() {
-      Object.values(this.searchersValues).map((_) => '');
+      this.searchersValues['search-date'] = '';
+      this.searchersValues['search-driver'] = '';
+      this.searchersValues['search-train'] = '';
+
       this.journalFilterActive = this.journalTimetableFilters[0];
       this.sorterActive.id = 'timetableId';
+
+      this.searchHistory();
     },
 
     searchHistory() {
@@ -190,7 +195,7 @@ export default defineComponent({
 
     async fetchHistoryData(
       props: {
-        searchers?: JournalTimetableSearcher;
+        searchers?: JorunalTimetableSearchType;
         filter?: JournalFilter;
       } = {}
     ) {
