@@ -24,7 +24,6 @@
   &-track {
     border-radius: 0.5em;
     background-color: #333;
-
   }
 
   &-thumb {
@@ -217,8 +216,18 @@ button {
   }
 
   &--image {
-    color: white;
-    transition: color 0.3s;
+    display: flex;
+
+    padding: 0.4em 1em;
+    font-weight: bold;
+    font-size: 1em;
+
+    border-radius: 0.75em 0.75em 0 0;
+
+    img {
+      height: 1.3em;
+      margin-right: 0.5em;
+    }
   }
 
   &--option {

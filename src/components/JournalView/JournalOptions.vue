@@ -2,9 +2,9 @@
   <div class="journal-options">
     <div class="bg" v-if="showOptions" @click="showOptions = false"></div>
 
-    <button class="btn--open" @click="showOptions = !showOptions">
+    <button class="btn--image" @click="showOptions = !showOptions">
       <img :src="getIcon('filter2')" alt="Open filters" />
-      FILTRY
+      {{ $t('options.filters') }}
     </button>
 
     <transition name="options-anim">
@@ -200,21 +200,6 @@ export default defineComponent({
   z-index: 100;
 }
 
-.btn--open {
-  display: flex;
-
-  padding: 0.4em 1em;
-  font-weight: bold;
-  font-size: 1em;
-
-  border-radius: 0.75em 0.75em 0 0;
-
-  img {
-    height: 1.3em;
-    margin-right: 0.5em;
-  }
-}
-
 h1 {
   position: relative;
   font-size: 1.1em;
@@ -303,7 +288,7 @@ h1 {
     max-width: 100%;
   }
 
-  .btn--open {
+  .btn--image {
     margin: 0 auto;
   }
 
@@ -316,27 +301,5 @@ h1 {
   .options_sorters {
     justify-content: center;
   }
-
-  // .options {
-  //   &_wrapper {
-  //     justify-content: center;
-  //     align-items: center;
-  //   }
-
-  //   &_content {
-  //     padding: 0 1em;
-
-  //     flex-direction: column;
-
-  //     .content_select {
-  //       margin: 0 auto;
-  //       padding: 0;
-  //     }
-
-  //     .content_search {
-  //       justify-content: center;
-  //     }
-  //   }
-  // }
 }
 </style>

@@ -4,7 +4,7 @@
 
     <button class="btn--open" @click="showOptions = !showOptions">
       <img :src="getIcon('filter2')" alt="Open filters" />
-      FILTRY
+      {{ $t('options.filters') }}
     </button>
 
     <transition name="options-anim">
@@ -18,7 +18,7 @@
               </button>
             </div>
           </div>
-          
+
           <h1 v-if="trainFilterList.length != 0">{{ $t('options.filter-title') }}</h1>
           <div class="options_filters">
             <div class="filter-option" v-for="filter in trainFilterList">
