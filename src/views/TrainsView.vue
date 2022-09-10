@@ -15,11 +15,11 @@ import { computed, ComputedRef, defineComponent, provide, reactive, ref } from '
 import TrainOptions from '../components/TrainsView/TrainOptions.vue';
 import TrainStats from '../components/TrainsView/TrainStats.vue';
 import TrainTable from '../components/TrainsView/TrainTable.vue';
-import { trainFilters } from '../data/trainOptions';
+import { trainFilters } from '../constants/Trains/TrainOptionsConsts';
 import Train from '../scripts/interfaces/Train';
 import { filteredTrainList } from '../scripts/managers/trainFilterManager';
 import { useStore } from '../store/store';
-import { TrainFilter } from '../types/TrainOptionsTypes';
+import { TrainFilter } from '../types/Trains/TrainOptionsTypes';
 
 export default defineComponent({
   components: {

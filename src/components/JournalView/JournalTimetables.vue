@@ -7,6 +7,7 @@
     <div class="journal_wrapper">
       <JournalOptions
         @on-search-confirm="searchHistory"
+        @on-options-reset="resetOptions"
         :sorter-option-ids="['timetableId', 'beginDate', 'distance', 'total-stops']"
         :filters="journalTimetableFilters"
       />
@@ -46,12 +47,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, JournalFilter, provide, reactive, Ref, ref } from 'vue';
+import { defineComponent, provide, reactive, Ref, ref } from 'vue';
 import axios from 'axios';
 
 import DriverStats from './DriverStats.vue';
 import Loading from '../Global/Loading.vue';
-import { journalTimetableFilters } from '../../data/journalFilters';
+import { JournalFilter } from '../../types/Journal/JournalTimetablesTypes';
 import dateMixin from '../../mixins/dateMixin';
 import routerMixin from '../../mixins/routerMixin';
 import { DataStatus } from '../../scripts/enums/DataStatus';
@@ -60,10 +61,11 @@ import { TimetableHistory } from '../../scripts/interfaces/api/TimetablesAPIData
 import { URLs } from '../../scripts/utils/apiURLs';
 import { useStore } from '../../store/store';
 import JournalOptions from './JournalOptions.vue';
-import { JournalTimetableSearcher } from '../../types/JournalTimetablesTypes';
+import { JournalTimetableSearcher } from '../../types/Journal/JournalTimetablesTypes';
 import modalTrainMixin from '../../mixins/modalTrainMixin';
 import imageMixin from '../../mixins/imageMixin';
 import JournalTimetablesList from './JournalTimetablesList.vue';
+import { journalTimetableFilters } from '../../constants/Journal/JournalTimetablesConsts';
 
 const TIMETABLES_API_URL = `${URLs.stacjownikAPI}/api/getTimetables`;
 
@@ -148,6 +150,12 @@ export default defineComponent({
       if (!this.scrollDataLoaded || this.scrollNoMoreData || this.dataStatus != DataStatus.Loaded) return;
 
       if (scrollTop > elementHeight * 0.85) this.addHistoryData();
+    },
+
+    resetOptions() {
+      Object.values(this.searchersValues).map((_) => '');
+      this.journalFilterActive = this.journalTimetableFilters[0];
+      this.sorterActive.id = 'timetableId';
     },
 
     searchHistory() {

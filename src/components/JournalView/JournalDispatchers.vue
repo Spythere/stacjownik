@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, JournalFilter, provide, reactive, Ref, ref } from 'vue';
+import { defineComponent, provide, reactive, Ref, ref } from 'vue';
 import axios from 'axios';
 
 import ActionButton from '../../components/Global/ActionButton.vue';
@@ -51,8 +51,9 @@ import { URLs } from '../../scripts/utils/apiURLs';
 import { DataStatus } from '../../scripts/enums/DataStatus';
 import { useStore } from '../../store/store';
 import JournalDispatchersList from './JournalDispatchersList.vue';
-import { JournalDispatcherSearcher } from '../../types/JournalDispatcherTypes';
+import { JournalDispatcherSearcher } from '../../types/Journal/JournalDispatcherTypes';
 import { DispatcherHistory } from '../../scripts/interfaces/api/DispatchersAPIData';
+import { JournalFilter } from '../../types/Journal/JournalTimetablesTypes';
 
 const DISPATCHERS_API_URL = `${URLs.stacjownikAPI}/api/getDispatchers`;
 

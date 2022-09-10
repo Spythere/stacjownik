@@ -1,5 +1,5 @@
-import { TrainFilterType } from "../scripts/enums/TrainFilterType";
-import { TrainFilter } from "../types/TrainOptionsTypes";
+import { TrainFilterType } from '../../scripts/enums/TrainFilterType';
+import { TrainFilter } from '../../types/Trains/TrainOptionsTypes';
 
 export const trainFilters: TrainFilter[] = [
   {
@@ -56,5 +56,5 @@ export const sorterOptions = [
   {
     id: 'length',
     value: 'długość',
-  }
+  },
 ];

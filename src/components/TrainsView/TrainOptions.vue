@@ -59,7 +59,7 @@
 <script lang="ts">
 import { defineComponent, inject, PropType } from 'vue';
 import imageMixin from '../../mixins/imageMixin';
-import { TrainFilter } from '../../types/TrainOptionsTypes';
+import { TrainFilter } from '../../types/Trains/TrainOptionsTypes';
 import ActionButton from '../Global/ActionButton.vue';
 import SelectBox from '../Global/SelectBox.vue';
 

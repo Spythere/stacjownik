@@ -34,27 +34,44 @@
           </div>
 
           <h1>{{ $t('options.search-title') }}</h1>
-          <div class="content_search">
+          <div class="search_content">
             <div class="search" v-for="(_, propName) in searchersValues" :key="propName">
-              <label v-if="propName == 'search-date'">{{ $t('options.search-date') }}</label>
+              <label v-if="propName == 'search-date'" for="date">{{ $t('options.search-date') }}</label>
 
               <div class="search-box">
                 <input
+                  v-if="propName == 'search-date'"
                   class="search-input"
-                  :type="propName == 'search-date' ? 'date' : 'input'"
+                  id="date"
+                  type="date"
+                  min="2022-02-01"
+                  @keydown.enter="onSearchConfirm"
+                  v-model="searchersValues[propName]"
+                />
+
+                <input
+                  v-else
+                  class="search-input"
                   @keydown.enter="onSearchConfirm"
                   :placeholder="$t(`options.${propName}`)"
                   v-model="searchersValues[propName]"
                 />
+
                 <button class="search-exit">
                   <img :src="getIcon('exit')" alt="exit-icon" @click="onInputClear(propName)" />
                 </button>
               </div>
             </div>
 
-            <action-button class="search-button" @click="onSearchConfirm">
-              {{ $t('options.search-button') }}
-            </action-button>
+            <div class="search_actions">
+              <action-button class="search-button" @click="onSearchConfirm">
+                {{ $t('options.search-button') }}
+              </action-button>
+
+              <action-button class="search-button" @click="onResetButtonClick">
+                {{ $t('options.reset-button') }}
+              </action-button>
+            </div>
           </div>
         </div>
       </div>
@@ -63,14 +80,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, JournalFilter, PropType } from 'vue';
+import { defineComponent, inject, PropType } from 'vue';
 import imageMixin from '../../mixins/imageMixin';
+import { JournalFilter } from '../../types/Journal/JournalTimetablesTypes';
 import ActionButton from '../Global/ActionButton.vue';
 import SelectBox from '../Global/SelectBox.vue';
 
 export default defineComponent({
   components: { SelectBox, ActionButton },
-  emits: ['onSearchConfirm'],
+  emits: ['onSearchConfirm', 'onOptionsReset'],
   mixins: [imageMixin],
 
   props: {
@@ -127,6 +145,10 @@ export default defineComponent({
 
     onSearchConfirm() {
       this.$emit('onSearchConfirm');
+    },
+
+    onResetButtonClick() {
+      this.$emit('onOptionsReset');
     },
   },
 });
@@ -218,16 +240,6 @@ h1 {
   padding: 0.25em 0.25em 0 0;
 }
 
-.content_search > div {
-  margin: 0.5em auto;
-}
-
-.content_search > button {
-  display: flex;
-  justify-content: center;
-  margin: 0 auto;
-}
-
 .options_filters {
   display: flex;
   flex-wrap: wrap;
@@ -255,6 +267,24 @@ h1 {
 
   &#active {
     color: lightblue;
+  }
+}
+
+.search_content > div {
+  margin: 0.5em auto;
+}
+
+.search_content > button {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.search_actions {
+  display: flex;
+
+  button {
+    margin: 0.25em 0.5em;
   }
 }
 

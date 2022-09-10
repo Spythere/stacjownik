@@ -1,4 +1,4 @@
-import { TrainFilterType } from "../scripts/enums/TrainFilterType";
+import { TrainFilterType } from "../../scripts/enums/TrainFilterType";
 
 export interface TrainFilter {
   id: TrainFilterType;
