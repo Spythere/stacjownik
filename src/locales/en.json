@@ -85,7 +85,7 @@
     "search-driver": "Driver name",
     "search-dispatcher": "Dispatcher name",
     "search-station": "Scenery name",
-    "search-date": "Timetable date",
+    "search-date": "Timetable date (CEST / GMT+2)",
 
     "sort-mass": "mass",
     "sort-speed": "speed",
