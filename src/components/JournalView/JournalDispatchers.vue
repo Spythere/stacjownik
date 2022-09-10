@@ -1,37 +1,49 @@
 <template>
   <section class="journal-timetables">
     <div class="journal_wrapper">
-      <JournalOptions @on-search-confirm="searchHistory" :sorter-option-ids="['timestampFrom', 'duration']" />
+      <JournalOptions
+        @on-search-confirm="searchHistory"
+        @on-options-reset="resetOptions"
+        :sorter-option-ids="['timestampFrom', 'duration']"
+        :data-status="dataStatus"
+      />
 
       <div class="list_wrapper" @scroll="handleScroll">
-        <transition name="warning" mode="out-in">
-          <div :key="dataStatus">
-            <Loading v-if="dataStatus == (DataStatus.Loading || DataStatus.Initialized)" />
+        <!-- <transition name="warning" mode="out-in"> -->
+        <!-- <div :key="dataStatus"> -->
+        <Loading
+          v-if="dataStatus == DataStatus.Initialized || (dataStatus == DataStatus.Loading && historyList.length == 0)"
+        />
 
-            <div v-else-if="dataStatus == DataStatus.Error" class="journal_warning error">
-              {{ $t('app.error') }}
-            </div>
+        <div v-else-if="dataStatus == DataStatus.Error" class="journal_warning error">
+          {{ $t('app.error') }}
+        </div>
 
-            <div class="journal_warning" v-else-if="historyList.length == 0">
-              {{ $t('app.no-result') }}
-            </div>
+        <div class="journal_warning" v-else-if="historyList.length == 0 && dataStatus != DataStatus.Loading">
+          {{ $t('app.no-result') }}
+        </div>
 
-            <div v-else>
-              <JournalDispatchersList :dispatcherHistory="computedHistoryList" />
+        <div v-else>
+          <JournalDispatchersList :dispatcherHistory="computedHistoryList" />
 
-              <button
-                class="btn btn--option btn--load-data"
-                v-if="!scrollNoMoreData && scrollDataLoaded"
-                @click="addHistoryData"
-              >
-                {{ $t('journal.load-data') }}
-              </button>
-            </div>
-          </div>
-        </transition>
+          <button
+            class="btn btn--option btn--load-data"
+            v-if="!scrollNoMoreData && scrollDataLoaded && computedHistoryList.length > 15"
+            @click="addHistoryData"
+          >
+            {{ $t('journal.load-data') }}
+          </button>
+        </div>
+        <!-- </div>
+        </transition> -->
 
-        <div class="journal_warning" v-if="scrollNoMoreData">{{ $t('journal.no-further-data') }}</div>
-        <div class="journal_warning" v-else-if="!scrollDataLoaded">{{ $t('journal.loading-further-data') }}</div>
+        <div class="journal_warning" v-if="scrollNoMoreData">
+          {{ $t('journal.no-further-data') }}
+        </div>
+
+        <div class="journal_warning" v-else-if="!scrollDataLoaded">
+          {{ $t('journal.loading-further-data') }}
+        </div>
       </div>
     </div>
   </section>
@@ -51,9 +63,9 @@ import { URLs } from '../../scripts/utils/apiURLs';
 import { DataStatus } from '../../scripts/enums/DataStatus';
 import { useStore } from '../../store/store';
 import JournalDispatchersList from './JournalDispatchersList.vue';
-import { JournalDispatcherSearcher } from '../../types/Journal/JournalDispatcherTypes';
+import { JournalDispatcherSearcher, JournalDispatcherSorter } from '../../types/Journal/JournalDispatcherTypes';
 import { DispatcherHistory } from '../../scripts/interfaces/api/DispatchersAPIData';
-import { JournalFilter } from '../../types/Journal/JournalTimetablesTypes';
+import { JournalTimetableFilter } from '../../types/Journal/JournalTimetablesTypes';
 
 const DISPATCHERS_API_URL = `${URLs.stacjownikAPI}/api/getDispatchers`;
 
@@ -88,7 +100,7 @@ export default defineComponent({
   }),
 
   setup() {
-    const sorterActive = ref({ id: 'timestampFrom', dir: -1 });
+    const sorterActive: JournalDispatcherSorter = reactive({ id: 'timestampFrom', dir: -1 });
     const journalFilterActive = ref({});
 
     const searchersValues = reactive({
@@ -152,6 +164,14 @@ export default defineComponent({
       if (scrollTop > elementHeight * 0.85) this.addHistoryData();
     },
 
+    resetOptions() {
+      this.searchersValues['search-station'] = '';
+      this.searchersValues['search-dispatcher'] = '';
+      this.sorterActive.id = 'timestampFrom';
+
+      this.searchHistory();
+    },
+
     searchHistory() {
       this.fetchHistoryData({
         searchers: this.searchersValues,
@@ -184,7 +204,7 @@ export default defineComponent({
     async fetchHistoryData(
       props: {
         searchers?: JournalDispatcherSearcher;
-        filter?: JournalFilter;
+        filter?: JournalTimetableFilter;
       } = {}
     ) {
       this.dataStatus = DataStatus.Loading;

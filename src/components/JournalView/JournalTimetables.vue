@@ -10,18 +10,23 @@
         @on-options-reset="resetOptions"
         :sorter-option-ids="['timetableId', 'beginDate', 'distance', 'total-stops']"
         :filters="journalTimetableFilters"
+        :data-status="dataStatus"
       />
 
       <div class="list_wrapper" @scroll="handleScroll">
         <!-- <transition name="warning" mode="out-in"> -->
         <!-- <div :key="dataStatus"> -->
-        <Loading v-if="dataStatus == DataStatus.Loading || dataStatus == DataStatus.Initialized" />
+        <Loading
+          v-if="
+            dataStatus == DataStatus.Initialized || (dataStatus == DataStatus.Loading && timetableHistory.length == 0)
+          "
+        />
 
         <div v-else-if="dataStatus == DataStatus.Error" class="journal_warning error">
           {{ $t('app.error') }}
         </div>
 
-        <div v-else-if="timetableHistory.length == 0" class="journal_warning">
+        <div v-else-if="timetableHistory.length == 0 && dataStatus != DataStatus.Loading" class="journal_warning">
           {{ $t('app.no-result') }}
         </div>
 
@@ -52,7 +57,7 @@ import axios from 'axios';
 
 import DriverStats from './DriverStats.vue';
 import Loading from '../Global/Loading.vue';
-import { JournalFilter, JournalSorter } from '../../types/Journal/JournalTimetablesTypes';
+import { JournalTimetableFilter, JournalTimetableSorter } from '../../types/Journal/JournalTimetablesTypes';
 import dateMixin from '../../mixins/dateMixin';
 import routerMixin from '../../mixins/routerMixin';
 import { DataStatus } from '../../scripts/enums/DataStatus';
@@ -99,7 +104,7 @@ export default defineComponent({
   }),
 
   setup() {
-    const sorterActive: JournalSorter = reactive({ id: 'timetableId', dir: 1 });
+    const sorterActive: JournalTimetableSorter = reactive({ id: 'timetableId', dir: 1 });
     const journalFilterActive = ref(journalTimetableFilters[0]);
 
     const searchersValues = reactive({
@@ -196,7 +201,7 @@ export default defineComponent({
     async fetchHistoryData(
       props: {
         searchers?: JorunalTimetableSearchType;
-        filter?: JournalFilter;
+        filter?: JournalTimetableFilter;
       } = {}
     ) {
       this.dataStatus = DataStatus.Loading;

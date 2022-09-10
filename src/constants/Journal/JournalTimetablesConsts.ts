@@ -1,7 +1,7 @@
 import { JournalFilterType } from "../../scripts/enums/JournalFilterType";
-import { JournalFilter } from "../../types/Journal/JournalTimetablesTypes";
+import { JournalTimetableFilter } from "../../types/Journal/JournalTimetablesTypes";
 
-export const journalTimetableFilters: JournalFilter[] = [
+export const journalTimetableFilters: JournalTimetableFilter[] = [
   {
     id: JournalFilterType.all,
     filterSection: 'timetable-status',

@@ -64,15 +64,20 @@
             </div>
 
             <div class="search_actions">
-              <action-button class="search-button" @click="onSearchConfirm">
-                {{ $t('options.search-button') }}
-              </action-button>
-
               <action-button class="search-button" @click="onResetButtonClick">
                 {{ $t('options.reset-button') }}
               </action-button>
+
+              <action-button class="search-button" @click="onSearchConfirm">
+                {{ $t('options.search-button') }}
+              </action-button>
             </div>
           </div>
+        </div>
+
+        <div class="data-status">
+          <span v-if="dataStatus == DataStatus.Loading"> Pobieranie danych...</span>
+          <span v-if="dataStatus == DataStatus.Loaded"> Pobrano dane </span>
         </div>
       </div>
     </transition>
@@ -80,9 +85,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, PropType } from 'vue';
+import { defineComponent, inject, Prop, PropType } from 'vue';
 import imageMixin from '../../mixins/imageMixin';
-import { JournalFilter } from '../../types/Journal/JournalTimetablesTypes';
+import { DataStatus } from '../../scripts/enums/DataStatus';
+import { JournalTimetableFilter } from '../../types/Journal/JournalTimetablesTypes';
 import ActionButton from '../Global/ActionButton.vue';
 import SelectBox from '../Global/SelectBox.vue';
 
@@ -98,14 +104,20 @@ export default defineComponent({
     },
 
     filters: {
-      type: Array as PropType<JournalFilter[]>,
+      type: Array as PropType<JournalTimetableFilter[]>,
       default: [],
+    },
+
+    dataStatus: {
+      type: Number as PropType<DataStatus>,
+      default: DataStatus.Initialized,
     },
   },
 
   data() {
     return {
       showOptions: false,
+      DataStatus,
     };
   },
 
@@ -113,7 +125,7 @@ export default defineComponent({
     return {
       searchersValues: inject('searchersValues') as { [key: string]: string },
       sorterActive: inject('sorterActive') as { id: string | number; dir: number },
-      journalFilterActive: inject('journalFilterActive') as JournalFilter,
+      journalFilterActive: inject('journalFilterActive') as JournalTimetableFilter,
     };
   },
 
@@ -133,7 +145,7 @@ export default defineComponent({
       this.$emit('onSearchConfirm');
     },
 
-    onFilterChange(filter: JournalFilter) {
+    onFilterChange(filter: JournalTimetableFilter) {
       this.journalFilterActive = filter;
       this.$emit('onSearchConfirm');
     },
@@ -255,7 +267,7 @@ h1 {
   }
 }
 
-.search_content > div {
+.search_content > .search {
   margin: 0.5em auto;
 }
 
@@ -265,12 +277,21 @@ h1 {
   margin: 0 auto;
 }
 
-.search_actions {
+.search_content > .search_actions {
   display: flex;
+  margin: 1em 0 0.5em 0;
 
   button {
     margin: 0.25em 0.5em;
   }
+}
+
+.data-status {
+  display: flex;
+  justify-content: center;
+  font-size: 1.1em;
+
+  height: 1.5em;
 }
 
 @include smallScreen() {
