@@ -194,7 +194,7 @@ export default defineComponent({
       const train = props.searchers?.['search-train'].trim();
 
       const dateString = props.searchers?.['search-date'].trim();
-      const timestampFrom = dateString ? Date.parse(new Date(dateString).toISOString()) : undefined;
+      const timestampFrom = dateString ? Date.parse(new Date(dateString).toISOString()) - 120 * 60 * 1000 : undefined;
       const timestampTo = timestampFrom ? timestampFrom + 86400000 : undefined;
 
       if (driver) queries.push(`driverName=${driver}`);
