@@ -106,6 +106,7 @@ export default defineComponent({
     const searchersValues = reactive({
       'search-dispatcher': '',
       'search-station': '',
+      'search-date': '',
     } as JournalDispatcherSearcher);
 
     const countFromIndex = ref(0);
@@ -211,14 +212,15 @@ export default defineComponent({
 
       const queries: string[] = [];
 
-      // const dispatcher = props.searchers?.find((s) => s.id == 'search-dispatcher')?.value.trim();
-      // const station = props.searchers?.find((s) => s.id == 'search-station')?.value.trim();
-
       const dispatcher = props.searchers?.['search-dispatcher'].trim();
       const station = props.searchers?.['search-station'].trim();
+      const dateString = props.searchers?.['search-date'].trim();
+      const timestampFrom = dateString ? Date.parse(new Date(dateString).toISOString()) - 120 * 60 * 1000 : undefined;
+      const timestampTo = timestampFrom ? timestampFrom + 86400000 : undefined;
 
       if (dispatcher) queries.push(`dispatcherName=${dispatcher}`);
       if (station) queries.push(`stationName=${station}`);
+      if (timestampFrom && timestampTo) queries.push(`timestampFrom=${timestampFrom}`, `timestampTo=${timestampTo}`);
 
       // Z API: const SORT_TYPES = ['allStopsCount', 'endDate', 'beginDate', 'routeDistance'];
       if (this.sorterActive.id == 'timestampFrom') queries.push('sortBy=timestampFrom');

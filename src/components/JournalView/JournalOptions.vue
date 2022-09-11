@@ -75,10 +75,10 @@
           </div>
         </div>
 
-        <div class="data-status">
+        <!-- <div class="data-status">
           <span v-if="dataStatus == DataStatus.Loading"> Pobieranie danych...</span>
           <span v-if="dataStatus == DataStatus.Loaded"> Pobrano dane </span>
-        </div>
+        </div> -->
       </div>
     </transition>
   </div>

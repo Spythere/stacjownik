@@ -1,5 +1,5 @@
 export type JournalDispatcherSearcher = {
-  [key in 'search-dispatcher' | 'search-station']: string;
+  [key in 'search-dispatcher' | 'search-station' | 'search-date']: string;
 };
 
 export interface JournalDispatcherSorter {
