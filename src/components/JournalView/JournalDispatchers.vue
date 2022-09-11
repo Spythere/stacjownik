@@ -2,48 +2,55 @@
   <section class="journal-timetables">
     <div class="journal_wrapper">
       <JournalOptions
-        @on-filter-change="search"
-        @on-input-change="search"
-        @on-sorter-change="search"
+        @on-search-confirm="searchHistory"
+        @on-options-reset="resetOptions"
         :sorter-option-ids="['timestampFrom', 'duration']"
+        :data-status="dataStatus"
       />
 
-      <div class="timetables_wrapper" ref="scrollElement">
-        <transition name="warning" mode="out-in">
-          <div :key="dataStatus">
-            <Loading v-if="dataStatus == (DataStatus.Loading || DataStatus.Initialized)" />
+      <div class="list_wrapper" @scroll="handleScroll">
+        <!-- <transition name="warning" mode="out-in"> -->
+        <!-- <div :key="dataStatus"> -->
+        <Loading
+          v-if="dataStatus == DataStatus.Initialized || (dataStatus == DataStatus.Loading && historyList.length == 0)"
+        />
 
-            <div v-else-if="dataStatus == DataStatus.Error" class="journal_warning error">
-              {{ $t('app.error') }}
-            </div>
+        <div v-else-if="dataStatus == DataStatus.Error" class="journal_warning error">
+          {{ $t('app.error') }}
+        </div>
 
-            <div class="journal_warning" v-else-if="historyList.length == 0">
-              {{ $t('app.no-result') }}
-            </div>
+        <div class="journal_warning" v-else-if="historyList.length == 0 && dataStatus != DataStatus.Loading">
+          {{ $t('app.no-result') }}
+        </div>
 
-            <div v-else>
-              <JournalDispatchersList :dispatcherHistory="computedHistoryList" />
+        <div v-else>
+          <JournalDispatchersList :dispatcherHistory="computedHistoryList" />
 
-              <button
-                class="btn btn--option btn--load-data"
-                v-if="!scrollNoMoreData && scrollDataLoaded"
-                @click="addHistoryData"
-              >
-                {{ $t('journal.load-data') }}
-              </button>
-            </div>
-          </div>
-        </transition>
+          <button
+            class="btn btn--option btn--load-data"
+            v-if="!scrollNoMoreData && scrollDataLoaded && computedHistoryList.length > 15"
+            @click="addHistoryData"
+          >
+            {{ $t('journal.load-data') }}
+          </button>
+        </div>
+        <!-- </div>
+        </transition> -->
+
+        <div class="journal_warning" v-if="scrollNoMoreData">
+          {{ $t('journal.no-further-data') }}
+        </div>
+
+        <div class="journal_warning" v-else-if="!scrollDataLoaded">
+          {{ $t('journal.loading-further-data') }}
+        </div>
       </div>
-
-      <div class="journal_warning" v-if="scrollNoMoreData">{{ $t('journal.no-further-data') }}</div>
-      <div class="journal_warning" v-else-if="!scrollDataLoaded">{{ $t('journal.loading-further-data') }}</div>
     </div>
   </section>
 </template>
 
 <script lang="ts">
-import { defineComponent, JournalFilter, provide, reactive, Ref, ref } from 'vue';
+import { defineComponent, provide, reactive, Ref, ref } from 'vue';
 import axios from 'axios';
 
 import ActionButton from '../../components/Global/ActionButton.vue';
@@ -56,8 +63,9 @@ import { URLs } from '../../scripts/utils/apiURLs';
 import { DataStatus } from '../../scripts/enums/DataStatus';
 import { useStore } from '../../store/store';
 import JournalDispatchersList from './JournalDispatchersList.vue';
-import { JournalDispatcherSearcher } from '../../types/JournalDispatcherTypes';
+import { JournalDispatcherSearcher, JournalDispatcherSorter } from '../../types/Journal/JournalDispatcherTypes';
 import { DispatcherHistory } from '../../scripts/interfaces/api/DispatchersAPIData';
+import { JournalTimetableFilter } from '../../types/Journal/JournalTimetablesTypes';
 
 const DISPATCHERS_API_URL = `${URLs.stacjownikAPI}/api/getDispatchers`;
 
@@ -92,12 +100,13 @@ export default defineComponent({
   }),
 
   setup() {
-    const sorterActive = ref({ id: 'timestampFrom', dir: -1 });
+    const sorterActive: JournalDispatcherSorter = reactive({ id: 'timestampFrom', dir: -1 });
     const journalFilterActive = ref({});
 
     const searchersValues = reactive({
       'search-dispatcher': '',
       'search-station': '',
+      'search-date': '',
     } as JournalDispatcherSearcher);
 
     const countFromIndex = ref(0);
@@ -135,42 +144,36 @@ export default defineComponent({
     if (this.sceneryName || this.dispatcherName) {
       this.searchersValues['search-station'] = this.sceneryName?.toString() || '';
       this.searchersValues['search-dispatcher'] = this.dispatcherName?.toString() || '';
-      this.search();
+      this.searchHistory();
     }
-
-    window.addEventListener('scroll', this.handleScroll);
   },
 
   mounted() {
     if (!this.sceneryName && !this.dispatcherName) {
-      this.search();
+      this.searchHistory();
     }
   },
 
-  deactivated() {
-    window.removeEventListener('scroll', this.handleScroll);
-  },
-
   methods: {
-    closeDispatcherStatsCard() {
-      this.statsCardOpen = false;
+    handleScroll(e: Event) {
+      const listElement = e.target as HTMLElement;
+      const scrollTop = listElement.scrollTop;
+      const elementHeight = listElement.scrollHeight - listElement.offsetHeight;
+
+      if (!this.scrollDataLoaded || this.scrollNoMoreData || this.dataStatus != DataStatus.Loaded) return;
+
+      if (scrollTop > elementHeight * 0.85) this.addHistoryData();
     },
 
-    handleScroll() {
-      this.showReturnButton = window.scrollY > window.innerHeight;
+    resetOptions() {
+      this.searchersValues['search-station'] = '';
+      this.searchersValues['search-dispatcher'] = '';
+      this.sorterActive.id = 'timestampFrom';
 
-      const element = this.$refs.scrollElement as HTMLElement;
-
-      if (
-        element.getBoundingClientRect().bottom * 0.85 < window.innerHeight &&
-        this.scrollDataLoaded &&
-        !this.scrollNoMoreData &&
-        this.dataStatus == DataStatus.Loaded
-      )
-        this.addHistoryData();
+      this.searchHistory();
     },
 
-    search() {
+    searchHistory() {
       this.fetchHistoryData({
         searchers: this.searchersValues,
       });
@@ -202,21 +205,22 @@ export default defineComponent({
     async fetchHistoryData(
       props: {
         searchers?: JournalDispatcherSearcher;
-        filter?: JournalFilter;
+        filter?: JournalTimetableFilter;
       } = {}
     ) {
       this.dataStatus = DataStatus.Loading;
 
       const queries: string[] = [];
 
-      // const dispatcher = props.searchers?.find((s) => s.id == 'search-dispatcher')?.value.trim();
-      // const station = props.searchers?.find((s) => s.id == 'search-station')?.value.trim();
-
       const dispatcher = props.searchers?.['search-dispatcher'].trim();
       const station = props.searchers?.['search-station'].trim();
+      const dateString = props.searchers?.['search-date'].trim();
+      const timestampFrom = dateString ? Date.parse(new Date(dateString).toISOString()) - 120 * 60 * 1000 : undefined;
+      const timestampTo = timestampFrom ? timestampFrom + 86400000 : undefined;
 
       if (dispatcher) queries.push(`dispatcherName=${dispatcher}`);
       if (station) queries.push(`stationName=${station}`);
+      if (timestampFrom && timestampTo) queries.push(`timestampFrom=${timestampFrom}`, `timestampTo=${timestampTo}`);
 
       // Z API: const SORT_TYPES = ['allStopsCount', 'endDate', 'beginDate', 'routeDistance'];
       if (this.sorterActive.id == 'timestampFrom') queries.push('sortBy=timestampFrom');

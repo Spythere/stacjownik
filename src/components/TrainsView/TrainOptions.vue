@@ -1,230 +1,285 @@
 <template>
   <div class="train-options">
-    <div class="options_wrapper">
-      <div class="options_content">
-        <div class="content_select">
-          <select-box
-            :itemList="translatedSorterOptions"
-            :defaultItemIndex="0"
-            @selected="changeSorter"
-            :prefix="$t('trains.sorter-prefix')"
-          />
-        </div>
+    <div class="bg" v-if="showOptions" @click="showOptions = false"></div>
 
-        <div class="content_search">
-          <div class="search-box">
-            <input class="search-input" v-model="searchedTrain" :placeholder="$t('trains.search-train')" />
+    <button class="btn--open" @click="showOptions = !showOptions">
+      <img :src="getIcon('filter2')" alt="Open filters" />
+      {{ $t('options.filters') }}
+    </button>
 
-            <button class="search-exit">
-              <img :src="getIcon('exit')" alt="exit-icon" @click="() => (searchedTrain = '')" />
-            </button>
+    <transition name="options-anim">
+      <div class="options_wrapper" v-if="showOptions">
+        <div class="options_content">
+          <h1>{{ $t('options.sort-title') }}</h1>
+          <div class="options_sorters">
+            <div v-for="opt in translatedSorterOptions">
+              <button class="sort-option" :data-selected="opt.id == sorterActive.id" @click="onSorterChange(opt)">
+                {{ opt.value.toUpperCase() }}
+              </button>
+            </div>
           </div>
 
-          <div class="search-box">
-            <input class="search-input" v-model="searchedDriver" :placeholder="$t('trains.search-driver')" />
-
-            <button class="search-exit">
-              <img :src="getIcon('exit')" alt="exit-icon" @click="() => (searchedDriver = '')" />
-            </button>
+          <h1 v-if="trainFilterList.length != 0">{{ $t('options.filter-title') }}</h1>
+          <div class="options_filters">
+            <div class="filter-option" v-for="filter in trainFilterList">
+              <button class="btn--option" :data-disabled="!filter.isActive" @click="onFilterChange(filter)">
+                {{ $t(`options.filter-${filter.id}`) }}
+              </button>
+            </div>
+          </div>
+          <div class="options_filters">
+            <div class="filter-option">
+              <button @click="clearAllFilters">{{ $t('options.filter-clear') }}</button>
+            </div>
+            <div class="filter-option">
+              <button @click="resetAllFilters">{{ $t('options.filter-reset') }}</button>
+            </div>
+          </div>
+          <h1>{{ $t('options.search-title') }}</h1>
+          <div class="content_search">
+            <div class="search-box">
+              <input class="search-input" :placeholder="$t(`options.search-train`)" v-model="searchedTrain" />
+              <button class="search-exit">
+                <img :src="getIcon('exit')" alt="exit-icon" @click="onInputClear('train')" />
+              </button>
+            </div>
+            <div class="search-box">
+              <input class="search-input" :placeholder="$t(`options.search-driver`)" v-model="searchedDriver" />
+              <button class="search-exit">
+                <img :src="getIcon('exit')" alt="exit-icon" @click="onInputClear('driver')" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-
-    <div class="filters">
-      <span
-        :class="{ active: filter.isActive }"
-        class="filter"
-        v-for="filter in filterList"
-        :key="filter.id"
-        tabindex="0"
-        @contextmenu="
-          (e) => {
-            e.preventDefault();
-            return false;
-          }
-        "
-        @click.left="toggleFilter(filter)"
-        @keydown.enter="toggleFilter(filter)"
-        @click.right="setFilterOnly(filter)"
-        @keydown.space="setFilterOnly(filter)"
-      >
-        {{ $t(`trains.filter-${filter.id}`) }}
-      </span>
-
-      <span class="filter reset-btn" @click="resetFilters" tabindex="0">
-        {{ $t('trains.filter-reset') }}
-      </span>
-    </div>
+    </transition>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, inject, TrainFilter } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { defineComponent, inject, PropType } from 'vue';
 import imageMixin from '../../mixins/imageMixin';
+import { TrainFilter } from '../../types/Trains/TrainOptionsTypes';
+import ActionButton from '../Global/ActionButton.vue';
 import SelectBox from '../Global/SelectBox.vue';
 
 export default defineComponent({
-  components: { SelectBox },
-  emits: ['changeSearchedTrain', 'changeSearchedDriver', 'changeSorter'],
+  components: { SelectBox, ActionButton },
   mixins: [imageMixin],
 
-  setup() {
-    const { t } = useI18n();
+  props: {
+    sorterOptionIds: {
+      type: Array as PropType<Array<string>>,
+      required: true,
+    },
+  },
 
-    const sorterOptions = [
-      {
-        id: 'distance',
-        value: 'kilometraż',
-      },
-      {
-        id: 'progress',
-        value: 'przebyta trasa',
-      },
-      {
-        id: 'delay',
-        value: 'opóźnienie',
-      },
-      {
-        id: 'mass',
-        value: 'masa',
-      },
-      {
-        id: 'speed',
-        value: 'prędkość',
-      },
-      {
-        id: 'length',
-        value: 'długość',
-      },
-    ];
-
-    let filterList = inject('filterList') as TrainFilter[];
-
-    const translatedSorterOptions = computed(() =>
-      sorterOptions.map(({ id }) => ({
-        id,
-        value: t(`trains.option-${id}`),
-      }))
-    );
-
+  data() {
     return {
-      translatedSorterOptions,
-      searchedTrain: inject('searchedTrain') as string,
-      searchedDriver: inject('searchedDriver') as string,
-      sorterActive: inject('sorterActive') as { id: string | number; dir: number },
-      filterList,
+      showOptions: false,
     };
   },
 
+  setup() {
+    return {
+      searchedTrain: inject('searchedTrain') as string,
+      searchedDriver: inject('searchedDriver') as string,
+
+      sorterActive: inject('sorterActive') as { id: string | number; dir: number },
+      trainFilterList: inject('filterList') as TrainFilter[],
+    };
+  },
+
+  computed: {
+    translatedSorterOptions() {
+      return this.$props.sorterOptionIds.map((id) => ({
+        id,
+        value: this.$t(`options.sort-${id}`),
+      }));
+    },
+  },
+
   methods: {
-    changeSorter(item: { id: string | number; value: string }) {
+    onSorterChange(item: { id: string | number; value: string }) {
       this.sorterActive.id = item.id;
       this.sorterActive.dir = -1;
     },
 
-    toggleFilter(filter: TrainFilter) {
+    onFilterChange(filter: TrainFilter) {
       filter.isActive = !filter.isActive;
     },
 
-    setFilterOnly(filter: TrainFilter) {
-      this.filterList.forEach((f) => (f.isActive = f.id == filter.id));
+    clearAllFilters() {
+      this.trainFilterList.forEach((filter) => {
+        filter.isActive = false;
+      });
     },
 
-    resetFilters() {
-      this.filterList.forEach((f) => (f.isActive = true));
-      this.searchedDriver = '';
-      this.searchedTrain = '';
+    resetAllFilters() {
+      this.trainFilterList.forEach((filter) => {
+        filter.isActive = true;
+      });
+    },
+
+    onInputClear(id: 'driver' | 'train') {
+      if (id == 'driver') this.searchedDriver = '';
+      if (id == 'train') this.searchedTrain = '';
+    },
+
+    test(e: Event) {
+      console.log(e.target);
     },
   },
 });
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/responsive';
+@import '../../styles/responsive.scss';
 @import '../../styles/search_box.scss';
+@import '../../styles/variables.scss';
 
-.train-options {
-  @include smallScreen() {
-    width: 100%;
-    font-size: 1.25em;
+.options-anim {
+  &-enter-from,
+  &-leave-to {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  &-enter-active,
+  &-leave-active {
+    transition: all 150ms ease;
   }
 }
 
-.options {
-  &_wrapper {
-    display: flex;
-  }
+.bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
 
-  &_content {
-    display: flex;
-    flex-wrap: wrap;
-
-    .content_search,
-    .content_select {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-
-      padding: 0.25em 0.25em 0 0;
-    }
-  }
+  z-index: 10;
 }
 
-.filters {
+.journal-options {
+  position: relative;
+
+  margin-bottom: 0.5em;
+}
+
+.options_wrapper {
+  position: absolute;
+
+  background-color: #111111ee;
+  box-shadow: 0 0 10px 2px #111;
+
+  width: 100%;
+  max-width: 500px;
+
+  padding: 1em;
+
+  z-index: 100;
+}
+
+.btn--open {
   display: flex;
+
+  padding: 0.4em 1em;
+  font-weight: bold;
+  font-size: 1em;
+
+  border-radius: 0.75em 0.75em 0 0;
+
+  img {
+    height: 1.3em;
+    margin-right: 0.5em;
+  }
+}
+
+h1 {
+  position: relative;
+  font-size: 1.1em;
+  margin: 0.7em 0 0.25em 0;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+
+    width: 50%;
+    height: 2px;
+    background-color: white;
+    border-radius: 2px;
+  }
+}
+
+.options_sorters {
+  display: flex;
+  align-items: center;
   flex-wrap: wrap;
 
-  margin-top: 0.5em;
-
-  @include smallScreen() {
-    justify-content: center;
-  }
+  padding: 0.25em 0.25em 0 0;
 }
 
-.filter {
-  background: #333;
-  padding: 0.2em 0.25em;
-  margin: 0.25em 0.25em 0 0;
+.content_search > div {
+  margin: 0.5em auto;
+}
+
+.content_search > button {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.options_filters {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0.5em 0 0 0;
+}
+
+.sort-option,
+.filter-option {
+  margin: 0.25em 0.25em 0.25em 0;
+}
+
+.sort-option[data-selected='true'] {
+  color: $accentCol;
   font-weight: bold;
+}
 
-  cursor: pointer;
-  color: gray;
+.filter-option {
+  button {
+    color: white;
+    font-weight: bold;
 
-  &.active {
-    color: var(--clr-primary);
-  }
-
-  &.reset-btn {
-    color: salmon;
+    &[data-disabled='true'] {
+      color: #888;
+    }
   }
 }
 
 @include smallScreen() {
-  .journal-options {
-    width: 100%;
+  h1 {
+    text-align: center;
+
+    &::before {
+      width: 75%;
+      left: 50%;
+      transform: translateX(-50%);
+    }
   }
 
-  .options {
-    &_wrapper {
-      justify-content: center;
-    }
+  .options_wrapper {
+    max-width: 100%;
+  }
 
-    &_content {
-      padding: 0 1em;
+  .btn--open {
+    margin: 0 auto;
+  }
 
-      flex-direction: column;
-
-      .content_select {
-        margin: 0 auto;
-        padding: 0;
-      }
-
-      .content_search {
-        justify-content: center;
-      }
-    }
+  .options_filters,
+  .options_sorters {
+    justify-content: center;
   }
 }
 </style>

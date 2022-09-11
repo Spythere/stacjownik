@@ -74,7 +74,52 @@
   },
   "options": {
     "filters": "FILTRY",
-    "donate": "WESPRZYJ"
+    "donate": "WESPRZYJ",
+
+    "search-button": "Szukaj",
+    "reset-button": "Zresetuj",
+    
+    "sort-title": "SORTUJ WG:",
+    "filter-title": "FILTRUJ WG:",
+    "search-title": "SZUKAJ:",
+
+    "search-train-no": "Nr pociągu",
+    "search-train": "Nr pociągu / #",
+    "search-driver": "Nick maszynisty",
+    "search-dispatcher": "Nick dyżurnego",
+    "search-station": "Nazwa scenerii",
+    "search-date": "Data rozkładu jazdy (czas polski)",
+
+    "sort-distance": "kilometraż",
+    "sort-total-stops": "stacje",
+    "sort-beginDate": "data",
+    "sort-timetableId": "ID rozkładu",
+    "sort-timestampFrom": "data",
+    "sort-duration": "czas dyżuru",
+
+    "sort-mass": "masa",
+    "sort-speed": "prędkość",
+    "sort-length": "długość",
+    "sort-timetable": "nr pociągu",
+    "sort-progress": "przebyta trasa",
+    "sort-delay": "opóźnienie",
+    "sort-comments": "uwagi ekspl.",
+
+    "filter-comments": "UWAGI EKSPLOATACYJNE",
+    "filter-twr": "TWR",
+    "filter-skr": "PRZEKR. SKRAJNIA",
+    "filter-passenger": "PASAŻERSKIE",
+    "filter-freight": "TOWAROWE",
+    "filter-other": "INNE",
+    "filter-noTimetable": "BEZ RJ",
+
+    "filter-reset": "ZRESETUJ FILTRY",
+    "filter-clear": "WYŁĄCZ FILTRY",
+
+    "filter-all": "WSZYSTKIE",
+    "filter-abandoned": "PORZUCONE",
+    "filter-fulfilled": "WYPEŁNIONE",
+    "filter-active": "AKTYWNE"
   },
   "filters": {
     "endingStatus": "KOŃCZY",
@@ -152,28 +197,6 @@
     "current-signal": "przy semaforze",
     "current-track": "na szlaku",
 
-    "option-mass": "masa",
-    "option-speed": "prędkość",
-    "option-length": "długość",
-    "option-distance": "kilometraż",
-    "option-timetable": "nr pociągu",
-    "option-progress": "przebyta trasa",
-    "option-delay": "opóźnienie",
-    "option-comments": "uwagi ekspl.",
-
-    "filter-comments": "uwagi ekspl.",
-    "filter-twr": "TWR",
-    "filter-skr": "SKR",
-    "filter-passenger": "pasażerskie",
-    "filter-freight": "towarowe",
-    "filter-other": "inne",
-    "filter-noTimetable": "bez RJ",
-    "filter-reset": "X RESETUJ",
-
-    "sorter-prefix": "Sortuj: ",
-    "search-train": "Numer pociągu",
-    "search-driver": "Nick maszynisty",
-
     "delayed": "Opóźniony: ",
     "preponed": "Przed czasem: ",
     "on-time": "Planowo",
@@ -206,26 +229,6 @@
 
     "section-timetables": "ROZKŁADY JAZDY",
     "section-dispatchers": "DYŻURNI",
-
-    "search": "Szukaj",
-    "search-train": "Nr pociągu / #",
-    "search-driver": "Nick maszynisty",
-    "search-dispatcher": "Nick dyżurnego",
-    "search-station": "Nazwa scenerii",
-
-    "sort-prefix": "Sortuj: ",
-
-    "option-distance": "kilometraż",
-    "option-total-stops": "stacje",
-    "option-beginDate": "data",
-    "option-timetableId": "ID rozkładu",
-    "option-timestampFrom": "data",
-    "option-duration": "czas dyżuru",
-
-    "filter-all": "WSZYSTKIE",
-    "filter-abandoned": "PORZUCONE",
-    "filter-fulfilled": "WYPEŁNIONE",
-    "filter-active": "AKTYWNE",
 
     "no-further-data": "Brak dalszych wyników dla podanych parametrów",
     "loading-further-data": "Ładowanie...",

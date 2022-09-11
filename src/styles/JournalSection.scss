@@ -8,15 +8,23 @@
   }
 
   &-enter-active {
-    transition: all 150ms ease-out;
+    transition: all 150ms 100ms ease-out;
   }
 
   &-leave-active {
-    transition: all 150ms ease-out;
+    transition: all 150ms 100ms ease-out;
   }
 }
 
 //Styles
+
+.list_wrapper {
+  overflow-y: scroll;
+  height: 90vh;
+  min-height: 550px;
+
+  padding-right: 0.2em;
+}
 
 .journal_wrapper {
   max-width: 1350px;
@@ -40,9 +48,9 @@
 
 .journal_item,
 .journal_warning {
-  background: #202020;
+  background-color: #1a1a1a;
   padding: 1em;
-  margin: 1em 0;
+  margin-bottom: 1em;
 }
 
 .journal_top-bar {
@@ -67,5 +75,11 @@
   .journal_top-bar {
     justify-content: center;
     flex-wrap: wrap;
+  }
+}
+
+@media (orientation: landscape) {
+  .journal_wrapper {
+    font-size: 1em;
   }
 }

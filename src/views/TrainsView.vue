@@ -2,7 +2,7 @@
   <section class="trains-view">
     <div class="wrapper">
       <div class="options-bar">
-        <train-options />
+        <TrainOptions :sorter-option-ids="['distance', 'progress', 'delay', 'mass', 'speed', 'length']" />
       </div>
 
       <TrainTable :trains="computedTrains" />
@@ -11,14 +11,15 @@
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, provide, reactive, ref, TrainFilter } from 'vue';
+import { computed, ComputedRef, defineComponent, provide, reactive, ref } from 'vue';
 import TrainOptions from '../components/TrainsView/TrainOptions.vue';
 import TrainStats from '../components/TrainsView/TrainStats.vue';
 import TrainTable from '../components/TrainsView/TrainTable.vue';
-import { trainFilters } from '../data/trainOptions';
+import { trainFilters } from '../constants/Trains/TrainOptionsConsts';
 import Train from '../scripts/interfaces/Train';
 import { filteredTrainList } from '../scripts/managers/trainFilterManager';
 import { useStore } from '../store/store';
+import { TrainFilter } from '../types/Trains/TrainOptionsTypes';
 
 export default defineComponent({
   components: {
@@ -48,7 +49,6 @@ export default defineComponent({
 
     const sorterActive = ref({ id: 'distance', dir: -1 });
     const filterList = reactive([...trainFilters]) as TrainFilter[];
-    const isTrainOptionsCardVisible = ref(false);
 
     const searchedDriver = ref('');
     const searchedTrain = ref('');
@@ -57,7 +57,6 @@ export default defineComponent({
     provide('searchedDriver', searchedDriver);
     provide('sorterActive', sorterActive);
     provide('filterList', filterList);
-    provide('isTrainOptionsCardVisible', isTrainOptionsCardVisible);
 
     const computedTrains: ComputedRef<Train[]> = computed(() => {
       return filteredTrainList(
@@ -82,10 +81,6 @@ export default defineComponent({
       this.searchedTrain = this.train;
       this.searchedDriver = this.driver || '';
     }
-    // if (this.train) {
-    //   this.searchedTrain = this.train;
-    //   if(this.x) this.searchedDriver = this.x;
-    // }
   },
 });
 </script>
@@ -102,5 +97,4 @@ export default defineComponent({
   margin: 1rem auto;
   max-width: 1350px;
 }
-
 </style>

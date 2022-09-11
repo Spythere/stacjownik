@@ -1,8 +1,8 @@
 <template>
   <section class="filter-card" v-click-outside="closeCard">
     <div class="card_btn">
-      <button class="btn btn--option" @click="toggleCard">
-        <img class="button_icon" :src="getIcon('filter2')" alt="icon-filter" />
+      <button class="btn--image" @click="toggleCard">
+        <img class="button_icon" :src="getIcon('filter2')" alt="filter icon" />
         {{ $t('options.filters') }}
       </button>
     </div>
@@ -91,7 +91,6 @@
 </template>
 
 <script lang="ts">
-
 import { defineComponent, inject } from 'vue';
 import inputData from '../../data/options.json';
 import imageMixin from '../../mixins/imageMixin';
@@ -107,7 +106,6 @@ export default defineComponent({
   mixins: [imageMixin],
 
   data: () => ({
-
     inputs: { ...inputData },
     saveOptions: false,
     STORAGE_KEY: 'options_saved',
@@ -263,6 +261,7 @@ export default defineComponent({
   }
 }
 
+
 .card {
   &_btn {
     button {
@@ -389,6 +388,7 @@ export default defineComponent({
     input {
       width: 100%;
       padding: 0.5em;
+      border: 1px solid white;
     }
   }
 
@@ -437,6 +437,7 @@ export default defineComponent({
 
     &::-webkit-slider-thumb {
       -webkit-appearance: none;
+      appearance: none;
 
       height: 20px;
       width: 20px;

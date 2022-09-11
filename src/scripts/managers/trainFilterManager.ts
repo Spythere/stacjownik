@@ -1,4 +1,4 @@
-import { TrainFilter } from "vue";
+import { TrainFilter } from "../../types/Trains/TrainOptionsTypes";
 import { TrainFilterType } from "../enums/TrainFilterType";
 import Train from "../interfaces/Train";
 import TrainStop from "../interfaces/TrainStop";

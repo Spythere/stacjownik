@@ -118,11 +118,10 @@ export default defineComponent({
   text-align: center;
 
   padding: 1em 0;
-  margin: 1em 0;
 
   font-size: 1.5em;
 
-  background: #333;
+  background: #1a1a1a;
 }
 
 img.train-image {
@@ -138,8 +137,6 @@ img.train-image {
 .train {
   &-list {
     overflow: auto;
-
-    margin-top: 1em;
 
     @include smallScreen() {
       width: 100%;

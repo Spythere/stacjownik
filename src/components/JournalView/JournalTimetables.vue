@@ -6,54 +6,58 @@
 
     <div class="journal_wrapper">
       <JournalOptions
-        @on-input-change="searchHistory"
-        @on-filter-change="searchHistory"
-        @on-sorter-change="searchHistory"
+        @on-search-confirm="searchHistory"
+        @on-options-reset="resetOptions"
         :sorter-option-ids="['timetableId', 'beginDate', 'distance', 'total-stops']"
         :filters="journalTimetableFilters"
+        :data-status="dataStatus"
       />
 
-      <div class="timetables_wrapper" ref="scrollElement">
-        <transition name="warning" mode="out-in">
-          <div :key="dataStatus">
-            <Loading v-if="dataStatus == (DataStatus.Loading || DataStatus.Initialized)" />
+      <div class="list_wrapper" @scroll="handleScroll">
+        <!-- <transition name="warning" mode="out-in"> -->
+        <!-- <div :key="dataStatus"> -->
+        <Loading
+          v-if="
+            dataStatus == DataStatus.Initialized || (dataStatus == DataStatus.Loading && timetableHistory.length == 0)
+          "
+        />
 
-            <div v-else-if="dataStatus == DataStatus.Error" class="journal_warning error">
-              {{ $t('app.error') }}
-            </div>
+        <div v-else-if="dataStatus == DataStatus.Error" class="journal_warning error">
+          {{ $t('app.error') }}
+        </div>
 
-            <div v-else-if="timetableHistory.length == 0" class="journal_warning">
-              {{ $t('app.no-result') }}
-            </div>
+        <div v-else-if="timetableHistory.length == 0 && dataStatus != DataStatus.Loading" class="journal_warning">
+          {{ $t('app.no-result') }}
+        </div>
 
-            <div v-else>
-              <JournalTimetablesList :timetableHistory="timetableHistory" />
+        <div v-else>
+          <JournalTimetablesList :timetableHistory="timetableHistory" />
 
-              <button
-                class="btn btn--option btn--load-data"
-                v-if="!scrollNoMoreData && scrollDataLoaded"
-                @click="addHistoryData"
-              >
-                {{ $t('journal.load-data') }}
-              </button>
-            </div>
-          </div>
-        </transition>
+          <button
+            class="btn btn--option btn--load-data"
+            v-if="!scrollNoMoreData && scrollDataLoaded && timetableHistory.length >= 15"
+            @click="addHistoryData"
+          >
+            {{ $t('journal.load-data') }}
+          </button>
+        </div>
+        <!-- </div> -->
+        <!-- </transition> -->
+
+        <div class="journal_warning" v-if="scrollNoMoreData">{{ $t('journal.no-further-data') }}</div>
+        <div class="journal_warning" v-else-if="!scrollDataLoaded">{{ $t('journal.loading-further-data') }}</div>
       </div>
-
-      <div class="journal_warning" v-if="scrollNoMoreData">{{ $t('journal.no-further-data') }}</div>
-      <div class="journal_warning" v-else-if="!scrollDataLoaded">{{ $t('journal.loading-further-data') }}</div>
     </div>
   </section>
 </template>
 
 <script lang="ts">
-import { defineComponent, JournalFilter, provide, reactive, Ref, ref } from 'vue';
+import { defineComponent, provide, reactive, Ref, ref } from 'vue';
 import axios from 'axios';
 
 import DriverStats from './DriverStats.vue';
 import Loading from '../Global/Loading.vue';
-import { journalTimetableFilters } from '../../data/journalFilters';
+import { JournalTimetableFilter, JournalTimetableSorter } from '../../types/Journal/JournalTimetablesTypes';
 import dateMixin from '../../mixins/dateMixin';
 import routerMixin from '../../mixins/routerMixin';
 import { DataStatus } from '../../scripts/enums/DataStatus';
@@ -62,10 +66,11 @@ import { TimetableHistory } from '../../scripts/interfaces/api/TimetablesAPIData
 import { URLs } from '../../scripts/utils/apiURLs';
 import { useStore } from '../../store/store';
 import JournalOptions from './JournalOptions.vue';
-import { JournalTimetableSearcher } from '../../types/JournalTimetablesTypes';
+import { JorunalTimetableSearchType } from '../../types/Journal/JournalTimetablesTypes';
 import modalTrainMixin from '../../mixins/modalTrainMixin';
 import imageMixin from '../../mixins/imageMixin';
 import JournalTimetablesList from './JournalTimetablesList.vue';
+import { journalTimetableFilters } from '../../constants/Journal/JournalTimetablesConsts';
 
 const TIMETABLES_API_URL = `${URLs.stacjownikAPI}/api/getTimetables`;
 
@@ -99,13 +104,14 @@ export default defineComponent({
   }),
 
   setup() {
-    const sorterActive = ref({ id: 'timetableId', dir: -1 });
+    const sorterActive: JournalTimetableSorter = reactive({ id: 'timetableId', dir: 1 });
     const journalFilterActive = ref(journalTimetableFilters[0]);
 
     const searchersValues = reactive({
       'search-train': '',
       'search-driver': '',
-    } as JournalTimetableSearcher);
+      'search-date': '',
+    } as JorunalTimetableSearchType);
 
     const countFromIndex = ref(0);
     const countLimit = 15;
@@ -130,16 +136,10 @@ export default defineComponent({
   },
 
   activated() {
-    window.addEventListener('scroll', this.handleScroll);
-
     if (this.timetableId) {
       this.searchersValues['search-train'] = `#${this.timetableId}`;
       this.searchHistory();
     }
-  },
-
-  deactivated() {
-    window.removeEventListener('scroll', this.handleScroll);
   },
 
   mounted() {
@@ -147,18 +147,25 @@ export default defineComponent({
   },
 
   methods: {
-    handleScroll() {
-      this.showReturnButton = window.scrollY > window.innerHeight;
+    handleScroll(e: Event) {
+      const listElement = e.target as HTMLElement;
+      const scrollTop = listElement.scrollTop;
+      const elementHeight = listElement.scrollHeight - listElement.offsetHeight;
 
-      const element = this.$refs.scrollElement as HTMLElement;
+      if (!this.scrollDataLoaded || this.scrollNoMoreData || this.dataStatus != DataStatus.Loaded) return;
 
-      if (
-        element.getBoundingClientRect().bottom * 0.85 < window.innerHeight &&
-        this.scrollDataLoaded &&
-        !this.scrollNoMoreData &&
-        this.dataStatus == DataStatus.Loaded
-      )
-        this.addHistoryData();
+      if (scrollTop > elementHeight * 0.85) this.addHistoryData();
+    },
+
+    resetOptions() {
+      this.searchersValues['search-date'] = '';
+      this.searchersValues['search-driver'] = '';
+      this.searchersValues['search-train'] = '';
+
+      this.journalFilterActive = this.journalTimetableFilters[0];
+      this.sorterActive.id = 'timetableId';
+
+      this.searchHistory();
     },
 
     searchHistory() {
@@ -193,8 +200,8 @@ export default defineComponent({
 
     async fetchHistoryData(
       props: {
-        searchers?: JournalTimetableSearcher;
-        filter?: JournalFilter;
+        searchers?: JorunalTimetableSearchType;
+        filter?: JournalTimetableFilter;
       } = {}
     ) {
       this.dataStatus = DataStatus.Loading;
@@ -204,8 +211,13 @@ export default defineComponent({
       const driver = props.searchers?.['search-driver'].trim();
       const train = props.searchers?.['search-train'].trim();
 
+      const dateString = props.searchers?.['search-date'].trim();
+      const timestampFrom = dateString ? Date.parse(new Date(dateString).toISOString()) - 120 * 60 * 1000 : undefined;
+      const timestampTo = timestampFrom ? timestampFrom + 86400000 : undefined;
+
       if (driver) queries.push(`driverName=${driver}`);
       if (train) queries.push(train.startsWith('#') ? `timetableId=${train.replace('#', '')}` : `trainNo=${train}`);
+      if (timestampFrom && timestampTo) queries.push(`timestampFrom=${timestampFrom}`, `timestampTo=${timestampTo}`);
 
       // Z API: const SORT_TYPES = ['allStopsCount', 'endDate', 'beginDate', 'routeDistance'];
       if (this.sorterActive.id == 'distance') queries.push('sortBy=routeDistance');
@@ -257,8 +269,6 @@ export default defineComponent({
             : '';
 
         this.dataStatus = DataStatus.Loaded;
-
-        console.log(this.dataStatus);
       } catch (error) {
         this.dataStatus = DataStatus.Error;
         this.dataErrorMessage = 'Ups! Coś poszło nie tak!';
