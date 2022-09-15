@@ -1,9 +1,7 @@
 <template>
   <section class="trains-view">
-    <div class="wrapper">
-      <div class="options-bar">
-        <TrainOptions :sorter-option-ids="['distance', 'progress', 'delay', 'mass', 'speed', 'length']" />
-      </div>
+    <div class="trains_wrapper">
+      <TrainOptions :sorter-option-ids="['distance', 'progress', 'delay', 'mass', 'speed', 'length']" />
 
       <TrainTable :trains="computedTrains" />
     </div>
@@ -93,7 +91,7 @@ export default defineComponent({
   position: relative;
 }
 
-.wrapper {
+.trains_wrapper {
   margin: 1rem auto;
   max-width: 1350px;
 }

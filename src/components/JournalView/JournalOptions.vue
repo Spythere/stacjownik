@@ -1,5 +1,5 @@
 <template>
-  <div class="journal-options">
+  <div class="filters-options">
     <div class="bg" v-if="showOptions" @click="showOptions = false"></div>
 
     <button class="btn--image" @click="showOptions = !showOptions">
@@ -10,7 +10,7 @@
     <transition name="options-anim">
       <div class="options_wrapper" v-if="showOptions">
         <div class="options_content">
-          <h1>{{ $t('options.sort-title') }}</h1>
+          <h1 class="option-title">{{ $t('options.sort-title') }}</h1>
 
           <div class="options_sorters">
             <div v-for="opt in translatedSorterOptions">
@@ -20,7 +20,7 @@
             </div>
           </div>
 
-          <h1 v-if="filters.length != 0">{{ $t('options.filter-title') }}</h1>
+          <h1 class="option-title" v-if="filters.length != 0">{{ $t('options.filter-title') }}</h1>
           <div class="options_filters">
             <button
               v-for="filter in filters"
@@ -33,7 +33,7 @@
             </button>
           </div>
 
-          <h1>{{ $t('options.search-title') }}</h1>
+          <h1 class="option-title">{{ $t('options.search-title') }}</h1>
           <div class="search_content">
             <div class="search" v-for="(_, propName) in searchersValues" :key="propName">
               <label v-if="propName == 'search-date'" for="date">{{ $t('options.search-date') }}</label>
@@ -167,160 +167,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/responsive.scss';
-@import '../../styles/search_box.scss';
-@import '../../styles/variables.scss';
-
-.options-anim {
-  &-enter-from,
-  &-leave-to {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-
-  &-enter-active,
-  &-leave-active {
-    transition: all 150ms ease;
-  }
-}
-
-.bg {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-
-  z-index: 10;
-}
-
-.journal-options {
-  position: relative;
-}
-
-.options_wrapper {
-  position: absolute;
-
-  background-color: #111111ee;
-  box-shadow: 0 0 10px 2px #111;
-
-  width: 100%;
-  max-width: 500px;
-
-  padding: 1em;
-
-  z-index: 100;
-}
-
-h1 {
-  position: relative;
-  font-size: 1.1em;
-  margin: 0.7em 0 0.25em 0;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: -4px;
-
-    width: 50%;
-    height: 2px;
-    background-color: white;
-    border-radius: 2px;
-  }
-}
-
-.options_sorters {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-
-  padding: 0.25em 0.25em 0 0;
-}
-
-.options_filters {
-  display: flex;
-  flex-wrap: wrap;
-  margin: 0.5em 0 0 0;
-}
-
-.sort-option,
-.filter-option {
-  margin: 0 0.25em 0 0;
-}
-
-.sort-option[data-selected='true'] {
-  color: $accentCol;
-  font-weight: bold;
-}
-
-.filter-option {
-  &#abandoned {
-    color: salmon;
-  }
-
-  &#fulfilled {
-    color: lightgreen;
-  }
-
-  &#active {
-    color: lightblue;
-  }
-}
-
-.search_content > .search {
-  margin: 0.5em auto;
-}
-
-.search_content > button {
-  display: flex;
-  justify-content: center;
-  margin: 0 auto;
-}
-
-.search_content > .search_actions {
-  display: flex;
-  margin: 1em 0 0.5em 0;
-
-  button {
-    margin: 0.25em 0.5em;
-  }
-}
-
-.data-status {
-  display: flex;
-  justify-content: center;
-  font-size: 1.1em;
-
-  height: 1.5em;
-}
-
-@include smallScreen() {
-  h1 {
-    text-align: center;
-
-    &::before {
-      width: 75%;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-  }
-
-  .options_wrapper {
-    max-width: 100%;
-  }
-
-  .btn--image {
-    margin: 0 auto;
-  }
-
-  .filter-option,
-  .sort-option {
-    margin: 0.25em 0.25em;
-  }
-
-  .options_filters,
-  .options_sorters {
-    justify-content: center;
-  }
-}
+@import '../../styles/filters_options.scss';
 </style>

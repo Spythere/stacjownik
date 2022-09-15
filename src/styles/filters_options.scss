@@ -1,0 +1,149 @@
+@import './responsive.scss';
+@import 'variables.scss';
+@import 'search_box.scss';
+
+h1.option-title {
+  position: relative;
+  font-size: 1.1em;
+  margin: 0.7em 0 0.25em 0;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+
+    width: 50%;
+    height: 2px;
+    background-color: white;
+    border-radius: 2px;
+  }
+}
+
+.options-anim {
+  &-enter-from,
+  &-leave-to {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  &-enter-active,
+  &-leave-active {
+    transition: all 150ms ease;
+  }
+}
+
+.bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+
+  z-index: 10;
+}
+
+.filters-options {
+  position: relative;
+  margin-bottom: 0.5em;
+}
+
+.options_wrapper {
+  position: absolute;
+
+  background-color: #111111ee;
+  box-shadow: 0 0 15px 5px #000000b3;
+
+  width: 100%;
+  max-width: 500px;
+
+  padding: 1em;
+
+  z-index: 100;
+}
+
+.options_sorters {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  padding: 0.25em 0.25em 0 0;
+}
+
+.options_filters {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0.5em 0 0 0;
+}
+
+.sort-option,
+.filter-option {
+  margin: 0.25em 0.25em 0.25em 0;
+}
+
+.sort-option[data-selected='true'] {
+  color: $accentCol;
+  font-weight: bold;
+}
+
+.filter-option {
+  &#abandoned {
+    color: salmon;
+  }
+
+  &#fulfilled {
+    color: lightgreen;
+  }
+
+  &#active {
+    color: lightblue;
+  }
+}
+
+.search_content > .search {
+  margin: 0.5em auto;
+}
+
+.search_content > button {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.search_content > .search_actions {
+  display: flex;
+  margin: 1em 0 0.5em 0;
+
+  button {
+    margin: 0.25em 0.5em;
+  }
+}
+
+@include smallScreen() {
+  .filters-options {
+    font-size: 1.2em;
+  }
+
+  h1 {
+    text-align: center;
+
+    &::before {
+      width: 75%;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+
+  .options_wrapper {
+    max-width: 100%;
+  }
+
+  .filter-option,
+  .sort-option {
+    margin: 0.25em 0.25em;
+  }
+
+  .options_filters,
+  .options_sorters {
+    justify-content: center;
+  }
+}

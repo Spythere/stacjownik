@@ -125,7 +125,7 @@ li.sticky {
 }
 
 .journal_day {
-  margin: 1em 0;
+  margin-bottom: 1em;
   padding: 0.5em;
   font-weight: bold;
 
