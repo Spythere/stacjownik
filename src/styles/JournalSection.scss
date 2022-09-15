@@ -68,7 +68,7 @@
 }
 
 @include smallScreen() {
-  .journal_wrapper {
+  .list_wrapper {
     font-size: 1.25em;
   }
 
@@ -79,7 +79,7 @@
 }
 
 @media (orientation: landscape) {
-  .journal_wrapper {
+  .list_wrapper {
     font-size: 1em;
   }
 }
