@@ -138,7 +138,7 @@ export default defineComponent({
   position: absolute;
   top: 50%;
   right: 0;
-  padding: 0.5em;
+  padding: 0;
 
   img {
     vertical-align: middle;
@@ -151,12 +151,13 @@ export default defineComponent({
 }
 
 button.selected {
-  background: #333;
-  color: white;
+  background-color: transparent;
+  color: paleturquoise;
 
   font-size: 1em;
+  font-weight: bold;
 
-  padding: 0.35em 0.5em;
+  padding: 0.1em 0.5em;
   margin-right: 1.4em;
 
   width: 100%;
@@ -168,7 +169,7 @@ button.selected {
   text-align: left;
 
   &:focus {
-    background: #555;
+    background-color: #262626;
   }
 }
 
@@ -189,8 +190,9 @@ ul.options {
   height: auto;
 
   z-index: 100;
-
   width: 100%;
+
+  font-size: 0.9em;
 }
 
 li.option {
@@ -219,11 +221,11 @@ li.option {
     position: relative;
 
     display: inline-block;
-    background-color: hsla(0, 0%, 15%, 0.95);
+    background-color: #262626f2;
 
     &:hover,
     &:focus {
-      background-color: hsla(0, 0%, 20%, 0.95);
+      background-color: #333333f2;
     }
 
     padding: 0.5em 0;

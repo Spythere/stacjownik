@@ -261,25 +261,7 @@ export default defineComponent({
   }
 }
 
-
 .card {
-  &_btn {
-    button {
-      display: flex;
-      align-items: center;
-
-      padding: 0.5em 1em;
-      border-radius: 0.75em 0.75em 0 0;
-
-      font-weight: bold;
-    }
-
-    img {
-      width: 1.3em;
-      margin-right: 0.25em;
-    }
-  }
-
   &_content {
     display: grid;
     grid-template-rows: 70px 1fr 100px 50px auto;

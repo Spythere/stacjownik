@@ -13,6 +13,8 @@
         :data-status="dataStatus"
       />
 
+      <!-- <button @click="statsCardOpen = true">Stats</button> -->
+
       <div class="list_wrapper" @scroll="handleScroll">
         <!-- <transition name="warning" mode="out-in"> -->
         <!-- <div :key="dataStatus"> -->

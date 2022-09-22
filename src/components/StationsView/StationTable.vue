@@ -332,7 +332,7 @@ table {
   }
 
   thead tr {
-    background-color: $primaryCol;
+    background-color: $bgCol;
   }
 
   thead th {
@@ -342,7 +342,7 @@ table {
     min-width: 75px;
 
     padding: 0.5em;
-    background-color: $primaryCol;
+    background-color: $bgCol;
     white-space: pre-wrap;
 
     cursor: pointer;

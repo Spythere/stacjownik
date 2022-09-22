@@ -3,6 +3,7 @@
   --clr-secondary: #2f2f2f;
 
   --clr-bg: #4d4d4d;
+  --clr-bg2: #1b1b1b;
 
   --clr-accent: #1085b3;
   --clr-accent2: #ff3d5d;
@@ -223,10 +224,12 @@ button {
     font-size: 1em;
 
     border-radius: 0.75em 0.75em 0 0;
+    background-color: #1b1b1b;
+
 
     img {
       height: 1.3em;
-      margin-right: 0.5em;
+      margin-right: 0.5rem;
     }
   }
 

@@ -1,4 +1,4 @@
-@import './responsive.scss';
+@import 'responsive.scss';
 @import 'variables.scss';
 @import 'search_box.scss';
 
@@ -50,8 +50,8 @@ h1.option-title {
 .options_wrapper {
   position: absolute;
 
-  background-color: #111111ee;
-  box-shadow: 0 0 15px 5px #000000b3;
+  background-color: $bgCol;
+  box-shadow: 0 5px 10px 2px #0f0f0f;
 
   width: 100%;
   max-width: 500px;

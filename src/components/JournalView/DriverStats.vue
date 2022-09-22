@@ -51,9 +51,8 @@
 </template>
 
 <script lang="ts">
-
 import axios from 'axios';
-import { defineComponent } from 'vue';
+import { computed, defineComponent, ref } from 'vue';
 import { DriverStatsAPIData } from '../../scripts/interfaces/api/DriverStatsAPIData';
 import { TimetableHistory } from '../../scripts/interfaces/api/TimetablesAPIData';
 import { URLs } from '../../scripts/utils/apiURLs';
@@ -66,6 +65,7 @@ export default defineComponent({
     const store = useStore();
     return {
       store,
+      driverStatsName: computed(() => store.driverStatsName),
     };
   },
 
@@ -80,6 +80,12 @@ export default defineComponent({
 
   activated() {
     this.fetchDispatcherStats();
+  },
+
+  watch: {
+    driverStatsName(value: any) {
+      console.log(value);
+    },
   },
 
   methods: {
@@ -107,6 +113,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '../../styles/responsive.scss';
+@import '../../styles/card.scss';
 
 .timetable-row {
   display: grid;
