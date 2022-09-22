@@ -14,6 +14,7 @@ import TrainOptions from '../components/TrainsView/TrainOptions.vue';
 import TrainStats from '../components/TrainsView/TrainStats.vue';
 import TrainTable from '../components/TrainsView/TrainTable.vue';
 import { trainFilters } from '../constants/Trains/TrainOptionsConsts';
+import modalTrainMixin from '../mixins/modalTrainMixin';
 import Train from '../scripts/interfaces/Train';
 import { filteredTrainList } from '../scripts/managers/trainFilterManager';
 import { useStore } from '../store/store';
@@ -26,6 +27,8 @@ export default defineComponent({
     TrainOptions,
   },
 
+  mixins: [modalTrainMixin],
+
   props: {
     train: {
       type: String,
@@ -33,6 +36,11 @@ export default defineComponent({
     },
 
     driver: {
+      type: String,
+      required: false,
+    },
+
+    trainId: {
       type: String,
       required: false,
     },
@@ -71,6 +79,7 @@ export default defineComponent({
       searchedTrain,
       searchedDriver,
       sorterActive,
+      store,
     };
   },
 
@@ -80,10 +89,12 @@ export default defineComponent({
       this.searchedDriver = this.driver || '';
     }
 
+    this.$nextTick(() => {
+      if (this.trainId) {
+        this.selectModalTrain(this.trainId);
+      }
+    });
   },
-
-
-
 });
 </script>
 
