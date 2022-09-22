@@ -293,7 +293,7 @@ export default defineComponent({
 @import '../../styles/variables.scss';
 @import '../../styles/icons.scss';
 
-$rowCol: #4b4b4b;
+$rowCol: #424242;
 
 .change-anim {
   &-enter-active,
