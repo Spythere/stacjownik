@@ -20,7 +20,7 @@
         <!-- <div :key="dataStatus"> -->
         <Loading
           v-if="
-            dataStatus == DataStatus.Initialized || (dataStatus == DataStatus.Loading && timetableHistory.length == 0)
+            dataStatus == DataStatus.Initialized || (dataStatus == DataStatus.Loading )
           "
         />
 
@@ -28,7 +28,7 @@
           {{ $t('app.error') }}
         </div>
 
-        <div v-else-if="timetableHistory.length == 0 && dataStatus != DataStatus.Loading" class="journal_warning">
+        <div v-else-if="timetableHistory.length == 0" class="journal_warning">
           {{ $t('app.no-result') }}
         </div>
 

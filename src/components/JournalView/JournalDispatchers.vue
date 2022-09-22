@@ -11,15 +11,13 @@
       <div class="list_wrapper" @scroll="handleScroll">
         <!-- <transition name="warning" mode="out-in"> -->
         <!-- <div :key="dataStatus"> -->
-        <Loading
-          v-if="dataStatus == DataStatus.Initialized || (dataStatus == DataStatus.Loading && historyList.length == 0)"
-        />
+        <Loading v-if="dataStatus == DataStatus.Initialized || dataStatus == DataStatus.Loading" />
 
         <div v-else-if="dataStatus == DataStatus.Error" class="journal_warning error">
           {{ $t('app.error') }}
         </div>
 
-        <div class="journal_warning" v-else-if="historyList.length == 0 && dataStatus != DataStatus.Loading">
+        <div class="journal_warning" v-else-if="historyList.length == 0">
           {{ $t('app.no-result') }}
         </div>
 
@@ -227,7 +225,7 @@ export default defineComponent({
       else if (this.sorterActive.id == 'duration') queries.push('sortBy=currentDuration');
       else queries.push('sortBy=timestampFrom');
 
-      queries.push('countLimit=15');
+      queries.push('countLimit=30');
 
       this.currentQuery = queries.join('&');
 
