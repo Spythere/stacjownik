@@ -4,7 +4,7 @@
 
     <button class="btn--image" @click="showOptions = !showOptions">
       <img :src="getIcon('filter2')" alt="Open filters" />
-      {{ $t('options.filters') }}
+      {{ $t('options.filters') }} [F]
     </button>
 
     <transition name="options-anim">
@@ -53,6 +53,8 @@
                   v-else
                   class="search-input"
                   @keydown.enter="onSearchConfirm"
+                  @focus="preventKeyDown = true"
+                  @blur="preventKeyDown = false"
                   :placeholder="$t(`options.${propName}`)"
                   v-model="searchersValues[propName]"
                 />
@@ -68,7 +70,7 @@
                 {{ $t('options.reset-button') }}
               </action-button>
 
-              <action-button class="search-button" @click="onSearchConfirm">
+              <action-button class="search-button" @click="onSearchButtonConfirm">
                 {{ $t('options.search-button') }}
               </action-button>
             </div>
@@ -87,6 +89,7 @@
 <script lang="ts">
 import { defineComponent, inject, Prop, PropType } from 'vue';
 import imageMixin from '../../mixins/imageMixin';
+import keyMixin from '../../mixins/keyMixin';
 import { DataStatus } from '../../scripts/enums/DataStatus';
 import { JournalTimetableFilter } from '../../types/Journal/JournalTimetablesTypes';
 import ActionButton from '../Global/ActionButton.vue';
@@ -95,7 +98,7 @@ import SelectBox from '../Global/SelectBox.vue';
 export default defineComponent({
   components: { SelectBox, ActionButton },
   emits: ['onSearchConfirm', 'onOptionsReset'],
-  mixins: [imageMixin],
+  mixins: [imageMixin, keyMixin],
 
   props: {
     sorterOptionIds: {
@@ -139,6 +142,11 @@ export default defineComponent({
   },
 
   methods: {
+    // Override keyMixin function
+    onKeyDownFunction() {
+      this.showOptions = !this.showOptions;
+    },
+
     onSorterChange(item: { id: string | number; value: string }) {
       this.sorterActive.id = item.id;
       this.sorterActive.dir = -1;
@@ -156,6 +164,11 @@ export default defineComponent({
     },
 
     onSearchConfirm() {
+      this.$emit('onSearchConfirm');
+    },
+
+    onSearchButtonConfirm() {
+      this.showOptions = false;
       this.$emit('onSearchConfirm');
     },
 

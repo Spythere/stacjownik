@@ -4,7 +4,7 @@
 
     <button class="btn--image" @click="showOptions = !showOptions">
       <img :src="getIcon('filter2')" alt="Open filters" />
-      {{ $t('options.filters') }}
+      {{ $t('options.filters') }} [F]
     </button>
 
     <transition name="options-anim">
@@ -39,13 +39,26 @@
           <h1 class="option-title">{{ $t('options.search-title') }}</h1>
           <div class="search_content">
             <div class="search-box">
-              <input class="search-input" :placeholder="$t(`options.search-train`)" v-model="searchedTrain" />
+              <input
+                class="search-input"
+                @focus="preventKeyDown = true"
+                @blur="preventKeyDown = false"
+                :placeholder="$t(`options.search-train`)"
+                v-model="searchedTrain"
+              />
               <button class="search-exit">
                 <img :src="getIcon('exit')" alt="exit-icon" @click="onInputClear('train')" />
               </button>
             </div>
+
             <div class="search-box">
-              <input class="search-input" :placeholder="$t(`options.search-driver`)" v-model="searchedDriver" />
+              <input
+                class="search-input"
+                @focus="preventKeyDown = true"
+                @blur="preventKeyDown = false"
+                :placeholder="$t(`options.search-driver`)"
+                v-model="searchedDriver"
+              />
               <button class="search-exit">
                 <img :src="getIcon('exit')" alt="exit-icon" @click="onInputClear('driver')" />
               </button>
@@ -60,13 +73,14 @@
 <script lang="ts">
 import { defineComponent, inject, PropType } from 'vue';
 import imageMixin from '../../mixins/imageMixin';
+import keyMixin from '../../mixins/keyMixin';
 import { TrainFilter } from '../../types/Trains/TrainOptionsTypes';
 import ActionButton from '../Global/ActionButton.vue';
 import SelectBox from '../Global/SelectBox.vue';
 
 export default defineComponent({
   components: { SelectBox, ActionButton },
-  mixins: [imageMixin],
+  mixins: [imageMixin, keyMixin],
 
   props: {
     sorterOptionIds: {
@@ -101,6 +115,11 @@ export default defineComponent({
   },
 
   methods: {
+    // Override keyMixin function
+    onKeyDownFunction() {
+      this.showOptions = !this.showOptions;
+    },
+
     onSorterChange(item: { id: string | number; value: string }) {
       this.sorterActive.id = item.id;
       this.sorterActive.dir = -1;
@@ -125,10 +144,6 @@ export default defineComponent({
     onInputClear(id: 'driver' | 'train') {
       if (id == 'driver') this.searchedDriver = '';
       if (id == 'train') this.searchedTrain = '';
-    },
-
-    test(e: Event) {
-      console.log(e.target);
     },
   },
 });

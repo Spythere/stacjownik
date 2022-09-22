@@ -79,7 +79,11 @@ export default defineComponent({
       this.searchedTrain = this.train;
       this.searchedDriver = this.driver || '';
     }
+
   },
+
+
+
 });
 </script>
 

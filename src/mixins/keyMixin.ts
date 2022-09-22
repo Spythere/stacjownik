@@ -1,0 +1,25 @@
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+  data() {
+    return {
+      preventKeyDown: false,
+    };
+  },
+
+  activated() {
+    window.addEventListener('keydown', this.handleKeyDown);
+  },
+
+  deactivated() {
+    window.removeEventListener('keydown', this.handleKeyDown);
+  },
+
+  methods: {
+    onKeyDownFunction() {},
+
+    handleKeyDown(e: KeyboardEvent) {
+      if (e.key.toLowerCase() == 'f' && !this.preventKeyDown) this.onKeyDownFunction();
+    },
+  },
+});

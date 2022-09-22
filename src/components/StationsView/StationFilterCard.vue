@@ -3,7 +3,7 @@
     <div class="card_btn">
       <button class="btn--image" @click="toggleCard">
         <img class="button_icon" :src="getIcon('filter2')" alt="filter icon" />
-        {{ $t('options.filters') }}
+        {{ $t('options.filters') }} [F]
       </button>
     </div>
 
@@ -42,6 +42,8 @@
               name="authors"
               v-model="authorsInputValue"
               @input="handleAuthorsInput"
+              @focus="preventKeyDown = true"
+              @blur="preventKeyDown = false"
             />
           </section>
 
@@ -94,6 +96,7 @@
 import { defineComponent, inject } from 'vue';
 import inputData from '../../data/options.json';
 import imageMixin from '../../mixins/imageMixin';
+import keyMixin from '../../mixins/keyMixin';
 import StorageManager from '../../scripts/managers/storageManager';
 import { useStore } from '../../store/store';
 
@@ -103,7 +106,7 @@ import FilterOption from './FilterOption.vue';
 export default defineComponent({
   components: { ActionButton, FilterOption },
   emits: ['changeFilterValue', 'invertFilters', 'resetFilters'],
-  mixins: [imageMixin],
+  mixins: [imageMixin, keyMixin],
 
   data: () => ({
     inputs: { ...inputData },
@@ -141,6 +144,11 @@ export default defineComponent({
   },
 
   methods: {
+    // Override keyMixin function
+    onKeyDownFunction() {
+      this.isVisible = !this.isVisible;
+    },
+
     handleChange(change: { name: string; value: boolean }) {
       this.$emit('changeFilterValue', {
         name: change.name,
