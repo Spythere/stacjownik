@@ -10,29 +10,6 @@
     <transition name="options-anim">
       <div class="options_wrapper" v-if="showOptions">
         <div class="options_content">
-          <h1 class="option-title">{{ $t('options.sort-title') }}</h1>
-
-          <div class="options_sorters">
-            <div v-for="opt in translatedSorterOptions">
-              <button class="sort-option" :data-selected="opt.id == sorterActive.id" @click="onSorterChange(opt)">
-                {{ opt.value.toUpperCase() }}
-              </button>
-            </div>
-          </div>
-
-          <h1 class="option-title" v-if="filters.length != 0">{{ $t('options.filter-title') }}</h1>
-          <div class="options_filters">
-            <button
-              v-for="filter in filters"
-              class="filter-option btn--option"
-              :class="{ checked: journalFilterActive.id === filter.id }"
-              :id="filter.id"
-              @click="onFilterChange(filter)"
-            >
-              {{ $t(`options.filter-${filter.id}`) }}
-            </button>
-          </div>
-
           <h1 class="option-title">{{ $t('options.search-title') }}</h1>
           <div class="search_content">
             <div class="search" v-for="(_, propName) in searchersValues" :key="propName">
@@ -74,6 +51,28 @@
                 {{ $t('options.search-button') }}
               </action-button>
             </div>
+          </div>
+
+          <h1 class="option-title">{{ $t('options.sort-title') }}</h1>
+          <div class="options_sorters">
+            <div v-for="opt in translatedSorterOptions">
+              <button class="sort-option" :data-selected="opt.id == sorterActive.id" @click="onSorterChange(opt)">
+                {{ opt.value.toUpperCase() }}
+              </button>
+            </div>
+          </div>
+
+          <h1 class="option-title" v-if="filters.length != 0">{{ $t('options.filter-title') }}</h1>
+          <div class="options_filters">
+            <button
+              v-for="filter in filters"
+              class="filter-option btn--option"
+              :class="{ checked: journalFilterActive.id === filter.id }"
+              :id="filter.id"
+              @click="onFilterChange(filter)"
+            >
+              {{ $t(`options.filter-${filter.id}`) }}
+            </button>
           </div>
         </div>
 
