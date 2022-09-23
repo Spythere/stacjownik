@@ -112,6 +112,7 @@ export default defineComponent({
     const searchersValues = reactive({
       'search-train': '',
       'search-driver': '',
+      'search-author': '',
       'search-date': '',
     } as JorunalTimetableSearchType);
 
@@ -163,6 +164,7 @@ export default defineComponent({
       this.searchersValues['search-date'] = '';
       this.searchersValues['search-driver'] = '';
       this.searchersValues['search-train'] = '';
+      this.searchersValues['search-author'] = '';
 
       this.journalFilterActive = this.journalTimetableFilters[0];
       this.sorterActive.id = 'timetableId';
@@ -210,15 +212,17 @@ export default defineComponent({
 
       const queries: string[] = [];
 
-      const driver = props.searchers?.['search-driver'].trim();
-      const train = props.searchers?.['search-train'].trim();
+      const driverName = props.searchers?.['search-driver'].trim();
+      const trainNo = props.searchers?.['search-train'].trim();
+      const authorName = props.searchers?.['search-author'].trim();
 
       const dateString = props.searchers?.['search-date'].trim();
       const timestampFrom = dateString ? Date.parse(new Date(dateString).toISOString()) - 120 * 60 * 1000 : undefined;
       const timestampTo = timestampFrom ? timestampFrom + 86400000 : undefined;
 
-      if (driver) queries.push(`driverName=${driver}`);
-      if (train) queries.push(train.startsWith('#') ? `timetableId=${train.replace('#', '')}` : `trainNo=${train}`);
+      if (driverName) queries.push(`driverName=${driverName}`);
+      if (trainNo) queries.push(trainNo.startsWith('#') ? `timetableId=${trainNo.replace('#', '')}` : `trainNo=${trainNo}`);
+      if (authorName) queries.push(`authorName=${authorName}`);
       if (timestampFrom && timestampTo) queries.push(`timestampFrom=${timestampFrom}`, `timestampTo=${timestampTo}`);
 
       // Z API: const SORT_TYPES = ['allStopsCount', 'endDate', 'beginDate', 'routeDistance'];

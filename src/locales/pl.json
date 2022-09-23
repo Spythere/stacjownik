@@ -88,6 +88,7 @@
     "search-driver": "Nick maszynisty",
     "search-dispatcher": "Nick dyżurnego",
     "search-station": "Nazwa scenerii",
+    "search-author": "Nick autora rozkładu jazdy",
     "search-date": "Data rozkładu jazdy (czas polski)",
 
     "sort-distance": "kilometraż",
