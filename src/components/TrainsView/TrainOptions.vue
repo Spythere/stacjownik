@@ -2,7 +2,7 @@
   <div class="filters-options" @keydown.esc="showOptions = false">
     <div class="bg" v-if="showOptions" @click="showOptions = false"></div>
 
-    <button class="btn--image" @click="toggleShowOptions">
+    <button class="btn--image" @click="toggleShowOptions" ref="button">
       <img :src="getIcon('filter2')" alt="Open filters" />
       {{ $t('options.filters') }} [F]
     </button>
@@ -125,9 +125,9 @@ export default defineComponent({
     toggleShowOptions() {
       this.showOptions = !this.showOptions;
 
-      // this.$nextTick(() => {
-      //   if (this.showOptions) (this.$refs['initFocusedElement'] as any)?.focus();
-      // });
+      this.$nextTick(() => {
+        if (this.showOptions) (this.$refs['button'] as HTMLButtonElement)?.focus();
+      });
     },
 
     onSorterChange(item: { id: string | number; value: string }) {

@@ -133,6 +133,14 @@ input {
   -webkit-tap-highlight-color: transparent;
 }
 
+*:focus {
+  outline: none;
+}
+
+*:focus-visible {
+  outline: 1px solid $accentCol;
+}
+
 .title {
   color: $accentCol;
   font-weight: 600;
@@ -225,7 +233,6 @@ button {
 
     border-radius: 0.75em 0.75em 0 0;
     background-color: #1b1b1b;
-
 
     img {
       height: 1.3em;

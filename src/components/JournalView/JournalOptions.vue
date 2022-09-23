@@ -2,7 +2,7 @@
   <div class="filters-options">
     <div class="bg" v-if="showOptions" @click="showOptions = false"></div>
 
-    <button class="btn--image" @click="showOptions = !showOptions">
+    <button class="btn--image" @click="showOptions = !showOptions" ref="button">
       <img :src="getIcon('filter2')" alt="Open filters" />
       {{ $t('options.filters') }} [F]
     </button>
@@ -75,11 +75,6 @@
             </button>
           </div>
         </div>
-
-        <!-- <div class="data-status">
-          <span v-if="dataStatus == DataStatus.Loading"> Pobieranie danych...</span>
-          <span v-if="dataStatus == DataStatus.Loaded"> Pobrano dane </span>
-        </div> -->
       </div>
     </transition>
   </div>
@@ -144,6 +139,14 @@ export default defineComponent({
     // Override keyMixin function
     onKeyDownFunction() {
       this.showOptions = !this.showOptions;
+
+      this.$nextTick(() => {
+        if (this.showOptions) (this.$refs['button'] as HTMLButtonElement)?.focus();
+      });
+    },
+
+    focusEnd() {
+      console.log('focus end');
     },
 
     onSorterChange(item: { id: string | number; value: string }) {
