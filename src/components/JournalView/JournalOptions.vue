@@ -1,5 +1,5 @@
 <template>
-  <div class="filters-options">
+  <div class="filters-options" @keydown.esc="showOptions = false">
     <div class="bg" v-if="showOptions" @click="showOptions = false"></div>
 
     <button class="btn--image" @click="showOptions = !showOptions" ref="button">
