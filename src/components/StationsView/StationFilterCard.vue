@@ -1,5 +1,5 @@
 <template>
-  <section class="filter-card" v-click-outside="closeCard">
+  <section class="filter-card" v-click-outside="closeCard" @keydown.esc="closeCard" >
     <div class="card_btn">
       <button class="btn--image" @click="toggleCard">
         <img class="button_icon" :src="getIcon('filter2')" alt="filter icon" />
@@ -8,7 +8,7 @@
     </div>
 
     <transition name="card-anim">
-      <div class="card" v-if="isVisible">
+      <div class="card" v-if="isVisible" >
         <div class="card_content">
           <div class="card_title flex">{{ $t('filters.title') }}</div>
 
