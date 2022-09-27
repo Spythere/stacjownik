@@ -176,7 +176,8 @@
     "users": "Drivers online",
     "spawns": "Spawns online",
     "timetables": "Active timetables",
-    "no-stations": "No stations to show here!"
+    "no-stations": "No stations to show here!",
+    "scenery-search": "Search for scenery..."
   },
   "trains": {
     "no-trains": "No trains to show here!",

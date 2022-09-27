@@ -248,7 +248,6 @@ export default defineComponent({
     gap: 1em 0;
     text-align: center;
 
-    font-size: 1.15em;
   }
 
   .train-stats {

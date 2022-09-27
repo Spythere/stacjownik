@@ -206,6 +206,7 @@ li.option {
     appearance: none;
     border: none;
     outline: none;
+    background: none;
 
     &:focus + span {
       color: $accentCol;

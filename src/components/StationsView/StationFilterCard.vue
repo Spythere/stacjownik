@@ -1,14 +1,29 @@
 <template>
-  <section class="filter-card" v-click-outside="closeCard" @keydown.esc="closeCard" >
-    <div class="card_btn">
+  <section class="filter-card" v-click-outside="closeCard" @keydown.esc="closeCard">
+    <div class="card_controls">
       <button class="btn--image" @click="toggleCard">
         <img class="button_icon" :src="getIcon('filter2')" alt="filter icon" />
         {{ $t('options.filters') }} [F]
       </button>
+
+      <label for="scenery-search">
+        <input
+          id="scenery-search"
+          list="sceneries"
+          :placeholder="$t('sceneries.scenery-search')"
+          @focus="preventKeyDown = true"
+          @blur="preventKeyDown = false"
+          v-model="chosenSearchScenery"
+        />
+
+        <datalist id="sceneries">
+          <option v-for="scenery in store.stationList" :value="scenery.name"></option>
+        </datalist>
+      </label>
     </div>
 
     <transition name="card-anim">
-      <div class="card" v-if="isVisible" >
+      <div class="card" v-if="isVisible">
         <div class="card_content">
           <div class="card_title flex">{{ $t('filters.title') }}</div>
 
@@ -97,6 +112,7 @@ import { defineComponent, inject } from 'vue';
 import inputData from '../../data/options.json';
 import imageMixin from '../../mixins/imageMixin';
 import keyMixin from '../../mixins/keyMixin';
+import routerMixin from '../../mixins/routerMixin';
 import StorageManager from '../../scripts/managers/storageManager';
 import { useStore } from '../../store/store';
 
@@ -106,7 +122,7 @@ import FilterOption from './FilterOption.vue';
 export default defineComponent({
   components: { ActionButton, FilterOption },
   emits: ['changeFilterValue', 'invertFilters', 'resetFilters'],
-  mixins: [imageMixin, keyMixin],
+  mixins: [imageMixin, keyMixin, routerMixin],
 
   data: () => ({
     inputs: { ...inputData },
@@ -119,6 +135,7 @@ export default defineComponent({
     currentRegion: { id: '', value: '' },
 
     delayInputTimer: -1,
+    chosenSearchScenery: '',
   }),
 
   setup() {
@@ -141,6 +158,17 @@ export default defineComponent({
     }
 
     this.currentRegion = this.store.region;
+  },
+
+  watch: {
+    chosenSearchScenery(value: string) {
+      const chosenStation = this.store.stationList.find(({ name }) => name == value);
+
+      if (chosenStation) {
+        this.$router.push(`/scenery?station=${chosenStation.name.replace(/ /g, '_')}`);
+        this.chosenSearchScenery = '';
+      }
+    },
   },
 
   methods: {
@@ -270,6 +298,16 @@ export default defineComponent({
 }
 
 .card {
+  &_controls {
+    display: flex;
+    gap: 0.5em;
+
+    input {
+      border-radius: 0.5em 0.5em 0 0;
+      height: 100%;
+    }
+  }
+
   &_content {
     display: grid;
     grid-template-rows: 70px 1fr 100px 50px auto;

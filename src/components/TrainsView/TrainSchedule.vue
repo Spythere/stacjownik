@@ -60,7 +60,9 @@
               <b>{{ stop.stopNameRAW }} </b>: <span v-html="stop.comments"></span>
             </div>
 
-            <span v-if="stop.departureLine == train.timetableData!.followingStops[i + 1].arrivalLine && !/sbl/gi.test(stop.departureLine!)">
+            <span
+              v-if="stop.departureLine == train.timetableData!.followingStops[i + 1].arrivalLine && !/sbl/gi.test(stop.departureLine!)"
+            >
               {{ stop.departureLine }}
             </span>
 
@@ -175,10 +177,6 @@ $stopNameClr: #22a8d1;
 
 .train-schedule {
   padding: 0 0.25em;
-
-  @include smallScreen() {
-    font-size: 1.1em;
-  }
 }
 
 .train-stock {
@@ -197,6 +195,11 @@ ul.stock-list {
     text-align: center;
     color: #aaa;
     font-size: 0.9em;
+  }
+
+  img {
+    max-height: 60px;
+    max-width: 320px;
   }
 }
 

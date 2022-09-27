@@ -1,8 +1,8 @@
 <template>
   <section class="info-header">
-    <div class="scenery-name">
+    <a class="scenery-name" :href="station.generalInfo?.url">
       {{ station.name }}
-    </div>
+    </a>
 
     <div class="scenery-hash" v-if="station.onlineInfo?.hash">#{{ station.onlineInfo.hash }}</div>
   </section>
@@ -11,7 +11,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import Station from '../../scripts/interfaces/Station';
-
 
 export default defineComponent({
   props: {
@@ -47,4 +46,3 @@ export default defineComponent({
   font-size: 1.2em;
 }
 </style>
-

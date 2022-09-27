@@ -144,9 +144,6 @@ export default defineComponent({
 }
 
 @include smallScreen {
-  .train-modal {
-    font-size: 1.05em;
-  }
 
   .modal_content {
     max-height: 85vh;

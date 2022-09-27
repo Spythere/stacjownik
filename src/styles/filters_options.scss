@@ -116,9 +116,6 @@ h1.option-title {
   }
 
   .search-box {
-    .search_input {
-    }
-
     .search-exit {
       position: absolute;
       transform: translateY(-50%);
@@ -129,10 +126,6 @@ h1.option-title {
 }
 
 @include smallScreen() {
-  .filters-options {
-    font-size: 1.2em;
-  }
-
   h1 {
     text-align: center;
 
