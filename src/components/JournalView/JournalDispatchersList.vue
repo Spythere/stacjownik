@@ -111,6 +111,8 @@ li.sticky {
 
   flex-wrap: wrap;
 
+  padding: 0.75em;
+
   &.online {
     cursor: pointer;
   }

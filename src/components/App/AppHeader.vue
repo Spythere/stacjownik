@@ -128,6 +128,10 @@ export default defineComponent({
 .header {
   &_body {
     max-width: 21em;
+
+    @include smallScreen {
+      max-width: 18em;
+    }
   }
 
   &_container {
@@ -141,8 +145,11 @@ export default defineComponent({
   }
 
   &_brand {
+    display: flex;
+
     img {
       width: 100%;
+      margin: 0 auto;
     }
   }
 

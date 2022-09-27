@@ -126,6 +126,9 @@ h1.option-title {
 }
 
 @include smallScreen() {
+  .filters-options {
+  }
+  
   h1 {
     text-align: center;
 
@@ -137,6 +140,7 @@ h1.option-title {
   }
 
   .options_wrapper {
+    font-size: 1.1em;
     max-width: 100%;
   }
 

@@ -31,14 +31,9 @@ export default defineComponent({
 
   position: relative;
 
-  font-size: 3.5em;
-  padding: 0 0.5em;
+  font-size: 3em;
 
   text-transform: uppercase;
-
-  @include smallScreen() {
-    font-size: 2.75em;
-  }
 }
 
 .scenery-hash {

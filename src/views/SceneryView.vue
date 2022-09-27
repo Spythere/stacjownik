@@ -209,15 +209,15 @@ button.back-btn {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75em;
 
   .btn {
-    margin: 0.5em;
     padding: 0.5em;
     box-shadow: 0 0 10px 4px #242424;
 
     &[data-checked='true'] {
       color: var(--clr-primary);
-      font-weight: bold;
     }
   }
 }

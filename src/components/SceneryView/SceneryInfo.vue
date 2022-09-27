@@ -109,7 +109,7 @@ h3.section-header {
   justify-content: center;
   align-items: center;
 
-  font-size: 1.5em;
+  font-size: 1.2em;
 
   img {
     width: 1.1em;
@@ -127,7 +127,6 @@ h3.section-header {
 
 .info-general {
   margin-top: 1em;
-  font-size: 1.1em;
 }
 
 .general-list {

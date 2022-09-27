@@ -33,7 +33,6 @@
 </template>
 
 <script lang="ts">
-
 import axios from 'axios';
 import { defineComponent, PropType } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
@@ -106,13 +105,8 @@ export default defineComponent({
 }
 
 @include smallScreen {
-  .history-list {
-    font-size: 1.1em;
-  }
   .list-item {
     grid-template-columns: 1fr 1fr;
-    font-size: 1.05em;
   }
 }
 </style>
-
