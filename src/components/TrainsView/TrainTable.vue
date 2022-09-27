@@ -42,7 +42,9 @@ export default defineComponent({
       required: true,
     },
   },
+
   mixins: [returnBtnMixin, modalTrainMixin],
+
   setup(props) {
     const store = useStore();
     const searchedTrain = inject('searchedTrain') as Ref<string>;
@@ -50,6 +52,7 @@ export default defineComponent({
     const currentTrains = computed(() => {
       return props.trains;
     });
+
     return {
       searchedTrain,
       searchedDriver,
@@ -64,6 +67,7 @@ export default defineComponent({
       ),
     };
   },
+
   activated() {
     const query = this.$route.query;
     if (query.trainNo && query.driverName) {
@@ -73,25 +77,6 @@ export default defineComponent({
         this.selectModalTrain(query.driverName! + query.trainNo!.toString());
       }, 20);
     }
-  },
-  methods: {
-    enter(el: HTMLElement) {
-      const maxHeight = getComputedStyle(el).height;
-      el.style.height = '0px';
-      getComputedStyle(el);
-      setTimeout(() => {
-        el.style.height = maxHeight;
-      }, 10);
-    },
-    afterEnter(el: HTMLElement) {
-      el.style.height = 'auto';
-    },
-    leave(el: HTMLElement) {
-      el.style.height = getComputedStyle(el).height;
-      setTimeout(() => {
-        el.style.height = '0px';
-      }, 10);
-    },
   },
 });
 </script>

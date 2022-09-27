@@ -202,6 +202,12 @@ button {
 
   border-radius: 0.25em;
   padding: 0.25em 0.5em;
+
+  transition: all 100ms ease;
+
+  &:hover {
+    background-color: #2a2a2a;
+  }
 }
 
 .btn {
