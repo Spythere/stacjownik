@@ -13,15 +13,18 @@
       </h3>
 
       <div class="timetable-checkpoints" v-if="station && station.generalInfo?.checkpoints">
-        <button
-          v-for="cp in station.generalInfo.checkpoints"
-          :key="cp.checkpointName"
-          class="checkpoint_item btn btn--text"
-          :class="{ current: selectedCheckpoint === cp.checkpointName }"
-          @click="selectCheckpoint(cp)"
-        >
-          {{ cp.checkpointName }}
-        </button>
+        <span v-for="(cp, i) in station.generalInfo.checkpoints" :key="i">
+          <span v-if="i > 0">&bull;</span>
+
+          <button
+            :key="cp.checkpointName"
+            class="checkpoint_item btn--text"
+            :class="{ current: selectedCheckpoint === cp.checkpointName }"
+            @click="selectCheckpoint(cp)"
+          >
+            {{ cp.checkpointName }}
+          </button>
+        </span>
       </div>
     </div>
 
@@ -36,7 +39,7 @@
         {{ $t('scenery.offline') }}
       </span>
 
-       <span class="timetable-item empty" v-else-if="computedScheduledTrains.length == 0">
+      <span class="timetable-item empty" v-else-if="computedScheduledTrains.length == 0">
         {{ $t('scenery.no-timetables') }}
       </span>
 
@@ -186,7 +189,6 @@ export default defineComponent({
 
   data: () => ({
     listOpen: false,
-
   }),
 
   setup(props) {
@@ -351,17 +353,14 @@ export default defineComponent({
   flex-wrap: wrap;
   font-size: 1.1em;
   padding: 0.75em 0;
-  .checkpoint_item {
-    &.current {
-      font-weight: bold;
-      color: $accentCol;
-    }
 
-    &:not(:last-child)::after {
-      margin: 0 0.5em;
-      content: '•';
-      color: white;
-    }
+  .checkpoint_item {
+    color: #aaa;
+  }
+
+  .checkpoint_item.current {
+    font-weight: bold;
+    color: $accentCol;
   }
 }
 

@@ -2,7 +2,7 @@
   <div class="filters-options" @keydown.esc="showOptions = false">
     <div class="bg" v-if="showOptions" @click="showOptions = false"></div>
 
-    <button class="btn--image" @click="toggleShowOptions" ref="button">
+    <button class="btn--filled btn--image" @click="toggleShowOptions" ref="button">
       <img :src="getIcon('filter2')" alt="Open filters" />
       {{ $t('options.filters') }} [F]
     </button>
@@ -43,7 +43,11 @@
           <h1 class="option-title">{{ $t('options.sort-title') }}</h1>
           <div class="options_sorters">
             <div v-for="opt in translatedSorterOptions">
-              <button class="sort-option" :data-selected="opt.id == sorterActive.id" @click="onSorterChange(opt)">
+              <button
+                class="sort-option btn--option"
+                :data-selected="opt.id == sorterActive.id"
+                @click="onSorterChange(opt)"
+              >
                 {{ opt.value.toUpperCase() }}
               </button>
             </div>
@@ -56,14 +60,10 @@
                 {{ $t(`options.filter-${filter.id}`) }}
               </button>
             </div>
-          </div>
 
-          <div class="options_filters">
-            <div class="filter-option">
-              <button @click="clearAllFilters">{{ $t('options.filter-clear') }}</button>
-            </div>
-            <div class="filter-option">
-              <button @click="resetAllFilters">{{ $t('options.filter-reset') }}</button>
+            <div class="filter-actions">
+              <button class="btn--action" @click="clearAllFilters">{{ $t('options.filter-clear') }}</button>
+              <button class="btn--action" @click="resetAllFilters">{{ $t('options.filter-reset') }}</button>
             </div>
           </div>
         </div>
@@ -180,6 +180,18 @@ export default defineComponent({
     &[data-disabled='true'] {
       color: #888;
     }
+  }
+}
+
+.filter-actions {
+  display: flex;
+  gap: 0.5em;
+  width: 100%;
+
+  margin-top: 1em;
+
+  button {
+    width: 100%;
   }
 }
 </style>

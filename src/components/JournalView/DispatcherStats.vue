@@ -1,6 +1,6 @@
 <template>
   <div class="stats_container" v-click-outside="() => (cardVisible = false)">
-    <button class="stats_button btn btn--option" @click="toggleCard">
+    <button class="stats_button" @click="toggleCard">
       Statystyki dyżurnego {{ store.dispatcherStatsName }}
     </button>
 

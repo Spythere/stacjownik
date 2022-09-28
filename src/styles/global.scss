@@ -197,77 +197,118 @@ ul {
 
 button {
   cursor: pointer;
-
   color: white;
-  background-color: #333;
+  background: none;
 
-  border-radius: 0.25em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   padding: 0.25em 0.5em;
 
   transition: all 100ms ease;
+}
+
+button.btn--filled {
+  background-color: #333;
+  border-radius: 0.25em;
 
   &:hover {
     background-color: #2a2a2a;
   }
 }
 
-.btn {
-  background: none;
-  cursor: pointer;
-  font-size: 1em;
+button.btn--action {
+  background-color: #424242;
+  border-radius: 0.25em;
 
-  &--text {
-    color: white;
-    transition: color 0.3s;
-
-    &:hover:not(:disabled),
-    &:focus:not(:disabled) {
-      color: $accentCol;
-    }
-
-    &.checked {
-      color: var(--clr-primary);
-      font-weight: bold;
-    }
-  }
-
-  &--image {
-    display: flex;
-
-    padding: 0.4em 1em;
-    font-weight: bold;
-    font-size: 1em;
-
-    border-radius: 0.75em 0.75em 0 0;
-    background-color: #1b1b1b;
-
-    img {
-      height: 1.3em;
-      margin-right: 0.5rem;
-    }
-  }
-
-  &--option {
-    cursor: pointer;
-
-    color: white;
-    background-color: #333;
-
-    border-radius: 0.25em;
-    padding: 0.25em 0.5em;
-
-    &.checked {
-      color: var(--clr-primary);
-      font-weight: bold;
-
-      background-color: #3c3c3c;
-    }
-  }
-
-  &:disabled {
-    opacity: 0.65;
+  &:hover {
+    background-color: #555;
   }
 }
+
+button.btn--option {
+  color: white;
+  background-color: #333;
+
+  &.checked {
+    color: var(--clr-primary);
+    font-weight: bold;
+
+    background-color: #3c3c3c;
+  }
+}
+
+button.btn--image {
+  font-weight: bold;
+  padding: 0.35em 0.75em;
+
+  img {
+    width: 1.5em;
+    margin-right: 0.5em;
+    vertical-align: middle;
+  }
+}
+
+// .btn {
+//   background: none;
+//   cursor: pointer;
+//   font-size: 1em;
+
+//   &--text {
+//     background: none;
+//     color: white;
+
+//     transition: color 0.3s;
+
+//     &:hover:not(:disabled),
+//     &:focus:not(:disabled) {
+//       color: $accentCol;
+//     }
+
+//     &.checked {
+//       color: var(--clr-primary);
+//       font-weight: bold;
+//     }
+//   }
+
+//   &--image {
+//     display: flex;
+
+//     padding: 0.4em 1em;
+//     font-weight: bold;
+//     font-size: 1em;
+
+//     border-radius: 0.75em 0.75em 0 0;
+//     background-color: #1b1b1b;
+
+//     img {
+//       height: 1.3em;
+//       margin-right: 0.5rem;
+//     }
+//   }
+
+//   &--option {
+//     cursor: pointer;
+
+//     color: white;
+//     background-color: #333;
+
+//     border-radius: 0.25em;
+//     padding: 0.25em 0.5em;
+
+//     &.checked {
+//       color: var(--clr-primary);
+//       font-weight: bold;
+
+//       background-color: #3c3c3c;
+//     }
+//   }
+
+//   &:disabled {
+//     opacity: 0.65;
+//   }
+// }
 
 .return-btn {
   display: none;

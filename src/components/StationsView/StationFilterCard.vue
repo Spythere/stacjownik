@@ -1,7 +1,7 @@
 <template>
   <section class="filter-card" v-click-outside="closeCard" @keydown.esc="closeCard">
     <div class="card_controls">
-      <button class="btn--image" @click="toggleCard">
+      <button class="btn--filled btn--image" @click="toggleCard">
         <img class="button_icon" :src="getIcon('filter2')" alt="filter icon" />
         {{ $t('options.filters') }} [F]
       </button>
@@ -82,23 +82,20 @@
           </section>
 
           <section class="card_actions">
-            <div>
-              <filter-option
-                @optionChange="saveFilters"
-                :option="{
-                  id: 'save',
-                  name: 'save',
-                  section: 'mode',
-                  value: saveOptions,
-                  defaultValue: true,
-                }"
-              />
-            </div>
-            <div>
-              <action-button class="outlined" @click="resetFilters">
-                {{ $t('filters.reset') }}
-              </action-button>
-              <action-button class="outlined" @click="closeCard">{{ $t('filters.close') }}</action-button>
+            <filter-option
+              @optionChange="saveFilters"
+              :option="{
+                id: 'save',
+                name: 'save',
+                section: 'mode',
+                value: saveOptions,
+                defaultValue: true,
+              }"
+            />
+
+            <div class="action-buttons">
+              <button class="btn--action" @click="resetFilters">{{ $t('filters.reset') }}</button>
+              <button class="btn--action" @click="closeCard">{{ $t('filters.close') }}</button>
             </div>
           </section>
         </div>
@@ -309,18 +306,19 @@ export default defineComponent({
   }
 
   &_content {
-    display: grid;
-    grid-template-rows: 70px 1fr 100px 50px auto;
-    min-height: 0;
-    max-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+
+    max-height: 90vh;
+
+    padding: 1em;
   }
 
   &_title {
     font-size: 2em;
     font-weight: 700;
     color: $accentCol;
-
-    margin: 0.5em 0;
 
     text-align: center;
   }
@@ -421,18 +419,23 @@ export default defineComponent({
   }
 
   &_actions {
-    margin-top: 1em;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    button {
-      margin: 1em 0.25em;
+    .filter-option {
+      max-width: 50%;
+      margin: 0 auto;
     }
 
-    .option {
-      font-size: 1.1em;
+    .action-buttons {
+      display: flex;
+      gap: 0.5em;
+      width: 100%;
+
+      margin-top: 0.5em;
+
+      button {
+        width: 50%;
+        margin: 0 auto;
+        padding: 0.5em;
+      }
     }
   }
 }

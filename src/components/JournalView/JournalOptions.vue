@@ -2,7 +2,7 @@
   <div class="filters-options" @keydown.esc="showOptions = false">
     <div class="bg" v-if="showOptions" @click="showOptions = false"></div>
 
-    <button class="btn--image" @click="showOptions = !showOptions" ref="button">
+    <button class="btn--filled btn--image" @click="showOptions = !showOptions" ref="button">
       <img :src="getIcon('filter2')" alt="Open filters" />
       {{ $t('options.filters') }} [F]
     </button>
@@ -43,20 +43,23 @@
             </div>
 
             <div class="search_actions">
-              <action-button class="search-button" @click="onResetButtonClick">
+              <button class="btn--action" @click="onResetButtonClick">
                 {{ $t('options.reset-button') }}
-              </action-button>
-
-              <action-button class="search-button" @click="onSearchButtonConfirm">
+              </button>
+              <button class="btn--action" @click="onSearchButtonConfirm">
                 {{ $t('options.search-button') }}
-              </action-button>
+              </button>
             </div>
           </div>
 
           <h1 class="option-title">{{ $t('options.sort-title') }}</h1>
           <div class="options_sorters">
             <div v-for="opt in translatedSorterOptions">
-              <button class="sort-option" :data-selected="opt.id == sorterActive.id" @click="onSorterChange(opt)">
+              <button
+                class="sort-option btn--option"
+                :data-selected="opt.id == sorterActive.id"
+                @click="onSorterChange(opt)"
+              >
                 {{ opt.value.toUpperCase() }}
               </button>
             </div>

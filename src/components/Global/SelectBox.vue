@@ -2,7 +2,6 @@
   <div class="select-box">
     <div class="select-box_content">
       <button class="selected" @click="toggleBox">
-        <span class="text--primary">{{ prefix }}</span>
         <span>{{ computedSelectedItem.selectedValue || computedSelectedItem.value }}</span>
       </button>
 
@@ -158,7 +157,10 @@ button.selected {
   font-weight: bold;
 
   padding: 0.1em 0.5em;
-  margin-right: 1.4em;
+  margin-right: 2em;
+
+  display: flex;
+
 
   width: 100%;
   cursor: pointer;
