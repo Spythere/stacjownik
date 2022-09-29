@@ -96,7 +96,7 @@ const filterStations = (station: Station, filters: Filter) => {
     const routes = station.generalInfo.routes;
     const availability = station.generalInfo.availability;
 
-    if (filters['abandoned'] && availability == 'abandoned') return returnMode;
+    if (filters['abandoned'] && availability == 'abandoned' && !station.onlineInfo) return returnMode;
 
     if (availability == 'default' && filters['default']) return returnMode;
     if (

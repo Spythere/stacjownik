@@ -59,7 +59,7 @@ const router = createRouter({
   scrollBehavior(to, from) {
     if (to.name == 'SceneryView' && from.name) return { el: `.app_main` };
 
-    if (from.name == 'SceneryView' && to.name == 'StationsView') return { el: `.last-selected`, top: 20 };
+    // if (from.name == 'SceneryView' && to.name == 'StationsView') return { el: `.last-selected`, top: 20 };
   },
   history: createWebHistory(),
   routes,

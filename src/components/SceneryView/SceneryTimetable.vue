@@ -14,11 +14,11 @@
 
       <div class="timetable-checkpoints" v-if="station && station.generalInfo?.checkpoints">
         <span v-for="(cp, i) in station.generalInfo.checkpoints" :key="i">
-          <span v-if="i > 0">&bull;</span>
+          {{ i > 0 && '&bull;' || '' }}
 
           <button
             :key="cp.checkpointName"
-            class="checkpoint_item btn--text"
+            class="checkpoint_item"
             :class="{ current: selectedCheckpoint === cp.checkpointName }"
             @click="selectCheckpoint(cp)"
           >
@@ -354,8 +354,9 @@ export default defineComponent({
   font-size: 1.1em;
   padding: 0.75em 0;
 
-  .checkpoint_item {
+  button.checkpoint_item {
     color: #aaa;
+    display: inline;
   }
 
   .checkpoint_item.current {
