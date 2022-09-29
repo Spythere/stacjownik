@@ -4,7 +4,7 @@
       <div class="train_general">
         <span>
           <span class="timetable-id" v-if="train.timetableData">#{{ train.timetableData.timetableId }}</span>
-
+          
           <span class="timetable_warnings">
             <span class="train-badge twr" v-if="train.timetableData?.TWR">TWR</span>
             <span class="train-badge skr" v-if="train.timetableData?.SKR">SKR</span>
@@ -12,8 +12,7 @@
           <strong v-if="train.timetableData">{{ train.timetableData.category }}&nbsp;</strong>
           <strong>{{ train.trainNo }}</strong>
           <span>&nbsp;| {{ train.driverName }}&nbsp;</span>
-
-          <span>{{ train.isTimeout }}</span>
+          <b class="warning-timeout" v-if="train.isTimeout" title="Błąd SWDR podczas próby aktualizacji">?</b>
         </span>
       </div>
 
@@ -148,6 +147,17 @@ export default defineComponent({
 .timetable-id {
   margin-right: 0.3em;
   color: #d2d2d2;
+}
+
+.warning-timeout {
+  background-color: #be3728;
+  
+  display: inline-block;
+  text-align: center;
+  
+  width: 1.25em;
+  height: 1.25em;
+  border-radius: 50%;
 }
 
 .timetable_stops {

@@ -8,6 +8,12 @@
           {{ $t('trains.no-trains') }}
         </div>
 
+        <div class="timeouts-warning" v-if="trainNumbersWithTimeouts.length != 0">
+          <b class="warning-timeout">!</b>
+          Problem z aktualizacją danych z SWDR dla następujących numerów:
+          <span class="text--primary">{{ trainNumbersWithTimeouts.join(', ') }}</span>
+        </div>
+
         <ul class="train-list">
           <li
             class="train-row"
@@ -68,6 +74,12 @@ export default defineComponent({
     };
   },
 
+  computed: {
+    trainNumbersWithTimeouts() {
+      return this.store.trainList.filter((train) => train.isTimeout).map((train) => train.trainNo);
+    },
+  },
+
   activated() {
     const query = this.$route.query;
     if (query.trainNo && query.driverName) {
@@ -117,6 +129,28 @@ img.train-image {
   padding: 1em 0;
   margin-bottom: 0.5em;
   background: var(--clr-warning);
+}
+
+.timeouts-warning {
+  background-color: #333;
+
+  font-weight: bold;
+  font-size: 1.05em;
+
+  margin-bottom: 0.5em;
+  padding: 0.5em;
+}
+
+.warning-timeout {
+  background-color: #be3728;
+  color: white;
+
+  display: inline-block;
+  text-align: center;
+
+  width: 1.25em;
+  height: 1.25em;
+  border-radius: 50%;
 }
 
 .train {
