@@ -3,37 +3,23 @@
     <div class="wrapper">
       <div class="body">
         <div class="options-bar">
-          <StationFilterCard
-            :showCard="filterCardOpen"
-            :exit="closeCard"
-            @changeFilterValue="changeFilterValue"
-            @invertFilters="invertFilters"
-            @resetFilters="resetFilters"
-            ref="filterCardRef"
-          />
+          <StationFilterCard :showCard="filterCardOpen" :exit="(filterCardOpen = false)" ref="filterCardRef" />
         </div>
 
-        <StationTable
-          :stations="computedStationList"
-          :sorterActive="filterManager.getSorter()"
-          :setFocusedStation="setFocusedStation"
-          :changeSorter="changeSorter"
-        />
+        <StationTable :stations="computedStationList" />
       </div>
     </div>
   </section>
 </template>
 
 <script lang="ts">
-import inputData from '../data/options.json';
-
-import { defineComponent, reactive } from 'vue';
-import { useStore } from '../store/store';
-import StationFilterManager from '../scripts/managers/stationFilterManager';
+import { defineComponent } from 'vue';
 import StorageManager from '../scripts/managers/storageManager';
 import StationTable from '../components/StationsView/StationTable.vue';
 import StationFilterCard from '../components/StationsView/StationFilterCard.vue';
 import SelectBox from '../components/Global/SelectBox.vue';
+import { useStationFiltersStore } from '../store/stationFiltersStore';
+import { useStore } from '../store/store';
 
 export default defineComponent({
   components: {
@@ -46,76 +32,37 @@ export default defineComponent({
     filterCardOpen: false,
     modalHidden: true,
     STORAGE_KEY: 'options_saved',
-    inputs: inputData,
     focusedStationName: '',
   }),
 
   setup() {
-    const store = useStore();
-    const filterManager = reactive(new StationFilterManager());
-
     return {
-      filterManager,
-      store,
+      filterStore: useStationFiltersStore(),
+      store: useStore(),
     };
   },
 
   computed: {
     computedStationList() {
-      const list = this.filterManager.getFilteredStationList(this.store.stationList, this.store.region.id);
+      const list = this.filterStore.getFilteredStationList(this.store.stationList, this.store.region.id);
 
       return list;
     },
   },
 
   mounted() {
-    if (!StorageManager.isRegistered(this.STORAGE_KEY)) return;
+    this.filterStore.setupFilters();
+    // this.filterStore.inputs.options.forEach((option) => {
+    //   const value = StorageManager.getBooleanValue(option.name);
+    //   option.value = value;
+    //   this.filterStore.changeFilterValue({ name: option.name, value: value });
+    // });
 
-    this.filterManager.checkFilters();
-
-    this.inputs.options.forEach((option) => {
-      const value = StorageManager.getBooleanValue(option.name);
-      this.changeFilterValue({ name: option.name, value: value ? 0 : 1 });
-      option.value = value;
-    });
-
-    this.inputs.sliders.forEach((slider) => {
-      const value = StorageManager.getNumericValue(slider.name);
-      this.changeFilterValue({ name: slider.name, value });
-      slider.value = value;
-    });
-  },
-
-  methods: {
-    toggleCardsState(name: string): void {
-      if (name == 'filter') {
-        this.filterCardOpen = !this.filterCardOpen;
-      }
-    },
-
-    changeSorter(index: number) {
-      this.filterManager.changeSorter(index);
-    },
-
-    changeFilterValue(filter: { name: string; value: number }) {
-      this.filterManager.changeFilterValue(filter);
-    },
-
-    resetFilters() {
-      this.filterManager.resetFilters();
-    },
-
-    invertFilters() {
-      this.filterManager.invertFilters();
-    },
-
-    closeCard() {
-      this.filterCardOpen = false;
-    },
-
-    setFocusedStation(name: string) {
-      this.focusedStationName = this.focusedStationName == name ? '' : name;
-    },
+    // this.filterStore.inputs.sliders.forEach((slider) => {
+    //   const value = StorageManager.getNumericValue(slider.name);
+    //   slider.value = value;
+    //   this.filterStore.changeFilterValue({ name: slider.name, value: value });
+    // });
   },
 });
 </script>

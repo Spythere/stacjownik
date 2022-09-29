@@ -83,7 +83,6 @@ export default defineComponent({
   },
 
   async mounted() {
-    this.updateStorage();
     this.setReleaseURL();
 
     watch(
@@ -111,15 +110,6 @@ export default defineComponent({
       const releaseURL = StorageManager.getStringValue('releaseURL');
 
       this.releaseURL = releaseURL || '';
-    },
-
-    updateStorage() {
-      if (!StorageManager.isRegistered('unavailable-status')) {
-        StorageManager.setBooleanValue('unavailable-status', true);
-        StorageManager.setBooleanValue('ending-status', true);
-        StorageManager.setBooleanValue('no-space-status', true);
-        StorageManager.setBooleanValue('afk-status', true);
-      }
     },
 
     loadLang() {

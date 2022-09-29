@@ -19,8 +19,9 @@ export default interface Train {
   online: boolean;
   lastSeen: number;
   region: string;
-
   cars: string[];
+
+  isTimeout: boolean;
 
   timetableData?: {
     timetableId: number;

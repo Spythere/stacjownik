@@ -198,15 +198,6 @@
       "section": "status",
       "value": true,
       "defaultValue": true
-    },
-    {
-      "id": "troll",
-      "name": "troll",
-      "iconName": "",
-
-      "section": "troll",
-      "value": true,
-      "defaultValue": true
     }
   ],
   "sliders": [

@@ -21,6 +21,7 @@ export default interface TrainAPIData {
   lastSeen: number;
 
   region: string;
+  isTimeout: boolean;
 
   timetable?: {
     timetableId: number;

@@ -23,13 +23,13 @@
     </div>
 
     <transition name="card-anim">
-      <div class="card" v-if="isVisible">
+      <div class="card" v-if="isVisible" tabindex="0" ref="cardEl">
         <div class="card_content">
           <div class="card_title flex">{{ $t('filters.title') }}</div>
 
           <section class="card_options">
             <filter-option
-              v-for="(option, i) in inputs.options"
+              v-for="(option, i) in filterStore.inputs.options"
               :option="option"
               :key="i"
               @optionChange="handleChange"
@@ -38,7 +38,7 @@
           <section class="card_timestamp" style="text-align: center">
             <div>{{ $t('filters.minimum-hours-title') }}</div>
             <span class="clock">
-              <button @click="subHour">-</button>
+              <button class="btn--action" @click="subHour">-</button>
               <span>{{
                 minimumHours == 0
                   ? $t('filters.now')
@@ -46,7 +46,7 @@
                   ? minimumHours + $t('filters.hour')
                   : $t('filters.no-limit')
               }}</span>
-              <button @click="addHour">+</button>
+              <button class="btn--action" @click="addHour">+</button>
             </span>
           </section>
 
@@ -63,7 +63,7 @@
           </section>
 
           <section class="card_sliders">
-            <div class="slider" v-for="(slider, i) in inputs.sliders" :key="i">
+            <div class="slider" v-for="(slider, i) in filterStore.inputs.sliders" :key="i">
               <input
                 class="slider-input"
                 type="range"
@@ -82,18 +82,11 @@
           </section>
 
           <section class="card_actions">
-            <filter-option
-              @optionChange="saveFilters"
-              :option="{
-                id: 'save',
-                name: 'save',
-                section: 'mode',
-                value: saveOptions,
-                defaultValue: true,
-              }"
-            />
-
             <div class="action-buttons">
+              <button class="btn--action" style="width: 100%" @click="saveFilters" :data-selected="saveOptions">
+                {{ $t('filters.save') }}
+              </button>
+
               <button class="btn--action" @click="resetFilters">{{ $t('filters.reset') }}</button>
               <button class="btn--action" @click="closeCard">{{ $t('filters.close') }}</button>
             </div>
@@ -106,11 +99,11 @@
 
 <script lang="ts">
 import { defineComponent, inject } from 'vue';
-import inputData from '../../data/options.json';
 import imageMixin from '../../mixins/imageMixin';
 import keyMixin from '../../mixins/keyMixin';
 import routerMixin from '../../mixins/routerMixin';
 import StorageManager from '../../scripts/managers/storageManager';
+import { useStationFiltersStore } from '../../store/stationFiltersStore';
 import { useStore } from '../../store/store';
 
 import ActionButton from '../Global/ActionButton.vue';
@@ -118,11 +111,9 @@ import FilterOption from './FilterOption.vue';
 
 export default defineComponent({
   components: { ActionButton, FilterOption },
-  emits: ['changeFilterValue', 'invertFilters', 'resetFilters'],
   mixins: [imageMixin, keyMixin, routerMixin],
 
   data: () => ({
-    inputs: { ...inputData },
     saveOptions: false,
     STORAGE_KEY: 'options_saved',
 
@@ -138,10 +129,12 @@ export default defineComponent({
   setup() {
     const isVisible = inject('isFilterCardVisible');
     const store = useStore();
+    const filterStore = useStationFiltersStore();
 
     return {
       isVisible,
       store,
+      filterStore,
     };
   },
 
@@ -166,6 +159,12 @@ export default defineComponent({
         this.chosenSearchScenery = '';
       }
     },
+
+    isVisible(value: boolean) {
+      this.$nextTick(() => {
+        if (value) (this.$refs['cardEl'] as HTMLDivElement).focus();
+      });
+    },
   },
 
   methods: {
@@ -175,7 +174,7 @@ export default defineComponent({
     },
 
     handleChange(change: { name: string; value: boolean }) {
-      this.$emit('changeFilterValue', {
+      this.filterStore.changeFilterValue({
         name: change.name,
         value: !change.value,
       });
@@ -186,7 +185,7 @@ export default defineComponent({
     handleInput(e: Event) {
       const target = e.target as HTMLInputElement;
 
-      this.$emit('changeFilterValue', {
+      this.filterStore.changeFilterValue({
         name: target.name,
         value: target.value,
       });
@@ -203,7 +202,7 @@ export default defineComponent({
     },
 
     changeNumericFilterValue(name: string, value: number, saveToStorage = false) {
-      this.$emit('changeFilterValue', {
+      this.filterStore.changeFilterValue({
         name,
         value,
       });
@@ -223,17 +222,8 @@ export default defineComponent({
       this.changeNumericFilterValue('onlineFromHours', this.minimumHours, true);
     },
 
-    invertFilters() {
-      this.inputs.options.forEach((option) => {
-        option.value = !option.value;
-        StorageManager.setBooleanValue(option.name, option.value);
-      });
-
-      this.$emit('invertFilters');
-    },
-
-    saveFilters(change: { value: any }) {
-      this.saveOptions = change.value;
+    saveFilters() {
+      this.saveOptions = !this.saveOptions;
 
       if (!this.saveOptions) {
         StorageManager.unregisterStorage(this.STORAGE_KEY);
@@ -242,28 +232,16 @@ export default defineComponent({
 
       StorageManager.registerStorage(this.STORAGE_KEY);
 
-      this.inputs.options.forEach((option) => StorageManager.setBooleanValue(option.name, option.value));
-
-      this.inputs.sliders.forEach((slider) => StorageManager.setNumericValue(slider.name, slider.value));
+      this.filterStore.inputs.options.forEach((option) => StorageManager.setBooleanValue(option.name, !option.value));
+      this.filterStore.inputs.sliders.forEach((slider) => StorageManager.setNumericValue(slider.name, slider.value));
     },
 
     resetFilters() {
-      this.inputs.options.forEach((option) => {
-        option.value = option.defaultValue;
-        StorageManager.setBooleanValue(option.name, option.value);
-      });
-
-      this.inputs.sliders.forEach((slider) => {
-        slider.value = slider.defaultValue;
-        StorageManager.setNumericValue(slider.name, slider.value);
-      });
-
       this.authorsInputValue = '';
 
       this.minimumHours = 0;
       this.changeNumericFilterValue('onlineFromHours', this.minimumHours, true);
-
-      this.$emit('resetFilters');
+      this.filterStore.resetFilters();
     },
 
     closeCard() {
@@ -367,31 +345,17 @@ export default defineComponent({
       align-items: center;
       justify-content: center;
 
-      font-size: 1.15em;
+      font-size: 1.2em;
+      margin-top: 0.5em;
 
-      color: $accentCol;
-      font-weight: bold;
-    }
-
-    span {
-      min-width: 100px;
-    }
-
-    button {
-      border: none;
-      outline: none;
-      background: none;
-      padding: 0 0.45em;
-
-      cursor: pointer;
-
-      color: white;
-
-      font-size: 1.35em;
-
-      &:focus,
-      &:hover {
+      span {
+        min-width: 120px;
+        font-weight: bold;
         color: $accentCol;
+      }
+
+      button {
+        padding: 0.2em 0.6em;
       }
     }
   }
@@ -435,6 +399,11 @@ export default defineComponent({
         width: 50%;
         margin: 0 auto;
         padding: 0.5em;
+
+        &[data-selected='true'] {
+          background-color: lightgreen;
+          color: black;
+        }
       }
     }
   }
@@ -465,6 +434,10 @@ export default defineComponent({
 
     min-width: 25%;
     max-width: 120px;
+
+    &:focus-visible ~ * {
+      color: gold;
+    }
 
     &::-webkit-slider-thumb {
       -webkit-appearance: none;

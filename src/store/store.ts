@@ -17,6 +17,7 @@ import {
 } from '../scripts/utils/storeUtils';
 import { APIData, StationJSONData, StoreState } from './storeTypes';
 
+
 export const useStore = defineStore('store', {
   state: () =>
     ({
@@ -53,6 +54,7 @@ export const useStore = defineStore('store', {
 
       blockScroll: false,
       listenerLaunched: false,
+
     } as StoreState),
 
   actions: {
@@ -94,6 +96,7 @@ export const useStore = defineStore('store', {
             cars: stock.slice(1),
 
             lastSeen: train.lastSeen,
+            isTimeout: train.isTimeout,
 
             timetableData: timetable
               ? {

@@ -230,6 +230,7 @@ import stationInfoMixin from '../../mixins/stationInfoMixin';
 import styleMixin from '../../mixins/styleMixin';
 import { DataStatus } from '../../scripts/enums/DataStatus';
 import Station from '../../scripts/interfaces/Station';
+import { useStationFiltersStore } from '../../store/stationFiltersStore';
 import { useStore } from '../../store/store';
 import Loading from '../Global/Loading.vue';
 
@@ -239,17 +240,9 @@ export default defineComponent({
       type: Array as () => Station[],
       required: true,
     },
-    sorterActive: {
-      type: Object as () => {
-        index: number;
-        dir: number;
-      },
-      required: true,
-    },
-    setFocusedStation: { type: Function, required: true },
-    changeSorter: { type: Function, required: true },
   },
 
+  components: { Loading },
   mixins: [styleMixin, dateMixin, stationInfoMixin, returnBtnMixin, imageMixin],
 
   data: () => ({
@@ -258,13 +251,22 @@ export default defineComponent({
     lastSelectedStationName: '',
   }),
 
+  computed: {
+    sorterActive() {
+      return this.stationFiltersStore.sorterActive;
+    },
+  },
+
   setup() {
     const store = useStore();
+    const stationFiltersStore = useStationFiltersStore();
+
     const isDataLoaded = computed(() => {
       return store.dataStatuses.sceneries != DataStatus.Loading;
     });
     return {
       isDataLoaded,
+      stationFiltersStore,
     };
   },
 
@@ -272,19 +274,24 @@ export default defineComponent({
     setScenery(name: string) {
       const station = this.stations.find((station) => station.name === name);
       if (!station) return;
+
       this.lastSelectedStationName = station.name;
       this.$router.push({
         name: 'SceneryView',
         query: { station: station.name.replaceAll(' ', '_') },
       });
     },
+
     openForumSite(e: Event, url: string | undefined) {
       if (!url) return;
       e.preventDefault();
       window.open(url, '_blank');
     },
+
+    changeSorter(i: number) {
+      this.stationFiltersStore.changeSorter(i);
+    },
   },
-  components: { Loading },
 });
 </script>
 

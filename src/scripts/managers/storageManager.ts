@@ -23,6 +23,13 @@ export default class StorageManager {
     window.localStorage.setItem(key, val);
   }
 
+  static setValue(key: string, val: any) {
+    if (typeof val == 'boolean') this.setBooleanValue(key, val);
+    else if (typeof val == 'number') this.setNumericValue(key, val);
+    else if (typeof val == 'string') this.setStringValue(key, val);
+    else this.setStringValue(key, val);
+  }
+
   static removeValue(key: string) {
     window.localStorage.removeItem(key);
   }

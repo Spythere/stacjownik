@@ -12,6 +12,8 @@
           <strong v-if="train.timetableData">{{ train.timetableData.category }}&nbsp;</strong>
           <strong>{{ train.trainNo }}</strong>
           <span>&nbsp;| {{ train.driverName }}&nbsp;</span>
+
+          <span>{{ train.isTimeout }}</span>
         </span>
       </div>
 

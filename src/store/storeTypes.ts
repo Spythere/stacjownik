@@ -1,12 +1,11 @@
-
 import { Socket } from 'socket.io-client';
 import { DataStatus } from '../scripts/enums/DataStatus';
-import { DispatcherStatsAPIData } from '../scripts/interfaces/api/DispatcherStatsAPIData';
-import { DriverStatsAPIData } from '../scripts/interfaces/api/DriverStatsAPIData';
 import StationAPIData from '../scripts/interfaces/api/StationAPIData';
 import TrainAPIData from '../scripts/interfaces/api/TrainAPIData';
 import Station from '../scripts/interfaces/Station';
 import Train from '../scripts/interfaces/Train';
+import { DispatcherStatsAPIData } from '../scripts/interfaces/api/DispatcherStatsAPIData';
+import { DriverStatsAPIData } from '../scripts/interfaces/api/DriverStatsAPIData';
 
 export type Availability = 'default' | 'unavailable' | 'nonPublic' | 'abandoned' | 'nonDefault';
 
