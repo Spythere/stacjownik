@@ -64,6 +64,7 @@ export default defineComponent({
   justify-content: center;
 
   flex-wrap: wrap;
+  gap: 0.5em;
 
   .dispatcher {
     font-size: 2em;
@@ -82,17 +83,15 @@ export default defineComponent({
     }
 
     &_name {
-      margin-right: 0.4em;
       cursor: pointer;
+      margin-right: 0.25em;
     }
 
     &_likes {
       img {
         height: 0.7em;
-        margin-right: 0.25em;
+        margin: 0 0.25em;
       }
-
-      margin-right: 1.5em;
     }
   }
 

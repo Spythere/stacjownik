@@ -8,16 +8,16 @@
       </action-button>
     </div>
 
-    <div class="scenery-wrapper" v-if="stationInfo" ref="card-wrapper">
-      <div class="scenery-left">
+    <div class="scenery-wrapper" v-if="stationInfo" ref="card-wrapper" :data-timetable-only="timetableOnly">
+      <div class="scenery-left" v-if="!timetableOnly">
         <div class="scenery-actions">
-          <button v-if="!timetableOnly" class="back-btn btn" :title="$t('scenery.return-btn')" @click="navigateTo('/')">
+          <button class="back-btn btn" :title="$t('scenery.return-btn')" @click="navigateTo('/')">
             <img :src="getIcon('back')" alt="Back to scenery" />
           </button>
         </div>
 
         <SceneryHeader :station="stationInfo" />
-        <SceneryInfo :station="stationInfo" :timetableOnly="timetableOnly" />
+        <SceneryInfo :station="stationInfo" />
       </div>
 
       <div class="scenery-right">
@@ -33,7 +33,12 @@
         </div>
 
         <keep-alive>
-          <component :is="currentViewCompontent" :station="stationInfo" :key="currentViewCompontent"></component>
+          <component
+            :is="currentViewCompontent"
+            :station="stationInfo"
+            :timetableOnly="timetableOnly"
+            :key="currentViewCompontent"
+          ></component>
         </keep-alive>
       </div>
     </div>
@@ -41,7 +46,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
+import { computed, defineComponent, PropType } from 'vue';
 import { useRoute } from 'vue-router';
 import routerMixin from '../mixins/routerMixin';
 import { useStore } from '../store/store';
@@ -68,7 +73,9 @@ export default defineComponent({
     SceneryTimetablesHistory,
     SceneryDispatchersHistory,
   },
+
   mixins: [routerMixin, imageMixin],
+
   data: () => ({
     viewModes: [
       {
@@ -89,17 +96,22 @@ export default defineComponent({
     currentViewCompontent: 'SceneryTimetable',
     onlineFrom: -1,
   }),
+
   activated() {
     this.loadSelectedCheckpoint();
   },
+
   setup() {
     const route = useRoute();
     const store = useStore();
-    const timetableOnly = computed(() => (route.query['timetable_only'] == '1' ? true : false));
+
+    const timetableOnly = computed(() => (route.query['timetableOnly'] == '1' ? true : false));
     const isComponentVisible = computed(() => route.path === '/scenery');
+
     const stationInfo = computed(() => {
       return store.stationList.find((station) => station.name === route.query.station?.toString().replace(/_/g, ' '));
     });
+
     return {
       timetableOnly,
       isComponentVisible,
@@ -111,11 +123,13 @@ export default defineComponent({
     setViewMode(componentName: string) {
       this.currentViewCompontent = componentName;
     },
+
     loadSelectedCheckpoint() {
       if (!this.stationInfo?.generalInfo?.checkpoints) return;
       if (this.stationInfo.generalInfo.checkpoints.length == 0) return;
       this.selectedCheckpoint = this.stationInfo.generalInfo.checkpoints[0].checkpointName;
     },
+
     selectCheckpoint(cp: { checkpointName: string }) {
       this.selectedCheckpoint = cp.checkpointName;
     },
@@ -169,8 +183,12 @@ button.back-btn {
   max-width: 1700px;
 
   margin: 1rem 0;
-
   text-align: center;
+
+  &[data-timetable-only='true'] {
+    grid-template-columns: 1fr;
+    max-width: 1000px;
+  }
 }
 
 .scenery-left {

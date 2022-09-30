@@ -18,7 +18,6 @@ const routes: Array<RouteRecordRaw> = [
     path: '/scenery',
     name: 'SceneryView',
     component: () => import('../views/SceneryView.vue'),
-    props: true,
   },
   {
     path: '/journal',

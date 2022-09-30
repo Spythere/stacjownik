@@ -10,11 +10,17 @@
         <span class="text--grayed">
           {{ station.onlineInfo?.scheduledTrains?.filter((train) => train.stopInfo.confirmed).length || '0' }}
         </span>
+        <!-- 
+        <button class="btn--image" v-if="!timetableOnly">
+          <a :href="`${$route.path}?station=${$route.query.station}&timetableOnly=1`">
+            <img :src="getIcon('view')" alt="View image" />
+          </a>
+        </button> -->
       </h3>
 
       <div class="timetable-checkpoints" v-if="station && station.generalInfo?.checkpoints">
         <span v-for="(cp, i) in station.generalInfo.checkpoints" :key="i">
-          {{ i > 0 && '&bull;' || '' }}
+          {{ (i > 0 && '&bull;') || '' }}
 
           <button
             :key="cp.checkpointName"
@@ -185,6 +191,10 @@ export default defineComponent({
       type: Object as PropType<Station>,
       required: true,
     },
+
+    timetableOnly: {
+      type: Boolean,
+    },
   },
 
   data: () => ({
@@ -252,6 +262,10 @@ export default defineComponent({
     selectCheckpoint(cp: { checkpointName: string }) {
       this.selectedCheckpoint = cp.checkpointName;
     },
+
+    showTimetableOnlyView() {
+      this.$router.push(`${this.$route.fullPath}&timetableOnly=1`);
+    },
   },
 
   mounted() {
@@ -295,7 +309,7 @@ export default defineComponent({
   h3 {
     display: flex;
     align-items: center;
-    font-size: 1.4em;
+    font-size: 1.3em;
   }
 }
 
