@@ -78,7 +78,7 @@
 
     "search-button": "Szukaj",
     "reset-button": "Zresetuj",
-    
+
     "sort-title": "SORTUJ WG:",
     "filter-title": "FILTRUJ WG:",
     "search-title": "SZUKAJ:",
@@ -255,7 +255,13 @@
     "stock-mass": "Masa",
     "stock-max-speed": "Maks. zarejestrowana prędkość",
 
-    "load-data": "Pobierz dalszą historię..."
+    "load-data": "Pobierz dalszą historię...",
+
+    "stats-timetables": "ROZKŁADY JAZDY",
+    "stats-longest-timetable": "NAJDŁUŻSZY RJ",
+    "stats-avg-timetable": "ŚREDNIA DŁUGOŚĆ RJ",
+    "stats-distance": "DYSTANS",
+    "stats-stations": "STACJE"
   },
   "scenery": {
     "users": "GRACZE ONLINE",

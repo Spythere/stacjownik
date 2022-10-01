@@ -6,22 +6,22 @@
 
     <div class="info-stats">
       <span class="stat-badge">
-        <span>ROZKŁADY JAZDY</span>
+        <span>{{ $t('journal.stats-timetables') }}</span>
         <span>{{ store.driverStatsData._count.fulfilled }} / {{ store.driverStatsData._count._all }}</span>
       </span>
 
       <span class="stat-badge">
-        <span>NAJDŁUŻSZY RJ</span>
+        <span>{{ $t('journal.stats-longest-timetable') }}</span>
         <span> {{ store.driverStatsData._max.routeDistance.toFixed(2) }}km </span>
       </span>
 
       <span class="stat-badge">
-        <span>ŚREDNIA DŁUGOŚĆ RJ</span>
+        <span>{{ $t('journal.stats-avg-timetable') }}</span>
         <span> {{ store.driverStatsData._avg.routeDistance.toFixed(2) }}km </span>
       </span>
 
       <span class="stat-badge">
-        <span>DYSTANS</span>
+        <span>{{ $t('journal.stats-distance') }}</span>
         <span>
           {{ store.driverStatsData._sum.currentDistance.toFixed(2) }} /
           {{ store.driverStatsData._sum.routeDistance.toFixed(2) }}km
@@ -29,7 +29,7 @@
       </span>
 
       <span class="stat-badge">
-        <span>STACJE</span>
+        <span>{{ $t('journal.stats-stations') }}</span>
         <span>
           {{ store.driverStatsData._sum.confirmedStopsCount }} /
           {{ store.driverStatsData._sum.allStopsCount }}

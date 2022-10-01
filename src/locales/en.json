@@ -251,7 +251,13 @@
     "stock-mass": "Mass",
     "stock-max-speed": "Maximum registered speed",
 
-    "load-data": "Load further data..."
+    "load-data": "Load further data...",
+
+    "stats-timetables": "TIMETABLES",
+    "stats-longest-timetable": "LONGEST TIMETABLE",
+    "stats-avg-timetable": "AVERAGE TIMETABLE LENGTH",
+    "stats-distance": "DISTANCE",
+    "stats-stations": "STATIONS"
   },
   "scenery": {
     "users": "PLAYERS ONLINE",
