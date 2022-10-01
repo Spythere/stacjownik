@@ -1,28 +1,22 @@
 <template>
   <section class="journal-timetables">
-    <keep-alive>
-      <DriverStats v-if="statsCardOpen" @close-card="statsCardOpen = false" />
-    </keep-alive>
-
+    
     <div class="journal_wrapper">
       <JournalOptions
-        @on-search-confirm="searchHistory"
-        @on-options-reset="resetOptions"
-        :sorter-option-ids="['timetableId', 'beginDate', 'distance', 'total-stops']"
-        :filters="journalTimetableFilters"
-        :data-status="dataStatus"
+      @on-search-confirm="searchHistory"
+      @on-options-reset="resetOptions"
+      :sorter-option-ids="['timetableId', 'beginDate', 'distance', 'total-stops']"
+      :filters="journalTimetableFilters"
+      :data-status="dataStatus"
       />
-
+      
+      <DriverStats />
       <!-- <button @click="statsCardOpen = true">Stats</button> -->
 
       <div class="list_wrapper" @scroll="handleScroll">
         <!-- <transition name="warning" mode="out-in"> -->
         <!-- <div :key="dataStatus"> -->
-        <Loading
-          v-if="
-            dataStatus == DataStatus.Initialized || (dataStatus == DataStatus.Loading )
-          "
-        />
+        <Loading v-if="dataStatus == DataStatus.Initialized || dataStatus == DataStatus.Loading" />
 
         <div v-else-if="dataStatus == DataStatus.Error" class="journal_warning error">
           {{ $t('app.error') }}
@@ -221,7 +215,8 @@ export default defineComponent({
       const timestampTo = timestampFrom ? timestampFrom + 86400000 : undefined;
 
       if (driverName) queries.push(`driverName=${driverName}`);
-      if (trainNo) queries.push(trainNo.startsWith('#') ? `timetableId=${trainNo.replace('#', '')}` : `trainNo=${trainNo}`);
+      if (trainNo)
+        queries.push(trainNo.startsWith('#') ? `timetableId=${trainNo.replace('#', '')}` : `trainNo=${trainNo}`);
       if (authorName) queries.push(`authorName=${authorName}`);
       if (timestampFrom && timestampTo) queries.push(`timestampFrom=${timestampFrom}`, `timestampTo=${timestampTo}`);
 

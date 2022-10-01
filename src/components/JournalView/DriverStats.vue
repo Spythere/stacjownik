@@ -1,51 +1,40 @@
 <template>
-  <div class="card-dimmer" @click="closeCard"></div>
+  <div class="journal-stats" v-if="store.driverStatsData?._sum.routeDistance != null">
+    <h1>
+      STATYSTYKI MASZYNISTY <span class="text--primary">{{ store.driverStatsName.toUpperCase() }}</span>
+    </h1>
 
-  <div class="stats-card card">
-    <div>
-      <h2 class="card-title">
-        STATYSTYKI MASZYNISTY <span class="text--primary">{{ store.driverStatsName.toUpperCase() }}</span>
-      </h2>
+    <div class="info-stats">
+      <span class="stat-badge">
+        <span>ROZKŁADY JAZDY</span>
+        <span>{{ store.driverStatsData._count.fulfilled }} / {{ store.driverStatsData._count._all }}</span>
+      </span>
 
-      <div class="loading" v-if="!store.driverStatsData">Ładowanie...</div>
+      <span class="stat-badge">
+        <span>NAJDŁUŻSZY RJ</span>
+        <span> {{ store.driverStatsData._max.routeDistance.toFixed(2) }}km </span>
+      </span>
 
-      <div v-else>
-        <div class="info-stats" v-if="store.driverStatsData._sum.routeDistance != null">
-          <span class="stat-badge">
-            <span>PRZEBYTO</span>
-            <span>{{ store.driverStatsData._sum.routeDistance.toFixed(2) }}km</span>
-          </span>
-          <span class="stat-badge">
-            <span>PORZUCONO</span>
-            <span>
-              {{ (store.driverStatsData._sum.routeDistance - store.driverStatsData._sum.currentDistance).toFixed(2) }}km
-            </span>
-          </span>
+      <span class="stat-badge">
+        <span>ŚREDNIA DŁUGOŚĆ RJ</span>
+        <span> {{ store.driverStatsData._avg.routeDistance.toFixed(2) }}km </span>
+      </span>
 
-          <span class="stat-badge">
-            <span>WYPEŁNIONO</span>
-            <span>{{ store.driverStatsData._count.fulfilled }} RJ</span>
-          </span>
+      <span class="stat-badge">
+        <span>DYSTANS</span>
+        <span>
+          {{ store.driverStatsData._sum.currentDistance.toFixed(2) }} /
+          {{ store.driverStatsData._sum.routeDistance.toFixed(2) }}km
+        </span>
+      </span>
 
-          <span class="stat-badge">
-            <span>PORZUCONO</span>
-            <span>{{ store.driverStatsData._count._all - store.driverStatsData._count.fulfilled }} RJ</span>
-          </span>
-
-          <span class="stat-badge">
-            <span>ZATWIERDZONO</span>
-            <span>{{ store.driverStatsData._sum.confirmedStopsCount }} stacji</span>
-          </span>
-
-          <span class="stat-badge">
-            <span>PORZUCONO</span>
-            <span>
-              {{ store.driverStatsData._sum.allStopsCount - store.driverStatsData._sum.confirmedStopsCount }}
-              stacji
-            </span>
-          </span>
-        </div>
-      </div>
+      <span class="stat-badge">
+        <span>STACJE</span>
+        <span>
+          {{ store.driverStatsData._sum.confirmedStopsCount }} /
+          {{ store.driverStatsData._sum.allStopsCount }}
+        </span>
+      </span>
     </div>
   </div>
 </template>
@@ -78,13 +67,9 @@ export default defineComponent({
     };
   },
 
-  activated() {
-    this.fetchDispatcherStats();
-  },
-
   watch: {
-    driverStatsName(value: any) {
-      console.log(value);
+    driverStatsName(value: string) {
+      this.fetchDispatcherStats();
     },
   },
 
@@ -92,57 +77,18 @@ export default defineComponent({
     async fetchDispatcherStats() {
       this.store.driverStatsData = undefined;
 
+      if (!this.store.driverStatsName) return;
+
       const statsData: DriverStatsAPIData = await (
         await axios.get(`${URLs.stacjownikAPI}/api/getDriverInfo?name=${this.store.driverStatsName}`)
       ).data;
 
-      const recentTimetablesData: TimetableHistory[] = await (
-        await axios.get(`${URLs.stacjownikAPI}/api/getTimetables?driverName=${this.store.driverStatsName}`)
-      ).data;
-
       this.store.driverStatsData = statsData;
-      this.lastTimetables = recentTimetablesData || [];
-    },
-
-    closeCard() {
-      this.$emit('closeCard');
     },
   },
 });
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/responsive.scss';
-@import '../../styles/card.scss';
-
-.timetable-row {
-  display: grid;
-  grid-template-columns: 4fr 1fr 1fr 2fr 2fr;
-  gap: 0.2em;
-  margin: 0.5em 0;
-  text-align: center;
-
-  span {
-    min-width: 100px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-
-    background-color: #4d4d4d;
-    padding: 0.5em 0.2em;
-  }
-
-  @include smallScreen() {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-
-    span {
-      padding: 0.2em 0.3em;
-    }
-
-    grid-template-columns: 1fr;
-    background-color: #4d4d4d;
-  }
-}
+@import '../../styles/JournalStats.scss';
 </style>

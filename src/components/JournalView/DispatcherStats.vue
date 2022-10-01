@@ -14,6 +14,7 @@
 
         <div v-else>
           <h3>STATYSTYKI WYSTAWIONYCH ROZKŁADÓW</h3>
+          
           <div class="info-stats" v-if="store.dispatcherStatsData._count._all">
             <span class="stat-badge">
               <span>LICZBA</span>
@@ -162,42 +163,11 @@ h3 {
   text-align: center;
 }
 
-.info-stats {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-top: 1em;
-}
 
 .last-timetables {
   overflow-y: auto;
 }
 
-.stat-badge {
-  margin-right: 0.5em;
-  padding-bottom: 1em;
 
-  span {
-    padding: 0.25em 0.3em;
-  }
 
-  span:first-child {
-    background-color: #4d4d4d;
-  }
-
-  span:last-child {
-    background-color: $accentCol;
-    color: black;
-    font-weight: bold;
-  }
-}
-
-@include smallScreen() {
-  .stats_card {
-    text-align: center;
-    left: 50%;
-    transform: translateX(-50%);
-    border-radius: 0 0 1em 1em;
-  }
-}
 </style>

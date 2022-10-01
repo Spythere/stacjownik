@@ -1,0 +1,42 @@
+@import 'variables.scss';
+@import 'responsive.scss';
+
+.journal-stats {
+  background-color: #1a1a1a;
+  padding: 1em;
+  margin-bottom: 1em;
+}
+
+.info-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+
+  margin-top: 1em;
+}
+
+.stat-badge {
+  display: flex;
+
+  span {
+    background-color: $accentCol;
+    color: black;
+    font-weight: bold;
+    padding: 0.2em 0.5em;
+  }
+
+  span:first-child {
+    background-color: #333;
+    color: white;
+  }
+}
+
+@include smallScreen {
+  .journal-stats {
+    text-align: center;
+  }
+
+  .info-stats {
+    justify-content: center;
+  }
+}
