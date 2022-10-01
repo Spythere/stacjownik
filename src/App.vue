@@ -40,6 +40,7 @@ import TrainModal from './components/Global/TrainModal.vue';
 import StorageManager from './scripts/managers/storageManager';
 import imageMixin from './mixins/imageMixin';
 import AppHeader from './components/App/AppHeader.vue';
+import axios from 'axios';
 
 export default defineComponent({
   components: {
@@ -106,10 +107,19 @@ export default defineComponent({
       StorageManager.setStringValue('lang', lang);
     },
 
-    setReleaseURL() {
-      const releaseURL = StorageManager.getStringValue('releaseURL');
+    async setReleaseURL() {
+      try {
+        const releaseData = await (
+          await axios.get('https://api.github.com/repos/Spythere/stacjownik/releases/latest')
+        ).data;
 
-      this.releaseURL = releaseURL || '';
+        if (!releaseData) return;
+
+        this.releaseURL = releaseData.html_url;
+      } catch (error) {
+        console.error(`Wystąpił błąd podczas pobierania danych z API GitHuba: ${error}`);
+        return;
+      }
     },
 
     loadLang() {
