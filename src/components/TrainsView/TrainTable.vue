@@ -9,9 +9,8 @@
         </div>
 
         <div class="timeouts-warning" v-if="trainNumbersWithTimeouts.length != 0">
-          <b class="warning-timeout">!</b>
-          Problem z aktualizacją danych z SWDR dla następujących numerów:
-          <span class="text--primary">{{ trainNumbersWithTimeouts.join(', ') }}</span>
+          <b class="warning-timeout">?</b>
+          {{ $t('trains.timeout') }}
         </div>
 
         <ul class="train-list">

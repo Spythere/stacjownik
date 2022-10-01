@@ -219,7 +219,8 @@
     "last-seen-min": "since one minute",
     "last-seen-ago": "since {minutes} minutes",
 
-    "scenery-offline": "Offline ride"
+    "scenery-offline": "Offline ride",
+    "timeout": "An error occured while trying to refresh SWDR timetable data!"
   },
   "journal": {
     "title": "DISPATCHER HISTORY",

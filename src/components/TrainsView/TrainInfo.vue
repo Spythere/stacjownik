@@ -12,7 +12,7 @@
           <strong v-if="train.timetableData">{{ train.timetableData.category }}&nbsp;</strong>
           <strong>{{ train.trainNo }}</strong>
           <span>&nbsp;| {{ train.driverName }}&nbsp;</span>
-          <b class="warning-timeout" v-if="train.isTimeout" title="Błąd SWDR podczas próby aktualizacji">?</b>
+          <b class="warning-timeout" v-if="train.isTimeout" :title="$t('trains.timeout')">?</b>
         </span>
       </div>
 
