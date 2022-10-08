@@ -253,6 +253,8 @@
 
     "load-data": "Load further data...",
 
+    "stats-title": "DRIVING STATISTICS OF",
+
     "stats-timetables": "TIMETABLES",
     "stats-longest-timetable": "LONGEST TIMETABLE",
     "stats-avg-timetable": "AVERAGE TIMETABLE LENGTH",

@@ -1,7 +1,7 @@
 <template>
   <div class="journal-stats" v-if="store.driverStatsData?._sum.routeDistance != null">
     <h1>
-      STATYSTYKI MASZYNISTY <span class="text--primary">{{ store.driverStatsName.toUpperCase() }}</span>
+      {{ $t('journal.stats-title') }} <span class="text--primary">{{ store.driverStatsName.toUpperCase() }}</span>
     </h1>
 
     <div class="info-stats">
