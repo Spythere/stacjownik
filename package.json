@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "core-js": "^3.12.1",
-    "dotenv": "^8.6.0",
+    "dotenv": "^16.0.3",
     "firebase": "^9.8.1",
     "howler": "^2.2.1",
     "pinia": "^2.0.14",
@@ -21,12 +21,12 @@
     "vue-router": "^4.0.0-0"
   },
   "devDependencies": {
-    "@types/node": "^17.0.35",
+    "@types/node": "^18.8.3",
     "@vitejs/plugin-vue": "^3.0.0",
-    "axios": "^0.21.1",
+    "axios": "^1.1.2",
     "typescript": "^4.6.4",
     "vite": "^3.0.0",
-    "vue-tsc": "^1.0.1"
+    "vue-tsc": "^1.0.3"
   },
   "browserslist": [
     "> 1%",
