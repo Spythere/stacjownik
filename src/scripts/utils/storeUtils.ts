@@ -117,17 +117,21 @@ export function getScheduledTrain(train: Train, trainStopIndex: number, stationN
   let prevStationName = '',
     nextStationName = '';
 
+  let prevDepartureLine: string | null = null,
+    nextArrivalLine: string | null = null;
 
   for (let i = trainStopIndex - 1; i >= 0; i--) {
     if (/strong|podg/g.test(followingStops[i].stopName)) {
-      prevStationName = followingStops[i].stopNameRAW;
+      prevStationName = followingStops[i].stopNameRAW.replace(/,.*/g,"");
+
       break;
     }
   }
 
   for (let i = trainStopIndex + 1; i < followingStops.length; i++) {
     if (/strong|podg/g.test(followingStops[i].stopName)) {
-      nextStationName = followingStops[i].stopNameRAW;
+      nextStationName = followingStops[i].stopNameRAW.replace(/,.*/g,"");
+
       break;
     }
   }
@@ -138,10 +142,12 @@ export function getScheduledTrain(train: Train, trainStopIndex: number, stationN
   for (let i = trainStopIndex; i < followingStops.length; i++) {
     const currentStop = followingStops[i];
 
-    if (currentStop.departureLine == null) break;
+    if (currentStop.departureLine == null) continue;
 
     if (!/-|_|it|sbl/gi.test(currentStop.departureLine)) {
       departureLine = currentStop.departureLine;
+      nextArrivalLine = followingStops[i + 1]?.arrivalLine || null;
+
       break;
     }
   }
@@ -149,10 +155,12 @@ export function getScheduledTrain(train: Train, trainStopIndex: number, stationN
   for (let i = trainStopIndex; i >= 0; i--) {
     const currentStop = followingStops[i];
 
-    if (currentStop.arrivalLine == null) break;
+    if (currentStop.arrivalLine == null) continue;
 
     if (!/-|_|it|sbl/gi.test(currentStop.arrivalLine)) {
       arrivingLine = currentStop.arrivalLine;
+      prevDepartureLine = followingStops[i - 1]?.departureLine || null;
+
       break;
     }
   }
@@ -160,7 +168,11 @@ export function getScheduledTrain(train: Train, trainStopIndex: number, stationN
   return {
     trainNo: train.trainNo,
     trainId: train.trainId,
-    
+
+    signal: train.signal,
+    connectedTrack: train.connectedTrack,
+
+
     driverName: train.driverName,
     driverId: train.driverId,
     currentStationName: train.currentStationName,
@@ -179,5 +191,8 @@ export function getScheduledTrain(train: Train, trainStopIndex: number, stationN
 
     arrivingLine,
     departureLine,
+
+    nextArrivalLine,
+    prevDepartureLine,
   };
 }

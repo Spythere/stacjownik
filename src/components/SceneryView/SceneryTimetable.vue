@@ -10,12 +10,6 @@
         <span class="text--grayed">
           {{ station.onlineInfo?.scheduledTrains?.filter((train) => train.stopInfo.confirmed).length || '0' }}
         </span>
-        <!-- 
-        <button class="btn--image" v-if="!timetableOnly">
-          <a :href="`${$route.path}?station=${$route.query.station}&timetableOnly=1`">
-            <img :src="getIcon('view')" alt="View image" />
-          </a>
-        </button> -->
       </h3>
 
       <div class="timetable-checkpoints" v-if="station && station.generalInfo?.checkpoints">
@@ -69,23 +63,15 @@
               </span>
             </span>
             &nbsp;|&nbsp;
-            <span style="color: white">
+            <span>
               {{ scheduledTrain.driverName }}
-            </span>
-            &nbsp;|&nbsp;
-            <span class="general-status">
-              <span :class="scheduledTrain.stopStatus">
-                {{ $t(`timetables.${scheduledTrain.stopStatus}`) }}
-                <span v-if="scheduledTrain.stopStatus == 'arriving'"> {{ scheduledTrain.prevStationName }}</span>
-                <span v-if="scheduledTrain.stopStatus.startsWith('departed')">{{
-                  scheduledTrain.nextStationName
-                }}</span>
-              </span>
             </span>
 
             <div class="info-route">
               <strong>{{ scheduledTrain.beginsAt }} - {{ scheduledTrain.terminatesAt }}</strong>
             </div>
+
+            <ScheduledTrainStatus :scheduledTrain="scheduledTrain" />
           </span>
         </span>
 
@@ -127,9 +113,13 @@
             <span class="arrow"></span>
 
             <span class="stop-line">
-              {{ scheduledTrain.arrivingLine }}
-              {{ scheduledTrain.arrivingLine && scheduledTrain.departureLine && '&gt;' }}
-              {{ scheduledTrain.departureLine }}
+              <span>
+                {{ scheduledTrain.arrivingLine }}
+              </span>
+              <span ></span>
+              <span>
+                {{ scheduledTrain.departureLine }}
+              </span>
             </span>
           </span>
 
@@ -178,11 +168,12 @@ import Station from '../../scripts/interfaces/Station';
 import { useStore } from '../../store/store';
 import imageMixin from '../../mixins/imageMixin';
 import modalTrainMixin from '../../mixins/modalTrainMixin';
+import ScheduledTrainStatus from './ScheduledTrainStatus.vue';
 
 export default defineComponent({
   name: 'SceneryTimetable',
 
-  components: { SelectBox, Loading, TrainModal },
+  components: { SelectBox, Loading, TrainModal, ScheduledTrainStatus },
 
   mixins: [dateMixin, routerMixin, imageMixin, modalTrainMixin],
 
@@ -320,12 +311,14 @@ export default defineComponent({
 
   &-item {
     margin: 0.5em auto;
-    padding: 0 0.5em;
+    padding: 0.5em;
     max-width: 1100px;
 
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
-    gap: 0 0.5em;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2em 0.5em;
+
+    overflow: hidden;
 
     background: #353535;
 
@@ -340,9 +333,6 @@ export default defineComponent({
   }
 
   &-general {
-    padding: 0.5rem 0;
-    border-radius: 10px;
-
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -353,6 +343,10 @@ export default defineComponent({
   &-schedule {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(30px, 1fr));
+
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
   }
 }
 
@@ -415,7 +409,6 @@ export default defineComponent({
   }
 
   .info-route {
-    margin-top: 0.5em;
     width: 100%;
   }
 
@@ -431,38 +424,6 @@ export default defineComponent({
   }
 }
 
-.general-status {
-  text-align: right;
-
-  span.arriving {
-    color: #ccc;
-  }
-
-  span.departed {
-    color: lime;
-    font-weight: bold;
-
-    &-away {
-      font-weight: bold;
-      color: #5ecc5e;
-    }
-  }
-
-  span.stopped {
-    color: #ffa600;
-    font-weight: bold;
-  }
-
-  span.online {
-    color: gold;
-  }
-
-  span.terminated {
-    color: salmon;
-    font-weight: bold;
-  }
-}
-
 .schedule {
   &-arrival,
   &-stop,
@@ -472,23 +433,40 @@ export default defineComponent({
     align-items: center;
 
     margin: 0 0.3rem;
-    font-size: 1.1em;
+    font-size: 1.15em;
   }
 
   &-stop {
     position: relative;
     display: flex;
     flex-direction: column;
-    font-size: 0.85em;
+    font-size: 0.9em;
 
     padding: 0.3em 0;
 
     .stop-line {
-      margin-top: 0.25em;
+      display: flex;
+      position: absolute;
+
+      span {
+        width: 65px;
+        word-break: break-all;
+      }
+
+      span:first-child {
+        text-align: right;
+      }
+
+      span:last-child {
+        text-align: left;
+      }
     }
 
     .stop-time {
-      transform: translateY(-0.25em);
+      position: absolute;
+      transform: translateY(-15px);
+
+      color: $accentCol;
     }
   }
 }
@@ -513,21 +491,9 @@ export default defineComponent({
   }
 }
 
-@include smallScreen() {
-  .timetable {
-    &-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    &-general {
-      width: 100%;
-    }
-
-    &-schedule {
-      width: 100%;
-    }
+@include smallScreen {
+  .timetable-item {
+    grid-template-columns: 1fr;
   }
 }
 </style>

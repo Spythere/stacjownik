@@ -305,12 +305,8 @@
   },
   "timetables": {
     "timetable-only": "Wyodrębnij rozkłady jazdy",
-    "online": "Na stacji",
-    "departed": "Odprawiony do:",
-    "departed-away": "Odjechał do:",
-    "arriving": "W drodze z:",
-    "stopped": "Postój",
-    "terminated": "Skończył bieg",
+    "end": "Koniec rozkładu jazdy",
+    "terminated": "Rozkład jazdy zakończony",
     "begins": "ROZPOCZYNA\nBIEG",
     "terminates": "KOŃCZY BIEG"
   },

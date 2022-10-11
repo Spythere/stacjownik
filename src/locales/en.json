@@ -301,12 +301,8 @@
   },
   "timetables": {
     "timetable-only": "Switch to timetable-only view",
-    "online": "At station",
-    "departed": "Dispatched to:",
-    "departed-away": "Departed to:",
-    "arriving": "Arriving from:",
-    "stopped": "Stopped",
-    "terminated": "Terminated",
+    "end": "Timetable terminates here",
+    "terminated": "Timetable terminated",
     "begins": "BEGINS HERE",
     "terminates": "TERMINATES\nHERE"
   },

@@ -20,6 +20,12 @@ export default interface ScheduledTrain {
     arrivingLine: string | null;
     departureLine: string | null;
 
+    prevDepartureLine: string | null;
+    nextArrivalLine: string | null;
+
+    signal: string;
+    connectedTrack: string;
+
     stopLabel: string;
     stopStatus: string;
     stopStatusID: number;
