@@ -29,8 +29,6 @@
     </div>
 
     <div class="timetable-list">
-      <!-- <transition name="scenery-timetable-list-anim" mode="out-in"> -->
-      <!-- <div :key="store.dataStatuses.trains + selectedCheckpoint" class="scenery-timetable-list"> -->
       <div style="padding-bottom: 5em" v-if="store.dataStatuses.trains == 0 && computedScheduledTrains.length == 0">
         <Loading />
       </div>
@@ -43,115 +41,116 @@
         {{ $t('scenery.no-timetables') }}
       </span>
 
-      <div
-        class="timetable-item"
-        v-for="(scheduledTrain, i) in computedScheduledTrains"
-        :key="i + 1"
-        tabindex="0"
-        @click.prevent.stop="selectModalTrain(scheduledTrain.trainId)"
-        @keydown.enter.prevent="selectModalTrain(scheduledTrain.trainId)"
-      >
-        <span class="timetable-general">
-          <span class="general-info">
-            <span class="info-number">
-              <strong>{{ scheduledTrain.category }}</strong>
-              {{ scheduledTrain.trainNo }}
+      <transition-group name="timetables-anim">
+        <div
+          class="timetable-item"
+          v-for="(scheduledTrain, i) in computedScheduledTrains"
+          :key="scheduledTrain.trainId"
+          tabindex="0"
+          @click.prevent.stop="selectModalTrain(scheduledTrain.trainId)"
+          @keydown.enter.prevent="selectModalTrain(scheduledTrain.trainId)"
+        >
+          <span class="timetable-general">
+            <span class="general-info">
+              <span class="info-number">
+                <strong>{{ scheduledTrain.category }}</strong>
+                {{ scheduledTrain.trainNo }}
 
-              <span class="g-tooltip" v-if="scheduledTrain.stopInfo.comments">
-                <img :src="getIcon('warning')" />
-                <span class="content" v-html="scheduledTrain.stopInfo.comments"> </span>
-              </span>
-            </span>
-            &nbsp;|&nbsp;
-            <span>
-              {{ scheduledTrain.driverName }}
-            </span>
-
-            <div class="info-route">
-              <strong>{{ scheduledTrain.beginsAt }} - {{ scheduledTrain.terminatesAt }}</strong>
-            </div>
-
-            <ScheduledTrainStatus :scheduledTrain="scheduledTrain" />
-          </span>
-        </span>
-
-        <span class="timetable-schedule">
-          <span class="schedule-arrival">
-            <span class="arrival-time begins" v-if="scheduledTrain.stopInfo.beginsHere">
-              {{ $t('timetables.begins') }}
-            </span>
-
-            <span class="arrival-time" v-else>
-              <div v-if="scheduledTrain.stopInfo.arrivalDelay == 0">
-                <span>{{ timestampToString(scheduledTrain.stopInfo.arrivalTimestamp) }}</span>
-              </div>
-              <div v-else>
-                <div>
-                  <s style="margin-right: 0.2em" class="text--grayed">{{
-                    timestampToString(scheduledTrain.stopInfo.arrivalTimestamp)
-                  }}</s>
-                </div>
-
-                <span>
-                  {{ timestampToString(scheduledTrain.stopInfo.arrivalRealTimestamp) }}
-                  ({{ scheduledTrain.stopInfo.arrivalDelay > 0 ? '+' : '' }}{{ scheduledTrain.stopInfo.arrivalDelay }})
+                <span class="g-tooltip" v-if="scheduledTrain.stopInfo.comments">
+                  <img :src="getIcon('warning')" />
+                  <span class="content" v-html="scheduledTrain.stopInfo.comments"> </span>
                 </span>
+              </span>
+              &nbsp;|&nbsp;
+              <span>
+                {{ scheduledTrain.driverName }}
+              </span>
+
+              <div class="info-route">
+                <strong>{{ scheduledTrain.beginsAt }} - {{ scheduledTrain.terminatesAt }}</strong>
               </div>
+
+              <ScheduledTrainStatus :scheduledTrain="scheduledTrain" />
             </span>
           </span>
 
-          <span class="schedule-stop">
-            <span class="stop-time">
-              <span v-if="scheduledTrain.stopInfo.stopTime">
-                {{ scheduledTrain.stopInfo.stopTime }}
-                {{ scheduledTrain.stopInfo.stopType || 'pt' }}
+          <span class="timetable-schedule">
+            <span class="schedule-arrival">
+              <span class="arrival-time begins" v-if="scheduledTrain.stopInfo.beginsHere">
+                {{ $t('timetables.begins') }}
               </span>
 
-              <span v-else>&nbsp;</span>
-            </span>
-
-            <span class="arrow"></span>
-
-            <span class="stop-line">
-              <span>
-                {{ scheduledTrain.arrivingLine }}
-              </span>
-              <span ></span>
-              <span>
-                {{ scheduledTrain.departureLine }}
-              </span>
-            </span>
-          </span>
-
-          <span class="schedule-departure">
-            <span class="departure-time terminates" v-if="scheduledTrain.stopInfo.terminatesHere">
-              {{ $t('timetables.terminates') }}
-            </span>
-
-            <span class="departure-time" v-else>
-              <div v-if="scheduledTrain.stopInfo.departureDelay == 0">
-                <span>{{ timestampToString(scheduledTrain.stopInfo.departureTimestamp) }}</span>
-              </div>
-              <div v-else>
-                <div>
-                  <s style="margin-right: 0.2em" class="text--grayed">{{
-                    timestampToString(scheduledTrain.stopInfo.departureTimestamp)
-                  }}</s>
+              <span class="arrival-time" v-else>
+                <div v-if="scheduledTrain.stopInfo.arrivalDelay == 0">
+                  <span>{{ timestampToString(scheduledTrain.stopInfo.arrivalTimestamp) }}</span>
                 </div>
+                <div v-else>
+                  <div>
+                    <s style="margin-right: 0.2em" class="text--grayed">{{
+                      timestampToString(scheduledTrain.stopInfo.arrivalTimestamp)
+                    }}</s>
+                  </div>
 
-                <span>
-                  {{ timestampToString(scheduledTrain.stopInfo.departureRealTimestamp) }}
-                  ({{ scheduledTrain.stopInfo.departureDelay > 0 ? '+' : ''
-                  }}{{ scheduledTrain.stopInfo.departureDelay }})
+                  <span>
+                    {{ timestampToString(scheduledTrain.stopInfo.arrivalRealTimestamp) }}
+                    ({{ scheduledTrain.stopInfo.arrivalDelay > 0 ? '+' : ''
+                    }}{{ scheduledTrain.stopInfo.arrivalDelay }})
+                  </span>
+                </div>
+              </span>
+            </span>
+
+            <span class="schedule-stop">
+              <span class="stop-time">
+                <span v-if="scheduledTrain.stopInfo.stopTime">
+                  {{ scheduledTrain.stopInfo.stopTime }}
+                  {{ scheduledTrain.stopInfo.stopType || 'pt' }}
                 </span>
-              </div>
+
+                <span v-else>&nbsp;</span>
+              </span>
+
+              <span class="arrow"></span>
+
+              <span class="stop-line">
+                <span>
+                  {{ scheduledTrain.arrivingLine }}
+                </span>
+                <span></span>
+                <span>
+                  {{ scheduledTrain.departureLine }}
+                </span>
+              </span>
+            </span>
+
+            <span class="schedule-departure">
+              <span class="departure-time terminates" v-if="scheduledTrain.stopInfo.terminatesHere">
+                {{ $t('timetables.terminates') }}
+              </span>
+
+              <span class="departure-time" v-else>
+                <div v-if="scheduledTrain.stopInfo.departureDelay == 0">
+                  <span>{{ timestampToString(scheduledTrain.stopInfo.departureTimestamp) }}</span>
+                </div>
+                <div v-else>
+                  <div>
+                    <s style="margin-right: 0.2em" class="text--grayed">{{
+                      timestampToString(scheduledTrain.stopInfo.departureTimestamp)
+                    }}</s>
+                  </div>
+
+                  <span>
+                    {{ timestampToString(scheduledTrain.stopInfo.departureRealTimestamp) }}
+                    ({{ scheduledTrain.stopInfo.departureDelay > 0 ? '+' : ''
+                    }}{{ scheduledTrain.stopInfo.departureDelay }})
+                  </span>
+                </div>
+              </span>
             </span>
           </span>
-        </span>
-      </div>
+        </div>
+      </transition-group>
     </div>
-
-    <!-- </transition> -->
   </section>
 </template>
 
@@ -169,6 +168,7 @@ import { useStore } from '../../store/store';
 import imageMixin from '../../mixins/imageMixin';
 import modalTrainMixin from '../../mixins/modalTrainMixin';
 import ScheduledTrainStatus from './ScheduledTrainStatus.vue';
+import ScheduledTrain from '../../scripts/interfaces/ScheduledTrain';
 
 export default defineComponent({
   name: 'SceneryTimetable',
@@ -273,11 +273,21 @@ export default defineComponent({
 @import '../../styles/responsive.scss';
 @import '../../styles/variables.scss';
 
-// .scenery-timetable {
-//   height: 85vh;
-//   max-height: 900px;
-//   min-height: 450px;
-// }
+.timetables-anim-move,
+.timetables-anim-enter-active,
+.timetables-anim-leave-active {
+  transition: all 250ms ease;
+}
+
+.timetables-anim-enter-from,
+.timetables-anim-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.timetables-anim-leave-active {
+  position: absolute;
+}
 
 .scenery-timetable {
   height: 100%;

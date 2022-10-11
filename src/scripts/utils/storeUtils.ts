@@ -136,8 +136,8 @@ export function getScheduledTrain(train: Train, trainStopIndex: number, stationN
     }
   }
 
-  let departureLine: string | null = trainStop.departureLine;
-  let arrivingLine: string | null = trainStop.arrivalLine;
+  let departureLine: string | null = null;
+  let arrivingLine: string | null = null;
 
   for (let i = trainStopIndex; i < followingStops.length; i++) {
     const currentStop = followingStops[i];
