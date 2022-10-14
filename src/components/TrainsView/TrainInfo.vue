@@ -4,14 +4,17 @@
       <div class="train_general">
         <span>
           <span class="timetable-id" v-if="train.timetableData">#{{ train.timetableData.timetableId }}</span>
-          
+
           <span class="timetable_warnings">
             <span class="train-badge twr" v-if="train.timetableData?.TWR">TWR</span>
             <span class="train-badge skr" v-if="train.timetableData?.SKR">SKR</span>
           </span>
-          <strong v-if="train.timetableData">{{ train.timetableData.category }}&nbsp;</strong>
-          <strong>{{ train.trainNo }}</strong>
-          <span>&nbsp;| {{ train.driverName }}&nbsp;</span>
+          <strong class="timetable-category" v-if="train.timetableData">
+            {{ train.timetableData.category }}&nbsp;
+          </strong>
+          <strong class="train-number">{{ train.trainNo }}</strong>
+          |
+          <span class="train-driver" :class="{ supporter: train.isSupporter }">{{ train.driverName }}</span>
           <b class="warning-timeout" v-if="train.isTimeout" :title="$t('trains.timeout')">?</b>
         </span>
       </div>
@@ -151,10 +154,10 @@ export default defineComponent({
 
 .warning-timeout {
   background-color: #be3728;
-  
+
   display: inline-block;
   text-align: center;
-  
+
   width: 1.25em;
   height: 1.25em;
   border-radius: 50%;
@@ -192,6 +195,13 @@ export default defineComponent({
 
   &.offline {
     background-color: #b83b2d;
+  }
+}
+
+.train-driver {
+  &.supporter {
+    color: orange;
+    text-shadow: orange 0 0 5px;
   }
 }
 

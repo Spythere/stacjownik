@@ -100,7 +100,10 @@
             </td>
 
             <td class="station_dispatcher-exp">
-              <span v-if="station.onlineInfo" :style="calculateExpStyle(station.onlineInfo.dispatcherExp)">
+              <span
+                v-if="station.onlineInfo"
+                :style="calculateExpStyle(station.onlineInfo.dispatcherExp, station.onlineInfo.dispatcherIsSupporter)"
+              >
                 {{ 2 > station.onlineInfo.dispatcherExp ? 'L' : station.onlineInfo.dispatcherExp }}
               </span>
             </td>

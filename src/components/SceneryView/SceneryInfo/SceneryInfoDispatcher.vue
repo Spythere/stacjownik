@@ -1,7 +1,10 @@
 <template>
   <section class="info-dispatcher">
     <div class="dispatcher" v-if="station.onlineInfo">
-      <span class="dispatcher_level" :style="calculateExpStyle(station.onlineInfo.dispatcherExp)">
+      <span
+        class="dispatcher_level"
+        :style="calculateExpStyle(station.onlineInfo.dispatcherExp, station.onlineInfo.dispatcherIsSupporter)"
+      >
         {{ station.onlineInfo.dispatcherExp > 1 ? station.onlineInfo.dispatcherExp : 'L' }}
       </span>
 

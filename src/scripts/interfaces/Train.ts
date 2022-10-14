@@ -22,6 +22,7 @@ export default interface Train {
   cars: string[];
 
   isTimeout: boolean;
+  isSupporter: boolean;
 
   timetableData?: {
     timetableId: number;

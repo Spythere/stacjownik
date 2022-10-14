@@ -98,6 +98,8 @@ export const useStore = defineStore('store', {
             lastSeen: train.lastSeen,
             isTimeout: train.isTimeout,
 
+            isSupporter: train.driverIsSupporter,
+
             timetableData: timetable
               ? {
                   timetableId: timetable.timetableId,
