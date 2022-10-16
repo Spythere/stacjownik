@@ -10,11 +10,12 @@
             <span class="train-badge skr" v-if="train.timetableData?.SKR">SKR</span>
           </span>
           <strong class="timetable-category" v-if="train.timetableData">
-            {{ train.timetableData.category }}&nbsp;
+            {{ train.timetableData.category }}
           </strong>
-          <strong class="train-number">{{ train.trainNo }}</strong>
+          <strong class="train-number">&nbsp;{{ train.trainNo }}</strong>
           |
           <span class="train-driver" :class="{ supporter: train.isSupporter }">{{ train.driverName }}</span>
+          
           <b class="warning-timeout" v-if="train.isTimeout" :title="$t('trains.timeout')">?</b>
         </span>
       </div>
@@ -161,6 +162,8 @@ export default defineComponent({
   width: 1.25em;
   height: 1.25em;
   border-radius: 50%;
+
+  margin-left: 0.25em;
 }
 
 .timetable_stops {
