@@ -1,15 +1,14 @@
 <template>
   <section class="journal-timetables">
-    
     <div class="journal_wrapper">
       <JournalOptions
-      @on-search-confirm="searchHistory"
-      @on-options-reset="resetOptions"
-      :sorter-option-ids="['timetableId', 'beginDate', 'distance', 'total-stops']"
-      :filters="journalTimetableFilters"
-      :data-status="dataStatus"
+        @on-search-confirm="searchHistory"
+        @on-options-reset="resetOptions"
+        :sorter-option-ids="['timetableId', 'beginDate', 'distance', 'total-stops']"
+        :filters="journalTimetableFilters"
+        :data-status="dataStatus"
       />
-      
+
       <DriverStats />
       <!-- <button @click="statsCardOpen = true">Stats</button> -->
 
@@ -106,7 +105,7 @@ export default defineComponent({
     const searchersValues = reactive({
       'search-train': '',
       'search-driver': '',
-      'search-author': '',
+      'search-dispatcher': '',
       'search-date': '',
     } as JorunalTimetableSearchType);
 
@@ -158,7 +157,7 @@ export default defineComponent({
       this.searchersValues['search-date'] = '';
       this.searchersValues['search-driver'] = '';
       this.searchersValues['search-train'] = '';
-      this.searchersValues['search-author'] = '';
+      this.searchersValues['search-dispatcher'] = '';
 
       this.journalFilterActive = this.journalTimetableFilters[0];
       this.sorterActive.id = 'timetableId';
@@ -208,7 +207,7 @@ export default defineComponent({
 
       const driverName = props.searchers?.['search-driver'].trim();
       const trainNo = props.searchers?.['search-train'].trim();
-      const authorName = props.searchers?.['search-author'].trim();
+      const authorName = props.searchers?.['search-dispatcher'].trim();
 
       const dateString = props.searchers?.['search-date'].trim();
       const timestampFrom = dateString ? Date.parse(new Date(dateString).toISOString()) - 120 * 60 * 1000 : undefined;

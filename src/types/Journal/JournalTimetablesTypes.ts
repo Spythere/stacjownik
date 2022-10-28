@@ -1,7 +1,7 @@
 import { JournalFilterType } from '../../scripts/enums/JournalFilterType';
 
 export type JorunalTimetableSearchType = {
-  [key in 'search-driver' | 'search-train' | 'search-date' | 'search-author']: string;
+  [key in 'search-driver' | 'search-train' | 'search-date' | 'search-dispatcher']: string;
 };
 
 export interface JournalTimetableFilter {

@@ -7,6 +7,14 @@
       {{ $t('options.filters') }} [F]
     </button>
 
+    <datalist id="search-driver">
+      <option v-for="sugg in driverSuggestions" :value="sugg"></option>
+    </datalist>
+
+    <datalist id="search-dispatcher">
+      <option v-for="sugg in dispatcherSuggestions" :value="sugg"></option>
+    </datalist>
+
     <transition name="options-anim">
       <div class="options_wrapper" v-if="showOptions">
         <div class="options_content">
@@ -17,23 +25,15 @@
 
               <div class="search-box">
                 <input
-                  v-if="propName == 'search-date'"
                   class="search-input"
-                  id="date"
-                  type="date"
-                  min="2022-02-01"
-                  @keydown.enter="onSearchConfirm"
                   v-model="searchersValues[propName]"
-                />
-
-                <input
-                  v-else
-                  class="search-input"
                   @keydown.enter="onSearchConfirm"
                   @focus="preventKeyDown = true"
                   @blur="preventKeyDown = false"
                   :placeholder="$t(`options.${propName}`)"
-                  v-model="searchersValues[propName]"
+                  :type="propName == 'search-date' ? 'date' : 'text'"
+                  :min="propName == 'search-date' ? '2022-02-01' : undefined"
+                  :list="propName.toString()"
                 />
 
                 <button class="search-exit">
@@ -84,10 +84,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, Prop, PropType } from 'vue';
+import axios from 'axios';
+import { defineComponent, inject, PropType } from 'vue';
 import imageMixin from '../../mixins/imageMixin';
 import keyMixin from '../../mixins/keyMixin';
 import { DataStatus } from '../../scripts/enums/DataStatus';
+import { URLs } from '../../scripts/utils/apiURLs';
 import { JournalTimetableFilter } from '../../types/Journal/JournalTimetablesTypes';
 import ActionButton from '../Global/ActionButton.vue';
 import SelectBox from '../Global/SelectBox.vue';
@@ -117,6 +119,12 @@ export default defineComponent({
   data() {
     return {
       showOptions: false,
+
+      driverSuggestions: [] as string[],
+      dispatcherSuggestions: [] as string[],
+
+      searchTimeout: 0,
+
       DataStatus,
     };
   },
@@ -135,6 +143,51 @@ export default defineComponent({
         id,
         value: this.$t(`options.sort-${id}`),
       }));
+    },
+  },
+
+  watch: {
+    async 'searchersValues.search-driver'(value: string | undefined) {
+      clearTimeout(this.searchTimeout);
+
+      if (!value || value == '') return;
+      if (value.length < 3) return;
+
+      this.searchTimeout = setTimeout(async () => {
+        try {
+          const driverSuggestions: string[] = await (
+            await axios.get(`${URLs.stacjownikAPI}/api/getDriverSuggestions?name=${value}`)
+          ).data;
+
+          this.driverSuggestions = driverSuggestions;
+        } catch (error) {
+          this.driverSuggestions = [];
+        }
+      }, 1500);
+
+      // this.loadingDriverSuggestions = true;
+
+      // this.loadingDriverSuggestions = false;
+      // this.nextSearchTimestamp = Date.now() + 100;
+    },
+
+    async 'searchersValues.search-dispatcher'(value: string | undefined) {
+      clearTimeout(this.searchTimeout);
+
+      if (!value || value == '') return;
+      if (value.length < 3) return;
+
+      this.searchTimeout = setTimeout(async () => {
+        try {
+          const dispatcherSuggestions: string[] = await (
+            await axios.get(`${URLs.stacjownikAPI}/api/getDispatcherSuggestions?name=${value}`)
+          ).data;
+
+          this.dispatcherSuggestions = dispatcherSuggestions;
+        } catch (error) {
+          this.dispatcherSuggestions = [];
+        }
+      }, 1500);
     },
   },
 
