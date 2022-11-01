@@ -17,7 +17,7 @@
         />
 
         <datalist id="sceneries">
-          <option v-for="scenery in store.stationList" :value="scenery.name"></option>
+          <option v-for="scenery in sortedStationList" :value="scenery.name"></option>
         </datalist>
       </label>
     </div>
@@ -148,6 +148,14 @@ export default defineComponent({
     }
 
     this.currentRegion = this.store.region;
+  },
+
+  computed: {
+    sortedStationList() {
+      return this.store.stationList
+        .filter((s) => s.name.toLocaleLowerCase().includes(this.chosenSearchScenery.toLocaleLowerCase()))
+        .sort((s1, s2) => (s1.name > s2.name ? 1 : -1));
+    },
   },
 
   watch: {
