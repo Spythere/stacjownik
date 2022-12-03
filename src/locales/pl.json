@@ -259,6 +259,9 @@
 
     "stats-title": "STATYSTYKI MASZYNISTY",
 
+    "last-seen-at": "Ostatnio widziany na: ",
+    "currently-at": "Obecnie na scenerii: ",
+
     "stats-timetables": "ROZKŁADY JAZDY",
     "stats-longest-timetable": "NAJDŁUŻSZY RJ",
     "stats-avg-timetable": "ŚREDNIA DŁUGOŚĆ RJ",

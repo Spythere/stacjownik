@@ -72,6 +72,13 @@
             {{ timetable.confirmedStopsCount }} /
             {{ timetable.allStopsCount }}
           </span>
+          <span class="text--grayed" v-if="!timetable.fulfilled">
+            &bull;
+            <b>
+              {{ $t(`journal.${timetable.terminated ? 'last-seen-at' : 'currently-at'}`) }}
+              {{ timetable.currentSceneryName?.replace(/.[a-zA-Z0-9]+.sc/, '') }}
+            </b>
+          </span>
         </div>
 
         <!-- Nick dyżurnego -->

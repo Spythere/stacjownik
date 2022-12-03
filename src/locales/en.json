@@ -252,6 +252,9 @@
     "stock-max-speed": "Maximum registered speed",
 
     "load-data": "Load further data...",
+    
+    "last-seen-at": "Last seen at",
+    "currently-at": "Currently at",
 
     "stats-title": "DRIVING STATISTICS OF",
 
