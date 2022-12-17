@@ -266,7 +266,11 @@
     "stats-longest-timetable": "NAJDŁUŻSZY RJ",
     "stats-avg-timetable": "ŚREDNIA DŁUGOŚĆ RJ",
     "stats-distance": "DYSTANS",
-    "stats-stations": "STACJE"
+    "stats-stations": "STACJE",
+
+    "timetables-stats-total": "Dyżurni stworzyli dziś <b class='text--primary'>{count}</b> rozkładów jazdy o łącznym dystansie <b class='text--primary'>{distance}km</b>.",
+    "timetable-stats-longest": "Najdłuższym rozkładem jazdy jest dzisiaj <b>#{id}</b> stworzony przez dyżurnego <b>{author}</b> dla maszynisty <b>{driver}</b> - <b class='text--primary'>{distance}km</b>!",
+    "timetable-stats-most-active": "Dzisiejszym najaktywniejszym dyżurnym jest <b>{dispatcher}</b>, który stworzył <b class='text--primary'>{count}</b> RJ."
   },
   "scenery": {
     "users": "GRACZE ONLINE",

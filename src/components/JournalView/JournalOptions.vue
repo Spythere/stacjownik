@@ -89,7 +89,9 @@ import { defineComponent, inject, PropType } from 'vue';
 import imageMixin from '../../mixins/imageMixin';
 import keyMixin from '../../mixins/keyMixin';
 import { DataStatus } from '../../scripts/enums/DataStatus';
+import { DriverStatsAPIData } from '../../scripts/interfaces/api/DriverStatsAPIData';
 import { URLs } from '../../scripts/utils/apiURLs';
+import { useStore } from '../../store/store';
 import { JournalTimetableFilter } from '../../types/Journal/JournalTimetablesTypes';
 import ActionButton from '../Global/ActionButton.vue';
 import SelectBox from '../Global/SelectBox.vue';
@@ -124,6 +126,7 @@ export default defineComponent({
       dispatcherSuggestions: [] as string[],
 
       searchTimeout: 0,
+      store: useStore(),
 
       DataStatus,
     };
@@ -138,6 +141,10 @@ export default defineComponent({
   },
 
   computed: {
+    driverStatsName() {
+      return this.store.driverStatsName;
+    },
+
     translatedSorterOptions() {
       return this.$props.sorterOptionIds.map((id) => ({
         id,
@@ -147,6 +154,11 @@ export default defineComponent({
   },
 
   watch: {
+    async driverStatsName(value: string) {
+      await this.fetchDispatcherStats();
+      this.store.currentStatsTab = value ? 'driver' : 'daily';
+    },
+
     async 'searchersValues.search-driver'(value: string | undefined) {
       clearTimeout(this.searchTimeout);
 
@@ -192,6 +204,18 @@ export default defineComponent({
   },
 
   methods: {
+    async fetchDispatcherStats() {
+      this.store.driverStatsData = undefined;
+
+      if (!this.store.driverStatsName) return;
+
+      const statsData: DriverStatsAPIData = await (
+        await axios.get(`${URLs.stacjownikAPI}/api/getDriverInfo?name=${this.store.driverStatsName}`)
+      ).data;
+
+      this.store.driverStatsData = statsData;
+    },
+
     // Override keyMixin function
     onKeyDownFunction() {
       this.showOptions = !this.showOptions;

@@ -1,6 +1,8 @@
 <template>
   <section class="journal-timetables">
     <div class="journal_wrapper">
+      <TimetablesStats />
+
       <JournalOptions
         @on-search-confirm="searchHistory"
         @on-options-reset="resetOptions"
@@ -9,7 +11,7 @@
         :data-status="dataStatus"
       />
 
-      <DriverStats />
+      <!-- <DriverStats /> -->
       <!-- <button @click="statsCardOpen = true">Stats</button> -->
 
       <div class="list_wrapper" @scroll="handleScroll">
@@ -66,11 +68,12 @@ import modalTrainMixin from '../../mixins/modalTrainMixin';
 import imageMixin from '../../mixins/imageMixin';
 import JournalTimetablesList from './JournalTimetablesList.vue';
 import { journalTimetableFilters } from '../../constants/Journal/JournalTimetablesConsts';
+import TimetablesStats from './TimetablesStats.vue';
 
 const TIMETABLES_API_URL = `${URLs.stacjownikAPI}/api/getTimetables`;
 
 export default defineComponent({
-  components: { DriverStats, Loading, JournalOptions, JournalTimetablesList },
+  components: { DriverStats, Loading, JournalOptions, JournalTimetablesList, TimetablesStats },
   mixins: [dateMixin, routerMixin, modalTrainMixin, imageMixin],
 
   name: 'JournalTimetables',

@@ -9,7 +9,7 @@
             <b>{{ $t('availability.title') }}:</b> {{ $t(`availability.${station.generalInfo.availability}`) }}
 
             <span v-if="station.generalInfo.reqLevel > -1">
-              - {{ $tc('scenery.req-level', station.generalInfo.reqLevel, { lvl: station.generalInfo.reqLevel }) }}
+              - {{ $t('scenery.req-level', { lvl: station.generalInfo.reqLevel }, station.generalInfo.reqLevel) }}
             </span>
           </span>
 
@@ -33,7 +33,7 @@
         <scenery-info-routes :station="station" />
 
         <div class="scenery-authors" v-if="station.generalInfo.authors && station.generalInfo.authors.length > 0">
-          <b> {{ $tc('scenery.authors-title', station.generalInfo.authors.length) }}: </b>
+          <b> {{ $t('scenery.authors-title', { authors: station.generalInfo.authors.length }, station.generalInfo.authors.length) }}: </b>
           {{ station.generalInfo.authors.join(', ') }}
         </div>
 
@@ -71,7 +71,6 @@ import SceneryInfoUserList from './SceneryInfo/SceneryInfoUserList.vue';
 import SceneryInfoSpawnList from './SceneryInfo/SceneryInfoSpawnList.vue';
 import SceneryInfoRoutes from './SceneryInfo/SceneryInfoRoutes.vue';
 import Station from '../../scripts/interfaces/Station';
-
 
 export default defineComponent({
   components: {

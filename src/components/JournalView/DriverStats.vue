@@ -48,43 +48,14 @@ import { URLs } from '../../scripts/utils/apiURLs';
 import { useStore } from '../../store/store';
 
 export default defineComponent({
-  emits: ['closeCard'],
-
-  setup() {
-    const store = useStore();
-    return {
-      store,
-      driverStatsName: computed(() => store.driverStatsName),
-    };
-  },
-
   data() {
     return {
       test: Math.random(),
       lastDispatcherName: '',
+      store: useStore(),
 
       lastTimetables: [] as TimetableHistory[],
     };
-  },
-
-  watch: {
-    driverStatsName(value: string) {
-      this.fetchDispatcherStats();
-    },
-  },
-
-  methods: {
-    async fetchDispatcherStats() {
-      this.store.driverStatsData = undefined;
-
-      if (!this.store.driverStatsName) return;
-
-      const statsData: DriverStatsAPIData = await (
-        await axios.get(`${URLs.stacjownikAPI}/api/getDriverInfo?name=${this.store.driverStatsName}`)
-      ).data;
-
-      this.store.driverStatsData = statsData;
-    },
   },
 });
 </script>

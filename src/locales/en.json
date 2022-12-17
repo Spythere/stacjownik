@@ -252,7 +252,7 @@
     "stock-max-speed": "Maximum registered speed",
 
     "load-data": "Load further data...",
-    
+
     "last-seen-at": "Last seen at",
     "currently-at": "Currently at",
 
@@ -262,7 +262,11 @@
     "stats-longest-timetable": "LONGEST TIMETABLE",
     "stats-avg-timetable": "AVERAGE TIMETABLE LENGTH",
     "stats-distance": "DISTANCE",
-    "stats-stations": "STATIONS"
+    "stats-stations": "STATIONS",
+
+    "timetables-stats-total": "Today, dispatchers made so far <b class='text--primary'>{count}</b> timetables with total distance of <b class='text--primary'>{distance}km</b>.",
+    "timetable-stats-longest": "Today's the longest timetable is <b>#{id}</b> made by <b>{author}</b> for <b>{driver}</b> - <b class='text--primary'>{distance}km</b>!",
+    "timetable-stats-most-active": "The most active dispatcher is <b>{dispatcher}</b> who created <b class='text--primary'>{count}</b> timetables."
   },
   "scenery": {
     "users": "PLAYERS ONLINE",
