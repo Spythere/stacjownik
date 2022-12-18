@@ -5,6 +5,7 @@
         v-for="tab in data.tabs"
         class="btn--filled"
         :data-selected="tab.name == store.currentStatsTab"
+        :data-inactive="tab.inactive"
         @click="onTabButtonClick(tab.name)"
       >
         {{ $t(tab.titlePath) }}
@@ -21,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import { onActivated, onDeactivated, reactive, Ref, ref } from 'vue';
+import { computed, KeepAlive, onActivated, onDeactivated, reactive, Ref, ref, watch } from 'vue';
 import { useStore } from '../../store/store';
 import JournalDailyStats from './DailyStats.vue';
 import JournalDriverStats from './JournalDriverStats.vue';
@@ -43,8 +44,9 @@ let data = reactive({
     {
       name: 'driver',
       titlePath: 'journal.driver-stats-title',
+      inactive: true,
     },
-  ] as { name: TStatTab; titlePath: string }[],
+  ] as { name: TStatTab; titlePath: string; inactive?: boolean }[],
 });
 
 // Methods
@@ -60,35 +62,14 @@ onDeactivated(() => {
   dailyStatsComp.value?.stopFetchingDailyStats();
 });
 
-// Translation
+watch(
+  computed(() => store.driverStatsData),
+  (statsData) => {
+    console.log(statsData);
 
-// const { t } = useI18n();
-
-// const totalTimetables = computed(() =>
-//   t('journal.timetables-stats-total', { count: data.stats.totalTimetables, distance: data.stats.distanceSum })
-// );
-
-// const longestTimetable = computed(() =>
-//   t('journal.timetable-stats-longest', {
-//     id: data.stats.timetableId,
-//     author: data.stats.timetableAuthor,
-//     driver: data.stats.timetableDriver,
-//     distance: data.stats.timetableRouteDistance,
-//   })
-// );
-
-// const mostActiveDispatcher = computed(() =>
-//   t('journal.timetable-stats-most-active', {
-//     dispatcher: data.stats.dispatcherName,
-//     count: data.stats.dispatcherTimetablesCount,
-//   })
-// );
-
-// const timetablesStats = computed(
-//   () => `&bull; ${totalTimetables.value}<br>&bull; ${longestTimetable.value}<br>&bull; ${mostActiveDispatcher.value}`
-// );
-
-// Hooks
+    data.tabs[1].inactive = statsData ? false : true;
+  }
+);
 </script>
 
 <style lang="scss" scoped>
@@ -103,10 +84,15 @@ onDeactivated(() => {
     font-weight: bold;
     border-radius: 0.4em 0.4em 0 0;
     padding: 0.5em 0.75em;
+    
+    &[data-inactive='true'] {
+      color: gray;
+    }
 
     &[data-selected='true'] {
       color: $accentCol;
     }
+
   }
 }
 </style>

@@ -39,11 +39,11 @@
       </div>
     </span>
 
-    <span v-else-if="store.driverStatsStatus == DataStatus.Loading">{{ $t('journal.stats-loading') }}</span>
-    <span v-else-if="store.driverStatsStatus == DataStatus.Error">
+    <b v-else-if="store.driverStatsStatus == DataStatus.Loading">{{ $t('journal.stats-loading') }}</b>
+    <b v-else-if="store.driverStatsStatus == DataStatus.Error">
       {{ $t('journal.stats-error ') }}
-    </span>
-    <span v-else>{{ $t('journal.driver-stats-info') }}</span>
+    </b>
+    <b v-else>{{ $t('journal.driver-stats-info') }}</b>
   </div>
 </template>
 

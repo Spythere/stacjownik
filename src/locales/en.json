@@ -271,8 +271,9 @@
     "timetable-count": "timetable | timetables",
 
     "daily-stats-title": "DAILY STATS",
-    "driver-stats-title": "DRIVER STATS",
+    "daily-stats-info": "Today's statistics are unavailable yet!",
 
+    "driver-stats-title": "DRIVER STATS",
     "driver-stats-info": "Enter a proper nickname into filters [F] to see user's driving statistics!",
 
     "stats-loading": "Fetching statistics...",

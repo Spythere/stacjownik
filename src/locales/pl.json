@@ -275,8 +275,10 @@
     "timetable-count": "rozkład jazdy | rozkładów jazdy",
 
     "daily-stats-title": "STATYSTYKI DNIA",
+    "daily-stats-info": "Dzisiejsze statystyki nie są jeszcze dostępne!",
+
     "driver-stats-title": "STATYSTYKI GRACZA",
-    "driver-stats-info": "Wpisz nazwę użytkownika w filtrach [F], aby zobaczyć jego statystyki maszynisty!",  
+    "driver-stats-info": "Wpisz nazwę użytkownika w filtrach [F], aby zobaczyć jego statystyki maszynisty!",
 
     "stats-loading": "Pobieranie statystyk...",
     "stats-error": "Ups! Wystąpił błąd podczas próby pobrania statystyk! :/"
