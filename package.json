@@ -1,6 +1,6 @@
 {
   "name": "stacjownik",
-  "version": "1.10.10",
+  "version": "1.11.0",
   "private": true,
   "scripts": {
     "dev": "vite",
@@ -8,7 +8,7 @@
     "deploy": "yarn build && firebase deploy --only hosting",
     "preview": "vite preview"
   },
-  "dependencies": {
+  "dependencies": { 
     "core-js": "^3.12.1",
     "dotenv": "^16.0.3",
     "firebase": "^9.8.1",
