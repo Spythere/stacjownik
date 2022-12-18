@@ -268,9 +268,18 @@
     "stats-distance": "DYSTANS",
     "stats-stations": "STACJE",
 
-    "timetables-stats-total": "Dyżurni stworzyli dziś <b class='text--primary'>{count}</b> rozkładów jazdy o łącznym dystansie <b class='text--primary'>{distance}km</b>.",
-    "timetable-stats-longest": "Najdłuższym rozkładem jazdy jest dzisiaj <b>#{id}</b> stworzony przez dyżurnego <b>{author}</b> dla maszynisty <b>{driver}</b> - <b class='text--primary'>{distance}km</b>!",
-    "timetable-stats-most-active": "Dzisiejszym najaktywniejszym dyżurnym jest <b>{dispatcher}</b>, który stworzył <b class='text--primary'>{count}</b> RJ."
+    "timetable-stats-total": "Dyżurni stworzyli dziś {count}  o łącznym dystansie {distance}",
+    "timetable-stats-longest": "Najdłuższym rozkładem jazdy jest dzisiaj #{id} stworzony przez dyżurnego {author} dla maszynisty {driver} - {distance}",
+    "timetable-stats-most-active": "Dzisiejszym najaktywniejszym dyżurnym jest {dispatcher}, który stworzył {count}",
+
+    "timetable-count": "rozkład jazdy | rozkładów jazdy",
+
+    "daily-stats-title": "STATYSTYKI DNIA",
+    "driver-stats-title": "STATYSTYKI GRACZA",
+    "driver-stats-info": "Wpisz nazwę użytkownika w filtrach [F], aby zobaczyć jego statystyki maszynisty!",  
+
+    "stats-loading": "Pobieranie statystyk...",
+    "stats-error": "Ups! Wystąpił błąd podczas próby pobrania statystyk! :/"
   },
   "scenery": {
     "users": "GRACZE ONLINE",

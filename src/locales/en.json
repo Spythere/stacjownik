@@ -264,9 +264,19 @@
     "stats-distance": "DISTANCE",
     "stats-stations": "STATIONS",
 
-    "timetables-stats-total": "Today, dispatchers made so far <b class='text--primary'>{count}</b> timetables with total distance of <b class='text--primary'>{distance}km</b>.",
-    "timetable-stats-longest": "Today's the longest timetable is <b>#{id}</b> made by <b>{author}</b> for <b>{driver}</b> - <b class='text--primary'>{distance}km</b>!",
-    "timetable-stats-most-active": "The most active dispatcher is <b>{dispatcher}</b> who created <b class='text--primary'>{count}</b> timetables."
+    "timetable-stats-total": "Today, dispatchers made so far {count} with total distance of {distance}",
+    "timetable-stats-longest": "Today's the longest timetable is #{id} made by {author} for {driver} - {distance}",
+    "timetable-stats-most-active": "The most active dispatcher is {dispatcher} who created {count}",
+
+    "timetable-count": "timetable | timetables",
+
+    "daily-stats-title": "DAILY STATS",
+    "driver-stats-title": "DRIVER STATS",
+
+    "driver-stats-info": "Enter a proper nickname into filters [F] to see user's driving statistics!",
+
+    "stats-loading": "Fetching statistics...",
+    "stats-error": "Oops! An unexpected error occurred while trying to fetch statistics! :/"
   },
   "scenery": {
     "users": "PLAYERS ONLINE",

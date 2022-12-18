@@ -3,7 +3,7 @@
     <JournalHeader />
     
     <div class="journal_wrapper">
-      <TimetablesStats />
+      <JournalStats />
 
       <JournalOptions
         @on-search-confirm="searchHistory"
@@ -54,7 +54,7 @@
 import { defineComponent, provide, reactive, Ref, ref } from 'vue';
 import axios from 'axios';
 
-import DriverStats from '../components/JournalView/DriverStats.vue';
+import DriverStats from '../components/JournalView/JournalDriverStats.vue';
 import Loading from '../components/Global/Loading.vue';
 import { JournalTimetableFilter, JournalTimetableSorter } from '../types/Journal/JournalTimetablesTypes';
 import dateMixin from '../mixins/dateMixin';
@@ -70,13 +70,13 @@ import modalTrainMixin from '../mixins/modalTrainMixin';
 import imageMixin from '../mixins/imageMixin';
 import JournalTimetablesList from '../components/JournalView/JournalTimetablesList.vue';
 import { journalTimetableFilters } from '../constants/Journal/JournalTimetablesConsts';
-import TimetablesStats from '../components/JournalView/TimetablesStats.vue';
+import JournalStats from '../components/JournalView/JournalStats.vue';
 import JournalHeader from '../components/JournalView/JournalHeader.vue';
 
 const TIMETABLES_API_URL = `${URLs.stacjownikAPI}/api/getTimetables`;
 
 export default defineComponent({
-  components: { DriverStats, Loading, JournalOptions, JournalTimetablesList, TimetablesStats, JournalHeader },
+  components: { DriverStats, Loading, JournalOptions, JournalTimetablesList, JournalStats, JournalHeader },
   mixins: [dateMixin, routerMixin, modalTrainMixin, imageMixin],
 
   name: 'JournalTimetables',

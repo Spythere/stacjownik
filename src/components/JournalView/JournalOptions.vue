@@ -155,7 +155,7 @@ export default defineComponent({
 
   watch: {
     async driverStatsName(value: string) {
-      await this.fetchDispatcherStats();
+      await this.fetchDriverStats();
       this.store.currentStatsTab = value ? 'driver' : 'daily';
     },
 
@@ -204,16 +204,27 @@ export default defineComponent({
   },
 
   methods: {
-    async fetchDispatcherStats() {
+    async fetchDriverStats() {
       this.store.driverStatsData = undefined;
 
-      if (!this.store.driverStatsName) return;
+      if (!this.store.driverStatsName) {
+        this.store.driverStatsStatus = DataStatus.Initialized;
+        return;
+      }
 
-      const statsData: DriverStatsAPIData = await (
-        await axios.get(`${URLs.stacjownikAPI}/api/getDriverInfo?name=${this.store.driverStatsName}`)
-      ).data;
+      try {
+        this.store.driverStatsStatus = DataStatus.Loading;
 
-      this.store.driverStatsData = statsData;
+        const statsData: DriverStatsAPIData = await (
+          await axios.get(`${URLs.stacjownikAPI}/api/getDriverInfo?name=${this.store.driverStatsName}`)
+        ).data;
+
+        this.store.driverStatsData = statsData;
+        this.store.driverStatsStatus = DataStatus.Loaded;
+      } catch (error) {
+        this.store.driverStatsStatus = DataStatus.Error;
+        console.error('Ups! Wystąpił błąd przy próbie pobrania statystyk maszynisty! :/');
+      }
     },
 
     // Override keyMixin function

@@ -29,6 +29,7 @@ export interface StoreState {
 
   driverStatsName: string;
   driverStatsData?: DriverStatsAPIData;
+  driverStatsStatus: DataStatus;
 
   chosenModalTrainId?: string;
 

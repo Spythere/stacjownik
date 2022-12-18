@@ -41,6 +41,7 @@ export const useStore = defineStore('store', {
 
       driverStatsName: '',
       driverStatsData: undefined,
+      driverStatsStatus: DataStatus.Initialized,
 
       chosenModalTrainId: undefined,
 
