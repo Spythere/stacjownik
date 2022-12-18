@@ -1,5 +1,5 @@
 <template>
-  <div class="journal-stats" v-if="store.driverStatsData?._sum.routeDistance != null">
+  <div class="journal-stats" v-if="store.driverStatsData">
     <h1>
       {{ $t('journal.stats-title') }} <span class="text--primary">{{ store.driverStatsName.toUpperCase() }}</span>
     </h1>

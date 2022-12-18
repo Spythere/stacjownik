@@ -4,8 +4,9 @@
       <button
         v-for="tab in data.tabs"
         class="btn--filled"
-        :data-disabled="tab.disabled"
         :disabled="tab.disabled"
+        :data-disabled="tab.disabled"
+        :data-selected="tab.name == store.currentStatsTab"
         @click="onTabButtonClick(tab.name, tab.disabled)"
       >
         {{ tab.title }}
@@ -19,7 +20,7 @@
 
 <script setup lang="ts">
 import axios from 'axios';
-import { computed, onActivated, reactive, Ref, ref, watch } from 'vue';
+import { computed, onActivated, onDeactivated, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ITimetablesDailyStats, ITimetablesDailyStatsResponse } from '../../scripts/interfaces/api/StatsAPIData';
 import { URLs } from '../../scripts/utils/apiURLs';
@@ -32,6 +33,7 @@ type TStatTab = 'daily' | 'driver';
 // Variables
 
 const store = useStore();
+const intervalId = ref(-1);
 
 let data = reactive({
   tabs: [
@@ -64,6 +66,35 @@ function onTabButtonClick(tab: TStatTab, disabled: boolean) {
   if (!disabled) store.currentStatsTab = tab;
 }
 
+async function fetchDailyTimetableStats() {
+  console.log('test');
+
+  try {
+    const {
+      distanceAvg,
+      distanceSum,
+      maxTimetable,
+      totalTimetables,
+      mostActiveDispatcher,
+    }: ITimetablesDailyStatsResponse = await (
+      await axios.get(`${URLs.stacjownikAPI}/api/getDailyTimetableStats`)
+    ).data;
+
+    data.stats = {
+      totalTimetables,
+      distanceSum,
+      distanceAvg,
+      timetableAuthor: maxTimetable?.authorName || '',
+      timetableDriver: maxTimetable?.driverName || '',
+      timetableId: maxTimetable?.timetableId || 0,
+      timetableRouteDistance: maxTimetable?.routeDistance || 0,
+      dispatcherName: mostActiveDispatcher?.name || '',
+      dispatcherTimetablesCount: mostActiveDispatcher?.count || 0,
+    };
+  } catch (error) {
+    console.error('Ups! Wystąpił błąd podczas pobierania statystyk rozkładów jazdy...');
+  }
+}
 // Translation
 
 const { t } = useI18n();
@@ -101,37 +132,19 @@ watch(
   }
 );
 
-onActivated(async () => {
-  try {
-    const {
-      distanceAvg,
-      distanceSum,
-      maxTimetable,
-      totalTimetables,
-      mostActiveDispatcher,
-    }: ITimetablesDailyStatsResponse = await (
-      await axios.get(`${URLs.stacjownikAPI}/api/getDailyTimetableStats`)
-    ).data;
+onActivated(() => {
+  fetchDailyTimetableStats();
+  intervalId.value = setInterval(fetchDailyTimetableStats, 60000);
+});
 
-    data.stats = {
-      totalTimetables,
-      distanceSum,
-      distanceAvg,
-      timetableAuthor: maxTimetable?.authorName || '',
-      timetableDriver: maxTimetable?.driverName || '',
-      timetableId: maxTimetable?.timetableId || 0,
-      timetableRouteDistance: maxTimetable?.routeDistance || 0,
-      dispatcherName: mostActiveDispatcher?.name || '',
-      dispatcherTimetablesCount: mostActiveDispatcher?.count || 0,
-    };
-  } catch (error) {
-    console.error('Ups! Wystąpił błąd podczas pobierania statystyk rozkładów jazdy...');
-  }
+onDeactivated(() => {
+  clearInterval(intervalId.value);
 });
 </script>
 
 <style lang="scss" scoped>
 @import '../../styles/JournalStats.scss';
+@import '../../styles/variables.scss';
 
 .tabs {
   display: flex;
@@ -141,6 +154,10 @@ onActivated(async () => {
     font-weight: bold;
     border-radius: 0.4em 0.4em 0 0;
     padding: 0.5em 0.75em;
+
+    &[data-selected='true'] {
+      color: $accentCol;
+    }
   }
 }
 

@@ -10,7 +10,7 @@
 
     <main class="app_main">
       <router-view v-slot="{ Component }">
-        <keep-alive>
+        <keep-alive exclude="JournalView">
           <component :is="Component" :key="$route.name" />
         </keep-alive>
       </router-view>
