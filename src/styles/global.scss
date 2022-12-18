@@ -207,6 +207,12 @@ button {
   padding: 0.25em 0.5em;
 
   transition: all 100ms ease;
+
+  &[data-disabled=true] {
+    user-select: none;
+    pointer-events: none;
+    opacity: 0.85;
+  }
 }
 
 button.btn--filled {

@@ -1,9 +1,14 @@
 <template>
   <div class="timetables-stats">
     <div class="tabs">
-      <button class="btn--filled" @click="store.currentStatsTab = 'daily'">STATYSTYKI DNIA</button>
-      <button v-if="store.driverStatsData" class="btn--filled" @click="store.currentStatsTab = 'driver'">
-        STATYSTYKI GRACZA
+      <button
+        v-for="tab in data.tabs"
+        class="btn--filled"
+        :data-disabled="tab.disabled"
+        :disabled="tab.disabled"
+        @click="onTabButtonClick(tab.name, tab.disabled)"
+      >
+        {{ tab.title }}
       </button>
     </div>
 
@@ -14,16 +19,33 @@
 
 <script setup lang="ts">
 import axios from 'axios';
-import { computed, onActivated, reactive, Ref, ref } from 'vue';
+import { computed, onActivated, reactive, Ref, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ITimetablesDailyStats, ITimetablesDailyStatsResponse } from '../../scripts/interfaces/api/StatsAPIData';
 import { URLs } from '../../scripts/utils/apiURLs';
 import { useStore } from '../../store/store';
 import DriverStats from './DriverStats.vue';
 
+// Types
+type TStatTab = 'daily' | 'driver';
+
+// Variables
+
 const store = useStore();
 
 let data = reactive({
+  tabs: [
+    {
+      name: 'daily',
+      title: 'STATYSTYKI DNIA',
+      disabled: false,
+    },
+    {
+      name: 'driver',
+      title: 'STATYSTYKI GRACZA',
+      disabled: true,
+    },
+  ] as { name: TStatTab; title: string; disabled: boolean }[],
   stats: {
     totalTimetables: 0,
     distanceSum: 0,
@@ -36,6 +58,48 @@ let data = reactive({
     dispatcherTimetablesCount: 0,
   } as ITimetablesDailyStats,
 });
+
+// Methods
+function onTabButtonClick(tab: TStatTab, disabled: boolean) {
+  if (!disabled) store.currentStatsTab = tab;
+}
+
+// Translation
+
+const { t } = useI18n();
+
+const totalTimetables = computed(() =>
+  t('journal.timetables-stats-total', { count: data.stats.totalTimetables, distance: data.stats.distanceSum })
+);
+
+const longestTimetable = computed(() =>
+  t('journal.timetable-stats-longest', {
+    id: data.stats.timetableId,
+    author: data.stats.timetableAuthor,
+    driver: data.stats.timetableDriver,
+    distance: data.stats.timetableRouteDistance,
+  })
+);
+
+const mostActiveDispatcher = computed(() =>
+  t('journal.timetable-stats-most-active', {
+    dispatcher: data.stats.dispatcherName,
+    count: data.stats.dispatcherTimetablesCount,
+  })
+);
+
+const timetablesStats = computed(
+  () => `&bull; ${totalTimetables.value}<br>&bull; ${longestTimetable.value}<br>&bull; ${mostActiveDispatcher.value}`
+);
+
+// Hooks & watchers
+
+watch(
+  computed(() => store.driverStatsData),
+  (stats) => {
+    data.tabs[1].disabled = stats ? false : true;
+  }
+);
 
 onActivated(async () => {
   try {
@@ -64,32 +128,6 @@ onActivated(async () => {
     console.error('Ups! Wystąpił błąd podczas pobierania statystyk rozkładów jazdy...');
   }
 });
-
-const { t } = useI18n();
-
-const totalTimetables = computed(() =>
-  t('journal.timetables-stats-total', { count: data.stats.totalTimetables, distance: data.stats.distanceSum })
-);
-
-const longestTimetable = computed(() =>
-  t('journal.timetable-stats-longest', {
-    id: data.stats.timetableId,
-    author: data.stats.timetableAuthor,
-    driver: data.stats.timetableDriver,
-    distance: data.stats.timetableRouteDistance,
-  })
-);
-
-const mostActiveDispatcher = computed(() =>
-  t('journal.timetable-stats-most-active', {
-    dispatcher: data.stats.dispatcherName,
-    count: data.stats.dispatcherTimetablesCount,
-  })
-);
-
-const timetablesStats = computed(
-  () => `&bull; ${totalTimetables.value}<br>&bull; ${longestTimetable.value}<br>&bull; ${mostActiveDispatcher.value}`
-);
 </script>
 
 <style lang="scss" scoped>
