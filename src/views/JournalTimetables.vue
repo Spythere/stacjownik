@@ -134,6 +134,16 @@ export default defineComponent({
     };
   },
 
+  // Handle route updates for route-links
+  beforeRouteUpdate(to, from) {
+    const timetableId = to.query['timetableId']?.toString();
+
+    if (!timetableId) return;
+
+    this.searchersValues['search-train'] = `#${timetableId}`;
+    this.searchHistory();
+  },
+
   activated() {
     if (this.timetableId) {
       this.searchersValues['search-train'] = `#${this.timetableId}`;
@@ -142,8 +152,6 @@ export default defineComponent({
   },
 
   mounted() {
-    console.log('mounted');
-
     if (!this.timetableId) this.searchHistory();
   },
 

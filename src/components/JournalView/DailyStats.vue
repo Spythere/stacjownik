@@ -21,7 +21,9 @@
 
         <i18n-t keypath="journal.timetable-stats-longest" tag="p">
           <template #id>
-            <b>{{ data.stats.timetableId }}</b>
+            <router-link :to="`/journal/timetables?timetableId=${data.stats.timetableId}`">{{
+              data.stats.timetableId
+            }}</router-link>
           </template>
           <template #author>
             <b>{{ data.stats.timetableAuthor }}</b>
@@ -53,6 +55,7 @@
 <script setup lang="ts">
 import axios from 'axios';
 import { reactive, ref } from 'vue';
+import { onBeforeRouteUpdate, useRouter } from 'vue-router';
 import { DataStatus } from '../../scripts/enums/DataStatus';
 import { ITimetablesDailyStats, ITimetablesDailyStatsResponse } from '../../scripts/interfaces/api/StatsAPIData';
 import { URLs } from '../../scripts/utils/apiURLs';
