@@ -36,7 +36,7 @@
                   :list="propName.toString()"
                 />
 
-                <button class="search-exit">
+                <button class="search-exit" v-if="propName != 'search-date'">
                   <img :src="getIcon('exit')" alt="exit-icon" @click="onInputClear(propName)" />
                 </button>
               </div>
