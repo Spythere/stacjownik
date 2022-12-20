@@ -1,7 +1,7 @@
 <template>
   <section class="journal-timetables">
     <JournalHeader />
-    
+
     <div class="journal_wrapper">
       <JournalStats />
 
@@ -12,9 +12,6 @@
         :filters="journalTimetableFilters"
         :data-status="dataStatus"
       />
-
-      <!-- <DriverStats /> -->
-      <!-- <button @click="statsCardOpen = true">Stats</button> -->
 
       <div class="list_wrapper" @scroll="handleScroll">
         <!-- <transition name="warning" mode="out-in"> -->
@@ -146,7 +143,7 @@ export default defineComponent({
 
   mounted() {
     console.log('mounted');
-    
+
     if (!this.timetableId) this.searchHistory();
   },
 
