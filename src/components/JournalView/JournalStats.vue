@@ -36,7 +36,7 @@ const store = useStore();
 const dailyStatsComp: Ref<InstanceType<typeof JournalDailyStats> | null> = ref(null);
 
 const areStatsOpen = ref(true);
-const lastClickedTab = ref('');
+const lastClickedTab = ref('daily');
 
 let data = reactive({
   tabs: [
