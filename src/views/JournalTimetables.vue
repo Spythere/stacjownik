@@ -136,11 +136,10 @@ export default defineComponent({
 
   // Handle route updates for route-links
   beforeRouteUpdate(to, from) {
-    const timetableId = to.query['timetableId']?.toString();
+    const { timetableId, driverName } = to.query;
 
-    if (!timetableId) return;
+    if (timetableId) this.searchersValues['search-train'] = `#${timetableId}`;
 
-    this.searchersValues['search-train'] = `#${timetableId}`;
     this.searchHistory();
   },
 

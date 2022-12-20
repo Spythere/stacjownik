@@ -21,12 +21,14 @@
 
         <i18n-t keypath="journal.timetable-stats-longest" tag="p">
           <template #id>
-            <router-link :to="`/journal/timetables?timetableId=${data.stats.timetableId}`">{{
-              data.stats.timetableId
-            }}</router-link>
+            <router-link :to="`/journal/timetables?timetableId=${data.stats.timetableId}`">
+              <b>{{ data.stats.timetableId }}</b>
+            </router-link>
           </template>
           <template #author>
-            <b>{{ data.stats.timetableAuthor }}</b>
+            <router-link :to="`/journal/dispatchers?dispatcherName=${data.stats.timetableAuthor}`">
+              <b>{{ data.stats.timetableAuthor }}</b>
+            </router-link>
           </template>
           <template #driver>
             <b>{{ data.stats.timetableDriver }}</b>
@@ -38,7 +40,9 @@
 
         <i18n-t keypath="journal.timetable-stats-most-active" tag="p">
           <template #dispatcher>
-            <b>{{ data.stats.dispatcherName }}</b>
+            <router-link :to="`/journal/dispatchers?dispatcherName=${data.stats.dispatcherName}`">
+              <b>{{ data.stats.dispatcherName }}</b>
+            </router-link>
           </template>
           <template #count>
             <b class="text--primary">
@@ -55,7 +59,6 @@
 <script setup lang="ts">
 import axios from 'axios';
 import { reactive, ref } from 'vue';
-import { onBeforeRouteUpdate, useRouter } from 'vue-router';
 import { DataStatus } from '../../scripts/enums/DataStatus';
 import { ITimetablesDailyStats, ITimetablesDailyStatsResponse } from '../../scripts/interfaces/api/StatsAPIData';
 import { URLs } from '../../scripts/utils/apiURLs';
