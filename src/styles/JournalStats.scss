@@ -3,14 +3,15 @@
 
 .stats-tab {
   background-color: #1a1a1a;
-  padding: 1em;
-  margin-bottom: 1em;
+  border: 1px solid #ffc014;
 
-  min-height: 100px;
+  padding: 1em;
   display: flex;
   align-items: flex-end;
 
-  border-radius: 0 0 1em 1em;
+  margin-bottom: 0.5em;
+
+  width: 100%;
 }
 
 .info-stats {

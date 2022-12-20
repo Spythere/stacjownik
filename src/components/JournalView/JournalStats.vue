@@ -4,7 +4,7 @@
       <button
         v-for="tab in data.tabs"
         class="btn--filled"
-        :data-selected="tab.name == store.currentStatsTab"
+        :data-selected="tab.name == store.currentStatsTab && areStatsOpen"
         :data-inactive="tab.inactive"
         @click="onTabButtonClick(tab.name)"
       >
@@ -12,7 +12,7 @@
       </button>
     </div>
 
-    <div class="stats-tab">
+    <div class="stats-tab" v-show="areStatsOpen">
       <keep-alive>
         <JournalDailyStats v-if="store.currentStatsTab == 'daily'" ref="dailyStatsComp" />
         <JournalDriverStats v-else-if="store.currentStatsTab == 'driver'" />
@@ -35,6 +35,9 @@ type TStatTab = 'daily' | 'driver';
 const store = useStore();
 const dailyStatsComp: Ref<InstanceType<typeof JournalDailyStats> | null> = ref(null);
 
+const areStatsOpen = ref(true);
+const lastClickedTab = ref('');
+
 let data = reactive({
   tabs: [
     {
@@ -51,7 +54,12 @@ let data = reactive({
 
 // Methods
 function onTabButtonClick(tab: TStatTab) {
+  if (lastClickedTab.value == tab || !areStatsOpen.value) {
+    areStatsOpen.value = !areStatsOpen.value;
+  }
+
   store.currentStatsTab = tab;
+  lastClickedTab.value = tab;
 }
 
 onActivated(() => {
@@ -65,9 +73,10 @@ onDeactivated(() => {
 watch(
   computed(() => store.driverStatsData),
   (statsData) => {
-    console.log(statsData);
-
     data.tabs[1].inactive = statsData ? false : true;
+
+    lastClickedTab.value = statsData ? 'driver' : 'daily';
+    if (statsData) areStatsOpen.value = true;
   }
 );
 </script>
@@ -77,14 +86,17 @@ watch(
 @import '../../styles/variables.scss';
 
 .tabs {
+  position: relative;
+
   display: flex;
   gap: 0.5em;
 
+  margin-bottom: 0.5em;
+
   button {
     font-weight: bold;
-    border-radius: 0.4em 0.4em 0 0;
     padding: 0.5em 0.75em;
-    
+
     &[data-inactive='true'] {
       color: gray;
     }
@@ -92,7 +104,6 @@ watch(
     &[data-selected='true'] {
       color: $accentCol;
     }
-
   }
 }
 </style>

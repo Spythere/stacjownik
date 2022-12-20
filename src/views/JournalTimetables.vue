@@ -3,8 +3,6 @@
     <JournalHeader />
 
     <div class="journal_wrapper">
-      <JournalStats />
-
       <JournalOptions
         @on-search-confirm="searchHistory"
         @on-options-reset="resetOptions"
@@ -12,6 +10,8 @@
         :filters="journalTimetableFilters"
         :data-status="dataStatus"
       />
+
+      <JournalStats />
 
       <div class="list_wrapper" @scroll="handleScroll">
         <!-- <transition name="warning" mode="out-in"> -->
@@ -286,3 +286,4 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '../styles/JournalSection.scss';
 </style>
+
