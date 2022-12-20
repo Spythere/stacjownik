@@ -72,11 +72,11 @@
             {{ timetable.confirmedStopsCount }} /
             {{ timetable.allStopsCount }}
           </span>
-          <span class="text--grayed" v-if="!timetable.fulfilled">
+          <span class="text--grayed" v-if="!timetable.fulfilled && timetable.currentSceneryName">
             &bull;
             <b>
               {{ $t(`journal.${timetable.terminated ? 'last-seen-at' : 'currently-at'}`) }}
-              {{ timetable.currentSceneryName?.replace(/.[a-zA-Z0-9]+.sc/, '') }}
+              {{ timetable.currentSceneryName.replace(/.[a-zA-Z0-9]+.sc/, '') }}
             </b>
           </span>
         </div>
