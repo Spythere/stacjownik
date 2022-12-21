@@ -66,7 +66,6 @@ import { useStore } from '../store/store';
 import JournalDispatchersList from '../components/JournalView/JournalDispatchersList.vue';
 import { JournalDispatcherSearcher, JournalDispatcherSorter } from '../types/Journal/JournalDispatcherTypes';
 import { DispatcherHistory } from '../scripts/interfaces/api/DispatchersAPIData';
-import { JournalTimetableFilter } from '../types/Journal/JournalTimetablesTypes';
 import JournalHeader from '../components/JournalView/JournalHeader.vue';
 import { LocationQuery } from 'vue-router';
 
@@ -169,12 +168,6 @@ export default defineComponent({
   activated() {
     this.handleQueries(this.$route.query);
     this.fetchHistoryData();
-  },
-
-  mounted() {
-    if (!this.sceneryName && !this.dispatcherName) {
-      this.fetchHistoryData();
-    }
   },
 
   methods: {
