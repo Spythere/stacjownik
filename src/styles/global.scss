@@ -208,10 +208,14 @@ button {
 
   transition: all 100ms ease;
 
-  &[data-disabled=true] {
+  &[data-disabled='true'] {
     user-select: none;
     pointer-events: none;
     opacity: 0.85;
+  }
+
+  &[data-inactive='true'] {
+    opacity: 0.55;
   }
 }
 

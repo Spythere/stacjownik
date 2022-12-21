@@ -1,7 +1,10 @@
 <template>
   <section class="trains-view">
     <div class="trains_wrapper">
-      <TrainOptions :sorter-option-ids="['distance', 'progress', 'delay', 'mass', 'speed', 'length']" />
+      <TrainOptions
+        :sorter-option-ids="['distance', 'progress', 'delay', 'mass', 'speed', 'length']"
+        :current-options-active="currentOptionsActive"
+      />
 
       <TrainTable :trains="computedTrains" />
     </div>
@@ -9,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, provide, reactive, ref } from 'vue';
+import { computed, ComputedRef, defineComponent, provide, reactive, ref, watch } from 'vue';
 import TrainOptions from '../components/TrainsView/TrainOptions.vue';
 import TrainStats from '../components/TrainsView/TrainStats.vue';
 import TrainTable from '../components/TrainsView/TrainTable.vue';
@@ -52,9 +55,12 @@ export default defineComponent({
 
   setup() {
     const store = useStore();
+    const initTrainFilters = [...trainFilters.map((f) => ({ ...f }))];
 
-    const sorterActive = ref({ id: 'distance', dir: -1 });
+    const sorterActive = reactive({ id: 'distance', dir: -1 });
     const filterList = reactive([...trainFilters]) as TrainFilter[];
+
+    const currentOptionsActive = ref(false);
 
     const searchedDriver = ref('');
     const searchedTrain = ref('');
@@ -65,13 +71,13 @@ export default defineComponent({
     provide('filterList', filterList);
 
     const computedTrains: ComputedRef<Train[]> = computed(() => {
-      return filteredTrainList(
-        store.trainList,
-        searchedTrain.value,
-        searchedDriver.value,
-        sorterActive.value,
-        filterList
-      );
+      return filteredTrainList(store.trainList, searchedTrain.value, searchedDriver.value, sorterActive, filterList);
+    });
+
+    watch([searchedTrain, searchedDriver, sorterActive, filterList], ([sT, sD, sA, fL]) => {
+      const areFiltersActive = fL.some((f, i) => f.isActive !== initTrainFilters[i].isActive);
+
+      currentOptionsActive.value = sT.length > 0 || sD.length > 0 || sA.id != 'distance' || areFiltersActive;
     });
 
     return {
@@ -80,6 +86,7 @@ export default defineComponent({
       searchedDriver,
       sorterActive,
       store,
+      currentOptionsActive,
     };
   },
 
