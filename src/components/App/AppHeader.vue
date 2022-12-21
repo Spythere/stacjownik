@@ -22,7 +22,9 @@
         <StatusIndicator />
 
         <span class="header_brand">
-          <img :src="getImage('stacjownik-header-logo.svg')" alt="Stacjownik" />
+          <router-link to="/">
+            <img :src="getImage('stacjownik-header-logo.svg')" alt="Stacjownik" />
+          </router-link>
         </span>
 
         <span class="header_info">
@@ -48,7 +50,12 @@
           /
           <router-link class="route" active-class="route-active" to="/trains">{{ $t('app.trains') }}</router-link>
           /
-          <router-link class="route" active-class="route-active" :data-active="$route.path.startsWith('/journal')" to="/journal">
+          <router-link
+            class="route"
+            active-class="route-active"
+            :data-active="$route.path.startsWith('/journal')"
+            to="/journal"
+          >
             {{ $t('app.journal') }}
           </router-link>
         </span>
@@ -66,50 +73,51 @@ import StatusIndicator from './StatusIndicator.vue';
 import Clock from './Clock.vue';
 
 export default defineComponent({
-    emits: ["changeLang"],
-    mixins: [imageMixin],
-    props: {
-        currentLang: {
-            type: String,
-            required: true,
-        },
+  emits: ['changeLang'],
+  mixins: [imageMixin],
+  props: {
+    currentLang: {
+      type: String,
+      required: true,
     },
-    setup() {
+  },
+  setup() {
+    return {
+      store: useStore(),
+    };
+  },
+  methods: {
+    changeRegion(region: { id: string; value: string }) {
+      this.store.changeRegion(region);
+    },
+    changeLang(lang: string) {
+      this.$emit('changeLang', lang);
+    },
+  },
+  computed: {
+    onlineTrainsCount() {
+      return this.store.trainList.filter((train) => train.online).length;
+    },
+    onlineDispatchersCount() {
+      return this.store.stationList.filter(
+        (station) => station.onlineInfo && station.onlineInfo.region == this.store.region.id
+      ).length;
+    },
+    computedRegions() {
+      return options.regions.map((region) => {
+        const regionStationCount =
+          this.store.apiData.stations?.filter((station) => station.region == region.id && station.isOnline).length || 0;
+        const regionTrainCount =
+          this.store.apiData.trains?.filter((train) => train.region == region.id && train.online).length || 0;
         return {
-            store: useStore(),
+          id: region.id,
+          value: `${region.value} <div class='text--grayed'>${regionStationCount} / ${regionTrainCount}</div>`,
+          selectedValue: region.value,
         };
+      });
     },
-    methods: {
-        changeRegion(region: {
-            id: string;
-            value: string;
-        }) {
-            this.store.changeRegion(region);
-        },
-        changeLang(lang: string) {
-            this.$emit("changeLang", lang);
-        },
-    },
-    computed: {
-        onlineTrainsCount() {
-            return this.store.trainList.filter((train) => train.online).length;
-        },
-        onlineDispatchersCount() {
-            return this.store.stationList.filter((station) => station.onlineInfo && station.onlineInfo.region == this.store.region.id).length;
-        },
-        computedRegions() {
-            return options.regions.map((region) => {
-                const regionStationCount = this.store.apiData.stations?.filter((station) => station.region == region.id && station.isOnline).length || 0;
-                const regionTrainCount = this.store.apiData.trains?.filter((train) => train.region == region.id && train.online).length || 0;
-                return {
-                    id: region.id,
-                    value: `${region.value} <div class='text--grayed'>${regionStationCount} / ${regionTrainCount}</div>`,
-                    selectedValue: region.value,
-                };
-            });
-        },
-    },
-    components: { SelectBox, StatusIndicator, Clock }
+  },
+  components: { SelectBox, StatusIndicator, Clock },
 });
 </script>
 <style lang="scss" scoped>
