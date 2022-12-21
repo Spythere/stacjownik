@@ -146,17 +146,6 @@ export default defineComponent({
     this.searchHistory();
   },
 
-  // activated() {
-  //   if (this.timetableId) {
-  //     this.searchersValues['search-train'] = `#${this.timetableId}`;
-  //     this.searchHistory();
-  //   }
-  // },
-
-  // mounted() {
-  //   if (!this.timetableId) this.searchHistory();
-  // },
-
   methods: {
     handleScroll(e: Event) {
       const listElement = e.target as HTMLElement;
