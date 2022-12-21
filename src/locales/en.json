@@ -1,4 +1,7 @@
 {
+  "general": {
+    "and": " and "
+  },
   "app": {
     "sceneries": "SCENERIES",
     "trains": "TRAINS",
@@ -266,7 +269,8 @@
 
     "timetable-stats-total": "Today, dispatchers made so far {count} with total distance of {distance}",
     "timetable-stats-longest": "The longest timetable today is #{id} made by {author} for {driver} - {distance}",
-    "timetable-stats-most-active": "The most active dispatcher is {dispatcher} who created {count}",
+    "timetable-stats-most-active": "The most active dispatcher today is {dispatcher} who created {count}",
+    "timetable-stats-most-active-many": "The most active dispatchers today are {dispatchers} who created {count} each",
 
     "timetable-count": "timetable | timetables",
 

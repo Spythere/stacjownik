@@ -1,4 +1,7 @@
 {
+  "general": {
+    "and": " oraz "
+  },
   "app": {
     "sceneries": "SCENERIE",
     "trains": "POCIĄGI",
@@ -271,6 +274,7 @@
     "timetable-stats-total": "Dyżurni stworzyli dziś {count}  o łącznym dystansie {distance}",
     "timetable-stats-longest": "Najdłuższym rozkładem jazdy jest dzisiaj #{id} stworzony przez dyżurnego {author} dla maszynisty {driver} - {distance}",
     "timetable-stats-most-active": "Dzisiejszym najaktywniejszym dyżurnym jest {dispatcher}, który stworzył {count}",
+    "timetable-stats-most-active-many": "Dzisiejszymi najaktywniejszymi dyżurnymi są {dispatchers}, którzy stworzyli po {count}",
 
     "timetable-count": "rozkład jazdy | rozkładów jazdy",
 

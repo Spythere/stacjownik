@@ -10,8 +10,10 @@ export interface ITimetablesDailyStats {
   timetableDriver: string;
   timetableRouteDistance: number;
 
-  dispatcherName: string;
-  dispatcherTimetablesCount: number;
+  mostActiveDispatchers: {
+    name: string;
+    count: number;
+  }[];
 }
 
 export interface ITimetablesDailyStatsResponse {
@@ -19,8 +21,10 @@ export interface ITimetablesDailyStatsResponse {
   distanceSum: number;
   distanceAvg: number;
   maxTimetable: TimetableHistory | null;
-  mostActiveDispatcher: {
+
+  mostActiveDispatchers: {
     name: string;
     count: number;
-  } | null;
+  }[];
 }
+

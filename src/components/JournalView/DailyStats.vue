@@ -10,7 +10,7 @@
           <template #count>
             <b class="text--primary">
               {{ data.stats.totalTimetables }}
-              {{ $t('journal.timetable-count', data.stats.dispatcherTimetablesCount) }}
+              {{ $t('journal.timetable-count', data.stats.totalTimetables) }}
             </b>
           </template>
 
@@ -38,19 +38,44 @@
           </template>
         </i18n-t>
 
-        <i18n-t keypath="journal.timetable-stats-most-active" tag="p">
-          <template #dispatcher>
-            <router-link :to="`/journal/dispatchers?dispatcherName=${data.stats.dispatcherName}`">
-              <b>{{ data.stats.dispatcherName }}</b>
-            </router-link>
-          </template>
-          <template #count>
-            <b class="text--primary">
-              {{ data.stats.dispatcherTimetablesCount }}
-              {{ $t('journal.timetable-count', data.stats.dispatcherTimetablesCount) }}
-            </b>
-          </template>
-        </i18n-t>
+        <p v-if="firstPlaceDispatchers.length == 1">
+          <i18n-t keypath="journal.timetable-stats-most-active">
+            <template #dispatcher>
+              <router-link :to="`/journal/dispatchers?dispatcherName=${firstPlaceDispatchers[0].name}`">
+                <b>{{ firstPlaceDispatchers[0].name }}</b>
+              </router-link>
+            </template>
+            <template #count>
+              <b class="text--primary">
+                {{ firstPlaceDispatchers[0].count }}
+                {{ $t('journal.timetable-count', firstPlaceDispatchers[0].count) }}
+              </b>
+            </template>
+          </i18n-t>
+        </p>
+
+        <p v-if="firstPlaceDispatchers.length > 1">
+          <i18n-t keypath="journal.timetable-stats-most-active-many">
+            <template #dispatchers>
+              <span v-for="(disp, i) in firstPlaceDispatchers">
+                <span v-if="i == firstPlaceDispatchers.length - 1"> {{ $t('general.and') }} </span>
+
+                <router-link :to="`/journal/dispatchers?dispatcherName=${disp.name}`">
+                  <b>{{ disp.name }}</b>
+                </router-link>
+
+                <span v-if="i < firstPlaceDispatchers.length - 2">, </span>
+              </span>
+            </template>
+
+            <template #count>
+              <b class="text--primary">
+                {{ firstPlaceDispatchers[0].count }}
+                {{ $t('journal.timetable-count', firstPlaceDispatchers[0].count) }}
+              </b>
+            </template>
+          </i18n-t>
+        </p>
       </span>
     </span>
   </section>
@@ -58,7 +83,7 @@
 
 <script setup lang="ts">
 import axios from 'axios';
-import { reactive, ref } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import { DataStatus } from '../../scripts/enums/DataStatus';
 import { ITimetablesDailyStats, ITimetablesDailyStatsResponse } from '../../scripts/interfaces/api/StatsAPIData';
 import { URLs } from '../../scripts/utils/apiURLs';
@@ -76,9 +101,16 @@ const data = reactive({
     timetableDriver: '',
     timetableId: 0,
     timetableRouteDistance: 0,
-    dispatcherName: '',
-    dispatcherTimetablesCount: 0,
+
+    mostActiveDispatchers: [],
   } as ITimetablesDailyStats,
+});
+
+const firstPlaceDispatchers = computed(() => {
+  if (data.stats.mostActiveDispatchers.length == 0) return [];
+  const maxCount = data.stats.mostActiveDispatchers[0].count;
+
+  return data.stats.mostActiveDispatchers.filter((disp) => disp.count === maxCount);
 });
 
 async function fetchDailyTimetableStats() {
@@ -88,7 +120,7 @@ async function fetchDailyTimetableStats() {
       distanceSum,
       maxTimetable,
       totalTimetables,
-      mostActiveDispatcher,
+      mostActiveDispatchers,
     }: ITimetablesDailyStatsResponse = await (
       await axios.get(`${URLs.stacjownikAPI}/api/getDailyTimetableStats`)
     ).data;
@@ -101,8 +133,8 @@ async function fetchDailyTimetableStats() {
       timetableDriver: maxTimetable?.driverName || '',
       timetableId: maxTimetable?.timetableId || 0,
       timetableRouteDistance: maxTimetable?.routeDistance || 0,
-      dispatcherName: mostActiveDispatcher?.name || '',
-      dispatcherTimetablesCount: mostActiveDispatcher?.count || 0,
+
+      mostActiveDispatchers,
     };
 
     data.statsStatus = DataStatus.Loaded;
