@@ -4,7 +4,7 @@
 
     <div class="journal_wrapper">
       <JournalOptions
-        @on-search-confirm="searchHistory"
+        @on-search-confirm="fetchHistoryData"
         @on-options-reset="resetOptions"
         :sorter-option-ids="['timestampFrom', 'duration']"
         :data-status="dataStatus"
@@ -68,6 +68,7 @@ import { JournalDispatcherSearcher, JournalDispatcherSorter } from '../types/Jou
 import { DispatcherHistory } from '../scripts/interfaces/api/DispatchersAPIData';
 import { JournalTimetableFilter } from '../types/Journal/JournalTimetablesTypes';
 import JournalHeader from '../components/JournalView/JournalHeader.vue';
+import { LocationQuery } from 'vue-router';
 
 const DISPATCHERS_API_URL = `${URLs.stacjownikAPI}/api/getDispatchers`;
 
@@ -160,17 +161,19 @@ export default defineComponent({
     },
   },
 
+  beforeRouteUpdate(to, _) {
+    this.handleQueries(to.query);
+    this.fetchHistoryData();
+  },
+
   activated() {
-    if (this.sceneryName || this.dispatcherName) {
-      this.searchersValues['search-station'] = this.sceneryName?.toString() || '';
-      this.searchersValues['search-dispatcher'] = this.dispatcherName?.toString() || '';
-      this.searchHistory();
-    }
+    this.handleQueries(this.$route.query);
+    this.fetchHistoryData();
   },
 
   mounted() {
     if (!this.sceneryName && !this.dispatcherName) {
-      this.searchHistory();
+      this.fetchHistoryData();
     }
   },
 
@@ -185,22 +188,22 @@ export default defineComponent({
       if (scrollTop > elementHeight * 0.85) this.addHistoryData();
     },
 
-    resetOptions() {
-      this.searchersValues['search-station'] = '';
-      this.searchersValues['search-dispatcher'] = '';
-      this.searchersValues['search-date'] = '';
-      this.sorterActive.id = 'timestampFrom';
-
-      this.searchHistory();
+    handleQueries(query: LocationQuery) {
+      if ('sceneryName' in query) this.searchersValues['search-station'] = `${query.sceneryName}`;
+      if ('dispatcherName' in query) this.searchersValues['search-dispatcher'] = `${query.dispatcherName}`;
     },
 
-    searchHistory() {
-      this.fetchHistoryData({
-        searchers: this.searchersValues,
-      });
+    setSearchers(date: string, station: string, dispatcher: string) {
+      this.searchersValues['search-date'] = date;
+      this.searchersValues['search-station'] = station;
+      this.searchersValues['search-dispatcher'] = dispatcher;
+    },
 
-      this.scrollNoMoreData = false;
-      this.scrollDataLoaded = true;
+    resetOptions() {
+      this.setSearchers('', '', '');
+      this.sorterActive.id = 'timestampFrom';
+
+      this.fetchHistoryData();
     },
 
     async addHistoryData() {
@@ -223,19 +226,15 @@ export default defineComponent({
       this.scrollDataLoaded = true;
     },
 
-    async fetchHistoryData(
-      props: {
-        searchers?: JournalDispatcherSearcher;
-        filter?: JournalTimetableFilter;
-      } = {}
-    ) {
+    async fetchHistoryData() {
       this.dataStatus = DataStatus.Loading;
 
       const queries: string[] = [];
 
-      const dispatcher = props.searchers?.['search-dispatcher'].trim();
-      const station = props.searchers?.['search-station'].trim();
-      const dateString = props.searchers?.['search-date'].trim();
+      const dispatcher = this.searchersValues['search-dispatcher'].trim();
+      const station = this.searchersValues['search-station'].trim();
+      const dateString = this.searchersValues['search-date'].trim();
+
       const timestampFrom = dateString ? Date.parse(new Date(dateString).toISOString()) - 120 * 60 * 1000 : undefined;
       const timestampTo = timestampFrom ? timestampFrom + 86400000 : undefined;
 
@@ -278,6 +277,9 @@ export default defineComponent({
       } catch (error) {
         this.dataStatus = DataStatus.Error;
       }
+
+      this.scrollNoMoreData = false;
+      this.scrollDataLoaded = true;
     },
   },
 });
