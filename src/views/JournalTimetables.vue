@@ -4,10 +4,11 @@
 
     <div class="journal_wrapper">
       <JournalOptions
-        @on-search-confirm="searchHistory"
+        @on-search-confirm="fetchHistoryData"
         @on-options-reset="resetOptions"
         :sorter-option-ids="['timetableId', 'beginDate', 'distance', 'total-stops']"
         :filters="journalTimetableFilters"
+        :currentOptionsActive="currentOptionsActive"
         :data-status="dataStatus"
       />
 
@@ -48,7 +49,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, provide, reactive, Ref, ref } from 'vue';
+import { defineComponent, provide, reactive, Ref, ref, watch } from 'vue';
 import axios from 'axios';
 
 import DriverStats from '../components/JournalView/JournalDriverStats.vue';
@@ -87,11 +88,14 @@ export default defineComponent({
 
   data: () => ({
     currentQuery: '',
+    currentQueryArray: [] as string[],
+
     scrollDataLoaded: true,
     scrollNoMoreData: false,
 
     showReturnButton: false,
     statsCardOpen: false,
+    currentOptionsActive: false,
 
     timetableHistory: [] as TimetableHistory[],
     journalTimetableFilters,
@@ -131,19 +135,27 @@ export default defineComponent({
       countLimit,
 
       scrollElement,
+
       store: useStore(),
     };
   },
 
+  watch: {
+    currentQueryArray(q: string[]) {
+      this.currentOptionsActive =
+        q.length > 2 || q.some((qv) => qv.startsWith('sortBy=') && qv.split('=')[1] != 'timetableId');
+    },
+  },
+
   // Handle route updates for route-links
-  beforeRouteUpdate(to, from) {
+  beforeRouteUpdate(to, _) {
     this.handleQueries(to.query);
-    this.searchHistory();
+    this.fetchHistoryData();
   },
 
   activated() {
     this.handleQueries(this.$route.query);
-    this.searchHistory();
+    this.fetchHistoryData();
   },
 
   methods: {
@@ -174,17 +186,7 @@ export default defineComponent({
       this.journalFilterActive = this.journalTimetableFilters[0];
       this.sorterActive.id = 'timetableId';
 
-      this.searchHistory();
-    },
-
-    searchHistory() {
-      this.fetchHistoryData({
-        searchers: this.searchersValues,
-        filter: this.journalFilterActive,
-      });
-
-      this.scrollNoMoreData = false;
-      this.scrollDataLoaded = true;
+      this.fetchHistoryData();
     },
 
     async addHistoryData() {
@@ -207,21 +209,16 @@ export default defineComponent({
       this.scrollDataLoaded = true;
     },
 
-    async fetchHistoryData(
-      props: {
-        searchers?: JournalTimetableSearchType;
-        filter?: JournalTimetableFilter;
-      } = {}
-    ) {
+    async fetchHistoryData() {
       this.dataStatus = DataStatus.Loading;
 
       const queries: string[] = [];
 
-      const driverName = props.searchers?.['search-driver'].trim();
-      const trainNo = props.searchers?.['search-train'].trim();
-      const authorName = props.searchers?.['search-dispatcher'].trim();
+      const driverName = this.searchersValues['search-driver'].trim();
+      const trainNo = this.searchersValues['search-train'].trim();
+      const authorName = this.searchersValues['search-dispatcher'].trim();
+      const dateString = this.searchersValues['search-date'].trim();
 
-      const dateString = props.searchers?.['search-date'].trim();
       const timestampFrom = dateString ? Date.parse(new Date(dateString).toISOString()) - 120 * 60 * 1000 : undefined;
       const timestampTo = timestampFrom ? timestampFrom + 86400000 : undefined;
 
@@ -239,7 +236,7 @@ export default defineComponent({
 
       queries.push('countLimit=15');
 
-      switch (props.filter?.id) {
+      switch (this.journalFilterActive.id) {
         case JournalFilterType.abandoned:
           queries.push('fulfilled=0', 'terminated=1');
           break;
@@ -257,6 +254,7 @@ export default defineComponent({
       }
 
       this.currentQuery = queries.join('&');
+      this.currentQueryArray = queries;
 
       try {
         const responseData: TimetableHistory[] = await (
@@ -285,6 +283,9 @@ export default defineComponent({
         this.dataStatus = DataStatus.Error;
         this.dataErrorMessage = 'Ups! Coś poszło nie tak!';
       }
+
+      this.scrollNoMoreData = false;
+      this.scrollDataLoaded = true;
     },
   },
 });

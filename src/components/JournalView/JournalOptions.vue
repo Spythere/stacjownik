@@ -2,9 +2,10 @@
   <div class="filters-options" @keydown.esc="showOptions = false">
     <div class="bg" v-if="showOptions" @click="showOptions = false"></div>
 
-    <button class="btn--filled btn--image" @click="showOptions = !showOptions" ref="button">
+    <button class="filter-button btn--filled btn--image" @click="showOptions = !showOptions" ref="button">
       <img :src="getIcon('filter2')" alt="Open filters" />
       {{ $t('options.filters') }} [F]
+      <span class="active-indicator" v-if="currentOptionsActive"></span>
     </button>
 
     <datalist id="search-driver">
@@ -116,6 +117,11 @@ export default defineComponent({
       type: Number as PropType<DataStatus>,
       default: DataStatus.Initialized,
     },
+
+    currentOptionsActive: {
+      type: Boolean,
+      default: false
+    }
   },
 
   data() {
