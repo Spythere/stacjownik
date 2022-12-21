@@ -8,6 +8,7 @@
         @on-options-reset="resetOptions"
         :sorter-option-ids="['timestampFrom', 'duration']"
         :data-status="dataStatus"
+        :current-options-active="currentOptionsActive"
       />
 
       <div class="list_wrapper" @scroll="handleScroll">
@@ -71,7 +72,15 @@ import JournalHeader from '../components/JournalView/JournalHeader.vue';
 const DISPATCHERS_API_URL = `${URLs.stacjownikAPI}/api/getDispatchers`;
 
 export default defineComponent({
-  components: { SearchBox, ActionButton, JournalOptions, DispatcherStats, Loading, JournalDispatchersList, JournalHeader },
+  components: {
+    SearchBox,
+    ActionButton,
+    JournalOptions,
+    DispatcherStats,
+    Loading,
+    JournalDispatchersList,
+    JournalHeader,
+  },
   name: 'JournalDispatchers',
 
   props: {
@@ -88,11 +97,14 @@ export default defineComponent({
 
   data: () => ({
     currentQuery: '',
+    currentQueryArray: [] as string[],
+
     scrollDataLoaded: true,
     scrollNoMoreData: false,
 
     showReturnButton: false,
     statsCardOpen: false,
+    currentOptionsActive: false,
 
     dataStatus: DataStatus.Initialized,
     DataStatus,
@@ -133,6 +145,13 @@ export default defineComponent({
     };
   },
 
+  watch: {
+    currentQueryArray(q: string[]) {
+      this.currentOptionsActive =
+        q.length > 2 || q.some((qv) => qv.startsWith('sortBy=') && qv.split('=')[1] != 'timestampFrom');
+    },
+  },
+
   computed: {
     computedHistoryList() {
       return this.historyList.filter(
@@ -169,6 +188,7 @@ export default defineComponent({
     resetOptions() {
       this.searchersValues['search-station'] = '';
       this.searchersValues['search-dispatcher'] = '';
+      this.searchersValues['search-date'] = '';
       this.sorterActive.id = 'timestampFrom';
 
       this.searchHistory();
@@ -231,6 +251,7 @@ export default defineComponent({
       queries.push('countLimit=30');
 
       this.currentQuery = queries.join('&');
+      this.currentQueryArray = queries;
 
       try {
         const responseData: DispatcherHistory[] = await (
@@ -265,3 +286,4 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '../styles/JournalSection.scss';
 </style>
+
