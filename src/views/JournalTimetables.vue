@@ -62,13 +62,14 @@ import { TimetableHistory } from '../scripts/interfaces/api/TimetablesAPIData';
 import { URLs } from '../scripts/utils/apiURLs';
 import { useStore } from '../store/store';
 import JournalOptions from '../components/JournalView/JournalOptions.vue';
-import { JorunalTimetableSearchType } from '../types/Journal/JournalTimetablesTypes';
+import { JournalTimetableSearchType } from '../types/Journal/JournalTimetablesTypes';
 import modalTrainMixin from '../mixins/modalTrainMixin';
 import imageMixin from '../mixins/imageMixin';
 import JournalTimetablesList from '../components/JournalView/JournalTimetablesList.vue';
 import { journalTimetableFilters } from '../constants/Journal/JournalTimetablesConsts';
 import JournalStats from '../components/JournalView/JournalStats.vue';
 import JournalHeader from '../components/JournalView/JournalHeader.vue';
+import { LocationQuery } from 'vue-router';
 
 const TIMETABLES_API_URL = `${URLs.stacjownikAPI}/api/getTimetables`;
 
@@ -110,7 +111,7 @@ export default defineComponent({
       'search-driver': '',
       'search-dispatcher': '',
       'search-date': '',
-    } as JorunalTimetableSearchType);
+    } as JournalTimetableSearchType);
 
     const countFromIndex = ref(0);
     const countLimit = 15;
@@ -136,23 +137,25 @@ export default defineComponent({
 
   // Handle route updates for route-links
   beforeRouteUpdate(to, from) {
-    const { timetableId, driverName } = to.query;
-
-    if (timetableId) this.searchersValues['search-train'] = `#${timetableId}`;
-
+    this.handleQueries(to.query);
     this.searchHistory();
   },
 
   activated() {
-    if (this.timetableId) {
-      this.searchersValues['search-train'] = `#${this.timetableId}`;
-      this.searchHistory();
-    }
+    this.handleQueries(this.$route.query);
+    this.searchHistory();
   },
 
-  mounted() {
-    if (!this.timetableId) this.searchHistory();
-  },
+  // activated() {
+  //   if (this.timetableId) {
+  //     this.searchersValues['search-train'] = `#${this.timetableId}`;
+  //     this.searchHistory();
+  //   }
+  // },
+
+  // mounted() {
+  //   if (!this.timetableId) this.searchHistory();
+  // },
 
   methods: {
     handleScroll(e: Event) {
@@ -165,11 +168,19 @@ export default defineComponent({
       if (scrollTop > elementHeight * 0.85) this.addHistoryData();
     },
 
+    handleQueries(query: LocationQuery) {
+      if ('timetableId' in query) this.searchersValues['search-train'] = `#${query.timetableId}`;
+    },
+
+    setSearchers(date: string, driver: string, train: string, dispatcher: string) {
+      this.searchersValues['search-date'] = date;
+      this.searchersValues['search-driver'] = driver;
+      this.searchersValues['search-train'] = train;
+      this.searchersValues['search-dispatcher'] = dispatcher;
+    },
+
     resetOptions() {
-      this.searchersValues['search-date'] = '';
-      this.searchersValues['search-driver'] = '';
-      this.searchersValues['search-train'] = '';
-      this.searchersValues['search-dispatcher'] = '';
+      this.setSearchers('', '', '', '');
 
       this.journalFilterActive = this.journalTimetableFilters[0];
       this.sorterActive.id = 'timetableId';
@@ -209,7 +220,7 @@ export default defineComponent({
 
     async fetchHistoryData(
       props: {
-        searchers?: JorunalTimetableSearchType;
+        searchers?: JournalTimetableSearchType;
         filter?: JournalTimetableFilter;
       } = {}
     ) {
