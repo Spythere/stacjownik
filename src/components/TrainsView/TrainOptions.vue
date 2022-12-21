@@ -93,13 +93,14 @@ export default defineComponent({
 
     currentOptionsActive: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
 
   data() {
     return {
       showOptions: false,
+      lastSelectedFilter: null as TrainFilter | null,
     };
   },
 
@@ -142,7 +143,11 @@ export default defineComponent({
     },
 
     onFilterChange(filter: TrainFilter) {
+      // if (this.lastSelectedFilter?.id === filter.id)
+      //   this.trainFilterList.forEach((tf) => (tf.isActive = filter.id === tf.id));
+
       filter.isActive = !filter.isActive;
+      this.lastSelectedFilter = filter;
     },
 
     clearAllFilters() {
