@@ -33,7 +33,8 @@
 .route {
   margin: 0 0.2em;
 
-  &-active {
+  &-active,
+  &[data-active='true'] {
     color: $accentCol;
     font-weight: bold;
   }

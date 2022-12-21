@@ -19,7 +19,10 @@ const routes: Array<RouteRecordRaw> = [
     name: 'SceneryView',
     component: () => import('../views/SceneryView.vue'),
   },
-
+  {
+    path: '/journal',
+    redirect: '/journal/timetables'
+  },
   {
     path: '/journal/timetables',
     name: 'JournalTimetables',

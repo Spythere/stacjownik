@@ -48,7 +48,7 @@
           /
           <router-link class="route" active-class="route-active" to="/trains">{{ $t('app.trains') }}</router-link>
           /
-          <router-link class="route" active-class="route-active" to="/journal/timetables">
+          <router-link class="route" active-class="route-active" :data-active="$route.path.startsWith('/journal')" to="/journal">
             {{ $t('app.journal') }}
           </router-link>
         </span>
