@@ -120,8 +120,8 @@ export default defineComponent({
 
     currentOptionsActive: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
 
   data() {
@@ -171,41 +171,14 @@ export default defineComponent({
       if (!value || value == '') return;
       if (value.length < 3) return;
 
-      this.searchTimeout = setTimeout(async () => {
-        try {
-          const driverSuggestions: string[] = await (
-            await axios.get(`${URLs.stacjownikAPI}/api/getDriverSuggestions?name=${value}`)
-          ).data;
-
-          this.driverSuggestions = driverSuggestions;
-        } catch (error) {
-          this.driverSuggestions = [];
-        }
-      }, 1500);
-
-      // this.loadingDriverSuggestions = true;
-
-      // this.loadingDriverSuggestions = false;
-      // this.nextSearchTimestamp = Date.now() + 100;
+      this.startSearchTimeout('driver', value);
     },
 
     async 'searchersValues.search-dispatcher'(value: string | undefined) {
-      clearTimeout(this.searchTimeout);
-
       if (!value || value == '') return;
       if (value.length < 3) return;
 
-      this.searchTimeout = setTimeout(async () => {
-        try {
-          const dispatcherSuggestions: string[] = await (
-            await axios.get(`${URLs.stacjownikAPI}/api/getDispatcherSuggestions?name=${value}`)
-          ).data;
-
-          this.dispatcherSuggestions = dispatcherSuggestions;
-        } catch (error) {
-          this.dispatcherSuggestions = [];
-        }
-      }, 1500);
+      this.startSearchTimeout('dispatcher', value);
     },
   },
 
@@ -231,6 +204,24 @@ export default defineComponent({
         this.store.driverStatsStatus = DataStatus.Error;
         console.error('Ups! Wystąpił błąd przy próbie pobrania statystyk maszynisty! :/');
       }
+    },
+
+    startSearchTimeout(type: 'driver' | 'dispatcher', value: string) {
+      if (this[`${type}Suggestions`].includes(value)) return;
+
+      window.clearTimeout(this.searchTimeout);
+
+      this.searchTimeout = setTimeout(async () => {
+        try {
+          const suggestions: string[] = await (
+            await axios.get(`${URLs.stacjownikAPI}/api/get${type}Suggestions?name=${value}`)
+          ).data;
+
+          this[`${type}Suggestions`] = suggestions;
+        } catch (error) {
+          this[`${type}Suggestions`] = [];
+        }
+      }, 450);
     },
 
     // Override keyMixin function
