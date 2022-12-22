@@ -2,7 +2,7 @@
   <section class="daily-stats">
     <span :data-active="data.statsStatus">
       <b v-if="data.statsStatus == DataStatus.Loading">
-        Ładowanie...
+        {{ $t('app.loading') }}
       </b>
 
       <b v-else-if="data.stats.distanceSum == null">
