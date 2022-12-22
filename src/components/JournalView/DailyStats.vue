@@ -1,44 +1,55 @@
 <template>
   <section class="daily-stats">
     <span :data-active="data.statsStatus">
-      <b v-if="data.stats.distanceSum == null">
+      <b v-if="data.statsStatus == DataStatus.Loading">
+        Ładowanie...
+      </b>
+
+      <b v-else-if="data.stats.distanceSum == null">
         {{ $t('journal.daily-stats-info') }}
       </b>
 
-      <span v-else>
-        <i18n-t keypath="journal.timetable-stats-total" tag="p">
-          <template #count>
-            <b class="text--primary">
-              {{ data.stats.totalTimetables }}
-              {{ $t('journal.timetable-count', data.stats.totalTimetables) }}
-            </b>
-          </template>
+      <span>
+        <div v-if="data.stats.totalTimetables">
+          &bull;
+          <i18n-t keypath="journal.timetable-stats-total">
+            <template #count>
+              <b class="text--primary">
+                {{ data.stats.totalTimetables }}
+                {{ $t('journal.timetable-count', data.stats.totalTimetables) }}
+              </b>
+            </template>
 
-          <template #distance>
-            <b class="text--primary"> {{ data.stats.distanceSum }} km </b>
-          </template>
-        </i18n-t>
+            <template #distance>
+              <b class="text--primary"> {{ data.stats.distanceSum }} km </b>
+            </template>
+          </i18n-t>
+        </div>
 
-        <i18n-t keypath="journal.timetable-stats-longest" tag="p">
-          <template #id>
-            <router-link :to="`/journal/timetables?timetableId=${data.stats.timetableId}`">
-              <b>{{ data.stats.timetableId }}</b>
-            </router-link>
-          </template>
-          <template #author>
-            <router-link :to="`/journal/dispatchers?dispatcherName=${data.stats.timetableAuthor}`">
-              <b>{{ data.stats.timetableAuthor }}</b>
-            </router-link>
-          </template>
-          <template #driver>
-            <b>{{ data.stats.timetableDriver }}</b>
-          </template>
-          <template #distance>
-            <b class="text--primary">{{ data.stats.timetableRouteDistance }} km</b>
-          </template>
-        </i18n-t>
+        <div v-if="data.stats.timetableId">
+          &bull;
+          <i18n-t keypath="journal.timetable-stats-longest">
+            <template #id>
+              <router-link :to="`/journal/timetables?timetableId=${data.stats.timetableId}`">
+                <b>{{ data.stats.timetableId }}</b>
+              </router-link>
+            </template>
+            <template #author>
+              <router-link :to="`/journal/dispatchers?dispatcherName=${data.stats.timetableAuthor}`">
+                <b>{{ data.stats.timetableAuthor }}</b>
+              </router-link>
+            </template>
+            <template #driver>
+              <b>{{ data.stats.timetableDriver }}</b>
+            </template>
+            <template #distance>
+              <b class="text--primary">{{ data.stats.timetableRouteDistance }} km</b>
+            </template>
+          </i18n-t>
+        </div>
 
-        <p v-if="firstPlaceDispatchers.length == 1">
+        <div v-if="firstPlaceDispatchers.length == 1">
+          &bull;
           <i18n-t keypath="journal.timetable-stats-most-active">
             <template #dispatcher>
               <router-link :to="`/journal/dispatchers?dispatcherName=${firstPlaceDispatchers[0].name}`">
@@ -52,9 +63,10 @@
               </b>
             </template>
           </i18n-t>
-        </p>
+        </div>
 
-        <p v-if="firstPlaceDispatchers.length > 1">
+        <div v-if="firstPlaceDispatchers.length > 1">
+          &bull;
           <i18n-t keypath="journal.timetable-stats-most-active-many">
             <template #dispatchers>
               <span v-for="(disp, i) in firstPlaceDispatchers">
@@ -75,7 +87,7 @@
               </b>
             </template>
           </i18n-t>
-        </p>
+        </div>
       </span>
     </span>
   </section>
@@ -160,6 +172,9 @@ defineExpose({
 </script>
 
 <style lang="scss" scoped>
+.daily-stats {
+  text-align: left;
+}
 .daily-stats > span[data-active='0'] {
   opacity: 0.75;
 }
