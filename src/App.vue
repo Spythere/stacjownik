@@ -6,6 +6,8 @@
       </keep-alive>
     </transition>
 
+    <UpdatePrompt />
+
     <AppHeader :current-lang="currentLang" @change-lang="changeLang" />
 
     <main class="app_main">
@@ -41,6 +43,7 @@ import StorageManager from './scripts/managers/storageManager';
 import imageMixin from './mixins/imageMixin';
 import AppHeader from './components/App/AppHeader.vue';
 import axios from 'axios';
+import UpdatePrompt from './components/App/UpdatePrompt.vue';
 
 export default defineComponent({
   components: {
@@ -49,7 +52,8 @@ export default defineComponent({
     SelectBox,
     TrainModal,
     AppHeader,
-  },
+    UpdatePrompt
+},
 
   mixins: [imageMixin],
 

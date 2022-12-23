@@ -14,7 +14,7 @@
       "ESNext",
       "DOM"
     ],
-    "types": ["vite/client"],
+    "types": ["vite/client", "vite-plugin-pwa/client"],
     "skipLibCheck": true
   },
   "include": [
