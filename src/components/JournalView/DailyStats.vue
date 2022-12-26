@@ -21,7 +21,7 @@
             </template>
 
             <template #distance>
-              <b class="text--primary"> {{ data.stats.distanceSum }} km </b>
+              <b class="text--primary"> {{ data.stats.distanceSum?.toFixed(2) }} km </b>
             </template>
           </i18n-t>
         </div>
