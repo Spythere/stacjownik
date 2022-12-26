@@ -12,10 +12,10 @@
           {{ $t('trains.no-trains') }}
         </div>
 
-        <div class="timeouts-warning" v-if="trainNumbersWithTimeouts.length == 0">
+        <!-- <div class="timeouts-warning" v-if="trainNumbersWithTimeouts.length == 0">
           <b class="warning-timeout">?</b>
           {{ $t('trains.timeout') }}
-        </div>
+        </div> -->
         
         <ul class="train-list" v-else>
           <li

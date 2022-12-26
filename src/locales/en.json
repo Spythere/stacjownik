@@ -15,10 +15,11 @@
     "offline": "App is in the offline mode!"
   },
   "update": {
-    "title": "New Stacjownik version is available!",
+    "title": "New version of the app is available!",
     "paragraph1": "Enjoy the application and may the green signal be with you!",
     "release-link": "Click here to browse version changelog (GitHub)",
-    "confirm-button": "Understood!"
+    "confirm-button": "UPDATE NOW",
+    "later-button": "LATER"
   },
   "data-status": {
     "S1-offline": "<b>S1 signal</b> <br> The app is working in offline mode!",

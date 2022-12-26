@@ -1,12 +1,12 @@
 <template>
   <div class="update-prompt">
     <transition name="prompt-anim">
-      <div class="prompt_content" v-if="!hidePrompt && needRefresh">
-        <div>Nowa wersja <span class="text--primary">Stacjownika</span> jest dostępna!</div>
+      <div class="prompt_content" v-if="true">
+        <div>{{ $t('update.title') }}</div>
 
         <div class="prompt_actions">
-          <button class="btn btn--filled" @click="updateServiceWorker(true)">ZAKTUALIZUJ</button>
-          <button class="btn btn--filled" @click="hidePrompt = true">PÓŹNIEJ</button>
+          <button class="btn btn--filled" @click="updateServiceWorker(true)">{{ $t('update.confirm-button') }}</button>
+          <button class="btn btn--filled" @click="hidePrompt = true">{{ $t('update.later-button') }}</button>
         </div>
       </div>
     </transition>
