@@ -2,9 +2,10 @@
   <div class="filters-options" @keydown.esc="showOptions = false">
     <div class="bg" v-if="showOptions" @click="showOptions = false"></div>
 
-    <button class="btn--filled btn--image" @click="toggleShowOptions" ref="button">
+    <button class="filter-button btn--filled btn--image" @click="toggleShowOptions" ref="button">
       <img :src="getIcon('filter2')" alt="Open filters" />
       {{ $t('options.filters') }} [F]
+      <span class="active-indicator" v-if="currentOptionsActive"></span>
     </button>
 
     <transition name="options-anim">
@@ -56,7 +57,7 @@
           <h1 class="option-title" v-if="trainFilterList.length != 0">{{ $t('options.filter-title') }}</h1>
           <div class="options_filters">
             <div class="filter-option" v-for="filter in trainFilterList">
-              <button class="btn--option" :data-disabled="!filter.isActive" @click="onFilterChange(filter)">
+              <button class="btn--option" :data-inactive="!filter.isActive" @click="onFilterChange(filter)">
                 {{ $t(`options.filter-${filter.id}`) }}
               </button>
             </div>
@@ -89,11 +90,17 @@ export default defineComponent({
       type: Array as PropType<Array<string>>,
       required: true,
     },
+
+    currentOptionsActive: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   data() {
     return {
       showOptions: false,
+      lastSelectedFilter: null as TrainFilter | null,
     };
   },
 
@@ -136,7 +143,11 @@ export default defineComponent({
     },
 
     onFilterChange(filter: TrainFilter) {
+      // if (this.lastSelectedFilter?.id === filter.id)
+      //   this.trainFilterList.forEach((tf) => (tf.isActive = filter.id === tf.id));
+
       filter.isActive = !filter.isActive;
+      this.lastSelectedFilter = filter;
     },
 
     clearAllFilters() {

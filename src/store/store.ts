@@ -17,7 +17,6 @@ import {
 } from '../scripts/utils/storeUtils';
 import { APIData, StationJSONData, StoreState } from './storeTypes';
 
-
 export const useStore = defineStore('store', {
   state: () =>
     ({
@@ -35,12 +34,14 @@ export const useStore = defineStore('store', {
       stationCount: 0,
 
       webSocket: undefined,
+      isOffline: false,
 
       dispatcherStatsName: '',
       dispatcherStatsData: undefined,
 
       driverStatsName: '',
       driverStatsData: undefined,
+      driverStatsStatus: DataStatus.Initialized,
 
       chosenModalTrainId: undefined,
 
@@ -52,9 +53,10 @@ export const useStore = defineStore('store', {
         trains: DataStatus.Loading,
       },
 
+      currentStatsTab: 'daily',
+
       blockScroll: false,
       listenerLaunched: false,
-
     } as StoreState),
 
   actions: {
@@ -222,6 +224,14 @@ export const useStore = defineStore('store', {
       const onlineStationNames: string[] = [];
       const prevDispatcherStatuses: StoreState['lastDispatcherStatuses'] = [];
 
+      if (this.isOffline) {
+        this.stationList.forEach((station) => {
+          station.onlineInfo = undefined;
+        });
+
+        return;
+      }
+
       this.apiData.stations?.forEach((stationAPIData) => {
         if (stationAPIData.region !== this.region.id || !stationAPIData.isOnline) return;
         const station = this.stationList.find((s) => s.name === stationAPIData.stationName);
@@ -349,12 +359,11 @@ export const useStore = defineStore('store', {
         transports: ['websocket', 'polling'],
         rememberUpgrade: true,
         reconnection: true,
-        timeout: 10000,
+        timeout: 2000,
       });
 
       socket.on('connect_error', (err) => {
         this.dataStatuses.connection = DataStatus.Error;
-        this.webSocket = undefined;
       });
 
       socket.on('UPDATE', (data: APIData) => {
@@ -365,6 +374,7 @@ export const useStore = defineStore('store', {
 
       socket.emit('FETCH_DATA', {}, (data: APIData) => {
         this.apiData = data;
+        this.dataStatuses.connection = DataStatus.Loaded;
         this.setOnlineData();
       });
 

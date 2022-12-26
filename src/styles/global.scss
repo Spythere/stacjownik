@@ -207,10 +207,20 @@ button {
   padding: 0.25em 0.5em;
 
   transition: all 100ms ease;
+
+  &[data-disabled='true'] {
+    user-select: none;
+    pointer-events: none;
+    opacity: 0.85;
+  }
+
+  &[data-inactive='true'] {
+    opacity: 0.55;
+  }
 }
 
 button.btn--filled {
-  background-color: #333;
+  background-color: #1a1a1a;
   border-radius: 0.25em;
 
   &:hover {

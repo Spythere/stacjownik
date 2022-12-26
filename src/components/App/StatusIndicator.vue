@@ -161,7 +161,6 @@
 </template>
 
 <script lang="ts">
-
 import { defineComponent } from 'vue';
 import { DataStatus } from '../../scripts/enums/DataStatus';
 import { useStore } from '../../store/store';
@@ -172,6 +171,7 @@ export default defineComponent({
     return {
       tooltipActive: false,
       indicator: {
+        offline: false,
         status: DataStatus.Loading,
         message: 'data-status.S3',
       },
@@ -193,6 +193,7 @@ export default defineComponent({
 
     return {
       dataStatus: store.dataStatuses,
+      store,
     };
   },
 
@@ -205,6 +206,13 @@ export default defineComponent({
         const sceneryDataStatus = statuses.sceneries;
         const trainsDataStatus = statuses.trains;
         const dispatcherDataStatus = statuses.dispatchers;
+
+        if (this.store.isOffline) {
+          this.setSignalStatus(DataStatus.Initialized);
+          this.indicator.status = DataStatus.Initialized;
+          this.indicator.message = 'data-status.S1-offline';
+          return;
+        }
 
         if (connectionStatus == DataStatus.Error) {
           this.setSignalStatus(connectionStatus);
@@ -252,6 +260,10 @@ export default defineComponent({
       this.orangeLight = false;
       this.redBottomLight = false;
 
+      if (status == DataStatus.Initialized) {
+        this.redTopLight = true;
+      }
+
       if (status == DataStatus.Loaded) {
         this.greenLight = true;
       }
@@ -291,9 +303,8 @@ export default defineComponent({
 
 .status-indicator {
   position: absolute;
-  left: 50%;
+  left: 110%;
   bottom: 0;
-  transform: translateX(12em);
   z-index: 100;
 }
 

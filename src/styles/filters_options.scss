@@ -2,6 +2,19 @@
 @import 'variables.scss';
 @import 'search_box.scss';
 
+.filters-options {
+  margin-bottom: 0.5em;
+}
+
+.filter-button .active-indicator {
+  width: 7px;
+  height: 7px;
+  background-color: lightgreen;
+  border-radius: 50%;
+  
+  margin-left: 10px;
+}
+
 h1.option-title {
   position: relative;
   font-size: 1.1em;
@@ -42,22 +55,16 @@ h1.option-title {
   z-index: 10;
 }
 
-.filters-options {
-  position: relative;
-  margin-bottom: 0.5em;
-}
-
 .options_wrapper {
   position: absolute;
 
   background-color: $bgCol;
   box-shadow: 0 5px 10px 2px #0f0f0f;
 
-  width: 100%;
+  width: 97%;
   max-width: 500px;
 
   padding: 1em;
-
   z-index: 100;
 }
 

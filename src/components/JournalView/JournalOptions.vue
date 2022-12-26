@@ -2,9 +2,10 @@
   <div class="filters-options" @keydown.esc="showOptions = false">
     <div class="bg" v-if="showOptions" @click="showOptions = false"></div>
 
-    <button class="btn--filled btn--image" @click="showOptions = !showOptions" ref="button">
+    <button class="filter-button btn--filled btn--image" @click="showOptions = !showOptions" ref="button">
       <img :src="getIcon('filter2')" alt="Open filters" />
       {{ $t('options.filters') }} [F]
+      <span class="active-indicator" v-if="currentOptionsActive"></span>
     </button>
 
     <datalist id="search-driver">
@@ -36,7 +37,7 @@
                   :list="propName.toString()"
                 />
 
-                <button class="search-exit">
+                <button class="search-exit" v-if="propName != 'search-date'">
                   <img :src="getIcon('exit')" alt="exit-icon" @click="onInputClear(propName)" />
                 </button>
               </div>
@@ -89,7 +90,9 @@ import { defineComponent, inject, PropType } from 'vue';
 import imageMixin from '../../mixins/imageMixin';
 import keyMixin from '../../mixins/keyMixin';
 import { DataStatus } from '../../scripts/enums/DataStatus';
+import { DriverStatsAPIData } from '../../scripts/interfaces/api/DriverStatsAPIData';
 import { URLs } from '../../scripts/utils/apiURLs';
+import { useStore } from '../../store/store';
 import { JournalTimetableFilter } from '../../types/Journal/JournalTimetablesTypes';
 import ActionButton from '../Global/ActionButton.vue';
 import SelectBox from '../Global/SelectBox.vue';
@@ -114,6 +117,11 @@ export default defineComponent({
       type: Number as PropType<DataStatus>,
       default: DataStatus.Initialized,
     },
+
+    currentOptionsActive: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   data() {
@@ -124,6 +132,7 @@ export default defineComponent({
       dispatcherSuggestions: [] as string[],
 
       searchTimeout: 0,
+      store: useStore(),
 
       DataStatus,
     };
@@ -138,6 +147,10 @@ export default defineComponent({
   },
 
   computed: {
+    driverStatsName() {
+      return this.store.driverStatsName;
+    },
+
     translatedSorterOptions() {
       return this.$props.sorterOptionIds.map((id) => ({
         id,
@@ -147,51 +160,70 @@ export default defineComponent({
   },
 
   watch: {
+    async driverStatsName(value: string) {
+      await this.fetchDriverStats();
+      this.store.currentStatsTab = value ? 'driver' : 'daily';
+    },
+
     async 'searchersValues.search-driver'(value: string | undefined) {
       clearTimeout(this.searchTimeout);
 
       if (!value || value == '') return;
       if (value.length < 3) return;
 
-      this.searchTimeout = setTimeout(async () => {
-        try {
-          const driverSuggestions: string[] = await (
-            await axios.get(`${URLs.stacjownikAPI}/api/getDriverSuggestions?name=${value}`)
-          ).data;
-
-          this.driverSuggestions = driverSuggestions;
-        } catch (error) {
-          this.driverSuggestions = [];
-        }
-      }, 1500);
-
-      // this.loadingDriverSuggestions = true;
-
-      // this.loadingDriverSuggestions = false;
-      // this.nextSearchTimestamp = Date.now() + 100;
+      this.startSearchTimeout('driver', value);
     },
 
     async 'searchersValues.search-dispatcher'(value: string | undefined) {
-      clearTimeout(this.searchTimeout);
-
       if (!value || value == '') return;
       if (value.length < 3) return;
 
-      this.searchTimeout = setTimeout(async () => {
-        try {
-          const dispatcherSuggestions: string[] = await (
-            await axios.get(`${URLs.stacjownikAPI}/api/getDispatcherSuggestions?name=${value}`)
-          ).data;
-
-          this.dispatcherSuggestions = dispatcherSuggestions;
-        } catch (error) {
-          this.dispatcherSuggestions = [];
-        }
-      }, 1500);
+      this.startSearchTimeout('dispatcher', value);
     },
   },
 
   methods: {
+    async fetchDriverStats() {
+      this.store.driverStatsData = undefined;
+
+      if (!this.store.driverStatsName) {
+        this.store.driverStatsStatus = DataStatus.Initialized;
+        return;
+      }
+
+      try {
+        this.store.driverStatsStatus = DataStatus.Loading;
+
+        const statsData: DriverStatsAPIData = await (
+          await axios.get(`${URLs.stacjownikAPI}/api/getDriverInfo?name=${this.store.driverStatsName}`)
+        ).data;
+
+        this.store.driverStatsData = statsData;
+        this.store.driverStatsStatus = DataStatus.Loaded;
+      } catch (error) {
+        this.store.driverStatsStatus = DataStatus.Error;
+        console.error('Ups! Wystąpił błąd przy próbie pobrania statystyk maszynisty! :/');
+      }
+    },
+
+    startSearchTimeout(type: 'driver' | 'dispatcher', value: string) {
+      if (this[`${type}Suggestions`].includes(value)) return;
+
+      window.clearTimeout(this.searchTimeout);
+
+      this.searchTimeout = setTimeout(async () => {
+        try {
+          const suggestions: string[] = await (
+            await axios.get(`${URLs.stacjownikAPI}/api/get${type}Suggestions?name=${value}`)
+          ).data;
+
+          this[`${type}Suggestions`] = suggestions;
+        } catch (error) {
+          this[`${type}Suggestions`] = [];
+        }
+      }, 450);
+    },
+
     // Override keyMixin function
     onKeyDownFunction() {
       this.showOptions = !this.showOptions;

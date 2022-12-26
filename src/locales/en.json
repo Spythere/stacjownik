@@ -1,4 +1,7 @@
 {
+  "general": {
+    "and": " and "
+  },
   "app": {
     "sceneries": "SCENERIES",
     "trains": "TRAINS",
@@ -8,15 +11,18 @@
     "error": "An error occured while loading data!",
     "no-result": "No results for current search!",
     "migration-warning": "Stacjownik services will be unavailable 2/06/2022 between 1-3am (CEST time) due to the migration of API hostings!",
-    "migration-confirm": "Roger that!"
+    "migration-confirm": "Roger that!",
+    "offline": "App is in the offline mode!"
   },
   "update": {
-    "title": "New Stacjownik version is available!",
+    "title": "New version of the app is available!",
     "paragraph1": "Enjoy the application and may the green signal be with you!",
     "release-link": "Click here to browse version changelog (GitHub)",
-    "confirm-button": "Understood!"
+    "confirm-button": "UPDATE NOW",
+    "later-button": "LATER"
   },
   "data-status": {
+    "S1-offline": "<b>S1 signal</b> <br> The app is working in offline mode!",
     "S1a-connection": "<b>S1a signal</b> <br> Cannot connect with Stacjownik API service!",
     "S1a-sceneries": "<b>S1a signal</b> <br> Cannot load online stations data!",
     "S2": "<b>S2 signal</b> <br> All data loaded successfully!",
@@ -252,7 +258,7 @@
     "stock-max-speed": "Maximum registered speed",
 
     "load-data": "Load further data...",
-    
+
     "last-seen-at": "Last seen at",
     "currently-at": "Currently at",
 
@@ -262,7 +268,23 @@
     "stats-longest-timetable": "LONGEST TIMETABLE",
     "stats-avg-timetable": "AVERAGE TIMETABLE LENGTH",
     "stats-distance": "DISTANCE",
-    "stats-stations": "STATIONS"
+    "stats-stations": "STATIONS",
+
+    "timetable-stats-total": "Today, dispatchers made so far {count} with total distance of {distance}",
+    "timetable-stats-longest": "The longest timetable today is #{id} made by {author} for {driver} - {distance}",
+    "timetable-stats-most-active": "The most active dispatcher today is {dispatcher} who created {count}",
+    "timetable-stats-most-active-many": "The most active dispatchers today are {dispatchers} who created {count} each",
+
+    "timetable-count": "timetable | timetables",
+
+    "daily-stats-title": "DAILY STATS",
+    "daily-stats-info": "Today's statistics are unavailable yet!",
+
+    "driver-stats-title": "DRIVER STATS",
+    "driver-stats-info": "Enter a proper nickname into filters [F] to see user's driving statistics!",
+
+    "stats-loading": "Fetching statistics...",
+    "stats-error": "Oops! An unexpected error occurred while trying to fetch statistics! :/"
   },
   "scenery": {
     "users": "PLAYERS ONLINE",

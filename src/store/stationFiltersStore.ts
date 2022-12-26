@@ -3,6 +3,7 @@ import inputData from '../data/options.json';
 import Filter from '../scripts/interfaces/Filter';
 import Station from '../scripts/interfaces/Station';
 import StorageManager from '../scripts/managers/storageManager';
+import { useStore } from './store';
 
 const sortStations = (a: Station, b: Station, sorter: { index: number; dir: number }) => {
   switch (sorter.index) {
@@ -58,7 +59,7 @@ const sortStations = (a: Station, b: Station, sorter: { index: number; dir: numb
   return a.name.localeCompare(b.name);
 };
 
-const filterStations = (station: Station, filters: Filter) => {
+const filterStations = (station: Station, filters: Filter, isOffline = false) => {
   const returnMode = false;
 
   if ((station.generalInfo?.availability == 'nonPublic' || !station.generalInfo) && filters['nonPublic'])
@@ -236,6 +237,7 @@ export const useStationFiltersStore = defineStore('stationFiltersStore', {
       inputs: inputData,
       filters: { ...filterInitStates },
       sorterActive: { index: 0, dir: 1 },
+      store: useStore(),
     };
   },
 
@@ -249,7 +251,7 @@ export const useStationFiltersStore = defineStore('stationFiltersStore', {
 
           return station;
         })
-        .filter((station) => filterStations(station, this.filters))
+        .filter((station) => filterStations(station, this.filters, this.store.isOffline))
         .sort((a, b) => sortStations(a, b, this.sorterActive));
     },
 
@@ -303,3 +305,4 @@ export const useStationFiltersStore = defineStore('stationFiltersStore', {
     },
   },
 });
+

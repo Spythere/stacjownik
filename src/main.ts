@@ -10,6 +10,7 @@ import { createPinia } from 'pinia';
 
 const i18n = createI18n({
   locale: 'pl',
+  legacy: false,
   fallbackLocale: 'pl',
   messages: {
     en: enLang,

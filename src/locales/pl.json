@@ -1,4 +1,7 @@
 {
+  "general": {
+    "and": " oraz "
+  },
   "app": {
     "sceneries": "SCENERIE",
     "trains": "POCIĄGI",
@@ -8,17 +11,20 @@
     "error": "Wystąpił problem z załadowaniem danych!",
     "no-result": "Brak wyników o podanych kryteriach!",
     "migration-warning": "Usługi Stacjownika będą niedostępne w godzinach 1:00-3:00 2 czerwca 2022r. z powodu migracji hostingów API!",
-    "migration-confirm": "Przyjąłem!"
+    "migration-confirm": "Przyjąłem!",
+    "offline": "Aplikacja w trybie offline!"
   },
 
   "update": {
     "title": "Nowa wersja Stacjownika jest dostępna!",
     "paragraph1": "Miłego korzystania z aplikacji i niech S2 będzie z wami!",
     "release-link": "Kliknij, aby przejrzeć listę zmian (GitHub)",
-    "confirm-button": "Przyjąłem!"
+    "confirm-button": "ZAKTUALIZUJ",
+    "later-button": "PÓŹNIEJ"
   },
 
   "data-status": {
+    "S1-offline": "<b>Sygnał S1</b> <br> Aplikacja działa w trybie offline!",
     "S1a-connection": "<b>Sygnał S1a</b> <br> Błąd podczas próby połączenia się z API Stacjownika!",
     "S1a-sceneries": "<b>Sygnał S1a</b> <br> Błąd podczas pobierania danych o sceneriach online!",
     "S2": "<b>Sygnał S2</b> <br> Pomyślnie załadowano dane!",
@@ -266,7 +272,23 @@
     "stats-longest-timetable": "NAJDŁUŻSZY RJ",
     "stats-avg-timetable": "ŚREDNIA DŁUGOŚĆ RJ",
     "stats-distance": "DYSTANS",
-    "stats-stations": "STACJE"
+    "stats-stations": "STACJE",
+
+    "timetable-stats-total": "Dyżurni stworzyli dziś {count}  o łącznym dystansie {distance}",
+    "timetable-stats-longest": "Najdłuższym rozkładem jazdy jest dzisiaj #{id} stworzony przez dyżurnego {author} dla maszynisty {driver} - {distance}",
+    "timetable-stats-most-active": "Dzisiejszym najaktywniejszym dyżurnym jest {dispatcher}, który stworzył {count}",
+    "timetable-stats-most-active-many": "Dzisiejszymi najaktywniejszymi dyżurnymi są {dispatchers}, którzy stworzyli po {count}",
+
+    "timetable-count": "rozkład jazdy | rozkładów jazdy",
+
+    "daily-stats-title": "STATYSTYKI DNIA",
+    "daily-stats-info": "Dzisiejsze statystyki nie są jeszcze dostępne!",
+
+    "driver-stats-title": "STATYSTYKI GRACZA",
+    "driver-stats-info": "Wpisz nazwę użytkownika w filtrach [F], aby zobaczyć jego statystyki maszynisty!",
+
+    "stats-loading": "Pobieranie statystyk...",
+    "stats-error": "Ups! Wystąpił błąd podczas próby pobrania statystyk! :/"
   },
   "scenery": {
     "users": "GRACZE ONLINE",

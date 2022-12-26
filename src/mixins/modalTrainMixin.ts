@@ -2,7 +2,7 @@ import { defineComponent } from 'vue';
 import { useStore } from '../store/store';
 
 export default defineComponent({
-  setup() {
+  data() {
     return {
       store: useStore(),
     };

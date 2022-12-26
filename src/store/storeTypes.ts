@@ -23,14 +23,18 @@ export interface StoreState {
   stationCount: number;
 
   webSocket?: Socket;
+  isOffline: boolean;
 
   dispatcherStatsName: string;
   dispatcherStatsData?: DispatcherStatsAPIData;
 
   driverStatsName: string;
   driverStatsData?: DriverStatsAPIData;
+  driverStatsStatus: DataStatus;
 
   chosenModalTrainId?: string;
+
+  currentStatsTab: 'daily' | 'driver';
 
   dataStatuses: {
     connection: DataStatus;
@@ -48,6 +52,7 @@ export interface APIData {
   stations?: StationAPIData[];
   dispatchers?: string[][];
   trains?: TrainAPIData[];
+  connectedSocketCount: number;
 }
 
 export interface StationJSONData {

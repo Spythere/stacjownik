@@ -1,12 +1,12 @@
 {
   "name": "stacjownik",
-  "version": "1.10.10",
+  "version": "1.11.0",
   "private": true,
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "deploy": "yarn build && firebase deploy --only hosting",
-    "preview": "vite preview"
+    "preview": "yarn build && vite preview"
   },
   "dependencies": {
     "core-js": "^3.12.1",
@@ -21,12 +21,13 @@
     "vue-router": "^4.0.0-0"
   },
   "devDependencies": {
-    "@types/node": "^18.11.1",
-    "@vitejs/plugin-vue": "^3.0.0",
-    "axios": "^1.1.2",
-    "typescript": "^4.6.4",
-    "vite": "^3.0.0",
-    "vue-tsc": "^1.0.9"
+    "@types/node": "^18.11.17",
+    "@vitejs/plugin-vue": "^4.0.0",
+    "axios": "^1.2.1",
+    "typescript": "^4.9.4",
+    "vite": "^4.0.3",
+    "vite-plugin-pwa": "^0.14.0",
+    "vue-tsc": "^1.0.18"
   },
   "browserslist": [
     "> 1%",
