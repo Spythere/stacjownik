@@ -51,6 +51,7 @@ export interface APIData {
   stations?: StationAPIData[];
   dispatchers?: string[][];
   trains?: TrainAPIData[];
+  connectedSocketCount: number;
 }
 
 export interface StationJSONData {
