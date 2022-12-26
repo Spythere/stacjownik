@@ -136,6 +136,7 @@ export default defineComponent({
 .header {
   &_body {
     max-width: 21em;
+    position: relative;
 
     @include smallScreen {
       max-width: 18em;

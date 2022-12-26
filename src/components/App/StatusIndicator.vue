@@ -303,9 +303,8 @@ export default defineComponent({
 
 .status-indicator {
   position: absolute;
-  left: 50%;
+  left: 110%;
   bottom: 0;
-  transform: translateX(12em);
   z-index: 100;
 }
 
