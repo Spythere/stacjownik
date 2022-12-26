@@ -1,7 +1,7 @@
 <template>
   <div class="update-prompt">
     <transition name="prompt-anim">
-      <div class="prompt_content" v-if="true">
+      <div class="prompt_content" v-if="!hidePrompt && needRefresh">
         <div>{{ $t('update.title') }}</div>
 
         <div class="prompt_actions">
