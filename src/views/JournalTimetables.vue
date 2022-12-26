@@ -214,8 +214,6 @@ export default defineComponent({
     },
 
     async fetchHistoryData() {
-      this.dataStatus = DataStatus.Loading;
-
       const queries: string[] = [];
 
       const driverName = this.searchersValues['search-driver'].trim();
@@ -256,6 +254,8 @@ export default defineComponent({
         default:
           break;
       }
+
+      if (this.currentQuery != queries.join('&')) this.dataStatus = DataStatus.Loading;
 
       this.currentQuery = queries.join('&');
       this.currentQueryArray = queries;

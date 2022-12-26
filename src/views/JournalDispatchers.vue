@@ -224,8 +224,6 @@ export default defineComponent({
     },
 
     async fetchHistoryData() {
-      this.dataStatus = DataStatus.Loading;
-
       const queries: string[] = [];
 
       const dispatcher = this.searchersValues['search-dispatcher'].trim();
@@ -245,6 +243,8 @@ export default defineComponent({
       else queries.push('sortBy=timestampFrom');
 
       queries.push('countLimit=30');
+
+      if (this.currentQuery != queries.join('&')) this.dataStatus = DataStatus.Loading;
 
       this.currentQuery = queries.join('&');
       this.currentQueryArray = queries;
