@@ -11,7 +11,8 @@
     "error": "Wystąpił problem z załadowaniem danych!",
     "no-result": "Brak wyników o podanych kryteriach!",
     "migration-warning": "Usługi Stacjownika będą niedostępne w godzinach 1:00-3:00 2 czerwca 2022r. z powodu migracji hostingów API!",
-    "migration-confirm": "Przyjąłem!"
+    "migration-confirm": "Przyjąłem!",
+    "offline": "Aplikacja w trybie offline!"
   },
 
   "update": {
@@ -22,6 +23,7 @@
   },
 
   "data-status": {
+    "S1-offline": "<b>Sygnał S1</b> <br> Aplikacja działa w trybie offline!",
     "S1a-connection": "<b>Sygnał S1a</b> <br> Błąd podczas próby połączenia się z API Stacjownika!",
     "S1a-sceneries": "<b>Sygnał S1a</b> <br> Błąd podczas pobierania danych o sceneriach online!",
     "S2": "<b>Sygnał S2</b> <br> Pomyślnie załadowano dane!",

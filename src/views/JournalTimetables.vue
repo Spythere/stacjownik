@@ -17,7 +17,11 @@
       <div class="list_wrapper" @scroll="handleScroll">
         <!-- <transition name="warning" mode="out-in"> -->
         <!-- <div :key="dataStatus"> -->
-        <Loading v-if="dataStatus == DataStatus.Initialized || dataStatus == DataStatus.Loading" />
+        <div class="journal_warning" v-if="store.isOffline">
+          {{ $t('app.offline') }}
+        </div>
+
+        <Loading v-else-if="dataStatus == DataStatus.Initialized || dataStatus == DataStatus.Loading" />
 
         <div v-else-if="dataStatus == DataStatus.Error" class="journal_warning error">
           {{ $t('app.error') }}

@@ -14,18 +14,11 @@
 </template>
 
 <script setup lang="ts">
-import { useRegisterSW } from 'virtual:pwa-register/vue';
 import { ref } from 'vue';
+import useCustomSW from '../../mixins/useCustomSW';
 
 const hidePrompt = ref(false);
-
-const { needRefresh, updateServiceWorker } = useRegisterSW({
-  immediate: true,
-
-  onNeedRefresh() {
-    console.log('Needs refresh!');
-  },
-});
+const { needRefresh, updateServiceWorker } = useCustomSW();
 </script>
 
 <style lang="scss" scoped>

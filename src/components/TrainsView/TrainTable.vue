@@ -2,18 +2,22 @@
   <div class="train-table">
     <transition name="anim" mode="out-in">
       <div :key="store.dataStatuses.trains">
-        <Loading v-if="trains.length == 0 && store.dataStatuses.trains == 0" />
+        <div class="table-info" v-if="store.isOffline">
+          {{ $t('app.offline') }}
+        </div>
 
-        <div class="table-info no-trains" v-if="trains.length == 0 && store.dataStatuses.trains != 0">
+        <Loading v-else-if="trains.length == 0 && store.dataStatuses.trains == 0" />
+
+        <div class="table-info no-trains" v-else-if="trains.length == 0 && store.dataStatuses.trains != 0">
           {{ $t('trains.no-trains') }}
         </div>
 
-        <div class="timeouts-warning" v-if="trainNumbersWithTimeouts.length != 0">
+        <div class="timeouts-warning" v-if="trainNumbersWithTimeouts.length == 0">
           <b class="warning-timeout">?</b>
           {{ $t('trains.timeout') }}
         </div>
-
-        <ul class="train-list">
+        
+        <ul class="train-list" v-else>
           <li
             class="train-row"
             v-for="train in currentTrains"

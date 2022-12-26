@@ -23,6 +23,7 @@ export interface StoreState {
   stationCount: number;
 
   webSocket?: Socket;
+  isOffline: boolean;
 
   dispatcherStatsName: string;
   dispatcherStatsData?: DispatcherStatsAPIData;

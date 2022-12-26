@@ -11,7 +11,8 @@
     "error": "An error occured while loading data!",
     "no-result": "No results for current search!",
     "migration-warning": "Stacjownik services will be unavailable 2/06/2022 between 1-3am (CEST time) due to the migration of API hostings!",
-    "migration-confirm": "Roger that!"
+    "migration-confirm": "Roger that!",
+    "offline": "App is in the offline mode!"
   },
   "update": {
     "title": "New Stacjownik version is available!",
@@ -20,6 +21,7 @@
     "confirm-button": "Understood!"
   },
   "data-status": {
+    "S1-offline": "<b>S1 signal</b> <br> The app is working in offline mode!",
     "S1a-connection": "<b>S1a signal</b> <br> Cannot connect with Stacjownik API service!",
     "S1a-sceneries": "<b>S1a signal</b> <br> Cannot load online stations data!",
     "S2": "<b>S2 signal</b> <br> All data loaded successfully!",

@@ -1,5 +1,5 @@
 <template>
-  <div class="journal-stats">
+  <div class="journal-stats" v-show="!store.isOffline">
     <div class="tabs">
       <button
         v-for="tab in data.tabs"

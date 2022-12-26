@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, provide, ref, watch } from 'vue';
+import { computed, defineComponent, KeepAlive, provide, ref, watch } from 'vue';
 
 import Clock from './components/App/Clock.vue';
 
@@ -44,6 +44,9 @@ import imageMixin from './mixins/imageMixin';
 import AppHeader from './components/App/AppHeader.vue';
 import axios from 'axios';
 import UpdatePrompt from './components/App/UpdatePrompt.vue';
+import { VERSION } from 'vue-i18n';
+import { RouterView } from 'vue-router';
+import useCustomSW from './mixins/useCustomSW';
 
 export default defineComponent({
   components: {
@@ -52,14 +55,16 @@ export default defineComponent({
     SelectBox,
     TrainModal,
     AppHeader,
-    UpdatePrompt
-},
+    UpdatePrompt,
+  },
 
   mixins: [imageMixin],
 
   setup() {
     const store = useStore();
     store.connectToAPI();
+
+    const { offlineReady } = useCustomSW();
 
     const isFilterCardVisible = ref(false);
 
@@ -85,6 +90,25 @@ export default defineComponent({
 
   created() {
     this.loadLang();
+
+    this.store.isOffline = !window.navigator.onLine;
+
+    window.addEventListener('offline', () => {
+      this.store.isOffline = true;
+
+      this.store.apiData = {
+        stations: [],
+        dispatchers: [],
+        trains: [],
+        connectedSocketCount: 0,
+      };
+
+      this.store.setOnlineData();
+    });
+
+    window.addEventListener('online', () => {
+      this.store.isOffline = false;
+    });
   },
 
   async mounted() {
