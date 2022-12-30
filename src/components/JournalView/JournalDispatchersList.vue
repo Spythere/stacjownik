@@ -15,6 +15,14 @@
         tabindex="0"
       >
         <span>
+          <b
+            v-if="item.dispatcherLevel !== null"
+            class="dispatcher-level"
+            :style="calculateExpStyle(item.dispatcherLevel, item.dispatcherIsSupporter)"
+          >
+            {{ item.dispatcherLevel >= 2 ? item.dispatcherLevel : 'L' }}
+          </b>
+
           <b class="text--primary">{{ item.dispatcherName }}</b> &bull; <b>{{ item.stationName }}</b>
           <span class="text--grayed">&nbsp;#{{ item.stationHash }}&nbsp;</span>
           <span class="region-badge" :class="item.region">PL1</span>
@@ -44,6 +52,7 @@
 import { defineComponent, PropType } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
 import { DispatcherHistory } from '../../scripts/interfaces/api/DispatchersAPIData';
+import styleMixin from '../../mixins/styleMixin';
 
 export default defineComponent({
   props: {
@@ -53,7 +62,7 @@ export default defineComponent({
     },
   },
 
-  mixins: [dateMixin],
+  mixins: [dateMixin, styleMixin],
 
   computed: {
     computedDispatcherHistory() {
@@ -141,6 +150,18 @@ li.sticky {
 
     font-weight: bold;
   }
+}
+
+.dispatcher-level {
+  display: inline-block;
+  text-align: center;
+  line-height: 150%;
+
+  width: 25px;
+  height: 25px;
+
+  margin-right: 0.5em;
+  border-radius: 0.25em;
 }
 
 @include smallScreen() {
