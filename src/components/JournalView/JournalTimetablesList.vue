@@ -16,7 +16,7 @@
             <b class="text--primary">{{ timetable.trainCategoryCode }}&nbsp;</b>
             <b>{{ timetable.trainNo }}</b>
             | <span>{{ timetable.driverName }}</span> |
-            <span class="text--grayed">#{{ timetable.timetableId }}</span>
+            <span class="text--grayed">#{{ timetable.id }}</span>
           </span>
 
           <span>
