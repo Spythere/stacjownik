@@ -234,7 +234,7 @@ export default defineComponent({
       if (this.sorterActive.id == 'distance') queries.push('sortBy=routeDistance');
       else if (this.sorterActive.id == 'total-stops') queries.push('sortBy=allStopsCount');
       else if (this.sorterActive.id == 'beginDate') queries.push('sortBy=beginDate');
-      else queries.push('sortBy=timetableId');
+      // else queries.push('sortBy=timetableId');
 
       queries.push('countLimit=15');
 

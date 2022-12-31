@@ -1,4 +1,6 @@
 export interface TimetableHistory {
+  id: number;
+  
   timetableId: number;
   trainNo: number;
   trainCategoryCode: string;

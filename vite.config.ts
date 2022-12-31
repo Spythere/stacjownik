@@ -12,7 +12,7 @@ export default defineConfig({
       registerType: 'prompt',
 
       workbox: {
-        globPatterns: ['**/*.{js,css,html,png,svg,img}'],
+        globPatterns: ['**/*.{js,css,html,png,svg,jpg}'],
         runtimeCaching: [
           {
             urlPattern: new RegExp('^https://spythere.pl/api/getSceneries', 'i'),
@@ -20,6 +20,7 @@ export default defineConfig({
             options: {
               cacheName: 'sceneries-cache',
               expiration: {
+                maxEntries: 1,
                 maxAgeSeconds: 60 * 60 * 24 * 7, // <== 7 days
               },
               cacheableResponse: {
