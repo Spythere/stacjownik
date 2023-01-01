@@ -24,7 +24,7 @@ function filterTrainList(trainList: Train[], searchedTrain: string, searchedDriv
         (train) => {
             const isFiltered = filters.every(f => {
                 if (f.isActive) return true;
-                
+
                 if (!train.timetableData) return filters.find(filter => filter.id == TrainFilterType.noTimetable)!.isActive;
 
                 switch (f.id) {

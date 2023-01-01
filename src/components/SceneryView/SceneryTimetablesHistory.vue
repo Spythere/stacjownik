@@ -11,8 +11,8 @@
         </div>
 
         <div>
-          <router-link :to="`/journal/timetables?timetableId=${historyItem.timetableId}`">
-            <span class="text--grayed"> #{{ historyItem.timetableId }} </span>
+          <router-link :to="`/journal/timetables?timetableId=${historyItem.id}`">
+            <span class="text--grayed"> #{{ historyItem.id }} </span>
             <b class="text--primary">&nbsp;{{ historyItem.trainCategoryCode }} {{ historyItem.trainNo }}</b>
             <div>{{ historyItem.driverName }}</div>
           </router-link>

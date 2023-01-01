@@ -143,7 +143,7 @@ async function fetchDailyTimetableStats() {
       distanceAvg,
       timetableAuthor: maxTimetable?.authorName || '',
       timetableDriver: maxTimetable?.driverName || '',
-      timetableId: maxTimetable?.timetableId || 0,
+      timetableId: maxTimetable?.id || 0,
       timetableRouteDistance: maxTimetable?.routeDistance || 0,
 
       mostActiveDispatchers,
