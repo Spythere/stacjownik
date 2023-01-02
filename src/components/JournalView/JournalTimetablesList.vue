@@ -17,6 +17,13 @@
             <b>{{ timetable.trainNo }}</b>
             | <span>{{ timetable.driverName }}</span> |
             <span class="text--grayed">#{{ timetable.id }}</span>
+
+            <span v-if="timetable.driverLevel">
+              |
+              <b :style="calculateTextExpStyle(timetable.driverLevel)">
+                {{ timetable.driverLevel < 2 ? 'L' : `${timetable.driverLevel} lvl` }}
+              </b>
+            </span>
           </span>
 
           <span>
@@ -140,6 +147,7 @@ import { defineComponent, PropType, ref } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
 import imageMixin from '../../mixins/imageMixin';
 import modalTrainMixin from '../../mixins/modalTrainMixin';
+import styleMixin from '../../mixins/styleMixin';
 import { TimetableHistory } from '../../scripts/interfaces/api/TimetablesAPIData';
 
 export default defineComponent({
@@ -150,7 +158,7 @@ export default defineComponent({
     },
   },
 
-  mixins: [dateMixin, imageMixin, modalTrainMixin],
+  mixins: [dateMixin, imageMixin, modalTrainMixin, styleMixin],
 
   computed: {
     computedTimetableHistory() {

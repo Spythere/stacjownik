@@ -14,8 +14,12 @@
           </strong>
           <strong class="train-number">&nbsp;{{ train.trainNo }}</strong>
           |
-          <span class="train-driver" :class="{ supporter: train.isSupporter }">{{ train.driverName }}</span>
-          
+          <!-- <span class="train-driver" :class="{ supporter: train.isSupporter }">{{ train.driverName }}</span> -->
+          {{ train.driverName }} |
+          <b :style="calculateTextExpStyle(train.driverLevel)">
+            {{ train.driverLevel < 2 ? 'L' : `${train.driverLevel} lvl` }}
+          </b>
+
           <b class="warning-timeout" v-if="train.isTimeout" :title="$t('trains.timeout')">?</b>
         </span>
       </div>
@@ -94,6 +98,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import imageMixin from '../../mixins/imageMixin';
+import styleMixin from '../../mixins/styleMixin';
 import trainInfoMixin from '../../mixins/trainInfoMixin';
 import Train from '../../scripts/interfaces/Train';
 
@@ -110,7 +115,7 @@ export default defineComponent({
     },
   },
 
-  mixins: [trainInfoMixin, imageMixin],
+  mixins: [trainInfoMixin, imageMixin, styleMixin],
 });
 </script>
 

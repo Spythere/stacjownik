@@ -101,6 +101,7 @@ export const useStore = defineStore('store', {
             isTimeout: train.isTimeout,
 
             isSupporter: train.driverIsSupporter,
+            driverLevel: train.driverLevel,
 
             timetableData: timetable
               ? {

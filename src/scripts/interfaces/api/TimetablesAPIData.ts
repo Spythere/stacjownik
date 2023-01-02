@@ -4,8 +4,12 @@ export interface TimetableHistory {
   timetableId: number;
   trainNo: number;
   trainCategoryCode: string;
+  
   driverId: number;
   driverName: string;
+  driverLevel: number | null;
+  driverIsSupporter: boolean;
+
   route: string;
   twr: number;
   skr: number;
