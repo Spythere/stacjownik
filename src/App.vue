@@ -21,7 +21,8 @@
     <footer class="app_footer">
       &copy;
       <a href="https://td2.info.pl/profile/?u=20777" target="_blank">Spythere</a>
-      {{ new Date().getUTCFullYear() }} | <a :href="releaseURL" target="_blank">v{{ VERSION }}</a>
+      {{ new Date().getUTCFullYear() }} |
+      <a :href="releaseURL" target="_blank">v{{ VERSION }}{{ isOnProductionHost ? '' : 'dev' }}</a>
 
       <div style="display: none">&int; ukryta taktyczna całka do programowania w HTMLu</div>
     </footer>
@@ -86,6 +87,7 @@ export default defineComponent({
 
     currentLang: 'pl',
     releaseURL: '',
+    isOnProductionHost: location.hostname == 'stacjownik-td2.web.app',
   }),
 
   created() {
