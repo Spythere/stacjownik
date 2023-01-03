@@ -1,6 +1,5 @@
 <template>
-  <ul class="journal-list">
-    <!-- <transition-group name="journal-list-anim"> -->
+  <transition-group class="journal-list" tag="ul" name="list-anim">
     <li v-for="item in computedDispatcherHistory" :class="{ sticky: typeof item == 'string' }">
       <div v-if="typeof item == 'string'" class="journal_day">
         {{ item }}
@@ -9,6 +8,7 @@
       <div
         v-else
         class="journal_item"
+        :key="item.timestampFrom + item.dispatcherId" 
         :class="{ online: item.isOnline }"
         @click="navigateToScenery(item.stationName, item.isOnline)"
         @keydown.enter="navigateToScenery(item.stationName, item.isOnline)"
@@ -44,8 +44,7 @@
         </span>
       </div>
     </li>
-    <!-- </transition-group> -->
-  </ul>
+  </transition-group>
 </template>
 
 <script lang="ts">
@@ -95,6 +94,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '../../styles/animations.scss';
 @import '../../styles/responsive.scss';
 @import '../../styles/JournalSection.scss';
 
@@ -117,9 +117,12 @@ li.sticky {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   flex-wrap: wrap;
+  text-align: left;
 
+  gap: 0.25em;
+
+  line-height: 1.7em;
   padding: 0.75em;
 
   &.online {
@@ -155,23 +158,12 @@ li.sticky {
 .dispatcher-level {
   display: inline-block;
   text-align: center;
-  line-height: 150%;
 
-  width: 25px;
-  height: 25px;
+  line-height: 1.45em;
+  width: 1.45em;
+  height: 1.45em;
 
-  margin-right: 0.5em;
+  margin-right: 0.45em;
   border-radius: 0.25em;
-}
-
-@include smallScreen() {
-  .journal_item {
-    flex-direction: column;
-
-    span {
-      margin-top: 0.25em;
-      text-align: center;
-    }
-  }
 }
 </style>

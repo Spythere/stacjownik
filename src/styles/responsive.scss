@@ -1,18 +1,23 @@
 @mixin smallScreen() {
-    @media only screen and (max-width: 700px) {
-        @content;
-    }
+  @media only screen and (max-width: 700px) {
+    @content;
+  }
 }
 
-
 @mixin midScreen() {
-    @media only screen and (max-width: 1150px) {
-        @content;
-    }
+  @media only screen and (max-width: 1150px) {
+    @content;
+  }
+}
+
+@mixin screenLandscape() {
+  @media only screen and (orientation: landscape) and (max-device-height: 450px)  {
+    @content;
+  }
 }
 
 @mixin bigScreen() {
-    @media only screen and (min-width: 2000px) {
-        @content;
-    }
+  @media only screen and (min-width: 2000px) {
+    @content;
+  }
 }

@@ -6,7 +6,7 @@
       <JournalOptions
         @on-search-confirm="fetchHistoryData"
         @on-options-reset="resetOptions"
-        :sorter-option-ids="[ 'beginDate', 'distance', 'total-stops']"
+        :sorter-option-ids="['timetableId', 'beginDate', 'distance', 'total-stops']"
         :filters="journalTimetableFilters"
         :currentOptionsActive="currentOptionsActive"
         :data-status="dataStatus"
@@ -111,7 +111,7 @@ export default defineComponent({
   }),
 
   setup() {
-    const sorterActive: JournalTimetableSorter = reactive({ id: 'beginDate', dir: 1 });
+    const sorterActive: JournalTimetableSorter = reactive({ id: 'timetableId', dir: 1 });
     const journalFilterActive = ref(journalTimetableFilters[0]);
 
     const searchersValues = reactive({
@@ -147,7 +147,7 @@ export default defineComponent({
   watch: {
     currentQueryArray(q: string[]) {
       this.currentOptionsActive =
-        q.length > 2 || q.some((qv) => qv.startsWith('sortBy=') && qv.split('=')[1] != 'beginDate');
+        q.length > 2 || q.some((qv) => qv.startsWith('sortBy=') && qv.split('=')[1]);
     },
   },
 
@@ -188,7 +188,7 @@ export default defineComponent({
       this.setSearchers('', '', '', '');
 
       this.journalFilterActive = this.journalTimetableFilters[0];
-      this.sorterActive.id = 'beginDate';
+      this.sorterActive.id = 'timetableId';
 
       this.fetchHistoryData();
     },

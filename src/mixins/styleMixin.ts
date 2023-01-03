@@ -8,7 +8,7 @@ export default defineComponent({
       const fontColor = exp > 14 || exp == -1 ? 'white' : 'black';
       const boxShadow = isSupporter ? `box-shadow: 0 0 10px 2px ${bgColor};` : '';
 
-      return `background-color: ${bgColor}; color: ${fontColor}; ${boxShadow}`;
+      return `background-color: ${bgColor}; color: ${fontColor}; ${boxShadow};`;
     },
 
     calculateTextExpStyle(exp: number): string {

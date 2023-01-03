@@ -1,0 +1,15 @@
+.list-anim-move,
+.list-anim-enter-active,
+.list-anim-leave-active {
+  transition: all 250ms ease;
+}
+
+.list-anim-enter-from,
+.list-anim-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.list-anim-leave-active {
+  position: absolute;
+}

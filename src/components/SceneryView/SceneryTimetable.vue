@@ -41,7 +41,7 @@
         {{ $t('scenery.no-timetables') }}
       </span>
 
-      <transition-group name="timetables-anim">
+      <transition-group name="list-anim">
         <div
           class="timetable-item"
           v-for="(scheduledTrain, i) in computedScheduledTrains"
@@ -272,22 +272,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '../../styles/responsive.scss';
 @import '../../styles/variables.scss';
-
-.timetables-anim-move,
-.timetables-anim-enter-active,
-.timetables-anim-leave-active {
-  transition: all 250ms ease;
-}
-
-.timetables-anim-enter-from,
-.timetables-anim-leave-to {
-  opacity: 0;
-  transform: translateY(30px);
-}
-
-.timetables-anim-leave-active {
-  position: absolute;
-}
+@import '../../styles/animations.scss';
 
 .scenery-timetable {
   height: 100%;
@@ -484,21 +469,6 @@ export default defineComponent({
 .arrival-time.begins,
 .departure-time.terminates {
   font-size: 0.85em;
-}
-
-.scenery-timetable-list-anim {
-  &-enter-from,
-  &-leave-to {
-    opacity: 0;
-  }
-
-  &-enter-active {
-    transition: all 100ms ease-out;
-  }
-
-  &-leave-active {
-    transition: all 100ms ease-out 100ms;
-  }
 }
 
 @include smallScreen {
