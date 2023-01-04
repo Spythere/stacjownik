@@ -12,35 +12,35 @@
       />
 
       <div class="list_wrapper" @scroll="handleScroll">
-        <!-- <transition name="warning" mode="out-in"> -->
-        <!-- <div :key="dataStatus"> -->
-        <div class="journal_warning" v-if="store.isOffline">
-          {{ $t('app.offline') }}
-        </div>
+        <transition name="status-anim" mode="out-in">
+          <div :key="dataStatus">
+            <div class="journal_warning" v-if="store.isOffline">
+              {{ $t('app.offline') }}
+            </div>
 
-        <Loading v-else-if="dataStatus == DataStatus.Initialized || dataStatus == DataStatus.Loading" />
+            <Loading v-else-if="dataStatus == DataStatus.Initialized || dataStatus == DataStatus.Loading" />
 
-        <div v-else-if="dataStatus == DataStatus.Error" class="journal_warning error">
-          {{ $t('app.error') }}
-        </div>
+            <div v-else-if="dataStatus == DataStatus.Error" class="journal_warning error">
+              {{ $t('app.error') }}
+            </div>
 
-        <div class="journal_warning" v-else-if="historyList.length == 0">
-          {{ $t('app.no-result') }}
-        </div>
+            <div class="journal_warning" v-else-if="historyList.length == 0">
+              {{ $t('app.no-result') }}
+            </div>
 
-        <div v-else>
-          <JournalDispatchersList :dispatcherHistory="computedHistoryList" />
+            <div v-else>
+              <JournalDispatchersList :dispatcherHistory="computedHistoryList" />
 
-          <button
-            class="btn btn--option btn--load-data"
-            v-if="!scrollNoMoreData && scrollDataLoaded && computedHistoryList.length > 15"
-            @click="addHistoryData"
-          >
-            {{ $t('journal.load-data') }}
-          </button>
-        </div>
-        <!-- </div>
-        </transition> -->
+              <button
+                class="btn btn--option btn--load-data"
+                v-if="!scrollNoMoreData && scrollDataLoaded && computedHistoryList.length > 15"
+                @click="addHistoryData"
+              >
+                {{ $t('journal.load-data') }}
+              </button>
+            </div>
+          </div>
+        </transition>
 
         <div class="journal_warning" v-if="scrollNoMoreData">
           {{ $t('journal.no-further-data') }}

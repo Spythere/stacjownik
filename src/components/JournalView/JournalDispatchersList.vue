@@ -1,6 +1,10 @@
 <template>
   <transition-group class="journal-list" tag="ul" name="list-anim">
-    <li v-for="item in computedDispatcherHistory" :class="{ sticky: typeof item == 'string' }">
+    <li
+      v-for="item in computedDispatcherHistory"
+      :key="typeof item === 'string' ? item : item.timestampFrom + item.dispatcherId"
+      :class="{ sticky: typeof item == 'string' }"
+    >
       <div v-if="typeof item == 'string'" class="journal_day">
         {{ item }}
       </div>
@@ -8,7 +12,6 @@
       <div
         v-else
         class="journal_item"
-        :key="item.timestampFrom + item.dispatcherId" 
         :class="{ online: item.isOnline }"
         @click="navigateToScenery(item.stationName, item.isOnline)"
         @keydown.enter="navigateToScenery(item.stationName, item.isOnline)"

@@ -1,21 +1,5 @@
 @import 'responsive.scss';
-
-// Animations
-.warning {
-  &-enter-from,
-  &-leave-to {
-    opacity: 0;
-  }
-
-  &-enter-active {
-    transition: all 150ms 100ms ease-out;
-  }
-
-  &-leave-active {
-    transition: all 150ms 100ms ease-out;
-  }
-}
-
+@import 'animations.scss';
 //Styles
 
 .list_wrapper {
@@ -24,6 +8,10 @@
   min-height: 550px;
 
   padding-right: 0.2em;
+}
+
+.journal-list {
+  position: relative;
 }
 
 .journal_wrapper {

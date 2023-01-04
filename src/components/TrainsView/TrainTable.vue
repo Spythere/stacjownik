@@ -158,8 +158,8 @@ img.train-image {
 
 .train {
   &-list {
-    overflow: auto;
-
+    position: relative;
+    
     @include smallScreen() {
       width: 100%;
     }
