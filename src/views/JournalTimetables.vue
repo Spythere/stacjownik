@@ -6,6 +6,7 @@
       <JournalOptions
         @on-search-confirm="fetchHistoryData"
         @on-options-reset="resetOptions"
+        @on-refresh-data="fetchHistoryData"
         :sorter-option-ids="['timetableId', 'beginDate', 'distance', 'total-stops']"
         :filters="journalTimetableFilters"
         :currentOptionsActive="currentOptionsActive"
@@ -53,12 +54,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, provide, reactive, Ref, ref, watch } from 'vue';
+import { defineComponent, provide, reactive, Ref, ref } from 'vue';
 import axios from 'axios';
 
 import DriverStats from '../components/JournalView/JournalDriverStats.vue';
 import Loading from '../components/Global/Loading.vue';
-import { JournalTimetableFilter, JournalTimetableSorter } from '../types/Journal/JournalTimetablesTypes';
+import { JournalTimetableSorter } from '../types/Journal/JournalTimetablesTypes';
 import dateMixin from '../mixins/dateMixin';
 import routerMixin from '../mixins/routerMixin';
 import { DataStatus } from '../scripts/enums/DataStatus';
@@ -145,8 +146,8 @@ export default defineComponent({
   },
 
   watch: {
-    currentQueryArray(q: string[]) {
-      this.currentOptionsActive = q.length > 2 || q.some((qv) => qv.startsWith('sortBy=') && qv.split('=')[1]);
+    currentQueryArray(q: string[]) {      
+      this.currentOptionsActive = q.length >= 2 || q.some((qv) => qv.startsWith('sortBy=') && qv.split('=')[1]);
     },
   },
 
@@ -160,6 +161,7 @@ export default defineComponent({
     this.handleQueries(this.$route.query);
     this.fetchHistoryData();
   },
+
 
   methods: {
     handleScroll(e: Event) {
@@ -213,6 +215,8 @@ export default defineComponent({
     },
 
     async fetchHistoryData() {
+      if(this.dataStatus == DataStatus.Loading) return;
+
       const queries: string[] = [];
 
       const driverName = this.searchersValues['search-driver'].trim();

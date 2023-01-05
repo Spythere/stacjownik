@@ -2,11 +2,18 @@
   <div class="filters-options" @keydown.esc="showOptions = false">
     <div class="bg" v-if="showOptions" @click="showOptions = false"></div>
 
-    <button class="filter-button btn--filled btn--image" @click="showOptions = !showOptions" ref="button">
-      <img :src="getIcon('filter2')" alt="Open filters" />
-      {{ $t('options.filters') }} [F]
-      <span class="active-indicator" v-if="currentOptionsActive"></span>
-    </button>
+    <div class="actions-bar">
+      <button class="filter-button btn--filled btn--image" @click="showOptions = !showOptions" ref="button">
+        <img :src="getIcon('filter2')" alt="Open filters" />
+        {{ $t('options.filters') }} [F]
+        <span class="active-indicator" v-if="currentOptionsActive"></span>
+      </button>
+
+      <button class="filter-button btn--filled btn--image" @click="refreshData">
+        <img :src="getIcon('refresh')" alt="Refresh data" />
+        {{ $t('general.refresh') }}
+      </button>
+    </div>
 
     <datalist id="search-driver">
       <option v-for="sugg in driverSuggestions" :value="sugg"></option>
@@ -99,7 +106,7 @@ import SelectBox from '../Global/SelectBox.vue';
 
 export default defineComponent({
   components: { SelectBox, ActionButton },
-  emits: ['onSearchConfirm', 'onOptionsReset'],
+  emits: ['onSearchConfirm', 'onOptionsReset', 'onRefreshData'],
   mixins: [imageMixin, keyMixin],
 
   props: {
@@ -204,6 +211,10 @@ export default defineComponent({
         this.store.driverStatsStatus = DataStatus.Error;
         console.error('Ups! Wystąpił błąd przy próbie pobrania statystyk maszynisty! :/');
       }
+    },
+
+    refreshData() {
+      this.$emit('onRefreshData');
     },
 
     startSearchTimeout(type: 'driver' | 'dispatcher', value: string) {

@@ -6,6 +6,7 @@
       <JournalOptions
         @on-search-confirm="fetchHistoryData"
         @on-options-reset="resetOptions"
+        @on-refresh-data="fetchHistoryData"
         :sorter-option-ids="['timestampFrom', 'duration']"
         :data-status="dataStatus"
         :current-options-active="currentOptionsActive"

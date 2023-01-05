@@ -1,6 +1,7 @@
 {
   "general": {
-    "and": " and "
+    "and": " and ",
+    "refresh": "REFRESH"
   },
   "app": {
     "sceneries": "SCENERIES",
