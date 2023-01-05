@@ -7,6 +7,7 @@ import plLang from './locales/pl.json';
 
 import { createI18n } from 'vue-i18n';
 import { createPinia } from 'pinia';
+import { registerSW } from 'virtual:pwa-register';
 
 const i18n = createI18n({
   locale: 'pl',
@@ -17,6 +18,15 @@ const i18n = createI18n({
     pl: plLang,
   },
   enableLegacy: false,
+});
+
+registerSW({
+  onRegistered(r) {
+    r &&
+      setInterval(() => {
+        r.update();
+      }, 60 * 60 * 1000);
+  },
 });
 
 const clickOutsideDirective: Directive = {
