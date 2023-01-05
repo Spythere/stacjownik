@@ -1,9 +1,9 @@
 <template>
-  <ul class="journal-list">
+  <transition-group class="journal-list" tag="ul" name="list-anim">
     <li
       v-for="{ timetable, sceneryList, ...item } in computedTimetableHistory"
       class="journal_item"
-      :key="timetable.timetableId"
+      :key="timetable.id"
     >
       <div class="journal_item-info">
         <div class="info-top">
@@ -17,8 +17,13 @@
             <b>{{ timetable.trainNo }}</b>
             | <span>{{ timetable.driverName }}</span> |
             <span class="text--grayed">#{{ timetable.id }}</span>
+            <span v-if="timetable.driverLevel !== null">
+              |
+              <b :style="calculateTextExpStyle(timetable.driverLevel, timetable.driverIsSupporter)">
+                {{ timetable.driverLevel < 2 ? 'L' : `${timetable.driverLevel} lvl` }}
+              </b>
+            </span>
           </span>
-
           <span>
             <b class="info-date">{{ localeDay(timetable.beginDate, $i18n.locale) }}</b>
             <b
@@ -39,26 +44,20 @@
             </b>
           </span>
         </div>
-
         <div class="info-route">
           <b>{{ timetable.route.replace('|', ' - ') }}</b>
         </div>
-
         <hr />
-
         <div class="scenery-list">
           <span v-for="(scenery, i) in sceneryList" :key="scenery.name" :class="{ confirmed: scenery.confirmed }">
             <span v-if="i > 0"> &gt;</span>
             {{ scenery.name }}
-
             <!-- Data odjazdu ze stacji początkowej -->
             <span v-if="i == 0" v-html="scenery.beginDateHTML"></span>
-
             <!-- Data przyjazdu do stacji końcowej -->
             <span v-if="i == sceneryList.length - 1" v-html="scenery.endDateHTML"> </span>
           </span>
         </div>
-
         <!-- Status RJ -->
         <div style="margin: 0.5em 0">
           <span>
@@ -80,7 +79,6 @@
             </b>
           </span>
         </div>
-
         <!-- Nick dyżurnego -->
         <div v-if="timetable.authorName">
           <b class="text--grayed">{{ $t('journal.dispatcher-name') }}&nbsp;</b>
@@ -88,7 +86,6 @@
             <b>{{ timetable.authorName }}</b>
           </router-link>
         </div>
-
         <button
           v-if="timetable.stockString"
           class="btn--option btn--show"
@@ -97,27 +94,22 @@
           {{ $t('journal.stock-info') }}
           <img :src="getIcon(`arrow-${item.showStock.value ? 'asc' : 'desc'}`)" alt="Arrow" />
         </button>
-
         <div class="info-extended" v-if="timetable.stockString && item.showStock.value">
           <hr />
-
           <div>
             <span class="badge info-badge">
               <span>{{ $t('journal.stock-max-speed') }}</span>
               <span>{{ timetable.maxSpeed }}km/h</span>
             </span>
-
             <span class="badge info-badge">
               <span>{{ $t('journal.stock-length') }}</span>
               <span>{{ timetable.stockLength }}m</span>
             </span>
-
             <span class="badge info-badge">
               <span>{{ $t('journal.stock-mass') }}</span>
               <span>{{ Math.floor(timetable.stockMass! / 1000) }}t</span>
             </span>
           </div>
-
           <ul class="stock-list">
             <li v-for="(car, i) in timetable.stockString.split(';')" :key="i">
               <img
@@ -125,14 +117,13 @@
                 :src="`https://rj.td2.info.pl/dist/img/thumbnails/${car.split(':')[0]}.png`"
                 :alt="car"
               />
-
               <div>{{ car.replace(/_/g, ' ').split(':')[0] }}</div>
             </li>
           </ul>
         </div>
       </div>
     </li>
-  </ul>
+  </transition-group>
 </template>
 
 <script lang="ts">
@@ -140,6 +131,7 @@ import { defineComponent, PropType, ref } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
 import imageMixin from '../../mixins/imageMixin';
 import modalTrainMixin from '../../mixins/modalTrainMixin';
+import styleMixin from '../../mixins/styleMixin';
 import { TimetableHistory } from '../../scripts/interfaces/api/TimetablesAPIData';
 
 export default defineComponent({
@@ -150,7 +142,7 @@ export default defineComponent({
     },
   },
 
-  mixins: [dateMixin, imageMixin, modalTrainMixin],
+  mixins: [dateMixin, imageMixin, modalTrainMixin, styleMixin],
 
   computed: {
     computedTimetableHistory() {
@@ -211,10 +203,12 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '../../styles/animations.scss';
 @import '../../styles/variables.scss';
 @import '../../styles/responsive.scss';
 @import '../../styles/badge.scss';
 @import '../../styles/JournalSection.scss';
+
 
 hr {
   margin: 0.25em 0;

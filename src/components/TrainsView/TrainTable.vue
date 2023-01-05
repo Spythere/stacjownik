@@ -16,8 +16,7 @@
           <b class="warning-timeout">?</b>
           {{ $t('trains.timeout') }}
         </div> -->
-        
-        <ul class="train-list" v-else>
+        <transition-group name="list-anim" tag="ul" class="train-list" v-else>
           <li
             class="train-row"
             v-for="train in currentTrains"
@@ -27,7 +26,7 @@
           >
             <TrainInfo :train="train" />
           </li>
-        </ul>
+        </transition-group>
       </div>
     </transition>
   </div>
@@ -98,6 +97,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '../../styles/responsive.scss';
+@import '../../styles/animations.scss';
 
 .anim {
   &-enter-from,
@@ -158,8 +158,8 @@ img.train-image {
 
 .train {
   &-list {
-    overflow: auto;
-
+    position: relative;
+    
     @include smallScreen() {
       width: 100%;
     }

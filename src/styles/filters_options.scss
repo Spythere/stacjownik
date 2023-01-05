@@ -6,6 +6,11 @@
   margin-bottom: 0.5em;
 }
 
+.actions-bar {
+  display: flex;
+  gap: 0.5em;
+}
+
 .filter-button .active-indicator {
   width: 7px;
   height: 7px;

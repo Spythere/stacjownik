@@ -2,22 +2,24 @@
   <div class="train-info" tabindex="0">
     <section class="train-route">
       <div class="train_general">
-        <span>
-          <span class="timetable-id" v-if="train.timetableData">#{{ train.timetableData.timetableId }}</span>
+        <b class="warning-timeout" v-if="train.isTimeout" :title="$t('trains.timeout')">?</b>
+        <span class="timetable-id" v-if="train.timetableData">#{{ train.timetableData.timetableId }}</span>
 
-          <span class="timetable_warnings">
-            <span class="train-badge twr" v-if="train.timetableData?.TWR">TWR</span>
-            <span class="train-badge skr" v-if="train.timetableData?.SKR">SKR</span>
-          </span>
-          <strong class="timetable-category" v-if="train.timetableData">
-            {{ train.timetableData.category }}
-          </strong>
-          <strong class="train-number">&nbsp;{{ train.trainNo }}</strong>
-          |
-          <span class="train-driver" :class="{ supporter: train.isSupporter }">{{ train.driverName }}</span>
-          
-          <b class="warning-timeout" v-if="train.isTimeout" :title="$t('trains.timeout')">?</b>
+        <span class="timetable_warnings" v-if="train.timetableData?.TWR || train.timetableData?.SKR">
+          <span class="train-badge twr" v-if="train.timetableData?.TWR">TWR</span>
+          <span class="train-badge skr" v-if="train.timetableData?.SKR">SKR</span>
         </span>
+
+        <strong>
+          <span v-if="train.timetableData">{{ train.timetableData.category }}&nbsp;</span>
+          <span class="train-number">{{ train.trainNo }}</span>
+        </strong>
+        <span>|</span>
+        <span>{{ train.driverName }}</span>
+        <span>|</span>
+        <b :style="calculateTextExpStyle(train.driverLevel, train.isSupporter)">
+          {{ train.driverLevel < 2 ? 'L' : `${train.driverLevel} lvl` }}
+        </b>
       </div>
 
       <div class="timetable_route" v-if="train.timetableData">
@@ -40,9 +42,7 @@
       </div>
 
       <div class="timetable_progress" style="margin-top: 0.5em" v-if="train.timetableData">
-        <!-- <span> </span> -->
         <span class="timetable_progress-bar">
-          <!-- {{ confirmedPercentage(train.timetableData.followingStops) }}%&nbsp; -->
           <span class="bar-bg"></span>
           <span
             class="bar-fg"
@@ -94,6 +94,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import imageMixin from '../../mixins/imageMixin';
+import styleMixin from '../../mixins/styleMixin';
 import trainInfoMixin from '../../mixins/trainInfoMixin';
 import Train from '../../scripts/interfaces/Train';
 
@@ -110,7 +111,7 @@ export default defineComponent({
     },
   },
 
-  mixins: [trainInfoMixin, imageMixin],
+  mixins: [trainInfoMixin, imageMixin, styleMixin],
 });
 </script>
 
@@ -149,7 +150,6 @@ export default defineComponent({
 }
 
 .timetable-id {
-  margin-right: 0.3em;
   color: #d2d2d2;
 }
 
@@ -159,11 +159,7 @@ export default defineComponent({
   display: inline-block;
   text-align: center;
 
-  width: 1.25em;
-  height: 1.25em;
-  border-radius: 50%;
-
-  margin-left: 0.25em;
+  padding: 0 0.25em;
 }
 
 .timetable_stops {
@@ -174,16 +170,19 @@ export default defineComponent({
   display: flex;
   align-items: center;
   flex-wrap: wrap;
+
+  gap: 0.25em;
 }
 .train-status-badges {
   display: flex;
   flex-wrap: wrap;
+
+  gap: 0.25em;
 }
 
 .train-badge {
-  padding: 0.15em 0.35em;
-  margin-right: 0.3em;
-
+  padding: 0.1em 0.2em;
+  border-radius: 0.2em;
   font-weight: bold;
 
   font-size: 0.9em;
@@ -197,7 +196,7 @@ export default defineComponent({
   }
 
   &.offline {
-    background-color: #b83b2d;
+    background-color: #9c362b;
   }
 }
 
@@ -216,6 +215,9 @@ export default defineComponent({
 }
 
 .timetable_warnings {
+  display: flex;
+  gap: 0.2em;
+
   color: black;
 }
 

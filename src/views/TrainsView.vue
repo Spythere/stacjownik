@@ -2,7 +2,7 @@
   <section class="trains-view">
     <div class="trains_wrapper">
       <TrainOptions
-        :sorter-option-ids="['distance', 'progress', 'delay', 'mass', 'speed', 'length']"
+        :sorter-option-ids="['distance', 'id', 'progress', 'delay', 'mass', 'speed', 'length']"
         :current-options-active="currentOptionsActive"
       />
 

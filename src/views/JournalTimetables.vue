@@ -6,7 +6,8 @@
       <JournalOptions
         @on-search-confirm="fetchHistoryData"
         @on-options-reset="resetOptions"
-        :sorter-option-ids="[ 'beginDate', 'distance', 'total-stops']"
+        @on-refresh-data="fetchHistoryData"
+        :sorter-option-ids="['timetableId', 'beginDate', 'distance', 'total-stops']"
         :filters="journalTimetableFilters"
         :currentOptionsActive="currentOptionsActive"
         :data-status="dataStatus"
@@ -15,35 +16,35 @@
       <JournalStats />
 
       <div class="list_wrapper" @scroll="handleScroll">
-        <!-- <transition name="warning" mode="out-in"> -->
-        <!-- <div :key="dataStatus"> -->
-        <div class="journal_warning" v-if="store.isOffline">
-          {{ $t('app.offline') }}
-        </div>
+        <transition name="status-anim" mode="out-in">
+          <div :key="dataStatus">
+            <div class="journal_warning" v-if="store.isOffline">
+              {{ $t('app.offline') }}
+            </div>
 
-        <Loading v-else-if="dataStatus == DataStatus.Initialized || dataStatus == DataStatus.Loading" />
+            <Loading v-else-if="dataStatus == DataStatus.Initialized || dataStatus == DataStatus.Loading" />
 
-        <div v-else-if="dataStatus == DataStatus.Error" class="journal_warning error">
-          {{ $t('app.error') }}
-        </div>
+            <div v-else-if="dataStatus == DataStatus.Error" class="journal_warning error">
+              {{ $t('app.error') }}
+            </div>
 
-        <div v-else-if="timetableHistory.length == 0" class="journal_warning">
-          {{ $t('app.no-result') }}
-        </div>
+            <div v-else-if="timetableHistory.length == 0" class="journal_warning">
+              {{ $t('app.no-result') }}
+            </div>
 
-        <div v-else>
-          <JournalTimetablesList :timetableHistory="timetableHistory" />
+            <div v-else>
+              <JournalTimetablesList :timetableHistory="timetableHistory" />
 
-          <button
-            class="btn btn--option btn--load-data"
-            v-if="!scrollNoMoreData && scrollDataLoaded && timetableHistory.length >= 15"
-            @click="addHistoryData"
-          >
-            {{ $t('journal.load-data') }}
-          </button>
-        </div>
-        <!-- </div> -->
-        <!-- </transition> -->
+              <button
+                class="btn btn--option btn--load-data"
+                v-if="!scrollNoMoreData && scrollDataLoaded && timetableHistory.length >= 15"
+                @click="addHistoryData"
+              >
+                {{ $t('journal.load-data') }}
+              </button>
+            </div>
+          </div>
+        </transition>
 
         <div class="journal_warning" v-if="scrollNoMoreData">{{ $t('journal.no-further-data') }}</div>
         <div class="journal_warning" v-else-if="!scrollDataLoaded">{{ $t('journal.loading-further-data') }}</div>
@@ -53,12 +54,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, provide, reactive, Ref, ref, watch } from 'vue';
+import { defineComponent, provide, reactive, Ref, ref } from 'vue';
 import axios from 'axios';
 
 import DriverStats from '../components/JournalView/JournalDriverStats.vue';
 import Loading from '../components/Global/Loading.vue';
-import { JournalTimetableFilter, JournalTimetableSorter } from '../types/Journal/JournalTimetablesTypes';
+import { JournalTimetableSorter } from '../types/Journal/JournalTimetablesTypes';
 import dateMixin from '../mixins/dateMixin';
 import routerMixin from '../mixins/routerMixin';
 import { DataStatus } from '../scripts/enums/DataStatus';
@@ -111,7 +112,7 @@ export default defineComponent({
   }),
 
   setup() {
-    const sorterActive: JournalTimetableSorter = reactive({ id: 'beginDate', dir: 1 });
+    const sorterActive: JournalTimetableSorter = reactive({ id: 'timetableId', dir: 1 });
     const journalFilterActive = ref(journalTimetableFilters[0]);
 
     const searchersValues = reactive({
@@ -145,9 +146,8 @@ export default defineComponent({
   },
 
   watch: {
-    currentQueryArray(q: string[]) {
-      this.currentOptionsActive =
-        q.length > 2 || q.some((qv) => qv.startsWith('sortBy=') && qv.split('=')[1] != 'beginDate');
+    currentQueryArray(q: string[]) {      
+      this.currentOptionsActive = q.length >= 2 || q.some((qv) => qv.startsWith('sortBy=') && qv.split('=')[1]);
     },
   },
 
@@ -161,6 +161,7 @@ export default defineComponent({
     this.handleQueries(this.$route.query);
     this.fetchHistoryData();
   },
+
 
   methods: {
     handleScroll(e: Event) {
@@ -188,7 +189,7 @@ export default defineComponent({
       this.setSearchers('', '', '', '');
 
       this.journalFilterActive = this.journalTimetableFilters[0];
-      this.sorterActive.id = 'beginDate';
+      this.sorterActive.id = 'timetableId';
 
       this.fetchHistoryData();
     },
@@ -214,6 +215,8 @@ export default defineComponent({
     },
 
     async fetchHistoryData() {
+      if(this.dataStatus == DataStatus.Loading) return;
+
       const queries: string[] = [];
 
       const driverName = this.searchersValues['search-driver'].trim();

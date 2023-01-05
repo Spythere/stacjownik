@@ -13,6 +13,7 @@ export default interface TrainAPIData {
   driverName: string;
   driverId: number;
   driverIsSupporter: boolean;
+  driverLevel?: number;
 
   currentStationName: string;
   currentStationHash: string;

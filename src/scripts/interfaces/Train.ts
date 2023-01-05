@@ -12,6 +12,7 @@ export default interface Train {
   driverId: number;
   trainNo: number;
   driverName: string;
+  driverLevel: number;
   currentStationName: string;
   currentStationHash: string;
   locoURL: string;

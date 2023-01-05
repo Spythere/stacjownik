@@ -13,6 +13,6 @@ export interface JournalTimetableFilter {
 }
 
 export interface JournalTimetableSorter {
-  id:  'beginDate' | 'distance' | 'total-stops';
+  id:  'timetableId' | 'beginDate' | 'distance' | 'total-stops';
   dir: -1 | 1;
 }

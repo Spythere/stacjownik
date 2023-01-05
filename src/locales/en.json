@@ -1,6 +1,7 @@
 {
   "general": {
-    "and": " and "
+    "and": " and ",
+    "refresh": "REFRESH"
   },
   "app": {
     "sceneries": "SCENERIES",
@@ -102,6 +103,7 @@
     "sort-timetable": "train no.",
     "sort-progress": "route progress",
     "sort-delay": "current delay",
+    "sort-id": "timetable id",
 
     "sort-total-stops": "total stops",
     "sort-beginDate": "date",

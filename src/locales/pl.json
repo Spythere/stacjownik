@@ -1,6 +1,7 @@
 {
   "general": {
-    "and": " oraz "
+    "and": " oraz ",
+    "refresh": "ODŚWIEŻ"
   },
   "app": {
     "sceneries": "SCENERIE",
@@ -103,7 +104,8 @@
     "sort-timetableId": "ID rozkładu",
     "sort-timestampFrom": "data",
     "sort-duration": "czas dyżuru",
-
+    "sort-id": "id rozkładu",
+    
     "sort-mass": "masa",
     "sort-speed": "prędkość",
     "sort-length": "długość",

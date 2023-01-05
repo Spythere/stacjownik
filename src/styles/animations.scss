@@ -1,0 +1,31 @@
+.list-anim-move,
+.list-anim-enter-active,
+.list-anim-leave-active {
+  transition: all 250ms ease;
+}
+
+.list-anim-enter-from,
+.list-anim-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.list-anim-leave-active {
+  position: absolute;
+  width: 100%;
+}
+
+.status-anim {
+  &-enter-from,
+  &-leave-to {
+    opacity: 0;
+  }
+
+  &-enter-active {
+    transition: all 100ms ease-out;
+  }
+
+  &-leave-active {
+    transition: all 100ms ease-out;
+  }
+}
