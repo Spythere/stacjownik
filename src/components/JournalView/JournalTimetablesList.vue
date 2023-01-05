@@ -17,7 +17,7 @@
             <b>{{ timetable.trainNo }}</b>
             | <span>{{ timetable.driverName }}</span> |
             <span class="text--grayed">#{{ timetable.id }}</span>
-            <span v-if="timetable.driverLevel">
+            <span v-if="timetable.driverLevel !== null">
               |
               <b :style="calculateTextExpStyle(timetable.driverLevel)">
                 {{ timetable.driverLevel < 2 ? 'L' : `${timetable.driverLevel} lvl` }}
