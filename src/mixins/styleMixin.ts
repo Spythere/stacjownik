@@ -11,10 +11,10 @@ export default defineComponent({
       return `background-color: ${bgColor}; color: ${fontColor}; ${boxShadow};`;
     },
 
-    calculateTextExpStyle(exp: number): string {
+    calculateTextExpStyle(exp: number, isSupporter = false): string {
       const textColor = exp > -1 ? (exp < 2 ? '#26B0D9' : `hsl(${-exp * 5 + 100},  75%, 50%)`) : '#666';
 
-      return `color: ${textColor};`;
+      return `color: ${textColor}; ${isSupporter ? 'text-shadow: 0 0 10px ' + textColor : ''};`;
     },
 
     statusClasses(occupiedTo: string) {

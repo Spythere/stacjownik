@@ -38,6 +38,10 @@ export const sorterOptions = [
     value: 'kilometraż',
   },
   {
+    id: 'id',
+    value: 'id rozkładu',
+  },
+  {
     id: 'progress',
     value: 'przebyta trasa',
   },
