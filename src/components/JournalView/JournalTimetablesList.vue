@@ -19,7 +19,7 @@
             <span class="text--grayed">#{{ timetable.id }}</span>
             <span v-if="timetable.driverLevel !== null">
               |
-              <b :style="calculateTextExpStyle(timetable.driverLevel)">
+              <b :style="calculateTextExpStyle(timetable.driverLevel, timetable.driverIsSupporter)">
                 {{ timetable.driverLevel < 2 ? 'L' : `${timetable.driverLevel} lvl` }}
               </b>
             </span>
