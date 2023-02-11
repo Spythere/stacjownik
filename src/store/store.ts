@@ -24,6 +24,7 @@ export const useStore = defineStore('store', {
 
       stationList: [],
       trainList: [],
+      routesList: [],
 
       sceneryData: [],
       lastDispatcherStatuses: [],
@@ -115,8 +116,8 @@ export const useStore = defineStore('store', {
                   sceneries: timetable.sceneries,
                 }
               : undefined,
-          };
-        }) as Train[];
+          } as Train;
+        });
     },
 
     getDispatcherStatus(onlineStationData: StationAPIData) {
@@ -294,65 +295,72 @@ export const useStore = defineStore('store', {
         return;
       }
 
-      this.stationList = sceneryData.map((scenery) => ({
-        name: scenery.name,
+      this.stationList = sceneryData.map((scenery) => {
+        return {
+          name: scenery.name,
 
-        generalInfo: {
-          ...scenery,
-          authors: scenery.authors?.split(',').map((a) => a.trim()),
-          routes:
-            scenery.routes
-              ?.split(';')
-              .filter((routeString) => routeString)
-              .reduce(
-                (acc, routeString) => {
-                  const specs1 = routeString.split('_')[0];
-                  const isInternal = specs1.startsWith('!');
-                  const name = isInternal ? specs1.replace('!', '') : specs1;
+          generalInfo: {
+            ...scenery,
+            authors: scenery.authors?.split(',').map((a) => a.trim()),
+            routes:
+              scenery.routes
+                ?.split(';')
+                .filter((routeString) => routeString)
+                .reduce(
+                  (acc, routeString) => {
+                    const specs1 = routeString.split('_')[0];
+                    const isInternal = specs1.startsWith('!');
+                    const name = isInternal ? specs1.replace('!', '') : specs1;
 
-                  const specs2 = routeString.split('_')[1].split('');
-                  const twoWay = specs2[0] == '2';
-                  const catenary = specs2[1] == 'E';
-                  const SBL = specs2[2] == 'S';
-                  const TWB = specs2[3] ? true : false;
+                    const specs2 = routeString.split('_')[1].split('');
+                    const twoWay = specs2[0] == '2';
+                    const catenary = specs2[1] == 'E';
+                    const SBL = specs2[2] == 'S';
+                    const TWB = specs2[3] ? true : false;
+                    const speed = Number(routeString.split(':')[1]) || 0;
+                    const length  = Number(routeString.split(':')[2]) || 0;
 
-                  const propName = twoWay
-                    ? catenary
-                      ? 'twoWayCatenaryRouteNames'
-                      : 'twoWayNoCatenaryRouteNames'
-                    : catenary
-                    ? 'oneWayCatenaryRouteNames'
-                    : 'oneWayNoCatenaryRouteNames';
 
-                  acc[twoWay ? 'twoWay' : 'oneWay'].push({
-                    name,
-                    SBL,
-                    TWB,
-                    catenary,
-                    isInternal,
-                    tracks: twoWay ? 2 : 1,
-                  });
-                  if (!isInternal) acc[propName].push(name);
+                    const propName = twoWay
+                      ? catenary
+                        ? 'twoWayCatenaryRouteNames'
+                        : 'twoWayNoCatenaryRouteNames'
+                      : catenary
+                      ? 'oneWayCatenaryRouteNames'
+                      : 'oneWayNoCatenaryRouteNames';
 
-                  if (SBL) acc['sblRouteNames'].push(name);
+                    acc[twoWay ? 'twoWay' : 'oneWay'].push({
+                      name,
+                      SBL,
+                      TWB,
+                      catenary,
+                      isInternal,
+                      tracks: twoWay ? 2 : 1,
+                      length,
+                      speed,
+                    });
+                    if (!isInternal) acc[propName].push(name);
 
-                  return acc;
-                },
-                {
-                  oneWay: [],
-                  twoWay: [],
-                  sblRouteNames: [],
-                  oneWayCatenaryRouteNames: [],
-                  oneWayNoCatenaryRouteNames: [],
-                  twoWayCatenaryRouteNames: [],
-                  twoWayNoCatenaryRouteNames: [],
-                } as StationRoutes
-              ) || {},
-          checkpoints: scenery.checkpoints
-            ? scenery.checkpoints.split(';').map((sub) => ({ checkpointName: sub, scheduledTrains: [] }))
-            : [],
-        },
-      }));
+                    if (SBL) acc['sblRouteNames'].push(name);
+
+                    return acc;
+                  },
+                  {
+                    oneWay: [],
+                    twoWay: [],
+                    sblRouteNames: [],
+                    oneWayCatenaryRouteNames: [],
+                    oneWayNoCatenaryRouteNames: [],
+                    twoWayCatenaryRouteNames: [],
+                    twoWayNoCatenaryRouteNames: [],
+                  } as StationRoutes
+                ) || {},
+            checkpoints: scenery.checkpoints
+              ? scenery.checkpoints.split(';').map((sub) => ({ checkpointName: sub, scheduledTrains: [] }))
+              : [],
+          },
+        };
+      });
     },
 
     connectToWebsocket() {

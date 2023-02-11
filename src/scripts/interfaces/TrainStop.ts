@@ -1,4 +1,4 @@
-export default interface  TrainStop {
+export default interface TrainStop {
   stopName: string;
   stopNameRAW: string;
   stopType: string;
