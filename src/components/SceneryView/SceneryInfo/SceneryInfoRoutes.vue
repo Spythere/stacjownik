@@ -61,9 +61,11 @@ export default defineComponent({
 ul.routes-list {
   margin: 0.45em 0.25em;
   display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
 
   li {
-    margin: 0.2em 0.25em;
+    margin: 0.5em 0.25em;
 
     span {
       padding: 0.2em 0.25em;
