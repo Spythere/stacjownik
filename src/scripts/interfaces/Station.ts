@@ -8,12 +8,13 @@ export default interface Station {
   generalInfo?: {
     name: string;
     url: string;
-
+    
     reqLevel: number;
     // supportersOnly: boolean;
-
+    
     lines: string;
     project: string;
+    projectUrl?: string;
 
     signalType: string;
     controlType: string;

@@ -60,6 +60,7 @@ export interface StationJSONData {
   url: string;
   lines: string;
   project: string;
+  projectUrl: string;
 
   reqLevel: number;
 
