@@ -14,12 +14,11 @@
           <span v-if="train.timetableData">{{ train.timetableData.category }}&nbsp;</span>
           <span class="train-number">{{ train.trainNo }}</span>
         </strong>
-        <span>|</span>
-        <span>{{ train.driverName }}</span>
-        <span>|</span>
-        <b :style="calculateTextExpStyle(train.driverLevel, train.isSupporter)">
-          {{ train.driverLevel < 2 ? 'L' : `${train.driverLevel} lvl` }}
+        <span>&bull;</span>
+        <b class="level-badge driver" :style="calculateExpStyle(train.driverLevel, train.isSupporter)">
+          {{ train.driverLevel < 2 ? 'L' : `${train.driverLevel}` }}
         </b>
+        <span>{{ train.driverName }}</span>
       </div>
 
       <div class="timetable_route" v-if="train.timetableData">
@@ -117,6 +116,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '../../styles/responsive.scss';
+@import '../../styles/badge.scss';
+
 
 .image-warning {
   height: 1em;
@@ -172,6 +173,7 @@ export default defineComponent({
   flex-wrap: wrap;
 
   gap: 0.25em;
+  margin-right: 1.5em;
 }
 .train-status-badges {
   display: flex;

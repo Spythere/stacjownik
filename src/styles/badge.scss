@@ -26,3 +26,33 @@
     }
   }
 }
+
+.level-badge {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.9em;
+
+  &.driver {
+    border-radius: 50%;
+    width: 1.7em;
+    height: 1.7em;
+  }
+
+  &.dispatcher {
+    border-radius: 0.25em;
+
+    width: 1.6em;
+    height: 1.6em;
+  }
+}
+
+.region-badge {
+  padding: 0 0.5em;
+  border-radius: 0.5em;
+  font-weight: bold;
+
+  &.eu {
+    background-color: forestgreen;
+  }
+}

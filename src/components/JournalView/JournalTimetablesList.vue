@@ -6,25 +6,35 @@
       :key="timetable.id"
     >
       <div class="journal_item-info">
-        <div class="info-top">
+        <div class="info-general">
           <span
+            class="general-train"
             tabindex="0"
             @click="showTimetable(timetable)"
             @keydown.enter="showTimetable(timetable)"
             style="cursor: pointer"
           >
-            <b class="text--primary">{{ timetable.trainCategoryCode }}&nbsp;</b>
-            <b>{{ timetable.trainNo }}</b>
-            | <span>{{ timetable.driverName }}</span> |
             <span class="text--grayed">#{{ timetable.id }}</span>
-            <span v-if="timetable.driverLevel !== null">
-              |
-              <b :style="calculateTextExpStyle(timetable.driverLevel, timetable.driverIsSupporter)">
-                {{ timetable.driverLevel < 2 ? 'L' : `${timetable.driverLevel} lvl` }}
-              </b>
+            &bull;
+            <span>
+              <strong class="text--primary">
+                {{ timetable.trainCategoryCode }}
+              </strong>
+              <strong>&nbsp;{{ timetable.trainNo }}</strong>
             </span>
+            &bull;
+            <strong
+              v-if="timetable.driverLevel !== null"
+              class="level-badge driver"
+              :style="calculateExpStyle(timetable.driverLevel, timetable.driverIsSupporter)"
+            >
+              {{ timetable.driverLevel < 2 ? 'L' : `${timetable.driverLevel}` }}
+            </strong>
+
+            <strong>{{ timetable.driverName }}</strong>
           </span>
-          <span>
+
+          <span class="general-time">
             <b class="info-date">{{ localeDay(timetable.beginDate, $i18n.locale) }}</b>
             <b
               class="info-status"
@@ -189,6 +199,7 @@ export default defineComponent({
     },
 
     showTimetable(timetable: TimetableHistory) {
+      if (!timetable) return;
       if (timetable.terminated) return;
 
       this.selectModalTrain(timetable.driverName + timetable.trainNo.toString());
@@ -208,7 +219,6 @@ export default defineComponent({
 @import '../../styles/responsive.scss';
 @import '../../styles/badge.scss';
 @import '../../styles/JournalSection.scss';
-
 
 hr {
   margin: 0.25em 0;
@@ -236,10 +246,14 @@ hr {
     }
   }
 
-  &-top {
+  &-general {
     display: flex;
-    flex-wrap: wrap;
     justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: 0.25em;
+    margin-bottom: 0.5em;
   }
 
   &-route {
@@ -249,6 +263,12 @@ hr {
   &-extended {
     margin-top: 0.5em;
   }
+}
+
+.general-train {
+  display: flex;
+  align-items: center;
+  gap: 0.25em;
 }
 
 ul.stock-list {
@@ -291,14 +311,9 @@ ul.stock-list {
 }
 
 @include smallScreen {
-  .info-top {
+  .info-general {
     flex-direction: column;
-
-    span {
-      margin: 0.1em auto;
-    }
   }
-
   .info-extended {
     text-align: center;
   }

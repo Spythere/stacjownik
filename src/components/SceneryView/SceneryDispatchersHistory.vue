@@ -5,25 +5,31 @@
     <div class="list-warning" v-else-if="dispatcherHistoryList.length == 0">{{ $t('scenery.history-list-empty') }}</div>
 
     <ul class="history-list" v-else>
-      <li class="list-item" v-for="historyItem in dispatcherHistoryList">
-        <div>
-          <router-link :to="`/journal/dispatchers?dispatcherName=${historyItem.dispatcherName}`">
-            <span class="text--grayed">#{{ historyItem.stationHash }}&nbsp;</span>
-            <b>{{ historyItem.dispatcherName }}</b>
-          </router-link>
-        </div>
+      <li class="list-item" v-for="item in dispatcherHistoryList">
+        <router-link class="item-general" :to="`/journal/dispatchers?dispatcherName=${item.dispatcherName}`">
+          <span class="text--grayed">#{{ item.stationHash }}&nbsp;</span>
+          <b
+            v-if="item.dispatcherLevel !== null"
+            class="level-badge dispatcher"
+            :style="calculateExpStyle(item.dispatcherLevel, item.dispatcherIsSupporter)"
+          >
+            {{ item.dispatcherLevel >= 2 ? item.dispatcherLevel : 'L' }}
+          </b>
 
-        <div v-if="historyItem.timestampTo">
-          <b>{{ $d(historyItem.timestampFrom) }}</b>
+          <b>{{ item.dispatcherName }}</b>
+        </router-link>
 
-          {{ timestampToString(historyItem.timestampFrom) }}
-          - {{ timestampToString(historyItem.timestampTo) }} ({{ calculateDuration(historyItem.currentDuration) }})
+        <div v-if="item.timestampTo">
+          <b>{{ $d(item.timestampFrom) }}</b>
+
+          {{ timestampToString(item.timestampFrom) }}
+          - {{ timestampToString(item.timestampTo) }} ({{ calculateDuration(item.currentDuration) }})
         </div>
 
         <div class="dispatcher-online" v-else>
           {{ $t('journal.online-since') }}
-          <b>{{ timestampToString(historyItem.timestampFrom) }}</b>
-          ({{ calculateDuration(historyItem.currentDuration) }})
+          <b>{{ timestampToString(item.timestampFrom) }}</b>
+          ({{ calculateDuration(item.currentDuration) }})
         </div>
       </li>
     </ul>
@@ -39,10 +45,11 @@ import { DispatcherHistory } from '../../scripts/interfaces/api/DispatchersAPIDa
 import Station from '../../scripts/interfaces/Station';
 import { URLs } from '../../scripts/utils/apiURLs';
 import Loading from '../Global/Loading.vue';
+import styleMixin from '../../mixins/styleMixin';
 
 export default defineComponent({
   name: 'SceneryDispatchersHistory',
-  mixins: [dateMixin],
+  mixins: [dateMixin, styleMixin],
   props: {
     station: {
       type: Object as PropType<Station>,
@@ -94,6 +101,12 @@ export default defineComponent({
   margin: 0.5em 0;
 
   line-height: 1.5em;
+}
+
+.item-general {
+  display: flex;
+  align-items: center;
+  gap: 0.25em;
 }
 
 .dispatcher-online {

@@ -17,10 +17,10 @@
         @keydown.enter="navigateToScenery(item.stationName, item.isOnline)"
         tabindex="0"
       >
-        <span>
+        <span class="item-general">
           <b
             v-if="item.dispatcherLevel !== null"
-            class="dispatcher-level"
+            class="level-badge dispatcher"
             :style="calculateExpStyle(item.dispatcherLevel, item.dispatcherIsSupporter)"
           >
             {{ item.dispatcherLevel >= 2 ? item.dispatcherLevel : 'L' }}
@@ -31,7 +31,7 @@
           <span class="region-badge" :class="item.region">PL1</span>
         </span>
 
-        <span>
+        <span class="item-time">
           <span :data-status="item.isOnline"> {{ item.isOnline ? $t('journal.online-since') : 'OFFLINE' }}&nbsp; </span>
           <span>
             {{ new Date(item.timestampFrom).toLocaleTimeString('pl-PL', { timeStyle: 'short' }) }}
@@ -99,17 +99,8 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '../../styles/animations.scss';
 @import '../../styles/responsive.scss';
+@import '../../styles/badge.scss';
 @import '../../styles/JournalSection.scss';
-
-.region-badge {
-  padding: 0.1em 0.5em;
-  border-radius: 0.5em;
-  font-weight: bold;
-
-  &.eu {
-    background-color: forestgreen;
-  }
-}
 
 li.sticky {
   position: sticky;
@@ -141,6 +132,16 @@ li.sticky {
   }
 }
 
+.item-general {
+  display: flex;
+  align-items: center;
+  gap: 0.25em;
+
+  .level-badge {
+    margin-right: 0.25em;
+  }
+}
+
 .journal_day {
   margin-bottom: 1em;
   padding: 0.5em;
@@ -156,17 +157,5 @@ li.sticky {
 
     font-weight: bold;
   }
-}
-
-.dispatcher-level {
-  display: inline-block;
-  text-align: center;
-
-  line-height: 1.45em;
-  width: 1.45em;
-  height: 1.45em;
-
-  margin-right: 0.45em;
-  border-radius: 0.25em;
 }
 </style>

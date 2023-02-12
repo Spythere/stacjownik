@@ -1,10 +1,10 @@
 <template>
   <div class="scenery-info">
     <section v-if="!timetableOnly">
-      <div class="info-general" v-if="station.generalInfo">
+      <div class="scenery-info-general" v-if="station.generalInfo">
         <scenery-info-icons :station="station" />
 
-        <div class="general-list">
+        <div class="scenery-general-list">
           <span>
             <b>{{ $t('availability.title') }}:</b> {{ $t(`availability.${station.generalInfo.availability}`) }}
 
@@ -130,11 +130,11 @@ h3.section-header {
   margin-top: 1em;
 }
 
-.info-general {
+.scenery-info-general {
   margin-top: 1em;
 }
 
-.general-list {
+.scenery-general-list {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
