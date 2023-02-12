@@ -2,8 +2,46 @@
   <section class="scenery-timetables-history scenery-section">
     <Loading v-if="dataStatus != 2" />
 
-    <div class="list-warning" v-else-if="sceneryHistoryList.length == 0">{{ $t('scenery.history-list-empty') }}</div>
-    <ul class="history-list" v-else>
+    <table v-else-if="sceneryHistoryList.length">
+      <thead>
+        <th>ID</th>
+        <th>Kat. nr</th>
+        <th>Relacja</th>
+        <th>Maszynista</th>
+        <th>Autor RJ</th>
+        <th>Data</th>
+      </thead>
+
+      <tbody>
+        <tr v-for="historyItem in sceneryHistoryList" @click="test">
+          <td>
+            <router-link :to="`/journal/timetables?timetableId=${historyItem.id}`">#{{ historyItem.id }}</router-link>
+          </td>
+          <td>
+            <b class="text--primary">{{ historyItem.trainCategoryCode }}</b> <br />
+            {{ historyItem.trainNo }}
+          </td>
+          <td>{{ historyItem.route.replace('|', ' -> ') }}</td>
+          <td>{{ historyItem.driverName }}</td>
+          <td>
+            <router-link
+              v-if="historyItem.authorName"
+              :to="`/journal/dispatchers?dispatcherName=${historyItem.authorName}`"
+              >{{ historyItem.authorName }}
+            </router-link>
+            <i v-else>{{ $t('scenery.timetable-author-unknown') }}</i>
+          </td>
+          <td>
+            <b>{{ localeDay(historyItem.beginDate, $i18n.locale) }}</b>
+            {{ localeTime(historyItem.beginDate, $i18n.locale) }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="list-warning" v-else>{{ $t('scenery.history-list-empty') }}</div>
+
+    <!-- <ul class="history-list" v-else>
       <li class="list-item" v-for="historyItem in sceneryHistoryList">
         <div>
           <b>{{ localeDay(historyItem.beginDate, $i18n.locale) }}</b>
@@ -19,16 +57,14 @@
         </div>
 
         <div>{{ historyItem.route.replace('|', ' -> ') }}</div>
-        <!-- <div>{{ historyItem.routeDistance }} km</div> -->
         <div>
           {{ $t('scenery.timetable-author-title') }}:
           <b v-if="historyItem.authorName">{{ historyItem.authorName }}</b>
           <i v-else>{{ $t('scenery.timetable-author-unknown') }}</i>
         </div>
 
-        <!-- <div v-if="historyItem.authorId">{{ historyItem.authorName }}</div> -->
       </li>
-    </ul>
+    </ul> -->
   </section>
 </template>
 
@@ -57,7 +93,7 @@ export default defineComponent({
       dataStatus: DataStatus.Loading,
     };
   },
-  mounted() {
+  activated() {
     this.fetchAPIData();
   },
   methods: {
@@ -71,6 +107,10 @@ export default defineComponent({
       } catch (error) {
         console.error(error);
       }
+    },
+
+    test() {
+      console.log('test');
     },
   },
   components: { Loading },
@@ -91,17 +131,29 @@ export default defineComponent({
   padding: 0 0.5em;
 }
 
-.list-item {
-  display: grid;
-  grid-template-columns: 1fr 2fr 2fr 1fr;
-  gap: 1em;
-  align-items: center;
+table {
+  width: 100%;
+  border-collapse: collapse;
 
-  background-color: #353535;
-  padding: 0.5em;
-  margin: 0.5em 0;
+  thead {
+    position: sticky;
+    top: 0;
+    background-color: #222222;
+  }
 
-  line-height: 1.5em;
+  th {
+    padding: 0.5em;
+  }
+
+  tr {
+    background-color: #353535;
+    border: none;
+  }
+
+  td {
+    padding: 0.75em;
+    border-bottom: solid 5px #111;
+  }
 }
 
 @include smallScreen {

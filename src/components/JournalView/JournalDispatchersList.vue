@@ -136,6 +136,8 @@ li.sticky {
   display: flex;
   align-items: center;
   gap: 0.25em;
+  flex-wrap: wrap;
+
 
   .level-badge {
     margin-right: 0.25em;

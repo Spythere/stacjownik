@@ -62,7 +62,7 @@ export default defineComponent({
       dataStatus: DataStatus.Loading,
     };
   },
-  mounted() {
+  activated() {
     this.fetchAPIData();
   },
   methods: {
@@ -106,6 +106,7 @@ export default defineComponent({
 .item-general {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 0.25em;
 }
 

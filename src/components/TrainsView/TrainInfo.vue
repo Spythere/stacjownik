@@ -11,7 +11,7 @@
         </span>
 
         <strong>
-          <span v-if="train.timetableData">{{ train.timetableData.category }}&nbsp;</span>
+          <span v-if="train.timetableData" class="text--primary">{{ train.timetableData.category }}&nbsp;</span>
           <span class="train-number">{{ train.trainNo }}</span>
         </strong>
         <span>&bull;</span>

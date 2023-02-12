@@ -252,7 +252,7 @@ hr {
     align-items: center;
     flex-wrap: wrap;
 
-    gap: 0.25em;
+    gap: 0.5em;
     margin-bottom: 0.5em;
   }
 
