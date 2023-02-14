@@ -11,7 +11,7 @@
         {{ $t(tab.titlePath) }}
       </button>
     </div>
-
+    
     <div class="stats-tab" v-show="areStatsOpen">
       <keep-alive>
         <JournalDailyStats v-if="store.currentStatsTab == 'daily'" ref="dailyStatsComp" />

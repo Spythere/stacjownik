@@ -15,7 +15,6 @@
             style="cursor: pointer"
           >
             <span class="text--grayed">#{{ timetable.id }}</span>
-            &bull;
             <span>
               <strong class="text--primary">
                 {{ timetable.trainCategoryCode }}
@@ -96,6 +95,7 @@
             <b>{{ timetable.authorName }}</b>
           </router-link>
         </div>
+
         <button
           v-if="timetable.stockString"
           class="btn--option btn--show"
@@ -104,6 +104,7 @@
           {{ $t('journal.stock-info') }}
           <img :src="getIcon(`arrow-${item.showStock.value ? 'asc' : 'desc'}`)" alt="Arrow" />
         </button>
+
         <div class="info-extended" v-if="timetable.stockString && item.showStock.value">
           <hr />
           <div>
