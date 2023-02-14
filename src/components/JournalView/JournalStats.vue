@@ -35,7 +35,8 @@ type TStatTab = 'daily' | 'driver';
 const store = useStore();
 const dailyStatsComp: Ref<InstanceType<typeof JournalDailyStats> | null> = ref(null);
 
-const areStatsOpen = ref(true);
+const lastDailyStatsOpen = ref(false);
+const areStatsOpen = ref(false);
 const lastClickedTab = ref('daily');
 
 let data = reactive({
@@ -54,9 +55,9 @@ let data = reactive({
 
 // Methods
 function onTabButtonClick(tab: TStatTab) {
-  if (lastClickedTab.value == tab || !areStatsOpen.value) {
-    areStatsOpen.value = !areStatsOpen.value;
-  }
+  if (lastClickedTab.value == tab || !areStatsOpen.value) areStatsOpen.value = !areStatsOpen.value;
+
+  if (tab == 'daily') lastDailyStatsOpen.value = areStatsOpen.value;
 
   store.currentStatsTab = tab;
   lastClickedTab.value = tab;
@@ -77,6 +78,7 @@ watch(
 
     lastClickedTab.value = statsData ? 'driver' : 'daily';
     if (statsData) areStatsOpen.value = true;
+    if (!statsData) areStatsOpen.value = lastDailyStatsOpen.value;
   }
 );
 </script>

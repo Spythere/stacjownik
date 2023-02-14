@@ -19,7 +19,7 @@
               {{ $t('app.offline') }}
             </div>
 
-            <Loading v-else-if="dataStatus == DataStatus.Initialized || dataStatus == DataStatus.Loading" />
+            <Loading v-else-if="dataStatus == DataStatus.Loading" />
 
             <div v-else-if="dataStatus == DataStatus.Error" class="journal_warning error">
               {{ $t('app.error') }}
@@ -111,7 +111,7 @@ export default defineComponent({
     statsCardOpen: false,
     currentOptionsActive: false,
 
-    dataStatus: DataStatus.Initialized,
+    dataStatus: DataStatus.Loading,
     DataStatus,
 
     historyList: [] as DispatcherHistory[],
