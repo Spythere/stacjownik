@@ -313,6 +313,13 @@
     "timetable-author-title": "Issued by",
     "timetable-author-unknown": "Author unknown",
 
+    "timetables-history-id": "ID",
+    "timetables-history-number": "Number",
+    "timetables-history-route": "Route",
+    "timetables-history-driver": "Driver",
+    "timetables-history-author": "TT author",
+    "timetables-history-date": "Date",
+
     "req-level": "all dispatcher levels | dispatcher level {lvl} required | dispatcher level {lvl} required",
     "history-list-empty": "No recorded scenery history!",
 

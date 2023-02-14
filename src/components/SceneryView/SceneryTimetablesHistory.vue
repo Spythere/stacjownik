@@ -4,12 +4,12 @@
 
     <table v-else-if="sceneryHistoryList.length">
       <thead>
-        <th>ID</th>
-        <th>Kat. nr</th>
-        <th>Relacja</th>
-        <th>Maszynista</th>
-        <th>Autor RJ</th>
-        <th>Data</th>
+        <th>{{ $t('scenery.timetables-history-id')  }}</th>
+        <th>{{ $t('scenery.timetables-history-number')}}</th>
+        <th>{{ $t('scenery.timetables-history-route')}}</th>
+        <th>{{ $t('scenery.timetables-history-driver')}}</th>
+        <th>{{ $t('scenery.timetables-history-author')}}</th>
+        <th>{{ $t('scenery.timetables-history-date')}}</th>
       </thead>
 
       <tbody>
