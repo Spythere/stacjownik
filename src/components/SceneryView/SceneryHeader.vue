@@ -1,6 +1,6 @@
 <template>
   <section class="info-header">
-    <a class="scenery-name" :href="station.generalInfo?.url">
+    <a class="scenery-name" :href="station.generalInfo?.url" target="_blank">
       {{ station.name }}
     </a>
 

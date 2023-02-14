@@ -60,6 +60,7 @@ export interface StationJSONData {
   url: string;
   lines: string;
   project: string;
+  projectUrl: string;
 
   reqLevel: number;
 
@@ -69,6 +70,7 @@ export interface StationJSONData {
   SUP: boolean;
 
   routes: string;
+  
   checkpoints: string | null;
   authors?: string;
 

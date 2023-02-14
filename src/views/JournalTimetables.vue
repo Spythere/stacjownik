@@ -22,7 +22,7 @@
               {{ $t('app.offline') }}
             </div>
 
-            <Loading v-else-if="dataStatus == DataStatus.Initialized || dataStatus == DataStatus.Loading" />
+            <Loading v-else-if="dataStatus == DataStatus.Loading" />
 
             <div v-else-if="dataStatus == DataStatus.Error" class="journal_warning error">
               {{ $t('app.error') }}
@@ -105,7 +105,7 @@ export default defineComponent({
     timetableHistory: [] as TimetableHistory[],
     journalTimetableFilters,
 
-    dataStatus: DataStatus.Initialized,
+    dataStatus: DataStatus.Loading,
     dataErrorMessage: '',
 
     DataStatus,
@@ -215,7 +215,7 @@ export default defineComponent({
     },
 
     async fetchHistoryData() {
-      if(this.dataStatus == DataStatus.Loading) return;
+      // if(this.dataStatus == DataStatus.Loading) return;
 
       const queries: string[] = [];
 

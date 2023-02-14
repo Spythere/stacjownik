@@ -317,6 +317,13 @@
     "timetable-author-title": "Wydany przez",
     "timetable-author-unknown": "Autor nieznany",
 
+    "timetables-history-id": "ID",
+    "timetables-history-number": "Numer",
+    "timetables-history-route": "Trasa",
+    "timetables-history-driver": "Maszynista",
+    "timetables-history-author": "Autor RJ",
+    "timetables-history-date": "Data",
+
     "req-level": "ogólnodostępna | minimum {lvl} poziom dyżurnego | minimum {lvl} poziom dyżurnego",
     "history-list-empty": "Brak historii dla tej scenerii!",
 

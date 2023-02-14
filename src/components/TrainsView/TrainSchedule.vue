@@ -89,6 +89,7 @@ import dateMixin from '../../mixins/dateMixin';
 import imageMixin from '../../mixins/imageMixin';
 import Train from '../../scripts/interfaces/Train';
 import TrainStop from '../../scripts/interfaces/TrainStop';
+import { useStore } from '../../store/store';
 import StopDate from '../Global/StopDate.vue';
 
 export default defineComponent({
@@ -106,6 +107,8 @@ export default defineComponent({
 
   setup(props) {
     return {
+      store: useStore(),
+
       lastConfirmed: computed(() => {
         return props.train.timetableData!.followingStops.findIndex(
           (stop, i, stops) => stop.confirmed && !stops[i + 1]?.confirmed && !stops[i + 1]?.stopped
@@ -424,3 +427,4 @@ ul.stop_list > li.stop {
   }
 }
 </style>
+

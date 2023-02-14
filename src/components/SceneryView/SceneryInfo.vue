@@ -1,10 +1,10 @@
 <template>
   <div class="scenery-info">
     <section v-if="!timetableOnly">
-      <div class="info-general" v-if="station.generalInfo">
+      <div class="scenery-info-general" v-if="station.generalInfo">
         <scenery-info-icons :station="station" />
 
-        <div class="general-list">
+        <div class="scenery-general-list">
           <span>
             <b>{{ $t('availability.title') }}:</b> {{ $t(`availability.${station.generalInfo.availability}`) }}
 
@@ -26,26 +26,32 @@
           </span>
           <span v-if="station.generalInfo.project">
             &bull; <b>{{ $t('scenery.project-title') }}: </b>
-            <b style="color: salmon">{{ station.generalInfo.project }}</b>
+            <a
+              style="color: salmon; text-decoration: underline; font-weight: bold"
+              :href="station.generalInfo.projectUrl"
+              target="_blank"
+              >{{ station.generalInfo.project }}</a
+            >
           </span>
         </div>
 
         <scenery-info-routes :station="station" />
 
         <div class="scenery-authors" v-if="station.generalInfo.authors && station.generalInfo.authors.length > 0">
-          <b> {{ $t('scenery.authors-title', { authors: station.generalInfo.authors.length }, station.generalInfo.authors.length) }}: </b>
+          <b>
+            {{
+              $t(
+                'scenery.authors-title',
+                { authors: station.generalInfo.authors.length },
+                station.generalInfo.authors.length
+              )
+            }}:
+          </b>
           {{ station.generalInfo.authors.join(', ') }}
-        </div>
-
-        <br />
-        <div class="scenery-topic" v-if="station.generalInfo.url">
-          <a :href="station.generalInfo.url" target="_blank">
-            &gt; {{ $t('scenery.forum-topic', { name: station.name }) }} &lt;
-          </a>
         </div>
       </div>
 
-      <div style="margin: 2em 0; height: 2px; background-color: white" />
+      <div style="margin: 2em 0; height: 2px; background-color: white"></div>
 
       <!-- info dispatcher -->
       <scenery-info-dispatcher :station="station" :onlineFrom="onlineFrom" />
@@ -124,11 +130,11 @@ h3.section-header {
   margin-top: 1em;
 }
 
-.info-general {
+.scenery-info-general {
   margin-top: 1em;
 }
 
-.general-list {
+.scenery-general-list {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
