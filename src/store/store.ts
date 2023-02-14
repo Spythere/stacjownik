@@ -318,8 +318,7 @@ export const useStore = defineStore('store', {
                     const SBL = specs2[2] == 'S';
                     const TWB = specs2[3] ? true : false;
                     const speed = Number(routeString.split(':')[1]) || 0;
-                    const length  = Number(routeString.split(':')[2]) || 0;
-
+                    const length = Number(routeString.split(':')[2]) || 0;
 
                     const propName = twoWay
                       ? catenary
@@ -365,10 +364,9 @@ export const useStore = defineStore('store', {
 
     connectToWebsocket() {
       const socket = io(URLs.stacjownikAPI, {
-        transports: ['websocket', 'polling'],
+        // transports: ['websocket', 'polling'],
         rememberUpgrade: true,
         reconnection: true,
-        timeout: 2000,
       });
 
       socket.on('connect_error', (err) => {
@@ -382,8 +380,9 @@ export const useStore = defineStore('store', {
       });
 
       socket.emit('FETCH_DATA', {}, (data: APIData) => {
-        this.apiData = data;
         this.dataStatuses.connection = DataStatus.Loaded;
+
+        this.apiData = data;
         this.setOnlineData();
       });
 
