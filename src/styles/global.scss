@@ -45,6 +45,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'Quicksand', sans-serif;
+  font-weight: 500;
   overflow-y: scroll;
 
   &.no-scroll {
@@ -81,22 +82,9 @@ body {
 
     transition: opacity 0.3s;
     padding: 0.25em;
-
-    // @include smallScreen() {
-    //   right: 0;
-    //   left: 0;
-
-    //   &::after {
-    //     left: 75%;
-    //   }
-    // }
   }
 
   &:hover > .content {
-    // @include smallScreen() {
-    //   display: none;
-    // }
-
     visibility: visible;
     opacity: 1;
   }
@@ -105,7 +93,6 @@ body {
 button,
 input,
 select {
-  // font-family: "Open Sans", sans-serif;
   border: none;
   font-family: 'Quicksand', sans-serif;
   font-size: 1em;
