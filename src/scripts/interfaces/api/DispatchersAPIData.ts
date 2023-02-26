@@ -1,10 +1,11 @@
 export interface DispatcherHistory {
   id: string;
-  
+
   currentDuration: number;
   dispatcherId: number;
   dispatcherName: string;
   dispatcherLevel: number | null;
+  dispatcherRate: number;
   dispatcherIsSupporter: boolean;
   isOnline: boolean;
   lastOnlineTimestamp: number;

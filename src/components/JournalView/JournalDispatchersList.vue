@@ -29,6 +29,10 @@
           <b class="text--primary">{{ item.dispatcherName }}</b> &bull; <b>{{ item.stationName }}</b>
           <span class="text--grayed">&nbsp;#{{ item.stationHash }}&nbsp;</span>
           <span class="region-badge" :class="item.region">PL1</span>
+          <span class="like-count" v-if="item.dispatcherRate">
+            <img :src="getIcon('like')" alt="like icon" />
+            {{ item.dispatcherRate }}
+          </span>
         </span>
 
         <span class="item-time">
@@ -55,6 +59,7 @@ import { defineComponent, PropType } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
 import { DispatcherHistory } from '../../scripts/interfaces/api/DispatchersAPIData';
 import styleMixin from '../../mixins/styleMixin';
+import imageMixin from '../../mixins/imageMixin';
 
 export default defineComponent({
   props: {
@@ -64,7 +69,7 @@ export default defineComponent({
     },
   },
 
-  mixins: [dateMixin, styleMixin],
+  mixins: [dateMixin, styleMixin, imageMixin],
 
   computed: {
     computedDispatcherHistory() {
@@ -101,6 +106,7 @@ export default defineComponent({
 @import '../../styles/responsive.scss';
 @import '../../styles/badge.scss';
 @import '../../styles/JournalSection.scss';
+@import '../../styles/variables.scss';
 
 li.sticky {
   position: sticky;
@@ -114,7 +120,7 @@ li.sticky {
   flex-wrap: wrap;
   text-align: left;
 
-  gap: 0.25em;
+  gap: 0.5em 1em;
 
   line-height: 1.7em;
   padding: 0.75em;
@@ -134,10 +140,10 @@ li.sticky {
 
 .item-general {
   display: flex;
+  justify-content: center;
   align-items: center;
   gap: 0.25em;
   flex-wrap: wrap;
-
 
   .level-badge {
     margin-right: 0.25em;
@@ -158,6 +164,20 @@ li.sticky {
     padding-right: 1em;
 
     font-weight: bold;
+  }
+}
+
+.like-count {
+  display: flex;
+  align-items: center;
+  gap: 0.25em;
+  font-size: 1.2em;
+  color: $accentCol;
+}
+
+@include smallScreen {
+  .journal_item {
+    flex-direction: column;
   }
 }
 </style>
