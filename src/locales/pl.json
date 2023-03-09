@@ -96,7 +96,8 @@
     "search-dispatcher": "Nick dyżurnego",
     "search-station": "Nazwa scenerii",
     "search-author": "Nick autora rozkładu jazdy",
-    "search-date": "Data rozkładu jazdy (czas polski)",
+    "search-timetables-date": "Data rozkładu jazdy (czas polski)",
+    "search-dispatchers-date": "Data służby (czas polski)",
 
     "sort-distance": "kilometraż",
     "sort-total-stops": "stacje",
@@ -105,7 +106,7 @@
     "sort-timestampFrom": "data",
     "sort-duration": "czas dyżuru",
     "sort-id": "id rozkładu",
-    
+
     "sort-mass": "masa",
     "sort-speed": "prędkość",
     "sort-length": "długość",

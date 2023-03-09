@@ -29,7 +29,7 @@
           <h1 class="option-title">{{ $t('options.search-title') }}</h1>
           <div class="search_content">
             <div class="search" v-for="(_, propName) in searchersValues" :key="propName">
-              <label v-if="propName == 'search-date'" for="date">{{ $t('options.search-date') }}</label>
+              <label v-if="propName == 'search-date'" for="date">{{ $t(`options.search-${optionsType}-date`) }}</label>
 
               <div class="search-box">
                 <input
@@ -129,6 +129,11 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+
+    optionsType: {
+      type: String,
+      required: true
+    }
   },
 
   data() {
