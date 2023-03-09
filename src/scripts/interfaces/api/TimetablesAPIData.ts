@@ -1,5 +1,7 @@
 export interface TimetableHistory {
   id: number;
+  createdAt: string;
+  updatedAt: string;
   
   timetableId: number;
   trainNo: number;

@@ -53,12 +53,21 @@
             </b>
           </span>
         </div>
+
         <div class="info-route">
           <b>{{ timetable.route.replace('|', ' - ') }}</b>
         </div>
+
         <hr />
+
         <div class="scenery-list">
-          <span v-for="(scenery, i) in sceneryList" :key="scenery.name" :class="{ confirmed: scenery.confirmed }">
+          <span
+            v-for="(scenery, i) in sceneryList.filter((_, i) =>
+              !item.showExtra.value ? i == 0 || i == sceneryList.length - 1 : true
+            )"
+            :key="scenery.name"
+            :class="{ confirmed: scenery.confirmed }"
+          >
             <span v-if="i > 0"> &gt;</span>
             {{ scenery.name }}
             <!-- Data odjazdu ze stacji początkowej -->
@@ -67,6 +76,7 @@
             <span v-if="i == sceneryList.length - 1" v-html="scenery.endDateHTML"> </span>
           </span>
         </div>
+
         <!-- Status RJ -->
         <div style="margin: 0.5em 0">
           <span>
@@ -88,24 +98,30 @@
             </b>
           </span>
         </div>
+
         <!-- Nick dyżurnego -->
         <div v-if="timetable.authorName">
           <b class="text--grayed">{{ $t('journal.dispatcher-name') }}&nbsp;</b>
           <router-link class="dispatcher-link" :to="`/journal/dispatchers?dispatcherName=${timetable.authorName}`">
             <b>{{ timetable.authorName }}</b>
           </router-link>
+          <span class="text--grayed">
+            ({{
+              new Date(timetable.createdAt).toLocaleString($i18n.locale, { timeStyle: 'short', dateStyle: 'full' })
+            }})
+          </span>
         </div>
 
         <button
           v-if="timetable.stockString"
           class="btn--option btn--show"
-          @click="item.showStock.value = !item.showStock.value"
+          @click="item.showExtra.value = !item.showExtra.value"
         >
           {{ $t('journal.stock-info') }}
-          <img :src="getIcon(`arrow-${item.showStock.value ? 'asc' : 'desc'}`)" alt="Arrow" />
+          <img :src="getIcon(`arrow-${item.showExtra.value ? 'asc' : 'desc'}`)" alt="Arrow" />
         </button>
 
-        <div class="info-extended" v-if="timetable.stockString && item.showStock.value">
+        <div class="info-extended" v-if="timetable.stockString && item.showExtra.value">
           <hr />
           <div>
             <span class="badge info-badge">
@@ -160,7 +176,7 @@ export default defineComponent({
       return this.timetableHistory.map((timetable) => ({
         timetable,
         sceneryList: this.getSceneryList(timetable),
-        showStock: ref(false),
+        showExtra: ref(false),
       }));
     },
   },
@@ -190,12 +206,7 @@ export default defineComponent({
             this.$i18n.locale
           )}</span>)`;
 
-        const abandonedDateHTML = ` (porz. ${this.localeTime(
-          timetable.fulfilled ? timetable.scheduledEndDate : timetable.endDate,
-          this.$i18n.locale
-        )})`;
-
-        return { name, confirmed: i < timetable.confirmedStopsCount, beginDateHTML, endDateHTML, abandonedDateHTML };
+        return { name, confirmed: i < timetable.confirmedStopsCount, beginDateHTML, endDateHTML };
       });
     },
 
