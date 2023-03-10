@@ -4,13 +4,14 @@
       v-for="{ timetable, sceneryList, ...item } in computedTimetableHistory"
       class="journal_item"
       :key="timetable.id"
+      @click="item.showExtra.value = !item.showExtra.value"
     >
       <div class="journal_item-info">
         <div class="info-general">
           <span
             class="general-train"
             tabindex="0"
-            @click="showTimetable(timetable)"
+            @click.stop="showTimetable(timetable)"
             @keydown.enter="showTimetable(timetable)"
             style="cursor: pointer"
           >
@@ -68,7 +69,12 @@
             :key="scenery.name"
             :class="{ confirmed: scenery.confirmed }"
           >
-            <span v-if="i > 0"> &gt;</span>
+            <span v-if="i > 0">
+              &gt;
+              <span v-if="!item.showExtra.value && i == 1 && sceneryList.length > 2"
+                >... (+{{ sceneryList.length - 2 }}) &gt;</span
+              >
+            </span>
             {{ scenery.name }}
             <!-- Data odjazdu ze stacji początkowej -->
             <span v-if="i == 0" v-html="scenery.beginDateHTML"></span>
@@ -118,11 +124,7 @@
           </span>
         </div>
 
-        <button
-          v-if="timetable.stockString"
-          class="btn--option btn--show"
-          @click="item.showExtra.value = !item.showExtra.value"
-        >
+        <button class="btn--option btn--show">
           {{ $t('journal.stock-info') }}
           <img :src="getIcon(`arrow-${item.showExtra.value ? 'asc' : 'desc'}`)" alt="Arrow" />
         </button>
@@ -166,6 +168,7 @@ import imageMixin from '../../mixins/imageMixin';
 import modalTrainMixin from '../../mixins/modalTrainMixin';
 import styleMixin from '../../mixins/styleMixin';
 import { TimetableHistory } from '../../scripts/interfaces/api/TimetablesAPIData';
+import { TimetableStop } from '../../scripts/interfaces/api/TrainAPIData';
 
 export default defineComponent({
   props: {
@@ -237,6 +240,10 @@ export default defineComponent({
 @import '../../styles/responsive.scss';
 @import '../../styles/badge.scss';
 @import '../../styles/JournalSection.scss';
+
+.journal_item {
+  cursor: pointer;
+}
 
 hr {
   margin: 0.25em 0;
