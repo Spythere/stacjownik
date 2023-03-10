@@ -10,6 +10,23 @@
         <span class="text--grayed">
           {{ station.onlineInfo?.scheduledTrains?.filter((train) => train.stopInfo.confirmed).length || '0' }}
         </span>
+        <span class="header_links">
+          <a
+            :href="`https://pragotron-td2.web.app/board?name=${station.name}`"
+            target="_blank"
+            title="Otwórz w widoku pragotronu"
+          >
+            <img :src="getIcon('pragotron')" alt="icon-pragotron" />
+          </a>
+
+          <a
+            :href="`https://tablice-td2.web.app/?station=${station.name}`"
+            target="_blank"
+            title="Otwórz w widoku tablic stacyjnych (autorstwa Thundo)"
+          >
+            <img :src="getIcon('tablice', 'ico')" alt="icon-tablice" />
+          </a>
+        </span>
       </h3>
 
       <div class="timetable-checkpoints" v-if="station && station.generalInfo?.checkpoints">
@@ -168,7 +185,6 @@ import { useStore } from '../../store/store';
 import imageMixin from '../../mixins/imageMixin';
 import modalTrainMixin from '../../mixins/modalTrainMixin';
 import ScheduledTrainStatus from './ScheduledTrainStatus.vue';
-import ScheduledTrain from '../../scripts/interfaces/ScheduledTrain';
 
 export default defineComponent({
   name: 'SceneryTimetable',
@@ -285,6 +301,7 @@ export default defineComponent({
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  margin-top: 0.5em;
 
   position: sticky;
   top: 0;
@@ -292,11 +309,22 @@ export default defineComponent({
 
   background-color: #181818;
 
+  img {
+    width: 30px;
+    vertical-align: middle;
+  }
+
   h3 {
     display: flex;
     align-items: center;
     font-size: 1.3em;
   }
+}
+
+.header_links {
+  display: flex;
+  gap: 0.5em;
+  margin-left: 0.5em;
 }
 
 .timetable {
