@@ -73,7 +73,10 @@
             <!-- Data odjazdu ze stacji początkowej -->
             <span v-if="i == 0" v-html="scenery.beginDateHTML"></span>
             <!-- Data przyjazdu do stacji końcowej -->
-            <span v-if="i == sceneryList.length - 1" v-html="scenery.endDateHTML"> </span>
+            <span
+              v-if="i == sceneryList.length - 1 || (i == 1 && !item.showExtra.value)"
+              v-html="scenery.endDateHTML"
+            ></span>
           </span>
         </div>
 
@@ -107,7 +110,10 @@
           </router-link>
           <span class="text--grayed">
             ({{
-              new Date(timetable.createdAt).toLocaleString($i18n.locale, { timeStyle: 'short', dateStyle: 'full' })
+              (new Date(timetable.createdAt).getTime() - new Date(timetable.beginDate).getTime() < 0
+                ? new Date(timetable.createdAt)
+                : new Date(timetable.beginDate)
+              ).toLocaleString($i18n.locale, { timeStyle: 'short', dateStyle: 'full' })
             }})
           </span>
         </div>
