@@ -1,16 +1,22 @@
 export default interface Filter {
-  [key: string]: (boolean | number | string),
+  [key: string]: boolean | number | string;
   default: boolean;
   notDefault: boolean;
   real: boolean;
   fictional: boolean;
-  "SPK": boolean;
-  "SCS": boolean;
-  "SPE": boolean;
-  "SUP": boolean;
+  SPK: boolean;
+  SCS: boolean;
+  SPE: boolean;
+  SUP: boolean;
+  noSUP: boolean;
   ręczne: boolean;
+  'ręczne+SPK': boolean;
+  'ręczne+SCS': boolean;
   mechaniczne: boolean;
-  "SBL": boolean;
+  'mechaniczne+SPK': boolean;
+  'mechaniczne+SCS': boolean;
+  SBL: boolean;
+  PBL: boolean;
   współczesna: boolean;
   kształtowa: boolean;
   historyczna: boolean;

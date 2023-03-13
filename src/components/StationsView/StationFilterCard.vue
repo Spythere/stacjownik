@@ -26,15 +26,28 @@
       <div class="card" v-if="isVisible" tabindex="0" ref="cardEl">
         <div class="card_content">
           <div class="card_title flex">{{ $t('filters.title') }}</div>
+          <p class="card_info" v-html="$t('filters.desc')"></p>
 
           <section class="card_options">
-            <filter-option
-              v-for="(option, i) in filterStore.inputs.options"
-              :option="option"
-              :key="i"
-              @optionChange="handleChange"
-            />
+            <div class="option-section" v-for="section in filterStore.inputs.optionSections">
+              <h3 class="text--primary">
+                {{ $t(`filters.sections.${section}`) }}
+
+                <button @click="filterStore.resetSectionOptions(section)">RESET</button>
+              </h3>
+
+              <hr />
+
+              <div class="section-inputs">
+                <filter-option
+                  v-for="(option, i) in filterStore.inputs.options.filter((o) => o.section == section)"
+                  :option="option"
+                  :key="i"
+                />
+              </div>
+            </div>
           </section>
+
           <section class="card_timestamp" style="text-align: center">
             <div>{{ $t('filters.minimum-hours-title') }}</div>
             <span class="clock">
@@ -80,18 +93,18 @@
               </div>
             </div>
           </section>
-
-          <section class="card_actions">
-            <div class="action-buttons">
-              <button class="btn--action" style="width: 100%" @click="saveFilters" :data-selected="saveOptions">
-                {{ $t('filters.save') }}
-              </button>
-
-              <button class="btn--action" @click="resetFilters">{{ $t('filters.reset') }}</button>
-              <button class="btn--action" @click="closeCard">{{ $t('filters.close') }}</button>
-            </div>
-          </section>
         </div>
+
+        <section class="card_actions">
+          <div class="action-buttons">
+            <button class="btn--action" style="width: 100%" @click="saveFilters" :data-selected="saveOptions">
+              {{ $t('filters.save') }}
+            </button>
+
+            <button class="btn--action" @click="resetFilters">{{ $t('filters.reset') }}</button>
+            <button class="btn--action" @click="closeCard">{{ $t('filters.close') }}</button>
+          </div>
+        </section>
       </div>
     </transition>
   </section>
@@ -179,15 +192,6 @@ export default defineComponent({
     // Override keyMixin function
     onKeyDownFunction() {
       this.isVisible = !this.isVisible;
-    },
-
-    handleChange(change: { name: string; value: boolean }) {
-      this.filterStore.changeFilterValue({
-        name: change.name,
-        value: !change.value,
-      });
-
-      if (this.saveOptions) StorageManager.setBooleanValue(change.name, change.value);
     },
 
     handleInput(e: Event) {
@@ -281,6 +285,14 @@ export default defineComponent({
 }
 
 .card {
+  display: grid;
+  grid-template-rows: 1fr auto;
+
+  &_info {
+    background-color: #111;
+    padding: 0.5em;
+  }
+
   &_controls {
     display: flex;
     gap: 0.5em;
@@ -292,13 +304,13 @@ export default defineComponent({
   }
 
   &_content {
+    padding: 0.5em;
+
     display: flex;
     flex-direction: column;
+
     gap: 1em;
-
-    max-height: 90vh;
-
-    padding: 1em;
+    overflow: auto;
   }
 
   &_title {
@@ -307,18 +319,6 @@ export default defineComponent({
     color: $accentCol;
 
     text-align: center;
-  }
-
-  &_options {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    grid-template-rows: repeat(4, 1fr);
-    gap: 0.5em;
-
-    @include smallScreen() {
-      grid-template-columns: repeat(auto-fit, minmax(8em, 1fr));
-      grid-template-rows: auto;
-    }
   }
 
   &_regions {
@@ -391,6 +391,9 @@ export default defineComponent({
   }
 
   &_actions {
+    width: 100%;
+    padding: 0.25em;
+
     .filter-option {
       max-width: 50%;
       margin: 0 auto;
@@ -414,6 +417,35 @@ export default defineComponent({
         }
       }
     }
+  }
+}
+
+.card_options {
+  .option-section h3 {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.25em;
+
+    gap: 0.5em;
+
+    button {
+      padding: 0.15em;
+      color: coral;
+    }
+  }
+
+  .section-inputs {
+    display: grid;
+    // flex-wrap: wrap;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    // grid-template-rows: repeat(3, 1fr);
+    gap: 0.5em;
+    margin: 1em 0;
+
+    // @include smallScreen() {
+    //   grid-template-columns: repeat(auto-fit, minmax(8em, 1fr));
+    //   grid-template-rows: auto;
+    // }
   }
 }
 

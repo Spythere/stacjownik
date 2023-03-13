@@ -132,6 +132,19 @@
     "filter-active": "AKTYWNE"
   },
   "filters": {
+    "desc": " &bull; Kliknięcie: zaznaczenie / odznaczenie filtru <br /> &bull; Podwójne kliknięcie: odznaczenie reszty filtrów z <b class='text--primary'>grupy</b> <br /> &bull; <span style='color: coral'>RESET</span>: zresetowanie filtrów z <b class='text--primary'>grupy</b>",
+    
+    "sections": {
+      "reality": "FIKCYJNOŚĆ SCENERII",
+      "package-access": "DOSTĘPNOŚĆ W PACZCE",
+      "access": "DOSTĘPNOŚĆ OGÓLNA",
+      "control": "TYP STEROWANIA",
+      "signals": "TYP SYGNALIZACJI",
+      "addons": "DODATKOWE PROGRAMY",
+      "blockades": "BLOKADY LINIOWE",
+      "status": "STATUS ONLINE"
+    },
+
     "endingStatus": "KOŃCZY",
     "afkStatus": "Z/W",
     "noSpaceStatus": "BRAK MIEJSCA",
@@ -147,18 +160,29 @@
     "abandoned": "WYCOFANA",
 
     "SPK": "SPK",
+    "SPK-R": "SPK + RĘCZNE",
+    "SPK-M": "SPK + MECH.",
     "SCS": "SCS",
+    "SCS-R": "SCS + RĘCZNE",
+    "SCS-M": "SCS + MECH.",
     "SPE": "SPE",
     "manual": "RĘCZNE",
-    "SUP": "SUP",
+
+    "SUP": "SUP (RASP-UZK)",
+    "noSUP": "BEZ SUP",
+
     "SBL": "SBL",
+    "PBL": "PBL",
+
     "mechanical": "MECHANICZNE",
     "modern": "WSPÓŁCZESNA",
     "semaphores": "KSZTAŁTOWA",
     "mixed": "MIESZANA",
     "historical": "HISTORYCZNA",
+
     "free": "WOLNA",
     "occupied": "ZAJĘTA",
+
     "sliders": {
       "min-lvl": "MIN. WYMAGANY POZIOM DYŻURNEGO",
       "max-lvl": "MAKS. WYMAGANY POZIOM DYŻURNEGO",
@@ -167,13 +191,14 @@
       "routes-2t-cat": "SZLAKI DWUTOROWE ZELEKTR. (MINIMUM)",
       "routes-2t-other": "SZLAKI DWUTOROWE NIEZELEKTR. (MINIMUM)"
     },
+
     "authors-search": "Szukaj autora (uwzględnia inne filtry)",
     "minimum-hours-title": "POKAŻ TYLKO SCENERIE DOSTĘPNE MINIMUM DO:",
     "now": "TERAZ",
     "hour": " godz.",
     "no-limit": "BEZ LIMITU",
     "include-selected": "POKAŻ ZAZNACZONE",
-    "save": "ZAPISZ FILTRY",
+    "save": "ZAPAMIĘTAJ FILTRY",
     "reset": "RESETUJ FILTRY",
     "close": "ZAMKNIJ FILTRY"
   },

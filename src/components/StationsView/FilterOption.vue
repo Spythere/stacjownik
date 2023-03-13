@@ -1,5 +1,11 @@
 <template>
-  <button class="btn--action" :class="option.section" :data-selected="option.value" @click="handleChange">
+  <button
+    class="btn--action"
+    :class="option.section"
+    :data-selected="option.value"
+    @click="handleLeftClick"
+    @dblclick="handleDbClick"
+  >
     {{ $t(`filters.${option.id}`) }}
   </button>
 </template>
@@ -29,20 +35,51 @@ export default defineComponent({
       filterStore: useStationFiltersStore(),
     };
   },
+
   methods: {
-    handleChange() {
+    handleLeftClick() {
       this.option.value = !this.option.value;
+      this.filterStore.lastClickedFilterId = '';
 
       this.filterStore.changeFilterValue({
         name: this.option.name,
         value: !this.option.value,
       });
     },
+
+    handleDbClick(e: Event) {
+      e.preventDefault();
+
+      
+      const lastClicked = this.filterStore.lastClickedFilterId == this.option.id;
+      console.log(this.filterStore.lastClickedFilterId);
+      this.filterStore.lastClickedFilterId = this.option.id;
+      this.option.value = true;
+
+      this.filterStore.changeFilterValue({
+        name: this.option.name,
+        value: !this.option.value,
+      });
+
+      this.filterStore.inputs.options
+        .filter((option) => {
+          return option.section == this.option.section && option.id != this.option.id;
+        })
+        .forEach((option) => {
+          this.filterStore.changeFilterValue({
+            name: option.name,
+            value: this.option.value,
+          });
+
+          option.value = !this.option.value;
+        });
+    },
   },
 });
 </script>
 
 <style lang="scss" scoped>
+$realityCol: #e03b07;
 $accessCol: #e03b07;
 $controlCol: #0085ff;
 $signalCol: #bf7c00;
@@ -51,56 +88,60 @@ $saveCol: #28a826;
 $routesCol: #9049c0;
 
 button {
-  width: 100%;
-  padding: 0.4em;
-  border-radius: 0.4em;
+  padding: 0.25em;
+  border-radius: 0;
 
   &:focus-visible {
     outline: 1px solid white;
   }
 
   &[data-selected='true'] {
-    &.access {
-      background-color: $accessCol;
-      box-shadow: 0 0 6px 1px $accessCol;
-    }
+    //  &.reality {
+    //   background-color: $realityCol;
+    //   box-shadow: 0 0 6px 1px $realityCol;
+    // }
 
-    &.control {
-      background-color: $controlCol;
-      box-shadow: 0 0 6px 1px $controlCol;
-    }
+    // &.access {
+    //   background-color: $accessCol;
+    //   box-shadow: 0 0 6px 1px $accessCol;
+    // }
 
-    &.signals {
-      background-color: $signalCol;
-      box-shadow: 0 0 6px 1px $signalCol;
-    }
+    // &.control {
+    //   background-color: $controlCol;
+    //   box-shadow: 0 0 6px 1px $controlCol;
+    // }
 
-    &.routes {
-      background-color: $routesCol;
-      box-shadow: 0 0 6px 1px $routesCol;
-    }
+    // &.signals {
+    //   background-color: $signalCol;
+    //   box-shadow: 0 0 6px 1px $signalCol;
+    // }
 
-    &.status {
-      background-color: $statusCol;
-      box-shadow: 0 0 6px 1px $statusCol;
-    }
+    // &.routes {
+    //   background-color: $routesCol;
+    //   box-shadow: 0 0 6px 1px $routesCol;
+    // }
 
-    &.save {
-      background-color: $saveCol;
-      box-shadow: 0 0 6px 1px $saveCol;
-    }
+    // &.status {
+    //   background-color: $statusCol;
+    //   box-shadow: 0 0 6px 1px $statusCol;
+    // }
 
-    &.troll {
-      background-color: firebrick;
-      box-shadow: 0 0 6px 1px firebrick;
-    }
+    // &.save {
+    //   background-color: $saveCol;
+    //   box-shadow: 0 0 6px 1px $saveCol;
+    // }
 
-    &.mode {
-      background-color: lightgreen;
-      color: black;
+    // &.troll {
+    //   background-color: firebrick;
+    //   box-shadow: 0 0 6px 1px firebrick;
+    // }
 
-      font-weight: 500;
-    }
+    // & {
+    background-color: forestgreen;
+
+    font-weight: bold;
+    // }
   }
 }
 </style>
+

@@ -94,12 +94,12 @@ const filterStations = (station: Station, filters: Filter, isOffline = false) =>
     return returnMode;
 
   if (station.generalInfo) {
-    const routes = station.generalInfo.routes;
-    const availability = station.generalInfo.availability;
+    const { routes, availability, controlType, lines, reqLevel, signalType, SUP, authors } = station.generalInfo;
 
-    if (filters['abandoned'] && availability == 'abandoned' && !station.onlineInfo) return returnMode;
+    if (availability == 'abandoned' && filters['abandoned'] && !station.onlineInfo) return returnMode;
 
     if (availability == 'default' && filters['default']) return returnMode;
+
     if (
       availability != 'default' &&
       filters['notDefault'] &&
@@ -107,24 +107,17 @@ const filterStations = (station: Station, filters: Filter, isOffline = false) =>
     )
       return returnMode;
 
-    if (filters['real'] && station.generalInfo.lines != '') return returnMode;
+    if (filters['real'] && lines) return returnMode;
+    if (filters['fictional'] && !lines) return returnMode;
+
     if (
-      filters['fictional'] &&
-      station.generalInfo.lines == '' &&
-      availability != 'abandoned' &&
-      availability != 'unavailable'
+      reqLevel + (availability == 'nonPublic' || availability == 'unavailable' || availability == 'abandoned' ? 1 : 0) <
+      filters['minLevel']
     )
       return returnMode;
 
     if (
-      station.generalInfo.reqLevel +
-        (availability == 'nonPublic' || availability == 'unavailable' || availability == 'abandoned' ? 1 : 0) <
-      filters['minLevel']
-    )
-      return returnMode;
-    if (
-      station.generalInfo.reqLevel +
-        (availability == 'nonPublic' || availability == 'unavailable' || availability == 'abandoned' ? 1 : 0) >
+      reqLevel + (availability == 'nonPublic' || availability == 'unavailable' || availability == 'abandoned' ? 1 : 0) >
       filters['maxLevel']
     )
       return returnMode;
@@ -146,42 +139,32 @@ const filterStations = (station: Station, filters: Filter, isOffline = false) =>
     if (routes.twoWayCatenaryRouteNames.length < filters['minTwoWayCatenary']) return returnMode;
     if (routes.twoWayNoCatenaryRouteNames.length < filters['minTwoWay']) return returnMode;
 
-    if (filters[station.generalInfo.controlType]) return returnMode;
-    if (filters[station.generalInfo.signalType]) return returnMode;
+    if (filters[controlType]) return returnMode;
+    if (filters[signalType]) return returnMode;
 
-    if (
-      filters['SPK'] &&
-      (station.generalInfo.controlType === 'SPK' || station.generalInfo.controlType.includes('+SPK'))
-    )
-      return returnMode;
-    if (
-      filters['SCS'] &&
-      (station.generalInfo.controlType === 'SCS' || station.generalInfo.controlType.includes('+SCS'))
-    )
-      return returnMode;
-    if (
-      filters['SPE'] &&
-      (station.generalInfo.controlType === 'SPE' || station.generalInfo.controlType.includes('+SPE'))
-    )
-      return returnMode;
-    if (filters['SUP'] && station.generalInfo.SUP) return returnMode;
+    if (filters['SPK'] && controlType === 'SPK') return returnMode;
+    if (filters['SCS'] && controlType === 'SCS') return returnMode;
+    if (filters['SPE'] && controlType === 'SPE') return returnMode;
+    if (filters['SUP'] && SUP) return returnMode;
+    if (filters['noSUP'] && !SUP) return returnMode;
 
-    if (
-      filters['SCS'] &&
-      filters['SPK'] &&
-      (station.generalInfo.controlType.includes('SPK') || station.generalInfo.controlType.includes('SCS'))
-    )
-      return returnMode;
+    // if (filters['SCS'] && filters['SPK'] && (controlType.includes('SPK') || controlType.includes('SCS')))
+    //   return returnMode;
 
-    if (filters['mechaniczne'] && station.generalInfo.controlType.includes('mechaniczne')) return returnMode;
+    if (filters['mechaniczne'] && controlType == 'mechaniczne') return returnMode;
+    if (filters['mechaniczne+SPK'] && controlType == 'mechaniczne+SPK') return returnMode;
+    if (filters['mechaniczne+SCS'] && controlType == 'mechaniczne+SCS') return returnMode;
 
-    if (filters['ręczne'] && station.generalInfo.controlType.includes('ręczne')) return returnMode;
+    if (filters['ręczne'] && controlType == 'ręczne') return returnMode;
+    if (filters['ręczne+SPK'] && controlType == 'ręczne+SPK') return returnMode;
+    if (filters['ręczne+SCS'] && controlType == 'ręczne+SCS') return returnMode;
 
     if (filters['SBL'] && routes.sblRouteNames.length > 0) return returnMode;
+    if (filters['PBL'] && routes.sblRouteNames.length == 0) return returnMode;
 
     if (
       filters['authors'].length > 3 &&
-      !station.generalInfo.authors?.map((a) => a.toLocaleLowerCase()).includes(filters['authors'].toLocaleLowerCase())
+      !authors?.map((a) => a.toLocaleLowerCase()).includes(filters['authors'].toLocaleLowerCase())
     )
       return returnMode;
   }
@@ -198,13 +181,19 @@ const filterInitStates: Filter = {
   SCS: false,
   SPE: false,
   SUP: false,
+  noSUP: false,
   ręczne: false,
+  'ręczne+SPK': false,
+  'ręczne+SCS': false,
   mechaniczne: false,
+  'mechaniczne+SPK': false,
+  'mechaniczne+SCS': false,
   współczesna: false,
   kształtowa: false,
   historyczna: false,
   mieszana: false,
   SBL: false,
+  PBL: false,
   minLevel: 0,
   maxLevel: 20,
   minOneWayCatenary: 0,
@@ -238,6 +227,7 @@ export const useStationFiltersStore = defineStore('stationFiltersStore', {
       filters: { ...filterInitStates },
       sorterActive: { index: 0, dir: 1 },
       store: useStore(),
+      lastClickedFilterId: '',
     };
   },
 
@@ -295,6 +285,17 @@ export const useStationFiltersStore = defineStore('stationFiltersStore', {
       });
     },
 
+    resetSectionOptions(section: string) {
+      this.inputs.options.forEach((option) => {
+        if (option.section != section) return;
+
+        option.value = option.defaultValue;
+        this.filters[option.id] = !option.defaultValue;
+
+        StorageManager.setBooleanValue(option.name, !option.defaultValue);
+      });
+    },
+
     changeSorter(index: number) {
       if (index > 4 && index < 7) return;
 
@@ -305,4 +306,3 @@ export const useStationFiltersStore = defineStore('stationFiltersStore', {
     },
   },
 });
-

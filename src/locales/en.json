@@ -35,7 +35,7 @@
   "desc": {
     "control-type": "Control type: ",
     "signals-type": "Signals type:  ",
-    "SBL": "This scenery has automatic line blockade system on following routes: ",
+    "SBL": "This scenery has automatic block signalling (ABS/SBL) system on following routes: ",
     "SUP": "Requires the SUP application (level crossing remote control simulator)",
     "TWB-all": "This scenery has two-way route blockade on all routes",
     "TWB-routes": "This scenery has two-way route blockade on following routes: ",
@@ -129,14 +129,27 @@
     "filter-active": "ACTIVE"
   },
   "filters": {
+    "desc": " &bull; Left mouse click: select / unselect chosen filter <br /> &bull; Double left click: unselect all filters but chosen from <b class='text--primary'>group</b> <br /> &bull; <span style='color: coral'>RESET</span>: reset all filters from <b class='text--primary'>group</b>",
+
+    "sections": {
+      "reality": "SCENERY REALITY",
+      "package-access": "IN-GAME AVAILABILITY",
+      "access": "GENERAL AVAILABILITY",
+      "control": "CONTROLS",
+      "signals": "SIGNALLING",
+      "addons": "ADDITIONAL PROGRAMS",
+      "blockades": "BLOCKADE TYPE",
+      "status": "ONLINE STATUS"
+    },
+
     "endingStatus": "ENDS SOON",
     "afkStatus": "AFK",
     "noSpaceStatus": "NO SPACE",
     "unavailableStatus": "UNAVAILABLE",
 
-    "title": "STATION FILTER",
-    "default": "DEFAULT",
-    "not-default": "OTHER",
+    "title": "STATION FILTERS",
+    "default": "IN-GAME",
+    "not-default": "ADDITIONAL",
     "real": "REAL",
     "fictional": "FICTIONAL",
     "unavailable": "UNSUPPORTED",
@@ -144,12 +157,22 @@
     "abandoned": "ABANDONED",
 
     "SPK": "SPK",
+    "SPK-R": "SPK + MANUAL",
+    "SPK-M": "SPK + MECH.",
     "SCS": "SCS",
+    "SCS-R": "SCS + MANUAL",
+    "SCS-M": "SCS + MECH.",
     "SPE": "SPE",
+
     "manual": "MANUAL",
     "mechanical": "MECHANICAL",
-    "SUP": "SUP",
-    "SBL": "SBL",
+
+    "SUP": "SUP (RASP-UZK)",
+    "noSUP": "NO SUP",
+
+    "SBL": "ABS (SBL)",
+    "PBL": "NO ABS (PBL)",
+
     "modern": "MODERN",
     "semaphores": "SEMAPHORES",
     "mixed": "MIXED",
@@ -170,7 +193,7 @@
     "hour": "h",
     "no-limit": "NO LIMIT",
     "include-selected": "INCLUDE SELECTED",
-    "save": "SAVE FILTERS",
+    "save": "REMEMBER FILTERS",
     "reset": "RESET FILTERS",
     "close": "CLOSE FILTERS"
   },

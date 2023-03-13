@@ -1,41 +1,38 @@
 {
+  "optionSections": ["reality", "package-access", "access", "control", "addons", "blockades", "signals", "status"],
+
   "options": [
-    {
-      "id": "default",
-      "name": "default",
-      "iconName": "td2",
-      "section": "access",
-      "value": true,
-      "defaultValue": true
-    },
-    {
-      "id": "not-default",
-      "name": "notDefault",
-      "iconName": "",
-      "section": "access",
-      "value": true,
-      "defaultValue": true
-    },
     {
       "id": "real",
       "name": "real",
-      "iconName": "lock",
-      "section": "access",
+      "section": "reality",
       "value": true,
       "defaultValue": true
     },
     {
       "id": "fictional",
       "name": "fictional",
-      "iconName": "user",
-      "section": "access",
+      "section": "reality",
+      "value": true,
+      "defaultValue": true
+    },
+    {
+      "id": "default",
+      "name": "default",
+      "section": "package-access",
+      "value": true,
+      "defaultValue": true
+    },
+    {
+      "id": "not-default",
+      "name": "notDefault",
+      "section": "package-access",
       "value": true,
       "defaultValue": true
     },
     {
       "id": "non-public",
       "name": "nonPublic",
-      "iconName": "user",
       "section": "access",
       "value": true,
       "defaultValue": true
@@ -43,7 +40,6 @@
     {
       "id": "unavailable",
       "name": "unavailable",
-      "iconName": "user",
       "section": "access",
       "value": false,
       "defaultValue": false
@@ -51,7 +47,6 @@
     {
       "id": "abandoned",
       "name": "abandoned",
-      "iconName": "user",
       "section": "access",
       "value": false,
       "defaultValue": false
@@ -59,7 +54,6 @@
     {
       "id": "SPK",
       "name": "SPK",
-      "iconName": "SPK",
       "section": "control",
       "value": true,
       "defaultValue": true
@@ -67,7 +61,6 @@
     {
       "id": "SCS",
       "name": "SCS",
-      "iconName": "SCS",
       "section": "control",
       "value": true,
       "defaultValue": true
@@ -75,15 +68,21 @@
     {
       "id": "SPE",
       "name": "SPE",
-      "iconName": "SPE",
+      "section": "control",
+      "value": true,
+      "defaultValue": true
+    },
+
+    {
+      "id": "SPK-M",
+      "name": "mechaniczne+SPK",
       "section": "control",
       "value": true,
       "defaultValue": true
     },
     {
-      "id": "manual",
-      "name": "ręczne",
-      "iconName": "ręczne",
+      "id": "SCS-M",
+      "name": "mechaniczne+SCS",
       "section": "control",
       "value": true,
       "defaultValue": true
@@ -91,7 +90,27 @@
     {
       "id": "mechanical",
       "name": "mechaniczne",
-      "iconName": "mechaniczne",
+      "section": "control",
+      "value": true,
+      "defaultValue": true
+    },
+    {
+      "id": "SPK-R",
+      "name": "ręczne+SPK",
+      "section": "control",
+      "value": true,
+      "defaultValue": true
+    },
+    {
+      "id": "SCS-R",
+      "name": "ręczne+SCS",
+      "section": "control",
+      "value": true,
+      "defaultValue": true
+    },
+    {
+      "id": "manual",
+      "name": "ręczne",
       "section": "control",
       "value": true,
       "defaultValue": true
@@ -99,23 +118,34 @@
     {
       "id": "SUP",
       "name": "SUP",
-      "iconName": "SUP",
-      "section": "control",
+      "section": "addons",
+      "value": true,
+      "defaultValue": true
+    },
+    {
+      "id": "noSUP",
+      "name": "noSUP",
+      "section": "addons",
       "value": true,
       "defaultValue": true
     },
     {
       "id": "SBL",
       "name": "SBL",
-      "iconName": "SBL",
-      "section": "routes",
+      "section": "blockades",
+      "value": true,
+      "defaultValue": true
+    },
+    {
+      "id": "PBL",
+      "name": "PBL",
+      "section": "blockades",
       "value": true,
       "defaultValue": true
     },
     {
       "id": "modern",
       "name": "współczesna",
-      "iconName": "współczesna",
       "section": "signals",
       "value": true,
       "defaultValue": true
@@ -123,7 +153,6 @@
     {
       "id": "semaphores",
       "name": "kształtowa",
-      "iconName": "kształtowa",
       "section": "signals",
       "value": true,
       "defaultValue": true
@@ -131,7 +160,6 @@
     {
       "id": "mixed",
       "name": "mieszana",
-      "iconName": "mieszana",
       "section": "signals",
       "value": true,
       "defaultValue": true
@@ -139,7 +167,6 @@
     {
       "id": "historical",
       "name": "historyczna",
-      "iconName": "historyczna",
       "section": "signals",
       "value": true,
       "defaultValue": true
@@ -148,7 +175,6 @@
     {
       "id": "free",
       "name": "free",
-      "iconName": "",
 
       "section": "status",
       "value": false,
@@ -157,7 +183,6 @@
     {
       "id": "occupied",
       "name": "occupied",
-      "iconName": "",
 
       "section": "status",
       "value": true,
@@ -166,7 +191,6 @@
     {
       "id": "endingStatus",
       "name": "endingStatus",
-      "iconName": "",
 
       "section": "status",
       "value": true,
@@ -175,7 +199,6 @@
     {
       "id": "afkStatus",
       "name": "afkStatus",
-      "iconName": "",
 
       "section": "status",
       "value": true,
@@ -184,7 +207,6 @@
     {
       "id": "noSpaceStatus",
       "name": "noSpaceStatus",
-      "iconName": "",
 
       "section": "status",
       "value": true,
@@ -193,7 +215,6 @@
     {
       "id": "unavailableStatus",
       "name": "unavailableStatus",
-      "iconName": "",
 
       "section": "status",
       "value": true,
@@ -254,7 +275,6 @@
     {
       "id": "include-selected",
       "name": "include-selected",
-      "iconName": "",
       "section": "mode",
       "value": true,
       "defaultValue": true
@@ -262,7 +282,6 @@
     {
       "id": "save",
       "name": "save",
-      "iconName": "",
       "section": "mode",
       "value": true,
       "defaultValue": true
