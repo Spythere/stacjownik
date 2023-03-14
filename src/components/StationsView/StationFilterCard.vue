@@ -101,7 +101,14 @@
               {{ $t('filters.save') }}
             </button>
 
-            <button class="btn--action" @click="resetFilters">{{ $t('filters.reset') }}</button>
+            <button
+              class="btn--action"
+              @click="resetFilters"
+              :disabled="filterStore.areFiltersAtDefault"
+              :data-disabled="filterStore.areFiltersAtDefault"
+            >
+              {{ $t('filters.reset') }}
+            </button>
             <button class="btn--action" @click="closeCard">{{ $t('filters.close') }}</button>
           </div>
         </section>
@@ -121,6 +128,7 @@ import { useStore } from '../../store/store';
 
 import ActionButton from '../Global/ActionButton.vue';
 import FilterOption from './FilterOption.vue';
+import { filterInitStates } from '../../store/constants/initFilterStates';
 
 export default defineComponent({
   components: { ActionButton, FilterOption },
@@ -304,7 +312,7 @@ export default defineComponent({
   }
 
   &_content {
-    padding: 0.5em;
+    padding: 1em 0.5em;
 
     display: flex;
     flex-direction: column;
@@ -392,7 +400,7 @@ export default defineComponent({
 
   &_actions {
     width: 100%;
-    padding: 0.25em;
+    padding: 0.5em;
 
     .filter-option {
       max-width: 50%;
@@ -412,8 +420,7 @@ export default defineComponent({
         padding: 0.5em;
 
         &[data-selected='true'] {
-          background-color: lightgreen;
-          color: black;
+          background-color: forestgreen;
         }
       }
     }

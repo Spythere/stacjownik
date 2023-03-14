@@ -1,3 +1,4 @@
+import Filter from '../../scripts/interfaces/Filter';
 import Station from '../../scripts/interfaces/Station';
 
 export const sortStations = (a: Station, b: Station, sorter: { index: number; dir: number }) => {
@@ -54,131 +55,86 @@ export const sortStations = (a: Station, b: Station, sorter: { index: number; di
   return a.name.localeCompare(b.name);
 };
 
-export const filterStations = (station: Station, filters: { [key: string]: any }, isOffline = false) => {
-  const returnMode = false;
+export const filterStations = (station: Station, filters: Filter) => {
+  if (!station.onlineInfo && filters['free']) return false;
 
-  if ((station.generalInfo?.availability == 'nonPublic' || !station.generalInfo) && filters['nonPublic'])
-    return returnMode;
+  if (station.onlineInfo) {
+    const { statusID, statusTimestamp } = station.onlineInfo;
 
-  if (station.onlineInfo?.statusID == 'ending' && filters['ending']) return returnMode;
+    const isEnding = statusID == 'ending' && filters['endingStatus'];
+    const isNotSigned = (statusID == 'not-signed' || statusID == 'unavailable') && filters['unavailableStatus'];
+    const isAFK = statusID == 'brb' && filters['afkStatus'];
+    const isNoSpace = statusID == 'no-space' && filters['noSpaceStatus'];
+    const isOccupied = station.onlineInfo && filters['occupied'];
 
-  if (
-    station.onlineInfo &&
-    station.onlineInfo.statusTimestamp > 0 &&
-    filters['onlineFromHours'] < 8 &&
-    station.onlineInfo.statusTimestamp <= Date.now() + filters['onlineFromHours'] * 3600000
-  )
-    return returnMode;
+    const isOnlineInBounds =
+      (filters['onlineFromHours'] < 8 &&
+        statusTimestamp > 0 &&
+        statusTimestamp <= Date.now() + filters['onlineFromHours'] * 3600000) ||
+      (filters['onlineFromHours'] > 0 && statusTimestamp <= 0) ||
+      (filters['onlineFromHours'] == 8 && statusID != 'no-limit');
 
-  if (filters['onlineFromHours'] > 0 && station.onlineInfo && station.onlineInfo.statusTimestamp <= 0)
-    return returnMode;
-  if (filters['onlineFromHours'] == 8 && station.onlineInfo?.statusID != 'no-limit') return returnMode;
+    if (isEnding || isOnlineInBounds || isNotSigned || isAFK || isNoSpace || isOccupied) return false;
+  }
 
-  if (station.onlineInfo?.statusID == 'ending' && filters['endingStatus']) return returnMode;
-  if (
-    (station.onlineInfo?.statusID == 'not-signed' || station.onlineInfo?.statusID == 'unavailable') &&
-    filters['unavailableStatus']
-  )
-    return returnMode;
-  if (station.onlineInfo?.statusID == 'brb' && filters['afkStatus']) return returnMode;
-  if (station.onlineInfo?.statusID == 'no-space' && filters['noSpaceStatus']) return returnMode;
-
-  if (station.onlineInfo && filters['occupied']) return returnMode;
-  if (!station.onlineInfo && filters['free']) return returnMode;
-  if (station.generalInfo?.availability == 'unavailable' && filters['unavailable'] && !station.onlineInfo)
-    return returnMode;
+  if ((station.generalInfo?.availability == 'nonPublic' || !station.generalInfo) && filters['nonPublic']) return false;
 
   if (station.generalInfo) {
-    const routes = station.generalInfo.routes;
-    const availability = station.generalInfo.availability;
+    const { routes, availability, controlType, lines, reqLevel, signalType, SUP, authors } = station.generalInfo;
 
-    if (filters['abandoned'] && availability == 'abandoned' && !station.onlineInfo) return returnMode;
+    if (availability == 'unavailable' && filters['unavailable'] && !station.onlineInfo) return false;
+    if (availability == 'abandoned' && filters['abandoned'] && !station.onlineInfo) return false;
+    if (availability == 'default' && filters['default']) return false;
 
-    if (availability == 'default' && filters['default']) return returnMode;
     if (
       availability != 'default' &&
       filters['notDefault'] &&
       !(availability == 'abandoned' || availability == 'unavailable')
     )
-      return returnMode;
+      return false;
 
-    if (filters['real'] && station.generalInfo.lines != '') return returnMode;
-    if (
-      filters['fictional'] &&
-      station.generalInfo.lines == '' &&
-      availability != 'abandoned' &&
-      availability != 'unavailable'
-    )
-      return returnMode;
+    if (filters['real'] && lines) return false;
+    if (filters['fictional'] && !lines) return false;
 
-    if (
-      station.generalInfo.reqLevel +
-        (availability == 'nonPublic' || availability == 'unavailable' || availability == 'abandoned' ? 1 : 0) <
-      filters['minLevel']
-    )
-      return returnMode;
-    if (
-      station.generalInfo.reqLevel +
-        (availability == 'nonPublic' || availability == 'unavailable' || availability == 'abandoned' ? 1 : 0) >
-      filters['maxLevel']
-    )
-      return returnMode;
+    const otherAvailability =
+      availability == 'nonPublic' || availability == 'unavailable' || availability == 'abandoned';
+
+    if (reqLevel + (otherAvailability ? 1 : 0) < filters['minLevel']) return false;
+
+    if (reqLevel + (otherAvailability ? 1 : 0) > filters['maxLevel']) return false;
 
     if (
       filters['no-1track'] &&
       (routes.oneWayCatenaryRouteNames.length != 0 || routes.oneWayNoCatenaryRouteNames.length != 0)
     )
-      return returnMode;
+      return false;
+
     if (
       filters['no-2track'] &&
       (routes.twoWayCatenaryRouteNames.length != 0 || routes.twoWayNoCatenaryRouteNames.length != 0)
     )
-      return returnMode;
+      return false;
 
-    if (routes.oneWayCatenaryRouteNames.length < filters['minOneWayCatenary']) return returnMode;
-    if (routes.oneWayNoCatenaryRouteNames.length < filters['minOneWay']) return returnMode;
+    if (routes.oneWayCatenaryRouteNames.length < filters['minOneWayCatenary']) return false;
+    if (routes.oneWayNoCatenaryRouteNames.length < filters['minOneWay']) return false;
 
-    if (routes.twoWayCatenaryRouteNames.length < filters['minTwoWayCatenary']) return returnMode;
-    if (routes.twoWayNoCatenaryRouteNames.length < filters['minTwoWay']) return returnMode;
+    if (routes.twoWayCatenaryRouteNames.length < filters['minTwoWayCatenary']) return false;
+    if (routes.twoWayNoCatenaryRouteNames.length < filters['minTwoWay']) return false;
 
-    if (filters[station.generalInfo.controlType]) return returnMode;
-    if (filters[station.generalInfo.signalType]) return returnMode;
+    if (filters[controlType]) return false;
+    if (filters[signalType]) return false;
 
-    if (
-      filters['SPK'] &&
-      (station.generalInfo.controlType === 'SPK' || station.generalInfo.controlType.includes('+SPK'))
-    )
-      return returnMode;
-    if (
-      filters['SCS'] &&
-      (station.generalInfo.controlType === 'SCS' || station.generalInfo.controlType.includes('+SCS'))
-    )
-      return returnMode;
-    if (
-      filters['SPE'] &&
-      (station.generalInfo.controlType === 'SPE' || station.generalInfo.controlType.includes('+SPE'))
-    )
-      return returnMode;
-    if (filters['SUP'] && station.generalInfo.SUP) return returnMode;
+    if (filters['SUP'] && SUP) return false;
+    if (filters['noSUP'] && !SUP) return false;
 
-    if (
-      filters['SCS'] &&
-      filters['SPK'] &&
-      (station.generalInfo.controlType.includes('SPK') || station.generalInfo.controlType.includes('SCS'))
-    )
-      return returnMode;
-
-    if (filters['mechaniczne'] && station.generalInfo.controlType.includes('mechaniczne')) return returnMode;
-
-    if (filters['ręczne'] && station.generalInfo.controlType.includes('ręczne')) return returnMode;
-
-    if (filters['SBL'] && routes.sblRouteNames.length > 0) return returnMode;
+    if (filters['SBL'] && routes.sblRouteNames.length > 0) return false;
+    if (filters['PBL'] && routes.sblRouteNames.length == 0) return false;
 
     if (
       filters['authors'].length > 3 &&
-      !station.generalInfo.authors?.map((a) => a.toLocaleLowerCase()).includes(filters['authors'].toLocaleLowerCase())
+      !authors?.map((a) => a.toLocaleLowerCase()).includes(filters['authors'].toLocaleLowerCase())
     )
-      return returnMode;
+      return false;
   }
 
   return true;

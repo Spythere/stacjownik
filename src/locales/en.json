@@ -129,7 +129,7 @@
     "filter-active": "ACTIVE"
   },
   "filters": {
-    "desc": " &bull; Left mouse click: select / unselect chosen filter <br /> &bull; Double left click: unselect all filters but chosen from <b class='text--primary'>group</b> <br /> &bull; <span style='color: coral'>RESET</span>: reset all filters from <b class='text--primary'>group</b>",
+    "desc": " &bull; Left mouse click: select / unselect chosen filter <br /> &bull; Double left click: unselect all filters but chosen from a <b class='text--primary'>group</b> <br /> &bull; <span style='color: coral'>RESET</span>: reset all filters from a <b class='text--primary'>group</b>",
 
     "sections": {
       "reality": "SCENERY REALITY",
@@ -138,7 +138,7 @@
       "control": "CONTROLS",
       "signals": "SIGNALLING",
       "addons": "ADDITIONAL PROGRAMS",
-      "blockades": "BLOCKADE TYPE",
+      "blockades": "BLOCK SIGNALLING",
       "status": "ONLINE STATUS"
     },
 
@@ -170,8 +170,8 @@
     "SUP": "SUP (RASP-UZK)",
     "noSUP": "NO SUP",
 
-    "SBL": "ABS (SBL)",
-    "PBL": "NO ABS (PBL)",
+    "SBL": "AUTOMATIC (SBL)",
+    "PBL": "SEMIAUTOMATIC (PBL)",
 
     "modern": "MODERN",
     "semaphores": "SEMAPHORES",

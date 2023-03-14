@@ -12,6 +12,7 @@ import { registerSW } from 'virtual:pwa-register';
 const i18n = createI18n({
   locale: 'pl',
   legacy: false,
+  warnHtmlMessage: false,
   fallbackLocale: 'pl',
   messages: {
     en: enLang,
