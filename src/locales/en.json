@@ -168,7 +168,7 @@
     "mechanical": "MECHANICAL",
 
     "SUP": "SUP (RASP-UZK)",
-    "noSUP": "NO SUP",
+    "noSUP": "WITHOUT SUP",
 
     "SBL": "AUTOMATIC (SBL)",
     "PBL": "SEMIAUTOMATIC (PBL)",
@@ -331,8 +331,8 @@
     "two-way-routes": "Two way routes",
 
     "option-active-timetables": "Active timetables",
-    "option-timetables-history": "Scenery timetables history",
-    "option-dispatchers-history": "Scenery dispatchers history",
+    "option-timetables-history": "Timetables history",
+    "option-dispatchers-history": "Dispatchers history",
 
     "timetable-author-title": "Issued by",
     "timetable-author-unknown": "Author unknown",
@@ -347,7 +347,10 @@
     "req-level": "all dispatcher levels | dispatcher level {lvl} required | dispatcher level {lvl} required",
     "history-list-empty": "No recorded scenery history!",
 
-    "forum-topic": "Official {name} forum topic"
+    "forum-topic": "Official {name} forum topic",
+
+    "pragotron-link": "Pragotron view (beta)",
+    "tablice-link": "Departures board view (by Thundo)"
   },
   "availability": {
     "title": "Availability",
