@@ -116,6 +116,7 @@
     "filter-withComments": "COMMENTS",
     "filter-twr": "HIGH RISK CARGO",
     "filter-skr": "EXCEEDED GAUGE",
+    "filter-common": "NO WARNINGS",
     "filter-passenger": "PASSENGER",
     "filter-freight": "FREIGHT",
     "filter-other": "OTHER",

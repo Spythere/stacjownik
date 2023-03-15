@@ -195,13 +195,17 @@ export default defineComponent({
   display: flex;
   width: 100%;
 
-  gap: 0.25em;
+  gap: 0.5em;
   margin-bottom: 0.5em;
 
   button {
     width: 100%;
-    color: $accentCol;
+    color: springgreen;
     font-weight: bold;
+
+    &[data-inactive=true] {
+      color: #aaa;
+    }
   }
 }
 

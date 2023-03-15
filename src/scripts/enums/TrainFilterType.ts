@@ -11,6 +11,8 @@ export const enum TrainFilterType {
 
   twr = 'twr',
   skr = 'skr',
+  common = 'common',
+
   passenger = 'passenger',
   freight = 'freight',
   other = 'other',

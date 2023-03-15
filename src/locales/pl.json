@@ -117,8 +117,9 @@
 
     "filter-withComments": "UWAGI EKSPLOATACYJNE",
     "filter-noComments": "BEZ UWAG",
-    "filter-twr": "WYSOKIEGO RYZYKA",
-    "filter-skr": "PRZEKR. SKRAJNIA",
+    "filter-twr": "WYS. RYZYKA",
+    "filter-skr": "SKRAJNIA",
+    "filter-common": "ZWYKŁE",
     "filter-passenger": "PASAŻERSKIE",
     "filter-freight": "TOWAROWE",
     "filter-other": "INNE",

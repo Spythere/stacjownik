@@ -12,6 +12,11 @@ export const trainFilters: TrainFilter[] = [
     section: TrainFilterSection.TRAIN_TYPE,
     isActive: true,
   },
+  {
+    id: TrainFilterType.common,
+    section: TrainFilterSection.TRAIN_TYPE,
+    isActive: true,
+  },
 
   {
     id: TrainFilterType.passenger,

@@ -31,17 +31,20 @@ function filterTrainList(trainList: Train[], searchedTrain: string, searchedDriv
         case TrainFilterType.withTimetable:
           return !train.timetableData;
 
-        case TrainFilterType.noComments:
-          return train.timetableData?.followingStops.some((stop) => stop.comments) || false;
-
         case TrainFilterType.withComments:
-          return train.timetableData?.followingStops.every((stop) => stop.comments) || true;
+          return !train.timetableData?.followingStops.some((stop) => stop.comments);
+
+        case TrainFilterType.noComments:
+          return train.timetableData?.followingStops.some((stop) => stop.comments);
 
         case TrainFilterType.twr:
-          return !train.timetableData?.TWR || true;
+          return !train.timetableData?.TWR;
 
         case TrainFilterType.skr:
-          return !train.timetableData?.SKR || true;
+          return !train.timetableData?.SKR;
+
+        case TrainFilterType.common:
+          return train.timetableData?.SKR ||  train.timetableData?.TWR;
 
         case TrainFilterType.passenger:
           return !/^[AMRE]\D{2}$/.test(train.timetableData?.category || '');
