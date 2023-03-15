@@ -1,33 +1,53 @@
-import { TrainFilterType } from '../../scripts/enums/TrainFilterType';
+import { TrainFilterSection, TrainFilterType } from '../../scripts/enums/TrainFilterType';
 import { TrainFilter } from '../../types/Trains/TrainOptionsTypes';
 
 export const trainFilters: TrainFilter[] = [
   {
     id: TrainFilterType.twr,
+    section: TrainFilterSection.TRAIN_TYPE,
     isActive: true,
   },
   {
     id: TrainFilterType.skr,
+    section: TrainFilterSection.TRAIN_TYPE,
     isActive: true,
   },
+
   {
     id: TrainFilterType.passenger,
+    section: TrainFilterSection.TIMETABLE_TYPE,
     isActive: true,
   },
   {
     id: TrainFilterType.freight,
+    section: TrainFilterSection.TIMETABLE_TYPE,
     isActive: true,
   },
   {
     id: TrainFilterType.other,
+    section: TrainFilterSection.TIMETABLE_TYPE,
+    isActive: true,
+  },
+
+  {
+    id: TrainFilterType.withComments,
+    section: TrainFilterSection.COMMENTS,
     isActive: true,
   },
   {
-    id: TrainFilterType.comments,
+    id: TrainFilterType.noComments,
+    section: TrainFilterSection.COMMENTS,
+    isActive: true,
+  },
+
+  {
+    id: TrainFilterType.withTimetable,
+    section: TrainFilterSection.TIMETABLE,
     isActive: true,
   },
   {
     id: TrainFilterType.noTimetable,
+    section: TrainFilterSection.TIMETABLE,
     isActive: true,
   },
 ];

@@ -55,17 +55,23 @@
           </div>
 
           <h1 class="option-title" v-if="trainFilterList.length != 0">{{ $t('options.filter-title') }}</h1>
+
           <div class="options_filters">
-            <div class="filter-option" v-for="filter in trainFilterList">
-              <button class="btn--option" :data-inactive="!filter.isActive" @click="onFilterChange(filter)">
+            <div v-for="section in Object.keys(TrainFilterSection)">
+              <button
+                class="btn--option"
+                v-for="filter in trainFilterList.filter((f) => f.section == section)"
+                :data-inactive="!filter.isActive"
+                @click="onFilterChange(filter)"
+              >
                 {{ $t(`options.filter-${filter.id}`) }}
               </button>
             </div>
+          </div>
 
-            <div class="filter-actions">
-              <button class="btn--action" @click="clearAllFilters">{{ $t('options.filter-clear') }}</button>
-              <button class="btn--action" @click="resetAllFilters">{{ $t('options.filter-reset') }}</button>
-            </div>
+          <div class="filter-actions">
+            <div></div>
+            <button class="btn--action" @click="resetAllFilters">{{ $t('options.filter-reset') }}</button>
           </div>
         </div>
       </div>
@@ -80,6 +86,7 @@ import keyMixin from '../../mixins/keyMixin';
 import { TrainFilter } from '../../types/Trains/TrainOptionsTypes';
 import ActionButton from '../Global/ActionButton.vue';
 import SelectBox from '../Global/SelectBox.vue';
+import { TrainFilterSection } from '../../scripts/enums/TrainFilterType';
 
 export default defineComponent({
   components: { SelectBox, ActionButton },
@@ -101,6 +108,7 @@ export default defineComponent({
     return {
       showOptions: false,
       lastSelectedFilter: null as TrainFilter | null,
+      TrainFilterSection,
     };
   },
 
@@ -183,14 +191,17 @@ export default defineComponent({
   margin: 0 auto;
 }
 
-.filter-option {
-  button {
-    color: white;
-    font-weight: bold;
+.options_filters div {
+  display: flex;
+  width: 100%;
 
-    &[data-disabled='true'] {
-      color: #888;
-    }
+  gap: 0.25em;
+  margin-bottom: 0.5em;
+
+  button {
+    width: 100%;
+    color: $accentCol;
+    font-weight: bold;
   }
 }
 
@@ -201,7 +212,7 @@ export default defineComponent({
 
   margin-top: 1em;
 
-  button {
+  > * {
     width: 100%;
   }
 }

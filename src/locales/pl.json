@@ -115,13 +115,15 @@
     "sort-delay": "opóźnienie",
     "sort-comments": "uwagi ekspl.",
 
-    "filter-comments": "UWAGI EKSPLOATACYJNE",
-    "filter-twr": "TWR",
+    "filter-withComments": "UWAGI EKSPLOATACYJNE",
+    "filter-noComments": "BEZ UWAG",
+    "filter-twr": "WYSOKIEGO RYZYKA",
     "filter-skr": "PRZEKR. SKRAJNIA",
     "filter-passenger": "PASAŻERSKIE",
     "filter-freight": "TOWAROWE",
     "filter-other": "INNE",
     "filter-noTimetable": "BEZ RJ",
+    "filter-withTimetable": "ROZKŁAD JAZDY",
 
     "filter-reset": "ZRESETUJ FILTRY",
     "filter-clear": "WYŁĄCZ FILTRY",

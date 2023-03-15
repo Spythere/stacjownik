@@ -112,13 +112,15 @@
     "sort-timestampFrom": "date",
     "sort-duration": "duration",
 
-    "filter-comments": "COMMENTS",
-    "filter-twr": "TWR",
-    "filter-skr": "SKR",
+    "filter-noComments": "NO COMMENTS",
+    "filter-withComments": "COMMENTS",
+    "filter-twr": "HIGH RISK CARGO",
+    "filter-skr": "EXCEEDED GAUGE",
     "filter-passenger": "PASSENGER",
     "filter-freight": "FREIGHT",
     "filter-other": "OTHER",
     "filter-noTimetable": "NO TIMETABLE",
+    "filter-withTimetable": "TIMETABLE",
 
     "filter-reset": "RESET FILTERS",
     "filter-clear": "CLEAR FILTERS",
@@ -211,7 +213,7 @@
     "no-stations": "No stations to show here!",
     "scenery-search": "Search for scenery..."
   },
-  "trains": {
+    "trains": {
     "no-trains": "No trains to show here!",
     "loading": "Loading train data...",
     "offline": "Offline ride",
