@@ -351,8 +351,8 @@
 
     "forum-topic": "Official {name} forum topic",
 
-    "pragotron-link": "Pragotron view (beta)",
-    "tablice-link": "Departures board view (by Thundo)"
+    "pragotron-link": "Timetable pallet board (beta)",
+    "tablice-link": "Timetable summary board (by Thundo)"
   },
   "availability": {
     "title": "Availability",
