@@ -43,15 +43,14 @@
 
           <h1 class="option-title">{{ $t('options.sort-title') }}</h1>
           <div class="options_sorters">
-            <div v-for="opt in translatedSorterOptions">
-              <button
-                class="sort-option btn--option"
-                :data-selected="opt.id == sorterActive.id"
-                @click="onSorterChange(opt)"
-              >
-                {{ opt.value.toUpperCase() }}
-              </button>
-            </div>
+            <button
+              v-for="opt in translatedSorterOptions"
+              class="sort-option btn--option"
+              :data-selected="opt.id == sorterActive.id"
+              @click="onSorterChange(opt)"
+            >
+              {{ opt.value.toUpperCase() }}
+            </button>
           </div>
 
           <h1 class="option-title" v-if="trainFilterList.length != 0">{{ $t('options.filter-title') }}</h1>
@@ -191,19 +190,23 @@ export default defineComponent({
   margin: 0 auto;
 }
 
-.options_filters div {
+.options_sorters {
+  display: flex;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.options_filters > div {
   display: flex;
   width: 100%;
 
   gap: 0.5em;
-  margin-bottom: 0.5em;
 
   button {
     width: 100%;
     color: springgreen;
     font-weight: bold;
 
-    &[data-inactive=true] {
+    &[data-inactive='true'] {
       color: #aaa;
     }
   }
