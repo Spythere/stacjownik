@@ -43,29 +43,34 @@
 
           <h1 class="option-title">{{ $t('options.sort-title') }}</h1>
           <div class="options_sorters">
-            <div v-for="opt in translatedSorterOptions">
+            <button
+              v-for="opt in translatedSorterOptions"
+              class="sort-option btn--option"
+              :data-selected="opt.id == sorterActive.id"
+              @click="onSorterChange(opt)"
+            >
+              {{ opt.value.toUpperCase() }}
+            </button>
+          </div>
+
+          <h1 class="option-title" v-if="trainFilterList.length != 0">{{ $t('options.filter-title') }}</h1>
+
+          <div class="options_filters">
+            <div v-for="section in Object.keys(TrainFilterSection)">
               <button
-                class="sort-option btn--option"
-                :data-selected="opt.id == sorterActive.id"
-                @click="onSorterChange(opt)"
+                class="btn--option"
+                v-for="filter in trainFilterList.filter((f) => f.section == section)"
+                :data-inactive="!filter.isActive"
+                @click="onFilterChange(filter)"
               >
-                {{ opt.value.toUpperCase() }}
+                {{ $t(`options.filter-${filter.id}`) }}
               </button>
             </div>
           </div>
 
-          <h1 class="option-title" v-if="trainFilterList.length != 0">{{ $t('options.filter-title') }}</h1>
-          <div class="options_filters">
-            <div class="filter-option" v-for="filter in trainFilterList">
-              <button class="btn--option" :data-inactive="!filter.isActive" @click="onFilterChange(filter)">
-                {{ $t(`options.filter-${filter.id}`) }}
-              </button>
-            </div>
-
-            <div class="filter-actions">
-              <button class="btn--action" @click="clearAllFilters">{{ $t('options.filter-clear') }}</button>
-              <button class="btn--action" @click="resetAllFilters">{{ $t('options.filter-reset') }}</button>
-            </div>
+          <div class="filter-actions">
+            <div></div>
+            <button class="btn--action" @click="resetAllFilters">{{ $t('options.filter-reset') }}</button>
           </div>
         </div>
       </div>
@@ -80,6 +85,7 @@ import keyMixin from '../../mixins/keyMixin';
 import { TrainFilter } from '../../types/Trains/TrainOptionsTypes';
 import ActionButton from '../Global/ActionButton.vue';
 import SelectBox from '../Global/SelectBox.vue';
+import { TrainFilterSection } from '../../scripts/enums/TrainFilterType';
 
 export default defineComponent({
   components: { SelectBox, ActionButton },
@@ -101,6 +107,7 @@ export default defineComponent({
     return {
       showOptions: false,
       lastSelectedFilter: null as TrainFilter | null,
+      TrainFilterSection,
     };
   },
 
@@ -183,13 +190,24 @@ export default defineComponent({
   margin: 0 auto;
 }
 
-.filter-option {
+.options_sorters {
+  display: flex;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.options_filters > div {
+  display: flex;
+  width: 100%;
+
+  gap: 0.5em;
+
   button {
-    color: white;
+    width: 100%;
+    color: springgreen;
     font-weight: bold;
 
-    &[data-disabled='true'] {
-      color: #888;
+    &[data-inactive='true'] {
+      color: #aaa;
     }
   }
 }
@@ -201,7 +219,7 @@ export default defineComponent({
 
   margin-top: 1em;
 
-  button {
+  > * {
     width: 100%;
   }
 }

@@ -1,4 +1,44 @@
-export default interface TrainAPIData {
+export interface TimetableStop {
+  stopName: string;
+  stopNameRAW: string;
+  stopType: string;
+  stopDistance: number;
+  pointId: number;
+
+  mainStop: boolean;
+
+  arrivalLine: string;
+  arrivalTimestamp: number;
+  arrivalRealTimestamp: number;
+  arrivalDelay: number;
+
+  departureLine: string;
+  departureTimestamp: number;
+  departureRealTimestamp: number;
+  departureDelay: number;
+
+  comments?: any;
+
+  beginsHere: boolean;
+  terminatesHere: boolean;
+  confirmed: boolean;
+  stopped: boolean;
+  stopTime: number;
+}
+
+export interface TrainTimetable {
+  timetableId: number;
+  category: string;
+  route: string;
+
+  stopList: TimetableStop[];
+
+  TWR: boolean;
+  SKR: boolean;
+  sceneries: string[];
+}
+
+export interface TrainAPIData {
   trainNo: number;
 
   mass: number;
@@ -24,41 +64,5 @@ export default interface TrainAPIData {
   region: string;
   isTimeout: boolean;
 
-  timetable?: {
-    timetableId: number;
-    category: string;
-    route: string;
-
-    stopList: {
-      stopName: string;
-      stopNameRAW: string;
-      stopType: string;
-      stopDistance: number;
-      pointId: number;
-
-      mainStop: boolean;
-
-      arrivalLine: string;
-      arrivalTimestamp: number;
-      arrivalRealTimestamp: number;
-      arrivalDelay: number;
-
-      departureLine: string;
-      departureTimestamp: number;
-      departureRealTimestamp: number;
-      departureDelay: number;
-
-      comments?: any;
-
-      beginsHere: boolean;
-      terminatesHere: boolean;
-      confirmed: boolean;
-      stopped: boolean;
-      stopTime: number;
-    }[];
-
-    TWR: boolean;
-    SKR: boolean;
-    sceneries: string[];
-  };
+  timetable?: TrainTimetable;
 }

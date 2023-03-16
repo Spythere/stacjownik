@@ -2,17 +2,37 @@
   <section class="scenery-timetable">
     <div class="timetable-header">
       <h3>
-        <img :src="getIcon('timetable')" alt="icon-timetable" />&nbsp;
+        <img :src="getIcon('timetable')" alt="icon-timetable" />
         <span>{{ $t('scenery.timetables') }}</span>
-        &nbsp;
-        <span class="text--primary">{{ station.onlineInfo?.scheduledTrains?.length || '0' }}</span>
-        <span>&nbsp;/&nbsp;</span>
-        <span class="text--grayed">
-          {{ station.onlineInfo?.scheduledTrains?.filter((train) => train.stopInfo.confirmed).length || '0' }}
+
+        <span>
+          <span class="text--primary">{{ station.onlineInfo?.scheduledTrains?.length || '0' }}</span>
+          <span> / </span>
+          <span class="text--grayed">
+            {{ station.onlineInfo?.scheduledTrains?.filter((train) => train.stopInfo.confirmed).length || '0' }}
+          </span>
+        </span>
+
+        <span class="header_links">
+          <a
+            :href="`https://pragotron-td2.web.app/board?name=${station.name}`"
+            target="_blank"
+            :title="$t('scenery.pragotron-link')"
+          >
+            <img :src="getIcon('pragotron')" alt="icon-pragotron" />
+          </a>
+
+          <a
+            :href="`https://tablice-td2.web.app/?station=${station.name}`"
+            target="_blank"
+            :title="$t('scenery.tablice-link')"
+          >
+            <img :src="getIcon('tablice', 'ico')" alt="icon-tablice" />
+          </a>
         </span>
       </h3>
 
-      <div class="timetable-checkpoints" v-if="station && station.generalInfo?.checkpoints">
+      <div class="timetable-checkpoints" v-if="station?.generalInfo?.checkpoints">
         <span v-for="(cp, i) in station.generalInfo.checkpoints" :key="i">
           {{ (i > 0 && '&bull;') || '' }}
 
@@ -168,7 +188,6 @@ import { useStore } from '../../store/store';
 import imageMixin from '../../mixins/imageMixin';
 import modalTrainMixin from '../../mixins/modalTrainMixin';
 import ScheduledTrainStatus from './ScheduledTrainStatus.vue';
-import ScheduledTrain from '../../scripts/interfaces/ScheduledTrain';
 
 export default defineComponent({
   name: 'SceneryTimetable',
@@ -281,22 +300,34 @@ export default defineComponent({
 }
 
 .timetable-header {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-
   position: sticky;
   top: 0;
   z-index: 99;
 
   background-color: #181818;
 
+  padding: 0.5em;
+
+  img {
+    width: 25px;
+    vertical-align: middle;
+  }
+
   h3 {
     display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
     align-items: center;
+
+    gap: 0.5em;
     font-size: 1.3em;
   }
+}
+
+.header_links {
+  display: flex;
+  gap: 0.5em;
+  margin-left: 0.5em;
 }
 
 .timetable {
@@ -355,7 +386,8 @@ export default defineComponent({
 
   flex-wrap: wrap;
   font-size: 1.1em;
-  padding: 0.75em 0;
+
+  margin-top: 0.5em;
 
   button.checkpoint_item {
     color: #aaa;

@@ -11,6 +11,7 @@
         :filters="journalTimetableFilters"
         :currentOptionsActive="currentOptionsActive"
         :data-status="dataStatus"
+        optionsType="timetables"
       />
 
       <JournalStats />

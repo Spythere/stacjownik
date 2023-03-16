@@ -12,10 +12,6 @@
           {{ $t('trains.no-trains') }}
         </div>
 
-        <!-- <div class="timeouts-warning" v-if="trainNumbersWithTimeouts.length == 0">
-          <b class="warning-timeout">?</b>
-          {{ $t('trains.timeout') }}
-        </div> -->
         <transition-group name="list-anim" tag="ul" class="train-list" v-else>
           <li
             class="train-row"
@@ -70,16 +66,7 @@ export default defineComponent({
         id: string | number;
         dir: number;
       },
-      distanceLimitExceeded: computed(
-        () => props.trains.findIndex(({ timetableData }) => timetableData && timetableData.routeDistance > 200) != -1
-      ),
     };
-  },
-
-  computed: {
-    trainNumbersWithTimeouts() {
-      return this.store.trainList.filter((train) => train.isTimeout).map((train) => train.trainNo);
-    },
   },
 
   activated() {
@@ -159,7 +146,7 @@ img.train-image {
 .train {
   &-list {
     position: relative;
-    
+
     @include smallScreen() {
       width: 100%;
     }

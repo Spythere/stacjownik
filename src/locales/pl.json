@@ -96,7 +96,8 @@
     "search-dispatcher": "Nick dyżurnego",
     "search-station": "Nazwa scenerii",
     "search-author": "Nick autora rozkładu jazdy",
-    "search-date": "Data rozkładu jazdy (czas polski)",
+    "search-timetables-date": "Data rozkładu jazdy (czas polski)",
+    "search-dispatchers-date": "Data służby (czas polski)",
 
     "sort-distance": "kilometraż",
     "sort-total-stops": "stacje",
@@ -105,7 +106,7 @@
     "sort-timestampFrom": "data",
     "sort-duration": "czas dyżuru",
     "sort-id": "id rozkładu",
-    
+
     "sort-mass": "masa",
     "sort-speed": "prędkość",
     "sort-length": "długość",
@@ -114,13 +115,16 @@
     "sort-delay": "opóźnienie",
     "sort-comments": "uwagi ekspl.",
 
-    "filter-comments": "UWAGI EKSPLOATACYJNE",
-    "filter-twr": "TWR",
-    "filter-skr": "PRZEKR. SKRAJNIA",
+    "filter-withComments": "UWAGI EKSPLOATACYJNE",
+    "filter-noComments": "BEZ UWAG",
+    "filter-twr": "WYS. RYZYKA",
+    "filter-skr": "SKRAJNIA",
+    "filter-common": "ZWYKŁE",
     "filter-passenger": "PASAŻERSKIE",
     "filter-freight": "TOWAROWE",
     "filter-other": "INNE",
     "filter-noTimetable": "BEZ RJ",
+    "filter-withTimetable": "ROZKŁAD JAZDY",
 
     "filter-reset": "ZRESETUJ FILTRY",
     "filter-clear": "WYŁĄCZ FILTRY",
@@ -131,6 +135,19 @@
     "filter-active": "AKTYWNE"
   },
   "filters": {
+    "desc": " &bull; Kliknięcie: zaznaczenie / odznaczenie filtru <br /> &bull; Podwójne kliknięcie: odznaczenie reszty filtrów z <b class='text--primary'>grupy</b> <br /> &bull; <span style='color: coral'>RESET</span>: zresetowanie filtrów z <b class='text--primary'>grupy</b>",
+    
+    "sections": {
+      "reality": "FIKCYJNOŚĆ SCENERII",
+      "package-access": "DOSTĘPNOŚĆ W PACZCE",
+      "access": "DOSTĘPNOŚĆ OGÓLNA",
+      "control": "TYP STEROWANIA",
+      "signals": "TYP SYGNALIZACJI",
+      "addons": "DODATKOWE PROGRAMY",
+      "blockades": "BLOKADY LINIOWE",
+      "status": "STATUS ONLINE"
+    },
+
     "endingStatus": "KOŃCZY",
     "afkStatus": "Z/W",
     "noSpaceStatus": "BRAK MIEJSCA",
@@ -146,18 +163,29 @@
     "abandoned": "WYCOFANA",
 
     "SPK": "SPK",
+    "SPK-R": "SPK + RĘCZNE",
+    "SPK-M": "SPK + MECH.",
     "SCS": "SCS",
+    "SCS-R": "SCS + RĘCZNE",
+    "SCS-M": "SCS + MECH.",
     "SPE": "SPE",
     "manual": "RĘCZNE",
-    "SUP": "SUP",
-    "SBL": "SBL",
+
+    "SUP": "SUP (RASP-UZK)",
+    "noSUP": "BEZ SUP",
+
+    "SBL": "SAMOCZYNNA",
+    "PBL": "PÓŁSAMOCZYNNA",
+
     "mechanical": "MECHANICZNE",
     "modern": "WSPÓŁCZESNA",
     "semaphores": "KSZTAŁTOWA",
     "mixed": "MIESZANA",
     "historical": "HISTORYCZNA",
+
     "free": "WOLNA",
     "occupied": "ZAJĘTA",
+
     "sliders": {
       "min-lvl": "MIN. WYMAGANY POZIOM DYŻURNEGO",
       "max-lvl": "MAKS. WYMAGANY POZIOM DYŻURNEGO",
@@ -166,13 +194,14 @@
       "routes-2t-cat": "SZLAKI DWUTOROWE ZELEKTR. (MINIMUM)",
       "routes-2t-other": "SZLAKI DWUTOROWE NIEZELEKTR. (MINIMUM)"
     },
+
     "authors-search": "Szukaj autora (uwzględnia inne filtry)",
     "minimum-hours-title": "POKAŻ TYLKO SCENERIE DOSTĘPNE MINIMUM DO:",
     "now": "TERAZ",
     "hour": " godz.",
     "no-limit": "BEZ LIMITU",
     "include-selected": "POKAŻ ZAZNACZONE",
-    "save": "ZAPISZ FILTRY",
+    "save": "ZAPAMIĘTAJ FILTRY",
     "reset": "RESETUJ FILTRY",
     "close": "ZAMKNIJ FILTRY"
   },
@@ -258,7 +287,7 @@
     "timetable-fulfilled": "WYPEŁNIONY",
     "timetable-abandoned": "PORZUCONY",
 
-    "stock-info": "INFORMACJE O SKŁADZIE",
+    "stock-info": "DODATKOWE INFORMACJE",
     "stock-length": "Długość",
     "stock-mass": "Masa",
     "stock-max-speed": "Maks. zarejestrowana prędkość",
@@ -303,7 +332,7 @@
     "no-scenery": "Ups! Ta sceneria nie istnieje!",
     "return-btn": "Wróć na stronę główną",
     "history-btn": "Przejdź do widoku historii dyżurnych ruchu",
-    "info-btn": "Wróc do widoku scenerii",
+    "info-btn": "Wróć do widoku scenerii",
     "authors-title": "Autor scenerii | Autorzy scenerii",
     "lines-title": "Rzeczywiste linie",
     "project-title": "Projekt",
@@ -311,8 +340,8 @@
     "two-way-routes": "Szlaki dwutorowe",
 
     "option-active-timetables": "Aktywne rozkłady jazdy",
-    "option-timetables-history": "Historia rozkładów scenerii",
-    "option-dispatchers-history": "Historia dyżurów scenerii",
+    "option-timetables-history": "Historia rozkładów",
+    "option-dispatchers-history": "Historia dyżurów",
 
     "timetable-author-title": "Wydany przez",
     "timetable-author-unknown": "Autor nieznany",
@@ -327,7 +356,10 @@
     "req-level": "ogólnodostępna | minimum {lvl} poziom dyżurnego | minimum {lvl} poziom dyżurnego",
     "history-list-empty": "Brak historii dla tej scenerii!",
 
-    "forum-topic": "Oficjalny wątek scenerii {name}"
+    "forum-topic": "Oficjalny wątek scenerii {name}",
+
+    "pragotron-link": "Paletowa tablica informacyjna (beta)",
+    "tablice-link": "Tablica informacyjna zbiorcza (autorstwa Thundo)"
   },
   "availability": {
     "title": "Dostępność",

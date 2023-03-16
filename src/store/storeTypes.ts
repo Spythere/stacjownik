@@ -1,7 +1,7 @@
 import { Socket } from 'socket.io-client';
 import { DataStatus } from '../scripts/enums/DataStatus';
 import StationAPIData from '../scripts/interfaces/api/StationAPIData';
-import TrainAPIData from '../scripts/interfaces/api/TrainAPIData';
+import { TrainAPIData } from '../scripts/interfaces/api/TrainAPIData';
 import Station from '../scripts/interfaces/Station';
 import Train from '../scripts/interfaces/Train';
 import { DispatcherStatsAPIData } from '../scripts/interfaces/api/DispatcherStatsAPIData';
@@ -70,7 +70,7 @@ export interface StationJSONData {
   SUP: boolean;
 
   routes: string;
-  
+
   checkpoints: string | null;
   authors?: string;
 

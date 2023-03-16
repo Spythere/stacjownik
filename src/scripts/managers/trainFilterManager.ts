@@ -24,26 +24,36 @@ function filterTrainList(trainList: Train[], searchedTrain: string, searchedDriv
     const isFiltered = filters.every((f) => {
       if (f.isActive) return true;
 
-      if (!train.timetableData) return filters.find((filter) => filter.id == TrainFilterType.noTimetable)!.isActive;
-
       switch (f.id) {
-        case TrainFilterType.comments:
-          return !train.timetableData.followingStops.some((stop) => stop.comments);
+        case TrainFilterType.noTimetable:
+          return train.timetableData;
+
+        case TrainFilterType.withTimetable:
+          return !train.timetableData;
+
+        case TrainFilterType.withComments:
+          return !train.timetableData?.followingStops.some((stop) => stop.comments);
+
+        case TrainFilterType.noComments:
+          return train.timetableData?.followingStops.some((stop) => stop.comments);
 
         case TrainFilterType.twr:
-          return !train.timetableData.TWR;
+          return !train.timetableData?.TWR;
 
         case TrainFilterType.skr:
-          return !train.timetableData.SKR;
+          return !train.timetableData?.SKR;
+
+        case TrainFilterType.common:
+          return train.timetableData?.SKR ||  train.timetableData?.TWR;
 
         case TrainFilterType.passenger:
-          return !/^[AMRE]\D{2}$/.test(train.timetableData.category);
+          return !/^[AMRE]\D{2}$/.test(train.timetableData?.category || '');
 
         case TrainFilterType.freight:
-          return !train.timetableData.category.startsWith('T');
+          return !train.timetableData?.category.startsWith('T');
 
         case TrainFilterType.other:
-          return !/^[PXZL]\D{2}$/.test(train.timetableData.category);
+          return !/^[PXZL]\D{2}$/.test(train.timetableData?.category || '');
 
         default:
           return true;
@@ -53,7 +63,7 @@ function filterTrainList(trainList: Train[], searchedTrain: string, searchedDriv
     return (
       (searchedTrain.length > 0 ? train.trainNo.toString().startsWith(searchedTrain) : true) &&
       (searchedDriver.length > 0 ? train.driverName.toLowerCase().startsWith(searchedDriver.toLowerCase()) : true) &&
-      (!train.timetableData ? !train.online : true) &&
+      (!train.timetableData ? train.online : train.timetableData) &&
       isFiltered
     );
   });

@@ -202,10 +202,6 @@ button {
     pointer-events: none;
     opacity: 0.85;
   }
-
-  &[data-inactive='true'] {
-    opacity: 0.55;
-  }
 }
 
 button.btn--filled {

@@ -10,6 +10,7 @@
         :sorter-option-ids="['timestampFrom', 'duration']"
         :data-status="dataStatus"
         :current-options-active="currentOptionsActive"
+        optionsType="dispatchers"
       />
 
       <div class="list_wrapper" @scroll="handleScroll">

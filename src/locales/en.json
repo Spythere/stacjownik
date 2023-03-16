@@ -35,7 +35,7 @@
   "desc": {
     "control-type": "Control type: ",
     "signals-type": "Signals type:  ",
-    "SBL": "This scenery has automatic line blockade system on following routes: ",
+    "SBL": "This scenery has automatic block signalling (ABS/SBL) system on following routes: ",
     "SUP": "Requires the SUP application (level crossing remote control simulator)",
     "TWB-all": "This scenery has two-way route blockade on all routes",
     "TWB-routes": "This scenery has two-way route blockade on following routes: ",
@@ -94,7 +94,8 @@
     "search-dispatcher": "Dispatcher name",
     "search-station": "Scenery name",
     "search-author": "Timetable author name",
-    "search-date": "Timetable date (CEST / GMT+2)",
+    "search-timetables-date": "Timetable date (CEST / GMT+2)",
+    "search-dispatchers-date": "Service date (CEST / GMT+2)",
 
     "sort-mass": "mass",
     "sort-speed": "speed",
@@ -111,13 +112,16 @@
     "sort-timestampFrom": "date",
     "sort-duration": "duration",
 
-    "filter-comments": "COMMENTS",
-    "filter-twr": "TWR",
-    "filter-skr": "SKR",
+    "filter-noComments": "NO COMMENTS",
+    "filter-withComments": "COMMENTS",
+    "filter-twr": "HIGH RISK CARGO",
+    "filter-skr": "EXCEEDED GAUGE",
+    "filter-common": "NO WARNINGS",
     "filter-passenger": "PASSENGER",
     "filter-freight": "FREIGHT",
     "filter-other": "OTHER",
     "filter-noTimetable": "NO TIMETABLE",
+    "filter-withTimetable": "TIMETABLE",
 
     "filter-reset": "RESET FILTERS",
     "filter-clear": "CLEAR FILTERS",
@@ -128,14 +132,27 @@
     "filter-active": "ACTIVE"
   },
   "filters": {
+    "desc": " &bull; Left mouse click: select / unselect chosen filter <br /> &bull; Double left click: unselect all filters but chosen from a <b class='text--primary'>group</b> <br /> &bull; <span style='color: coral'>RESET</span>: reset all filters from a <b class='text--primary'>group</b>",
+
+    "sections": {
+      "reality": "SCENERY REALITY",
+      "package-access": "IN-GAME AVAILABILITY",
+      "access": "GENERAL AVAILABILITY",
+      "control": "CONTROLS",
+      "signals": "SIGNALLING",
+      "addons": "ADDITIONAL PROGRAMS",
+      "blockades": "BLOCK SIGNALLING",
+      "status": "ONLINE STATUS"
+    },
+
     "endingStatus": "ENDS SOON",
     "afkStatus": "AFK",
     "noSpaceStatus": "NO SPACE",
     "unavailableStatus": "UNAVAILABLE",
 
-    "title": "STATION FILTER",
-    "default": "DEFAULT",
-    "not-default": "OTHER",
+    "title": "STATION FILTERS",
+    "default": "IN-GAME",
+    "not-default": "ADDITIONAL",
     "real": "REAL",
     "fictional": "FICTIONAL",
     "unavailable": "UNSUPPORTED",
@@ -143,12 +160,22 @@
     "abandoned": "ABANDONED",
 
     "SPK": "SPK",
+    "SPK-R": "SPK + MANUAL",
+    "SPK-M": "SPK + MECH.",
     "SCS": "SCS",
+    "SCS-R": "SCS + MANUAL",
+    "SCS-M": "SCS + MECH.",
     "SPE": "SPE",
+
     "manual": "MANUAL",
     "mechanical": "MECHANICAL",
-    "SUP": "SUP",
-    "SBL": "SBL",
+
+    "SUP": "SUP (RASP-UZK)",
+    "noSUP": "WITHOUT SUP",
+
+    "SBL": "AUTOMATIC (SBL)",
+    "PBL": "SEMIAUTOMATIC (PBL)",
+
     "modern": "MODERN",
     "semaphores": "SEMAPHORES",
     "mixed": "MIXED",
@@ -169,7 +196,7 @@
     "hour": "h",
     "no-limit": "NO LIMIT",
     "include-selected": "INCLUDE SELECTED",
-    "save": "SAVE FILTERS",
+    "save": "REMEMBER FILTERS",
     "reset": "RESET FILTERS",
     "close": "CLOSE FILTERS"
   },
@@ -187,7 +214,7 @@
     "no-stations": "No stations to show here!",
     "scenery-search": "Search for scenery..."
   },
-  "trains": {
+    "trains": {
     "no-trains": "No trains to show here!",
     "loading": "Loading train data...",
     "offline": "Offline ride",
@@ -254,7 +281,7 @@
     "minutes": "{minutes} mins",
     "hours": "{hours}h {minutes} mins",
 
-    "stock-info": "STOCK INFO",
+    "stock-info": "EXTRA INFO",
     "stock-length": "Length",
     "stock-mass": "Mass",
     "stock-max-speed": "Maximum registered speed",
@@ -307,8 +334,8 @@
     "two-way-routes": "Two way routes",
 
     "option-active-timetables": "Active timetables",
-    "option-timetables-history": "Scenery timetables history",
-    "option-dispatchers-history": "Scenery dispatchers history",
+    "option-timetables-history": "Timetables history",
+    "option-dispatchers-history": "Dispatchers history",
 
     "timetable-author-title": "Issued by",
     "timetable-author-unknown": "Author unknown",
@@ -323,7 +350,10 @@
     "req-level": "all dispatcher levels | dispatcher level {lvl} required | dispatcher level {lvl} required",
     "history-list-empty": "No recorded scenery history!",
 
-    "forum-topic": "Official {name} forum topic"
+    "forum-topic": "Official {name} forum topic",
+
+    "pragotron-link": "Timetable pallet board (beta)",
+    "tablice-link": "Timetable summary board (by Thundo)"
   },
   "availability": {
     "title": "Availability",
