@@ -207,6 +207,7 @@
   },
   "sceneries": {
     "station": "Stacja",
+    "abbr": "Skrót\nposterunku",
     "min-lvl": "Min. poziom\ndyżurnego",
     "status": "Status",
     "dispatcher": "Dyżurny",

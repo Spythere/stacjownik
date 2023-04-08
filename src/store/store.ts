@@ -15,7 +15,7 @@ import {
   getScheduledTrain,
   parseSpawns,
 } from '../scripts/utils/storeUtils';
-import { APIData, StationJSONData, StoreState } from './storeTypes';
+import { APIData, StationJSONData, StoreState } from '../scripts/interfaces/store/storeTypes';
 
 export const useStore = defineStore('store', {
   state: () =>

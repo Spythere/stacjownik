@@ -1,18 +1,18 @@
 import { defineStore } from 'pinia';
 import inputData from '../data/options.json';
-import Filter from '../scripts/interfaces/Filter';
 import Station from '../scripts/interfaces/Station';
 import StorageManager from '../scripts/managers/storageManager';
 import { useStore } from './store';
 import { filterInitStates } from './constants/initFilterStates';
 import { filterStations, sortStations } from './utils/filterUtils';
+import { HeadIdsTypes } from '../scripts/data/stationHeaderNames';
 
 export const useStationFiltersStore = defineStore('stationFiltersStore', {
   state() {
     return {
       inputs: inputData,
       filters: { ...filterInitStates },
-      sorterActive: { index: 0, dir: 1 },
+      sorterActive: { headerName: 'station' as HeadIdsTypes, dir: 1 },
       store: useStore(),
       lastClickedFilterId: '',
     };
@@ -89,13 +89,11 @@ export const useStationFiltersStore = defineStore('stationFiltersStore', {
       });
     },
 
-    changeSorter(index: number) {
-      if (index > 4 && index < 7) return;
-
-      if (index == this.sorterActive.index) this.sorterActive.dir = -1 * this.sorterActive.dir;
+    changeSorter(headerName: HeadIdsTypes) {
+      if (headerName == this.sorterActive.headerName) this.sorterActive.dir = -1 * this.sorterActive.dir;
       else this.sorterActive.dir = 1;
 
-      this.sorterActive.index = index;
+      this.sorterActive.headerName = headerName;
     },
   },
 });

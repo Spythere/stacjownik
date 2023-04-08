@@ -8,26 +8,26 @@
       <table>
         <thead>
           <tr>
-            <th v-for="(id, i) in headIds" :key="id" @click="() => changeSorter(i)">
+            <th v-for="(headerName, i) in headIds" :key="headerName" @click="changeSorter(headerName)">
               <span class="header_wrapper">
-                <div v-html="$t(`sceneries.${id}`)"></div>
+                <div v-html="$t(`sceneries.${headerName}`)"></div>
 
                 <img
                   class="sort-icon"
-                  v-if="sorterActive.index == i"
+                  v-if="sorterActive.headerName == headerName"
                   :src="sorterActive.dir == 1 ? getIcon('arrow-asc') : getIcon('arrow-desc')"
                   alt="sort icon"
                 />
               </span>
             </th>
 
-            <th v-for="(id, i) in headIconsIds" :key="id" @click="() => changeSorter(i + 7)">
+            <th v-for="(headerName, i) in headIconsIds" :key="headerName" @click="changeSorter(headerName)">
               <span class="header_wrapper">
-                <img :src="getIcon(id)" :alt="id" :title="$t(`sceneries.${id}s`)" />
+                <img :src="getIcon(headerName)" :alt="headerName" :title="$t(`sceneries.${headerName}s`)" />
 
                 <img
                   class="sort-icon"
-                  v-if="sorterActive.index == i + 7"
+                  v-if="sorterActive.headerName == headerName"
                   :src="sorterActive.dir == 1 ? getIcon('arrow-asc') : getIcon('arrow-desc')"
                   alt="sort icon"
                 />
@@ -51,6 +51,12 @@
             <td class="station_name" :class="station.generalInfo?.availability">
               <b v-if="station.generalInfo?.project" style="color: salmon">{{ station.generalInfo.project }}</b>
               {{ station.name }}
+            </td>
+
+            <td>
+              <b>
+                {{ station.generalInfo?.abbr }}
+              </b>
             </td>
 
             <td class="station_level">
@@ -236,6 +242,7 @@ import Station from '../../scripts/interfaces/Station';
 import { useStationFiltersStore } from '../../store/stationFiltersStore';
 import { useStore } from '../../store/store';
 import Loading from '../Global/Loading.vue';
+import { HeadIdsTypes, headIconsIds, headIds } from '../../scripts/data/stationHeaderNames';
 
 export default defineComponent({
   props: {
@@ -249,8 +256,8 @@ export default defineComponent({
   mixins: [styleMixin, dateMixin, stationInfoMixin, returnBtnMixin, imageMixin],
 
   data: () => ({
-    headIds: ['station', 'min-lvl', 'status', 'dispatcher', 'dispatcher-lvl', 'routes', 'general'],
-    headIconsIds: ['user', 'spawn', 'timetable'],
+    headIconsIds,
+    headIds,
     lastSelectedStationName: '',
   }),
 
@@ -291,8 +298,10 @@ export default defineComponent({
       window.open(url, '_blank');
     },
 
-    changeSorter(i: number) {
-      this.stationFiltersStore.changeSorter(i);
+    changeSorter(headerName: HeadIdsTypes) {
+      if (headerName == 'general' || headerName == 'routes') return;
+
+      this.stationFiltersStore.changeSorter(headerName);
     },
   },
 });
@@ -349,7 +358,7 @@ table {
     position: sticky;
     top: 0;
 
-    min-width: 75px;
+    min-width: 80px;
 
     padding: 0.5em;
     background-color: $bgCol;

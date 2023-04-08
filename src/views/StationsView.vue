@@ -52,17 +52,6 @@ export default defineComponent({
 
   mounted() {
     this.filterStore.setupFilters();
-    // this.filterStore.inputs.options.forEach((option) => {
-    //   const value = StorageManager.getBooleanValue(option.name);
-    //   option.value = value;
-    //   this.filterStore.changeFilterValue({ name: option.name, value: value });
-    // });
-
-    // this.filterStore.inputs.sliders.forEach((slider) => {
-    //   const value = StorageManager.getNumericValue(slider.name);
-    //   slider.value = value;
-    //   this.filterStore.changeFilterValue({ name: slider.name, value: value });
-    // });
   },
 });
 </script>

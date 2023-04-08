@@ -128,7 +128,6 @@ import { useStore } from '../../store/store';
 
 import ActionButton from '../Global/ActionButton.vue';
 import FilterOption from './FilterOption.vue';
-import { filterInitStates } from '../../store/constants/initFilterStates';
 
 export default defineComponent({
   components: { ActionButton, FilterOption },

@@ -202,6 +202,7 @@
   },
   "sceneries": {
     "station": "Station",
+    "abbr": "Station\nabbrev.",
     "min-lvl": "Min. dispatcher\nlevel",
     "status": "Status",
     "dispatcher": "Dispatcher",

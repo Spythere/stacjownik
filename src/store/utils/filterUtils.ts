@@ -1,34 +1,40 @@
+import { HeadIdsTypes } from '../../scripts/data/stationHeaderNames';
 import Filter from '../../scripts/interfaces/Filter';
 import Station from '../../scripts/interfaces/Station';
 
-export const sortStations = (a: Station, b: Station, sorter: { index: number; dir: number }) => {
-  switch (sorter.index) {
-    case 0:
+export const sortStations = (a: Station, b: Station, sorter: { headerName: HeadIdsTypes; dir: number }) => {
+  switch (sorter.headerName) {
+    case 'station':
       return sorter.dir == 1 ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
 
-    case 1:
+    case 'abbr':
+      if ((a.generalInfo?.abbr || '') > (b.generalInfo?.abbr || '')) return sorter.dir;
+      if ((a.generalInfo?.abbr || '') < (b.generalInfo?.abbr || '')) return -sorter.dir;
+      break;
+
+    case 'min-lvl':
       if ((a.generalInfo?.reqLevel || 0) > (b.generalInfo?.reqLevel || 0)) return sorter.dir;
       if ((a.generalInfo?.reqLevel || 0) < (b.generalInfo?.reqLevel || 0)) return -sorter.dir;
       break;
 
-    case 2:
+    case 'status':
       if ((a.onlineInfo?.statusTimestamp || 0) > (b.onlineInfo?.statusTimestamp || 0)) return sorter.dir;
       if ((a.onlineInfo?.statusTimestamp || 0) < (b.onlineInfo?.statusTimestamp || 0)) return -sorter.dir;
       break;
 
-    case 3:
+    case 'dispatcher':
       if ((a.onlineInfo?.dispatcherName.toLowerCase() || '') > (b.onlineInfo?.dispatcherName.toLowerCase() || ''))
         return sorter.dir;
       if ((a.onlineInfo?.dispatcherName.toLowerCase() || '') < (b.onlineInfo?.dispatcherName.toLowerCase() || ''))
         return -sorter.dir;
       break;
 
-    case 4:
+    case 'dispatcher-lvl':
       if ((a.onlineInfo?.dispatcherExp || 0) > (b.onlineInfo?.dispatcherExp || 0)) return sorter.dir;
       if ((a.onlineInfo?.dispatcherExp || 0) < (b.onlineInfo?.dispatcherExp || 0)) return -sorter.dir;
       break;
 
-    case 7:
+    case 'user':
       if ((a.onlineInfo?.currentUsers || 0) > (b.onlineInfo?.currentUsers || 0)) return sorter.dir;
       if ((a.onlineInfo?.currentUsers || 0) < (b.onlineInfo?.currentUsers || 0)) return -sorter.dir;
 
@@ -36,13 +42,13 @@ export const sortStations = (a: Station, b: Station, sorter: { index: number; di
       if ((a.onlineInfo?.maxUsers || 0) < (b.onlineInfo?.maxUsers || 0)) return -sorter.dir;
       break;
 
-    case 8:
+    case 'spawn':
       if ((a.onlineInfo?.spawns.length || 0) > (b.onlineInfo?.spawns.length || 0)) return sorter.dir;
       if ((a.onlineInfo?.spawns.length || 0) < (b.onlineInfo?.spawns.length || 0)) return -sorter.dir;
 
       break;
 
-    case 9:
+    case 'timetable':
       if ((a.onlineInfo?.scheduledTrains?.length || 0) > (b.onlineInfo?.scheduledTrains?.length || 0))
         return sorter.dir;
       if ((a.onlineInfo?.scheduledTrains?.length || 0) < (b.onlineInfo?.scheduledTrains?.length || 0))

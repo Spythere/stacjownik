@@ -164,7 +164,7 @@
 import { defineComponent } from 'vue';
 import { DataStatus } from '../../scripts/enums/DataStatus';
 import { useStore } from '../../store/store';
-import { StoreState } from '../../store/storeTypes';
+import { StoreState } from '../../scripts/interfaces/store/storeTypes';
 
 export default defineComponent({
   data() {
