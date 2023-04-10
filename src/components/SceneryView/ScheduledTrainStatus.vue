@@ -1,53 +1,77 @@
 <template>
   <div class="general-status">
-    <span :class="scheduledTrain.stopStatus">
-      <span v-if="scheduledTrain.stopStatus == 'arriving'">
-        <span v-if="scheduledTrain.prevDepartureLine">({{ scheduledTrain.prevDepartureLine }})</span>
-        {{ scheduledTrain.prevStationName }}
-        &gt;<span v-if="scheduledTrain.nextArrivalLine"> ({{ scheduledTrain.nextArrivalLine }}) </span>
-        {{ scheduledTrain.nextStationName || '---' }}
-      </span>
-
-      <span v-else-if="scheduledTrain.stopStatus == 'departed'">
-        &gt;&gt; <span v-if="scheduledTrain.nextArrivalLine"> ({{ scheduledTrain.nextArrivalLine }}) </span>
-        {{ scheduledTrain.nextStationName }}
-      </span>
-
-      <span v-else-if="scheduledTrain.stopStatus == 'departed-away'">
-        &gt;&gt;&gt;
-        <span v-if="scheduledTrain.nextArrivalLine"> ({{ scheduledTrain.nextArrivalLine }}) </span>
-        {{ scheduledTrain.nextStationName }}
-      </span>
-
-      <span v-else-if="scheduledTrain.stopStatus == 'online'">
-        &gt;
-        <span v-if="scheduledTrain.nextArrivalLine">
-          ({{ scheduledTrain.nextArrivalLine }}) {{ scheduledTrain.nextStationName }}
-        </span>
-        <span v-else-if="!scheduledTrain.nextStationName">{{ $t('timetables.end') }}</span>
-        <span v-else>{{ scheduledTrain.nextStationName }}</span>
-      </span>
-
-      <span v-else-if="scheduledTrain.stopStatus == 'stopped'">
-        &gt;
-        <span v-if="scheduledTrain.nextArrivalLine"> ({{ scheduledTrain.nextArrivalLine }}) </span>
-        {{ scheduledTrain.nextStationName }}
-      </span>
-
-      <span v-else-if="scheduledTrain.stopStatus == 'terminated'">X {{ $t('timetables.terminated') }}</span>
+    <span :class="computedScheduledTrain.stopStatus" :title="computedScheduledTrain.stopStatusDescription">
+      {{ computedScheduledTrain.stopStatusIndicator }}
     </span>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import ScheduledTrain from '../../scripts/interfaces/ScheduledTrain';
+import { ScheduledTrain, StopStatus } from '../../scripts/interfaces/ScheduledTrain';
+
+interface ScheduledTrainComp extends ScheduledTrain {
+  stopStatusIndicator: string;
+  stopStatusDescription: string;
+}
 
 export default defineComponent({
   props: {
     scheduledTrain: {
       type: Object as PropType<ScheduledTrain>,
       required: true,
+    },
+  },
+
+  computed: {
+    computedScheduledTrain(): ScheduledTrainComp {
+      const { prevDepartureLine, prevStationName, stopStatus, nextArrivalLine, nextStationName } = this.scheduledTrain;
+
+      const prevDepartureIndicator = prevDepartureLine ? `(${prevDepartureLine}) ${prevStationName}` : '---';
+      const nextArrivalIndicator = nextArrivalLine ? `(${nextArrivalLine}) ${nextStationName}` : '---';
+
+      let stopStatusDescription = '',
+        stopStatusIndicator = '';
+
+      switch (stopStatus) {
+        case StopStatus.arriving:
+          stopStatusIndicator = `${this.$t('timetables.from')}: ${prevDepartureIndicator}`;
+          stopStatusDescription = this.$t('timetables.desc-arriving', { prevStationName, prevDepartureLine });
+          break;
+
+        case StopStatus.online:
+        case StopStatus.stopped:
+          stopStatusIndicator = nextArrivalLine
+            ? `${this.$t('timetables.to')}: ${nextArrivalIndicator}`
+            : `${this.$t('timetables.desc-end')}`;
+          stopStatusDescription = nextArrivalLine
+            ? this.$t(`timetables.desc-${stopStatus}`, { nextStationName, nextArrivalLine })
+            : '';
+          break;
+
+        case StopStatus.departed:
+          stopStatusIndicator = `${this.$t('timetables.to')}: ${nextArrivalIndicator}`;
+          stopStatusDescription = this.$t('timetables.desc-departed', { nextStationName, nextArrivalLine });
+          break;
+
+        case StopStatus['departed-away']:
+          stopStatusIndicator = `${this.$t('timetables.to')}: ${nextArrivalIndicator}`;
+          stopStatusDescription = this.$t('timetables.desc-departed-away', { nextStationName, nextArrivalLine });
+          break;
+
+        case StopStatus.terminated:
+          stopStatusIndicator = `X ${this.$t('timetables.desc-terminated')}`;
+          stopStatusDescription = this.$t('timetables.desc-terminated');
+          break;
+
+        default:
+          break;
+      }
+      return {
+        ...this.scheduledTrain,
+        stopStatusDescription,
+        stopStatusIndicator,
+      };
     },
   },
 });
@@ -86,3 +110,4 @@ export default defineComponent({
   }
 }
 </style>
+

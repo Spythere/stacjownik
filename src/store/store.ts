@@ -3,7 +3,7 @@ import { defineStore } from 'pinia';
 import { io } from 'socket.io-client';
 import { DataStatus } from '../scripts/enums/DataStatus';
 import StationAPIData from '../scripts/interfaces/api/StationAPIData';
-import ScheduledTrain from '../scripts/interfaces/ScheduledTrain';
+import {ScheduledTrain} from '../scripts/interfaces/ScheduledTrain';
 import Station from '../scripts/interfaces/Station';
 import StationRoutes from '../scripts/interfaces/StationRoutes';
 import Train from '../scripts/interfaces/Train';

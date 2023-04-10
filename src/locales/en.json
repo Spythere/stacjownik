@@ -215,7 +215,7 @@
     "no-stations": "No stations to show here!",
     "scenery-search": "Search for scenery..."
   },
-    "trains": {
+  "trains": {
     "no-trains": "No trains to show here!",
     "loading": "Loading train data...",
     "offline": "Offline ride",
@@ -369,7 +369,18 @@
     "end": "Timetable terminates here",
     "terminated": "Timetable terminated",
     "begins": "BEGINS HERE",
-    "terminates": "TERMINATES\nHERE"
+    "terminates": "TERMINATES\nHERE",
+
+    "from": "FROM",
+    "to": "TO",
+
+    "desc-arriving": "The train is not here yet. It's going to come from: {prevStationName} (szlak {prevDepartureLine})",
+    "desc-online": "The train is at the station. It's going to leave to: {nextStationName} (szlak {nextArrivalLine})",
+    "desc-stopped": "The train is at the station and is stopped. It's going to leave towards: {nextStationName} (szlak {nextArrivalLine})",
+    "desc-next-arrival": "Leaves towards: {nextStationName} (szlak {nextArrivalLine})",
+    "desc-departed": "The train is at the station and it's been departed. Leaves towards: {nextStationName} (szlak {nextArrivalLine})",
+    "desc-departed-away": "The train has been departed to: {nextStationName} (szlak {nextArrivalLine})",
+    "desc-end": "The train terminates here"
   },
   "history": {
     "title": "TIMETABLE JOURNAL",

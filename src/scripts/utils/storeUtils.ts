@@ -1,4 +1,4 @@
-import ScheduledTrain from '../interfaces/ScheduledTrain';
+import { ScheduledTrain, StopStatus } from '../interfaces/ScheduledTrain';
 import Train from '../interfaces/Train';
 import TrainStop from '../interfaces/TrainStop';
 
@@ -74,32 +74,32 @@ export const parseSpawns = (spawnString: string) => {
 export const getTimestamp = (date: string | null): number => (date ? new Date(date).getTime() : 0);
 
 export const getTrainStopStatus = (stopInfo: TrainStop, currentStationName: string, stationName: string) => {
-  let stopStatus = '',
+  let stopStatus = StopStatus['arriving'],
     stopLabel = '',
     stopStatusID = -1;
 
   if (stopInfo.terminatesHere && stopInfo.confirmed) {
-    stopStatus = 'terminated';
+    stopStatus = StopStatus['terminated'];
     stopLabel = 'Skończył bieg';
     stopStatusID = 5;
   } else if (!stopInfo.terminatesHere && stopInfo.confirmed && currentStationName == stationName) {
-    stopStatus = 'departed';
+    stopStatus = StopStatus['departed'];
     stopLabel = 'Odprawiony';
     stopStatusID = 2;
   } else if (!stopInfo.terminatesHere && stopInfo.confirmed && currentStationName != stationName) {
-    stopStatus = 'departed-away';
+    stopStatus = StopStatus['departed-away'];
     stopLabel = 'Odjechał';
     stopStatusID = 4;
   } else if (currentStationName == stationName && !stopInfo.stopped) {
-    stopStatus = 'online';
+    stopStatus = StopStatus['online'];
     stopLabel = 'Na stacji';
     stopStatusID = 0;
   } else if (currentStationName == stationName && stopInfo.stopped) {
-    stopStatus = 'stopped';
+    stopStatus = StopStatus['stopped'];
     stopLabel = 'Postój';
     stopStatusID = 1;
   } else if (currentStationName != stationName) {
-    stopStatus = 'arriving';
+    stopStatus = StopStatus['arriving'];
     stopLabel = 'W drodze';
     stopStatusID = 3;
   }
@@ -122,7 +122,7 @@ export function getScheduledTrain(train: Train, trainStopIndex: number, stationN
 
   for (let i = trainStopIndex - 1; i >= 0; i--) {
     if (/strong|podg/g.test(followingStops[i].stopName)) {
-      prevStationName = followingStops[i].stopNameRAW.replace(/,.*/g,"");
+      prevStationName = followingStops[i].stopNameRAW.replace(/,.*/g, '');
 
       break;
     }
@@ -130,7 +130,7 @@ export function getScheduledTrain(train: Train, trainStopIndex: number, stationN
 
   for (let i = trainStopIndex + 1; i < followingStops.length; i++) {
     if (/strong|podg/g.test(followingStops[i].stopName)) {
-      nextStationName = followingStops[i].stopNameRAW.replace(/,.*/g,"");
+      nextStationName = followingStops[i].stopNameRAW.replace(/,.*/g, '');
 
       break;
     }
@@ -171,7 +171,6 @@ export function getScheduledTrain(train: Train, trainStopIndex: number, stationN
 
     signal: train.signal,
     connectedTrack: train.connectedTrack,
-
 
     driverName: train.driverName,
     driverId: train.driverId,
