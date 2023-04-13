@@ -303,9 +303,11 @@ export default defineComponent({
 
 .status-indicator {
   position: absolute;
-  left: 110%;
   bottom: 0;
+  right: 0;
   z-index: 100;
+
+  transform: translateX(1.5em);
 }
 
 .indicator {
@@ -330,7 +332,7 @@ export default defineComponent({
     background-color: #171717;
     border-radius: 0.75em;
 
-    min-width: 13em;
+    width: 13em;
     text-align: center;
     overflow: none;
 
@@ -354,22 +356,16 @@ export default defineComponent({
     }
 
     @include midScreen() {
-      left: 50%;
-      top: 100%;
-
-      transform: translate(-50%, 0);
-      margin-left: 0;
-      margin-top: 0.75em;
+      left: auto;
+      right: 200%;
 
       &::before {
-        border-left: 10px solid transparent;
         border-right: 10px solid transparent;
-        border-bottom: 10px solid #171717;
+        border-left: 12px solid #171717;
+        right: 0;
+        left: auto;
 
-        top: 0;
-        left: 50%;
-
-        transform: translate(-50%, -100%);
+        transform: translate(100%, -50%);
       }
     }
 
@@ -379,3 +375,4 @@ export default defineComponent({
   }
 }
 </style>
+

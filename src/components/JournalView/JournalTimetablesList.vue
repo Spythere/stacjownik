@@ -1,7 +1,7 @@
 <template>
   <transition-group class="journal-list" tag="ul" name="list-anim">
     <li
-      v-for="{ timetable, sceneryList, revesedHistory, ...item } in computedTimetableHistory"
+      v-for="{ timetable, sceneryList, stockHistoryComp, ...item } in computedTimetableHistory"
       class="journal_item"
       :key="timetable.id"
       @click="item.showExtra.value = !item.showExtra.value"
@@ -130,7 +130,7 @@
         </button>
 
         <!-- Dodatkowe informacje -->
-        <div class="info-extended" v-if="timetable.stockString && item.showExtra.value">
+        <div class="info-extended" v-if="timetable.stockString && timetable.stockMass && item.showExtra.value">
           <hr />
 
           <div class="stock-specs">
@@ -140,35 +140,44 @@
             </span>
             <span class="badge specs-badge">
               <span>{{ $t('journal.stock-length') }}</span>
-              <span>{{ timetable.stockLength }}m</span>
+              <span>
+                {{
+                  item.currentHistoryIndex.value == 0
+                    ? timetable.stockLength
+                    : stockHistoryComp[item.currentHistoryIndex.value].stockLength || timetable.stockLength
+                }}m
+              </span>
             </span>
             <span class="badge specs-badge">
               <span>{{ $t('journal.stock-mass') }}</span>
-              <span>{{ Math.floor(timetable.stockMass! / 1000) }}t</span>
+              <span>
+                {{
+                  Math.floor(
+                    (item.currentHistoryIndex.value == 0
+                      ? timetable.stockMass!
+                      : stockHistoryComp[item.currentHistoryIndex.value].stockMass || timetable.stockMass) / 1000
+                  )
+                }}t
+              </span>
             </span>
           </div>
 
-          <div class="stock-history" v-if="revesedHistory.length > 1">
+          <div class="stock-history" v-if="stockHistoryComp.length > 1">
             <button
               class="btn--action"
-              v-for="(sh, i) in revesedHistory"
+              v-for="(sh, i) in stockHistoryComp"
               :data-checked="i == item.currentHistoryIndex.value"
               @click.stop="item.currentHistoryIndex.value = i"
             >
-              {{
-                new Date(Number(sh.split('@')[0])).toLocaleTimeString($i18n.locale, {
-                  hour: '2-digit',
-                  minute: '2-digit',
-                })
-              }}
+              {{ sh.updatedAt }}
             </button>
           </div>
 
           <ul class="stock-list">
             <li
-              v-for="(car, i) in (revesedHistory.length <= 1
+              v-for="(car, i) in (item.currentHistoryIndex.value == 0
                 ? timetable.stockString
-                : revesedHistory[item.currentHistoryIndex.value].split('@')[1]
+                : stockHistoryComp[item.currentHistoryIndex.value].stockString
               ).split(';')"
               :key="i"
             >
@@ -209,7 +218,22 @@ export default defineComponent({
       return this.timetableHistory.map((timetable) => ({
         timetable,
         sceneryList: this.getSceneryList(timetable),
-        revesedHistory: timetable.stockHistory.slice().reverse(),
+        stockHistoryComp: timetable.stockHistory
+          .slice()
+          .reverse()
+          .map((h) => {
+            const historyData = h.split('@');
+
+            return {
+              updatedAt: new Date(Number(historyData[0])).toLocaleTimeString(this.$i18n.locale, {
+                hour: '2-digit',
+                minute: '2-digit',
+              }),
+              stockString: historyData[1],
+              stockMass: Number(historyData[2]) || undefined,
+              stockLength: Number(historyData[3]) || undefined,
+            };
+          }),
         showExtra: ref(false),
         currentHistoryIndex: ref(0),
       }));
@@ -362,8 +386,8 @@ ul.stock-list {
   flex-wrap: wrap;
   gap: 0.5em;
   margin-top: 1em;
-  
-  button[data-checked=true] {
+
+  button[data-checked='true'] {
     color: $accentCol;
   }
 }

@@ -6,16 +6,6 @@
           <img :src="getIcon('pl')" alt="icon-pl" @click="changeLang('en')" v-if="currentLang == 'pl'" />
           <img :src="getIcon('en', 'jpg')" alt="icon-en" @click="changeLang('pl')" v-else />
         </span>
-
-        <span class="icons-bottom">
-          <a href="https://www.paypal.com/paypalme/spythere" target="_blank">
-            <img :src="getIcon('dollar')" alt="icon paypal" />
-          </a>
-
-          <a href="https://discord.gg/x2mpNN3svk" target="_blank">
-            <img :src="getIcon('discord', 'png')" alt="icon discord" />
-          </a>
-        </span>
       </div>
 
       <div class="header_body">
@@ -33,6 +23,12 @@
           <div class="info_counter">
             <img :src="getIcon('dispatcher')" alt="icon dispatcher" />
             <span class="text--primary">{{ onlineDispatchersCount }}</span>
+
+            <!-- <span class="g-tooltip">
+              <b class="text--primary">{{ factorU }}U</b>
+              <div class="content">Test</div>
+            </span> -->
+
             <span class="text--grayed"> / </span>
             <span class="text--primary">{{ onlineTrainsCount }}</span>
             <img :src="getIcon('train')" alt="icon train" />
@@ -98,11 +94,17 @@ export default defineComponent({
     onlineTrainsCount() {
       return this.store.trainList.filter((train) => train.online).length;
     },
+
     onlineDispatchersCount() {
       return this.store.stationList.filter(
         (station) => station.onlineInfo && station.onlineInfo.region == this.store.region.id
       ).length;
     },
+
+    factorU() {
+      return this.onlineDispatchersCount == 0 ? '-' : (this.onlineTrainsCount / this.onlineDispatchersCount).toFixed(2);
+    },
+
     computedRegions() {
       return options.regions.map((region) => {
         const regionStationCount =
@@ -135,22 +137,19 @@ export default defineComponent({
 
 .header {
   &_body {
-    max-width: 21em;
     position: relative;
-
-    @include smallScreen {
-      max-width: 18em;
-    }
   }
 
   &_container {
     display: flex;
     justify-content: center;
-    position: relative;
 
-    width: 1350px;
-    padding: 0.5em 0.3em 0 0.3em;
     border-radius: 0 0 1em 1em;
+
+    @include smallScreen {
+      position: relative;
+      margin-top: 0.5em;
+    }
   }
 
   &_brand {
@@ -158,6 +157,8 @@ export default defineComponent({
 
     img {
       width: 100%;
+      max-width: 20em;
+
       margin: 0 auto;
     }
   }
@@ -165,9 +166,7 @@ export default defineComponent({
   &_info {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    max-width: 100%;
-
-    font-size: 1.2em;
+    font-size: 1.15em;
   }
 
   &_links {
@@ -184,57 +183,20 @@ export default defineComponent({
     position: absolute;
     right: 0;
     top: 0;
-    height: 100%;
 
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: flex-end;
-    padding: 0.5em 0.5em;
+    padding: 0.5em;
 
-    @include smallScreen() {
-      right: auto;
-      left: 0.75em;
-      padding: 0;
-
-      align-items: center;
+    @include smallScreen {
+      transform: translateX(70%);
     }
   }
 }
 
 // ICONS
-.icons {
-  position: relative;
-
-  &-top {
-    img {
-      width: 2.5em;
-
-      cursor: pointer;
-    }
-
-    margin-bottom: 0.5em;
-  }
-
-  &-bottom {
-    display: flex;
-
-    a {
-      margin-left: 0.6em;
-      user-select: none;
-    }
-
-    img {
-      width: 1.9em;
-    }
-
-    @include smallScreen() {
-      flex-direction: column;
-
-      a {
-        margin: 0.25em 0;
-      }
-    }
+.icons-top {
+  img {
+    width: 2.5em;
+    cursor: pointer;
   }
 }
 

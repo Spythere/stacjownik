@@ -54,9 +54,7 @@
             </td>
 
             <td>
-              <b>
-                {{ station.generalInfo?.abbr }}
-              </b>
+              {{ station.generalInfo?.abbr }}
             </td>
 
             <td class="station_level">
