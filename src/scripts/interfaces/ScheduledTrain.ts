@@ -1,32 +1,41 @@
-import TrainStop from "./TrainStop";
+import TrainStop from './TrainStop';
 
-export default interface ScheduledTrain {
-    trainId: string;
-    trainNo: number;
-    
-    driverName: string;
-    driverId: number;
-    currentStationName: string;
-    currentStationHash: string;
-    category: string;
-    stopInfo: TrainStop;
+export enum StopStatus {
+  'arriving' = 'arriving',
+  'departed' = 'departed',
+  'departed-away' = 'departed-away',
+  'online' = 'online',
+  'stopped' = 'stopped',
+  'terminated' = 'terminated',
+}
 
-    terminatesAt: string;
-    beginsAt: string;
+export interface ScheduledTrain {
+  trainId: string;
+  trainNo: number;
 
-    prevStationName: string;
-    nextStationName: string;
+  driverName: string;
+  driverId: number;
+  currentStationName: string;
+  currentStationHash: string;
+  category: string;
+  stopInfo: TrainStop;
 
-    arrivingLine: string | null;
-    departureLine: string | null;
+  terminatesAt: string;
+  beginsAt: string;
 
-    prevDepartureLine: string | null;
-    nextArrivalLine: string | null;
+  prevStationName: string;
+  nextStationName: string;
 
-    signal: string;
-    connectedTrack: string;
+  arrivingLine: string | null;
+  departureLine: string | null;
 
-    stopLabel: string;
-    stopStatus: string;
-    stopStatusID: number;
+  prevDepartureLine: string | null;
+  nextArrivalLine: string | null;
+
+  signal: string;
+  connectedTrack: string;
+
+  stopLabel: string;
+  stopStatus: StopStatus;
+  stopStatusID: number;
 }

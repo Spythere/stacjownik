@@ -23,6 +23,8 @@
       <a href="https://td2.info.pl/profile/?u=20777" target="_blank">Spythere</a>
       {{ new Date().getUTCFullYear() }} |
       <a :href="releaseURL" target="_blank">v{{ VERSION }}{{ isOnProductionHost ? '' : 'dev' }}</a>
+      <br />
+      <a href="https://discord.gg/x2mpNN3svk"><img :src="getIcon('discord', 'png')" alt="">&nbsp;<b>{{ $t('footer.discord') }}</b></a>
 
       <div style="display: none">&int; ukryta taktyczna całka do programowania w HTMLu</div>
     </footer>

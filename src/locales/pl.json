@@ -15,7 +15,9 @@
     "migration-confirm": "Przyjąłem!",
     "offline": "Aplikacja w trybie offline!"
   },
-
+  "footer": {
+    "discord": "Serwer Discord Stacjownika"
+  },
   "update": {
     "title": "Nowa wersja Stacjownika jest dostępna!",
     "paragraph1": "Miłego korzystania z aplikacji i niech S2 będzie z wami!",
@@ -23,7 +25,6 @@
     "confirm-button": "ZAKTUALIZUJ",
     "later-button": "PÓŹNIEJ"
   },
-
   "data-status": {
     "S1-offline": "<b>Sygnał S1</b> <br> Aplikacja działa w trybie offline!",
     "S1a-connection": "<b>Sygnał S1a</b> <br> Błąd podczas próby połączenia się z API Stacjownika!",
@@ -136,7 +137,7 @@
   },
   "filters": {
     "desc": " &bull; Kliknięcie: zaznaczenie / odznaczenie filtru <br /> &bull; Podwójne kliknięcie: odznaczenie reszty filtrów z <b class='text--primary'>grupy</b> <br /> &bull; <span style='color: coral'>RESET</span>: zresetowanie filtrów z <b class='text--primary'>grupy</b>",
-    
+
     "sections": {
       "reality": "FIKCYJNOŚĆ SCENERII",
       "package-access": "DOSTĘPNOŚĆ W PACZCE",
@@ -207,6 +208,7 @@
   },
   "sceneries": {
     "station": "Stacja",
+    "abbr": "Skrót\nposterunku",
     "min-lvl": "Min. poziom\ndyżurnego",
     "status": "Status",
     "dispatcher": "Dyżurny",
@@ -290,7 +292,7 @@
     "stock-info": "DODATKOWE INFORMACJE",
     "stock-length": "Długość",
     "stock-mass": "Masa",
-    "stock-max-speed": "Maks. zarejestrowana prędkość",
+    "stock-max-speed": "Prędkość maks.",
 
     "load-data": "Pobierz dalszą historię...",
 
@@ -374,7 +376,18 @@
     "end": "Koniec rozkładu jazdy",
     "terminated": "Rozkład jazdy zakończony",
     "begins": "ROZPOCZYNA\nBIEG",
-    "terminates": "KOŃCZY BIEG"
+    "terminates": "KOŃCZY BIEG",
+
+    "from": "Z",
+    "to": "DO",
+
+    "desc-arriving": "Pociągu nie ma jeszcze na tej scenerii. Przyjedzie z: {prevStationName} (szlak {prevDepartureLine})",
+    "desc-online": "Pociąg jest na tej scenerii. Odjedzie do: {nextStationName} (szlak {nextArrivalLine})",
+    "desc-stopped": "Pociąg jest na tej scenerii i odbywa postój. Odjedzie do: {nextStationName} (szlak {nextArrivalLine})",
+    "desc-next-arrival": "Odjeżdża do: {nextStationName} (szlak {nextArrivalLine})",
+    "desc-departed": "Pociąg jest na tej scenerii i został odprawiony. Odjeżdża do: {nextStationName} (szlak {nextArrivalLine})",
+    "desc-departed-away": "Pociąg został odprawiony i odjechał do: {nextStationName} (szlak {nextArrivalLine})",
+    "desc-end": "Pociąg kończy bieg"
   },
   "history": {
     "title": "DZIENNIK ROZKŁADÓW JAZDY"

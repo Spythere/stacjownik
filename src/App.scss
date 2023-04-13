@@ -91,6 +91,11 @@ footer.app_footer {
   max-width: 100%;
   padding: 0.5em;
 
+  img {
+    width: 1.1em;
+    vertical-align: text-bottom;
+  }
+
   z-index: 10;
 
   background: #111;

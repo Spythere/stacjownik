@@ -3,6 +3,10 @@
     <div class="select-box_content">
       <button class="selected" @click="toggleBox">
         <span>{{ computedSelectedItem.selectedValue || computedSelectedItem.value }}</span>
+
+        <div class="arrow">
+          <img :src="listOpen ? getIcon('arrow-asc') : getIcon('arrow-desc')" alt="arrow-icon" />
+        </div>
       </button>
 
       <ul class="options" :ref="(el) => (listRef = el as Element)">
@@ -20,10 +24,6 @@
           </transition>
         </li>
       </ul>
-    </div>
-
-    <div class="arrow">
-      <img :src="listOpen ? getIcon('arrow-asc') : getIcon('arrow-desc')" alt="arrow-icon" />
     </div>
   </div>
 </template>
@@ -129,46 +129,22 @@ export default defineComponent({
 }
 
 .select-box {
-  position: relative;
-  width: auto;
+  display: flex;
+  align-items: center;
 }
 
 .arrow {
-  position: absolute;
-  top: 50%;
-  right: 0;
-  padding: 0;
-
   img {
     vertical-align: middle;
     width: 1.35em;
   }
-
-  transform: translateY(-50%);
-
-  pointer-events: none;
 }
 
 button.selected {
-  background-color: transparent;
   color: paleturquoise;
 
-  font-size: 1em;
   font-weight: bold;
-
   padding: 0.1em 0.5em;
-  margin-right: 2em;
-
-  display: flex;
-
-
-  width: 100%;
-  cursor: pointer;
-
-  border: none;
-  outline: none;
-
-  text-align: left;
 
   &:focus {
     background-color: #262626;

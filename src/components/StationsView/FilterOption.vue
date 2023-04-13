@@ -50,9 +50,6 @@ export default defineComponent({
     handleDbClick(e: Event) {
       e.preventDefault();
 
-      
-      const lastClicked = this.filterStore.lastClickedFilterId == this.option.id;
-      console.log(this.filterStore.lastClickedFilterId);
       this.filterStore.lastClickedFilterId = this.option.id;
       this.option.value = true;
 
@@ -96,51 +93,8 @@ button {
   }
 
   &[data-selected='true'] {
-    //  &.reality {
-    //   background-color: $realityCol;
-    //   box-shadow: 0 0 6px 1px $realityCol;
-    // }
-
-    // &.access {
-    //   background-color: $accessCol;
-    //   box-shadow: 0 0 6px 1px $accessCol;
-    // }
-
-    // &.control {
-    //   background-color: $controlCol;
-    //   box-shadow: 0 0 6px 1px $controlCol;
-    // }
-
-    // &.signals {
-    //   background-color: $signalCol;
-    //   box-shadow: 0 0 6px 1px $signalCol;
-    // }
-
-    // &.routes {
-    //   background-color: $routesCol;
-    //   box-shadow: 0 0 6px 1px $routesCol;
-    // }
-
-    // &.status {
-    //   background-color: $statusCol;
-    //   box-shadow: 0 0 6px 1px $statusCol;
-    // }
-
-    // &.save {
-    //   background-color: $saveCol;
-    //   box-shadow: 0 0 6px 1px $saveCol;
-    // }
-
-    // &.troll {
-    //   background-color: firebrick;
-    //   box-shadow: 0 0 6px 1px firebrick;
-    // }
-
-    // & {
     background-color: forestgreen;
-
     font-weight: bold;
-    // }
   }
 }
 </style>

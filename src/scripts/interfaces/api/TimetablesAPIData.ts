@@ -38,6 +38,8 @@ export interface TimetableHistory {
   stopsString?: string;
 
   stockString?: string;
+  stockHistory: string[];
+
   stockMass?: number;
   stockLength?: number;
   maxSpeed?: number;

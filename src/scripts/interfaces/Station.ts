@@ -1,5 +1,5 @@
-import { Availability } from '../../store/storeTypes';
-import ScheduledTrain from './ScheduledTrain';
+import { Availability } from './store/storeTypes';
+import {ScheduledTrain} from './ScheduledTrain';
 import StationRoutes from './StationRoutes';
 
 export default interface Station {
@@ -8,9 +8,11 @@ export default interface Station {
   generalInfo?: {
     name: string;
     url: string;
-    
+    abbr: string;
+
     reqLevel: number;
     // supportersOnly: boolean;
+
     
     lines: string;
     project: string;

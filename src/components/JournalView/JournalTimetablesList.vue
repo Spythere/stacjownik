@@ -1,7 +1,7 @@
 <template>
   <transition-group class="journal-list" tag="ul" name="list-anim">
     <li
-      v-for="{ timetable, sceneryList, ...item } in computedTimetableHistory"
+      v-for="{ timetable, sceneryList, stockHistoryComp, ...item } in computedTimetableHistory"
       class="journal_item"
       :key="timetable.id"
       @click="item.showExtra.value = !item.showExtra.value"
@@ -129,24 +129,58 @@
           <img :src="getIcon(`arrow-${item.showExtra.value ? 'asc' : 'desc'}`)" alt="Arrow" />
         </button>
 
-        <div class="info-extended" v-if="timetable.stockString && item.showExtra.value">
+        <!-- Dodatkowe informacje -->
+        <div class="info-extended" v-if="timetable.stockString && timetable.stockMass && item.showExtra.value">
           <hr />
-          <div>
-            <span class="badge info-badge">
+
+          <div class="stock-specs">
+            <span class="badge specs-badge">
               <span>{{ $t('journal.stock-max-speed') }}</span>
               <span>{{ timetable.maxSpeed }}km/h</span>
             </span>
-            <span class="badge info-badge">
+            <span class="badge specs-badge">
               <span>{{ $t('journal.stock-length') }}</span>
-              <span>{{ timetable.stockLength }}m</span>
+              <span>
+                {{
+                  item.currentHistoryIndex.value == 0
+                    ? timetable.stockLength
+                    : stockHistoryComp[item.currentHistoryIndex.value].stockLength || timetable.stockLength
+                }}m
+              </span>
             </span>
-            <span class="badge info-badge">
+            <span class="badge specs-badge">
               <span>{{ $t('journal.stock-mass') }}</span>
-              <span>{{ Math.floor(timetable.stockMass! / 1000) }}t</span>
+              <span>
+                {{
+                  Math.floor(
+                    (item.currentHistoryIndex.value == 0
+                      ? timetable.stockMass!
+                      : stockHistoryComp[item.currentHistoryIndex.value].stockMass || timetable.stockMass) / 1000
+                  )
+                }}t
+              </span>
             </span>
           </div>
+
+          <div class="stock-history" v-if="stockHistoryComp.length > 1">
+            <button
+              class="btn--action"
+              v-for="(sh, i) in stockHistoryComp"
+              :data-checked="i == item.currentHistoryIndex.value"
+              @click.stop="item.currentHistoryIndex.value = i"
+            >
+              {{ sh.updatedAt }}
+            </button>
+          </div>
+
           <ul class="stock-list">
-            <li v-for="(car, i) in timetable.stockString.split(';')" :key="i">
+            <li
+              v-for="(car, i) in (item.currentHistoryIndex.value == 0
+                ? timetable.stockString
+                : stockHistoryComp[item.currentHistoryIndex.value].stockString
+              ).split(';')"
+              :key="i"
+            >
               <img
                 @error="onImageError"
                 :src="`https://rj.td2.info.pl/dist/img/thumbnails/${car.split(':')[0]}.png`"
@@ -168,7 +202,6 @@ import imageMixin from '../../mixins/imageMixin';
 import modalTrainMixin from '../../mixins/modalTrainMixin';
 import styleMixin from '../../mixins/styleMixin';
 import { TimetableHistory } from '../../scripts/interfaces/api/TimetablesAPIData';
-import { TimetableStop } from '../../scripts/interfaces/api/TrainAPIData';
 
 export default defineComponent({
   props: {
@@ -185,7 +218,24 @@ export default defineComponent({
       return this.timetableHistory.map((timetable) => ({
         timetable,
         sceneryList: this.getSceneryList(timetable),
+        stockHistoryComp: timetable.stockHistory
+          .slice()
+          .reverse()
+          .map((h) => {
+            const historyData = h.split('@');
+
+            return {
+              updatedAt: new Date(Number(historyData[0])).toLocaleTimeString(this.$i18n.locale, {
+                hour: '2-digit',
+                minute: '2-digit',
+              }),
+              stockString: historyData[1],
+              stockMass: Number(historyData[2]) || undefined,
+              stockLength: Number(historyData[3]) || undefined,
+            };
+          }),
         showExtra: ref(false),
+        currentHistoryIndex: ref(0),
       }));
     },
   },
@@ -308,6 +358,38 @@ ul.stock-list {
     color: #aaa;
     font-size: 0.9em;
   }
+
+  li > img {
+    vertical-align: text-bottom;
+    max-height: 60px;
+  }
+}
+
+.stock-specs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+  margin-top: 0.5em;
+
+  .specs-badge {
+    margin: 0;
+
+    span:last-child {
+      color: black;
+      background-color: $accentCol;
+    }
+  }
+}
+
+.stock-history {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+  margin-top: 1em;
+
+  button[data-checked='true'] {
+    color: $accentCol;
+  }
 }
 
 .scenery-list {
@@ -328,13 +410,6 @@ ul.stock-list {
   }
 }
 
-.info-badge {
-  span:last-child {
-    color: black;
-    background-color: $accentCol;
-  }
-}
-
 @include smallScreen {
   .info-general {
     flex-direction: column;
@@ -350,6 +425,14 @@ ul.stock-list {
 
   .btn--show {
     margin: 1em auto 0 auto;
+  }
+
+  .stock-specs {
+    justify-content: center;
+  }
+
+  .stock-history {
+    justify-content: center;
   }
 }
 </style>

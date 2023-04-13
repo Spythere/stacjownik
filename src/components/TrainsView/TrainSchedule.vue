@@ -202,7 +202,6 @@ ul.stock-list {
 
   img {
     max-height: 60px;
-    max-width: 320px;
   }
 }
 
