@@ -383,7 +383,7 @@
     "desc-next-arrival": "Leaves towards: {nextStationName} (szlak {nextArrivalLine})",
     "desc-departed": "The train is at the station and it's been departed. Leaves towards: {nextStationName} (szlak {nextArrivalLine})",
     "desc-departed-away": "The train has been departed to: {nextStationName} (szlak {nextArrivalLine})",
-    "desc-end": "The train terminates here"
+    "desc-terminated": "The train terminates here"
   },
   "history": {
     "title": "TIMETABLE JOURNAL",

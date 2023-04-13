@@ -387,7 +387,7 @@
     "desc-next-arrival": "Odjeżdża do: {nextStationName} (szlak {nextArrivalLine})",
     "desc-departed": "Pociąg jest na tej scenerii i został odprawiony. Odjeżdża do: {nextStationName} (szlak {nextArrivalLine})",
     "desc-departed-away": "Pociąg został odprawiony i odjechał do: {nextStationName} (szlak {nextArrivalLine})",
-    "desc-end": "Pociąg kończy bieg"
+    "desc-terminated": "Pociąg kończy bieg"
   },
   "history": {
     "title": "DZIENNIK ROZKŁADÓW JAZDY"
