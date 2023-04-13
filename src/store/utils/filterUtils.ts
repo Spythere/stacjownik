@@ -7,11 +7,6 @@ export const sortStations = (a: Station, b: Station, sorter: { headerName: HeadI
     case 'station':
       return sorter.dir == 1 ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
 
-    case 'abbr':
-      if ((a.generalInfo?.abbr || '') > (b.generalInfo?.abbr || '')) return sorter.dir;
-      if ((a.generalInfo?.abbr || '') < (b.generalInfo?.abbr || '')) return -sorter.dir;
-      break;
-
     case 'min-lvl':
       if ((a.generalInfo?.reqLevel || 0) > (b.generalInfo?.reqLevel || 0)) return sorter.dir;
       if ((a.generalInfo?.reqLevel || 0) < (b.generalInfo?.reqLevel || 0)) return -sorter.dir;
