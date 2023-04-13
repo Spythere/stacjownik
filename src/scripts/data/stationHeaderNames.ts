@@ -1,6 +1,5 @@
 export const headIds = [
   'station',
-  'abbr',
   'min-lvl',
   'status',
   'dispatcher',

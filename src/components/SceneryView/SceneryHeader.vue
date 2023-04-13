@@ -4,6 +4,8 @@
       {{ station.name }}
     </a>
 
+    <div class="scenery-abbrev">{{ $t('scenery.abbrev') }} <b>{{ station.generalInfo?.abbr }}</b></div>
+
     <div class="scenery-hash" v-if="station.onlineInfo?.hash">#{{ station.onlineInfo.hash }}</div>
   </section>
 </template>
@@ -28,16 +30,20 @@ export default defineComponent({
 
 .scenery-name {
   font-weight: bold;
-
-  position: relative;
-
   font-size: 3em;
 
   text-transform: uppercase;
 }
 
+.scenery-abbrev {
+  font-size: 1.3em;
+  color: #aaa;
+}
+
 .scenery-hash {
+  margin-top: 0.5em;
   color: #aaa;
   font-size: 1.2em;
 }
 </style>
+

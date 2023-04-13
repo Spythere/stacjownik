@@ -336,6 +336,7 @@
     "history-btn": "Przejdź do widoku historii dyżurnych ruchu",
     "info-btn": "Wróć do widoku scenerii",
     "authors-title": "Autor scenerii | Autorzy scenerii",
+    "abbrev": "Skrót posterunku:",
     "lines-title": "Rzeczywiste linie",
     "project-title": "Projekt",
     "one-way-routes": "Szlaki jednotorowe",
@@ -387,7 +388,8 @@
     "desc-next-arrival": "Odjeżdża do: {nextStationName} (szlak {nextArrivalLine})",
     "desc-departed": "Pociąg jest na tej scenerii i został odprawiony. Odjeżdża do: {nextStationName} (szlak {nextArrivalLine})",
     "desc-departed-away": "Pociąg został odprawiony i odjechał do: {nextStationName} (szlak {nextArrivalLine})",
-    "desc-end": "Pociąg kończy bieg"
+    "desc-end": "Pociąg kończy bieg",
+    "desc-terminated": "Pociąg skończył bieg"
   },
   "history": {
     "title": "DZIENNIK ROZKŁADÓW JAZDY"

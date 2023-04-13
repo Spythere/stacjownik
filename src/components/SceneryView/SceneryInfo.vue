@@ -30,8 +30,9 @@
               style="color: salmon; text-decoration: underline; font-weight: bold"
               :href="station.generalInfo.projectUrl"
               target="_blank"
-              >{{ station.generalInfo.project }}</a
             >
+              {{ station.generalInfo.project }}
+            </a>
           </span>
         </div>
 
