@@ -138,6 +138,7 @@ export default defineComponent({
 .header {
   &_body {
     position: relative;
+    max-width: 20em;
   }
 
   &_container {
@@ -157,7 +158,6 @@ export default defineComponent({
 
     img {
       width: 100%;
-      max-width: 20em;
 
       margin: 0 auto;
     }
@@ -187,7 +187,7 @@ export default defineComponent({
     padding: 0.5em;
 
     @include smallScreen {
-      transform: translateX(70%);
+      transform: translateX(85%);
     }
   }
 }
