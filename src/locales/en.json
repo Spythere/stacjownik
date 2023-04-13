@@ -205,7 +205,6 @@
   },
   "sceneries": {
     "station": "Station",
-    "abbr": "Station\nabbrev.",
     "min-lvl": "Min. dispatcher\nlevel",
     "status": "Status",
     "dispatcher": "Dispatcher",
@@ -332,6 +331,7 @@
     "history-btn": "View the dispatcher history",
     "info-btn": "Return to the scenery view",
     "authors-title": "Scenery author | Scenery authors",
+    "abbrev": "Station symbol:",
     "lines-title": "Real lines",
     "project-title": "Project name",
     "one-way-routes": "One way routes",
@@ -383,7 +383,8 @@
     "desc-next-arrival": "Leaves towards: {nextStationName} (szlak {nextArrivalLine})",
     "desc-departed": "The train is at the station and it's been departed. Leaves towards: {nextStationName} (szlak {nextArrivalLine})",
     "desc-departed-away": "The train has been departed to: {nextStationName} (szlak {nextArrivalLine})",
-    "desc-terminated": "The train terminates here"
+    "desc-end": "The train terminates here",
+    "desc-terminated": "The train has been terminated"
   },
   "history": {
     "title": "TIMETABLE JOURNAL",

@@ -53,10 +53,6 @@
               {{ station.name }}
             </td>
 
-            <td>
-              {{ station.generalInfo?.abbr }}
-            </td>
-
             <td class="station_level">
               <span v-if="station.generalInfo">
                 <span
