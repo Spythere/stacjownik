@@ -24,7 +24,7 @@
       {{ new Date().getUTCFullYear() }} |
       <a :href="releaseURL" target="_blank">v{{ VERSION }}{{ isOnProductionHost ? '' : 'dev' }}</a>
       <br />
-      <a href="https://discord.gg/x2mpNN3svk"><img :src="getIcon('discord', 'png')" alt="">&nbsp;<b>Discord Stacjownika</b></a>
+      <a href="https://discord.gg/x2mpNN3svk"><img :src="getIcon('discord', 'png')" alt="">&nbsp;<b>{{ $t('footer.discord') }}</b></a>
 
       <div style="display: none">&int; ukryta taktyczna całka do programowania w HTMLu</div>
     </footer>

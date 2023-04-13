@@ -15,6 +15,9 @@
     "migration-confirm": "Roger that!",
     "offline": "App is in the offline mode!"
   },
+  "footer": {
+    "discord": "Stacjownik Discord server"
+  },
   "update": {
     "title": "New version of the app is available!",
     "paragraph1": "Enjoy the application and may the green signal be with you!",
