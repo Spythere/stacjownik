@@ -3,18 +3,18 @@ import Filter from '../../scripts/interfaces/Filter';
 import Station from '../../scripts/interfaces/Station';
 
 export const sortStations = (a: Station, b: Station, sorter: { headerName: HeadIdsTypes; dir: number }) => {
+  let diff = 0;
+
   switch (sorter.headerName) {
     case 'station':
       return sorter.dir == 1 ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
 
     case 'min-lvl':
-      if ((a.generalInfo?.reqLevel || 0) > (b.generalInfo?.reqLevel || 0)) return sorter.dir;
-      if ((a.generalInfo?.reqLevel || 0) < (b.generalInfo?.reqLevel || 0)) return -sorter.dir;
+      diff = (a.generalInfo?.reqLevel || 0) - (b.generalInfo?.reqLevel || 0);
       break;
 
     case 'status':
-      if ((a.onlineInfo?.statusTimestamp || 0) > (b.onlineInfo?.statusTimestamp || 0)) return sorter.dir;
-      if ((a.onlineInfo?.statusTimestamp || 0) < (b.onlineInfo?.statusTimestamp || 0)) return -sorter.dir;
+      diff = (a.onlineInfo?.statusTimestamp || 0) - (b.onlineInfo?.statusTimestamp || 0);
       break;
 
     case 'dispatcher':
@@ -25,34 +25,40 @@ export const sortStations = (a: Station, b: Station, sorter: { headerName: HeadI
       break;
 
     case 'dispatcher-lvl':
-      if ((a.onlineInfo?.dispatcherExp || 0) > (b.onlineInfo?.dispatcherExp || 0)) return sorter.dir;
-      if ((a.onlineInfo?.dispatcherExp || 0) < (b.onlineInfo?.dispatcherExp || 0)) return -sorter.dir;
+      diff = (a.onlineInfo?.dispatcherExp || 0) - (b.onlineInfo?.dispatcherExp || 0);
       break;
 
     case 'user':
-      if ((a.onlineInfo?.currentUsers || 0) > (b.onlineInfo?.currentUsers || 0)) return sorter.dir;
-      if ((a.onlineInfo?.currentUsers || 0) < (b.onlineInfo?.currentUsers || 0)) return -sorter.dir;
-
-      if ((a.onlineInfo?.maxUsers || 0) > (b.onlineInfo?.maxUsers || 0)) return sorter.dir;
-      if ((a.onlineInfo?.maxUsers || 0) < (b.onlineInfo?.maxUsers || 0)) return -sorter.dir;
+      diff =
+        (a.onlineInfo?.currentUsers || a.onlineInfo?.maxUsers || 0) -
+        (b.onlineInfo?.currentUsers || b.onlineInfo?.maxUsers || 0);
       break;
 
     case 'spawn':
-      if ((a.onlineInfo?.spawns.length || 0) > (b.onlineInfo?.spawns.length || 0)) return sorter.dir;
-      if ((a.onlineInfo?.spawns.length || 0) < (b.onlineInfo?.spawns.length || 0)) return -sorter.dir;
-
+      diff = (a.onlineInfo?.spawns.length || 0) - (b.onlineInfo?.spawns.length || 0);
       break;
 
-    case 'timetable':
-      if ((a.onlineInfo?.scheduledTrains?.length || 0) > (b.onlineInfo?.scheduledTrains?.length || 0))
-        return sorter.dir;
-      if ((a.onlineInfo?.scheduledTrains?.length || 0) < (b.onlineInfo?.scheduledTrains?.length || 0))
-        return -sorter.dir;
+    case 'timetableConfirmed':
+      diff =
+        (a.onlineInfo?.scheduledTrains?.filter((train) => train.stopInfo.confirmed).length || 0) -
+        (b.onlineInfo?.scheduledTrains?.filter((train) => train.stopInfo.confirmed).length || 0);
+      break;
+
+    case 'timetableUnconfirmed':
+      diff =
+        (a.onlineInfo?.scheduledTrains?.filter((train) => !train.stopInfo.confirmed).length || 0) -
+        (b.onlineInfo?.scheduledTrains?.filter((train) => !train.stopInfo.confirmed).length || 0);
+      break;
+
+    case 'timetableAll':
+      diff = (a.onlineInfo?.scheduledTrains?.length || 0) - (b.onlineInfo?.scheduledTrains?.length || 0);
+      break;
 
     default:
       break;
   }
 
+  if (diff != 0) return Math.sign(diff) * sorter.dir;
   return a.name.localeCompare(b.name);
 };
 

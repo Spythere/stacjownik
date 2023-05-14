@@ -8,7 +8,12 @@
       <table>
         <thead>
           <tr>
-            <th v-for="(headerName, i) in headIds" :key="headerName" @click="changeSorter(headerName)">
+            <th
+              v-for="(headerName, i) in headIds"
+              :key="headerName"
+              @click="changeSorter(headerName)"
+              class="header-text"
+            >
               <span class="header_wrapper">
                 <div v-html="$t(`sceneries.${headerName}`)"></div>
 
@@ -21,9 +26,14 @@
               </span>
             </th>
 
-            <th v-for="(headerName, i) in headIconsIds" :key="headerName" @click="changeSorter(headerName)">
+            <th
+              v-for="(headerName, i) in headIconsIds"
+              :key="headerName"
+              @click="changeSorter(headerName)"
+              class="header-image"
+            >
               <span class="header_wrapper">
-                <img :src="getIcon(headerName)" :alt="headerName" :title="$t(`sceneries.${headerName}s`)" />
+                <img :src="getIcon(headerName)" :alt="headerName" :title="$t(`sceneries.${headerName}`)" />
 
                 <img
                   class="sort-icon"
@@ -190,27 +200,35 @@
 
             <td class="station_users" :class="{ inactive: !station.onlineInfo }">
               <span>
-                <span class="highlight">{{ station.onlineInfo?.currentUsers || '0' }}</span>
+                <span class="highlight">{{ station.onlineInfo?.currentUsers || 0 }}</span>
                 /
-                <span>{{ station.onlineInfo?.maxUsers || '0' }}</span>
+                <span>{{ station.onlineInfo?.maxUsers || 0 }}</span>
               </span>
             </td>
 
             <td class="station_spawns" :class="{ inactive: !station.onlineInfo }">
-              <span class="highlight">{{ station.onlineInfo?.spawns.length || '0' }}</span>
+              <span class="highlight">{{ station.onlineInfo?.spawns.length || 0 }}</span>
             </td>
 
-            <td class="station_schedules" :class="{ inactive: !station.onlineInfo }">
-              <span>
-                <span class="highlight">
-                  {{ station.onlineInfo?.scheduledTrains?.length || '0' }}
-                </span>
-                /
-                <span style="color: #bbb">
-                  {{ station.onlineInfo?.scheduledTrains?.filter((train) => train.stopInfo.confirmed).length || '0' }}
-                </span>
+            <td class="station_schedules" colspan="3" style="width: 30px" :class="{ inactive: !station.onlineInfo }">
+              <span class="highlight">
+                {{ station.onlineInfo?.scheduledTrains?.length || 0 }}
+              </span>
+              /
+              <span style="color: #66ff6c">
+                {{ station.onlineInfo?.scheduledTrains?.filter((train) => train.stopInfo.confirmed).length || 0 }}
+              </span>
+              /
+              <span style="color: #ccc">
+                {{ station.onlineInfo?.scheduledTrains?.filter((train) => !train.stopInfo.confirmed).length || 0 }}
               </span>
             </td>
+
+            <!-- <td class="station_schedules" :class="{ inactive: !station.onlineInfo }">
+              {{
+                (station.onlineInfo?.scheduledTrains?.filter((train) => !train.stopInfo.confirmed).length || 0)
+              }}
+            </td> -->
           </tr>
         </tbody>
       </table>
@@ -352,9 +370,15 @@ table {
     position: sticky;
     top: 0;
 
-    min-width: 80px;
+    &.header-text {
+      min-width: 140px;
+    }
 
-    padding: 0.5em;
+    &.header-image {
+      min-width: 60px;
+    }
+
+    padding: 0.5em 0.25em;
     background-color: $bgCol;
     white-space: pre-wrap;
 
