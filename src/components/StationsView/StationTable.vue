@@ -202,33 +202,31 @@
               <span>
                 <span class="highlight">{{ station.onlineInfo?.currentUsers || 0 }}</span>
                 /
-                <span>{{ station.onlineInfo?.maxUsers || 0 }}</span>
+                <span class="highlight">{{ station.onlineInfo?.maxUsers || 0 }}</span>
               </span>
             </td>
 
             <td class="station_spawns" :class="{ inactive: !station.onlineInfo }">
-              <span class="highlight">{{ station.onlineInfo?.spawns.length || 0 }}</span>
+              <span>{{ station.onlineInfo?.spawns.length || 0 }}</span>
             </td>
 
-            <td class="station_schedules" colspan="3" style="width: 30px" :class="{ inactive: !station.onlineInfo }">
+            <td class="station_schedules" style="width: 30px" :class="{ inactive: !station.onlineInfo }">
               <span class="highlight">
                 {{ station.onlineInfo?.scheduledTrains?.length || 0 }}
               </span>
-              /
-              <span style="color: #66ff6c">
-                {{ station.onlineInfo?.scheduledTrains?.filter((train) => train.stopInfo.confirmed).length || 0 }}
-              </span>
-              /
+            </td>
+
+            <td class="station_schedules" style="width: 30px" :class="{ inactive: !station.onlineInfo }">
               <span style="color: #ccc">
                 {{ station.onlineInfo?.scheduledTrains?.filter((train) => !train.stopInfo.confirmed).length || 0 }}
               </span>
             </td>
 
-            <!-- <td class="station_schedules" :class="{ inactive: !station.onlineInfo }">
-              {{
-                (station.onlineInfo?.scheduledTrains?.filter((train) => !train.stopInfo.confirmed).length || 0)
-              }}
-            </td> -->
+            <td class="station_schedules" style="width: 30px" :class="{ inactive: !station.onlineInfo }">
+              <span style="color: #66ff6c">
+                {{ station.onlineInfo?.scheduledTrains?.filter((train) => train.stopInfo.confirmed).length || 0 }}
+              </span>
+            </td>
           </tr>
         </tbody>
       </table>
