@@ -29,29 +29,37 @@ export const sortStations = (a: Station, b: Station, sorter: { headerName: HeadI
       break;
 
     case 'user':
-      diff =
-        (a.onlineInfo?.currentUsers || a.onlineInfo?.maxUsers || 0) -
-        (b.onlineInfo?.currentUsers || b.onlineInfo?.maxUsers || 0);
+      diff = (b.onlineInfo ? b.onlineInfo.currentUsers : -1) - (a.onlineInfo ? a.onlineInfo.currentUsers : -1);
       break;
 
     case 'spawn':
-      diff = (a.onlineInfo?.spawns.length || 0) - (b.onlineInfo?.spawns.length || 0);
+      diff = (a.onlineInfo ? a.onlineInfo.spawns.length : -1) - (b.onlineInfo ? b.onlineInfo.spawns.length : -1);
       break;
 
     case 'timetableConfirmed':
       diff =
-        (a.onlineInfo?.scheduledTrains?.filter((train) => train.stopInfo.confirmed).length || 0) -
-        (b.onlineInfo?.scheduledTrains?.filter((train) => train.stopInfo.confirmed).length || 0);
+        (a.onlineInfo?.scheduledTrains
+          ? a.onlineInfo.scheduledTrains.filter((train) => train.stopInfo.confirmed).length
+          : -1) -
+        (b.onlineInfo?.scheduledTrains
+          ? b.onlineInfo.scheduledTrains.filter((train) => train.stopInfo.confirmed).length
+          : -1);
       break;
 
     case 'timetableUnconfirmed':
       diff =
-        (a.onlineInfo?.scheduledTrains?.filter((train) => !train.stopInfo.confirmed).length || 0) -
-        (b.onlineInfo?.scheduledTrains?.filter((train) => !train.stopInfo.confirmed).length || 0);
+        (a.onlineInfo?.scheduledTrains
+          ? a.onlineInfo.scheduledTrains.filter((train) => !train.stopInfo.confirmed).length
+          : -1) -
+        (b.onlineInfo?.scheduledTrains
+          ? b.onlineInfo.scheduledTrains.filter((train) => !train.stopInfo.confirmed).length
+          : -1);
       break;
 
     case 'timetableAll':
-      diff = (a.onlineInfo?.scheduledTrains?.length || 0) - (b.onlineInfo?.scheduledTrains?.length || 0);
+      diff =
+        (a.onlineInfo?.scheduledTrains ? a.onlineInfo.scheduledTrains.length : -1) -
+        (b.onlineInfo?.scheduledTrains ? b.onlineInfo.scheduledTrains.length : -1);
       break;
 
     default:
