@@ -3,7 +3,7 @@ import { defineStore } from 'pinia';
 import { io } from 'socket.io-client';
 import { DataStatus } from '../scripts/enums/DataStatus';
 import StationAPIData from '../scripts/interfaces/api/StationAPIData';
-import {ScheduledTrain} from '../scripts/interfaces/ScheduledTrain';
+import { ScheduledTrain } from '../scripts/interfaces/ScheduledTrain';
 import Station from '../scripts/interfaces/Station';
 import StationRoutes from '../scripts/interfaces/StationRoutes';
 import Train from '../scripts/interfaces/Train';
@@ -303,57 +303,39 @@ export const useStore = defineStore('store', {
             ...scenery,
             authors: scenery.authors?.split(',').map((a) => a.trim()),
             routes:
-              scenery.routes
-                ?.split(';')
-                .filter((routeString) => routeString)
-                .reduce(
-                  (acc, routeString) => {
-                    const specs1 = routeString.split('_')[0];
-                    const isInternal = specs1.startsWith('!');
-                    const name = isInternal ? specs1.replace('!', '') : specs1;
+              scenery.routesInfo.reduce(
+                (acc, route) => {
+                  const propName: keyof StationRoutes = `${route.routeTracks == 2 ? 'twoWay' : 'oneWay'}${
+                    route.isElectric ? '' : 'No'
+                  }CatenaryRouteNames`;
 
-                    const specs2 = routeString.split('_')[1].split('');
-                    const twoWay = specs2[0] == '2';
-                    const catenary = specs2[1] == 'E';
-                    const SBL = specs2[2] == 'S';
-                    const TWB = specs2[3] ? true : false;
-                    const speed = Number(routeString.split(':')[1]) || 0;
-                    const length = Number(routeString.split(':')[2]) || 0;
+                  acc[route.routeTracks == 2 ? 'twoWay' : 'oneWay'].push({
+                    name: route.routeName,
+                    SBL: route.isRouteSBL,
+                    TWB: false,
+                    catenary: route.isElectric,
+                    isInternal: route.isInternal,
+                    tracks: route.routeTracks,
+                    length: route.routeLength,
+                    speed: route.routeSpeed,
+                  });
 
-                    const propName = twoWay
-                      ? catenary
-                        ? 'twoWayCatenaryRouteNames'
-                        : 'twoWayNoCatenaryRouteNames'
-                      : catenary
-                      ? 'oneWayCatenaryRouteNames'
-                      : 'oneWayNoCatenaryRouteNames';
+                  if (!route.isInternal) acc[propName].push(route.routeName);
 
-                    acc[twoWay ? 'twoWay' : 'oneWay'].push({
-                      name,
-                      SBL,
-                      TWB,
-                      catenary,
-                      isInternal,
-                      tracks: twoWay ? 2 : 1,
-                      length,
-                      speed,
-                    });
-                    if (!isInternal) acc[propName].push(name);
+                  if (route.isRouteSBL) acc['sblRouteNames'].push(route.routeName);
 
-                    if (SBL) acc['sblRouteNames'].push(name);
-
-                    return acc;
-                  },
-                  {
-                    oneWay: [],
-                    twoWay: [],
-                    sblRouteNames: [],
-                    oneWayCatenaryRouteNames: [],
-                    oneWayNoCatenaryRouteNames: [],
-                    twoWayCatenaryRouteNames: [],
-                    twoWayNoCatenaryRouteNames: [],
-                  } as StationRoutes
-                ) || {},
+                  return acc;
+                },
+                {
+                  oneWay: [],
+                  twoWay: [],
+                  sblRouteNames: [],
+                  oneWayCatenaryRouteNames: [],
+                  oneWayNoCatenaryRouteNames: [],
+                  twoWayCatenaryRouteNames: [],
+                  twoWayNoCatenaryRouteNames: [],
+                } as StationRoutes
+              ) || {},
             checkpoints: scenery.checkpoints
               ? scenery.checkpoints.split(';').map((sub) => ({ checkpointName: sub, scheduledTrains: [] }))
               : [],

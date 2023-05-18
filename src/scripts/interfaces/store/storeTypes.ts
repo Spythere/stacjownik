@@ -55,6 +55,16 @@ export interface APIData {
   connectedSocketCount: number;
 }
 
+export interface StationRoutesInfo {
+  routeName: string;
+  isElectric: boolean;
+  isInternal: boolean;
+  isRouteSBL: boolean;
+  routeLength: number;
+  routeSpeed: number;
+  routeTracks: number;
+}
+
 export interface StationJSONData {
   name: string;
   abbr: string;
@@ -70,7 +80,8 @@ export interface StationJSONData {
 
   SUP: boolean;
 
-  routes: string;
+  // routes: string;
+  routesInfo: StationRoutesInfo[];
 
   checkpoints: string | null;
   authors?: string;
