@@ -1,7 +1,9 @@
 {
   "general": {
     "and": " and ",
-    "refresh": "REFRESH"
+    "refresh": "REFRESH",
+    "TWR": "High risk freight train",
+    "SKR": "Train with exceeded gauge"
   },
   "app": {
     "sceneries": "SCENERIES",

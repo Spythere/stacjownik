@@ -6,8 +6,8 @@
         <span class="timetable-id" v-if="train.timetableData">#{{ train.timetableData.timetableId }}</span>
 
         <span class="timetable_warnings" v-if="train.timetableData?.TWR || train.timetableData?.SKR">
-          <span class="train-badge twr" v-if="train.timetableData?.TWR">TWR</span>
-          <span class="train-badge skr" v-if="train.timetableData?.SKR">SKR</span>
+          <span class="train-badge twr" v-if="train.timetableData?.TWR" :title="$t('general.TWR')">TWR</span>
+          <span class="train-badge skr" v-if="train.timetableData?.SKR" :title="$t('general.SKR')">SKR</span>
         </span>
 
         <strong>
@@ -118,7 +118,6 @@ export default defineComponent({
 @import '../../styles/responsive.scss';
 @import '../../styles/badge.scss';
 
-
 .image-warning {
   height: 1em;
 
@@ -182,26 +181,6 @@ export default defineComponent({
   gap: 0.25em;
 }
 
-.train-badge {
-  padding: 0.1em 0.2em;
-  border-radius: 0.2em;
-  font-weight: bold;
-
-  font-size: 0.9em;
-
-  &.twr {
-    background-color: var(--clr-twr);
-  }
-
-  &.skr {
-    background-color: var(--clr-skr);
-  }
-
-  &.offline {
-    background-color: #9c362b;
-  }
-}
-
 .train-driver {
   &.supporter {
     color: orange;
@@ -218,9 +197,7 @@ export default defineComponent({
 
 .timetable_warnings {
   display: flex;
-  gap: 0.2em;
-
-  color: black;
+  gap: 0.25em;
 }
 
 .timetable_progress {

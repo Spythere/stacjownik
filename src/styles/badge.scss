@@ -55,3 +55,22 @@
     background-color: forestgreen;
   }
 }
+
+.train-badge {
+  padding: 0.1em 0.2em;
+  border-radius: 0.2em;
+  font-weight: bold;
+
+  font-size: 0.9em;
+
+  &.twr {
+    background-color: var(--clr-twr);
+    box-shadow:  0 0 5px 1px var(--clr-twr);
+    color: black;
+  }
+
+  &.skr {
+    background-color: var(--clr-skr);
+    box-shadow:  0 0 5px 1px var(--clr-skr);
+  }
+}

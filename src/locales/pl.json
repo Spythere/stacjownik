@@ -1,7 +1,9 @@
 {
   "general": {
     "and": " oraz ",
-    "refresh": "ODŚWIEŻ"
+    "refresh": "ODŚWIEŻ",
+    "TWR": "Towar niebezpieczny wysokiego ryzyka",
+    "SKR": "Przekroczona skrajnia"
   },
   "app": {
     "sceneries": "SCENERIE",
