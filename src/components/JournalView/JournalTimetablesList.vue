@@ -16,6 +16,12 @@
             style="cursor: pointer"
           >
             <span class="text--grayed">#{{ timetable.id }}</span>
+
+            <span class="badges" v-if="timetable.skr || timetable.twr">
+              <span class="train-badge twr" v-if="timetable.twr" :title="$t('general.TWR')">TWR</span>
+              <span class="train-badge skr" v-if="timetable.skr" :title="$t('general.SKR')">SKR</span>
+            </span>
+
             <span>
               <strong class="text--primary">
                 {{ timetable.trainCategoryCode }}
@@ -342,6 +348,7 @@ hr {
 
 .general-train {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.25em;
 }
@@ -381,6 +388,13 @@ ul.stock-list {
   }
 }
 
+.badges {
+  display: flex;
+  gap: 0.25em;
+
+  // badge.scss
+}
+
 .stock-history {
   display: flex;
   flex-wrap: wrap;
@@ -416,6 +430,10 @@ ul.stock-list {
   }
   .info-extended {
     text-align: center;
+  }
+
+  .general-train {
+    justify-content: center;
   }
 
   .info-route {
