@@ -47,10 +47,12 @@ export interface TimetableHistory {
   hashesString?: string;
   currentSceneryName?: string;
   currentSceneryHash?: string;
+
+  routeSceneries?: string;
 }
 
 export interface SceneryTimetableHistory {
-  sceneryTimetables: TimetableHistory[];
-  totalCount: number;
-  sceneryName: string;
+  timetables: TimetableHistory[];
+  // totalCount: number;
+  // sceneryName: string;
 }
