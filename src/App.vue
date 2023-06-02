@@ -11,7 +11,6 @@
     <AppHeader :current-lang="currentLang" @change-lang="changeLang" />
 
     <main class="app_main">
-      TEST
       <router-view v-slot="{ Component }">
         <keep-alive exclude="JournalView">
           <component :is="Component" :key="$route.name" />
