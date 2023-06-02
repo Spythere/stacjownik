@@ -65,12 +65,16 @@
 
   &.twr {
     background-color: var(--clr-twr);
-    box-shadow:  0 0 5px 1px var(--clr-twr);
+    box-shadow: 0 0 5px 1px var(--clr-twr);
     color: black;
   }
 
   &.skr {
     background-color: var(--clr-skr);
-    box-shadow:  0 0 5px 1px var(--clr-skr);
+    box-shadow: 0 0 5px 1px var(--clr-skr);
+  }
+
+  &.offline {
+    background-color: #be3728;
   }
 }
