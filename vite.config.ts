@@ -9,7 +9,7 @@ export default defineConfig({
   plugins: [
     vue(),
     VitePWA({
-      registerType: 'prompt',
+      registerType: 'autoUpdate',
 
       workbox: {
         globPatterns: ['**/*.{js,css,html,png,svg,jpg}'],
