@@ -58,23 +58,26 @@
 import { defineComponent, provide, reactive, Ref, ref } from 'vue';
 import axios from 'axios';
 
-import DriverStats from '../components/JournalView/JournalDriverStats.vue';
-import Loading from '../components/Global/Loading.vue';
-import { JournalTimetableSorter } from '../types/Journal/JournalTimetablesTypes';
+import imageMixin from '../mixins/imageMixin';
 import dateMixin from '../mixins/dateMixin';
 import routerMixin from '../mixins/routerMixin';
+import modalTrainMixin from '../mixins/modalTrainMixin';
+
+import DriverStats from '../components/JournalView/JournalDriverStats.vue';
+import JournalOptions from '../components/JournalView/JournalOptions.vue';
+import JournalStats from '../components/JournalView/JournalStats.vue';
+import JournalHeader from '../components/JournalView/JournalHeader.vue';
+import JournalTimetablesList from '../components/JournalView/JournalTimetablesList.vue';
+import Loading from '../components/Global/Loading.vue';
+
+import { JournalTimetableSorter } from '../types/Journal/JournalTimetablesTypes';
 import { DataStatus } from '../scripts/enums/DataStatus';
 import { TimetableHistory } from '../scripts/interfaces/api/TimetablesAPIData';
 import { URLs } from '../scripts/utils/apiURLs';
 import { useStore } from '../store/store';
-import JournalOptions from '../components/JournalView/JournalOptions.vue';
 import { JournalTimetableSearchType } from '../types/Journal/JournalTimetablesTypes';
-import modalTrainMixin from '../mixins/modalTrainMixin';
-import imageMixin from '../mixins/imageMixin';
-import JournalTimetablesList from '../components/JournalView/JournalTimetablesList.vue';
 import { journalTimetableFilters } from '../constants/Journal/JournalTimetablesConsts';
-import JournalStats from '../components/JournalView/JournalStats.vue';
-import JournalHeader from '../components/JournalView/JournalHeader.vue';
+
 import { LocationQuery } from 'vue-router';
 import { TimetablesQueryParams } from '../scripts/interfaces/api/TimetablesQueryParams';
 import { JournalFilterType } from '../scripts/enums/JournalFilterType';
@@ -148,8 +151,8 @@ export default defineComponent({
   },
 
   watch: {
-    currentQueryArray(q: string[]) {
-      this.currentOptionsActive = q.length >= 2 || q.some((qv) => qv.startsWith('sortBy=') && qv.split('=')[1]);
+    currentQueryParams(q: TimetablesQueryParams) {
+      this.currentOptionsActive = Object.values(q).some((v) => v !== undefined);
     },
   },
 
@@ -181,15 +184,16 @@ export default defineComponent({
       if ('timetableId' in query) this.searchersValues['search-train'] = `#${query.timetableId}`;
     },
 
-    setSearchers(date: string, driver: string, train: string, dispatcher: string) {
+    setSearchers(date: string, driver: string, train: string, dispatcher: string, issuedFrom: string) {
       this.searchersValues['search-date'] = date;
       this.searchersValues['search-driver'] = driver;
       this.searchersValues['search-train'] = train;
       this.searchersValues['search-dispatcher'] = dispatcher;
+      this.searchersValues['search-issuedFrom'] = issuedFrom;
     },
 
     resetOptions() {
-      this.setSearchers('', '', '', '');
+      this.setSearchers('', '', '', '', '');
 
       this.journalFilterActive = this.journalTimetableFilters[0];
       this.sorterActive.id = 'timetableId';
@@ -229,37 +233,47 @@ export default defineComponent({
       const timestampFrom = dateString ? Date.parse(new Date(dateString).toISOString()) - 120 * 60 * 1000 : undefined;
       const timestampTo = timestampFrom ? timestampFrom + 86400000 : undefined;
 
+      const queryParams: TimetablesQueryParams = {};
+
       switch (this.journalFilterActive.id) {
-        case JournalFilterType.abandoned:
-          this.currentQueryParams['fulfilled'] = 0;
-          this.currentQueryParams['terminated'] = 1;
+        case JournalFilterType.ABANDONED:
+          queryParams['fulfilled'] = 0;
+          queryParams['terminated'] = 1;
           break;
 
-        case JournalFilterType.active:
-          this.currentQueryParams['terminated'] = 0;
+        case JournalFilterType.ACTIVE:
+          queryParams['fulfilled'] = undefined;
+          queryParams['terminated'] = 0;
           break;
 
-        case JournalFilterType.fulfilled:
-          this.currentQueryParams['fulfilled'] = 1;
+        case JournalFilterType.FULFILLED:
+          queryParams['terminated'] = undefined;
+          queryParams['fulfilled'] = 1;
+          break;
+        case JournalFilterType.ALL:
+          queryParams['terminated'] = undefined;
+          queryParams['fulfilled'] = undefined;
           break;
 
         default:
           break;
       }
 
-      this.currentQueryParams['driverName'] = driverName;
-      this.currentQueryParams['trainNo'] = trainNo;
+      queryParams['driverName'] = driverName;
+      queryParams['trainNo'] = trainNo;
 
-      this.currentQueryParams['countFrom'] = undefined;
-      this.currentQueryParams['countLimit'] = undefined;
+      queryParams['countFrom'] = undefined;
+      queryParams['countLimit'] = undefined;
 
-      this.currentQueryParams['authorName'] = authorName;
-      this.currentQueryParams['timestampFrom'] = timestampFrom;
-      this.currentQueryParams['timestampTo'] = timestampTo;
-      this.currentQueryParams['issuedFrom'] = issuedFrom;
-      this.currentQueryParams['sortBy'] = this.sorterActive.id != 'timetableId' ? this.sorterActive.id : undefined;
+      queryParams['authorName'] = authorName;
+      queryParams['timestampFrom'] = timestampFrom;
+      queryParams['timestampTo'] = timestampTo;
+      queryParams['issuedFrom'] = issuedFrom;
+      queryParams['sortBy'] = this.sorterActive.id != 'timetableId' ? this.sorterActive.id : undefined;
 
-      this.dataStatus = DataStatus.Loading;
+      if (JSON.stringify(this.currentQueryParams) != JSON.stringify(queryParams)) this.dataStatus = DataStatus.Loading;
+
+      this.currentQueryParams = queryParams;
 
       try {
         const responseData: TimetableHistory[] = await (

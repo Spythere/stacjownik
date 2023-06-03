@@ -1,6 +1,11 @@
-import { JournalFilterType } from '../../scripts/enums/JournalFilterType';
+import { JournalFilterSection, JournalFilterType } from '../../scripts/enums/JournalFilterType';
 
-export type JournalTimetableSearchKey = 'search-driver' | 'search-train' | 'search-date' | 'search-dispatcher' | 'search-issuedFrom'; 
+export type JournalTimetableSearchKey =
+  | 'search-driver'
+  | 'search-train'
+  | 'search-date'
+  | 'search-dispatcher'
+  | 'search-issuedFrom';
 
 export type JournalTimetableSearchType = {
   [key in JournalTimetableSearchKey]: string;
@@ -8,7 +13,7 @@ export type JournalTimetableSearchType = {
 
 export interface JournalTimetableFilter {
   id: JournalFilterType;
-  filterSection: string;
+  filterSection: JournalFilterSection;
   isActive: boolean;
 }
 

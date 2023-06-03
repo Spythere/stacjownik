@@ -103,6 +103,7 @@ import { useStore } from '../../store/store';
 import { JournalTimetableFilter } from '../../types/Journal/JournalTimetablesTypes';
 import ActionButton from '../Global/ActionButton.vue';
 import SelectBox from '../Global/SelectBox.vue';
+import { JournalFilterSection } from '../../scripts/enums/JournalFilterType';
 
 export default defineComponent({
   components: { SelectBox, ActionButton },
@@ -139,6 +140,7 @@ export default defineComponent({
   data() {
     return {
       showOptions: false,
+      JournalFilterSection,
 
       driverSuggestions: [] as string[],
       dispatcherSuggestions: [] as string[],
