@@ -132,8 +132,8 @@ export default defineComponent({
 
     optionsType: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
 
   data() {
@@ -247,10 +247,6 @@ export default defineComponent({
       this.$nextTick(() => {
         if (this.showOptions) (this.$refs['button'] as HTMLButtonElement)?.focus();
       });
-    },
-
-    focusEnd() {
-      console.log('focus end');
     },
 
     onSorterChange(item: { id: string | number; value: string }) {
