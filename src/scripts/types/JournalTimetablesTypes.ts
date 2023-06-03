@@ -1,4 +1,4 @@
-import { JournalFilterSection, JournalFilterType } from '../../scripts/enums/JournalFilterType';
+import { JournalFilterSection, JournalFilterType } from '../enums/JournalFilterType';
 
 export type JournalTimetableSearchKey =
   | 'search-driver'

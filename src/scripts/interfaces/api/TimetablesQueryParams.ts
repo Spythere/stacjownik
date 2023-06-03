@@ -1,4 +1,4 @@
-import { JournalTimetableSorter } from '../../../types/Journal/JournalTimetablesTypes';
+import { JournalTimetableSorter } from '../../types/JournalTimetablesTypes';
 
 export interface TimetablesQueryParams {
   driverName?: string;

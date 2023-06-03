@@ -82,10 +82,10 @@
 import { defineComponent, inject, PropType } from 'vue';
 import imageMixin from '../../mixins/imageMixin';
 import keyMixin from '../../mixins/keyMixin';
-import { TrainFilter } from '../../types/Trains/TrainOptionsTypes';
 import ActionButton from '../Global/ActionButton.vue';
 import SelectBox from '../Global/SelectBox.vue';
 import { TrainFilterSection } from '../../scripts/enums/TrainFilterType';
+import { TrainFilter } from '../../scripts/interfaces/Trains/TrainFilter';
 
 export default defineComponent({
   components: { SelectBox, ActionButton },

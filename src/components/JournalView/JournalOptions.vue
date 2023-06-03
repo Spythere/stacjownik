@@ -100,7 +100,7 @@ import { DataStatus } from '../../scripts/enums/DataStatus';
 import { DriverStatsAPIData } from '../../scripts/interfaces/api/DriverStatsAPIData';
 import { URLs } from '../../scripts/utils/apiURLs';
 import { useStore } from '../../store/store';
-import { JournalTimetableFilter } from '../../types/Journal/JournalTimetablesTypes';
+import { JournalTimetableFilter } from '../../scripts/types/JournalTimetablesTypes';
 import ActionButton from '../Global/ActionButton.vue';
 import SelectBox from '../Global/SelectBox.vue';
 import { JournalFilterSection } from '../../scripts/enums/JournalFilterType';

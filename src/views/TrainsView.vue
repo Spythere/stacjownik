@@ -21,7 +21,7 @@ import modalTrainMixin from '../mixins/modalTrainMixin';
 import Train from '../scripts/interfaces/Train';
 import { filteredTrainList } from '../scripts/managers/trainFilterManager';
 import { useStore } from '../store/store';
-import { TrainFilter } from '../types/Trains/TrainOptionsTypes';
+import { TrainFilter } from '../scripts/interfaces/Trains/TrainFilter';
 
 export default defineComponent({
   components: {

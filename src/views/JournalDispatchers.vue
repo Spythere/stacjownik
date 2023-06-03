@@ -70,7 +70,7 @@ import { URLs } from '../scripts/utils/apiURLs';
 import { DataStatus } from '../scripts/enums/DataStatus';
 import { useStore } from '../store/store';
 import JournalDispatchersList from '../components/JournalView/JournalDispatchersList.vue';
-import { JournalDispatcherSearcher, JournalDispatcherSorter } from '../types/Journal/JournalDispatcherTypes';
+import { JournalDispatcherSearcher, JournalDispatcherSorter } from '../scripts/types/JournalDispatcherTypes';
 import { DispatcherHistory } from '../scripts/interfaces/api/DispatchersAPIData';
 import JournalHeader from '../components/JournalView/JournalHeader.vue';
 import { LocationQuery } from 'vue-router';

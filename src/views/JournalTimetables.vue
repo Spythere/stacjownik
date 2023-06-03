@@ -70,12 +70,12 @@ import JournalHeader from '../components/JournalView/JournalHeader.vue';
 import JournalTimetablesList from '../components/JournalView/JournalTimetablesList.vue';
 import Loading from '../components/Global/Loading.vue';
 
-import { JournalTimetableSorter } from '../types/Journal/JournalTimetablesTypes';
+import { JournalTimetableSorter } from '../scripts/types/JournalTimetablesTypes';
 import { DataStatus } from '../scripts/enums/DataStatus';
 import { TimetableHistory } from '../scripts/interfaces/api/TimetablesAPIData';
 import { URLs } from '../scripts/utils/apiURLs';
 import { useStore } from '../store/store';
-import { JournalTimetableSearchType } from '../types/Journal/JournalTimetablesTypes';
+import { JournalTimetableSearchType } from '../scripts/types/JournalTimetablesTypes';
 import { journalTimetableFilters } from '../constants/Journal/JournalTimetablesConsts';
 
 import { LocationQuery } from 'vue-router';

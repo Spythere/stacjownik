@@ -1,4 +1,4 @@
-import { TrainFilter } from '../../types/Trains/TrainOptionsTypes';
+import { TrainFilter } from '../interfaces/Trains/TrainFilter';
 import { TrainFilterType } from '../enums/TrainFilterType';
 import Train from '../interfaces/Train';
 import TrainStop from '../interfaces/TrainStop';

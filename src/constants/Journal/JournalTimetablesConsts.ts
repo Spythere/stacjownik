@@ -1,5 +1,5 @@
 import { JournalFilterSection, JournalFilterType } from '../../scripts/enums/JournalFilterType';
-import { JournalTimetableFilter } from '../../types/Journal/JournalTimetablesTypes';
+import { JournalTimetableFilter } from '../../scripts/types/JournalTimetablesTypes';
 
 export const journalTimetableFilters: JournalTimetableFilter[] = [
   {
