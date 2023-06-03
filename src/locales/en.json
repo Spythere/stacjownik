@@ -106,7 +106,7 @@
     "sort-mass": "mass",
     "sort-speed": "speed",
     "sort-length": "length",
-    "sort-routeDistance": "route distance",
+    "sort-distance": "route distance",
     "sort-timetable": "train no.",
     "sort-progress": "route progress",
     "sort-delay": "current delay",

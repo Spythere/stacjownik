@@ -1,4 +1,4 @@
-import { JournalFilterSection, JournalFilterType } from '../enums/JournalFilterType';
+import { JournalFilterType } from '../../scripts/enums/JournalFilterType';
 
 export type JournalTimetableSearchKey =
   | 'search-driver'
@@ -7,17 +7,19 @@ export type JournalTimetableSearchKey =
   | 'search-dispatcher'
   | 'search-issuedFrom';
 
+export type JournalTimetableSorterKey = 'timetableId' | 'beginDate' | 'distance' | 'total-stops';
+
 export type JournalTimetableSearchType = {
   [key in JournalTimetableSearchKey]: string;
 };
 
 export interface JournalTimetableFilter {
   id: JournalFilterType;
-  filterSection: JournalFilterSection;
+  filterSection: string;
   isActive: boolean;
 }
 
 export interface JournalTimetableSorter {
-  id: 'timetableId' | 'beginDate' | 'routeDistance' | 'allStopsCount';
+  id: JournalTimetableSorterKey;
   dir: 'asc' | 'desc';
 }

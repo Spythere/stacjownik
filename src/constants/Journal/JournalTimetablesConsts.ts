@@ -1,28 +1,28 @@
-import { JournalFilterSection, JournalFilterType } from '../../scripts/enums/JournalFilterType';
+import { JournalFilterType } from '../../scripts/enums/JournalFilterType';
 import { JournalTimetableFilter } from '../../scripts/types/JournalTimetablesTypes';
 
 export const journalTimetableFilters: JournalTimetableFilter[] = [
   {
     id: JournalFilterType.ALL,
-    filterSection: JournalFilterSection.TIMETABLE_STATUS,
+    filterSection: 'timetable-status',
     isActive: true,
   },
 
   {
     id: JournalFilterType.ACTIVE,
-    filterSection: JournalFilterSection.TIMETABLE_STATUS,
+    filterSection: 'timetable-status',
     isActive: false,
   },
 
   {
     id: JournalFilterType.FULFILLED,
-    filterSection: JournalFilterSection.TIMETABLE_STATUS,
+    filterSection: 'timetable-status',
     isActive: false,
   },
 
   {
     id: JournalFilterType.ABANDONED,
-    filterSection: JournalFilterSection.TIMETABLE_STATUS,
+    filterSection: 'timetable-status',
     isActive: false,
   },
 ];

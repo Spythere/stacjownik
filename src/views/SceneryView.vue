@@ -1,4 +1,4 @@
-<template>
+  <template>
   <div class="scenery-view">
     <div class="scenery-offline" v-if="!stationInfo && isComponentVisible && store.dataStatuses.sceneries == 2">
       <div>{{ $t('scenery.no-scenery') }}</div>

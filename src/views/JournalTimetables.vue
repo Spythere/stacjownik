@@ -7,7 +7,7 @@
         @on-search-confirm="fetchHistoryData"
         @on-options-reset="resetOptions"
         @on-refresh-data="fetchHistoryData"
-        :sorter-option-ids="['timetableId', 'beginDate', 'routeDistance', 'allStopsCount']"
+        :sorter-option-ids="['timetableId', 'beginDate', 'distance', 'allStopsCount']"
         :filters="journalTimetableFilters"
         :currentOptionsActive="currentOptionsActive"
         :data-status="dataStatus"
@@ -70,17 +70,16 @@ import JournalHeader from '../components/JournalView/JournalHeader.vue';
 import JournalTimetablesList from '../components/JournalView/JournalTimetablesList.vue';
 import Loading from '../components/Global/Loading.vue';
 
-import { JournalTimetableSorter } from '../scripts/types/JournalTimetablesTypes';
 import { DataStatus } from '../scripts/enums/DataStatus';
 import { TimetableHistory } from '../scripts/interfaces/api/TimetablesAPIData';
 import { URLs } from '../scripts/utils/apiURLs';
 import { useStore } from '../store/store';
-import { JournalTimetableSearchType } from '../scripts/types/JournalTimetablesTypes';
-import { journalTimetableFilters } from '../constants/Journal/JournalTimetablesConsts';
 
 import { LocationQuery } from 'vue-router';
 import { TimetablesQueryParams } from '../scripts/interfaces/api/TimetablesQueryParams';
 import { JournalFilterType } from '../scripts/enums/JournalFilterType';
+import { JournalTimetableSearchType, JournalTimetableSorter } from '../scripts/types/JournalTimetablesTypes';
+import { journalTimetableFilters } from '../constants/Journal/JournalTimetablesConsts';
 
 const TIMETABLES_API_URL = `${URLs.stacjownikAPI}/api/getTimetables`;
 

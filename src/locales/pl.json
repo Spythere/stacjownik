@@ -103,7 +103,7 @@
     "search-timetables-date": "Data rozkładu jazdy (czas polski)",
     "search-dispatchers-date": "Data służby (czas polski)",
 
-    "sort-routeDistance": "kilometraż",
+    "sort-distance": "kilometraż",
     "sort-allStopsCount": "stacje",
     "sort-beginDate": "data",
     "sort-timetableId": "ID rozkładu",
