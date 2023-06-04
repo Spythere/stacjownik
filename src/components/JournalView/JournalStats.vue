@@ -11,7 +11,7 @@
         {{ $t(tab.titlePath) }}
       </button>
     </div>
-    
+
     <div class="stats-tab" v-show="areStatsOpen">
       <keep-alive>
         <JournalDailyStats v-if="store.currentStatsTab == 'daily'" ref="dailyStatsComp" />
@@ -26,12 +26,12 @@ import { computed, KeepAlive, onActivated, onDeactivated, reactive, Ref, ref, wa
 import { useStore } from '../../store/store';
 import JournalDailyStats from './DailyStats.vue';
 import JournalDriverStats from './JournalDriverStats.vue';
+import StorageManager from '../../scripts/managers/storageManager';
 
 // Types
 type TStatTab = 'daily' | 'driver';
 
 // Variables
-
 const store = useStore();
 const dailyStatsComp: Ref<InstanceType<typeof JournalDailyStats> | null> = ref(null);
 
@@ -57,7 +57,10 @@ let data = reactive({
 function onTabButtonClick(tab: TStatTab) {
   if (lastClickedTab.value == tab || !areStatsOpen.value) areStatsOpen.value = !areStatsOpen.value;
 
-  if (tab == 'daily') lastDailyStatsOpen.value = areStatsOpen.value;
+  if (tab == 'daily') {
+    lastDailyStatsOpen.value = areStatsOpen.value;
+    StorageManager.setBooleanValue('dailyStatsOpen', areStatsOpen.value);
+  }
 
   store.currentStatsTab = tab;
   lastClickedTab.value = tab;
@@ -65,6 +68,8 @@ function onTabButtonClick(tab: TStatTab) {
 
 onActivated(() => {
   dailyStatsComp.value?.startFetchingDailyStats();
+
+  if (StorageManager.getBooleanValue('dailyStatsOpen')) areStatsOpen.value = true;
 });
 
 onDeactivated(() => {
