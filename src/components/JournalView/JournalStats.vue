@@ -1,5 +1,5 @@
 <template>
-  <div class="journal-stats" v-show="!store.isOffline">
+  <div class="journal-stats" v-if="!store.isOffline">
     <div class="tabs">
       <button
         v-for="tab in data.tabs"
@@ -22,11 +22,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed, KeepAlive, onActivated, onDeactivated, reactive, Ref, ref, watch } from 'vue';
+import { computed, KeepAlive, onActivated, onDeactivated, onMounted, reactive, Ref, ref, watch } from 'vue';
 import { useStore } from '../../store/store';
 import JournalDailyStats from './DailyStats.vue';
 import JournalDriverStats from './JournalDriverStats.vue';
 import StorageManager from '../../scripts/managers/storageManager';
+import { DataStatus } from '../../scripts/enums/DataStatus';
 
 // Types
 type TStatTab = 'daily' | 'driver';
@@ -60,17 +61,26 @@ function onTabButtonClick(tab: TStatTab) {
   if (tab == 'daily') {
     lastDailyStatsOpen.value = areStatsOpen.value;
     StorageManager.setBooleanValue('dailyStatsOpen', areStatsOpen.value);
+
+    if (areStatsOpen.value) dailyStatsComp.value?.startFetchingDailyStats();
   }
 
   store.currentStatsTab = tab;
   lastClickedTab.value = tab;
 }
 
-onActivated(() => {
-  dailyStatsComp.value?.startFetchingDailyStats();
-
-  if (StorageManager.getBooleanValue('dailyStatsOpen')) areStatsOpen.value = true;
-});
+onMounted(() => {
+  if (StorageManager.getBooleanValue('dailyStatsOpen')) {
+    dailyStatsComp.value?.startFetchingDailyStats();
+    areStatsOpen.value = true;
+  }
+}),
+  onActivated(async () => {
+    if (StorageManager.getBooleanValue('dailyStatsOpen')) {
+      dailyStatsComp.value?.startFetchingDailyStats();
+      areStatsOpen.value = true;
+    }
+  });
 
 onDeactivated(() => {
   dailyStatsComp.value?.stopFetchingDailyStats();

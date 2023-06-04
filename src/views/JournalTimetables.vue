@@ -14,7 +14,7 @@
         optionsType="timetables"
       />
 
-      <JournalStats />
+      <JournalStats v-if="dataStatus == DataStatus.Loaded" />
 
       <div class="list_wrapper" @scroll="handleScroll">
         <transition name="status-anim" mode="out-in">
@@ -165,8 +165,6 @@ export default defineComponent({
   beforeRouteUpdate(to, _) {
     this.handleQueries(to.query);
     this.fetchHistoryData();
-
-    console.log('test');
   },
 
   activated() {
