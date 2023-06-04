@@ -44,7 +44,7 @@ function filterTrainList(trainList: Train[], searchedTrain: string, searchedDriv
           return !train.timetableData?.SKR;
 
         case TrainFilterType.common:
-          return train.timetableData?.SKR ||  train.timetableData?.TWR;
+          return train.timetableData?.SKR || train.timetableData?.TWR;
 
         case TrainFilterType.passenger:
           return !/^[AMRE]\D{2}$/.test(train.timetableData?.category || '');
@@ -81,7 +81,7 @@ function sortTrainList(trainList: Train[], sorterActive: { id: string; dir: numb
         if (a.mass > b.mass) return sorterActive.dir;
         return -sorterActive.dir;
 
-      case 'distance':
+      case 'routeDistance':
         if ((a.timetableData?.routeDistance || -1) > (b.timetableData?.routeDistance || -1)) return sorterActive.dir;
 
         return -sorterActive.dir;

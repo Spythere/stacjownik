@@ -82,12 +82,16 @@ h1.option-title {
   padding: 0.25em 0.25em 0 0;
 }
 
+.options_filter-sections section {
+  margin: 0.5em 0;
+}
+
 .options_filters {
   display: flex;
   flex-wrap: wrap;
 
   gap: 0.5em;
-  margin: 0.5em 0 0 0;
+  margin: 0.25em 0;
 }
 
 .sort-option,
@@ -158,5 +162,9 @@ h1.option-title {
   .options_filters,
   .options_sorters {
     justify-content: center;
+  }
+
+  .filter-section {
+    text-align: center;
   }
 }

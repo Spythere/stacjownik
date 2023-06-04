@@ -13,7 +13,7 @@ export type JournalTimetableSearchType = {
   [key in JournalTimetableSearchKey]: string;
 };
 
-export interface JournalTimetableFilter {
+export interface JournalFilter {
   id: JournalFilterType;
   filterSection: string;
   isActive: boolean;

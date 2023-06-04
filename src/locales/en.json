@@ -106,7 +106,7 @@
     "sort-mass": "mass",
     "sort-speed": "speed",
     "sort-length": "length",
-    "sort-distance": "route distance",
+    "sort-routeDistance": "route distance",
     "sort-timetable": "train no.",
     "sort-progress": "route progress",
     "sort-delay": "current delay",
@@ -122,6 +122,7 @@
     "filter-withComments": "COMMENTS",
     "filter-twr": "HIGH RISK CARGO",
     "filter-skr": "EXCEEDED GAUGE",
+    "filter-twr-skr": "ALL TYPES",
     "filter-common": "NO WARNINGS",
     "filter-passenger": "PASSENGER",
     "filter-freight": "FREIGHT",
@@ -131,6 +132,9 @@
 
     "filter-reset": "RESET FILTERS",
     "filter-clear": "CLEAR FILTERS",
+
+    "filter-section-timetable-status": "TIMETABLE STATUS",
+    "filter-section-twrskr": "WARNINGS",
 
     "filter-all": "ALL ENTRIES",
     "filter-abandoned": "ABANDONED",

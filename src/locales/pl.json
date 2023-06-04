@@ -103,7 +103,7 @@
     "search-timetables-date": "Data rozkładu jazdy (czas polski)",
     "search-dispatchers-date": "Data służby (czas polski)",
 
-    "sort-distance": "kilometraż",
+    "sort-routeDistance": "kilometraż",
     "sort-allStopsCount": "stacje",
     "sort-beginDate": "data",
     "sort-timetableId": "ID rozkładu",
@@ -123,6 +123,7 @@
     "filter-noComments": "BEZ UWAG",
     "filter-twr": "WYS. RYZYKA",
     "filter-skr": "SKRAJNIA",
+    "filter-twr-skr": "WSZYSTKIE",
     "filter-common": "ZWYKŁE",
     "filter-passenger": "PASAŻERSKIE",
     "filter-freight": "TOWAROWE",
@@ -132,6 +133,9 @@
 
     "filter-reset": "ZRESETUJ FILTRY",
     "filter-clear": "WYŁĄCZ FILTRY",
+
+    "filter-section-timetable-status": "STATUS ROZKŁADU JAZDY",
+    "filter-section-twrskr": "UWAGI",
 
     "filter-all": "WSZYSTKIE",
     "filter-abandoned": "PORZUCONE",

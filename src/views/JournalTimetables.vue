@@ -7,7 +7,7 @@
         @on-search-confirm="fetchHistoryData"
         @on-options-reset="resetOptions"
         @on-refresh-data="fetchHistoryData"
-        :sorter-option-ids="['timetableId', 'beginDate', 'distance', 'allStopsCount']"
+        :sorter-option-ids="['timetableId', 'beginDate', 'routeDistance', 'allStopsCount']"
         :filters="journalTimetableFilters"
         :currentOptionsActive="currentOptionsActive"
         :data-status="dataStatus"
@@ -78,7 +78,11 @@ import { useStore } from '../store/store';
 import { LocationQuery } from 'vue-router';
 import { TimetablesQueryParams } from '../scripts/interfaces/api/TimetablesQueryParams';
 import { JournalFilterType } from '../scripts/enums/JournalFilterType';
-import { JournalTimetableSearchType, JournalTimetableSorter } from '../scripts/types/JournalTimetablesTypes';
+import {
+  JournalFilter,
+  JournalTimetableSearchType,
+  JournalTimetableSorter,
+} from '../scripts/types/JournalTimetablesTypes';
 import { journalTimetableFilters } from '../constants/Journal/JournalTimetablesConsts';
 
 const TIMETABLES_API_URL = `${URLs.stacjownikAPI}/api/getTimetables`;
@@ -116,7 +120,9 @@ export default defineComponent({
 
   setup() {
     const sorterActive: JournalTimetableSorter = reactive({ id: 'timetableId', dir: 'desc' });
-    const journalFilterActive = ref(journalTimetableFilters[0]);
+    // const journalFilterActive = ref(journalTimetableFilters[0]);
+    const initFilters: readonly JournalFilter[] = JSON.parse(JSON.stringify(journalTimetableFilters));
+    const filterList = reactive([...initFilters]);
 
     const searchersValues = reactive({
       'search-train': '',
@@ -131,14 +137,14 @@ export default defineComponent({
 
     provide('searchersValues', searchersValues);
     provide('sorterActive', sorterActive);
-    provide('journalFilterActive', journalFilterActive);
+    provide('filterList', filterList);
 
     const scrollElement: Ref<HTMLElement | null> = ref(null);
 
     return {
       sorterActive,
-      journalFilterActive,
       searchersValues,
+      filterList,
 
       countFromIndex,
       countLimit,
@@ -194,7 +200,7 @@ export default defineComponent({
     resetOptions() {
       this.setSearchers('', '', '', '', '');
 
-      this.journalFilterActive = this.journalTimetableFilters[0];
+      // this.journalFilterActive = this.journalTimetableFilters[0];
       this.sorterActive.id = 'timetableId';
 
       this.fetchHistoryData();
@@ -234,29 +240,49 @@ export default defineComponent({
 
       const queryParams: TimetablesQueryParams = {};
 
-      switch (this.journalFilterActive.id) {
-        case JournalFilterType.ABANDONED:
-          queryParams['fulfilled'] = 0;
-          queryParams['terminated'] = 1;
-          break;
+      this.filterList
+        .filter((f) => f.isActive)
+        .forEach((f) => {
+          switch (f.id) {
+            case JournalFilterType.ABANDONED:
+              queryParams['fulfilled'] = 0;
+              queryParams['terminated'] = 1;
+              break;
 
-        case JournalFilterType.ACTIVE:
-          queryParams['fulfilled'] = undefined;
-          queryParams['terminated'] = 0;
-          break;
+            case JournalFilterType.ACTIVE:
+              queryParams['fulfilled'] = undefined;
+              queryParams['terminated'] = 0;
+              break;
 
-        case JournalFilterType.FULFILLED:
-          queryParams['terminated'] = undefined;
-          queryParams['fulfilled'] = 1;
-          break;
-        case JournalFilterType.ALL:
-          queryParams['terminated'] = undefined;
-          queryParams['fulfilled'] = undefined;
-          break;
+            case JournalFilterType.FULFILLED:
+              queryParams['terminated'] = undefined;
+              queryParams['fulfilled'] = 1;
+              break;
 
-        default:
-          break;
-      }
+            case JournalFilterType.ALL:
+              queryParams['terminated'] = undefined;
+              queryParams['fulfilled'] = undefined;
+              break;
+
+            case JournalFilterType.TWR_SKR:
+              queryParams['twr'] = undefined;
+              queryParams['skr'] = undefined;
+              break;
+
+            case JournalFilterType.TWR:
+              queryParams['twr'] = 1;
+              queryParams['skr'] = undefined;
+              break;
+
+            case JournalFilterType.SKR:
+              queryParams['twr'] = undefined;
+              queryParams['skr'] = 1;
+              break;
+
+            default:
+              break;
+          }
+        });
 
       queryParams['driverName'] = driverName;
       queryParams['trainNo'] = trainNo;

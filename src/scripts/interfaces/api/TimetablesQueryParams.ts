@@ -14,5 +14,8 @@ export interface TimetablesQueryParams {
   fulfilled?: number;
   terminated?: number;
 
+  twr?: number;
+  skr?: number;
+
   sortBy?: JournalTimetableSorter['id'];
 }

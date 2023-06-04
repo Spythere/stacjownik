@@ -74,16 +74,23 @@
           </div>
 
           <h1 class="option-title" v-if="filters.length != 0">{{ $t('options.filter-title') }}</h1>
-          <div class="options_filters">
-            <button
-              v-for="filter in filters"
-              class="filter-option btn--option"
-              :class="{ checked: journalFilterActive.id === filter.id }"
-              :id="filter.id"
-              @click="onFilterChange(filter)"
-            >
-              {{ $t(`options.filter-${filter.id}`) }}
-            </button>
+
+          <div class="options_filter-sections" v-if="filterList">
+            <section class="filter-section" v-for="section in JournalFilterSection">
+              <p>{{ $t(`options.filter-section-${section}`) }}</p>
+
+              <div class="options_filters">
+                <button
+                  v-for="filter in filterList.filter((f) => f.filterSection == section)"
+                  class="filter-option btn--option"
+                  :class="{ checked: filter.isActive }"
+                  :id="filter.id"
+                  @click="onFilterChange(filter)"
+                >
+                  {{ $t(`options.filter-${filter.id}`) }}
+                </button>
+              </div>
+            </section>
           </div>
         </div>
       </div>
@@ -103,7 +110,7 @@ import { useStore } from '../../store/store';
 import ActionButton from '../Global/ActionButton.vue';
 import SelectBox from '../Global/SelectBox.vue';
 import { JournalFilterSection } from '../../scripts/enums/JournalFilterType';
-import { JournalTimetableFilter } from '../../scripts/types/JournalTimetablesTypes';
+import { JournalFilter } from '../../scripts/types/JournalTimetablesTypes';
 
 export default defineComponent({
   components: { SelectBox, ActionButton },
@@ -117,7 +124,7 @@ export default defineComponent({
     },
 
     filters: {
-      type: Array as PropType<JournalTimetableFilter[]>,
+      type: Array as PropType<JournalFilter[]>,
       default: [],
     },
 
@@ -156,7 +163,8 @@ export default defineComponent({
     return {
       searchersValues: inject('searchersValues') as { [key: string]: string },
       sorterActive: inject('sorterActive') as { id: string | number; dir: number },
-      journalFilterActive: inject('journalFilterActive') as JournalTimetableFilter,
+      // journalFilterActive: inject('journalFilterActive') as JournalFilter,
+      filterList: inject('filterList') as JournalFilter[] | undefined,
     };
   },
 
@@ -257,8 +265,11 @@ export default defineComponent({
       this.$emit('onSearchConfirm');
     },
 
-    onFilterChange(filter: JournalTimetableFilter) {
-      this.journalFilterActive = filter;
+    onFilterChange(filter: JournalFilter) {
+      // this.journalFilterActive = filter;
+      this.filterList?.filter((f) => f.filterSection === filter.filterSection).forEach((f) => (f.isActive = false));
+      filter.isActive = true;
+
       this.$emit('onSearchConfirm');
     },
 
