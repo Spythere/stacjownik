@@ -1,5 +1,5 @@
 import { TrainFilterSection, TrainFilterType } from '../../scripts/enums/TrainFilterType';
-import { TrainFilter } from '../../types/Trains/TrainOptionsTypes';
+import { TrainFilter } from '../../scripts/interfaces/Trains/TrainFilter';
 
 export const trainFilters: TrainFilter[] = [
   {

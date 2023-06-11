@@ -95,12 +95,17 @@
 
 <script setup lang="ts">
 import axios from 'axios';
-import { computed, reactive, ref } from 'vue';
+import { computed, onActivated, onDeactivated, onMounted, reactive, ref } from 'vue';
 import { DataStatus } from '../../scripts/enums/DataStatus';
 import { ITimetablesDailyStats, ITimetablesDailyStatsResponse } from '../../scripts/interfaces/api/StatsAPIData';
 import { URLs } from '../../scripts/utils/apiURLs';
+import StorageManager from '../../scripts/managers/storageManager';
 
 const intervalId = ref(-1);
+
+const emit = defineEmits<{
+  (e: 'toggleStatsOpen', value: boolean): void;
+}>();
 
 const data = reactive({
   statsStatus: DataStatus.Loading,
@@ -158,17 +163,26 @@ async function fetchDailyTimetableStats() {
 
 function startFetchingDailyStats() {
   fetchDailyTimetableStats();
+
+  if (intervalId.value != -1) return;
+
   intervalId.value = setInterval(fetchDailyTimetableStats, 60000);
 }
 
 function stopFetchingDailyStats() {
   clearInterval(intervalId.value);
+  intervalId.value = -1;
 }
 
-defineExpose({
-  startFetchingDailyStats,
-  stopFetchingDailyStats,
+onActivated(() => {
+  startFetchingDailyStats();
+  emit('toggleStatsOpen', true);
 });
+
+onDeactivated(() => {
+  stopFetchingDailyStats();
+});
+
 </script>
 
 <style lang="scss" scoped>

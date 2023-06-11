@@ -1,28 +1,46 @@
-import { JournalFilterType } from "../../scripts/enums/JournalFilterType";
-import { JournalTimetableFilter } from "../../types/Journal/JournalTimetablesTypes";
+import { JournalFilterSection, JournalFilterType } from '../../scripts/enums/JournalFilterType';
+import { JournalFilter } from '../../scripts/types/JournalTimetablesTypes';
 
-export const journalTimetableFilters: JournalTimetableFilter[] = [
+export const journalTimetableFilters: JournalFilter[] = [
   {
-    id: JournalFilterType.all,
-    filterSection: 'timetable-status',
+    id: JournalFilterType.ALL,
+    filterSection: JournalFilterSection.TIMETABLE_STATUS,
     isActive: true,
   },
 
   {
-    id: JournalFilterType.active,
-    filterSection: 'timetable-status',
+    id: JournalFilterType.ACTIVE,
+    filterSection: JournalFilterSection.TIMETABLE_STATUS,
     isActive: false,
   },
 
   {
-    id: JournalFilterType.fulfilled,
-    filterSection: 'timetable-status',
+    id: JournalFilterType.FULFILLED,
+    filterSection: JournalFilterSection.TIMETABLE_STATUS,
     isActive: false,
   },
 
   {
-    id: JournalFilterType.abandoned,
-    filterSection: 'timetable-status',
+    id: JournalFilterType.ABANDONED,
+    filterSection: JournalFilterSection.TIMETABLE_STATUS,
+    isActive: false,
+  },
+
+  {
+    id: JournalFilterType.TWR_SKR,
+    filterSection: JournalFilterSection.TWRSKR,
+    isActive: true,
+  },
+
+  {
+    id: JournalFilterType.TWR,
+    filterSection: JournalFilterSection.TWRSKR,
+    isActive: false,
+  },
+
+  {
+    id: JournalFilterType.SKR,
+    filterSection: JournalFilterSection.TWRSKR,
     isActive: false,
   },
 ];

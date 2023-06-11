@@ -99,19 +99,21 @@
     "search-dispatcher": "Dispatcher name",
     "search-station": "Scenery name",
     "search-author": "Timetable author name",
-    "search-timetables-date": "Timetable date (CEST / GMT+2)",
-    "search-dispatchers-date": "Service date (CEST / GMT+2)",
+    "search-issuedFrom": "Origin scenery name",
+    "search-timetables-date": "Timetable date (UTC+2 / CEST)",
+    "search-dispatchers-date": "Service date (UTC+2 / CEST)",
+    "search-date": "Date (UTC+2 / CEST)",
 
     "sort-mass": "mass",
     "sort-speed": "speed",
     "sort-length": "length",
-    "sort-distance": "distance",
+    "sort-routeDistance": "route distance",
     "sort-timetable": "train no.",
     "sort-progress": "route progress",
     "sort-delay": "current delay",
     "sort-id": "timetable id",
 
-    "sort-total-stops": "total stops",
+    "sort-allStopsCount": "total stops",
     "sort-beginDate": "date",
     "sort-timetableId": "timetable ID",
     "sort-timestampFrom": "date",
@@ -121,6 +123,7 @@
     "filter-withComments": "COMMENTS",
     "filter-twr": "HIGH RISK CARGO",
     "filter-skr": "EXCEEDED GAUGE",
+    "filter-twr-skr": "ALL TYPES",
     "filter-common": "NO WARNINGS",
     "filter-passenger": "PASSENGER",
     "filter-freight": "FREIGHT",
@@ -130,6 +133,9 @@
 
     "filter-reset": "RESET FILTERS",
     "filter-clear": "CLEAR FILTERS",
+
+    "filter-section-timetable-status": "TIMETABLE STATUS",
+    "filter-section-twrskr": "WARNINGS",
 
     "filter-all": "ALL ENTRIES",
     "filter-abandoned": "ABANDONED",

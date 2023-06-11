@@ -3,8 +3,8 @@ import inputData from '../data/options.json';
 import Station from '../scripts/interfaces/Station';
 import StorageManager from '../scripts/managers/storageManager';
 import { useStore } from './store';
-import { filterInitStates } from './constants/initFilterStates';
-import { filterStations, sortStations } from './utils/filterUtils';
+import { filterInitStates } from '../scripts/constants/stores/initFilterStates';
+import { filterStations, sortStations } from '../scripts/utils/filterUtils';
 import { HeadIdsTypes } from '../scripts/data/stationHeaderNames';
 
 export const useStationFiltersStore = defineStore('stationFiltersStore', {

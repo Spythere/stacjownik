@@ -2,7 +2,7 @@
   <section class="trains-view">
     <div class="trains_wrapper">
       <TrainOptions
-        :sorter-option-ids="['distance', 'id', 'progress', 'delay', 'mass', 'speed', 'length']"
+        :sorter-option-ids="['routeDistance', 'id', 'progress', 'delay', 'mass', 'speed', 'length']"
         :current-options-active="currentOptionsActive"
       />
 
@@ -21,7 +21,7 @@ import modalTrainMixin from '../mixins/modalTrainMixin';
 import Train from '../scripts/interfaces/Train';
 import { filteredTrainList } from '../scripts/managers/trainFilterManager';
 import { useStore } from '../store/store';
-import { TrainFilter } from '../types/Trains/TrainOptionsTypes';
+import { TrainFilter } from '../scripts/interfaces/Trains/TrainFilter';
 
 export default defineComponent({
   components: {
@@ -57,7 +57,7 @@ export default defineComponent({
     const store = useStore();
     const initTrainFilters = [...trainFilters.map((f) => ({ ...f }))];
 
-    const sorterActive = reactive({ id: 'distance', dir: -1 });
+    const sorterActive = reactive({ id: 'routeDistance', dir: -1 });
     const filterList = reactive([...trainFilters]) as TrainFilter[];
 
     const currentOptionsActive = ref(false);

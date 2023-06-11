@@ -49,15 +49,6 @@
                 </button>
               </div>
             </div>
-
-            <div class="search_actions">
-              <button class="btn--action" @click="onResetButtonClick">
-                {{ $t('options.reset-button') }}
-              </button>
-              <button class="btn--action" @click="onSearchButtonConfirm">
-                {{ $t('options.search-button') }}
-              </button>
-            </div>
           </div>
 
           <h1 class="option-title">{{ $t('options.sort-title') }}</h1>
@@ -74,15 +65,31 @@
           </div>
 
           <h1 class="option-title" v-if="filters.length != 0">{{ $t('options.filter-title') }}</h1>
-          <div class="options_filters">
-            <button
-              v-for="filter in filters"
-              class="filter-option btn--option"
-              :class="{ checked: journalFilterActive.id === filter.id }"
-              :id="filter.id"
-              @click="onFilterChange(filter)"
-            >
-              {{ $t(`options.filter-${filter.id}`) }}
+
+          <div class="options_filter-sections" v-if="filters.length != 0 && filterList">
+            <section class="filter-section" v-for="section in JournalFilterSection">
+              <p>{{ $t(`options.filter-section-${section}`) }}</p>
+
+              <div class="options_filters">
+                <button
+                  v-for="filter in filterList.filter((f) => f.filterSection == section)"
+                  class="filter-option btn--option"
+                  :class="{ checked: filter.isActive }"
+                  :id="filter.id"
+                  @click="onFilterChange(filter)"
+                >
+                  {{ $t(`options.filter-${filter.id}`) }}
+                </button>
+              </div>
+            </section>
+          </div>
+
+          <div class="options_actions">
+            <button class="btn--action" @click="onResetButtonClick">
+              {{ $t('options.reset-button') }}
+            </button>
+            <button class="btn--action" @click="onSearchButtonConfirm">
+              {{ $t('options.search-button') }}
             </button>
           </div>
         </div>
@@ -100,9 +107,10 @@ import { DataStatus } from '../../scripts/enums/DataStatus';
 import { DriverStatsAPIData } from '../../scripts/interfaces/api/DriverStatsAPIData';
 import { URLs } from '../../scripts/utils/apiURLs';
 import { useStore } from '../../store/store';
-import { JournalTimetableFilter } from '../../types/Journal/JournalTimetablesTypes';
 import ActionButton from '../Global/ActionButton.vue';
 import SelectBox from '../Global/SelectBox.vue';
+import { JournalFilterSection } from '../../scripts/enums/JournalFilterType';
+import { JournalFilter } from '../../scripts/types/JournalTimetablesTypes';
 
 export default defineComponent({
   components: { SelectBox, ActionButton },
@@ -116,7 +124,7 @@ export default defineComponent({
     },
 
     filters: {
-      type: Array as PropType<JournalTimetableFilter[]>,
+      type: Array as PropType<JournalFilter[]>,
       default: [],
     },
 
@@ -132,13 +140,14 @@ export default defineComponent({
 
     optionsType: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
 
   data() {
     return {
       showOptions: false,
+      JournalFilterSection,
 
       driverSuggestions: [] as string[],
       dispatcherSuggestions: [] as string[],
@@ -154,7 +163,8 @@ export default defineComponent({
     return {
       searchersValues: inject('searchersValues') as { [key: string]: string },
       sorterActive: inject('sorterActive') as { id: string | number; dir: number },
-      journalFilterActive: inject('journalFilterActive') as JournalTimetableFilter,
+      // journalFilterActive: inject('journalFilterActive') as JournalFilter,
+      filterList: inject('filterList') as JournalFilter[] | undefined,
     };
   },
 
@@ -174,7 +184,8 @@ export default defineComponent({
   watch: {
     async driverStatsName(value: string) {
       await this.fetchDriverStats();
-      this.store.currentStatsTab = value ? 'driver' : 'daily';
+
+      // if (value) this.store.currentStatsTab = 'driver';
     },
 
     async 'searchersValues.search-driver'(value: string | undefined) {
@@ -249,18 +260,17 @@ export default defineComponent({
       });
     },
 
-    focusEnd() {
-      console.log('focus end');
-    },
-
     onSorterChange(item: { id: string | number; value: string }) {
       this.sorterActive.id = item.id;
       this.sorterActive.dir = -1;
       this.$emit('onSearchConfirm');
     },
 
-    onFilterChange(filter: JournalTimetableFilter) {
-      this.journalFilterActive = filter;
+    onFilterChange(filter: JournalFilter) {
+      // this.journalFilterActive = filter;
+      this.filterList?.filter((f) => f.filterSection === filter.filterSection).forEach((f) => (f.isActive = false));
+      filter.isActive = true;
+
       this.$emit('onSearchConfirm');
     },
 

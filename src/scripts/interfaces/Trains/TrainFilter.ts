@@ -1,4 +1,4 @@
-import { TrainFilterSection, TrainFilterType } from '../../scripts/enums/TrainFilterType';
+import { TrainFilterSection, TrainFilterType } from '../../enums/TrainFilterType'
 
 export interface TrainFilter {
   id: TrainFilterType;

@@ -1,20 +1,22 @@
 <template>
-  <div class="journal-stats" v-show="!store.isOffline">
+  <div class="journal-stats" v-if="!store.isOffline">
     <div class="tabs">
       <button
         v-for="tab in data.tabs"
         class="btn--filled"
         :data-selected="tab.name == store.currentStatsTab && areStatsOpen"
         :data-inactive="tab.inactive"
+        :data-disabled="tab.inactive"
+        :disabled="tab.inactive"
         @click="onTabButtonClick(tab.name)"
       >
         {{ $t(tab.titlePath) }}
       </button>
     </div>
-    
+
     <div class="stats-tab" v-show="areStatsOpen">
       <keep-alive>
-        <JournalDailyStats v-if="store.currentStatsTab == 'daily'" ref="dailyStatsComp" />
+        <JournalDailyStats v-if="store.currentStatsTab == 'daily'" @toggleStatsOpen="toggleStatsOpen" />
         <JournalDriverStats v-else-if="store.currentStatsTab == 'driver'" />
       </keep-alive>
     </div>
@@ -22,22 +24,21 @@
 </template>
 
 <script setup lang="ts">
-import { computed, KeepAlive, onActivated, onDeactivated, reactive, Ref, ref, watch } from 'vue';
+import { computed, KeepAlive, onMounted, reactive, Ref, ref, watch } from 'vue';
 import { useStore } from '../../store/store';
 import JournalDailyStats from './DailyStats.vue';
 import JournalDriverStats from './JournalDriverStats.vue';
+import StorageManager from '../../scripts/managers/storageManager';
 
 // Types
 type TStatTab = 'daily' | 'driver';
 
 // Variables
-
 const store = useStore();
-const dailyStatsComp: Ref<InstanceType<typeof JournalDailyStats> | null> = ref(null);
 
 const lastDailyStatsOpen = ref(false);
 const areStatsOpen = ref(false);
-const lastClickedTab = ref('daily');
+const lastClickedTab: Ref<'daily' | 'driver' | null> = ref(null);
 
 let data = reactive({
   tabs: [
@@ -57,30 +58,35 @@ let data = reactive({
 function onTabButtonClick(tab: TStatTab) {
   if (lastClickedTab.value == tab || !areStatsOpen.value) areStatsOpen.value = !areStatsOpen.value;
 
-  if (tab == 'daily') lastDailyStatsOpen.value = areStatsOpen.value;
+  if (tab == 'daily') {
+    StorageManager.setBooleanValue('dailyStatsOpen', areStatsOpen.value);
+    lastDailyStatsOpen.value = areStatsOpen.value;
+  }
 
   store.currentStatsTab = tab;
   lastClickedTab.value = tab;
+
+  if (areStatsOpen.value == false) store.currentStatsTab = null;
 }
 
-onActivated(() => {
-  dailyStatsComp.value?.startFetchingDailyStats();
-});
-
-onDeactivated(() => {
-  dailyStatsComp.value?.stopFetchingDailyStats();
-});
+function toggleStatsOpen(open: boolean) {
+  areStatsOpen.value = open;
+}
 
 watch(
   computed(() => store.driverStatsData),
   (statsData) => {
-    data.tabs[1].inactive = statsData ? false : true;
-
-    lastClickedTab.value = statsData ? 'driver' : 'daily';
-    if (statsData) areStatsOpen.value = true;
-    if (!statsData) areStatsOpen.value = lastDailyStatsOpen.value;
+    store.currentStatsTab = statsData ? 'driver' : lastClickedTab.value;
+    areStatsOpen.value = statsData ? true : lastClickedTab.value !== null;
   }
 );
+
+onMounted(() => {
+  if (StorageManager.getBooleanValue('dailyStatsOpen')) {
+    areStatsOpen.value = true;
+    store.currentStatsTab = 'daily';
+  }
+});
 </script>
 
 <style lang="scss" scoped>

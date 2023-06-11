@@ -4,9 +4,11 @@
       <b>{{ $t('scenery.one-way-routes') }}</b>
 
       <ul class="routes-list">
-        <li v-for="route in station.generalInfo.routes.oneWay">
+        <li v-for="route in station.generalInfo.routes.oneWay" @click="setActiveShowLength(route.name)">
           <span :class="{ 'no-catenary': !route.catenary, internal: route.isInternal }"> {{ route.name }}</span>
-          <span v-if="route.speed" class="speed">{{ route.speed }}</span>
+          <span v-if="route.speed" class="speed">
+            {{ activeShowLength.includes(route.name) ? route.length + 'm' : route.speed }}
+          </span>
           <span v-if="route.SBL" class="sbl">SBL</span>
         </li>
       </ul>
@@ -16,9 +18,11 @@
       <b>{{ $t('scenery.two-way-routes') }}</b>
 
       <ul class="routes-list">
-        <li v-for="route in station.generalInfo.routes.twoWay">
+        <li v-for="(route, i) in station.generalInfo.routes.twoWay" @click="setActiveShowLength(route.name)">
           <span :class="{ 'no-catenary': !route.catenary, internal: route.isInternal }">{{ route.name }}</span>
-          <span v-if="route.speed" class="speed">{{ route.speed }}</span>
+          <span v-if="route.speed" class="speed">
+            {{ activeShowLength.includes(route.name) ? route.length + 'm' : route.speed }}
+          </span>
           <span v-if="route.SBL" class="sbl">SBL</span>
         </li>
       </ul>
@@ -36,6 +40,19 @@ export default defineComponent({
       type: Object as () => Station,
       default: {},
     },
+  },
+
+  methods: {
+    setActiveShowLength(name: string) {
+      if (this.activeShowLength.includes(name)) this.activeShowLength.splice(this.activeShowLength.indexOf(name), 1);
+      else this.activeShowLength.push(name);
+    },
+  },
+
+  data() {
+    return {
+      activeShowLength: [] as string[],
+    };
   },
 });
 </script>
@@ -66,6 +83,11 @@ ul.routes-list {
 
   li {
     margin: 0.5em 0.25em;
+    cursor: pointer;
+
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
 
     span {
       padding: 0.2em 0.25em;
@@ -100,7 +122,6 @@ ul.routes-list {
 
       &:only-child {
         border-radius: 0.5em;
-
       }
     }
   }

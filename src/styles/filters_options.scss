@@ -16,7 +16,7 @@
   height: 7px;
   background-color: lightgreen;
   border-radius: 50%;
-  
+
   margin-left: 10px;
 }
 
@@ -82,12 +82,16 @@ h1.option-title {
   padding: 0.25em 0.25em 0 0;
 }
 
+.options_filter-sections section {
+  margin: 0.5em 0;
+}
+
 .options_filters {
   display: flex;
   flex-wrap: wrap;
 
   gap: 0.5em;
-  margin: 0.5em 0 0 0;
+  margin: 0.25em 0;
 }
 
 .sort-option,
@@ -118,17 +122,6 @@ h1.option-title {
     margin: 0.5em auto;
   }
 
-  .search_actions {
-    display: flex;
-    gap: 0.5em;
-    margin: 1em 0;
-    width: 100%;
-
-    button {
-      width: 100%;
-    }
-  }
-
   .search-box {
     .search-exit {
       position: absolute;
@@ -136,6 +129,17 @@ h1.option-title {
       top: 50%;
       right: 0;
     }
+  }
+}
+
+.options_actions {
+  display: flex;
+  gap: 0.5em;
+  width: 100%;
+  margin-top: 1em;
+
+  button {
+    width: 100%;
   }
 }
 
@@ -155,13 +159,12 @@ h1.option-title {
     max-width: 100%;
   }
 
-  .filter-option,
-  .sort-option {
-    margin: 0.25em 0.25em;
-  }
-
   .options_filters,
   .options_sorters {
     justify-content: center;
+  }
+
+  .filter-section {
+    text-align: center;
   }
 }

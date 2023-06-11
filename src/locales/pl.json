@@ -99,11 +99,13 @@
     "search-dispatcher": "Nick dyżurnego",
     "search-station": "Nazwa scenerii",
     "search-author": "Nick autora rozkładu jazdy",
-    "search-timetables-date": "Data rozkładu jazdy (czas polski)",
-    "search-dispatchers-date": "Data służby (czas polski)",
+    "search-issuedFrom": "Sceneria początkowa",
+    "search-timetables-date": "Data rozkładu jazdy (UTC+2 / CEST)",
+    "search-dispatchers-date": "Data służby (UTC+2 / CEST)",
+    "search-date": "Data (UTC+2 / CEST)",
 
-    "sort-distance": "kilometraż",
-    "sort-total-stops": "stacje",
+    "sort-routeDistance": "kilometraż",
+    "sort-allStopsCount": "stacje",
     "sort-beginDate": "data",
     "sort-timetableId": "ID rozkładu",
     "sort-timestampFrom": "data",
@@ -122,6 +124,7 @@
     "filter-noComments": "BEZ UWAG",
     "filter-twr": "WYS. RYZYKA",
     "filter-skr": "SKRAJNIA",
+    "filter-twr-skr": "WSZYSTKIE",
     "filter-common": "ZWYKŁE",
     "filter-passenger": "PASAŻERSKIE",
     "filter-freight": "TOWAROWE",
@@ -131,6 +134,9 @@
 
     "filter-reset": "ZRESETUJ FILTRY",
     "filter-clear": "WYŁĄCZ FILTRY",
+
+    "filter-section-timetable-status": "STATUS ROZKŁADU JAZDY",
+    "filter-section-twrskr": "UWAGI",
 
     "filter-all": "WSZYSTKIE",
     "filter-abandoned": "PORZUCONE",
