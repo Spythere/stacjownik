@@ -14,7 +14,7 @@
         optionsType="timetables"
       />
 
-      <JournalStats v-if="dataStatus == DataStatus.Loaded" />
+      <JournalStats />
 
       <div class="list_wrapper" @scroll="handleScroll">
         <transition name="status-anim" mode="out-in">

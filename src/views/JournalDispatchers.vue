@@ -134,6 +134,7 @@ export default defineComponent({
     provide('sorterActive', sorterActive);
     provide('journalFilterActive', journalFilterActive);
     provide('searchersValues', searchersValues);
+    provide('filterList', reactive([]));
 
     const scrollElement: Ref<HTMLElement | null> = ref(null);
 
@@ -287,4 +288,3 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '../styles/JournalSection.scss';
 </style>
-

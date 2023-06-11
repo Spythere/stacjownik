@@ -54,7 +54,7 @@ export const useStore = defineStore('store', {
         trains: DataStatus.Loading,
       },
 
-      currentStatsTab: 'daily',
+      currentStatsTab: null,
 
       blockScroll: false,
       listenerLaunched: false,

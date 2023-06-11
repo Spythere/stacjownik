@@ -6,6 +6,8 @@
         class="btn--filled"
         :data-selected="tab.name == store.currentStatsTab && areStatsOpen"
         :data-inactive="tab.inactive"
+        :data-disabled="tab.inactive"
+        :disabled="tab.inactive"
         @click="onTabButtonClick(tab.name)"
       >
         {{ $t(tab.titlePath) }}
@@ -14,7 +16,7 @@
 
     <div class="stats-tab" v-show="areStatsOpen">
       <keep-alive>
-        <JournalDailyStats v-if="store.currentStatsTab == 'daily'" ref="dailyStatsComp" />
+        <JournalDailyStats v-if="store.currentStatsTab == 'daily'" @toggleStatsOpen="toggleStatsOpen" />
         <JournalDriverStats v-else-if="store.currentStatsTab == 'driver'" />
       </keep-alive>
     </div>
@@ -22,19 +24,17 @@
 </template>
 
 <script setup lang="ts">
-import { computed, KeepAlive, onActivated, onDeactivated, onMounted, reactive, Ref, ref, watch } from 'vue';
+import { computed, KeepAlive, onMounted, reactive, ref, watch } from 'vue';
 import { useStore } from '../../store/store';
 import JournalDailyStats from './DailyStats.vue';
 import JournalDriverStats from './JournalDriverStats.vue';
 import StorageManager from '../../scripts/managers/storageManager';
-import { DataStatus } from '../../scripts/enums/DataStatus';
 
 // Types
 type TStatTab = 'daily' | 'driver';
 
 // Variables
 const store = useStore();
-const dailyStatsComp: Ref<InstanceType<typeof JournalDailyStats> | null> = ref(null);
 
 const lastDailyStatsOpen = ref(false);
 const areStatsOpen = ref(false);
@@ -59,32 +59,19 @@ function onTabButtonClick(tab: TStatTab) {
   if (lastClickedTab.value == tab || !areStatsOpen.value) areStatsOpen.value = !areStatsOpen.value;
 
   if (tab == 'daily') {
-    lastDailyStatsOpen.value = areStatsOpen.value;
     StorageManager.setBooleanValue('dailyStatsOpen', areStatsOpen.value);
-
-    if (areStatsOpen.value) dailyStatsComp.value?.startFetchingDailyStats();
+    lastDailyStatsOpen.value = areStatsOpen.value;
   }
 
   store.currentStatsTab = tab;
   lastClickedTab.value = tab;
+
+  if (areStatsOpen.value == false) store.currentStatsTab = null;
 }
 
-onMounted(() => {
-  if (StorageManager.getBooleanValue('dailyStatsOpen')) {
-    dailyStatsComp.value?.startFetchingDailyStats();
-    areStatsOpen.value = true;
-  }
-}),
-  onActivated(async () => {
-    if (StorageManager.getBooleanValue('dailyStatsOpen')) {
-      dailyStatsComp.value?.startFetchingDailyStats();
-      areStatsOpen.value = true;
-    }
-  });
-
-onDeactivated(() => {
-  dailyStatsComp.value?.stopFetchingDailyStats();
-});
+function toggleStatsOpen(open: boolean) {
+  areStatsOpen.value = open;
+}
 
 watch(
   computed(() => store.driverStatsData),
@@ -96,6 +83,13 @@ watch(
     if (!statsData) areStatsOpen.value = lastDailyStatsOpen.value;
   }
 );
+
+onMounted(() => {
+  if (StorageManager.getBooleanValue('dailyStatsOpen')) {
+    areStatsOpen.value = true;
+    store.currentStatsTab = 'daily';
+  }
+});
 </script>
 
 <style lang="scss" scoped>
