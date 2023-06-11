@@ -24,7 +24,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, KeepAlive, onMounted, reactive, ref, watch } from 'vue';
+import { computed, KeepAlive, onMounted, reactive, Ref, ref, watch } from 'vue';
 import { useStore } from '../../store/store';
 import JournalDailyStats from './DailyStats.vue';
 import JournalDriverStats from './JournalDriverStats.vue';
@@ -38,7 +38,7 @@ const store = useStore();
 
 const lastDailyStatsOpen = ref(false);
 const areStatsOpen = ref(false);
-const lastClickedTab = ref('daily');
+const lastClickedTab: Ref<'daily' | 'driver' | null> = ref(null);
 
 let data = reactive({
   tabs: [
@@ -76,11 +76,8 @@ function toggleStatsOpen(open: boolean) {
 watch(
   computed(() => store.driverStatsData),
   (statsData) => {
-    data.tabs[1].inactive = statsData ? false : true;
-
-    lastClickedTab.value = statsData ? 'driver' : 'daily';
-    if (statsData) areStatsOpen.value = true;
-    if (!statsData) areStatsOpen.value = lastDailyStatsOpen.value;
+    store.currentStatsTab = statsData ? 'driver' : lastClickedTab.value;
+    areStatsOpen.value = statsData ? true : lastClickedTab.value !== null;
   }
 );
 
