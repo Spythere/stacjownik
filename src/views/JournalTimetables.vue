@@ -122,7 +122,7 @@ export default defineComponent({
     const sorterActive: JournalTimetableSorter = reactive({ id: 'timetableId', dir: 'desc' });
     // const journalFilterActive = ref(journalTimetableFilters[0]);
     const initFilters: readonly JournalFilter[] = JSON.parse(JSON.stringify(journalTimetableFilters));
-    const filterList = reactive([...initFilters]);
+    const filterList: JournalFilter[] = reactive(JSON.parse(JSON.stringify(initFilters)));
 
     const searchersValues = reactive({
       'search-train': '',
@@ -145,6 +145,7 @@ export default defineComponent({
       sorterActive,
       searchersValues,
       filterList,
+      initFilters,
 
       countFromIndex,
       countLimit,
@@ -198,8 +199,11 @@ export default defineComponent({
     resetOptions() {
       this.setSearchers('', '', '', '', '');
 
-      // this.journalFilterActive = this.journalTimetableFilters[0];
       this.sorterActive.id = 'timetableId';
+
+      this.filterList.forEach(
+        (f) => (f.isActive = this.initFilters.find((initFilter) => initFilter.id == f.id)?.isActive || false)
+      );
 
       this.fetchHistoryData();
     },

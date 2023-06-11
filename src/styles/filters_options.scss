@@ -122,17 +122,6 @@ h1.option-title {
     margin: 0.5em auto;
   }
 
-  .search_actions {
-    display: flex;
-    gap: 0.5em;
-    margin: 1em 0;
-    width: 100%;
-
-    button {
-      width: 100%;
-    }
-  }
-
   .search-box {
     .search-exit {
       position: absolute;
@@ -140,6 +129,17 @@ h1.option-title {
       top: 50%;
       right: 0;
     }
+  }
+}
+
+.options_actions {
+  display: flex;
+  gap: 0.5em;
+  width: 100%;
+  margin-top: 1em;
+
+  button {
+    width: 100%;
   }
 }
 

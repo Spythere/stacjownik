@@ -49,15 +49,6 @@
                 </button>
               </div>
             </div>
-
-            <div class="search_actions">
-              <button class="btn--action" @click="onResetButtonClick">
-                {{ $t('options.reset-button') }}
-              </button>
-              <button class="btn--action" @click="onSearchButtonConfirm">
-                {{ $t('options.search-button') }}
-              </button>
-            </div>
           </div>
 
           <h1 class="option-title">{{ $t('options.sort-title') }}</h1>
@@ -75,7 +66,7 @@
 
           <h1 class="option-title" v-if="filters.length != 0">{{ $t('options.filter-title') }}</h1>
 
-          <div class="options_filter-sections" v-if="filterList">
+          <div class="options_filter-sections" v-if="filters.length != 0 && filterList">
             <section class="filter-section" v-for="section in JournalFilterSection">
               <p>{{ $t(`options.filter-section-${section}`) }}</p>
 
@@ -91,6 +82,15 @@
                 </button>
               </div>
             </section>
+          </div>
+
+          <div class="options_actions">
+            <button class="btn--action" @click="onResetButtonClick">
+              {{ $t('options.reset-button') }}
+            </button>
+            <button class="btn--action" @click="onSearchButtonConfirm">
+              {{ $t('options.search-button') }}
+            </button>
           </div>
         </div>
       </div>
