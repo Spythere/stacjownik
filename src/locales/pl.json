@@ -100,8 +100,9 @@
     "search-station": "Nazwa scenerii",
     "search-author": "Nick autora rozkładu jazdy",
     "search-issuedFrom": "Sceneria początkowa",
-    "search-timetables-date": "Data rozkładu jazdy (czas polski)",
-    "search-dispatchers-date": "Data służby (czas polski)",
+    "search-timetables-date": "Data rozkładu jazdy (UTC+2 / CEST)",
+    "search-dispatchers-date": "Data służby (UTC+2 / CEST)",
+    "search-date": "Data (UTC+2 / CEST)",
 
     "sort-routeDistance": "kilometraż",
     "sort-allStopsCount": "stacje",

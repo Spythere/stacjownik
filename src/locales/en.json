@@ -100,8 +100,9 @@
     "search-station": "Scenery name",
     "search-author": "Timetable author name",
     "search-issuedFrom": "Origin scenery name",
-    "search-timetables-date": "Timetable date (CEST / GMT+2)",
-    "search-dispatchers-date": "Service date (CEST / GMT+2)",
+    "search-timetables-date": "Timetable date (UTC+2 / CEST)",
+    "search-dispatchers-date": "Service date (UTC+2 / CEST)",
+    "search-date": "Date (UTC+2 / CEST)",
 
     "sort-mass": "mass",
     "sort-speed": "speed",
