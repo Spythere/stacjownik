@@ -9,8 +9,9 @@
     <span v-if="station.onlineInfo">
       <span
         class="badge spawn"
-        v-for="(spawn, i) in station.onlineInfo.spawns"
+        v-for="(spawn, i) in sortedSpawns"
         :key="spawn.spawnName + station.onlineInfo?.dispatcherName + i"
+        :data-electrified="spawn.isElectrified"
       >
         <span class="spawn_name">{{ spawn.spawnName }}</span>
         <span class="spawn_length">{{ spawn.spawnLength }}m</span>
@@ -37,6 +38,12 @@ export default defineComponent({
       default: {},
     },
   },
+
+  computed: {
+    sortedSpawns() {
+      return this.station.onlineInfo?.spawns.sort((s1, s2) => (s1.spawnLength < s2.spawnLength ? 1 : -1));
+    },
+  },
 });
 </script>
 
@@ -44,9 +51,15 @@ export default defineComponent({
 @import '../../../styles/variables.scss';
 
 .spawn {
+  color: white;
+
   &_length {
-    background: $accentCol;
-    color: black;
+    background-color: #404040;
+    color: #cfcfcf;
+  }
+
+  &[data-electrified='true'] > &_name {
+    background-color: #007599;
   }
 }
 </style>

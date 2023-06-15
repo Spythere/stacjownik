@@ -66,8 +66,9 @@ export const parseSpawns = (spawnString: string) => {
     const spawnArray = spawn.split(',');
     const spawnName = spawnArray[6] ? spawnArray[6] : spawnArray[0];
     const spawnLength = parseInt(spawnArray[2]);
+    const isElectrified = spawnArray[3] == 'True';
 
-    return { spawnName, spawnLength };
+    return { spawnName, spawnLength, isElectrified };
   });
 };
 
