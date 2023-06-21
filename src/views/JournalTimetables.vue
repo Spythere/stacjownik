@@ -287,8 +287,7 @@ export default defineComponent({
         });
 
       queryParams['driverName'] = driverName;
-      queryParams['trainNo'] = trainNo;
-
+      queryParams[trainNo?.startsWith('#') ? 'timetableId' : 'trainNo'] = trainNo?.replace('#', '');
       queryParams['countFrom'] = undefined;
       queryParams['countLimit'] = undefined;
 
