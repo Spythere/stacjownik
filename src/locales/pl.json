@@ -321,7 +321,7 @@
     "timetable-stats-longest": "Najdłuższy rozkład jazdy: #{id} (stworzony przez dyżurnego {author} dla maszynisty {driver} o dystansie {distance})",
     "timetable-stats-most-active-dr": "Najaktywniejszy dyżurny: {dispatcher} (stworzył {count})",
     "timetable-stats-most-active-dr-many": "Najaktywniejsi dyżurni: {dispatchers} (stworzyli po {count})",
-    "timetable-stats-most-active-driver": "Najaktywniejszy maszynista: {driver} (przejechał łącznie {distance})",
+    "timetable-stats-most-active-driver": "Najaktywniejszy maszynista: {driver} (przejechał: {distance})",
     "timetable-stats-longest-duties": "Najdłuższa służba: {dispatcher} na scenerii {station} (czas trwania: {duration})",
 
     "timetable-count": "rozkład jazdy | rozkładów jazdy",

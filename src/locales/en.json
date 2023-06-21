@@ -313,11 +313,11 @@
     "stats-stations": "STATIONS",
 
     "timetable-stats-title": "Daily stats on {date}",
-    "timetable-stats-total": "Issued timetables: {count} (total distance: {distance})",
+    "timetable-stats-total": "Issued timetables: {count} (total driven distance: {distance})",
     "timetable-stats-longest": "The longest timetable: #{id} (made by {author} for {driver}, distance: {distance})",
     "timetable-stats-most-active-dr": "The most active dispatcher: {dispatcher} (created {count})",
     "timetable-stats-most-active-dr-many": "The most active dispatchers: {dispatchers} (created {count} each)",
-    "timetable-stats-most-active-driver": "The most active driver: {driver} (has driven {distance})",
+    "timetable-stats-most-active-driver": "The most active driver: {driver} (driven: {distance})",
     "timetable-stats-longest-duties": "The longest service: {dispatcher} at {station} (duration: {duration})",
 
     "timetable-count": "timetable | timetables",
