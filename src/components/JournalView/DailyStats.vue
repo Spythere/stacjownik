@@ -10,7 +10,10 @@
       </b>
 
       <span class="stats-list" v-else>
-        <h3>{{ $t('journal.daily-stats-title') }} {{ new Date().toLocaleDateString($i18n.locale) }}</h3>
+        <h3>
+          {{ $t('journal.daily-stats-title') }}
+          <b class="text--primary">{{ new Date().toLocaleDateString($i18n.locale) }}</b>
+        </h3>
         <hr style="margin-bottom: 0.5em" />
 
         <div v-if="stats.totalTimetables">
@@ -221,6 +224,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '../../styles/responsive.scss';
+
 .daily-stats {
   text-align: left;
 }
@@ -230,6 +235,16 @@ export default defineComponent({
 
 .stats-list a {
   text-decoration: underline;
+}
+
+@include smallScreen {
+  .daily-stats {
+    text-align: justify;
+  }
+
+  h3 {
+    text-align: center;
+  }
 }
 </style>
 
