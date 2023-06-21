@@ -49,6 +49,9 @@ export interface TimetableHistory {
   currentSceneryHash?: string;
 
   routeSceneries?: string;
+
+  checkpointArrivals?: string[];
+  checkpointDepartures?: string[];
 }
 
 export interface SceneryTimetableHistory {
