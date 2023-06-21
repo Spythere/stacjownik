@@ -317,10 +317,12 @@
     "stats-distance": "DYSTANS",
     "stats-stations": "STACJE",
 
-    "timetable-stats-total": "Dyżurni stworzyli dziś {count}  o łącznym dystansie {distance}",
-    "timetable-stats-longest": "Najdłuższym rozkładem jazdy jest dzisiaj #{id} stworzony przez dyżurnego {author} dla maszynisty {driver} - {distance}",
-    "timetable-stats-most-active": "Dzisiejszym najaktywniejszym dyżurnym jest {dispatcher}, który stworzył {count}",
-    "timetable-stats-most-active-many": "Dzisiejszymi najaktywniejszymi dyżurnymi są {dispatchers}, którzy stworzyli po {count}",
+    "timetable-stats-total": "Stworzone rozkłady jazdy: {count} (łączny dystans: {distance})",
+    "timetable-stats-longest": "Najdłuższy rozkład jazdy: #{id} (stworzony przez dyżurnego {author} dla maszynisty {driver} o dystansie {distance})",
+    "timetable-stats-most-active-dr": "Najaktywniejszy dyżurny: {dispatcher} (stworzył {count})",
+    "timetable-stats-most-active-dr-many": "Najaktywniejsi dyżurni: {dispatchers} (stworzyli po {count})",
+    "timetable-stats-most-active-driver": "Najaktywniejszy maszynista: {driver} (przejechał łącznie {distance})",
+    "timetable-stats-longest-duties": "Najdłuższa służba: {dispatcher} na scenerii {station} (czas trwania: {duration})",
 
     "timetable-count": "rozkład jazdy | rozkładów jazdy",
 

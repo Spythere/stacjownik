@@ -14,6 +14,17 @@ export interface ITimetablesDailyStats {
     name: string;
     count: number;
   }[];
+
+  mostActiveDrivers: {
+    name: string;
+    distance: number;
+  }[];
+
+  longestDuties: {
+    name: string;
+    duration: number;
+    station: string;
+  }[];
 }
 
 export interface ITimetablesDailyStatsResponse {
@@ -25,6 +36,17 @@ export interface ITimetablesDailyStatsResponse {
   mostActiveDispatchers: {
     name: string;
     count: number;
+  }[];
+
+  mostActiveDrivers: {
+    name: string;
+    distance: number;
+  }[];
+
+  longestDuties: {
+    name: string;
+    duration: number;
+    station: string;
   }[];
 }
 
