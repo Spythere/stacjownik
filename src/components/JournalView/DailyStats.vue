@@ -9,10 +9,10 @@
         {{ $t('journal.daily-stats-info') }}
       </b>
 
-      <h3>{{ $t('journal.daily-stats-title') }} {{ new Date().toLocaleDateString($i18n.locale) }}</h3>
-      <hr style="margin-bottom: 0.5em" />
+      <span class="stats-list" v-else>
+        <h3>{{ $t('journal.daily-stats-title') }} {{ new Date().toLocaleDateString($i18n.locale) }}</h3>
+        <hr style="margin-bottom: 0.5em" />
 
-      <span class="stats-list">
         <div v-if="stats.totalTimetables">
           &bull;
           <i18n-t keypath="journal.timetable-stats-total">
