@@ -3,6 +3,8 @@ import { JournalTimetableSorter } from '../../types/JournalTimetablesTypes';
 export interface TimetablesQueryParams {
   driverName?: string;
   trainNo?: string;
+  timetableId?: string;
+
   authorName?: string;
   timestampFrom?: number;
   timestampTo?: number;

@@ -41,7 +41,7 @@ export default interface Station {
     maxUsers: number;
     currentUsers: number;
 
-    spawns: { spawnName: string; spawnLength: number }[];
+    spawns: { spawnName: string; spawnLength: number; isElectrified: boolean }[];
     dispatcherRate: number;
     dispatcherName: string;
     dispatcherExp: number;

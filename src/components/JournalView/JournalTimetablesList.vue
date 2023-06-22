@@ -45,7 +45,7 @@
             <b
               class="info-status"
               :class="{
-                fulfilled: timetable.fulfilled || timetable.currentDistance >= timetable.routeDistance * 0.9,
+                fulfilled: timetable.fulfilled,
                 terminated: timetable.terminated && !timetable.fulfilled,
                 active: !timetable.terminated,
               }"
@@ -53,7 +53,7 @@
               {{
                 !timetable.terminated
                   ? $t('journal.timetable-active')
-                  : timetable.fulfilled || timetable.currentDistance >= timetable.routeDistance * 0.9
+                  : timetable.fulfilled
                   ? $t('journal.timetable-fulfilled')
                   : `${$t('journal.timetable-abandoned')} ${localeTime(timetable.endDate, $i18n.locale)}`
               }}
@@ -77,18 +77,30 @@
           >
             <span v-if="i > 0">
               &gt;
-              <span v-if="!item.showExtra.value && i == 1 && sceneryList.length > 2"
-                >... (+{{ sceneryList.length - 2 }}) &gt;</span
-              >
+              <span v-if="!item.showExtra.value && i == 1 && sceneryList.length > 2">
+                ... (+{{ sceneryList.length - 2 }}) &gt;
+              </span>
             </span>
             {{ scenery.name }}
+
             <!-- Data odjazdu ze stacji początkowej -->
             <span v-if="i == 0" v-html="scenery.beginDateHTML"></span>
+
             <!-- Data przyjazdu do stacji końcowej -->
             <span
-              v-if="i == sceneryList.length - 1 || (i == 1 && !item.showExtra.value)"
+              v-else-if="i == sceneryList.length - 1 || (i == 1 && !item.showExtra.value)"
               v-html="scenery.endDateHTML"
             ></span>
+
+            <!-- Data przyjazdu i odjazdu ze stacji pośredniej -->
+            <span v-if="item.showExtra.value && i > 0 && i < sceneryList.length - 1">
+              <span v-if="timetable.checkpointArrivals && i < timetable.checkpointArrivals.length">
+                &lpar;p. {{ localeTime(timetable.checkpointArrivals[i], $i18n.locale)
+                }}<span v-if="timetable.checkpointDepartures && i < timetable.checkpointDepartures.length">
+                  / o. {{ localeTime(timetable.checkpointDepartures[i], $i18n.locale) }}</span
+                >&rpar;
+              </span>
+            </span>
           </span>
         </div>
 

@@ -1,56 +1,62 @@
 <template>
   <section class="daily-stats">
-    <span :data-active="data.statsStatus">
-      <b v-if="data.statsStatus == DataStatus.Loading">
+    <span :data-active="statsStatus">
+      <b v-if="statsStatus == DataStatus.Loading">
         {{ $t('app.loading') }}
       </b>
 
-      <b v-else-if="data.stats.distanceSum == null">
+      <b v-else-if="stats.distanceSum == null">
         {{ $t('journal.daily-stats-info') }}
       </b>
 
-      <span>
-        <div v-if="data.stats.totalTimetables">
+      <span class="stats-list" v-else>
+        <h3>
+          {{ $t('journal.daily-stats-title') }}
+          <b class="text--primary">{{ new Date().toLocaleDateString($i18n.locale) }}</b>
+        </h3>
+        <hr style="margin-bottom: 0.5em" />
+
+        <div v-if="stats.totalTimetables">
           &bull;
           <i18n-t keypath="journal.timetable-stats-total">
             <template #count>
               <b class="text--primary">
-                {{ data.stats.totalTimetables }}
-                {{ $t('journal.timetable-count', data.stats.totalTimetables) }}
+                {{ stats.totalTimetables }}
+                {{ $t('journal.timetable-count', stats.totalTimetables) }}
               </b>
             </template>
 
             <template #distance>
-              <b class="text--primary"> {{ data.stats.distanceSum?.toFixed(2) }} km </b>
+              <b class="text--primary"> {{ stats.distanceSum?.toFixed(2) }} km</b>
             </template>
           </i18n-t>
         </div>
 
-        <div v-if="data.stats.timetableId">
+        <div v-if="stats.timetableId">
           &bull;
           <i18n-t keypath="journal.timetable-stats-longest">
             <template #id>
-              <router-link :to="`/journal/timetables?timetableId=${data.stats.timetableId}`">
-                <b>{{ data.stats.timetableId }}</b>
+              <router-link :to="`/journal/timetables?timetableId=${stats.timetableId}`">
+                <b>{{ stats.timetableId }}</b>
               </router-link>
             </template>
             <template #author>
-              <router-link :to="`/journal/dispatchers?dispatcherName=${data.stats.timetableAuthor}`">
-                <b>{{ data.stats.timetableAuthor }}</b>
+              <router-link :to="`/journal/dispatchers?dispatcherName=${stats.timetableAuthor}`">
+                <b>{{ stats.timetableAuthor }}</b>
               </router-link>
             </template>
             <template #driver>
-              <b>{{ data.stats.timetableDriver }}</b>
+              <b class="text--primary">{{ stats.timetableDriver }}</b>
             </template>
             <template #distance>
-              <b class="text--primary">{{ data.stats.timetableRouteDistance }} km</b>
+              <b class="text--primary">{{ stats.timetableRouteDistance }} km</b>
             </template>
           </i18n-t>
         </div>
 
         <div v-if="firstPlaceDispatchers.length == 1">
           &bull;
-          <i18n-t keypath="journal.timetable-stats-most-active">
+          <i18n-t keypath="journal.timetable-stats-most-active-dr">
             <template #dispatcher>
               <router-link :to="`/journal/dispatchers?dispatcherName=${firstPlaceDispatchers[0].name}`">
                 <b>{{ firstPlaceDispatchers[0].name }}</b>
@@ -67,7 +73,7 @@
 
         <div v-if="firstPlaceDispatchers.length > 1">
           &bull;
-          <i18n-t keypath="journal.timetable-stats-most-active-many">
+          <i18n-t keypath="journal.timetable-stats-most-active-dr-many">
             <template #dispatchers>
               <span v-for="(disp, i) in firstPlaceDispatchers">
                 <span v-if="i == firstPlaceDispatchers.length - 1"> {{ $t('general.and') }} </span>
@@ -88,109 +94,157 @@
             </template>
           </i18n-t>
         </div>
+
+        <div v-if="stats.longestDuties.length > 0">
+          &bull;
+          <i18n-t keypath="journal.timetable-stats-longest-duties">
+            <template #dispatcher>
+              <router-link :to="`/journal/dispatchers?dispatcherName=${stats.longestDuties[0].name}`">
+                <b>{{ stats.longestDuties[0].name }}</b>
+              </router-link>
+            </template>
+
+            <template #station>{{ stats.longestDuties[0].station }}</template>
+
+            <template #duration>
+              {{ calculateDuration(stats.longestDuties[0].duration) }}
+            </template>
+          </i18n-t>
+        </div>
+
+        <div v-if="stats.mostActiveDrivers.length > 0">
+          &bull;
+          <i18n-t keypath="journal.timetable-stats-most-active-driver">
+            <template #driver>
+              <b class="text--primary">{{ stats.mostActiveDrivers[0].name }}</b>
+            </template>
+            <template #distance>
+              <b class="text--primary">{{ stats.mostActiveDrivers[0].distance }} km</b>
+            </template>
+          </i18n-t>
+        </div>
       </span>
     </span>
   </section>
 </template>
 
-<script setup lang="ts">
+<script lang="ts">
 import axios from 'axios';
-import { computed, onActivated, onDeactivated, onMounted, reactive, ref } from 'vue';
+import { defineComponent } from 'vue';
+import dateMixin from '../../mixins/dateMixin';
 import { DataStatus } from '../../scripts/enums/DataStatus';
 import { ITimetablesDailyStats, ITimetablesDailyStatsResponse } from '../../scripts/interfaces/api/StatsAPIData';
 import { URLs } from '../../scripts/utils/apiURLs';
-import StorageManager from '../../scripts/managers/storageManager';
 
-const intervalId = ref(-1);
+export default defineComponent({
+  mixins: [dateMixin],
+  emits: ['toggleStatsOpen'],
 
-const emit = defineEmits<{
-  (e: 'toggleStatsOpen', value: boolean): void;
-}>();
+  data() {
+    return {
+      DataStatus,
+      statsStatus: DataStatus.Loading,
+      intervalId: -1,
 
-const data = reactive({
-  statsStatus: DataStatus.Loading,
-
-  stats: {
-    totalTimetables: 0,
-    distanceSum: 0,
-    distanceAvg: 0,
-    timetableAuthor: '',
-    timetableDriver: '',
-    timetableId: 0,
-    timetableRouteDistance: 0,
-
-    mostActiveDispatchers: [],
-  } as ITimetablesDailyStats,
-});
-
-const firstPlaceDispatchers = computed(() => {
-  if (data.stats.mostActiveDispatchers.length == 0) return [];
-  const maxCount = data.stats.mostActiveDispatchers[0].count;
-
-  return data.stats.mostActiveDispatchers.filter((disp) => disp.count === maxCount);
-});
-
-async function fetchDailyTimetableStats() {
-  try {
-    const {
-      distanceAvg,
-      distanceSum,
-      maxTimetable,
-      totalTimetables,
-      mostActiveDispatchers,
-    }: ITimetablesDailyStatsResponse = await (
-      await axios.get(`${URLs.stacjownikAPI}/api/getDailyTimetableStats`)
-    ).data;
-
-    data.stats = {
-      totalTimetables,
-      distanceSum,
-      distanceAvg,
-      timetableAuthor: maxTimetable?.authorName || '',
-      timetableDriver: maxTimetable?.driverName || '',
-      timetableId: maxTimetable?.id || 0,
-      timetableRouteDistance: maxTimetable?.routeDistance || 0,
-
-      mostActiveDispatchers,
+      stats: {
+        totalTimetables: 0,
+        distanceSum: 0,
+        distanceAvg: 0,
+        timetableAuthor: '',
+        timetableDriver: '',
+        timetableId: 0,
+        timetableRouteDistance: 0,
+        longestDuties: [],
+        mostActiveDrivers: [],
+        mostActiveDispatchers: [],
+      } as ITimetablesDailyStats,
     };
+  },
 
-    data.statsStatus = DataStatus.Loaded;
-  } catch (error) {
-    console.error('Ups! Wystąpił błąd podczas pobierania statystyk rozkładów jazdy...');
-    data.statsStatus = DataStatus.Error;
-  }
-}
+  activated() {
+    this.startFetchingDailyStats();
+    this.$emit('toggleStatsOpen', true);
+  },
 
-function startFetchingDailyStats() {
-  fetchDailyTimetableStats();
+  deactivated() {
+    this.stopFetchingDailyStats();
+  },
 
-  if (intervalId.value != -1) return;
+  computed: {
+    firstPlaceDispatchers() {
+      if (this.stats.mostActiveDispatchers.length == 0) return [];
+      const maxCount = this.stats.mostActiveDispatchers[0].count;
 
-  intervalId.value = setInterval(fetchDailyTimetableStats, 60000);
-}
+      return this.stats.mostActiveDispatchers.filter((disp) => disp.count === maxCount);
+    },
+  },
 
-function stopFetchingDailyStats() {
-  clearInterval(intervalId.value);
-  intervalId.value = -1;
-}
+  methods: {
+    async fetchDailyTimetableStats() {
+      try {
+        const res: ITimetablesDailyStatsResponse = await (
+          await axios.get(`${URLs.stacjownikAPI}/api/getDailyTimetableStats`)
+        ).data;
 
-onActivated(() => {
-  startFetchingDailyStats();
-  emit('toggleStatsOpen', true);
+        this.stats = {
+          totalTimetables: res.totalTimetables,
+          distanceSum: res.distanceSum,
+          distanceAvg: res.distanceAvg,
+          timetableAuthor: res.maxTimetable?.authorName || '',
+          timetableDriver: res.maxTimetable?.driverName || '',
+          timetableId: res.maxTimetable?.id || 0,
+          timetableRouteDistance: res.maxTimetable?.routeDistance || 0,
+
+          mostActiveDispatchers: res.mostActiveDispatchers,
+          mostActiveDrivers: res.mostActiveDrivers,
+          longestDuties: res.longestDuties,
+        };
+
+        this.statsStatus = DataStatus.Loaded;
+      } catch (error) {
+        console.error('Ups! Wystąpił błąd podczas pobierania statystyk rozkładów jazdy...');
+        this.statsStatus = DataStatus.Error;
+      }
+    },
+
+    startFetchingDailyStats() {
+      this.fetchDailyTimetableStats();
+
+      if (this.intervalId != -1) return;
+
+      this.intervalId = setInterval(this.fetchDailyTimetableStats, 60000);
+    },
+
+    stopFetchingDailyStats() {
+      clearInterval(this.intervalId);
+      this.intervalId = -1;
+    },
+  },
 });
-
-onDeactivated(() => {
-  stopFetchingDailyStats();
-});
-
 </script>
 
 <style lang="scss" scoped>
+@import '../../styles/responsive.scss';
+
 .daily-stats {
   text-align: left;
 }
 .daily-stats > span[data-active='0'] {
   opacity: 0.75;
+}
+
+.stats-list a {
+  text-decoration: underline;
+}
+
+@include smallScreen {
+  .daily-stats {
+    text-align: justify;
+  }
+
+  h3 {
+    text-align: center;
+  }
 }
 </style>
 
