@@ -2,7 +2,7 @@
   <section class="scenery-timetables-history scenery-section">
     <Loading v-if="dataStatus != 2" />
 
-    <table v-else-if="sceneryHistoryList.length">
+    <table class="scenery-history-table" v-else-if="sceneryHistoryList.length">
       <thead>
         <th>{{ $t('scenery.timetables-history-id') }}</th>
         <th>{{ $t('scenery.timetables-history-number') }}</th>
@@ -39,7 +39,7 @@
       </tbody>
     </table>
 
-    <div class="list-warning" v-else>{{ $t('scenery.history-list-empty') }}</div>
+    <div class="no-history" v-else>{{ $t('scenery.history-list-empty') }}</div>
   </section>
 </template>
 
@@ -90,46 +90,5 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '../../styles/responsive.scss';
-@import '../../styles/SceneryView/styles.scss';
-
-.list-warning {
-  padding: 1em 0.5em;
-  background-color: #444;
-  font-size: 1.2em;
-}
-
-.history-list {
-  padding: 0 0.5em;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-
-  thead {
-    position: sticky;
-    top: 0;
-    background-color: #222222;
-  }
-
-  th {
-    padding: 0.5em;
-  }
-
-  tr {
-    background-color: #353535;
-    border: none;
-  }
-
-  td {
-    padding: 0.75em;
-    border-bottom: solid 5px #111;
-  }
-}
-
-@include smallScreen {
-  .list-item {
-    grid-template-columns: 1fr 1fr;
-  }
-}
+@import '../../styles/sceneryViewTables.scss';
 </style>

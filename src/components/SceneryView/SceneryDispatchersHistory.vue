@@ -2,37 +2,61 @@
   <section class="scenery-dispatchers-history scenery-section">
     <Loading v-if="dataStatus != 2" />
 
-    <div class="list-warning" v-else-if="dispatcherHistoryList.length == 0">{{ $t('scenery.history-list-empty') }}</div>
+    <table class="scenery-history-table" v-else-if="dispatcherHistoryList.length">
+      <thead>
+        <!-- <th>{{ $t('scenery.timetables-history-id') }}</th>
+        <th>{{ $t('scenery.timetables-history-number') }}</th>
+        <th>{{ $t('scenery.timetables-history-route') }}</th>
+        <th>{{ $t('scenery.timetables-history-driver') }}</th>
+        <th>{{ $t('scenery.timetables-history-author') }}</th>
+        <th>{{ $t('scenery.timetables-history-date') }}</th> -->
 
-    <ul class="history-list" v-else>
-      <li class="list-item" v-for="item in dispatcherHistoryList">
-        <router-link class="item-general" :to="`/journal/dispatchers?dispatcherName=${item.dispatcherName}`">
-          <span class="text--grayed">#{{ item.stationHash }}&nbsp;</span>
-          <b
-            v-if="item.dispatcherLevel !== null"
-            class="level-badge dispatcher"
-            :style="calculateExpStyle(item.dispatcherLevel, item.dispatcherIsSupporter)"
-          >
-            {{ item.dispatcherLevel >= 2 ? item.dispatcherLevel : 'L' }}
-          </b>
+        <th>Hash</th>
+        <th>Dyżurny</th>
+        <th>Poziom</th>
+        <th>Ocena</th>
+        <th>Data</th>
+      </thead>
 
-          <b>{{ item.dispatcherName }}</b>
-        </router-link>
+      <tbody>
+        <tr v-for="historyItem in dispatcherHistoryList">
+          <td>#{{ historyItem.stationHash }}</td>
+          <td>
+            <router-link :to="`/journal/dispatchers?dispatcherName=${historyItem.dispatcherName}`">
+              <b>{{ historyItem.dispatcherName }}</b>
+            </router-link>
+          </td>
+          <td>
+            <b
+              v-if="historyItem.dispatcherLevel !== null"
+              class="level-badge dispatcher"
+              :style="calculateExpStyle(historyItem.dispatcherLevel, historyItem.dispatcherIsSupporter)"
+            >
+              {{ historyItem.dispatcherLevel >= 2 ? historyItem.dispatcherLevel : 'L' }}
+            </b>
+          </td>
+          <td class="text--primary">
+            <b>{{ historyItem.dispatcherRate }}</b>
+          </td>
+          <td style="min-width: 300px">
+            <div v-if="historyItem.timestampTo">
+              <b>{{ $d(historyItem.timestampFrom) }}</b>
 
-        <div v-if="item.timestampTo">
-          <b>{{ $d(item.timestampFrom) }}</b>
+              {{ timestampToString(historyItem.timestampFrom) }}
+              - {{ timestampToString(historyItem.timestampTo) }} ({{ calculateDuration(historyItem.currentDuration) }})
+            </div>
 
-          {{ timestampToString(item.timestampFrom) }}
-          - {{ timestampToString(item.timestampTo) }} ({{ calculateDuration(item.currentDuration) }})
-        </div>
+            <div class="dispatcher-online" v-else>
+              {{ $t('journal.online-since') }}
+              <b>{{ timestampToString(historyItem.timestampFrom) }}</b>
+              ({{ calculateDuration(historyItem.currentDuration) }})
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
-        <div class="dispatcher-online" v-else>
-          {{ $t('journal.online-since') }}
-          <b>{{ timestampToString(item.timestampFrom) }}</b>
-          ({{ calculateDuration(item.currentDuration) }})
-        </div>
-      </li>
-    </ul>
+    <div class="no-history" v-else>{{ $t('scenery.history-list-empty') }}</div>
   </section>
 </template>
 
@@ -84,30 +108,10 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '../../styles/responsive.scss';
-@import '../../styles/SceneryView/styles.scss';
+@import '../../styles/sceneryViewTables.scss';
 
-.history-list {
-  padding: 0 0.5em;
-}
-
-.list-item {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-
-  text-align: left;
-  background-color: #353535;
-  padding: 0.5em;
-  margin: 0.5em 0;
-
-  line-height: 1.5em;
-}
-
-.item-general {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.25em;
+.level-badge {
+  margin: 0 auto;
 }
 
 .dispatcher-online {
