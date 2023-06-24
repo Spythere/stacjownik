@@ -2,7 +2,7 @@
   <section class="scenery-dispatchers-history scenery-section">
     <Loading v-if="dataStatus != 2" />
 
-    <table class="scenery-history-table" v-else-if="dispatcherHistoryList.length">
+    <table class="scenery-history-table" v-else-if="historyList.length">
       <thead>
         <!-- <th>{{ $t('scenery.timetables-history-id') }}</th>
         <th>{{ $t('scenery.timetables-history-number') }}</th>
@@ -19,7 +19,7 @@
       </thead>
 
       <tbody>
-        <tr v-for="historyItem in dispatcherHistoryList">
+        <tr v-for="historyItem in historyList">
           <td>#{{ historyItem.stationHash }}</td>
           <td>
             <router-link :to="`/journal/dispatchers?dispatcherName=${historyItem.dispatcherName}`">
@@ -57,6 +57,7 @@
     </table>
 
     <div class="no-history" v-else>{{ $t('scenery.history-list-empty') }}</div>
+    <div ref="bottomDiv"></div>
   </section>
 </template>
 
@@ -70,24 +71,35 @@ import Station from '../../scripts/interfaces/Station';
 import { URLs } from '../../scripts/utils/apiURLs';
 import Loading from '../Global/Loading.vue';
 import styleMixin from '../../mixins/styleMixin';
+import listObserverMixin from '../../mixins/listObserverMixin';
 
 export default defineComponent({
   name: 'SceneryDispatchersHistory',
-  mixins: [dateMixin, styleMixin],
+  mixins: [dateMixin, styleMixin, listObserverMixin],
   props: {
     station: {
       type: Object as PropType<Station>,
       required: true,
     },
   },
+
   data() {
     return {
-      dispatcherHistoryList: [] as DispatcherHistory[],
+      historyList: [] as DispatcherHistory[],
       dataStatus: DataStatus.Loading,
     };
   },
+
+  mounted() {
+    this.mountObserver(this.fireObserverAction, this.$refs['bottomDiv'] as Element);
+  },
+
+  unmounted() {
+    this.unmountObserver();
+  },
+
   activated() {
-    this.fetchAPIData();
+    if (this.historyList.length == 0) this.fetchAPIData();
   },
   methods: {
     async fetchAPIData(countFrom = 0, countLimit = 30) {
@@ -95,11 +107,16 @@ export default defineComponent({
         const requestString = `${URLs.stacjownikAPI}/api/getDispatchers?stationName=${this.station.name}&countFrom=${countFrom}&countLimit=${countLimit}`;
         const historyAPIData: DispatcherHistory[] = await (await axios.get(requestString)).data;
 
-        this.dispatcherHistoryList = historyAPIData;
+        this.historyList.push(...historyAPIData);
         this.dataStatus = DataStatus.Loaded;
       } catch (error) {
         console.error(error);
       }
+    },
+
+    fireObserverAction() {
+      if (this.historyList.length > 0 && this.dataStatus == DataStatus.Loaded)
+        this.fetchAPIData(this.historyList.length);
     },
   },
   components: { Loading },
