@@ -52,6 +52,11 @@ export interface TimetableHistory {
 
   checkpointArrivals?: string[];
   checkpointDepartures?: string[];
+
+  checkpointArrivalsScheduled?: string[];
+  checkpointDeparturesScheduled?: string[];
+
+  checkpointStopTypes?: string[];
 }
 
 export interface SceneryTimetableHistory {
