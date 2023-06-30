@@ -13,6 +13,10 @@
         optionsType="dispatchers"
       />
 
+      <div class="journal_refreshed-date" v-if="dataRefreshedAt">
+        {{ $t('journal.data-refreshed-at') }}: {{ dataRefreshedAt.toLocaleString($i18n.locale) }}
+      </div>
+
       <div class="list_wrapper" @scroll="handleScroll">
         <transition name="status-anim" mode="out-in">
           <div :key="dataStatus">
@@ -104,6 +108,7 @@ export default defineComponent({
   data: () => ({
     currentQuery: '',
     currentQueryArray: [] as string[],
+    dataRefreshedAt: null as Date | null,
 
     scrollDataLoaded: true,
     scrollNoMoreData: false,
@@ -273,6 +278,7 @@ export default defineComponent({
             ? this.historyList[0].dispatcherName
             : '';
 
+        this.dataRefreshedAt = new Date();
         this.dataStatus = DataStatus.Loaded;
       } catch (error) {
         this.dataStatus = DataStatus.Error;

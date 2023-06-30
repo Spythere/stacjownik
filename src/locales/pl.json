@@ -279,6 +279,7 @@
     "title": "HISTORIA DYŻURÓW",
     "loading": "Ładowanie historii dyżurów...",
     "no-history": "Brak historii dyżurów dla tej scenerii!",
+    "data-refreshed-at": "Dane odświeżone o",
 
     "section-timetables": "ROZKŁADY JAZDY",
     "section-dispatchers": "DYŻURNI",
@@ -288,8 +289,9 @@
 
     "online-since": "ONLINE OD",
     "duty-lasted": "Dyżur trwał",
-    "minutes": "{minutes} min.",
-    "hours": "{hours} godz. {minutes} min.",
+    "hours": "{value} godz.",
+    "minutes": "{value} min.",
+    "seconds": "{value} sek.",
 
     "route-length": "Kilometraż:",
     "station-count": "Stacje:",
@@ -333,7 +335,10 @@
     "driver-stats-info": "Wpisz nazwę użytkownika w filtrach [F], aby zobaczyć jego statystyki maszynisty!",
 
     "stats-loading": "Pobieranie statystyk...",
-    "stats-error": "Ups! Wystąpił błąd podczas próby pobrania statystyk! :/"
+    "stats-error": "Ups! Wystąpił błąd podczas próby pobrania statystyk! :/",
+
+    "timetable-location-signal": "semafor:",
+    "timetable-location-route": "szlak:"
   },
   "scenery": {
     "users": "GRACZE ONLINE",

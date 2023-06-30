@@ -16,6 +16,10 @@
 
       <JournalStats />
 
+      <div class="journal_refreshed-date" v-if="dataRefreshedAt">
+        {{ $t('journal.data-refreshed-at') }}: {{ dataRefreshedAt.toLocaleString($i18n.locale) }}
+      </div>
+
       <div class="list_wrapper" @scroll="handleScroll">
         <transition name="status-anim" mode="out-in">
           <div :key="dataStatus">
@@ -101,6 +105,7 @@ export default defineComponent({
 
   data: () => ({
     currentQueryParams: {} as TimetablesQueryParams,
+    dataRefreshedAt: null as Date | null,
 
     scrollDataLoaded: true,
     scrollNoMoreData: false,
@@ -326,6 +331,7 @@ export default defineComponent({
             : '';
 
         this.dataStatus = DataStatus.Loaded;
+        this.dataRefreshedAt = new Date();
       } catch (error) {
         this.dataStatus = DataStatus.Error;
         this.dataErrorMessage = 'Ups! Coś poszło nie tak!';

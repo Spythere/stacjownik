@@ -16,6 +16,7 @@ export interface TimetableHistory {
   twr: number;
   skr: number;
   sceneriesString: string;
+  currentLocation: string[];
 
   routeDistance: number;
   currentDistance: number;
