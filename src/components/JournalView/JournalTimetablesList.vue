@@ -106,7 +106,7 @@
               {{ $t(`journal.${timetable.terminated ? 'last-seen-at' : 'currently-at'}`) }}
               {{ timetable.currentSceneryName.replace(/.[a-zA-Z0-9]+.sc/, '') }}
 
-              <span v-if="timetable.currentLocation.toString()">&lpar;</span>
+              <span v-if="timetable.currentLocation[0] || timetable.currentLocation[1]">&lpar;</span>
 
               <span v-if="timetable.currentLocation[1]">
                 {{ $t('journal.timetable-location-route') }} {{ timetable.currentLocation[1] }}
@@ -116,7 +116,7 @@
                 {{ $t('journal.timetable-location-signal') }} {{ timetable.currentLocation[0] }}
               </span>
 
-              <span v-if="timetable.currentLocation.toString()">&rpar;</span>
+              <span v-if="timetable.currentLocation[0] || timetable.currentLocation[1]">&rpar;</span>
             </b>
           </span>
         </div>
