@@ -1,0 +1,31 @@
+table.scenery-history-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  thead {
+    position: sticky;
+    top: 0;
+    background-color: #222222;
+  }
+
+  th {
+    padding: 0.5em;
+  }
+
+  tr {
+    background-color: #353535;
+    border: none;
+  }
+
+  td {
+    padding: 0.75em;
+    border-bottom: solid 5px #111;
+  }
+}
+
+.no-history {
+  padding: 1em 0.5em;
+  background-color: #444;
+  font-size: 1.2em;
+  color: #ccc;
+}

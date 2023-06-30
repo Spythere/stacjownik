@@ -16,6 +16,7 @@ export interface TimetableHistory {
   twr: number;
   skr: number;
   sceneriesString: string;
+  currentLocation: string[];
 
   routeDistance: number;
   currentDistance: number;
@@ -52,6 +53,11 @@ export interface TimetableHistory {
 
   checkpointArrivals?: string[];
   checkpointDepartures?: string[];
+
+  checkpointArrivalsScheduled?: string[];
+  checkpointDeparturesScheduled?: string[];
+
+  checkpointStopTypes?: string[];
 }
 
 export interface SceneryTimetableHistory {

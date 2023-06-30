@@ -1,10 +1,10 @@
 <template>
   <transition-group class="journal-list" tag="ul" name="list-anim">
     <li
-      v-for="{ timetable, sceneryList, stockHistoryComp, ...item } in computedTimetableHistory"
+      v-for="{ timetable, stockHistoryComp, stops, showExtraInfo, ...item } in computedTimetableHistory"
       class="journal_item"
       :key="timetable.id"
-      @click="item.showExtra.value = !item.showExtra.value"
+      @click="showExtraInfo.value = !showExtraInfo.value"
     >
       <div class="journal_item-info">
         <div class="info-general">
@@ -43,7 +43,7 @@
           <span class="general-time">
             <b class="info-date">{{ localeDay(timetable.beginDate, $i18n.locale) }}</b>
             <b
-              class="info-status"
+              class="info-badge"
               :class="{
                 fulfilled: timetable.fulfilled,
                 terminated: timetable.terminated && !timetable.fulfilled,
@@ -67,45 +67,28 @@
 
         <hr />
 
-        <div class="scenery-list">
+        <!-- Spis postojów -->
+        <div class="stop-list">
           <span
-            v-for="(scenery, i) in sceneryList.filter((_, i) =>
-              !item.showExtra.value ? i == 0 || i == sceneryList.length - 1 : true
-            )"
-            :key="scenery.name"
-            :class="{ confirmed: scenery.confirmed }"
+            v-for="(stop, i) in stops.filter((_, i) => (!showExtraInfo.value ? i == 0 || i == stops.length - 1 : true))"
+            class="stop-list-item"
+            :key="stop.stopName"
+            :data-confirmed="stop.confirmed"
           >
             <span v-if="i > 0">
               &gt;
-              <span v-if="!item.showExtra.value && i == 1 && sceneryList.length > 2">
-                ... (+{{ sceneryList.length - 2 }}) &gt;
+              <span v-if="!showExtraInfo.value && i == 1 && stops.length > 2">
+                ... (+{{ stops.length - 2 }}) &gt;
               </span>
             </span>
-            {{ scenery.name }}
 
-            <!-- Data odjazdu ze stacji początkowej -->
-            <span v-if="i == 0" v-html="scenery.beginDateHTML"></span>
-
-            <!-- Data przyjazdu do stacji końcowej -->
-            <span
-              v-else-if="i == sceneryList.length - 1 || (i == 1 && !item.showExtra.value)"
-              v-html="scenery.endDateHTML"
-            ></span>
-
-            <!-- Data przyjazdu i odjazdu ze stacji pośredniej -->
-            <span v-if="item.showExtra.value && i > 0 && i < sceneryList.length - 1">
-              <span v-if="timetable.checkpointArrivals && i < timetable.checkpointArrivals.length">
-                &lpar;p. {{ localeTime(timetable.checkpointArrivals[i], $i18n.locale)
-                }}<span v-if="timetable.checkpointDepartures && i < timetable.checkpointDepartures.length">
-                  / o. {{ localeTime(timetable.checkpointDepartures[i], $i18n.locale) }}</span
-                >&rpar;
-              </span>
-            </span>
+            <span class="stop-name">{{ stop.stopName }}</span>
+            <span v-html="stop.html"></span>
           </span>
         </div>
 
         <!-- Status RJ -->
-        <div style="margin: 0.5em 0">
+        <div class="info-status" style="margin: 0.5em 0">
           <span>
             <b>{{ $t('journal.route-length') }}</b>
             {{ !timetable.fulfilled ? timetable.currentDistance + ' /' : '' }}
@@ -122,12 +105,24 @@
             <b>
               {{ $t(`journal.${timetable.terminated ? 'last-seen-at' : 'currently-at'}`) }}
               {{ timetable.currentSceneryName.replace(/.[a-zA-Z0-9]+.sc/, '') }}
+
+              <span v-if="timetable.currentLocation[0] || timetable.currentLocation[1]">&lpar;</span>
+
+              <span v-if="timetable.currentLocation[1]">
+                {{ $t('journal.timetable-location-route') }} {{ timetable.currentLocation[1] }}
+              </span>
+
+              <span v-else-if="timetable.currentLocation[0]">
+                {{ $t('journal.timetable-location-signal') }} {{ timetable.currentLocation[0] }}
+              </span>
+
+              <span v-if="timetable.currentLocation[0] || timetable.currentLocation[1]">&rpar;</span>
             </b>
           </span>
         </div>
 
-        <!-- Nick dyżurnego -->
-        <div v-if="timetable.authorName">
+        <!-- Info o autorze RJ -->
+        <div class="info-author" v-if="timetable.authorName">
           <b class="text--grayed">{{ $t('journal.dispatcher-name') }}&nbsp;</b>
           <router-link class="dispatcher-link" :to="`/journal/dispatchers?dispatcherName=${timetable.authorName}`">
             <b>{{ timetable.authorName }}</b>
@@ -144,11 +139,11 @@
 
         <button class="btn--option btn--show">
           {{ $t('journal.stock-info') }}
-          <img :src="getIcon(`arrow-${item.showExtra.value ? 'asc' : 'desc'}`)" alt="Arrow" />
+          <img :src="getIcon(`arrow-${showExtraInfo.value ? 'asc' : 'desc'}`)" alt="Arrow" />
         </button>
 
         <!-- Dodatkowe informacje -->
-        <div class="info-extended" v-if="timetable.stockString && timetable.stockMass && item.showExtra.value">
+        <div class="info-extended" v-if="timetable.stockString && timetable.stockMass && showExtraInfo.value">
           <hr />
 
           <div class="stock-specs">
@@ -180,6 +175,7 @@
             </span>
           </div>
 
+          <!-- Historia zmian w składzie -->
           <div class="stock-history" v-if="stockHistoryComp.length > 1">
             <button
               class="btn--action"
@@ -235,7 +231,6 @@ export default defineComponent({
     computedTimetableHistory() {
       return this.timetableHistory.map((timetable) => ({
         timetable,
-        sceneryList: this.getSceneryList(timetable),
         stockHistoryComp: timetable.stockHistory
           .slice()
           .reverse()
@@ -252,38 +247,64 @@ export default defineComponent({
               stockLength: Number(historyData[3]) || undefined,
             };
           }),
-        showExtra: ref(false),
+
+        showExtraInfo: ref(false),
+        stops: this.getTimetableStops(timetable),
         currentHistoryIndex: ref(0),
       }));
     },
   },
 
   methods: {
-    getSceneryList(timetable: TimetableHistory) {
-      return timetable.sceneriesString.split('%').map((name, i) => {
-        const beginDateHTML =
-          ' (o. ' +
-          (timetable.beginDate != timetable.scheduledBeginDate
-            ? `<s class='text--grayed'>${this.localeTime(timetable.beginDate, this.$i18n.locale)}</s> `
-            : '') +
-          `<span>${this.localeTime(timetable.scheduledBeginDate, this.$i18n.locale)}</span>)`;
+    getTimetableStops(timetable: TimetableHistory) {
+      const stopNames = timetable.sceneriesString.split('%');
 
-        const endDateHTML =
-          ' (p. ' +
-          (timetable.endDate != timetable.scheduledEndDate && timetable.fulfilled
-            ? `<s class='text--grayed'>${this.localeTime(
-                timetable.fulfilled ? timetable.endDate : timetable.scheduledEndDate,
-                this.$i18n.locale
-              )}</s> `
-            : '') +
-          `<span>${this.localeTime(
-            timetable.fulfilled || (timetable.terminated && !timetable.fulfilled)
-              ? timetable.scheduledEndDate
-              : timetable.endDate,
-            this.$i18n.locale
-          )}</span>)`;
+      const beginDateHTML = ` (o. ${
+        timetable.beginDate != timetable.scheduledBeginDate
+          ? `<s class="text--grayed">${this.localeTime(timetable.beginDate, this.$i18n.locale)}</s>`
+          : ''
+      } <span>${this.localeTime(timetable.scheduledBeginDate, this.$i18n.locale)}</span>)`;
 
-        return { name, confirmed: i < timetable.confirmedStopsCount, beginDateHTML, endDateHTML };
+      const endDateHTML = ` (p. ${
+        timetable.endDate != timetable.scheduledEndDate && timetable.fulfilled
+          ? `<s class="text--grayed">${this.localeTime(timetable.endDate, this.$i18n.locale)}</s>`
+          : ''
+      } <span>${this.localeTime(timetable.scheduledEndDate, this.$i18n.locale)}</span>)`;
+
+      return stopNames.map((stopName, i) => {
+        const confirmed = i < timetable.confirmedStopsCount;
+        if (i == 0) return { stopName, html: beginDateHTML, confirmed };
+        if (i == stopNames.length - 1) return { stopName, html: endDateHTML, confirmed };
+
+        const departureDateScheduled = this.stringToDate(timetable.checkpointDeparturesScheduled?.at(i));
+        const departureDateReal = this.stringToDate(timetable.checkpointDepartures?.at(i));
+        const arrivalDateScheduled = this.stringToDate(timetable.checkpointArrivalsScheduled?.at(i));
+        const arrivalDateReal = this.stringToDate(timetable.checkpointArrivals?.at(i));
+
+        // const arrivalDelay =
+        //   arrivalDateReal && arrivalDateScheduled ? arrivalDateReal.getTime() - arrivalDateScheduled.getTime() : 0;
+
+        // const departureDelay =
+        //   departureDateReal && departureDateScheduled
+        //     ? departureDateReal.getTime() - departureDateScheduled.getTime()
+        //     : 0;
+
+        const arrivalHTML =
+          (arrivalDateReal && arrivalDateScheduled && arrivalDateReal?.getTime() != arrivalDateScheduled?.getTime()
+            ? `<s class="text--grayed">${this.parseDateToTimeString(arrivalDateScheduled)}</s> `
+            : '') + this.parseDateToTimeString(arrivalDateReal || arrivalDateScheduled);
+
+        const departureHTML =
+          (departureDateReal &&
+          departureDateScheduled &&
+          departureDateReal?.getTime() != departureDateScheduled?.getTime()
+            ? `<s class="text--grayed">${this.parseDateToTimeString(departureDateScheduled)}</s> `
+            : '') + this.parseDateToTimeString(departureDateReal || departureDateScheduled);
+
+        let html = `${arrivalHTML}${departureHTML ? ` / ${departureHTML}` : ''}`;
+        if (html) html = ` (${html})`;
+
+        return { stopName, html, confirmed };
       });
     },
 
@@ -322,7 +343,7 @@ hr {
     margin-right: 0.5em;
   }
 
-  &-status {
+  &-badge {
     padding: 0.05em 0.35em;
     color: black;
 
@@ -418,10 +439,19 @@ ul.stock-list {
   }
 }
 
-.scenery-list {
+.stop-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25em;
+
   color: #adadad;
-  span.confirmed {
+
+  &-item[data-confirmed='true'] {
     color: #a3eba3;
+
+    .stop-name {
+      font-weight: bold;
+    }
   }
 }
 
@@ -437,15 +467,8 @@ ul.stock-list {
 }
 
 @include smallScreen {
-  .info-general {
-    flex-direction: column;
-  }
-  .info-extended {
+  .journal_item-info {
     text-align: center;
-  }
-
-  .general-train {
-    justify-content: center;
   }
 
   .info-route {
@@ -457,10 +480,9 @@ ul.stock-list {
     margin: 1em auto 0 auto;
   }
 
-  .stock-specs {
-    justify-content: center;
-  }
-
+  .info-general,
+  .general-train,
+  .stock-specs,
   .stock-history {
     justify-content: center;
   }

@@ -49,7 +49,7 @@ let data = reactive({
     {
       name: 'driver',
       titlePath: 'journal.driver-stats-title',
-      inactive: true,
+      // inactive: true,
     },
   ] as { name: TStatTab; titlePath: string; inactive?: boolean }[],
 });

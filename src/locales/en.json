@@ -274,6 +274,7 @@
     "title": "DISPATCHER HISTORY",
     "loading": "Loading dispatcher history data...",
     "no-history": "No dispatcher history found!",
+    "data-refreshed-at": "Data refreshed at",
 
     "section-timetables": "TIMETABLES",
     "section-dispatchers": "DISPATCHERS",
@@ -291,8 +292,10 @@
 
     "online-since": "ONLINE SINCE",
     "duty-lasted": "The duty lasted",
-    "minutes": "{minutes} mins",
-    "hours": "{hours}h {minutes} mins",
+
+    "hours": "{value} hour | {value} hours",
+    "minutes": "{value} min | {value} mins",
+    "seconds": "{value} s",
 
     "stock-info": "EXTRA INFO",
     "stock-length": "Length",
@@ -329,7 +332,10 @@
     "driver-stats-info": "Enter a proper nickname into filters [F] to see user's driving statistics!",
 
     "stats-loading": "Fetching statistics...",
-    "stats-error": "Oops! An unexpected error occurred while trying to fetch statistics! :/"
+    "stats-error": "Oops! An unexpected error occurred while trying to fetch statistics! :/",
+
+    "timetable-location-signal": "signal:",
+    "timetable-location-route": "route:"
   },
   "scenery": {
     "users": "PLAYERS ONLINE",

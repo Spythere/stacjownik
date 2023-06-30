@@ -23,6 +23,15 @@
   padding: 1em 0;
 }
 
+.journal_refreshed-date {
+  background-color: #333;
+  color: #ddd;
+  text-align: end;
+
+  padding: 0.25em;
+  margin: 0.5em 0;
+}
+
 .journal_warning {
   text-align: center;
   font-size: 1.3em;
@@ -70,6 +79,10 @@
   .journal_top-bar {
     justify-content: center;
     flex-wrap: wrap;
+  }
+
+  .journal_refreshed-date {
+    text-align: center;
   }
 }
 
