@@ -4,18 +4,11 @@
 
     <table class="scenery-history-table" v-else-if="historyList.length">
       <thead>
-        <!-- <th>{{ $t('scenery.timetables-history-id') }}</th>
-        <th>{{ $t('scenery.timetables-history-number') }}</th>
-        <th>{{ $t('scenery.timetables-history-route') }}</th>
-        <th>{{ $t('scenery.timetables-history-driver') }}</th>
-        <th>{{ $t('scenery.timetables-history-author') }}</th>
-        <th>{{ $t('scenery.timetables-history-date') }}</th> -->
-
-        <th>Hash</th>
-        <th>Dyżurny</th>
-        <th>Poziom</th>
-        <th>Ocena</th>
-        <th>Data</th>
+        <th>{{ $t('scenery.dispatchers-history-hash') }}</th>
+        <th>{{ $t('scenery.dispatchers-history-dispatcher') }}</th>
+        <th>{{ $t('scenery.dispatchers-history-level') }}</th>
+        <th>{{ $t('scenery.dispatchers-history-rate') }}</th>
+        <th>{{ $t('scenery.dispatchers-history-date') }}</th>
       </thead>
 
       <tbody>

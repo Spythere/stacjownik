@@ -370,6 +370,12 @@
     "timetables-history-author": "TT author",
     "timetables-history-date": "Date",
 
+    "dispatchers-history-hash": "Hash",
+    "dispatchers-history-dispatcher": "Dispatcher",
+    "dispatchers-history-level": "Level",
+    "dispatchers-history-rate": "Rate",
+    "dispatchers-history-date": "Service date",
+
     "req-level": "all dispatcher levels | dispatcher level {lvl} required | dispatcher level {lvl} required",
     "history-list-empty": "No recorded scenery history!",
 

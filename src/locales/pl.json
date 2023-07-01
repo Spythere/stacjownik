@@ -373,6 +373,12 @@
     "timetables-history-author": "Autor RJ",
     "timetables-history-date": "Data",
 
+    "dispatchers-history-hash": "Hash",
+    "dispatchers-history-dispatcher": "Dyżurny",
+    "dispatchers-history-level": "Poziom",
+    "dispatchers-history-rate": "Ocena",
+    "dispatchers-history-date": "Data służby",
+
     "req-level": "ogólnodostępna | minimum {lvl} poziom dyżurnego | minimum {lvl} poziom dyżurnego",
     "history-list-empty": "Brak historii dla tej scenerii!",
 
