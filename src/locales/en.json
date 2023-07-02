@@ -382,7 +382,9 @@
     "forum-topic": "Official {name} forum topic",
 
     "pragotron-link": "Timetable pallet board (beta)",
-    "tablice-link": "Timetable summary board (by Thundo)"
+    "tablice-link": "Timetable summary board (by Thundo)",
+
+    "bottom-info": "Show full history in the Journal tab"
   },
   "availability": {
     "title": "Availability",

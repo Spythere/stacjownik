@@ -1,8 +1,9 @@
 <template>
-  <section class="scenery-timetables-history scenery-section">
-    <Loading v-if="dataStatus != 2" />
+  <section class="scenery-table-section">
+    <Loading v-if="dataStatus != DataStatus.Loaded" />
+    <div class="no-history" v-else-if="historyList.length == 0">{{ $t('scenery.history-list-empty') }}</div>
 
-    <table class="scenery-history-table" v-else-if="historyList.length">
+    <table class="scenery-history-table" v-else>
       <thead>
         <th>{{ $t('scenery.timetables-history-id') }}</th>
         <th>{{ $t('scenery.timetables-history-number') }}</th>
@@ -26,7 +27,7 @@
           <td>
             <router-link
               v-if="historyItem.authorName"
-              :to="`/journal/dispatchers?dispatcherName=${historyItem.authorName}`"
+              :to="`/journal/timetables?authorName=${historyItem.authorName}`"
               >{{ historyItem.authorName }}
             </router-link>
             <i v-else>{{ $t('scenery.timetable-author-unknown') }}</i>
@@ -38,10 +39,13 @@
         </tr>
       </tbody>
     </table>
-
-    <div class="no-history" v-else>{{ $t('scenery.history-list-empty') }}</div>
-    <div ref="bottomDiv"></div>
   </section>
+
+  <div class="bottom-info">
+    <button class="btn btn--option" v-if="historyList.length > 0" @click="navigateToHistory()">
+      {{ $t('scenery.bottom-info') }}
+    </button>
+  </div>
 </template>
 
 <script lang="ts">
@@ -69,37 +73,31 @@ export default defineComponent({
     return {
       historyList: [] as TimetableHistory[],
       dataStatus: DataStatus.Loading,
+      DataStatus,
     };
   },
 
-  mounted() {
-    this.mountObserver(this.fireObserverAction, this.$refs['bottomDiv'] as Element);
-  },
-
-  unmounted() {
-    this.unmountObserver();
-  },
-
-  activated() {
-    if (this.historyList.length == 0) this.fetchAPIData();
+  async activated() {
+    const fetchedHistory = await this.fetchAPIData();
+    if (fetchedHistory) this.historyList = fetchedHistory.timetables;
   },
 
   methods: {
-    async fetchAPIData(countFrom = 0, countLimit = 15) {
+    async fetchAPIData(countFrom = 0, countLimit = 15): Promise<SceneryTimetableHistory | null> {
       try {
         const requestString = `${URLs.stacjownikAPI}/api/getIssuedTimetables?name=${this.station.name}&countFrom=${countFrom}&countLimit=${countLimit}`;
         const historyAPIData: SceneryTimetableHistory = await (await axios.get(requestString)).data;
 
-        this.historyList.push(...historyAPIData.timetables);
         this.dataStatus = DataStatus.Loaded;
+        return historyAPIData;
       } catch (error) {
         console.error(error);
+        return null;
       }
     },
 
-    fireObserverAction() {
-      if (this.historyList.length > 0 && this.dataStatus == DataStatus.Loaded)
-        this.fetchAPIData(this.historyList.length);
+    navigateToHistory() {
+      this.$router.push(`/journal/timetables?issuedFrom=${this.station.name}`);
     },
   },
   components: { Loading },

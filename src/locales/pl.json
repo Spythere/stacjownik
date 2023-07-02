@@ -385,7 +385,9 @@
     "forum-topic": "Oficjalny wątek scenerii {name}",
 
     "pragotron-link": "Paletowa tablica informacyjna (beta)",
-    "tablice-link": "Tablica informacyjna zbiorcza (autorstwa Thundo)"
+    "tablice-link": "Tablica informacyjna zbiorcza (autorstwa Thundo)",
+
+    "bottom-info": "Pokaż pełną historię w zakładce Dziennika"
   },
   "availability": {
     "title": "Dostępność",

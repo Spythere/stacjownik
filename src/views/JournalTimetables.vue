@@ -190,7 +190,11 @@ export default defineComponent({
     },
 
     handleQueries(query: LocationQuery) {
-      if ('timetableId' in query) this.searchersValues['search-train'] = `#${query.timetableId}`;
+      const queryKeys = Object.keys(query);
+
+      if (queryKeys.includes('timetableId')) this.setSearchers('', '', `#${query.timetableId}`, '', '');
+      if (queryKeys.includes('issuedFrom')) this.setSearchers('', '', '', '', `${query.issuedFrom}`);
+      if (queryKeys.includes('authorName')) this.setSearchers('', '', '', `${query.authorName}`, '');
     },
 
     setSearchers(date: string, driver: string, train: string, dispatcher: string, issuedFrom: string) {

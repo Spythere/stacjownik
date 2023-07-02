@@ -194,8 +194,10 @@ export default defineComponent({
     },
 
     handleQueries(query: LocationQuery) {
-      if ('sceneryName' in query) this.searchersValues['search-station'] = `${query.sceneryName}`;
-      if ('dispatcherName' in query) this.searchersValues['search-dispatcher'] = `${query.dispatcherName}`;
+      const queryKeys = Object.keys(query);
+
+      if (queryKeys.includes('sceneryName')) this.setSearchers('', `${query.sceneryName}`, '');
+      if (queryKeys.includes('dispatcherName')) this.setSearchers('', '', `${query.dispatcherName}`);
     },
 
     setSearchers(date: string, station: string, dispatcher: string) {

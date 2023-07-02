@@ -1,3 +1,9 @@
+.scenery-table-section {
+  position: relative;
+  height: 100%;
+  overflow-y: scroll;
+}
+
 table.scenery-history-table {
   width: 100%;
   border-collapse: collapse;
@@ -28,4 +34,13 @@ table.scenery-history-table {
   background-color: #444;
   font-size: 1.2em;
   color: #ccc;
+}
+
+.bottom-info {
+  display: flex;
+  justify-content: center;
+
+  button {
+    padding: 0.5em;
+  }
 }

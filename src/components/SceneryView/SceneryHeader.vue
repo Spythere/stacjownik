@@ -4,7 +4,9 @@
       {{ station.name }}
     </a>
 
-    <div class="scenery-abbrev">{{ $t('scenery.abbrev') }} <b>{{ station.generalInfo?.abbr }}</b></div>
+    <div class="scenery-abbrev">
+      {{ $t('scenery.abbrev') }} <b>{{ station.generalInfo?.abbr }}</b>
+    </div>
 
     <div class="scenery-hash" v-if="station.onlineInfo?.hash">#{{ station.onlineInfo.hash }}</div>
   </section>
@@ -27,6 +29,10 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '../../styles/variables.scss';
 @import '../../styles/responsive.scss';
+
+.info-header {
+  margin-top: 1em;
+}
 
 .scenery-name {
   font-weight: bold;
