@@ -9,8 +9,10 @@ export default defineComponent({
   methods: {
     mountObserver(actionFunction: () => void, target: Element) {
       this.observer = new IntersectionObserver((entries) => {
-        if (entries[0].intersectionRatio > 0) actionFunction();
-      });
+        console.log(entries);
+        
+        if (entries[0].intersectionRatio > 0.5) actionFunction();
+      }, { threshold: 0.2 });
 
       this.observer.observe(target);
     },

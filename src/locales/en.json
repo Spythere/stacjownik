@@ -370,13 +370,21 @@
     "timetables-history-author": "TT author",
     "timetables-history-date": "Date",
 
+    "dispatchers-history-hash": "Hash",
+    "dispatchers-history-dispatcher": "Dispatcher",
+    "dispatchers-history-level": "Level",
+    "dispatchers-history-rate": "Rate",
+    "dispatchers-history-date": "Service date",
+
     "req-level": "all dispatcher levels | dispatcher level {lvl} required | dispatcher level {lvl} required",
     "history-list-empty": "No recorded scenery history!",
 
     "forum-topic": "Official {name} forum topic",
 
     "pragotron-link": "Timetable pallet board (beta)",
-    "tablice-link": "Timetable summary board (by Thundo)"
+    "tablice-link": "Timetable summary board (by Thundo)",
+
+    "bottom-info": "Show full history in the Journal tab"
   },
   "availability": {
     "title": "Availability",

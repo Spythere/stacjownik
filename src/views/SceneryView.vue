@@ -33,12 +33,7 @@
         </div>
 
         <keep-alive>
-          <component
-            :is="currentViewCompontent"
-            :station="stationInfo"
-            :timetableOnly="timetableOnly"
-            :key="currentViewCompontent"
-          ></component>
+          <component :is="currentViewCompontent" :station="stationInfo" :key="currentViewCompontent"></component>
         </keep-alive>
       </div>
     </div>
@@ -172,12 +167,6 @@ button.back-btn {
   }
 }
 
-.scenery-section {
-  position: relative;
-  height: 100%;
-  overflow-y: scroll;
-}
-
 .scenery-wrapper {
   display: grid;
   grid-template-columns: 4fr 5fr;
@@ -214,14 +203,14 @@ button.back-btn {
 
 .scenery-right {
   background: #181818;
-  padding: 2em 0.5em;
+  padding: 1em 0.5em;
 
   height: 95vh;
   min-height: 550px;
   max-height: 1000px;
 
   display: grid;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: auto 1fr auto;
   gap: 1em;
 }
 
