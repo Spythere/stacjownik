@@ -4,12 +4,12 @@
       class="date arrival"
       v-if="!stop.beginsHere"
       :class="{
-        delayed: stop.arrivalDelay > 0 && stop.confirmed,
-        preponed: stop.arrivalDelay < 0 && stop.confirmed,
+        delayed: stop.arrivalDelay > 0 && (stop.confirmed || stop.stopped),
+        preponed: stop.arrivalDelay < 0 && (stop.confirmed || stop.stopped),
         'on-time': stop.arrivalDelay == 0 && stop.confirmed,
       }"
     >
-      <span v-if="stop.arrivalDelay != 0 && stop.confirmed">
+      <span v-if="stop.arrivalDelay != 0 && (stop.confirmed || stop.stopped)">
         <s>{{ timestampToString(stop.arrivalTimestamp) }}</s>
         {{ timestampToString(stop.arrivalRealTimestamp) }}
         ({{ stop.arrivalDelay > 0 ? '+' : '' }}{{ stop.arrivalDelay }})
@@ -20,13 +20,13 @@
       </span>
     </span>
 
-    <span class="date stop" v-if="stop.stopTime" :class="stop.stopType.replace(', ', '-')">
+    <span class="date stop" v-if="stop.stopTime || stop.stopped" :class="stop.stopType.replace(', ', '-')">
       {{ stop.stopTime }} {{ stop.stopType == '' ? 'pt' : stop.stopType }}
     </span>
 
     <span
       class="date departure"
-      v-if="!stop.terminatesHere && stop.stopTime != 0"
+      v-if="!stop.terminatesHere && (stop.stopTime != 0 || stop.stopped)"
       :class="{
         delayed: stop.departureDelay > 0 && stop.confirmed,
         preponed: stop.departureDelay < 0 && stop.confirmed,
