@@ -21,6 +21,13 @@ export default defineComponent({
       });
     },
 
+    localeDateTime(dateString: string, locale: string) {
+      return new Date(dateString).toLocaleString(locale == 'pl' ? 'pl-PL' : 'en-GB', {
+        timeStyle: 'short',
+        dateStyle: 'medium'
+      });
+    },
+
     localeTime(dateString: string, locale: string) {
       return new Date(dateString).toLocaleTimeString(locale == 'pl' ? 'pl-PL' : 'en-GB', {
         hour: '2-digit',

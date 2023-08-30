@@ -284,7 +284,7 @@
 
     "route-length": "Route length:",
     "station-count": "Stations:",
-    "dispatcher-name": "Created by",
+    "dispatcher-name": "Author",
     "timetable-day": "Timetable created at",
     "timetable-active": "ACTIVE",
     "timetable-fulfilled": "FULFILLED",

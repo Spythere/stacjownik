@@ -41,13 +41,14 @@
       </div>
 
       <div class="timetable_progress" style="margin-top: 0.5em" v-if="train.timetableData">
-        <span class="timetable_progress-bar">
+        <!-- <span class="timetable_progress-bar">
           <span class="bar-bg"></span>
           <span
             class="bar-fg"
             :style="{ width: `${Math.floor(confirmedPercentage(train.timetableData.followingStops))}%` }"
           ></span>
-        </span>
+        </span> -->
+        <ProgressBar :progressPercent="confirmedPercentage(train.timetableData.followingStops)" />
 
         <span class="timetable_progress-distance">
           &nbsp; {{ currentDistance(train.timetableData.followingStops) }} km /
@@ -96,6 +97,7 @@ import imageMixin from '../../mixins/imageMixin';
 import styleMixin from '../../mixins/styleMixin';
 import trainInfoMixin from '../../mixins/trainInfoMixin';
 import Train from '../../scripts/interfaces/Train';
+import ProgressBar from '../Global/ProgressBar.vue';
 
 export default defineComponent({
   props: {
@@ -103,14 +105,13 @@ export default defineComponent({
       type: Object as () => Train,
       required: true,
     },
-
     extended: {
       type: Boolean,
       default: true,
     },
   },
-
   mixins: [trainInfoMixin, imageMixin, styleMixin],
+  components: { ProgressBar },
 });
 </script>
 
@@ -204,31 +205,6 @@ export default defineComponent({
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-}
-
-.timetable_progress-bar {
-  position: relative;
-
-  width: 6em;
-  height: 1em;
-  margin: 0.5em 0;
-
-  .bar-fg,
-  .bar-bg {
-    position: absolute;
-    height: 1em;
-    width: 100%;
-
-    left: 0;
-  }
-
-  .bar-fg {
-    background-color: springgreen;
-  }
-
-  .bar-bg {
-    background-color: #5b5b5b;
-  }
 }
 
 .timetable_progress-distance {

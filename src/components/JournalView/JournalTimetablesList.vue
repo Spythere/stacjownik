@@ -41,7 +41,14 @@
           </span>
 
           <span class="general-time">
-            <b class="info-date">{{ localeDay(timetable.beginDate, $i18n.locale) }}</b>
+            <b class="info-date"
+              >{{
+                new Date(timetable.createdAt).getTime() - new Date(timetable.beginDate).getTime() < 0
+                  ? localeDateTime(timetable.createdAt, $i18n.locale)
+                  : localeDateTime(timetable.beginDate, $i18n.locale)
+              }}
+            </b>
+
             <b
               class="info-badge"
               :class="{
@@ -68,7 +75,7 @@
         <hr />
 
         <!-- Spis postojów -->
-        <div class="stop-list">
+        <div class="stop-list" v-if="showExtraInfo.value == true">
           <span
             v-for="(stop, i) in stops.filter((_, i) => (!showExtraInfo.value ? i == 0 || i == stops.length - 1 : true))"
             class="stop-list-item"
@@ -89,19 +96,20 @@
 
         <!-- Status RJ -->
         <div class="info-status" style="margin: 0.5em 0">
-          <span>
-            <b>{{ $t('journal.route-length') }}</b>
-            {{ !timetable.fulfilled ? timetable.currentDistance + ' /' : '' }}
-            {{ timetable.routeDistance }} km
+          <ProgressBar
+            :progressPercent="(timetable.confirmedStopsCount / timetable.allStopsCount) * 100"
+            :progressType="!timetable.fulfilled && timetable.terminated ? 'abandoned' : ''"
+          />
+
+          <span :style="{ color: timetable.terminated && timetable.fulfilled ? 'lightgreen' : '' }">
+            <span>
+              {{ timetable.currentDistance + ' km' }}
+            </span>
+            <span> / </span>
+            <span>{{ timetable.routeDistance }} km</span>
           </span>
-          &bull;
-          <span>
-            <b>{{ $t('journal.station-count') }}</b>
-            {{ timetable.confirmedStopsCount }} /
-            {{ timetable.allStopsCount }}
-          </span>
-          <span class="text--grayed" v-if="!timetable.fulfilled && timetable.currentSceneryName">
-            &bull;
+
+          <span class="text--grayed" v-if="timetable.currentSceneryName">
             <b>
               {{ $t(`journal.${timetable.terminated ? 'last-seen-at' : 'currently-at'}`) }}
               {{ timetable.currentSceneryName.replace(/.[a-zA-Z0-9]+.sc/, '') }}
@@ -121,22 +129,6 @@
           </span>
         </div>
 
-        <!-- Info o autorze RJ -->
-        <div class="info-author" v-if="timetable.authorName">
-          <b class="text--grayed">{{ $t('journal.dispatcher-name') }}&nbsp;</b>
-          <router-link class="dispatcher-link" :to="`/journal/dispatchers?dispatcherName=${timetable.authorName}`">
-            <b>{{ timetable.authorName }}</b>
-          </router-link>
-          <span class="text--grayed">
-            ({{
-              (new Date(timetable.createdAt).getTime() - new Date(timetable.beginDate).getTime() < 0
-                ? new Date(timetable.createdAt)
-                : new Date(timetable.beginDate)
-              ).toLocaleString($i18n.locale, { timeStyle: 'short', dateStyle: 'full' })
-            }})
-          </span>
-        </div>
-
         <button class="btn--option btn--show">
           {{ $t('journal.stock-info') }}
           <img :src="getIcon(`arrow-${showExtraInfo.value ? 'asc' : 'desc'}`)" alt="Arrow" />
@@ -148,9 +140,17 @@
 
           <div class="stock-specs">
             <span class="badge specs-badge">
+              <span>{{ $t('journal.dispatcher-name') }}</span>
+              <span>{{ timetable.authorName }}</span>
+            </span>
+          </div>
+
+          <div class="stock-specs">
+            <span class="badge specs-badge">
               <span>{{ $t('journal.stock-max-speed') }}</span>
               <span>{{ timetable.maxSpeed }}km/h</span>
             </span>
+
             <span class="badge specs-badge">
               <span>{{ $t('journal.stock-length') }}</span>
               <span>
@@ -161,6 +161,7 @@
                 }}m
               </span>
             </span>
+
             <span class="badge specs-badge">
               <span>{{ $t('journal.stock-mass') }}</span>
               <span>
@@ -216,6 +217,7 @@ import imageMixin from '../../mixins/imageMixin';
 import modalTrainMixin from '../../mixins/modalTrainMixin';
 import styleMixin from '../../mixins/styleMixin';
 import { TimetableHistory } from '../../scripts/interfaces/api/TimetablesAPIData';
+import ProgressBar from '../Global/ProgressBar.vue';
 
 export default defineComponent({
   props: {
@@ -224,9 +226,7 @@ export default defineComponent({
       required: true,
     },
   },
-
   mixins: [dateMixin, imageMixin, modalTrainMixin, styleMixin],
-
   computed: {
     computedTimetableHistory() {
       return this.timetableHistory.map((timetable) => ({
@@ -236,7 +236,6 @@ export default defineComponent({
           .reverse()
           .map((h) => {
             const historyData = h.split('@');
-
             return {
               updatedAt: new Date(Number(historyData[0])).toLocaleTimeString(this.$i18n.locale, {
                 hour: '2-digit',
@@ -247,14 +246,12 @@ export default defineComponent({
               stockLength: Number(historyData[3]) || undefined,
             };
           }),
-
         showExtraInfo: ref(false),
         stops: this.getTimetableStops(timetable),
         currentHistoryIndex: ref(0),
       }));
     },
   },
-
   methods: {
     getTimetableStops(timetable: TimetableHistory) {
       const stopNames = timetable.sceneriesString.split('%');
@@ -273,6 +270,7 @@ export default defineComponent({
 
       return stopNames.map((stopName, i) => {
         const confirmed = i < timetable.confirmedStopsCount;
+
         if (i == 0) return { stopName, html: beginDateHTML, confirmed };
         if (i == stopNames.length - 1) return { stopName, html: endDateHTML, confirmed };
 
@@ -280,14 +278,6 @@ export default defineComponent({
         const departureDateReal = this.stringToDate(timetable.checkpointDepartures?.at(i));
         const arrivalDateScheduled = this.stringToDate(timetable.checkpointArrivalsScheduled?.at(i));
         const arrivalDateReal = this.stringToDate(timetable.checkpointArrivals?.at(i));
-
-        // const arrivalDelay =
-        //   arrivalDateReal && arrivalDateScheduled ? arrivalDateReal.getTime() - arrivalDateScheduled.getTime() : 0;
-
-        // const departureDelay =
-        //   departureDateReal && departureDateScheduled
-        //     ? departureDateReal.getTime() - departureDateScheduled.getTime()
-        //     : 0;
 
         const arrivalHTML =
           (arrivalDateReal && arrivalDateScheduled && arrivalDateReal?.getTime() != arrivalDateScheduled?.getTime()
@@ -302,24 +292,22 @@ export default defineComponent({
             : '') + this.parseDateToTimeString(departureDateReal || departureDateScheduled);
 
         let html = `${arrivalHTML}${departureHTML ? ` / ${departureHTML}` : ''}`;
-        if (html) html = ` (${html})`;
 
+        if (html) html = ` (${html})`;
         return { stopName, html, confirmed };
       });
     },
-
     showTimetable(timetable: TimetableHistory) {
       if (!timetable) return;
       if (timetable.terminated) return;
-
       this.selectModalTrain(timetable.driverName + timetable.trainNo.toString());
     },
-
     onImageError(e: Event) {
       const imageEl = e.target as HTMLImageElement;
       imageEl.src = this.getImage('unknown.png');
     },
   },
+  components: { ProgressBar },
 });
 </script>
 
@@ -377,6 +365,13 @@ hr {
   &-extended {
     margin-top: 0.5em;
   }
+
+  &-status {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5em;
+  }
 }
 
 .general-train {
@@ -421,11 +416,10 @@ ul.stock-list {
   }
 }
 
+// badge.scss
 .badges {
   display: flex;
   gap: 0.25em;
-
-  // badge.scss
 }
 
 .stock-history {
@@ -440,14 +434,14 @@ ul.stock-list {
 }
 
 .stop-list {
-  display: flex;
-  flex-wrap: wrap;
+  word-wrap: break-word;
   gap: 0.25em;
+  font-size: 0.9em;
 
   color: #adadad;
 
   &-item[data-confirmed='true'] {
-    color: #a3eba3;
+    color: lightgreen;
 
     .stop-name {
       font-weight: bold;
@@ -457,7 +451,6 @@ ul.stock-list {
 
 .btn--show {
   display: flex;
-  margin-top: 1em;
   font-weight: bold;
   padding: 0.2em 0.45em;
 
@@ -473,6 +466,10 @@ ul.stock-list {
 
   .info-route {
     display: flex;
+    justify-content: center;
+  }
+
+  .info-status {
     justify-content: center;
   }
 
