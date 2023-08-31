@@ -1,213 +1,249 @@
 <template>
-  <transition-group class="journal-list" tag="ul" name="list-anim">
-    <li
-      v-for="{ timetable, stockHistoryComp, stops, showExtraInfo, ...item } in computedTimetableHistory"
-      class="journal_item"
-      :key="timetable.id"
-      @click="showExtraInfo.value = !showExtraInfo.value"
-    >
-      <div class="journal_item-info">
-        <div class="info-general">
-          <span
-            class="general-train"
-            tabindex="0"
-            @click.stop="showTimetable(timetable)"
-            @keydown.enter="showTimetable(timetable)"
-            style="cursor: pointer"
-          >
-            <span class="text--grayed">#{{ timetable.id }}</span>
-
-            <span class="badges" v-if="timetable.skr || timetable.twr">
-              <span class="train-badge twr" v-if="timetable.twr" :title="$t('general.TWR')">TWR</span>
-              <span class="train-badge skr" v-if="timetable.skr" :title="$t('general.SKR')">SKR</span>
-            </span>
-
-            <span>
-              <strong class="text--primary">
-                {{ timetable.trainCategoryCode }}
-              </strong>
-              <strong>&nbsp;{{ timetable.trainNo }}</strong>
-            </span>
-            &bull;
-            <strong
-              v-if="timetable.driverLevel !== null"
-              class="level-badge driver"
-              :style="calculateExpStyle(timetable.driverLevel, timetable.driverIsSupporter)"
-            >
-              {{ timetable.driverLevel < 2 ? 'L' : `${timetable.driverLevel}` }}
-            </strong>
-
-            <strong>{{ timetable.driverName }}</strong>
-          </span>
-
-          <span class="general-time">
-            <b class="info-date"
-              >{{
-                new Date(timetable.createdAt).getTime() - new Date(timetable.beginDate).getTime() < 0
-                  ? localeDateTime(timetable.createdAt, $i18n.locale)
-                  : localeDateTime(timetable.beginDate, $i18n.locale)
-              }}
-            </b>
-
-            <b
-              class="info-badge"
-              :class="{
-                fulfilled: timetable.fulfilled,
-                terminated: timetable.terminated && !timetable.fulfilled,
-                active: !timetable.terminated,
-              }"
-            >
-              {{
-                !timetable.terminated
-                  ? $t('journal.timetable-active')
-                  : timetable.fulfilled
-                  ? $t('journal.timetable-fulfilled')
-                  : `${$t('journal.timetable-abandoned')} ${localeTime(timetable.endDate, $i18n.locale)}`
-              }}
-            </b>
-          </span>
+  <div class="journal-list">
+    <transition name="status-anim" mode="out-in">
+      <div :key="dataStatus">
+        <div class="journal_warning" v-if="store.isOffline">
+          {{ $t('app.offline') }}
         </div>
 
-        <div class="info-route">
-          <b>{{ timetable.route.replace('|', ' - ') }}</b>
+        <Loading v-else-if="dataStatus == DataStatus.Loading" />
+
+        <div v-else-if="dataStatus == DataStatus.Error" class="journal_warning error">
+          {{ $t('app.error') }}
         </div>
 
-        <hr />
-
-        <!-- Spis postojów -->
-        <div class="stop-list" v-if="showExtraInfo.value == true">
-          <span
-            v-for="(stop, i) in stops.filter((_, i) => (!showExtraInfo.value ? i == 0 || i == stops.length - 1 : true))"
-            class="stop-list-item"
-            :key="stop.stopName"
-            :data-confirmed="stop.confirmed"
-          >
-            <span v-if="i > 0">
-              &gt;
-              <span v-if="!showExtraInfo.value && i == 1 && stops.length > 2">
-                ... (+{{ stops.length - 2 }}) &gt;
-              </span>
-            </span>
-
-            <span class="stop-name">{{ stop.stopName }}</span>
-            <span v-html="stop.html"></span>
-          </span>
+        <div v-else-if="timetableHistory.length == 0" class="journal_warning">
+          {{ $t('app.no-result') }}
         </div>
 
-        <!-- Status RJ -->
-        <div class="info-status" style="margin: 0.5em 0">
-          <ProgressBar
-            :progressPercent="(timetable.confirmedStopsCount / timetable.allStopsCount) * 100"
-            :progressType="!timetable.fulfilled && timetable.terminated ? 'abandoned' : ''"
-          />
-
-          <span :style="{ color: timetable.terminated && timetable.fulfilled ? 'lightgreen' : '' }">
-            <span>
-              {{ timetable.currentDistance + ' km' }}
-            </span>
-            <span> / </span>
-            <span>{{ timetable.routeDistance }} km</span>
-          </span>
-
-          <span class="text--grayed" v-if="timetable.currentSceneryName">
-            <b>
-              {{ $t(`journal.${timetable.terminated ? 'last-seen-at' : 'currently-at'}`) }}
-              {{ timetable.currentSceneryName.replace(/.[a-zA-Z0-9]+.sc/, '') }}
-
-              <span v-if="timetable.currentLocation[0] || timetable.currentLocation[1]">&lpar;</span>
-
-              <span v-if="timetable.currentLocation[1]">
-                {{ $t('journal.timetable-location-route') }} {{ timetable.currentLocation[1] }}
-              </span>
-
-              <span v-else-if="timetable.currentLocation[0]">
-                {{ $t('journal.timetable-location-signal') }} {{ timetable.currentLocation[0] }}
-              </span>
-
-              <span v-if="timetable.currentLocation[0] || timetable.currentLocation[1]">&rpar;</span>
-            </b>
-          </span>
-        </div>
-
-        <button class="btn--option btn--show">
-          {{ $t('journal.stock-info') }}
-          <img :src="getIcon(`arrow-${showExtraInfo.value ? 'asc' : 'desc'}`)" alt="Arrow" />
-        </button>
-
-        <!-- Dodatkowe informacje -->
-        <div class="info-extended" v-if="timetable.stockString && timetable.stockMass && showExtraInfo.value">
-          <hr />
-
-          <div class="stock-specs">
-            <span class="badge specs-badge">
-              <span>{{ $t('journal.dispatcher-name') }}</span>
-              <span>{{ timetable.authorName }}</span>
-            </span>
-          </div>
-
-          <div class="stock-specs">
-            <span class="badge specs-badge">
-              <span>{{ $t('journal.stock-max-speed') }}</span>
-              <span>{{ timetable.maxSpeed }}km/h</span>
-            </span>
-
-            <span class="badge specs-badge">
-              <span>{{ $t('journal.stock-length') }}</span>
-              <span>
-                {{
-                  item.currentHistoryIndex.value == 0
-                    ? timetable.stockLength
-                    : stockHistoryComp[item.currentHistoryIndex.value].stockLength || timetable.stockLength
-                }}m
-              </span>
-            </span>
-
-            <span class="badge specs-badge">
-              <span>{{ $t('journal.stock-mass') }}</span>
-              <span>
-                {{
-                  Math.floor(
-                    (item.currentHistoryIndex.value == 0
-                      ? timetable.stockMass!
-                      : stockHistoryComp[item.currentHistoryIndex.value].stockMass || timetable.stockMass) / 1000
-                  )
-                }}t
-              </span>
-            </span>
-          </div>
-
-          <!-- Historia zmian w składzie -->
-          <div class="stock-history" v-if="stockHistoryComp.length > 1">
-            <button
-              class="btn--action"
-              v-for="(sh, i) in stockHistoryComp"
-              :data-checked="i == item.currentHistoryIndex.value"
-              @click.stop="item.currentHistoryIndex.value = i"
-            >
-              {{ sh.updatedAt }}
-            </button>
-          </div>
-
-          <ul class="stock-list">
+        <div v-else>
+          <transition-group tag="ul" name="list-anim">
             <li
-              v-for="(car, i) in (item.currentHistoryIndex.value == 0
-                ? timetable.stockString
-                : stockHistoryComp[item.currentHistoryIndex.value].stockString
-              ).split(';')"
-              :key="i"
+              v-for="{ timetable, stockHistoryComp, stops, showExtraInfo, ...item } in computedTimetableHistory"
+              class="journal_item"
+              :key="timetable.id"
+              @click="showExtraInfo.value = !showExtraInfo.value"
             >
-              <img
-                @error="onImageError"
-                :src="`https://rj.td2.info.pl/dist/img/thumbnails/${car.split(':')[0]}.png`"
-                :alt="car"
-              />
-              <div>{{ car.replace(/_/g, ' ').split(':')[0] }}</div>
+              <div class="journal_item-info">
+                <div class="info-general">
+                  <span
+                    class="general-train"
+                    tabindex="0"
+                    @click.stop="showTimetable(timetable)"
+                    @keydown.enter="showTimetable(timetable)"
+                    style="cursor: pointer"
+                  >
+                    <span class="text--grayed">#{{ timetable.id }}</span>
+
+                    <span class="badges" v-if="timetable.skr || timetable.twr">
+                      <span class="train-badge twr" v-if="timetable.twr" :title="$t('general.TWR')">TWR</span>
+                      <span class="train-badge skr" v-if="timetable.skr" :title="$t('general.SKR')">SKR</span>
+                    </span>
+
+                    <span>
+                      <strong class="text--primary">
+                        {{ timetable.trainCategoryCode }}
+                      </strong>
+                      <strong>&nbsp;{{ timetable.trainNo }}</strong>
+                    </span>
+                    &bull;
+                    <strong
+                      v-if="timetable.driverLevel !== null"
+                      class="level-badge driver"
+                      :style="calculateExpStyle(timetable.driverLevel, timetable.driverIsSupporter)"
+                    >
+                      {{ timetable.driverLevel < 2 ? 'L' : `${timetable.driverLevel}` }}
+                    </strong>
+
+                    <strong>{{ timetable.driverName }}</strong>
+                  </span>
+
+                  <span class="general-time">
+                    <b class="info-date"
+                      >{{
+                        new Date(timetable.createdAt).getTime() - new Date(timetable.beginDate).getTime() < 0
+                          ? localeDateTime(timetable.createdAt, $i18n.locale)
+                          : localeDateTime(timetable.beginDate, $i18n.locale)
+                      }}
+                    </b>
+
+                    <b
+                      class="info-badge"
+                      :class="{
+                        fulfilled: timetable.fulfilled,
+                        terminated: timetable.terminated && !timetable.fulfilled,
+                        active: !timetable.terminated,
+                      }"
+                    >
+                      {{
+                        !timetable.terminated
+                          ? $t('journal.timetable-active')
+                          : timetable.fulfilled
+                          ? $t('journal.timetable-fulfilled')
+                          : `${$t('journal.timetable-abandoned')} ${localeTime(timetable.endDate, $i18n.locale)}`
+                      }}
+                    </b>
+                  </span>
+                </div>
+
+                <div class="info-route">
+                  <b>{{ timetable.route.replace('|', ' - ') }}</b>
+                </div>
+
+                <hr />
+
+                <!-- Spis postojów -->
+                <div class="stop-list" v-if="showExtraInfo.value == true">
+                  <span
+                    v-for="(stop, i) in stops.filter((_, i) =>
+                      !showExtraInfo.value ? i == 0 || i == stops.length - 1 : true
+                    )"
+                    class="stop-list-item"
+                    :key="stop.stopName"
+                    :data-confirmed="stop.confirmed"
+                  >
+                    <span v-if="i > 0">
+                      &gt;
+                      <span v-if="!showExtraInfo.value && i == 1 && stops.length > 2">
+                        ... (+{{ stops.length - 2 }}) &gt;
+                      </span>
+                    </span>
+
+                    <span class="stop-name">{{ stop.stopName }}</span>
+                    <span v-html="stop.html"></span>
+                  </span>
+                </div>
+
+                <!-- Status RJ -->
+                <div class="info-status" style="margin: 0.5em 0">
+                  <ProgressBar
+                    :progressPercent="(timetable.confirmedStopsCount / timetable.allStopsCount) * 100"
+                    :progressType="!timetable.fulfilled && timetable.terminated ? 'abandoned' : ''"
+                  />
+
+                  <span>
+                    <span :style="{ color: timetable.fulfilled ? 'lightgreen' : timetable.terminated ? 'salmon' : '' }">
+                      {{ timetable.currentDistance + ' km' }}
+                    </span>
+                    <span> / </span>
+                    <span class="text--primary">{{ timetable.routeDistance }} km</span>
+                  </span>
+
+                  <span class="text--grayed" v-if="timetable.currentSceneryName">
+                    <b>
+                      {{ $t(`journal.${timetable.terminated ? 'last-seen-at' : 'currently-at'}`) }}
+                      {{ timetable.currentSceneryName.replace(/.[a-zA-Z0-9]+.sc/, '') }}
+
+                      <span v-if="timetable.currentLocation[0] || timetable.currentLocation[1]">&lpar;</span>
+
+                      <span v-if="timetable.currentLocation[1]">
+                        {{ $t('journal.timetable-location-route') }} {{ timetable.currentLocation[1] }}
+                      </span>
+
+                      <span v-else-if="timetable.currentLocation[0]">
+                        {{ $t('journal.timetable-location-signal') }} {{ timetable.currentLocation[0] }}
+                      </span>
+
+                      <span v-if="timetable.currentLocation[0] || timetable.currentLocation[1]">&rpar;</span>
+                    </b>
+                  </span>
+                </div>
+
+                <button class="btn--option btn--show">
+                  {{ $t('journal.stock-info') }}
+                  <img :src="getIcon(`arrow-${showExtraInfo.value ? 'asc' : 'desc'}`)" alt="Arrow" />
+                </button>
+
+                <!-- Dodatkowe informacje -->
+                <div class="info-extended" v-if="timetable.stockString && timetable.stockMass && showExtraInfo.value">
+                  <hr />
+
+                  <div class="stock-specs">
+                    <span class="badge specs-badge">
+                      <span>{{ $t('journal.dispatcher-name') }}</span>
+                      <span>{{ timetable.authorName }}</span>
+                    </span>
+                  </div>
+
+                  <div class="stock-specs">
+                    <span class="badge specs-badge">
+                      <span>{{ $t('journal.stock-max-speed') }}</span>
+                      <span>{{ timetable.maxSpeed }}km/h</span>
+                    </span>
+
+                    <span class="badge specs-badge">
+                      <span>{{ $t('journal.stock-length') }}</span>
+                      <span>
+                        {{
+                          item.currentHistoryIndex.value == 0
+                            ? timetable.stockLength
+                            : stockHistoryComp[item.currentHistoryIndex.value].stockLength || timetable.stockLength
+                        }}m
+                      </span>
+                    </span>
+
+                    <span class="badge specs-badge">
+                      <span>{{ $t('journal.stock-mass') }}</span>
+                      <span>
+                        {{
+                          Math.floor(
+                            (item.currentHistoryIndex.value == 0
+                              ? timetable.stockMass!
+                              : stockHistoryComp[item.currentHistoryIndex.value].stockMass || timetable.stockMass) /
+                              1000
+                          )
+                        }}t
+                      </span>
+                    </span>
+                  </div>
+
+                  <!-- Historia zmian w składzie -->
+                  <div class="stock-history" v-if="stockHistoryComp.length > 1">
+                    <button
+                      class="btn--action"
+                      v-for="(sh, i) in stockHistoryComp"
+                      :data-checked="i == item.currentHistoryIndex.value"
+                      @click.stop="item.currentHistoryIndex.value = i"
+                    >
+                      {{ sh.updatedAt }}
+                    </button>
+                  </div>
+
+                  <ul class="stock-list">
+                    <li
+                      v-for="(car, i) in (item.currentHistoryIndex.value == 0
+                        ? timetable.stockString
+                        : stockHistoryComp[item.currentHistoryIndex.value].stockString
+                      ).split(';')"
+                      :key="i"
+                    >
+                      <img
+                        @error="onImageError"
+                        :src="`https://rj.td2.info.pl/dist/img/thumbnails/${car.split(':')[0]}.png`"
+                        :alt="car"
+                      />
+                      <div>{{ car.replace(/_/g, ' ').split(':')[0] }}</div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
             </li>
-          </ul>
+          </transition-group>
+
+          <button
+            class="btn btn--option btn--load-data"
+            v-if="!scrollNoMoreData && scrollDataLoaded && timetableHistory.length >= 15"
+            @click="addHistoryData"
+          >
+            {{ $t('journal.load-data') }}
+          </button>
         </div>
       </div>
-    </li>
-  </transition-group>
+    </transition>
+
+    <div class="journal_warning" v-if="scrollNoMoreData">{{ $t('journal.no-further-data') }}</div>
+    <div class="journal_warning" v-else-if="!scrollDataLoaded">{{ $t('journal.loading-further-data') }}</div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -216,17 +252,39 @@ import dateMixin from '../../mixins/dateMixin';
 import imageMixin from '../../mixins/imageMixin';
 import modalTrainMixin from '../../mixins/modalTrainMixin';
 import styleMixin from '../../mixins/styleMixin';
+import { DataStatus } from '../../scripts/enums/DataStatus';
 import { TimetableHistory } from '../../scripts/interfaces/api/TimetablesAPIData';
+import { useStore } from '../../store/store';
 import ProgressBar from '../Global/ProgressBar.vue';
 
 export default defineComponent({
+  mixins: [dateMixin, imageMixin, modalTrainMixin, styleMixin],
   props: {
     timetableHistory: {
       type: Array as PropType<TimetableHistory[]>,
       required: true,
     },
+    scrollNoMoreData: {
+      type: Boolean,
+    },
+    scrollDataLoaded: {
+      type: Boolean,
+    },
+    addHistoryData: {
+      type: Function as PropType<() => void>,
+    },
+    dataStatus: {
+      type: Object as PropType<DataStatus>,
+    },
   },
-  mixins: [dateMixin, imageMixin, modalTrainMixin, styleMixin],
+
+  data() {
+    return {
+      DataStatus,
+      store: useStore(),
+    };
+  },
+
   computed: {
     computedTimetableHistory() {
       return this.timetableHistory.map((timetable) => ({
@@ -436,7 +494,7 @@ ul.stock-list {
 .stop-list {
   word-wrap: break-word;
   gap: 0.25em;
-  font-size: 0.9em;
+  font-size: 0.95em;
 
   color: #adadad;
 
