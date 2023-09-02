@@ -138,6 +138,15 @@ input {
   padding: 0.35em 0;
 }
 
+.active-indicator {
+  width: 7px;
+  height: 7px;
+  background-color: lightgreen;
+  border-radius: 50%;
+
+  margin-left: 10px;
+}
+
 a {
   display: inline-block;
 

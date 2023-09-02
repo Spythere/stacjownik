@@ -4,6 +4,7 @@
       <button class="btn--filled btn--image" @click="toggleCard">
         <img class="button_icon" :src="getIcon('filter2')" alt="filter icon" />
         {{ $t('options.filters') }} [F]
+        <span class="active-indicator" v-if="!filterStore.areFiltersAtDefault"></span>
       </button>
 
       <label for="scenery-search">
@@ -175,6 +176,10 @@ export default defineComponent({
       return this.store.stationList
         .filter((s) => s.name.toLocaleLowerCase().includes(this.chosenSearchScenery.toLocaleLowerCase()))
         .sort((s1, s2) => (s1.name > s2.name ? 1 : -1));
+    },
+
+    currentOptionsActive() {
+      return true;
     },
   },
 
@@ -442,16 +447,9 @@ export default defineComponent({
 
   .section-inputs {
     display: grid;
-    // flex-wrap: wrap;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    // grid-template-rows: repeat(3, 1fr);
     gap: 0.5em;
     margin: 1em 0;
-
-    // @include smallScreen() {
-    //   grid-template-columns: repeat(auto-fit, minmax(8em, 1fr));
-    //   grid-template-rows: auto;
-    // }
   }
 }
 
