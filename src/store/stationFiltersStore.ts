@@ -58,6 +58,19 @@ export const useStationFiltersStore = defineStore('stationFiltersStore', {
       });
     },
 
+    handleQuickAction(actionName: string) {
+      switch (actionName) {
+        case 'all-available':
+          this.resetFilters();
+
+          this.changeFilterValue({ name: 'non-public', value: false });
+          break;
+
+        default:
+          break;
+      }
+    },
+
     changeFilterValue(filter: { name: string; value: any }) {
       this.filters[filter.name] = filter.value;
 

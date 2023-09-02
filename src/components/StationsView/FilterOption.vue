@@ -5,6 +5,7 @@
     :data-selected="option.value"
     @click="handleLeftClick"
     @dblclick="handleDbClick"
+    :aria-disabled="option.value"
   >
     {{ $t(`filters.${option.id}`) }}
   </button>

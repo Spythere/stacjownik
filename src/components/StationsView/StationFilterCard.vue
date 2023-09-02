@@ -30,6 +30,21 @@
           <p class="card_info" v-html="$t('filters.desc')"></p>
 
           <section class="card_options">
+            <div class="quick-actions">
+              <h3 class="text--primary">{{ $t('filters.sections.quick') }}</h3>
+              <hr />
+
+              <div>
+                <button class="btn--action" style="width: 100%" @click="filterStore.handleQuickAction('all-available')">
+                  {{ $t('filters.all-available') }}
+                </button>
+
+                <button class="btn--action" style="width: 100%" @click="saveFilters">
+                  {{ $t('filters.all-free') }}
+                </button>
+              </div>
+            </div>
+
             <div class="option-section" v-for="section in filterStore.inputs.optionSections">
               <h3 class="text--primary">
                 {{ $t(`filters.sections.${section}`) }}
@@ -431,26 +446,30 @@ export default defineComponent({
   }
 }
 
-.card_options {
-  .option-section h3 {
-    display: flex;
-    align-items: center;
-    margin-bottom: 0.25em;
+.option-section h3 {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.25em;
 
-    gap: 0.5em;
+  gap: 0.5em;
 
-    button {
-      padding: 0.15em;
-      color: coral;
-    }
+  button {
+    padding: 0.15em;
+    color: coral;
   }
+}
 
-  .section-inputs {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.5em;
-    margin: 1em 0;
-  }
+.section-inputs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5em;
+  margin: 1em 0;
+}
+
+.quick-actions div {
+  display: flex;
+  margin: 1em 0;
+  gap: 1em;
 }
 
 .slider {

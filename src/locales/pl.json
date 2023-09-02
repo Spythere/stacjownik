@@ -147,6 +147,7 @@
     "desc": " &bull; Kliknięcie: zaznaczenie / odznaczenie filtru <br /> &bull; Podwójne kliknięcie: odznaczenie reszty filtrów z <b class='text--primary'>grupy</b> <br /> &bull; <span style='color: coral'>RESET</span>: zresetowanie filtrów z <b class='text--primary'>grupy</b>",
 
     "sections": {
+      "quick": "SZYBKIE FILTRY",
       "reality": "FIKCYJNOŚĆ SCENERII",
       "package-access": "DOSTĘPNOŚĆ W PACZCE",
       "access": "DOSTĘPNOŚĆ OGÓLNA",
@@ -156,6 +157,9 @@
       "blockades": "BLOKADY LINIOWE",
       "status": "STATUS ONLINE"
     },
+
+    "all-available": "WSZYSTKIE DOSTĘPNE",
+    "all-free": "WSZYSTKIE WOLNE",
 
     "endingStatus": "KOŃCZY",
     "afkStatus": "Z/W",

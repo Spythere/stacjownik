@@ -146,6 +146,7 @@
     "desc": " &bull; Left mouse click: select / unselect chosen filter <br /> &bull; Double left click: unselect all filters but chosen from a <b class='text--primary'>group</b> <br /> &bull; <span style='color: coral'>RESET</span>: reset all filters from a <b class='text--primary'>group</b>",
 
     "sections": {
+      "quick": "QUICK FILTERS",
       "reality": "SCENERY REALITY",
       "package-access": "IN-GAME AVAILABILITY",
       "access": "GENERAL AVAILABILITY",
@@ -155,6 +156,9 @@
       "blockades": "BLOCK SIGNALLING",
       "status": "ONLINE STATUS"
     },
+
+    "all-available": "ALL AVAILABLE",
+    "all-free": "CURRENTLY FREE",
 
     "endingStatus": "ENDS SOON",
     "afkStatus": "AFK",
