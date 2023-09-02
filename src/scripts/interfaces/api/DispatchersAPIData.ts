@@ -7,6 +7,7 @@ export interface DispatcherHistory {
   dispatcherLevel: number | null;
   dispatcherRate: number;
   dispatcherIsSupporter: boolean;
+  dispatcherStatus?: number;
   isOnline: boolean;
   lastOnlineTimestamp: number;
   region: string;

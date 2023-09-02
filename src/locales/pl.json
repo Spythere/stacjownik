@@ -338,7 +338,14 @@
     "stats-error": "Ups! Wystąpił błąd podczas próby pobrania statystyk! :/",
 
     "timetable-location-signal": "semafor:",
-    "timetable-location-route": "szlak:"
+    "timetable-location-route": "szlak:",
+
+    "history-name": "Sceneria",
+    "history-hash": "Hash",
+    "history-dispatcher": "Dyżurny",
+    "history-level": "Poziom",
+    "history-rate": "Ocena",
+    "history-date": "Data służby"
   },
   "scenery": {
     "users": "GRACZE ONLINE",

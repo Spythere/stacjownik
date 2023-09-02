@@ -19,12 +19,12 @@
         <div v-else>
           <table class="scenery-history-table">
             <thead>
-              <th>Sceneria</th>
-              <th>{{ $t('scenery.dispatchers-history-hash') }}</th>
-              <th>{{ $t('scenery.dispatchers-history-dispatcher') }}</th>
-              <th>{{ $t('scenery.dispatchers-history-level') }}</th>
-              <th>{{ $t('scenery.dispatchers-history-rate') }}</th>
-              <th>{{ $t('scenery.dispatchers-history-date') }}</th>
+              <th>{{ $t('journal.history-name') }}</th>
+              <th>{{ $t('journal.history-hash') }}</th>
+              <th>{{ $t('journal.history-dispatcher') }}</th>
+              <th>{{ $t('journal.history-level') }}</th>
+              <th>{{ $t('journal.history-rate') }}</th>
+              <th>{{ $t('journal.history-date') }}</th>
             </thead>
 
             <tbody>
@@ -54,7 +54,7 @@
                   <b>{{ historyItem.dispatcherRate }}</b>
                 </td>
 
-                <td style="min-width: 250px" class="time">
+                <td style="min-width: 200px" class="time">
                   <span v-if="historyItem.timestampTo">
                     <b>{{ $d(historyItem.timestampFrom) }}</b>
 
@@ -66,7 +66,10 @@
 
                   <span class="dispatcher-online" v-else>
                     <b class="text--online">
-                      {{ $t('journal.online-since') }} {{ timestampToString(historyItem.timestampFrom) }}
+                      <router-link :to="`/scenery?station=${historyItem.stationName}`">{{
+                        $t('journal.online-since')
+                      }}</router-link>
+                      {{ timestampToString(historyItem.timestampFrom) }}
                     </b>
                     ({{ calculateDuration(historyItem.currentDuration) }})
                   </span>
@@ -74,63 +77,6 @@
               </tr>
             </tbody>
           </table>
-          <!-- <transition-group class="journal-list" tag="ul" name="list-anim">
-            <li
-              v-for="item in computedDispatcherHistory"
-              :key="typeof item === 'string' ? item : item.timestampFrom + item.dispatcherId"
-              :class="{ sticky: typeof item == 'string' }"
-            >
-              <div v-if="typeof item == 'string'" class="journal_day">
-                {{ item }}
-              </div>
-
-              <div
-                v-else
-                class="journal_item"
-                :class="{ online: item.isOnline }"
-                @click="navigateToScenery(item.stationName, item.isOnline)"
-                @keydown.enter="navigateToScenery(item.stationName, item.isOnline)"
-                tabindex="0"
-              >
-                <span class="item-general">
-                  <b
-                    v-if="item.dispatcherLevel !== null"
-                    class="level-badge dispatcher"
-                    :style="calculateExpStyle(item.dispatcherLevel, item.dispatcherIsSupporter)"
-                  >
-                    {{ item.dispatcherLevel >= 2 ? item.dispatcherLevel : 'L' }}
-                  </b>
-
-                  <b class="text--primary">{{ item.dispatcherName }}</b> &bull; <b>{{ item.stationName }}</b>
-                  <span class="text--grayed">&nbsp;#{{ item.stationHash }}&nbsp;</span>
-                  <span class="region-badge" :class="item.region">PL1</span>
-                  <span class="like-count" v-if="item.dispatcherRate">
-                    <img :src="getIcon('like')" alt="like icon" />
-                    {{ item.dispatcherRate }}
-                  </span>
-                </span>
-
-                <span class="item-time">
-                  <span :data-status="item.isOnline">
-                    {{ item.isOnline ? $t('journal.online-since') : 'OFFLINE' }}&nbsp;
-                  </span>
-                  <span>
-                    {{ new Date(item.timestampFrom).toLocaleTimeString('pl-PL', { timeStyle: 'short' }) }}
-                  </span>
-
-                  <span v-if="item.currentDuration && item.isOnline">
-                    ({{ calculateDuration(item.currentDuration) }})
-                  </span>
-
-                  <span v-if="item.timestampTo">
-                    &gt;
-                    {{ new Date(item.timestampTo).toLocaleTimeString('pl-PL', { timeStyle: 'short' }) }}
-                    ({{ $t('journal.duty-lasted') }} {{ calculateDuration(item.currentDuration!) }})
-                  </span>
-                </span>
-              </div>
-            </li>
-          </transition-group> -->
 
           <button
             class="btn btn--option btn--load-data"
@@ -161,8 +107,11 @@ import styleMixin from '../../mixins/styleMixin';
 import imageMixin from '../../mixins/imageMixin';
 import { DataStatus } from '../../scripts/enums/DataStatus';
 import { useStore } from '../../store/store';
+import Loading from '../Global/Loading.vue';
 
 export default defineComponent({
+  components: { Loading },
+
   mixins: [dateMixin, styleMixin, imageMixin],
 
   props: {
@@ -180,7 +129,7 @@ export default defineComponent({
       type: Function as PropType<() => void>,
     },
     dataStatus: {
-      type: Object as PropType<DataStatus>,
+      type: Number as PropType<DataStatus>,
     },
   },
 
@@ -252,11 +201,15 @@ table.scenery-history-table {
 
   td {
     padding: 0.75em;
-    border-bottom: solid 5px #1a1a1a;
+    border-bottom: solid 5px #111;
 
     .level-badge {
       margin: 0 auto;
     }
+  }
+
+  @media screen and (max-width: 550px) {
+    font-size: 0.9em;
   }
 }
 

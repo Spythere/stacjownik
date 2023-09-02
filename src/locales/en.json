@@ -335,7 +335,14 @@
     "stats-error": "Oops! An unexpected error occurred while trying to fetch statistics! :/",
 
     "timetable-location-signal": "signal:",
-    "timetable-location-route": "route:"
+    "timetable-location-route": "route:",
+
+    "history-name": "Scenery name",
+    "history-hash": "Hash",
+    "history-dispatcher": "Dispatcher",
+    "history-level": "Level",
+    "history-rate": "Rate",
+    "history-date": "Service date"
   },
   "scenery": {
     "users": "PLAYERS ONLINE",

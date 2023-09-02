@@ -255,9 +255,11 @@ import styleMixin from '../../mixins/styleMixin';
 import { DataStatus } from '../../scripts/enums/DataStatus';
 import { TimetableHistory } from '../../scripts/interfaces/api/TimetablesAPIData';
 import { useStore } from '../../store/store';
+import Loading from '../Global/Loading.vue';
 import ProgressBar from '../Global/ProgressBar.vue';
 
 export default defineComponent({
+  components: { ProgressBar, Loading },
   mixins: [dateMixin, imageMixin, modalTrainMixin, styleMixin],
   props: {
     timetableHistory: {
@@ -274,7 +276,7 @@ export default defineComponent({
       type: Function as PropType<() => void>,
     },
     dataStatus: {
-      type: Object as PropType<DataStatus>,
+      type: Number as PropType<DataStatus>,
     },
   },
 
@@ -310,6 +312,7 @@ export default defineComponent({
       }));
     },
   },
+
   methods: {
     getTimetableStops(timetable: TimetableHistory) {
       const stopNames = timetable.sceneriesString.split('%');
@@ -365,7 +368,6 @@ export default defineComponent({
       imageEl.src = this.getImage('unknown.png');
     },
   },
-  components: { ProgressBar },
 });
 </script>
 
