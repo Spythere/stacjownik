@@ -346,6 +346,7 @@
     "history-dispatcher": "Dispatcher",
     "history-level": "Level",
     "history-rate": "Rate",
+    "history-region": "Region",
     "history-date": "Service date"
   },
   "scenery": {

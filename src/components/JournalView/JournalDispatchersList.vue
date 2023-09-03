@@ -24,6 +24,7 @@
               <th>{{ $t('journal.history-dispatcher') }}</th>
               <th>{{ $t('journal.history-level') }}</th>
               <th>{{ $t('journal.history-rate') }}</th>
+              <th>{{ $t('journal.history-region') }}</th>
               <th>{{ $t('journal.history-date') }}</th>
             </thead>
 
@@ -52,6 +53,12 @@
 
                 <td class="text--primary">
                   <b>{{ historyItem.dispatcherRate }}</b>
+                </td>
+
+                <td>
+                  <b class="region-badge" :aria-describedby="historyItem.region">{{
+                    regions.find((r) => r.id == historyItem.region)?.value || '???'
+                  }}</b>
                 </td>
 
                 <td style="min-width: 200px" class="time">
@@ -108,6 +115,7 @@ import imageMixin from '../../mixins/imageMixin';
 import { DataStatus } from '../../scripts/enums/DataStatus';
 import { useStore } from '../../store/store';
 import Loading from '../Global/Loading.vue';
+import { regions } from '../../data/options.json';
 
 export default defineComponent({
   components: { Loading },
@@ -137,11 +145,14 @@ export default defineComponent({
     return {
       DataStatus,
       store: useStore(),
+      regions,
     };
   },
 
   computed: {
     computedDispatcherHistory() {
+      console.log(this.dispatcherHistory.length);
+
       return this.dispatcherHistory.reduce((acc, historyItem, i) => {
         if (this.isAnotherDay(i - 1, i)) acc.push(new Date(historyItem.timestampFrom).toLocaleDateString('pl-PL'));
         acc.push(historyItem);
