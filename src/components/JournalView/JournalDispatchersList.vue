@@ -29,59 +29,56 @@
             </thead>
 
             <tbody>
-              <tr v-for="historyItem in dispatcherHistory">
-                <td>
-                  <router-link :to="`/journal/dispatchers?sceneryName=${historyItem.stationName}`">
-                    <b>{{ historyItem.stationName }}</b>
-                  </router-link>
-                </td>
-                <td>#{{ historyItem.stationHash }}</td>
-                <td>
-                  <router-link :to="`/journal/dispatchers?dispatcherName=${historyItem.dispatcherName}`">
-                    <b>{{ historyItem.dispatcherName }}</b>
-                  </router-link>
-                </td>
-                <td>
-                  <b
-                    v-if="historyItem.dispatcherLevel !== null"
-                    class="level-badge dispatcher"
-                    :style="calculateExpStyle(historyItem.dispatcherLevel, historyItem.dispatcherIsSupporter)"
-                  >
-                    {{ historyItem.dispatcherLevel >= 2 ? historyItem.dispatcherLevel : 'L' }}
-                  </b>
-                </td>
-
-                <td class="text--primary">
-                  <b>{{ historyItem.dispatcherRate }}</b>
-                </td>
-
-                <td>
-                  <b class="region-badge" :aria-describedby="historyItem.region">{{
-                    regions.find((r) => r.id == historyItem.region)?.value || '???'
-                  }}</b>
-                </td>
-
-                <td style="min-width: 200px" class="time">
-                  <span v-if="historyItem.timestampTo">
-                    <b>{{ $d(historyItem.timestampFrom) }}</b>
-
-                    {{ timestampToString(historyItem.timestampFrom) }}
-                    - {{ timestampToString(historyItem.timestampTo) }} ({{
-                      calculateDuration(historyItem.currentDuration)
-                    }})
-                  </span>
-
-                  <span class="dispatcher-online" v-else>
-                    <b class="text--online">
-                      <router-link :to="`/scenery?station=${historyItem.stationName}`">{{
-                        $t('journal.online-since')
-                      }}</router-link>
-                      {{ timestampToString(historyItem.timestampFrom) }}
+              <transition-group name="list-anim">
+                <tr v-for="historyItem in dispatcherHistory" :key="historyItem.id">
+                  <td>
+                    <router-link :to="`/journal/dispatchers?sceneryName=${historyItem.stationName}`">
+                      <b>{{ historyItem.stationName }}</b>
+                    </router-link>
+                  </td>
+                  <td>#{{ historyItem.stationHash }}</td>
+                  <td>
+                    <router-link :to="`/journal/dispatchers?dispatcherName=${historyItem.dispatcherName}`">
+                      <b>{{ historyItem.dispatcherName }}</b>
+                    </router-link>
+                  </td>
+                  <td>
+                    <b
+                      v-if="historyItem.dispatcherLevel !== null"
+                      class="level-badge dispatcher"
+                      :style="calculateExpStyle(historyItem.dispatcherLevel, historyItem.dispatcherIsSupporter)"
+                    >
+                      {{ historyItem.dispatcherLevel >= 2 ? historyItem.dispatcherLevel : 'L' }}
                     </b>
-                    ({{ calculateDuration(historyItem.currentDuration) }})
-                  </span>
-                </td>
-              </tr>
+                  </td>
+                  <td class="text--primary">
+                    <b>{{ historyItem.dispatcherRate }}</b>
+                  </td>
+                  <td>
+                    <b class="region-badge" :aria-describedby="historyItem.region">{{
+                      regions.find((r) => r.id == historyItem.region)?.value || '???'
+                    }}</b>
+                  </td>
+                  <td style="min-width: 200px" class="time">
+                    <span v-if="historyItem.timestampTo" class="text--offline">
+                      <b>{{ $d(historyItem.timestampFrom) }}</b>
+                      {{ timestampToString(historyItem.timestampFrom) }}
+                      - {{ timestampToString(historyItem.timestampTo) }} ({{
+                        calculateDuration(historyItem.currentDuration)
+                      }})
+                    </span>
+                    <span class="dispatcher-online" v-else>
+                      <b class="text--online">
+                        <router-link :to="`/scenery?station=${historyItem.stationName}`">{{
+                          $t('journal.online-since')
+                        }}</router-link>
+                        {{ timestampToString(historyItem.timestampFrom) }}
+                      </b>
+                      ({{ calculateDuration(historyItem.currentDuration) }})
+                    </span>
+                  </td>
+                </tr>
+              </transition-group>
             </tbody>
           </table>
 
@@ -230,7 +227,7 @@ table.scenery-history-table {
   }
 
   &--offline {
-    color: salmon;
+    color: #ddd;
   }
 }
 </style>
