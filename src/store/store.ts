@@ -286,9 +286,7 @@ export const useStore = defineStore('store', {
     },
 
     async fetchStationsGeneralInfo() {
-      const sceneryData: StationJSONData[] = await (
-        await axios.get(`${URLs.stacjownikAPI}/api/getSceneries?timestamp=${Math.floor(Date.now() / 1800000)}`)
-      ).data;
+      const sceneryData: StationJSONData[] = await (await axios.get(`${URLs.stacjownikAPI}/api/getSceneries`)).data;
 
       if (!sceneryData) {
         this.dataStatuses.sceneries = DataStatus.Error;
