@@ -189,6 +189,7 @@ table.scenery-history-table {
   width: 100%;
   background-color: #111;
   border-collapse: collapse;
+  position: relative;
   /* border-spacing: 0 0.5em; */
   text-align: center;
 
@@ -197,6 +198,7 @@ table.scenery-history-table {
     top: 0;
     background-color: #222222;
   }
+
 
   th {
     padding: 0.5em;

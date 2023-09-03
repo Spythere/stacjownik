@@ -117,7 +117,7 @@
                 <!-- Status RJ -->
                 <div class="info-status" style="margin: 0.5em 0">
                   <ProgressBar
-                    :progressPercent="(timetable.confirmedStopsCount / timetable.allStopsCount) * 100"
+                    :progressPercent="~~((timetable.currentDistance / timetable.routeDistance) * 100)"
                     :progressType="!timetable.fulfilled && timetable.terminated ? 'abandoned' : ''"
                   />
 
@@ -127,6 +127,8 @@
                     </span>
                     <span> / </span>
                     <span class="text--primary">{{ timetable.routeDistance }} km</span>
+                    |
+                    <span class="text--grayed">{{ timetable.confirmedStopsCount }}/{{ timetable.allStopsCount }}</span>
                   </span>
 
                   <span class="text--grayed" v-if="timetable.currentSceneryName">
