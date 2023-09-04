@@ -186,32 +186,36 @@ export default defineComponent({
 @import '../../styles/JournalSection.scss';
 
 table.scenery-history-table {
+  --_bg-table: #111;
+  --_bg-head: #101010;
+  --_bg-row: #2f2f2f;
+
   width: 100%;
-  background-color: #111;
   border-collapse: collapse;
   position: relative;
-  /* border-spacing: 0 0.5em; */
   text-align: center;
 
   thead {
     position: sticky;
     top: 0;
-    background-color: #222222;
+    background-color: var(--_bg-head);
   }
-
 
   th {
     padding: 0.5em;
   }
 
   tr {
-    background-color: #353535;
-    border: none;
+    background-color: var(--_bg-row);
+    border-bottom: 2px solid black;
+  
+    &:last-child {
+      border: none;
+    }
   }
 
   td {
     padding: 0.75em;
-    border-bottom: solid 5px #111;
 
     .level-badge {
       margin: 0 auto;
