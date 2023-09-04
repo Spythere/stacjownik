@@ -67,8 +67,8 @@
           v-for="(scheduledTrain, i) in computedScheduledTrains"
           :key="scheduledTrain.trainId"
           tabindex="0"
-          @click.prevent.stop="selectModalTrain(scheduledTrain.trainId)"
-          @keydown.enter.prevent="selectModalTrain(scheduledTrain.trainId)"
+          @click.prevent.stop="selectModalTrain(scheduledTrain.trainId, $event.currentTarget)"
+          @keydown.enter.prevent="selectModalTrain(scheduledTrain.trainId, $event.currentTarget)"
         >
           <span class="timetable-general">
             <span class="general-info">

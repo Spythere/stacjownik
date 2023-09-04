@@ -29,9 +29,8 @@
                   <span
                     class="general-train"
                     tabindex="0"
-                    @click.stop="showTimetable(timetable)"
-                    @keydown.enter="showTimetable(timetable)"
-                    style="cursor: pointer"
+                    @click.stop="showTimetable(timetable, $event.currentTarget)"
+                    @keydown.enter="showTimetable(timetable, $event.currentTarget)"
                   >
                     <span class="text--grayed">#{{ timetable.id }}</span>
 
@@ -360,10 +359,10 @@ export default defineComponent({
         return { stopName, html, confirmed };
       });
     },
-    showTimetable(timetable: TimetableHistory) {
-      if (!timetable) return;
-      if (timetable.terminated) return;
-      this.selectModalTrain(timetable.driverName + timetable.trainNo.toString());
+    showTimetable(timetable: TimetableHistory, target: EventTarget | null) {
+      if (timetable?.terminated) return;
+
+      this.selectModalTrain(timetable.driverName + timetable.trainNo.toString(), target);
     },
     onImageError(e: Event) {
       const imageEl = e.target as HTMLImageElement;
@@ -437,6 +436,7 @@ hr {
 }
 
 .general-train {
+  cursor: pointer;
   display: flex;
   flex-wrap: wrap;
   align-items: center;

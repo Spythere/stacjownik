@@ -13,8 +13,8 @@
       :class="train.stopStatus"
       :key="train.trainId"
       tabindex="0"
-      @click="selectModalTrain(train.trainId)"
-      @keydown.enter="selectModalTrain(train.trainId)"
+      @click.prevent="selectModalTrain(train.trainId, $event.currentTarget)"
+      @keydown.enter="selectModalTrain(train.trainId, $event.currentTarget)"
     >
       <span class="user_train">{{ train.trainNo }}</span>
       <span class="user_name">{{ train.driverName }}</span>
@@ -27,7 +27,6 @@
 </template>
 
 <script lang="ts">
-
 import { computed, defineComponent } from 'vue';
 import imageMixin from '../../../mixins/imageMixin';
 import modalTrainMixin from '../../../mixins/modalTrainMixin';
@@ -130,4 +129,3 @@ $disconnected: slategray;
   }
 }
 </style>
-

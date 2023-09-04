@@ -58,6 +58,7 @@ export const useStore = defineStore('store', {
 
       blockScroll: false,
       listenerLaunched: false,
+      modalLastClickedTarget: null
     } as StoreState),
 
   actions: {

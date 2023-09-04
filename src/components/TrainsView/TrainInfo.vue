@@ -1,5 +1,5 @@
 <template>
-  <div class="train-info" tabindex="0">
+  <div class="train-info">
     <section class="train-route">
       <div class="train_general">
         <b class="warning-timeout" v-if="train.isTimeout" :title="$t('trains.timeout')">?</b>
@@ -41,13 +41,6 @@
       </div>
 
       <div class="timetable_progress" style="margin-top: 0.5em" v-if="train.timetableData">
-        <!-- <span class="timetable_progress-bar">
-          <span class="bar-bg"></span>
-          <span
-            class="bar-fg"
-            :style="{ width: `${Math.floor(confirmedPercentage(train.timetableData.followingStops))}%` }"
-          ></span>
-        </span> -->
         <ProgressBar :progressPercent="confirmedPercentage(train.timetableData.followingStops)" />
 
         <span class="timetable_progress-distance">
