@@ -58,17 +58,24 @@ export const useStationFiltersStore = defineStore('stationFiltersStore', {
       });
     },
 
+    // Quick actions (TODO)
     handleQuickAction(actionName: string) {
-      switch (actionName) {
-        case 'all-available':
-          this.resetFilters();
-
-          // this.changeFilterValue('non-public', false);
-          break;
-
-        default:
-          break;
-      }
+      // switch (actionName) {
+      //   case 'all-available':
+      //     this.resetFilters();
+      //     this.inputs.options
+      //       .filter((option) => /^(free|non-public)/.test(option.id))
+      //       .forEach((option) => (option.value = !option.defaultValue));
+      //     break;
+      //   case 'all-free':
+      //     this.resetFilters();
+      //     this.inputs.options
+      //       .filter((option) => /^(free|occupied)/.test(option.id))
+      //       .forEach((option) => (option.value = !option.defaultValue));
+      //     break;
+      //   default:
+      //     break;
+      // }
     },
 
     changeFilterValue(name: string, value: any) {
