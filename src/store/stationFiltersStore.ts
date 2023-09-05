@@ -63,7 +63,7 @@ export const useStationFiltersStore = defineStore('stationFiltersStore', {
         case 'all-available':
           this.resetFilters();
 
-          this.changeFilterValue({ name: 'non-public', value: false });
+          // this.changeFilterValue('non-public', false);
           break;
 
         default:
@@ -71,10 +71,9 @@ export const useStationFiltersStore = defineStore('stationFiltersStore', {
       }
     },
 
-    changeFilterValue(filter: { name: string; value: any }) {
-      this.filters[filter.name] = filter.value;
-
-      if (StorageManager.isRegistered('options_saved')) StorageManager.setValue(filter.name, filter.value);
+    changeFilterValue(name: string, value: any) {
+      this.filters[name] = value;
+      if (StorageManager.isRegistered('options_saved')) StorageManager.setValue(name, value);
     },
 
     resetFilters() {
@@ -92,14 +91,12 @@ export const useStationFiltersStore = defineStore('stationFiltersStore', {
     },
 
     resetSectionOptions(section: string) {
-      this.inputs.options.forEach((option) => {
-        if (option.section != section) return;
-
-        option.value = option.defaultValue;
-        this.filters[option.id] = !option.defaultValue;
-
-        StorageManager.setBooleanValue(option.name, !option.defaultValue);
-      });
+      this.inputs.options
+        .filter((option) => option.section == section)
+        .forEach((option) => {
+          option.value = option.defaultValue;
+          StorageManager.setBooleanValue(option.name, !option.defaultValue);
+        });
     },
 
     changeSorter(headerName: HeadIdsTypes) {

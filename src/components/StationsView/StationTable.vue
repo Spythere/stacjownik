@@ -1,9 +1,5 @@
 <template>
   <section class="station_table">
-    <button class="return-btn" @click="scrollToTop" v-if="showReturnButton">
-      <img :src="icons.arrow" alt="return arrow" />
-    </button>
-
     <div class="table_wrapper">
       <table>
         <thead>

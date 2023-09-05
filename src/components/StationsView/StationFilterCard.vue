@@ -55,7 +55,7 @@
               <hr />
 
               <div class="section-inputs">
-                <filter-option
+                <FilterOption
                   v-for="(option, i) in filterStore.inputs.options.filter((o) => o.section == section)"
                   :option="option"
                   :key="i"
@@ -224,10 +224,7 @@ export default defineComponent({
     handleInput(e: Event) {
       const target = e.target as HTMLInputElement;
 
-      this.filterStore.changeFilterValue({
-        name: target.name,
-        value: target.value,
-      });
+      this.filterStore.changeFilterValue(target.name, target.value);
 
       if (this.saveOptions) StorageManager.setStringValue(target.name, target.value);
     },
@@ -241,11 +238,7 @@ export default defineComponent({
     },
 
     changeNumericFilterValue(name: string, value: number, saveToStorage = false) {
-      this.filterStore.changeFilterValue({
-        name,
-        value,
-      });
-
+      this.filterStore.changeFilterValue(name, value);
       if (this.saveOptions && saveToStorage) StorageManager.setNumericValue(name, value);
     },
 
