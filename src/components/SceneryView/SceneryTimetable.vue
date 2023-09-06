@@ -67,8 +67,8 @@
           v-for="(scheduledTrain, i) in computedScheduledTrains"
           :key="scheduledTrain.trainId"
           tabindex="0"
-          @click.prevent.stop="selectModalTrain(scheduledTrain.trainId)"
-          @keydown.enter.prevent="selectModalTrain(scheduledTrain.trainId)"
+          @click.prevent.stop="selectModalTrain(scheduledTrain.trainId, $event.currentTarget)"
+          @keydown.enter.prevent="selectModalTrain(scheduledTrain.trainId, $event.currentTarget)"
         >
           <span class="timetable-general">
             <span class="general-info">
@@ -121,25 +121,17 @@
             </span>
 
             <span class="schedule-stop">
-              <span class="stop-time">
-                <span v-if="scheduledTrain.stopInfo.stopTime">
-                  {{ scheduledTrain.stopInfo.stopTime }}
-                  {{ scheduledTrain.stopInfo.stopType || 'pt' }}
-                </span>
-
-                <span v-else>&nbsp;</span>
+              <span class="stop-connection">
+                {{ scheduledTrain.arrivingLine }}
               </span>
 
-              <span class="arrow"></span>
+              <span class="stop-time">
+                {{ scheduledTrain.stopInfo.stopTime || '' }}
+                {{ scheduledTrain.stopInfo.stopTime ? scheduledTrain.stopInfo.stopType || 'pt' : '' }}
+              </span>
 
-              <span class="stop-line">
-                <span>
-                  {{ scheduledTrain.arrivingLine }}
-                </span>
-                <span></span>
-                <span>
-                  {{ scheduledTrain.departureLine }}
-                </span>
+              <span class="stop-connection">
+                {{ scheduledTrain.departureLine }}
               </span>
             </span>
 
@@ -341,8 +333,8 @@ export default defineComponent({
     max-width: 1100px;
 
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 2em 0.5em;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.2em 0.5em;
 
     overflow: hidden;
 
@@ -368,7 +360,9 @@ export default defineComponent({
 
   &-schedule {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(30px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.2em;
+    align-items: center;
 
     width: 100%;
     max-width: 400px;
@@ -400,33 +394,6 @@ export default defineComponent({
   }
 }
 
-.arrow {
-  border: solid white;
-  border-width: 0 2px 2px 0;
-  display: inline-block;
-  padding: 2px;
-  margin-left: 50px;
-
-  position: relative;
-
-  transform: rotate(-45deg);
-
-  &::before {
-    content: '';
-    position: absolute;
-    display: block;
-    width: 55px;
-    height: 3px;
-    top: 4px;
-    left: 4px;
-
-    transform: translate(-100%, -1px) rotate(45deg);
-    transform-origin: right bottom;
-
-    background: white;
-  }
-}
-
 .general-info {
   display: flex;
   flex-wrap: wrap;
@@ -453,47 +420,34 @@ export default defineComponent({
 
 .schedule {
   &-arrival,
-  &-stop,
   &-departure {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    margin: 0 0.3rem;
     font-size: 1.15em;
   }
 
   &-stop {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    font-size: 0.9em;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5em;
+    align-items: end;
 
-    padding: 0.3em 0;
-
-    .stop-line {
-      display: flex;
-      position: absolute;
-
-      span {
-        width: 65px;
-        word-break: break-all;
-      }
-
-      span:first-child {
-        text-align: right;
-      }
-
-      span:last-child {
-        text-align: left;
-      }
+    .stop-connection {
+      font-size: 0.95em;
     }
 
     .stop-time {
-      position: absolute;
-      transform: translateY(-15px);
+      position: relative;
+      inline-size: max-content;
+      align-self: center;
+      font-size: 0.9em;
 
       color: $accentCol;
+
+      &::after {
+        content: '\027F6';
+        display: block;
+        font-size: 2.2em;
+        line-height: 0.65em;
+      }
     }
   }
 }

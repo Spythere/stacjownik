@@ -6,6 +6,7 @@ import Station from '../Station';
 import Train from '../Train';
 import { DispatcherStatsAPIData } from '../api/DispatcherStatsAPIData';
 import { DriverStatsAPIData } from '../api/DriverStatsAPIData';
+import { Ref } from 'vue';
 
 export type Availability = 'default' | 'unavailable' | 'nonPublic' | 'abandoned' | 'nonDefault';
 
@@ -46,6 +47,7 @@ export interface StoreState {
 
   listenerLaunched: boolean;
   blockScroll: boolean;
+  modalLastClickedTarget: EventTarget | null;
 }
 
 export interface APIData {

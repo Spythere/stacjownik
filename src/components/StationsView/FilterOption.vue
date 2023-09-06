@@ -1,13 +1,10 @@
 <template>
-  <button
-    class="btn--action"
-    :class="option.section"
-    :data-selected="option.value"
-    @click="handleLeftClick"
-    @dblclick="handleDbClick"
-  >
-    {{ $t(`filters.${option.id}`) }}
-  </button>
+  <label @dblclick="handleDbClick">
+    <input v-model="option.value" type="checkbox" :class="option.section" :name="option.id" />
+    <span>
+      {{ $t(`filters.${option.id}`) }}
+    </span>
+  </label>
 </template>
 
 <script lang="ts">
@@ -36,38 +33,24 @@ export default defineComponent({
     };
   },
 
-  methods: {
-    handleLeftClick() {
-      this.option.value = !this.option.value;
-      this.filterStore.lastClickedFilterId = '';
-
-      this.filterStore.changeFilterValue({
-        name: this.option.name,
-        value: !this.option.value,
-      });
+  watch: {
+    'option.value'() {
+      this.filterStore.changeFilterValue(this.option.name, !this.option.value);
     },
+  },
 
+  methods: {
     handleDbClick(e: Event) {
       e.preventDefault();
 
       this.filterStore.lastClickedFilterId = this.option.id;
       this.option.value = true;
 
-      this.filterStore.changeFilterValue({
-        name: this.option.name,
-        value: !this.option.value,
-      });
-
       this.filterStore.inputs.options
         .filter((option) => {
           return option.section == this.option.section && option.id != this.option.id;
         })
         .forEach((option) => {
-          this.filterStore.changeFilterValue({
-            name: option.name,
-            value: this.option.value,
-          });
-
           option.value = !this.option.value;
         });
     },
@@ -76,25 +59,40 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-$realityCol: #e03b07;
-$accessCol: #e03b07;
-$controlCol: #0085ff;
-$signalCol: #bf7c00;
-$statusCol: #349b32;
-$saveCol: #28a826;
-$routesCol: #9049c0;
+@import '../../styles/variables.scss';
 
-button {
-  padding: 0.25em;
-  border-radius: 0;
+label {
+  position: relative;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
 
-  &:focus-visible {
-    outline: 1px solid white;
+  span {
+    cursor: pointer;
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    padding: 0.25em;
+    background-color: #444;
   }
 
-  &[data-selected='true'] {
-    background-color: forestgreen;
-    font-weight: bold;
+  span:hover {
+    background-color: #555;
+  }
+
+  input[type='checkbox'] {
+    cursor: pointer;
+    position: absolute;
+    opacity: 0;
+
+    &:checked + span {
+      background-color: forestgreen;
+      font-weight: bold;
+    }
+
+    &:focus-visible + span {
+      outline: 1px solid $accentCol;
+    }
   }
 }
 </style>

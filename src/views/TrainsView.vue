@@ -77,7 +77,9 @@ export default defineComponent({
     watch([searchedTrain, searchedDriver, sorterActive, filterList], ([sT, sD, sA, fL]) => {
       const areFiltersActive = fL.some((f, i) => f.isActive !== initTrainFilters[i].isActive);
 
-      currentOptionsActive.value = sT.length > 0 || sD.length > 0 || sA.id != 'distance' || areFiltersActive;
+      
+      currentOptionsActive.value = sT.length > 0 || sD.length > 0 || sA.id != 'routeDistance' || areFiltersActive;
+      console.log(sA.id);
     });
 
     return {

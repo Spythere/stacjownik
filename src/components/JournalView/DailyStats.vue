@@ -119,7 +119,7 @@
               <b class="text--primary">{{ stats.mostActiveDrivers[0].name }}</b>
             </template>
             <template #distance>
-              <b class="text--primary">{{ stats.mostActiveDrivers[0].distance }} km</b>
+              <b class="text--primary">{{ stats.mostActiveDrivers[0].distance.toFixed(2) }} km</b>
             </template>
           </i18n-t>
         </div>

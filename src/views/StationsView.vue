@@ -14,7 +14,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import StorageManager from '../scripts/managers/storageManager';
 import StationTable from '../components/StationsView/StationTable.vue';
 import StationFilterCard from '../components/StationsView/StationFilterCard.vue';
 import SelectBox from '../components/Global/SelectBox.vue';
@@ -44,9 +43,7 @@ export default defineComponent({
 
   computed: {
     computedStationList() {
-      const list = this.filterStore.getFilteredStationList(this.store.stationList, this.store.region.id);
-
-      return list;
+      return this.filterStore.getFilteredStationList(this.store.stationList, this.store.region.id);
     },
   },
 

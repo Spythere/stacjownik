@@ -15,7 +15,7 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,png,svg,jpg}'],
         runtimeCaching: [
           {
-            urlPattern: new RegExp('^https://spythere.pl/api/getSceneries', 'i'),
+            urlPattern: new RegExp('^https://stacjownik.spythere.pl/api/getSceneries', 'i'),
             handler: 'NetworkFirst',
             options: {
               cacheName: 'sceneries-cache',

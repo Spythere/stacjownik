@@ -1,9 +1,5 @@
 <template>
   <section class="station_table">
-    <button class="return-btn" @click="scrollToTop" v-if="showReturnButton">
-      <img :src="icons.arrow" alt="return arrow" />
-    </button>
-
     <div class="table_wrapper">
       <table>
         <thead>
@@ -93,16 +89,11 @@
             </td>
 
             <td class="station_status">
-              <span class="status-badge" :class="station.onlineInfo.statusID" v-if="station.onlineInfo">
-                {{ $t(`status.${station.onlineInfo.statusID}`) }}
-                {{
-                  station.onlineInfo.statusID == 'online' ? timestampToString(station.onlineInfo.statusTimestamp) : ''
-                }}
-              </span>
-
-              <span class="status-badge free" v-else>
-                {{ $t('status.free') }}
-              </span>
+              <StationStatusBadge
+                :statusID="station.onlineInfo?.statusID"
+                :isOnline="station.onlineInfo ? true : false"
+                :statusTimestamp="station.onlineInfo?.statusTimestamp"
+              />
             </td>
 
             <td class="station_dispatcher-name">
@@ -253,6 +244,7 @@ import { useStationFiltersStore } from '../../store/stationFiltersStore';
 import { useStore } from '../../store/store';
 import Loading from '../Global/Loading.vue';
 import { HeadIdsTypes, headIconsIds, headIds } from '../../scripts/data/stationHeaderNames';
+import StationStatusBadge from '../Global/StationStatusBadge.vue';
 
 export default defineComponent({
   props: {
@@ -262,7 +254,7 @@ export default defineComponent({
     },
   },
 
-  components: { Loading },
+  components: { Loading, StationStatusBadge },
   mixins: [styleMixin, dateMixin, stationInfoMixin, returnBtnMixin, imageMixin],
 
   data: () => ({

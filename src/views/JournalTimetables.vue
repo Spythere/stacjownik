@@ -21,38 +21,13 @@
       </div>
 
       <div class="list_wrapper" @scroll="handleScroll">
-        <transition name="status-anim" mode="out-in">
-          <div :key="dataStatus">
-            <div class="journal_warning" v-if="store.isOffline">
-              {{ $t('app.offline') }}
-            </div>
-
-            <Loading v-else-if="dataStatus == DataStatus.Loading" />
-
-            <div v-else-if="dataStatus == DataStatus.Error" class="journal_warning error">
-              {{ $t('app.error') }}
-            </div>
-
-            <div v-else-if="timetableHistory.length == 0" class="journal_warning">
-              {{ $t('app.no-result') }}
-            </div>
-
-            <div v-else>
-              <JournalTimetablesList :timetableHistory="timetableHistory" />
-
-              <button
-                class="btn btn--option btn--load-data"
-                v-if="!scrollNoMoreData && scrollDataLoaded && timetableHistory.length >= 15"
-                @click="addHistoryData"
-              >
-                {{ $t('journal.load-data') }}
-              </button>
-            </div>
-          </div>
-        </transition>
-
-        <div class="journal_warning" v-if="scrollNoMoreData">{{ $t('journal.no-further-data') }}</div>
-        <div class="journal_warning" v-else-if="!scrollDataLoaded">{{ $t('journal.loading-further-data') }}</div>
+        <JournalTimetablesList
+          :timetableHistory="timetableHistory"
+          :addHistoryData="addHistoryData"
+          :dataStatus="dataStatus"
+          :scrollDataLoaded="scrollDataLoaded"
+          :scrollNoMoreData="scrollNoMoreData"
+        />
       </div>
     </div>
   </section>

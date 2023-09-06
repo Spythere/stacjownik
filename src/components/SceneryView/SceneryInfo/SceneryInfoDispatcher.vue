@@ -21,18 +21,11 @@
       </span>
     </div>
 
-    <span class="status-badge" v-if="station.onlineInfo && onlineFrom > 0">
-      OD {{ new Date(onlineFrom).toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' }) }}
-    </span>
-
-    <span class="status-badge" v-if="station.onlineInfo" :class="station.onlineInfo.statusID">
-      {{ $t(`status.${station.onlineInfo.statusID}`) }}
-      {{ station.onlineInfo.statusID == 'online' ? timestampToString(station.onlineInfo.statusTimestamp) : '' }}
-    </span>
-
-    <span class="status-badge free" v-else>
-      {{ $t('status.free') }}
-    </span>
+    <StationStatusBadge
+      :statusID="station.onlineInfo?.statusID"
+      :isOnline="station.onlineInfo ? true : false"
+      :statusTimestamp="station.onlineInfo?.statusTimestamp"
+    />
   </section>
 </template>
 
@@ -43,20 +36,21 @@ import imageMixin from '../../../mixins/imageMixin';
 import routerMixin from '../../../mixins/routerMixin';
 import styleMixin from '../../../mixins/styleMixin';
 import Station from '../../../scripts/interfaces/Station';
+import StationStatusBadge from '../../Global/StationStatusBadge.vue';
 
 export default defineComponent({
-  mixins: [styleMixin, dateMixin, routerMixin, imageMixin],
-  props: {
-    station: {
-      type: Object as () => Station,
-      default: {},
+    mixins: [styleMixin, dateMixin, routerMixin, imageMixin],
+    props: {
+        station: {
+            type: Object as () => Station,
+            default: {},
+        },
+        onlineFrom: {
+            type: Number,
+            default: -1,
+        },
     },
-
-    onlineFrom: {
-      type: Number,
-      default: -1,
-    },
-  },
+    components: { StationStatusBadge }
 });
 </script>
 
@@ -104,3 +98,4 @@ export default defineComponent({
   }
 }
 </style>
+

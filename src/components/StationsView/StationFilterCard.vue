@@ -4,6 +4,7 @@
       <button class="btn--filled btn--image" @click="toggleCard">
         <img class="button_icon" :src="getIcon('filter2')" alt="filter icon" />
         {{ $t('options.filters') }} [F]
+        <span class="active-indicator" v-if="!filterStore.areFiltersAtDefault"></span>
       </button>
 
       <label for="scenery-search">
@@ -29,6 +30,22 @@
           <p class="card_info" v-html="$t('filters.desc')"></p>
 
           <section class="card_options">
+            <!-- QUICK ACTIONS (TODO) -->
+            <!-- <div class="quick-actions">
+              <h3 class="text--primary">{{ $t('filters.sections.quick') }}</h3>
+              <hr />
+
+              <div>
+                <button class="btn--action" style="width: 100%" @click="filterStore.handleQuickAction('all-available')">
+                  {{ $t('filters.all-available') }}
+                </button>
+
+                <button class="btn--action" style="width: 100%" @click="filterStore.handleQuickAction('all-free')">
+                  {{ $t('filters.all-free') }}
+                </button>
+              </div>
+            </div> -->
+
             <div class="option-section" v-for="section in filterStore.inputs.optionSections">
               <h3 class="text--primary">
                 {{ $t(`filters.sections.${section}`) }}
@@ -39,7 +56,7 @@
               <hr />
 
               <div class="section-inputs">
-                <filter-option
+                <FilterOption
                   v-for="(option, i) in filterStore.inputs.options.filter((o) => o.section == section)"
                   :option="option"
                   :key="i"
@@ -176,6 +193,10 @@ export default defineComponent({
         .filter((s) => s.name.toLocaleLowerCase().includes(this.chosenSearchScenery.toLocaleLowerCase()))
         .sort((s1, s2) => (s1.name > s2.name ? 1 : -1));
     },
+
+    currentOptionsActive() {
+      return true;
+    },
   },
 
   watch: {
@@ -204,10 +225,7 @@ export default defineComponent({
     handleInput(e: Event) {
       const target = e.target as HTMLInputElement;
 
-      this.filterStore.changeFilterValue({
-        name: target.name,
-        value: target.value,
-      });
+      this.filterStore.changeFilterValue(target.name, target.value);
 
       if (this.saveOptions) StorageManager.setStringValue(target.name, target.value);
     },
@@ -221,11 +239,7 @@ export default defineComponent({
     },
 
     changeNumericFilterValue(name: string, value: number, saveToStorage = false) {
-      this.filterStore.changeFilterValue({
-        name,
-        value,
-      });
-
+      this.filterStore.changeFilterValue(name, value);
       if (this.saveOptions && saveToStorage) StorageManager.setNumericValue(name, value);
     },
 
@@ -426,33 +440,30 @@ export default defineComponent({
   }
 }
 
-.card_options {
-  .option-section h3 {
-    display: flex;
-    align-items: center;
-    margin-bottom: 0.25em;
+.option-section h3 {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.25em;
 
-    gap: 0.5em;
+  gap: 0.5em;
 
-    button {
-      padding: 0.15em;
-      color: coral;
-    }
+  button {
+    padding: 0.15em;
+    color: coral;
   }
+}
 
-  .section-inputs {
-    display: grid;
-    // flex-wrap: wrap;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    // grid-template-rows: repeat(3, 1fr);
-    gap: 0.5em;
-    margin: 1em 0;
+.section-inputs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5em;
+  margin: 1em 0;
+}
 
-    // @include smallScreen() {
-    //   grid-template-columns: repeat(auto-fit, minmax(8em, 1fr));
-    //   grid-template-rows: auto;
-    // }
-  }
+.quick-actions div {
+  display: flex;
+  margin: 1em 0;
+  gap: 1em;
 }
 
 .slider {

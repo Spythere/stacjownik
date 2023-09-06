@@ -17,8 +17,9 @@
             class="train-row"
             v-for="train in currentTrains"
             :key="train.trainId"
-            @click.stop="selectModalTrain(train.trainId)"
-            @keydown.enter="selectModalTrain(train.trainId)"
+            tabindex="0"
+            @click.stop="selectModalTrain(train.trainId, $event.currentTarget)"
+            @keydown.enter="selectModalTrain(train.trainId, $event.currentTarget)"
           >
             <TrainInfo :train="train" />
           </li>

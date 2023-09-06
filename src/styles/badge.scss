@@ -46,12 +46,32 @@
 }
 
 .region-badge {
-  padding: 0 0.5em;
+  padding: 0.25em 0.5em;
   border-radius: 0.5em;
   font-weight: bold;
+  color: white;
 
-  &.eu {
+  &[aria-describedby='eu'] {
     background-color: forestgreen;
+  }
+
+  &[aria-describedby='cae'] {
+    background-color: lightcoral;
+    color: black;
+  }
+
+  &[aria-describedby='usw'] {
+    background-color: lightblue;
+    color: black;
+  }
+
+  &[aria-describedby='us'] {
+    background-color: lightblue;
+    color: black;
+  }
+
+  &[aria-describedby='ru'] {
+    background-color: lightslategray;
   }
 }
 

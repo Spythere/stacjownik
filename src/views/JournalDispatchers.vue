@@ -6,7 +6,7 @@
       <JournalOptions
         @on-search-confirm="fetchHistoryData"
         @on-options-reset="resetOptions"
-        @on-refresh-data="fetchHistoryData"
+        @on-refresh-data="fetchHistoryData(true)"
         :sorter-option-ids="['timestampFrom', 'duration']"
         :data-status="dataStatus"
         :current-options-active="currentOptionsActive"
@@ -18,43 +18,13 @@
       </div>
 
       <div class="list_wrapper" @scroll="handleScroll">
-        <transition name="status-anim" mode="out-in">
-          <div :key="dataStatus">
-            <div class="journal_warning" v-if="store.isOffline">
-              {{ $t('app.offline') }}
-            </div>
-
-            <Loading v-else-if="dataStatus == DataStatus.Loading" />
-
-            <div v-else-if="dataStatus == DataStatus.Error" class="journal_warning error">
-              {{ $t('app.error') }}
-            </div>
-
-            <div class="journal_warning" v-else-if="historyList.length == 0">
-              {{ $t('app.no-result') }}
-            </div>
-
-            <div v-else>
-              <JournalDispatchersList :dispatcherHistory="computedHistoryList" />
-
-              <button
-                class="btn btn--option btn--load-data"
-                v-if="!scrollNoMoreData && scrollDataLoaded && computedHistoryList.length > 15"
-                @click="addHistoryData"
-              >
-                {{ $t('journal.load-data') }}
-              </button>
-            </div>
-          </div>
-        </transition>
-
-        <div class="journal_warning" v-if="scrollNoMoreData">
-          {{ $t('journal.no-further-data') }}
-        </div>
-
-        <div class="journal_warning" v-else-if="!scrollDataLoaded">
-          {{ $t('journal.loading-further-data') }}
-        </div>
+        <JournalDispatchersList
+          :dispatcherHistory="computedHistoryList"
+          :addHistoryData="addHistoryData"
+          :dataStatus="dataStatus"
+          :scrollDataLoaded="scrollDataLoaded"
+          :scrollNoMoreData="scrollNoMoreData"
+        />
       </div>
     </div>
   </section>
@@ -216,10 +186,10 @@ export default defineComponent({
     async addHistoryData() {
       this.scrollDataLoaded = false;
 
-      const countFrom = this.historyList.length;
+      this.countFromIndex = this.historyList.length;
 
       const responseData: DispatcherHistory[] = await (
-        await axios.get(`${DISPATCHERS_API_URL}?${this.currentQuery}&countFrom=${countFrom}`)
+        await axios.get(`${DISPATCHERS_API_URL}?${this.currentQuery}&countFrom=${this.countFromIndex}`)
       ).data;
 
       if (!responseData) return;
@@ -233,7 +203,7 @@ export default defineComponent({
       this.scrollDataLoaded = true;
     },
 
-    async fetchHistoryData() {
+    async fetchHistoryData(reset = false) {
       const queries: string[] = [];
 
       const dispatcher = this.searchersValues['search-dispatcher'].trim();
@@ -247,7 +217,7 @@ export default defineComponent({
       if (station) queries.push(`stationName=${station}`);
       if (timestampFrom && timestampTo) queries.push(`timestampFrom=${timestampFrom}`, `timestampTo=${timestampTo}`);
 
-      // Z API: const SORT_TYPES = ['allStopsCount', 'endDate', 'beginDate', 'routeDistance'];
+      // API: const SORT_TYPES = ['allStopsCount', 'endDate', 'beginDate', 'routeDistance'];
       if (this.sorterActive.id == 'timestampFrom') queries.push('sortBy=timestampFrom');
       else if (this.sorterActive.id == 'duration') queries.push('sortBy=currentDuration');
       else queries.push('sortBy=timestampFrom');
@@ -260,6 +230,8 @@ export default defineComponent({
       this.currentQueryArray = queries;
 
       try {
+        if (reset) this.dataStatus = DataStatus.Loading;
+
         const responseData: DispatcherHistory[] = await (
           await axios.get(`${DISPATCHERS_API_URL}?${this.currentQuery}`)
         ).data;

@@ -146,6 +146,7 @@
     "desc": " &bull; Left mouse click: select / unselect chosen filter <br /> &bull; Double left click: unselect all filters but chosen from a <b class='text--primary'>group</b> <br /> &bull; <span style='color: coral'>RESET</span>: reset all filters from a <b class='text--primary'>group</b>",
 
     "sections": {
+      "quick": "QUICK FILTERS",
       "reality": "SCENERY REALITY",
       "package-access": "IN-GAME AVAILABILITY",
       "access": "GENERAL AVAILABILITY",
@@ -155,6 +156,9 @@
       "blockades": "BLOCK SIGNALLING",
       "status": "ONLINE STATUS"
     },
+
+    "all-available": "ALL AVAILABLE",
+    "all-free": "CURRENTLY FREE",
 
     "endingStatus": "ENDS SOON",
     "afkStatus": "AFK",
@@ -284,7 +288,7 @@
 
     "route-length": "Route length:",
     "station-count": "Stations:",
-    "dispatcher-name": "Created by",
+    "dispatcher-name": "Author",
     "timetable-day": "Timetable created at",
     "timetable-active": "ACTIVE",
     "timetable-fulfilled": "FULFILLED",
@@ -335,7 +339,15 @@
     "stats-error": "Oops! An unexpected error occurred while trying to fetch statistics! :/",
 
     "timetable-location-signal": "signal:",
-    "timetable-location-route": "route:"
+    "timetable-location-route": "route:",
+
+    "history-name": "Scenery name",
+    "history-hash": "Hash",
+    "history-dispatcher": "Dispatcher",
+    "history-level": "Level",
+    "history-rate": "Rate",
+    "history-region": "Region",
+    "history-date": "Service date"
   },
   "scenery": {
     "users": "PLAYERS ONLINE",
