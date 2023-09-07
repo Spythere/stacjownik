@@ -16,6 +16,7 @@ import {
   parseSpawns,
 } from '../scripts/utils/storeUtils';
 import { APIData, StationJSONData, StoreState } from '../scripts/interfaces/store/storeTypes';
+import packageInfo from '../../package.json';
 
 export const useStore = defineStore('store', {
   state: () =>
@@ -58,7 +59,7 @@ export const useStore = defineStore('store', {
 
       blockScroll: false,
       listenerLaunched: false,
-      modalLastClickedTarget: null
+      modalLastClickedTarget: null,
     } as StoreState),
 
   actions: {
@@ -348,6 +349,9 @@ export const useStore = defineStore('store', {
         // transports: ['websocket', 'polling'],
         rememberUpgrade: true,
         reconnection: true,
+        extraHeaders: {
+          version: packageInfo.version,
+        },
       });
 
       socket.on('connect_error', (err) => {
@@ -360,7 +364,7 @@ export const useStore = defineStore('store', {
         this.setOnlineData();
       });
 
-      socket.emit('FETCH_DATA', {}, (data: APIData) => {
+      socket.emit('FETCH_DATA', { version: packageInfo.version }, (data: APIData) => {
         this.dataStatuses.connection = DataStatus.Loaded;
 
         this.apiData = data;
