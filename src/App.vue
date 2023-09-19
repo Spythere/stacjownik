@@ -52,7 +52,7 @@ import UpdatePrompt from './components/App/UpdatePrompt.vue';
 import { VERSION } from 'vue-i18n';
 import { RouterView } from 'vue-router';
 import useCustomSW from './mixins/useCustomSW';
-import { useHead, useSeoMeta } from 'unhead';
+import { useSeoMeta } from 'unhead';
 
 export default defineComponent({
   components: {
@@ -72,23 +72,17 @@ export default defineComponent({
 
     const {} = useCustomSW();
 
-    useHead({
-      title: 'Stacjownik',
-      meta: [
-        {
-          name: 'description',
-          content: 'Pomocnik maszynisty i dyżurnego symulatora Train Driver 2',
-        },
-      ],
-    });
-
     useSeoMeta({
       title: 'Stacjownik',
       description: 'Pomocnik maszynisty i dyżurnego TD2',
       ogTitle: 'Stacjownik',
+      ogType: 'website',
+      ogUrl: 'https://stacjownik-td2.web.app',
+      themeColor: '#FFC014',
       ogDescription: 'Pomocnik maszynisty i dyżurnego TD2',
       ogImage: 'https://img.td2.info.pl:8448/images/2023/09/19/pkp-art.jpg',
-      ogSiteName: 'Stacjownik'
+      ogSiteName: 'Stacjownik',
+      twitterCard: 'summary_large_image',
     });
 
     const isFilterCardVisible = ref(false);
