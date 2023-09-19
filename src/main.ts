@@ -7,6 +7,9 @@ import plLang from './locales/pl.json';
 
 import { createI18n } from 'vue-i18n';
 import { createPinia } from 'pinia';
+import { createHead } from '@unhead/vue';
+
+const head = createHead();
 
 const i18n = createI18n({
   locale: 'pl',
@@ -37,5 +40,6 @@ createApp(App)
   .use(createPinia())
   .use(router)
   .use(i18n)
+  .use(head)
   .directive('click-outside', clickOutsideDirective)
   .mount('#app');

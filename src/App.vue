@@ -24,7 +24,9 @@
       {{ new Date().getUTCFullYear() }} |
       <a :href="releaseURL" target="_blank">v{{ VERSION }}{{ isOnProductionHost ? '' : 'dev' }}</a>
       <br />
-      <a href="https://discord.gg/x2mpNN3svk"><img :src="getIcon('discord', 'png')" alt="">&nbsp;<b>{{ $t('footer.discord') }}</b></a>
+      <a href="https://discord.gg/x2mpNN3svk"
+        ><img :src="getIcon('discord', 'png')" alt="" />&nbsp;<b>{{ $t('footer.discord') }}</b></a
+      >
 
       <div style="display: none">&int; ukryta taktyczna całka do programowania w HTMLu</div>
     </footer>
@@ -50,6 +52,7 @@ import UpdatePrompt from './components/App/UpdatePrompt.vue';
 import { VERSION } from 'vue-i18n';
 import { RouterView } from 'vue-router';
 import useCustomSW from './mixins/useCustomSW';
+import { useHead, useSeoMeta } from 'unhead';
 
 export default defineComponent({
   components: {
@@ -67,7 +70,25 @@ export default defineComponent({
     const store = useStore();
     store.connectToAPI();
 
-    const { offlineReady } = useCustomSW();
+    const {} = useCustomSW();
+
+    useHead({
+      title: 'Stacjownik',
+      meta: [
+        {
+          name: 'description',
+          content: 'Pomocnik maszynisty i dyżurnego symulatora Train Driver 2',
+        },
+      ],
+    });
+
+    useSeoMeta({
+      title: 'Stacjownik',
+      description: 'Pomocnik maszynisty i dyżurnego TD2',
+      ogDescription: 'Pomocnik maszynisty i dyżurnego TD2',
+      ogTitle: 'Stacjownik',
+      ogImage: 'https://images.toucharger.com/img/graphiques/fonds-d-ecran/nature--paysages/plage/le-reve.72442.jpg',
+    });
 
     const isFilterCardVisible = ref(false);
 

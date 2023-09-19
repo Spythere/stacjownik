@@ -22,6 +22,7 @@ import Train from '../scripts/interfaces/Train';
 import { filteredTrainList } from '../scripts/managers/trainFilterManager';
 import { useStore } from '../store/store';
 import { TrainFilter } from '../scripts/interfaces/Trains/TrainFilter';
+import { useHead } from 'unhead';
 
 export default defineComponent({
   components: {
@@ -77,7 +78,6 @@ export default defineComponent({
     watch([searchedTrain, searchedDriver, sorterActive, filterList], ([sT, sD, sA, fL]) => {
       const areFiltersActive = fL.some((f, i) => f.isActive !== initTrainFilters[i].isActive);
 
-      
       currentOptionsActive.value = sT.length > 0 || sD.length > 0 || sA.id != 'routeDistance' || areFiltersActive;
       console.log(sA.id);
     });
