@@ -85,9 +85,10 @@ export default defineComponent({
     useSeoMeta({
       title: 'Stacjownik',
       description: 'Pomocnik maszynisty i dyżurnego TD2',
-      ogDescription: 'Pomocnik maszynisty i dyżurnego TD2',
       ogTitle: 'Stacjownik',
-      ogImage: 'https://images.toucharger.com/img/graphiques/fonds-d-ecran/nature--paysages/plage/le-reve.72442.jpg',
+      ogDescription: 'Pomocnik maszynisty i dyżurnego TD2',
+      ogImage: 'https://img.td2.info.pl:8448/image/pkp-art.hetjl',
+      ogSiteName: 'Stacjownik'
     });
 
     const isFilterCardVisible = ref(false);
