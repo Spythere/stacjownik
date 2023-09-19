@@ -75,14 +75,21 @@ export default defineComponent({
     useSeoMeta({
       title: 'Stacjownik',
       description: 'Pomocnik maszynisty i dyżurnego TD2',
-      ogTitle: 'Stacjownik',
-      ogType: 'website',
-      ogUrl: 'https://stacjownik-td2.web.app',
       themeColor: '#FFC014',
+      
+      ogUrl: 'https://stacjownik-td2--pr55-feature-meta-2vhg0nhd.web.app/',
+      ogType: 'website',
+      ogTitle: 'Stacjownik',
       ogDescription: 'Pomocnik maszynisty i dyżurnego TD2',
-      ogImage: 'https://img.td2.info.pl:8448/images/2023/09/19/pkp-art.jpg',
+      ogImage: 'https://img.td2.info.pl:8448/images/2023/09/20/pkp-art-thumbnail.jpg',
+      ogImageWidth: '1200',
+      ogImageHeight: '630',
       ogSiteName: 'Stacjownik',
+
       twitterCard: 'summary_large_image',
+      twitterTitle: 'Stacjownik',
+      twitterDescription: 'Pomocnik maszynisty i dyżurnego TD2',
+      twitterImage: 'https://img.td2.info.pl:8448/images/2023/09/20/pkp-art-thumbnail.jpg',
     });
 
     const isFilterCardVisible = ref(false);
