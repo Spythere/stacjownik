@@ -87,7 +87,7 @@ export default defineComponent({
       description: 'Pomocnik maszynisty i dyżurnego TD2',
       ogTitle: 'Stacjownik',
       ogDescription: 'Pomocnik maszynisty i dyżurnego TD2',
-      ogImage: 'https://img.td2.info.pl:8448/image/pkp-art.hetjl',
+      ogImage: 'https://img.td2.info.pl:8448/images/2023/09/19/pkp-art.jpg',
       ogSiteName: 'Stacjownik'
     });
 
