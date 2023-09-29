@@ -1,6 +1,5 @@
 @import 'responsive.scss';
 @import 'animations.scss';
-//Styles
 
 .list_wrapper {
   overflow-y: auto;
@@ -8,10 +7,6 @@
   min-height: 550px;
 
   padding-right: 0.2em;
-}
-
-.journal-list {
-  position: relative;
 }
 
 .journal_wrapper {
@@ -41,8 +36,8 @@
   }
 }
 
-.schedule-dates > * {
-  margin-right: 0.25em;
+.journal_item {
+  cursor: pointer;
 }
 
 .journal_item,
@@ -50,6 +45,7 @@
   background-color: #1a1a1a;
   padding: 1em;
   margin-bottom: 1em;
+  cursor: pointer;
 }
 
 .journal_top-bar {
@@ -59,7 +55,6 @@
   gap: 0.5em;
 
   position: relative;
-
   margin-bottom: 0.5em;
 }
 
@@ -72,10 +67,6 @@
 }
 
 @include smallScreen() {
-  .list_wrapper {
-    font-size: 1.1em;
-  }
-
   .journal_top-bar {
     justify-content: center;
     flex-wrap: wrap;
@@ -83,11 +74,5 @@
 
   .journal_refreshed-date {
     text-align: center;
-  }
-}
-
-@media (orientation: landscape) {
-  .list_wrapper {
-    font-size: 1em;
   }
 }

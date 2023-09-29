@@ -46,7 +46,6 @@ import DriverStats from '../components/JournalView/JournalDriverStats.vue';
 import JournalOptions from '../components/JournalView/JournalOptions.vue';
 import JournalStats from '../components/JournalView/JournalStats.vue';
 import JournalHeader from '../components/JournalView/JournalHeader.vue';
-import JournalTimetablesList from '../components/JournalView/JournalTimetablesList.vue';
 import Loading from '../components/Global/Loading.vue';
 
 import { DataStatus } from '../scripts/enums/DataStatus';
@@ -63,11 +62,12 @@ import {
   JournalTimetableSorter,
 } from '../scripts/types/JournalTimetablesTypes';
 import { journalTimetableFilters } from '../constants/Journal/JournalTimetablesConsts';
+import JournalTimetablesList from '../components/JournalView/JournalTimetables/JournalTimetablesList.vue';
 
 const TIMETABLES_API_URL = `${URLs.stacjownikAPI}/api/getTimetables`;
 
 export default defineComponent({
-  components: { DriverStats, Loading, JournalOptions, JournalTimetablesList, JournalStats, JournalHeader },
+  components: { DriverStats, Loading, JournalOptions, JournalStats, JournalHeader, JournalTimetablesList },
   mixins: [dateMixin, routerMixin, modalTrainMixin, imageMixin],
 
   name: 'JournalTimetables',

@@ -1,5 +1,5 @@
 <template>
-  <div class="journal-list">
+  <div>
     <transition name="status-anim" mode="out-in">
       <div :key="dataStatus">
         <div class="journal_warning" v-if="store.isOffline">
@@ -17,17 +17,13 @@
         </div>
 
         <div v-else>
-          <ul>
-            <ListItem :timetableHistory="timetableHistory" />
-          </ul>
-          <!-- <transition-group tag="ul" name="list-anim"> -->
-          <!-- </transition-group> -->
+          <TimetableHistoryList :timetableHistory="timetableHistory" />
 
-          <!-- AddDataButton -->
           <AddDataButton
             :list="timetableHistory"
             :scrollDataLoaded="scrollDataLoaded"
             :scrollNoMoreData="scrollNoMoreData"
+            @addHistoryData="addHistoryData"
           />
         </div>
       </div>
@@ -40,16 +36,17 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import { DataStatus } from '../../scripts/enums/DataStatus';
-import { TimetableHistory } from '../../scripts/interfaces/api/TimetablesAPIData';
-import { useStore } from '../../store/store';
-import Loading from '../Global/Loading.vue';
-import ProgressBar from '../Global/ProgressBar.vue';
-import ListItem from './JournalTimetables/ListItem.vue';
-import AddDataButton from '../Global/AddDataButton.vue';
+import { DataStatus } from '../../../scripts/enums/DataStatus';
+import { TimetableHistory } from '../../../scripts/interfaces/api/TimetablesAPIData';
+import { useStore } from '../../../store/store';
+
+import Loading from '../../Global/Loading.vue';
+import ProgressBar from '../../Global/ProgressBar.vue';
+import AddDataButton from '../../Global/AddDataButton.vue';
+import TimetableHistoryList from './TimetableHistoryList.vue';
 
 export default defineComponent({
-  components: { ProgressBar, Loading, ListItem, AddDataButton },
+  components: { ProgressBar, Loading, AddDataButton, TimetableHistoryList },
 
   props: {
     timetableHistory: {
@@ -80,5 +77,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/animations.scss';
+@import '../../../styles/JournalSection.scss';
+@import '../../../styles/animations.scss';
 </style>
