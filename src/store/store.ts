@@ -8,14 +8,16 @@ import Station from '../scripts/interfaces/Station';
 import StationRoutes from '../scripts/interfaces/StationRoutes';
 import Train from '../scripts/interfaces/Train';
 import { URLs } from '../scripts/utils/apiURLs';
-import { getLocoURL, getStatusTimestamp, getStatusID, getScheduledTrain, parseSpawns } from '../scripts/utils/storeUtils';
+import { getStatusTimestamp, getStatusID, getScheduledTrain, parseSpawns } from '../scripts/utils/storeUtils';
 import { APIData, StationJSONData, StoreState } from '../scripts/interfaces/store/storeTypes';
 import packageInfo from '../../package.json';
+import { RollingStockInfo, RollingStockGithubData } from '../scripts/interfaces/github_api/StockInfoGithubData';
 
 export const useStore = defineStore('store', {
   state: () =>
     ({
       apiData: {} as unknown,
+      rollingStockData: undefined,
 
       stationList: [],
       trainList: [],
@@ -351,6 +353,7 @@ export const useStore = defineStore('store', {
 
     async connectToAPI() {
       await this.fetchStationsGeneralInfo();
+      await this.fetchStockInfoData();
 
       this.connectToWebsocket();
     },
@@ -359,6 +362,14 @@ export const useStore = defineStore('store', {
       this.region = region;
 
       await this.setOnlineData();
+    },
+
+    async fetchStockInfoData() {
+      try {
+        this.rollingStockData = (await axios.get<RollingStockGithubData>('https://raw.githubusercontent.com/Spythere/api/main/td2/data/stockInfo.json')).data;
+      } catch (error) {
+        console.error('Ups! Wystąpił błąd podczas pobierania informacji o taborze z API:', error);
+      }
     },
 
     async setOnlineData() {

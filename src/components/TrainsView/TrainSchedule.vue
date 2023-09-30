@@ -2,12 +2,12 @@
   <div class="train-schedule" @click="toggleShowState">
     <div class="train-stock">
       <ul class="stock-list">
-        <li>
+        <!-- <li>
           <img class="train-image" :src="train.locoURL" alt="loco" @error="onImageError" />
           <div>{{ train.locoType }}</div>
-        </li>
+        </li> -->
 
-        <li v-if="train.locoType.startsWith('EN')">
+        <!-- <li v-if="train.locoType.startsWith('EN')">
           <img :src="train.locoURL.replace('rb', 's')" @error="onImageError" alt="" />
           <div>{{ train.locoType }}S</div>
         </li>
@@ -20,16 +20,17 @@
         <li v-if="train.locoType.startsWith('EN')">
           <img :src="train.locoURL.replace('rb', 'ra')" @error="onImageError" alt="" />
           <div>{{ train.locoType }}RA</div>
-        </li>
+        </li> -->
 
-        <li v-for="(car, i) in train.cars" :key="i">
-          <img
+        <li v-for="(stockName, i) in train.stockList" :key="i">
+          <!-- <img
             :src="`https://rj.td2.info.pl/dist/img/thumbnails/${car.split(':')[0]}.png`"
             @error="onImageError"
             alt="car"
-          />
+          /> -->
 
-          <div>{{ car.replace(/_/g, ' ').split(':')[0] }}</div>
+          <TrainThumbnail :name="stockName" />
+          <div>{{ stockName.replace(/_/g, ' ').split(':')[0] }}</div>
         </li>
       </ul>
     </div>
@@ -91,9 +92,10 @@ import Train from '../../scripts/interfaces/Train';
 import TrainStop from '../../scripts/interfaces/TrainStop';
 import { useStore } from '../../store/store';
 import StopDate from '../Global/StopDate.vue';
+import TrainThumbnail from '../Global/TrainThumbnail.vue';
 
 export default defineComponent({
-  components: { StopDate },
+  components: { StopDate, TrainThumbnail },
   props: {
     train: {
       type: Object as PropType<Train>,
@@ -426,4 +428,3 @@ ul.stop_list > li.stop {
   }
 }
 </style>
-

@@ -60,11 +60,7 @@
         ).split(';')"
         :key="i"
       >
-        <img
-          @error="onImageError"
-          :src="`https://rj.td2.info.pl/dist/img/thumbnails/${car.split(':')[0]}.png`"
-          :alt="car"
-        />
+        <TrainThumbnail :name="car" />
         <div>{{ car.replace(/_/g, ' ').split(':')[0] }}</div>
       </li>
     </ul>
@@ -75,28 +71,25 @@
 import { PropType, defineComponent } from 'vue';
 import { TimetableHistory } from '../../../scripts/interfaces/api/TimetablesAPIData';
 import imageMixin from '../../../mixins/imageMixin';
+import TrainThumbnail from '../../Global/TrainThumbnail.vue';
 
 export default defineComponent({
   mixins: [imageMixin],
-
   props: {
     showExtraInfo: {
       type: Boolean,
       required: true,
     },
-
     timetable: {
       type: Object as PropType<TimetableHistory>,
       required: true,
     },
   },
-
   data() {
     return {
       currentHistoryIndex: 0,
     };
   },
-
   computed: {
     stockHistory() {
       return this.timetable.stockHistory
@@ -116,13 +109,13 @@ export default defineComponent({
         });
     },
   },
-
   methods: {
     onImageError(e: Event) {
       const imageEl = e.target as HTMLImageElement;
       imageEl.src = this.getImage('unknown.png');
     },
   },
+  components: { TrainThumbnail },
 });
 </script>
 

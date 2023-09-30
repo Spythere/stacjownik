@@ -62,15 +62,13 @@
     </section>
 
     <section class="train-stats">
-      <div>
-        <img :src="train.locoURL" loading="lazy" alt="Loco image not found" @error="onImageError" />
-      </div>
+      <TrainThumbnail :name="train.locoType" />
 
       <div class="text--grayed">
         {{ train.locoType }}
-        <span v-if="train.cars.length > 0">
+        <span v-if="train.stockList.length > 0">
           &nbsp;&bull; {{ $t('trains.cars') }}:
-          <span class="count">{{ train.cars.length }}</span>
+          <span class="count">{{ train.stockList.length }}</span>
         </span>
       </div>
 
@@ -91,6 +89,7 @@ import styleMixin from '../../mixins/styleMixin';
 import trainInfoMixin from '../../mixins/trainInfoMixin';
 import Train from '../../scripts/interfaces/Train';
 import ProgressBar from '../Global/ProgressBar.vue';
+import TrainThumbnail from '../Global/TrainThumbnail.vue';
 
 export default defineComponent({
   props: {
@@ -104,7 +103,7 @@ export default defineComponent({
     },
   },
   mixins: [trainInfoMixin, imageMixin, styleMixin],
-  components: { ProgressBar },
+  components: { ProgressBar, TrainThumbnail },
 });
 </script>
 
@@ -127,7 +126,7 @@ export default defineComponent({
   text-align: center;
 
   img {
-    margin: 0.5em 0;
+    margin: 0.5em auto;
     width: 12em;
   }
 }

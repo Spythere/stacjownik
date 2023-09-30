@@ -11,7 +11,7 @@ export default interface StationAPIData {
   lastSeen: number;
   dispatcherExp: number;
   nameFromHeader: string;
-  spawnString: string;
+  spawnString: string | null;
   networkConnectionString: string;
   isOnline: number;
   dispatcherRate: number;
