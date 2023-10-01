@@ -13,10 +13,9 @@
 
     <!-- Handling członów EZT -->
     <img v-if="!onlyFirstSegment && isLoaded && /^EN/.test(name)" :src="`https://rj.td2.info.pl/dist/img/thumbnails/${name.split(':')[0]}s.png`" />
-
     <img v-if="!onlyFirstSegment && isLoaded && /^EN71/.test(name)" :src="`https://rj.td2.info.pl/dist/img/thumbnails/${name.split(':')[0]}s.png`" />
-
     <img v-if="!onlyFirstSegment && isLoaded && /^EN/.test(name)" :src="`https://rj.td2.info.pl/dist/img/thumbnails/${name.split(':')[0]}ra.png`" />
+    <img v-if="!onlyFirstSegment && !isLoaded && /^2EN/.test(name)" :src="placeholderUrl" />
   </div>
 </template>
 
