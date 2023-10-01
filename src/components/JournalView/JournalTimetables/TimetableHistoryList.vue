@@ -1,31 +1,35 @@
 <template>
   <ul class="journal-list">
-    <li
-      v-for="{ timetable, showExtraInfo } in computedTimetableHistory"
-      class="journal_item"
-      :key="timetable.id"
-      @click="showExtraInfo.value = !showExtraInfo.value"
-    >
-      <div class="journal_item-info">
-        <!-- General -->
-        <TimetableGeneral :timetable="timetable" />
-        <!-- Route -->
-        <span class="item-route">
-          <b>{{ timetable.route.replace('|', ' - ') }}</b>
-        </span>
-        <hr />
-        <!-- Stops -->
-        <TimetableStops :timetable="timetable" :showExtraInfo="showExtraInfo.value" />
-        <!-- Status -->
-        <TimetableStatus :timetable="timetable" />
-        <button class="btn--option btn--show">
-          {{ $t('journal.stock-info') }}
-          <img :src="getIcon(`arrow-${showExtraInfo.value ? 'asc' : 'desc'}`)" alt="Arrow" />
-        </button>
-        <!-- Extra -->
-        <TimetableExtra :timetable="timetable" :showExtraInfo="showExtraInfo.value" />
-      </div>
-    </li>
+    <transition-group name="list-anim">
+      <li
+        v-for="{ timetable, showExtraInfo } in computedTimetableHistory"
+        class="journal_item"
+        :key="timetable.id"
+        @click="showExtraInfo.value = !showExtraInfo.value"
+      >
+        <div class="journal_item-info">
+          <!-- General -->
+          <TimetableGeneral :timetable="timetable" />
+          <!-- Route -->
+          <span class="item-route">
+            <b>{{ timetable.route.replace('|', ' - ') }}</b>
+          </span>
+
+          <hr />
+          <!-- Stops -->
+          <TimetableStops :timetable="timetable" :showExtraInfo="showExtraInfo.value" />
+          <!-- Status -->
+          <TimetableStatus :timetable="timetable" />
+
+          <button class="btn--option btn--show">
+            {{ $t('journal.stock-info') }}
+            <img :src="getIcon(`arrow-${showExtraInfo.value ? 'asc' : 'desc'}`)" alt="Arrow" />
+          </button>
+          <!-- Extra -->
+          <TimetableExtra :timetable="timetable" :showExtraInfo="showExtraInfo.value" />
+        </div>
+      </li>
+    </transition-group>
   </ul>
 </template>
 

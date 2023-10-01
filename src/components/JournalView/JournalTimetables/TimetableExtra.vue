@@ -17,49 +17,24 @@
 
       <span class="badge">
         <span>{{ $t('journal.stock-length') }}</span>
-        <span>
-          {{
-            currentHistoryIndex == 0
-              ? timetable.stockLength
-              : stockHistory[currentHistoryIndex].stockLength || timetable.stockLength
-          }}m
-        </span>
+        <span> {{ currentHistoryIndex == 0 ? timetable.stockLength : stockHistory[currentHistoryIndex].stockLength || timetable.stockLength }}m </span>
       </span>
 
       <span class="badge">
         <span>{{ $t('journal.stock-mass') }}</span>
-        <span>
-          {{
-            Math.floor(
-              (currentHistoryIndex == 0
-                ? timetable.stockMass!
-                : stockHistory[currentHistoryIndex].stockMass || timetable.stockMass) / 1000
-            )
-          }}t
-        </span>
+        <span> {{ Math.floor((currentHistoryIndex == 0 ? timetable.stockMass! : stockHistory[currentHistoryIndex].stockMass || timetable.stockMass) / 1000) }}t </span>
       </span>
     </div>
 
     <!-- Historia zmian w składzie -->
     <div class="stock-history" v-if="stockHistory.length > 1">
-      <button
-        class="btn--action"
-        v-for="(sh, i) in stockHistory"
-        :data-checked="i == currentHistoryIndex"
-        @click.stop="currentHistoryIndex = i"
-      >
+      <button class="btn--action" v-for="(sh, i) in stockHistory" :data-checked="i == currentHistoryIndex" @click.stop="currentHistoryIndex = i">
         {{ sh.updatedAt }}
       </button>
     </div>
 
     <ul class="stock-list">
-      <li
-        v-for="(car, i) in (currentHistoryIndex == 0
-          ? timetable.stockString
-          : stockHistory[currentHistoryIndex].stockString
-        ).split(';')"
-        :key="i"
-      >
+      <li v-for="(car, i) in (currentHistoryIndex == 0 ? timetable.stockString : stockHistory[currentHistoryIndex].stockString).split(';')" :key="i">
         <TrainThumbnail :name="car" />
         <div>{{ car.replace(/_/g, ' ').split(':')[0] }}</div>
       </li>
@@ -172,9 +147,5 @@ ul.stock-list {
     font-size: 0.9em;
   }
 
-  li > img {
-    vertical-align: text-bottom;
-    max-height: 60px;
-  }
 }
 </style>

@@ -62,13 +62,13 @@
     </section>
 
     <section class="train-stats">
-      <TrainThumbnail :name="train.locoType" />
+      <TrainThumbnail :name="train.locoType" :onlyFirstSegment="true" />
 
       <div class="text--grayed">
         {{ train.locoType }}
-        <span v-if="train.stockList.length > 0">
+        <span v-if="train.stockList.length > 1">
           &nbsp;&bull; {{ $t('trains.cars') }}:
-          <span class="count">{{ train.stockList.length }}</span>
+          <span class="count">{{ train.stockList.length - 1 }}</span>
         </span>
       </div>
 
@@ -107,7 +107,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import '../../styles/responsive.scss';
 @import '../../styles/badge.scss';
 
@@ -120,14 +120,14 @@ export default defineComponent({
 .train-stats {
   display: flex;
   justify-content: center;
-  align-content: center;
 
   flex-direction: column;
   text-align: center;
 
+  gap: 0.25em;
+
   img {
-    margin: 0.5em auto;
-    width: 12em;
+    max-width: 100%;
   }
 }
 

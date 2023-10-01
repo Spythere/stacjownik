@@ -1,5 +1,23 @@
 <template>
-  <img :src="url" loading="lazy" alt="Loco image not found" @error="onImageError" />
+  <div class="thumbnail-wrapper">
+    <img :src="placeholderUrl" v-if="!isLoaded || isNotFound" />
+
+    <img
+      v-show="isLoaded"
+      :src="`https://rj.td2.info.pl/dist/img/thumbnails/${name.split(':')[0]}${stockType == 'loco-ezt' ? 'rb' : ''}.png`"
+      @error="onImageError"
+      @load="onImageLoad"
+      width="220"
+      height="60"
+    />
+
+    <!-- Handling członów EZT -->
+    <img v-if="!onlyFirstSegment && isLoaded && /^EN/.test(name)" :src="`https://rj.td2.info.pl/dist/img/thumbnails/${name.split(':')[0]}s.png`" />
+
+    <img v-if="!onlyFirstSegment && isLoaded && /^EN71/.test(name)" :src="`https://rj.td2.info.pl/dist/img/thumbnails/${name.split(':')[0]}s.png`" />
+
+    <img v-if="!onlyFirstSegment && isLoaded && /^EN/.test(name)" :src="`https://rj.td2.info.pl/dist/img/thumbnails/${name.split(':')[0]}ra.png`" />
+  </div>
 </template>
 
 <script lang="ts">
@@ -16,17 +34,28 @@ export default defineComponent({
       type: String,
       required: true,
     },
+
+    onlyFirstSegment: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   data() {
     return {
       store: useStore(),
+      isLoaded: false,
+      isNotFound: false,
     };
   },
 
   computed: {
     url() {
       return `https://rj.td2.info.pl/dist/img/thumbnails/${this.name.split(':')[0]}.png`;
+    },
+
+    placeholderUrl() {
+      return this.getImage(`icon-${this.stockType}.png`);
     },
 
     stockType() {
@@ -41,21 +70,28 @@ export default defineComponent({
   },
 
   methods: {
-    onImageError(e: Event) {
-      const imageEl = e.target as HTMLImageElement;
-      imageEl.src = this.getImage(`icon-${this.stockType}.png`);
+    onImageError() {
+      this.isNotFound = true;
+      this.isLoaded = false;
+    },
+
+    onImageLoad() {
+      this.isNotFound = false;
+      this.isLoaded = true;
     },
   },
 });
 </script>
 
 <style lang="scss" scoped>
-.wrapper {
+.thumbnail-wrapper {
   display: flex;
   justify-content: center;
+  align-items: baseline;
 }
 
 img {
-  display: inline-block;
+  width: auto;
+  height: auto;
 }
 </style>
