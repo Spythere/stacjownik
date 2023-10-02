@@ -34,8 +34,5 @@ node_modules
 # Env
 .env
 
-# Mock data
-mockWebsocketData.json
-
 .fake
 .ionide
