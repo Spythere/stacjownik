@@ -107,7 +107,14 @@ export default defineComponent({
 });
 </script>
 
+<!-- Global style for TrainThumbnail -->
 <style lang="scss">
+.train-stats .train-thumbnail {
+  max-width: 100%;
+}
+</style>
+
+<style lang="scss" scoped>
 @import '../../styles/responsive.scss';
 @import '../../styles/badge.scss';
 
@@ -120,15 +127,12 @@ export default defineComponent({
 .train-stats {
   display: flex;
   justify-content: center;
+  align-items: center;
 
   flex-direction: column;
   text-align: center;
 
   gap: 0.25em;
-
-  img {
-    max-width: 100%;
-  }
 }
 
 .train-info {

@@ -17,12 +17,18 @@
 
       <span class="badge">
         <span>{{ $t('journal.stock-length') }}</span>
-        <span> {{ currentHistoryIndex == 0 ? timetable.stockLength : stockHistory[currentHistoryIndex].stockLength || timetable.stockLength }}m </span>
+        <span>
+          {{ currentHistoryIndex == 0 ? timetable.stockLength : stockHistory[currentHistoryIndex].stockLength || timetable.stockLength }}m
+        </span>
       </span>
 
       <span class="badge">
         <span>{{ $t('journal.stock-mass') }}</span>
-        <span> {{ Math.floor((currentHistoryIndex == 0 ? timetable.stockMass! : stockHistory[currentHistoryIndex].stockMass || timetable.stockMass) / 1000) }}t </span>
+        <span>
+          {{
+            Math.floor((currentHistoryIndex == 0 ? timetable.stockMass! : stockHistory[currentHistoryIndex].stockMass || timetable.stockMass) / 1000)
+          }}t
+        </span>
       </span>
     </div>
 
@@ -34,9 +40,9 @@
     </div>
 
     <ul class="stock-list">
-      <li v-for="(car, i) in (currentHistoryIndex == 0 ? timetable.stockString : stockHistory[currentHistoryIndex].stockString).split(';')" :key="i">
-        <TrainThumbnail :name="car" />
-        <div>{{ car.replace(/_/g, ' ').split(':')[0] }}</div>
+      <li v-for="(stockName, i) in (currentHistoryIndex == 0 ? timetable.stockString : stockHistory[currentHistoryIndex].stockString).split(';')" :key="i">
+        <TrainThumbnail :name="stockName" />
+        <div>{{ stockName.split(':')[0].split('_').splice(0, 2).join(' ') }} {{ stockName.split(':')[1] }}</div>
       </li>
     </ul>
   </div>
@@ -146,6 +152,5 @@ ul.stock-list {
     color: #aaa;
     font-size: 0.9em;
   }
-
 }
 </style>

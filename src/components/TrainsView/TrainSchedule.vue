@@ -2,35 +2,9 @@
   <div class="train-schedule" @click="toggleShowState">
     <div class="train-stock">
       <ul class="stock-list">
-        <!-- <li>
-          <img class="train-image" :src="train.locoURL" alt="loco" @error="onImageError" />
-          <div>{{ train.locoType }}</div>
-        </li> -->
-
-        <!-- <li v-if="train.locoType.startsWith('EN')">
-          <img :src="train.locoURL.replace('rb', 's')" @error="onImageError" alt="" />
-          <div>{{ train.locoType }}S</div>
-        </li>
-
-        <li v-if="train.locoType.startsWith('EN71')">
-          <img :src="train.locoURL.replace('rb', 's')" @error="onImageError" alt="" />
-          <div>{{ train.locoType }}S</div>
-        </li>
-
-        <li v-if="train.locoType.startsWith('EN')">
-          <img :src="train.locoURL.replace('rb', 'ra')" @error="onImageError" alt="" />
-          <div>{{ train.locoType }}RA</div>
-        </li> -->
-
         <li v-for="(stockName, i) in train.stockList" :key="i">
-          <!-- <img
-            :src="`https://rj.td2.info.pl/dist/img/thumbnails/${car.split(':')[0]}.png`"
-            @error="onImageError"
-            alt="car"
-          /> -->
-
           <TrainThumbnail :name="stockName" />
-          <div>{{ stockName.replace(/_/g, ' ').split(':')[0] }}</div>
+          <p>{{ stockName.split(':')[0].split('_').splice(0, 2).join(' ') }} {{ stockName.split(':')[1] }}</p>
         </li>
       </ul>
     </div>
@@ -61,9 +35,7 @@
               <b>{{ stop.stopNameRAW }} </b>: <span v-html="stop.comments"></span>
             </div>
 
-            <span
-              v-if="stop.departureLine == train.timetableData!.followingStops[i + 1].arrivalLine && !/sbl/gi.test(stop.departureLine!)"
-            >
+            <span v-if="stop.departureLine == train.timetableData!.followingStops[i + 1].arrivalLine && !/sbl/gi.test(stop.departureLine!)">
               {{ stop.departureLine }}
             </span>
 
@@ -147,8 +119,7 @@ export default defineComponent({
         end: stop.terminatesHere,
         delayed: stop.departureDelay > 0,
         sbl: /sbl/gi.test(stop.stopName),
-        [stop.stopType.replaceAll(', ', '-')]:
-          stop.stopType.match(new RegExp('ph|pm|pt')) && !stop.confirmed && !stop.beginsHere,
+        [stop.stopType.replaceAll(', ', '-')]: stop.stopType.match(new RegExp('ph|pm|pt')) && !stop.confirmed && !stop.beginsHere,
         'minor-stop-active': this.activeMinorStops.includes(index),
         'last-confirmed': index == this.lastConfirmed && !stop.terminatesHere,
       };
@@ -194,16 +165,18 @@ ul.stock-list {
   display: flex;
   align-items: flex-end;
   overflow: auto;
+
   padding-bottom: 1em;
 
-  li > div {
+  li > p {
     text-align: center;
     color: #aaa;
     font-size: 0.9em;
+    margin-top: 0.5em;
   }
 
   img {
-    max-height: 60px;
+    height: 60px;
   }
 }
 

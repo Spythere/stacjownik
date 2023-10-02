@@ -2,7 +2,7 @@
   <div class="scenery-info">
     <section v-if="!timetableOnly">
       <div class="scenery-info-general" v-if="station.generalInfo">
-        <scenery-info-icons :station="station" />
+        <SceneryInfoIcons :station="station" />
 
         <div class="scenery-general-list">
           <span>
@@ -26,28 +26,16 @@
           </span>
           <span v-if="station.generalInfo.project">
             &bull; <b>{{ $t('scenery.project-title') }}: </b>
-            <a
-              style="color: salmon; text-decoration: underline; font-weight: bold"
-              :href="station.generalInfo.projectUrl"
-              target="_blank"
-            >
+            <a style="color: salmon; text-decoration: underline; font-weight: bold" :href="station.generalInfo.projectUrl" target="_blank">
               {{ station.generalInfo.project }}
             </a>
           </span>
         </div>
 
-        <scenery-info-routes :station="station" />
+        <SceneryInfoRoutes :station="station" />
 
         <div class="scenery-authors" v-if="station.generalInfo.authors && station.generalInfo.authors.length > 0">
-          <b>
-            {{
-              $t(
-                'scenery.authors-title',
-                { authors: station.generalInfo.authors.length },
-                station.generalInfo.authors.length
-              )
-            }}:
-          </b>
+          <b> {{ $t('scenery.authors-title', { authors: station.generalInfo.authors.length }, station.generalInfo.authors.length) }}: </b>
           {{ station.generalInfo.authors.join(', ') }}
         </div>
       </div>
@@ -55,14 +43,14 @@
       <div style="margin: 2em 0; height: 2px; background-color: white"></div>
 
       <!-- info dispatcher -->
-      <scenery-info-dispatcher :station="station" :onlineFrom="onlineFrom" />
+      <SceneryInfoDispatcher :station="station" :onlineFrom="onlineFrom" />
 
       <div class="info-lists">
         <!-- user list -->
-        <scenery-info-user-list :station="station" />
+        <SceneryInfoUserList :station="station" />
 
         <!-- spawn list -->
-        <scenery-info-spawn-list :station="station" />
+        <SceneryInfoSpawnList :station="station" />
       </div>
     </section>
   </div>

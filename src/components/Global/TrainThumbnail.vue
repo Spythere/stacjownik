@@ -1,22 +1,37 @@
 <template>
-  <div class="thumbnail-wrapper">
-    <img :src="placeholderUrl" v-if="!isLoaded || isNotFound" />
+  <img class="train-thumbnail" :src="placeholderUrl" v-if="!isLoaded || isNotFound" />
 
-    <img
-      v-show="isLoaded"
-      :src="`https://rj.td2.info.pl/dist/img/thumbnails/${name.split(':')[0]}${stockType == 'loco-ezt' ? 'rb' : ''}.png`"
-      @error="onImageError"
-      @load="onImageLoad"
-      width="220"
-      height="60"
-    />
+  <img
+    class="train-thumbnail"
+    v-if="!isNotFound"
+    v-show="isLoaded"
+    :src="`https://rj.td2.info.pl/dist/img/thumbnails/${name.split(':')[0]}${stockType == 'loco-ezt' ? 'rb' : ''}.png`"
+    @error="onImageError"
+    @load="onImageLoad"
+    width="220"
+    height="60"
+  />
 
-    <!-- Handling członów EZT -->
-    <img v-if="!onlyFirstSegment && isLoaded && /^EN/.test(name)" :src="`https://rj.td2.info.pl/dist/img/thumbnails/${name.split(':')[0]}s.png`" />
-    <img v-if="!onlyFirstSegment && isLoaded && /^EN71/.test(name)" :src="`https://rj.td2.info.pl/dist/img/thumbnails/${name.split(':')[0]}s.png`" />
-    <img v-if="!onlyFirstSegment && isLoaded && /^EN/.test(name)" :src="`https://rj.td2.info.pl/dist/img/thumbnails/${name.split(':')[0]}ra.png`" />
-    <img v-if="!onlyFirstSegment && !isLoaded && /^2EN/.test(name)" :src="placeholderUrl" />
-  </div>
+  <!-- Handling członów EZT -->
+  <img
+    class="train-thumbnail"
+    v-if="!onlyFirstSegment && isLoaded && /^EN/.test(name)"
+    :src="`https://rj.td2.info.pl/dist/img/thumbnails/${name.split(':')[0]}s.png`"
+  />
+
+  <img
+    class="train-thumbnail"
+    v-if="!onlyFirstSegment && isLoaded && /^EN71/.test(name)"
+    :src="`https://rj.td2.info.pl/dist/img/thumbnails/${name.split(':')[0]}s.png`"
+  />
+
+  <img
+    class="train-thumbnail"
+    v-if="!onlyFirstSegment && isLoaded && /^EN/.test(name)"
+    :src="`https://rj.td2.info.pl/dist/img/thumbnails/${name.split(':')[0]}ra.png`"
+  />
+
+  <img class="train-thumbnail" v-if="!onlyFirstSegment && !isLoaded && /^2EN/.test(name)" :src="placeholderUrl" />
 </template>
 
 <script lang="ts">
@@ -58,12 +73,12 @@ export default defineComponent({
     },
 
     stockType() {
-      if (!this.store.rollingStockData) return 'unknown';
+      if (!this.store.rollingStockData) return 'vehicle-unknown';
 
       return (
         Object.keys(this.store.rollingStockData.info).find((type) => {
           return this.store.rollingStockData?.info[type as keyof RollingStockInfo].find((v) => v[0] === this.name.split(':')[0]);
-        }) || 'unknown'
+        }) || 'vehicle-unknown'
       );
     },
   },
@@ -83,14 +98,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.thumbnail-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: baseline;
-}
-
-img {
+.train-thumbnail {
   width: auto;
   height: auto;
+  max-height: 60px;
 }
 </style>
