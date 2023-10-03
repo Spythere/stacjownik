@@ -15,12 +15,11 @@ export default interface Train {
   driverLevel: number;
   currentStationName: string;
   currentStationHash: string;
-  locoURL: string;
   locoType: string;
   online: boolean;
   lastSeen: number;
   region: string;
-  cars: string[];
+  stockList: string[];
 
   isTimeout: boolean;
   isSupporter: boolean;

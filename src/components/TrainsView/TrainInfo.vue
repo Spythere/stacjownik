@@ -62,15 +62,13 @@
     </section>
 
     <section class="train-stats">
-      <div>
-        <img :src="train.locoURL" loading="lazy" alt="Loco image not found" @error="onImageError" />
-      </div>
+      <TrainThumbnail :name="train.locoType" :onlyFirstSegment="true" />
 
       <div class="text--grayed">
         {{ train.locoType }}
-        <span v-if="train.cars.length > 0">
+        <span v-if="train.stockList.length > 1">
           &nbsp;&bull; {{ $t('trains.cars') }}:
-          <span class="count">{{ train.cars.length }}</span>
+          <span class="count">{{ train.stockList.length - 1 }}</span>
         </span>
       </div>
 
@@ -91,6 +89,7 @@ import styleMixin from '../../mixins/styleMixin';
 import trainInfoMixin from '../../mixins/trainInfoMixin';
 import Train from '../../scripts/interfaces/Train';
 import ProgressBar from '../Global/ProgressBar.vue';
+import TrainThumbnail from '../Global/TrainThumbnail.vue';
 
 export default defineComponent({
   props: {
@@ -104,9 +103,16 @@ export default defineComponent({
     },
   },
   mixins: [trainInfoMixin, imageMixin, styleMixin],
-  components: { ProgressBar },
+  components: { ProgressBar, TrainThumbnail },
 });
 </script>
+
+<!-- Global style for TrainThumbnail -->
+<style lang="scss">
+.train-stats .train-thumbnail {
+  max-width: 100%;
+}
+</style>
 
 <style lang="scss" scoped>
 @import '../../styles/responsive.scss';
@@ -121,15 +127,12 @@ export default defineComponent({
 .train-stats {
   display: flex;
   justify-content: center;
-  align-content: center;
+  align-items: center;
 
   flex-direction: column;
   text-align: center;
 
-  img {
-    margin: 0.5em 0;
-    width: 12em;
-  }
+  gap: 0.25em;
 }
 
 .train-info {

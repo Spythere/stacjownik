@@ -2,8 +2,7 @@ import { ScheduledTrain, StopStatus } from '../interfaces/ScheduledTrain';
 import Train from '../interfaces/Train';
 import TrainStop from '../interfaces/TrainStop';
 
-export const getLocoURL = (locoType: string): string =>
-  `https://rj.td2.info.pl/dist/img/thumbnails/${locoType.includes('EN') ? locoType + 'rb' : locoType}.png`;
+export const getLocoURL = (locoType: string): string => `https://rj.td2.info.pl/dist/img/thumbnails/${locoType.includes('EN') ? locoType + 'rb' : locoType}.png`;
 
 export const getStatusID = (stationStatus: any): string => {
   if (!stationStatus) return 'unknown';
@@ -58,7 +57,7 @@ export const getStatusTimestamp = (stationStatus: any): number => {
   return -1;
 };
 
-export const parseSpawns = (spawnString: string) => {
+export const parseSpawns = (spawnString: string | null) => {
   if (!spawnString) return [];
   if (spawnString === 'NO_SPAWN') return [];
 

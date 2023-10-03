@@ -1,6 +1,6 @@
 {
   "name": "stacjownik",
-  "version": "1.17.0",
+  "version": "1.17.1",
   "private": true,
   "scripts": {
     "dev": "vite",
@@ -22,6 +22,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.6.2",
+    "@vite-pwa/assets-generator": "^0.0.10",
     "@vitejs/plugin-vue": "^4.3.4",
     "axios": "^1.5.0",
     "typescript": "^5.2.2",

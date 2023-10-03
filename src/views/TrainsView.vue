@@ -14,7 +14,6 @@
 <script lang="ts">
 import { computed, ComputedRef, defineComponent, provide, reactive, ref, watch } from 'vue';
 import TrainOptions from '../components/TrainsView/TrainOptions.vue';
-import TrainStats from '../components/TrainsView/TrainStats.vue';
 import TrainTable from '../components/TrainsView/TrainTable.vue';
 import { trainFilters } from '../constants/Trains/TrainOptionsConsts';
 import modalTrainMixin from '../mixins/modalTrainMixin';
@@ -26,7 +25,6 @@ import { TrainFilter } from '../scripts/interfaces/Trains/TrainFilter';
 export default defineComponent({
   components: {
     TrainTable,
-    TrainStats,
     TrainOptions,
   },
 

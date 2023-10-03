@@ -82,13 +82,12 @@
             </tbody>
           </table>
 
-          <button
-            class="btn btn--option btn--load-data"
-            v-if="!scrollNoMoreData && scrollDataLoaded && dispatcherHistory.length > 15"
-            @click="addHistoryData"
-          >
-            {{ $t('journal.load-data') }}
-          </button>
+          <AddDataButton
+            :list="dispatcherHistory"
+            :scrollDataLoaded="scrollDataLoaded"
+            :scrollNoMoreData="scrollNoMoreData"
+            @addHistoryData="addHistoryData"
+          />
         </div>
       </div>
     </transition>
@@ -113,9 +112,10 @@ import { DataStatus } from '../../scripts/enums/DataStatus';
 import { useStore } from '../../store/store';
 import Loading from '../Global/Loading.vue';
 import { regions } from '../../data/options.json';
+import AddDataButton from '../Global/AddDataButton.vue';
 
 export default defineComponent({
-  components: { Loading },
+  components: { Loading, AddDataButton },
 
   mixins: [dateMixin, styleMixin, imageMixin],
 
@@ -195,6 +195,8 @@ table.scenery-history-table {
   position: relative;
   text-align: center;
 
+  margin-bottom: 1em;
+
   thead {
     position: sticky;
     top: 0;
@@ -208,7 +210,7 @@ table.scenery-history-table {
   tr {
     background-color: var(--_bg-row);
     border-bottom: 2px solid black;
-  
+
     &:last-child {
       border: none;
     }

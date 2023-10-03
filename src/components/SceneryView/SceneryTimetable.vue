@@ -14,19 +14,11 @@
         </span>
 
         <span class="header_links">
-          <a
-            :href="`https://pragotron-td2.web.app/board?name=${station.name}`"
-            target="_blank"
-            :title="$t('scenery.pragotron-link')"
-          >
+          <a :href="`https://pragotron-td2.web.app/board?name=${station.name}`" target="_blank" :title="$t('scenery.pragotron-link')">
             <img :src="getIcon('pragotron')" alt="icon-pragotron" />
           </a>
 
-          <a
-            :href="`https://tablice-td2.web.app/?station=${station.name}`"
-            target="_blank"
-            :title="$t('scenery.tablice-link')"
-          >
+          <a :href="tabliceZbiorczeHref" target="_blank" :title="$t('scenery.tablice-link')">
             <img :src="getIcon('tablice', 'ico')" alt="icon-tablice" />
           </a>
         </span>
@@ -39,8 +31,8 @@
           <button
             :key="cp.checkpointName"
             class="checkpoint_item"
-            :class="{ current: selectedCheckpoint === cp.checkpointName }"
-            @click="selectCheckpoint(cp)"
+            :class="{ current: chosenCheckpoint === cp.checkpointName }"
+            @click="setCheckpoint(cp)"
           >
             {{ cp.checkpointName }}
           </button>
@@ -106,15 +98,12 @@
                 </div>
                 <div v-else>
                   <div>
-                    <s style="margin-right: 0.2em" class="text--grayed">{{
-                      timestampToString(scheduledTrain.stopInfo.arrivalTimestamp)
-                    }}</s>
+                    <s style="margin-right: 0.2em" class="text--grayed">{{ timestampToString(scheduledTrain.stopInfo.arrivalTimestamp) }}</s>
                   </div>
 
                   <span>
                     {{ timestampToString(scheduledTrain.stopInfo.arrivalRealTimestamp) }}
-                    ({{ scheduledTrain.stopInfo.arrivalDelay > 0 ? '+' : ''
-                    }}{{ scheduledTrain.stopInfo.arrivalDelay }})
+                    ({{ scheduledTrain.stopInfo.arrivalDelay > 0 ? '+' : '' }}{{ scheduledTrain.stopInfo.arrivalDelay }})
                   </span>
                 </div>
               </span>
@@ -146,15 +135,12 @@
                 </div>
                 <div v-else>
                   <div>
-                    <s style="margin-right: 0.2em" class="text--grayed">{{
-                      timestampToString(scheduledTrain.stopInfo.departureTimestamp)
-                    }}</s>
+                    <s style="margin-right: 0.2em" class="text--grayed">{{ timestampToString(scheduledTrain.stopInfo.departureTimestamp) }}</s>
                   </div>
 
                   <span>
                     {{ timestampToString(scheduledTrain.stopInfo.departureRealTimestamp) }}
-                    ({{ scheduledTrain.stopInfo.departureDelay > 0 ? '+' : ''
-                    }}{{ scheduledTrain.stopInfo.departureDelay }})
+                    ({{ scheduledTrain.stopInfo.departureDelay > 0 ? '+' : '' }}{{ scheduledTrain.stopInfo.departureDelay }})
                   </span>
                 </div>
               </span>
@@ -203,16 +189,22 @@ export default defineComponent({
     listOpen: false,
   }),
 
+  mounted() {
+    this.loadSelectedOption();
+  },
+
+  activated() {
+    this.loadSelectedOption();
+  },
+
   setup(props) {
     const route = useRoute();
     const currentURL = computed(() => `${location.origin}${route.fullPath}`);
 
     const store = useStore();
 
-    const selectedCheckpoint = ref(
-      props.station?.generalInfo?.checkpoints?.length == 0
-        ? ''
-        : props.station?.generalInfo?.checkpoints[0].checkpointName || ''
+    const chosenCheckpoint = ref(
+      props.station?.generalInfo?.checkpoints?.length == 0 ? '' : props.station?.generalInfo?.checkpoints[0].checkpointName || null
     );
 
     const computedScheduledTrains = computed(() => {
@@ -221,8 +213,7 @@ export default defineComponent({
       const station = props.station as Station;
 
       let scheduledTrains =
-        station.generalInfo?.checkpoints.find((cp) => cp.checkpointName === selectedCheckpoint.value)
-          ?.scheduledTrains ||
+        station.generalInfo?.checkpoints.find((cp) => cp.checkpointName === chosenCheckpoint.value)?.scheduledTrains ||
         station.onlineInfo?.scheduledTrains ||
         [];
 
@@ -243,10 +234,19 @@ export default defineComponent({
 
     return {
       currentURL,
-      selectedCheckpoint,
+      chosenCheckpoint,
       computedScheduledTrains,
       store,
     };
+  },
+
+  computed: {
+    tabliceZbiorczeHref() {
+      let url = `https://tablice-td2.web.app/?station=${this.station.name}`;
+      if (this.chosenCheckpoint) url += `&checkpoint=${this.chosenCheckpoint}`;
+
+      return url;
+    },
   },
 
   methods: {
@@ -256,26 +256,18 @@ export default defineComponent({
       if (!this.station.generalInfo.checkpoints) return;
       if (this.station.generalInfo.checkpoints.length == 0) return;
 
-      if (this.selectedCheckpoint != '') return;
+      if (this.chosenCheckpoint != '') return;
 
-      this.selectedCheckpoint = this.station.generalInfo.checkpoints[0].checkpointName;
+      this.chosenCheckpoint = this.station.generalInfo.checkpoints[0].checkpointName;
     },
 
-    selectCheckpoint(cp: { checkpointName: string }) {
-      this.selectedCheckpoint = cp.checkpointName;
+    setCheckpoint(cp: { checkpointName: string }) {
+      this.chosenCheckpoint = cp.checkpointName;
     },
 
     showTimetableOnlyView() {
       this.$router.push(`${this.$route.fullPath}&timetableOnly=1`);
     },
-  },
-
-  mounted() {
-    this.loadSelectedOption();
-  },
-
-  activated() {
-    this.loadSelectedOption();
   },
 });
 </script>

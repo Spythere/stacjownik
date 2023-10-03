@@ -8,20 +8,16 @@ import Station from '../scripts/interfaces/Station';
 import StationRoutes from '../scripts/interfaces/StationRoutes';
 import Train from '../scripts/interfaces/Train';
 import { URLs } from '../scripts/utils/apiURLs';
-import {
-  getLocoURL,
-  getStatusTimestamp,
-  getStatusID,
-  getScheduledTrain,
-  parseSpawns,
-} from '../scripts/utils/storeUtils';
+import { getStatusTimestamp, getStatusID, getScheduledTrain, parseSpawns } from '../scripts/utils/storeUtils';
 import { APIData, StationJSONData, StoreState } from '../scripts/interfaces/store/storeTypes';
 import packageInfo from '../../package.json';
+import { RollingStockInfo, RollingStockGithubData } from '../scripts/interfaces/github_api/StockInfoGithubData';
 
 export const useStore = defineStore('store', {
   state: () =>
     ({
       apiData: {} as unknown,
+      rollingStockData: undefined,
 
       stationList: [],
       trainList: [],
@@ -69,10 +65,7 @@ export const useStore = defineStore('store', {
       if (!trains) return [];
 
       this.trainList = trains
-        .filter(
-          (train) =>
-            train.region === this.region.id && (train.online || train.timetable || train.lastSeen > Date.now() - 180000)
-        )
+        .filter((train) => train.region === this.region.id && (train.online || train.timetable || train.lastSeen > Date.now() - 180000))
         .map((train) => {
           const stock = train.stockString.split(';');
           const locoType = stock ? stock[0] : train.stockString;
@@ -96,9 +89,8 @@ export const useStore = defineStore('store', {
             currentStationName: train.currentStationName,
             currentStationHash: train.currentStationHash,
             connectedTrack: train.connectedTrack,
+            stockList: stock,
             locoType,
-            locoURL: getLocoURL(locoType),
-            cars: stock.slice(1),
 
             lastSeen: train.lastSeen,
             isTimeout: train.isTimeout,
@@ -125,20 +117,12 @@ export const useStore = defineStore('store', {
     getDispatcherStatus(onlineStationData: StationAPIData) {
       const { dispatchers } = this.apiData;
 
-      const prevDispatcherStatus = this.lastDispatcherStatuses.find(
-        (dispatcher) => dispatcher.hash === onlineStationData.stationHash
-      );
+      const prevDispatcherStatus = this.lastDispatcherStatuses.find((dispatcher) => dispatcher.hash === onlineStationData.stationHash);
 
-      const stationStatus = !dispatchers
-        ? undefined
-        : dispatchers.find(
-            (status: string[]) => status[0] == onlineStationData.stationHash && status[1] == this.region.id
-          ) || -1;
+      const stationStatus = !dispatchers ? undefined : dispatchers.find((status: string[]) => status[0] == onlineStationData.stationHash && status[1] == this.region.id) || -1;
 
-      const statusTimestamp =
-        prevDispatcherStatus && !dispatchers ? prevDispatcherStatus.statusTimestamp : getStatusTimestamp(stationStatus);
-      const statusID =
-        prevDispatcherStatus && !dispatchers ? prevDispatcherStatus.statusID : getStatusID(stationStatus);
+      const statusTimestamp = prevDispatcherStatus && !dispatchers ? prevDispatcherStatus.statusTimestamp : getStatusTimestamp(stationStatus);
+      const statusID = prevDispatcherStatus && !dispatchers ? prevDispatcherStatus.statusID : getStatusID(stationStatus);
 
       return {
         hash: onlineStationData.stationHash,
@@ -162,26 +146,17 @@ export const useStore = defineStore('store', {
           const stopName = stop.stopNameRAW.toLowerCase();
 
           if (stationName === stopName) return true;
-          if (stopName.includes(stationName) && !stop.stopName.includes('po.') && !stop.stopName.includes('podg.'))
-            return true;
+          if (stopName.includes(stationName) && !stop.stopName.includes('po.') && !stop.stopName.includes('podg.')) return true;
 
-          if (stationName.includes(stopName) && !stop.stopName.includes('po.') && !stop.stopName.includes('podg.'))
-            return true;
+          if (stationName.includes(stopName) && !stop.stopName.includes('po.') && !stop.stopName.includes('podg.')) return true;
 
-          if (
-            stopName.includes('podg.') &&
-            stopName.split(', podg.')[0] &&
-            stationName.includes(stopName.split(', podg.')[0])
-          )
-            return true;
+          if (stopName.includes('podg.') && stopName.split(', podg.')[0] && stationName.includes(stopName.split(', podg.')[0])) return true;
 
           if (
             stationGeneralInfo &&
             stationGeneralInfo.checkpoints &&
             stationGeneralInfo.checkpoints.length > 0 &&
-            stationGeneralInfo.checkpoints.some((cp) =>
-              cp.checkpointName.toLowerCase().includes(stop.stopNameRAW.toLowerCase())
-            )
+            stationGeneralInfo.checkpoints.some((cp) => cp.checkpointName.toLowerCase().includes(stop.stopNameRAW.toLowerCase()))
           )
             return true;
 
@@ -194,9 +169,7 @@ export const useStore = defineStore('store', {
 
         if (stationGeneralInfo?.checkpoints) {
           for (const checkpoint of stationGeneralInfo.checkpoints) {
-            const index = timetable.followingStops.findIndex(
-              (stop) => stop.stopNameRAW.toLowerCase() == checkpoint.checkpointName.toLowerCase()
-            );
+            const index = timetable.followingStops.findIndex((stop) => stop.stopNameRAW.toLowerCase() == checkpoint.checkpointName.toLowerCase());
 
             if (index == -1) continue;
 
@@ -212,10 +185,7 @@ export const useStore = defineStore('store', {
 
     getStationTrains(stationAPIData: StationAPIData) {
       return this.trainList
-        .filter(
-          (train) =>
-            train?.region === this.region.id && train.online && train.currentStationName === stationAPIData.stationName
-        )
+        .filter((train) => train?.region === this.region.id && train.online && train.currentStationName === stationAPIData.stationName)
         .map((train) => ({
           driverName: train.driverName,
           driverId: train.driverId,
@@ -305,9 +275,7 @@ export const useStore = defineStore('store', {
             routes:
               scenery.routesInfo.reduce(
                 (acc, route) => {
-                  const propName: keyof StationRoutes = `${route.routeTracks == 2 ? 'twoWay' : 'oneWay'}${
-                    route.isElectric ? '' : 'No'
-                  }CatenaryRouteNames`;
+                  const propName: keyof StationRoutes = `${route.routeTracks == 2 ? 'twoWay' : 'oneWay'}${route.isElectric ? '' : 'No'}CatenaryRouteNames`;
 
                   acc[route.routeTracks == 2 ? 'twoWay' : 'oneWay'].push({
                     name: route.routeName,
@@ -336,15 +304,24 @@ export const useStore = defineStore('store', {
                   twoWayNoCatenaryRouteNames: [],
                 } as StationRoutes
               ) || {},
-            checkpoints: scenery.checkpoints
-              ? scenery.checkpoints.split(';').map((sub) => ({ checkpointName: sub, scheduledTrains: [] }))
-              : [],
+            checkpoints: scenery.checkpoints ? scenery.checkpoints.split(';').map((sub) => ({ checkpointName: sub, scheduledTrains: [] })) : [],
           },
         };
       });
     },
 
-    connectToWebsocket() {
+    async connectToWebsocket() {
+      if (import.meta.env.VITE_APP_WS_DEV === '1') {
+        const mockWebsocketData = await import('../data/mockWebsocketData.json');
+        this.dataStatuses.connection = DataStatus.Loaded;
+        this.apiData = mockWebsocketData as any;
+        this.setOnlineData();
+
+        console.warn('Stacjownik działa w trybie mockowania danych z WS');
+
+        return;
+      }
+
       const socket = io(URLs.stacjownikAPI, {
         // transports: ['websocket', 'polling'],
         rememberUpgrade: true,
@@ -376,6 +353,7 @@ export const useStore = defineStore('store', {
 
     async connectToAPI() {
       await this.fetchStationsGeneralInfo();
+      await this.fetchStockInfoData();
 
       this.connectToWebsocket();
     },
@@ -384,6 +362,14 @@ export const useStore = defineStore('store', {
       this.region = region;
 
       await this.setOnlineData();
+    },
+
+    async fetchStockInfoData() {
+      try {
+        this.rollingStockData = (await axios.get<RollingStockGithubData>('https://raw.githubusercontent.com/Spythere/api/main/td2/data/stockInfo.json')).data;
+      } catch (error) {
+        console.error('Ups! Wystąpił błąd podczas pobierania informacji o taborze z API:', error);
+      }
     },
 
     async setOnlineData() {

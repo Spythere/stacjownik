@@ -45,6 +45,7 @@ import { computed, defineComponent, PropType } from 'vue';
 import { useRoute } from 'vue-router';
 import routerMixin from '../mixins/routerMixin';
 import { useStore } from '../store/store';
+
 import SceneryInfo from '../components/SceneryView/SceneryInfo.vue';
 import SceneryHeader from '../components/SceneryView/SceneryHeader.vue';
 import SceneryTimetable from '../components/SceneryView/SceneryTimetable.vue';

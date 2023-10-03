@@ -6,7 +6,7 @@ import Station from '../Station';
 import Train from '../Train';
 import { DispatcherStatsAPIData } from '../api/DispatcherStatsAPIData';
 import { DriverStatsAPIData } from '../api/DriverStatsAPIData';
-import { Ref } from 'vue';
+import { RollingStockGithubData } from '../github_api/StockInfoGithubData';
 
 export type Availability = 'default' | 'unavailable' | 'nonPublic' | 'abandoned' | 'nonDefault';
 
@@ -14,6 +14,7 @@ export interface StoreState {
   stationList: Station[];
   trainList: Train[];
   apiData: APIData;
+  rollingStockData?: RollingStockGithubData;
 
   lastDispatcherStatuses: { hash: string; statusTimestamp: number; statusID: string }[];
 

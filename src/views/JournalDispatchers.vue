@@ -1,5 +1,5 @@
 <template>
-  <section class="journal-timetables">
+  <section class="journal-dispatchers">
     <JournalHeader />
 
     <div class="journal_wrapper">
