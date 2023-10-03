@@ -39,12 +39,18 @@
       </button>
     </div>
 
-    <ul class="stock-list">
-      <li v-for="(stockName, i) in (currentHistoryIndex == 0 ? timetable.stockString : stockHistory[currentHistoryIndex].stockString).split(';')" :key="i">
-        <TrainThumbnail :name="stockName" />
+    <!-- <StockList :trainStockList="currentHistoryIndex == 0 ? timetable.stockString : stockHistory[currentHistoryIndex].stockString).split(';')" /> -->
+    <StockList :trainStockList="timetable.stockString?.split(';')" />
+
+    <!-- <ul class="stock-list">
+      <li
+        v-for="(stockName, i) in (currentHistoryIndex == 0 ? timetable.stockString : stockHistory[currentHistoryIndex].stockString).split(';')"
+        :key="i"
+      >
         <div>{{ stockName.split(':')[0].split('_').splice(0, 2).join(' ') }} {{ stockName.split(':')[1] }}</div>
+        <TrainThumbnail :name="stockName" />
       </li>
-    </ul>
+    </ul> -->
   </div>
 </template>
 
@@ -53,6 +59,7 @@ import { PropType, defineComponent } from 'vue';
 import { TimetableHistory } from '../../../scripts/interfaces/api/TimetablesAPIData';
 import imageMixin from '../../../mixins/imageMixin';
 import TrainThumbnail from '../../Global/TrainThumbnail.vue';
+import StockList from '../../Global/StockList.vue';
 
 export default defineComponent({
   mixins: [imageMixin],
@@ -96,7 +103,7 @@ export default defineComponent({
       imageEl.src = this.getImage('unknown.png');
     },
   },
-  components: { TrainThumbnail },
+  components: { TrainThumbnail, StockList },
 });
 </script>
 
@@ -144,10 +151,12 @@ ul.stock-list {
   display: flex;
   align-items: flex-end;
   overflow: auto;
+
   padding-bottom: 0.5em;
-  margin-top: 1em;
 
   li > div {
+    margin: 1em 0;
+
     text-align: center;
     color: #aaa;
     font-size: 0.9em;

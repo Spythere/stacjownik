@@ -1,13 +1,15 @@
 <template>
   <div class="train-schedule" @click="toggleShowState">
-    <div class="train-stock">
-      <ul class="stock-list">
+    <StockList :trainStockList="train.stockList" />
+
+    <!-- <div class="train-stock"> -->
+    <!-- <ul>
         <li v-for="(stockName, i) in train.stockList" :key="i">
-          <TrainThumbnail :name="stockName" />
           <p>{{ stockName.split(':')[0].split('_').splice(0, 2).join(' ') }} {{ stockName.split(':')[1] }}</p>
+          <TrainThumbnail :name="stockName" /> 
         </li>
-      </ul>
-    </div>
+      </ul> -->
+    <!-- </div> -->
 
     <div class="schedule-wrapper" v-if="train.timetableData">
       <ul class="stop_list">
@@ -65,9 +67,10 @@ import TrainStop from '../../scripts/interfaces/TrainStop';
 import { useStore } from '../../store/store';
 import StopDate from '../Global/StopDate.vue';
 import TrainThumbnail from '../Global/TrainThumbnail.vue';
+import StockList from '../Global/StockList.vue';
 
 export default defineComponent({
-  components: { StopDate, TrainThumbnail },
+  components: { StopDate, TrainThumbnail, StockList },
   props: {
     train: {
       type: Object as PropType<Train>,
@@ -153,31 +156,6 @@ $stopNameClr: #22a8d1;
 
 .train-schedule {
   padding: 0 0.25em;
-}
-
-.train-stock {
-  padding: 0.25em 0.5em;
-  display: flex;
-  justify-content: center;
-}
-
-ul.stock-list {
-  display: flex;
-  align-items: flex-end;
-  overflow: auto;
-
-  padding-bottom: 1em;
-
-  li > p {
-    text-align: center;
-    color: #aaa;
-    font-size: 0.9em;
-    margin-top: 0.5em;
-  }
-
-  img {
-    height: 60px;
-  }
 }
 
 .schedule-wrapper {

@@ -1,37 +1,15 @@
 <template>
-  <img class="train-thumbnail" :src="placeholderUrl" v-if="!isLoaded || isNotFound" />
+  <img class="train-thumbnail" :src="placeholderUrl" v-if="isNotFound" />
 
   <img
     class="train-thumbnail"
-    v-if="!isNotFound"
-    v-show="isLoaded"
+    v-else
     :src="`https://rj.td2.info.pl/dist/img/thumbnails/${name.split(':')[0]}${stockType == 'loco-ezt' ? 'rb' : ''}.png`"
     @error="onImageError"
     @load="onImageLoad"
     width="220"
     height="60"
   />
-
-  <!-- Handling członów EZT -->
-  <img
-    class="train-thumbnail"
-    v-if="!onlyFirstSegment && isLoaded && /^EN/.test(name)"
-    :src="`https://rj.td2.info.pl/dist/img/thumbnails/${name.split(':')[0]}s.png`"
-  />
-
-  <img
-    class="train-thumbnail"
-    v-if="!onlyFirstSegment && isLoaded && /^EN71/.test(name)"
-    :src="`https://rj.td2.info.pl/dist/img/thumbnails/${name.split(':')[0]}s.png`"
-  />
-
-  <img
-    class="train-thumbnail"
-    v-if="!onlyFirstSegment && isLoaded && /^EN/.test(name)"
-    :src="`https://rj.td2.info.pl/dist/img/thumbnails/${name.split(':')[0]}ra.png`"
-  />
-
-  <img class="train-thumbnail" v-if="!onlyFirstSegment && !isLoaded && /^2EN/.test(name)" :src="placeholderUrl" />
 </template>
 
 <script lang="ts">
@@ -41,8 +19,6 @@ import { useStore } from '../../store/store';
 import { RollingStockInfo } from '../../scripts/interfaces/github_api/StockInfoGithubData';
 
 export default defineComponent({
-  mixins: [imageMixin],
-
   props: {
     name: {
       type: String,
@@ -58,8 +34,8 @@ export default defineComponent({
   data() {
     return {
       store: useStore(),
-      isLoaded: false,
       isNotFound: false,
+      isLoaded: false,
     };
   },
 
@@ -69,7 +45,7 @@ export default defineComponent({
     },
 
     placeholderUrl() {
-      return this.getImage(`icon-${this.stockType}.png`);
+      return `/images/icon-${this.stockType}.png`;
     },
 
     stockType() {
