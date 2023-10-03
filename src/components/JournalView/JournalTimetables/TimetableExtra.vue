@@ -40,7 +40,7 @@
     </div>
 
     <!-- <StockList :trainStockList="currentHistoryIndex == 0 ? timetable.stockString : stockHistory[currentHistoryIndex].stockString).split(';')" /> -->
-    <StockList :trainStockList="timetable.stockString?.split(';')" />
+    <StockList :trainStockList="(currentHistoryIndex == 0 ? timetable.stockString : stockHistory[currentHistoryIndex].stockString).split(';') " />
 
     <!-- <ul class="stock-list">
       <li

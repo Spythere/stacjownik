@@ -155,7 +155,7 @@ $stopNameClr: #22a8d1;
 }
 
 .train-schedule {
-  padding: 0 0.25em;
+  padding: 0 1em;
 }
 
 .schedule-wrapper {

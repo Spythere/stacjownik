@@ -82,9 +82,8 @@ export default defineComponent({
   display: flex;
   align-items: flex-end;
   overflow: auto;
-  margin: 1em auto;
-
-  padding-bottom: 1em;
+  margin: 0 auto;
+  padding: 1em 0;
 }
 
 ul > li > span {
