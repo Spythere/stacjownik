@@ -45,6 +45,7 @@
           <div class="options_sorters">
             <button
               v-for="opt in translatedSorterOptions"
+              :key="opt.id"
               class="sort-option btn--option"
               :data-selected="opt.id == sorterActive.id"
               @click="onSorterChange(opt)"
@@ -53,13 +54,16 @@
             </button>
           </div>
 
-          <h1 class="option-title" v-if="trainFilterList.length != 0">{{ $t('options.filter-title') }}</h1>
+          <h1 class="option-title" v-if="trainFilterList.length != 0">
+            {{ $t('options.filter-title') }}
+          </h1>
 
           <div class="options_filters">
-            <div v-for="section in Object.keys(TrainFilterSection)">
+            <div v-for="section in Object.keys(TrainFilterSection)" :key="section">
               <button
                 class="btn--option"
                 v-for="filter in trainFilterList.filter((f) => f.section == section)"
+                :key="filter.id"
                 :data-inactive="!filter.isActive"
                 @click="onFilterChange(filter)"
               >
@@ -70,7 +74,9 @@
 
           <div class="filter-actions">
             <div></div>
-            <button class="btn--action" @click="resetAllFilters">{{ $t('options.filter-reset') }}</button>
+            <button class="btn--action" @click="resetAllFilters">
+              {{ $t('options.filter-reset') }}
+            </button>
           </div>
         </div>
       </div>
@@ -82,32 +88,29 @@
 import { defineComponent, inject, PropType } from 'vue';
 import imageMixin from '../../mixins/imageMixin';
 import keyMixin from '../../mixins/keyMixin';
-import ActionButton from '../Global/ActionButton.vue';
-import SelectBox from '../Global/SelectBox.vue';
 import { TrainFilterSection } from '../../scripts/enums/TrainFilterType';
 import { TrainFilter } from '../../scripts/interfaces/Trains/TrainFilter';
 
 export default defineComponent({
-  components: { SelectBox, ActionButton },
   mixins: [imageMixin, keyMixin],
 
   props: {
     sorterOptionIds: {
       type: Array as PropType<Array<string>>,
-      required: true,
+      required: true
     },
 
     currentOptionsActive: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
 
   data() {
     return {
       showOptions: false,
       lastSelectedFilter: null as TrainFilter | null,
-      TrainFilterSection,
+      TrainFilterSection
     };
   },
 
@@ -117,7 +120,7 @@ export default defineComponent({
       searchedDriver: inject('searchedDriver') as string,
 
       sorterActive: inject('sorterActive') as { id: string | number; dir: number },
-      trainFilterList: inject('filterList') as TrainFilter[],
+      trainFilterList: inject('filterList') as TrainFilter[]
     };
   },
 
@@ -125,9 +128,9 @@ export default defineComponent({
     translatedSorterOptions() {
       return this.$props.sorterOptionIds.map((id) => ({
         id,
-        value: this.$t(`options.sort-${id}`),
+        value: this.$t(`options.sort-${id}`)
       }));
-    },
+    }
   },
 
   methods: {
@@ -172,8 +175,8 @@ export default defineComponent({
     onInputClear(id: 'driver' | 'train') {
       if (id == 'driver') this.searchedDriver = '';
       if (id == 'train') this.searchedTrain = '';
-    },
-  },
+    }
+  }
 });
 </script>
 

@@ -54,42 +54,42 @@
           </i18n-t>
         </div>
 
-        <div v-if="firstPlaceDispatchers.length == 1">
+        <div v-if="topDispatchers.length == 1">
           &bull;
           <i18n-t keypath="journal.timetable-stats-most-active-dr">
             <template #dispatcher>
-              <router-link :to="`/journal/dispatchers?dispatcherName=${firstPlaceDispatchers[0].name}`">
-                <b>{{ firstPlaceDispatchers[0].name }}</b>
+              <router-link :to="`/journal/dispatchers?dispatcherName=${topDispatchers[0].name}`">
+                <b>{{ topDispatchers[0].name }}</b>
               </router-link>
             </template>
             <template #count>
               <b class="text--primary">
-                {{ firstPlaceDispatchers[0].count }}
-                {{ $t('journal.timetable-count', firstPlaceDispatchers[0].count) }}
+                {{ topDispatchers[0].count }}
+                {{ $t('journal.timetable-count', topDispatchers[0].count) }}
               </b>
             </template>
           </i18n-t>
         </div>
 
-        <div v-if="firstPlaceDispatchers.length > 1">
+        <div v-if="topDispatchers.length > 1">
           &bull;
           <i18n-t keypath="journal.timetable-stats-most-active-dr-many">
             <template #dispatchers>
-              <span v-for="(disp, i) in firstPlaceDispatchers">
-                <span v-if="i == firstPlaceDispatchers.length - 1"> {{ $t('general.and') }} </span>
+              <span v-for="(disp, i) in topDispatchers" :key="i">
+                <span v-if="i == topDispatchers.length - 1"> {{ $t('general.and') }} </span>
 
                 <router-link :to="`/journal/dispatchers?dispatcherName=${disp.name}`">
                   <b>{{ disp.name }}</b>
                 </router-link>
 
-                <span v-if="i < firstPlaceDispatchers.length - 2">, </span>
+                <span v-if="i < topDispatchers.length - 2">, </span>
               </span>
             </template>
 
             <template #count>
               <b class="text--primary">
-                {{ firstPlaceDispatchers[0].count }}
-                {{ $t('journal.timetable-count', firstPlaceDispatchers[0].count) }}
+                {{ topDispatchers[0].count }}
+                {{ $t('journal.timetable-count', topDispatchers[0].count) }}
               </b>
             </template>
           </i18n-t>
@@ -99,7 +99,9 @@
           &bull;
           <i18n-t keypath="journal.timetable-stats-longest-duties">
             <template #dispatcher>
-              <router-link :to="`/journal/dispatchers?dispatcherName=${stats.longestDuties[0].name}`">
+              <router-link
+                :to="`/journal/dispatchers?dispatcherName=${stats.longestDuties[0].name}`"
+              >
                 <b>{{ stats.longestDuties[0].name }}</b>
               </router-link>
             </template>
@@ -133,7 +135,10 @@ import axios from 'axios';
 import { defineComponent } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
 import { DataStatus } from '../../scripts/enums/DataStatus';
-import { ITimetablesDailyStats, ITimetablesDailyStatsResponse } from '../../scripts/interfaces/api/StatsAPIData';
+import {
+  ITimetablesDailyStats,
+  ITimetablesDailyStatsResponse
+} from '../../scripts/interfaces/api/StatsAPIData';
 import { URLs } from '../../scripts/utils/apiURLs';
 
 export default defineComponent({
@@ -156,8 +161,8 @@ export default defineComponent({
         timetableRouteDistance: 0,
         longestDuties: [],
         mostActiveDrivers: [],
-        mostActiveDispatchers: [],
-      } as ITimetablesDailyStats,
+        mostActiveDispatchers: []
+      } as ITimetablesDailyStats
     };
   },
 
@@ -171,12 +176,12 @@ export default defineComponent({
   },
 
   computed: {
-    firstPlaceDispatchers() {
+    topDispatchers() {
       if (this.stats.mostActiveDispatchers.length == 0) return [];
       const maxCount = this.stats.mostActiveDispatchers[0].count;
 
       return this.stats.mostActiveDispatchers.filter((disp) => disp.count === maxCount);
-    },
+    }
   },
 
   methods: {
@@ -197,7 +202,7 @@ export default defineComponent({
 
           mostActiveDispatchers: res.mostActiveDispatchers,
           mostActiveDrivers: res.mostActiveDrivers,
-          longestDuties: res.longestDuties,
+          longestDuties: res.longestDuties
         };
 
         this.statsStatus = DataStatus.Loaded;
@@ -218,8 +223,8 @@ export default defineComponent({
     stopFetchingDailyStats() {
       clearInterval(this.intervalId);
       this.intervalId = -1;
-    },
-  },
+    }
+  }
 });
 </script>
 
@@ -247,4 +252,3 @@ export default defineComponent({
   }
 }
 </style>
-

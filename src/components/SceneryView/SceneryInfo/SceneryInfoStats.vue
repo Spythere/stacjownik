@@ -23,7 +23,10 @@
         <span style="color: #eee">{{ station.onlineInfo?.scheduledTrains?.length || '0' }}</span>
         /
         <span style="color: #bbb"
-          >{{ station.onlineInfo?.scheduledTrains?.filter((train) => train.stopInfo.confirmed).length || '0' }}
+          >{{
+            station.onlineInfo?.scheduledTrains?.filter((train) => train.stopInfo.confirmed)
+              .length || '0'
+          }}
         </span>
       </span>
     </span>
@@ -31,7 +34,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { PropType, defineComponent } from 'vue';
 import imageMixin from '../../../mixins/imageMixin';
 import Station from '../../../scripts/interfaces/Station';
 
@@ -39,10 +42,10 @@ export default defineComponent({
   mixins: [imageMixin],
   props: {
     station: {
-      type: Object as () => Station,
-      default: {},
-    },
-  },
+      type: Object as PropType<Station>,
+      required: true
+    }
+  }
 });
 </script>
 

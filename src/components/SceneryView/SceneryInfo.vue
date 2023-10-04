@@ -6,19 +6,29 @@
 
         <div class="scenery-general-list">
           <span>
-            <b>{{ $t('availability.title') }}:</b> {{ $t(`availability.${station.generalInfo.availability}`) }}
+            <b>{{ $t('availability.title') }}:</b>
+            {{ $t(`availability.${station.generalInfo.availability}`) }}
 
             <span v-if="station.generalInfo.reqLevel > -1">
-              - {{ $t('scenery.req-level', { lvl: station.generalInfo.reqLevel }, station.generalInfo.reqLevel) }}
+              -
+              {{
+                $t(
+                  'scenery.req-level',
+                  { lvl: station.generalInfo.reqLevel },
+                  station.generalInfo.reqLevel
+                )
+              }}
             </span>
           </span>
 
           <span>
-            &bull; <b>{{ $t('controls.title') }}:</b> {{ $t(`controls.${station.generalInfo.controlType}`) }}
+            &bull; <b>{{ $t('controls.title') }}:</b>
+            {{ $t(`controls.${station.generalInfo.controlType}`) }}
           </span>
 
           <span>
-            &bull; <b>{{ $t('signals.title') }}:</b> {{ $t(`signals.${station.generalInfo.signalType}`) }}
+            &bull; <b>{{ $t('signals.title') }}:</b>
+            {{ $t(`signals.${station.generalInfo.signalType}`) }}
           </span>
 
           <span v-if="station.generalInfo.lines">
@@ -26,7 +36,11 @@
           </span>
           <span v-if="station.generalInfo.project">
             &bull; <b>{{ $t('scenery.project-title') }}: </b>
-            <a style="color: salmon; text-decoration: underline; font-weight: bold" :href="station.generalInfo.projectUrl" target="_blank">
+            <a
+              style="color: salmon; text-decoration: underline; font-weight: bold"
+              :href="station.generalInfo.projectUrl"
+              target="_blank"
+            >
               {{ station.generalInfo.project }}
             </a>
           </span>
@@ -34,8 +48,19 @@
 
         <SceneryInfoRoutes :station="station" />
 
-        <div class="scenery-authors" v-if="station.generalInfo.authors && station.generalInfo.authors.length > 0">
-          <b> {{ $t('scenery.authors-title', { authors: station.generalInfo.authors.length }, station.generalInfo.authors.length) }}: </b>
+        <div
+          class="scenery-authors"
+          v-if="station.generalInfo.authors && station.generalInfo.authors.length > 0"
+        >
+          <b>
+            {{
+              $t(
+                'scenery.authors-title',
+                { authors: station.generalInfo.authors.length },
+                station.generalInfo.authors.length
+              )
+            }}:
+          </b>
           {{ station.generalInfo.authors.join(', ') }}
         </div>
       </div>
@@ -57,11 +82,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/runtime-core';
+import { PropType, defineComponent } from 'vue';
 
 import SceneryInfoDispatcher from './SceneryInfo/SceneryInfoDispatcher.vue';
 import SceneryInfoIcons from './SceneryInfo/SceneryInfoIcons.vue';
-import SceneryInfoStats from './SceneryInfo/SceneryInfoStats.vue';
 import SceneryInfoUserList from './SceneryInfo/SceneryInfoUserList.vue';
 import SceneryInfoSpawnList from './SceneryInfo/SceneryInfoSpawnList.vue';
 import SceneryInfoRoutes from './SceneryInfo/SceneryInfoRoutes.vue';
@@ -71,23 +95,22 @@ export default defineComponent({
   components: {
     SceneryInfoDispatcher,
     SceneryInfoIcons,
-    SceneryInfoStats,
     SceneryInfoUserList,
     SceneryInfoSpawnList,
-    SceneryInfoRoutes,
+    SceneryInfoRoutes
   },
   props: {
     station: {
-      type: Object as () => Station,
-      default: {},
+      type: Object as PropType<Station>,
+      required: true
     },
 
-    timetableOnly: Boolean,
+    timetableOnly: Boolean
   },
 
   data: () => ({
-    onlineFrom: -1,
-  }),
+    onlineFrom: -1
+  })
 });
 </script>
 

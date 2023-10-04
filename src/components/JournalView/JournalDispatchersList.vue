@@ -32,13 +32,17 @@
               <transition-group name="list-anim">
                 <tr v-for="historyItem in dispatcherHistory" :key="historyItem.id">
                   <td>
-                    <router-link :to="`/journal/dispatchers?sceneryName=${historyItem.stationName}`">
+                    <router-link
+                      :to="`/journal/dispatchers?sceneryName=${historyItem.stationName}`"
+                    >
                       <b>{{ historyItem.stationName }}</b>
                     </router-link>
                   </td>
                   <td>#{{ historyItem.stationHash }}</td>
                   <td>
-                    <router-link :to="`/journal/dispatchers?dispatcherName=${historyItem.dispatcherName}`">
+                    <router-link
+                      :to="`/journal/dispatchers?dispatcherName=${historyItem.dispatcherName}`"
+                    >
                       <b>{{ historyItem.dispatcherName }}</b>
                     </router-link>
                   </td>
@@ -46,7 +50,12 @@
                     <b
                       v-if="historyItem.dispatcherLevel !== null"
                       class="level-badge dispatcher"
-                      :style="calculateExpStyle(historyItem.dispatcherLevel, historyItem.dispatcherIsSupporter)"
+                      :style="
+                        calculateExpStyle(
+                          historyItem.dispatcherLevel,
+                          historyItem.dispatcherIsSupporter
+                        )
+                      "
                     >
                       {{ historyItem.dispatcherLevel >= 2 ? historyItem.dispatcherLevel : 'L' }}
                     </b>
@@ -122,27 +131,27 @@ export default defineComponent({
   props: {
     dispatcherHistory: {
       type: Array as PropType<DispatcherHistory[]>,
-      required: true,
+      required: true
     },
     scrollNoMoreData: {
-      type: Boolean,
+      type: Boolean
     },
     scrollDataLoaded: {
-      type: Boolean,
+      type: Boolean
     },
     addHistoryData: {
-      type: Function as PropType<() => void>,
+      type: Function as PropType<() => void>
     },
     dataStatus: {
-      type: Number as PropType<DataStatus>,
-    },
+      type: Number as PropType<DataStatus>
+    }
   },
 
   data() {
     return {
       DataStatus,
       store: useStore(),
-      regions,
+      regions
     };
   },
 
@@ -150,13 +159,17 @@ export default defineComponent({
     computedDispatcherHistory() {
       console.log(this.dispatcherHistory.length);
 
-      return this.dispatcherHistory.reduce((acc, historyItem, i) => {
-        if (this.isAnotherDay(i - 1, i)) acc.push(new Date(historyItem.timestampFrom).toLocaleDateString('pl-PL'));
-        acc.push(historyItem);
+      return this.dispatcherHistory.reduce(
+        (acc, historyItem, i) => {
+          if (this.isAnotherDay(i - 1, i))
+            acc.push(new Date(historyItem.timestampFrom).toLocaleDateString('pl-PL'));
+          acc.push(historyItem);
 
-        return acc;
-      }, [] as (DispatcherHistory | string)[]);
-    },
+          return acc;
+        },
+        [] as (DispatcherHistory | string)[]
+      );
+    }
   },
 
   methods: {
@@ -173,8 +186,8 @@ export default defineComponent({
         new Date(this.dispatcherHistory[prevIndex].timestampFrom).getDate() !=
         new Date(this.dispatcherHistory[currIndex].timestampFrom).getDate()
       );
-    },
-  },
+    }
+  }
 });
 </script>
 

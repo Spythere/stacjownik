@@ -7,39 +7,34 @@
       @keypress="updateValue"
     />
 
-    <img
-      class="search-exit"
-      :src="getIcon('exit')"
-      alt="exit-icon"
-      @click="clearValue"
-    />
+    <img class="search-exit" :src="getIcon('exit')" alt="exit-icon" @click="clearSearchValue" />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from "vue";
-import imageMixin from "../../mixins/imageMixin";
+import { defineComponent, ref, watch } from 'vue';
+import imageMixin from '../../mixins/imageMixin';
 
 export default defineComponent({
   mixins: [imageMixin],
 
-  emits: ["update:searchedValue", "clearValue"],
+  emits: ['update:searchedValue', 'clearValue'],
   props: {
     searchedValue: {
       type: String,
-      required: true,
+      required: true
     },
     updateOnInput: {
       type: Boolean,
-      default: true,
+      default: true
     },
     titleToTranslate: {
       type: String,
-      required: true,
+      required: true
     },
     clearValue: {
-      type: Function,
-    },
+      type: Function
+    }
   },
 
   setup(props, { emit }) {
@@ -49,32 +44,32 @@ export default defineComponent({
       watch(
         () => compSearchedValue.value,
         (value) => {
-          emit("update:searchedValue", value);
+          emit('update:searchedValue', value);
         }
       );
     }
 
-    const clearValue = () => {
-      compSearchedValue.value = "";
-      emit("clearValue");
+    const clearSearchValue = () => {
+      compSearchedValue.value = '';
+      emit('clearValue');
     };
 
     const updateValue = (e: any) => {
       if (!props.updateOnInput && e.keyCode == 13)
-        emit("update:searchedValue", compSearchedValue.value);
+        emit('update:searchedValue', compSearchedValue.value);
     };
 
     return {
       compSearchedValue,
       updateValue,
-      clearValue,
+      clearSearchValue
     };
-  },
+  }
 });
 </script>
 
 <style lang="scss" scoped>
-@import "../../styles/responsive";
+@import '../../styles/responsive';
 
 .search {
   &-box {

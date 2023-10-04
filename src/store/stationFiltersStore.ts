@@ -14,14 +14,14 @@ export const useStationFiltersStore = defineStore('stationFiltersStore', {
       filters: { ...filterInitStates },
       sorterActive: { headerName: 'station' as HeadIdsTypes, dir: 1 },
       store: useStore(),
-      lastClickedFilterId: '',
+      lastClickedFilterId: ''
     };
   },
 
   getters: {
     areFiltersAtDefault(state) {
       return Object.keys(state.filters).every((f) => state.filters[f] === filterInitStates[f]);
-    },
+    }
   },
 
   actions: {
@@ -58,26 +58,6 @@ export const useStationFiltersStore = defineStore('stationFiltersStore', {
       });
     },
 
-    // Quick actions (TODO)
-    handleQuickAction(actionName: string) {
-      // switch (actionName) {
-      //   case 'all-available':
-      //     this.resetFilters();
-      //     this.inputs.options
-      //       .filter((option) => /^(free|non-public)/.test(option.id))
-      //       .forEach((option) => (option.value = !option.defaultValue));
-      //     break;
-      //   case 'all-free':
-      //     this.resetFilters();
-      //     this.inputs.options
-      //       .filter((option) => /^(free|occupied)/.test(option.id))
-      //       .forEach((option) => (option.value = !option.defaultValue));
-      //     break;
-      //   default:
-      //     break;
-      // }
-    },
-
     changeFilterValue(name: string, value: any) {
       this.filters[name] = value;
       if (StorageManager.isRegistered('options_saved')) StorageManager.setValue(name, value);
@@ -107,10 +87,11 @@ export const useStationFiltersStore = defineStore('stationFiltersStore', {
     },
 
     changeSorter(headerName: HeadIdsTypes) {
-      if (headerName == this.sorterActive.headerName) this.sorterActive.dir = -1 * this.sorterActive.dir;
+      if (headerName == this.sorterActive.headerName)
+        this.sorterActive.dir = -1 * this.sorterActive.dir;
       else this.sorterActive.dir = 1;
 
       this.sorterActive.headerName = headerName;
-    },
-  },
+    }
+  }
 });

@@ -18,7 +18,11 @@
         />
 
         <datalist id="sceneries">
-          <option v-for="scenery in sortedStationList" :value="scenery.name"></option>
+          <option
+            v-for="scenery in sortedStationList"
+            :key="scenery.name"
+            :value="scenery.name"
+          ></option>
         </datalist>
       </label>
     </div>
@@ -46,7 +50,11 @@
               </div>
             </div> -->
 
-            <div class="option-section" v-for="section in filterStore.inputs.optionSections">
+            <div
+              class="option-section"
+              v-for="section in filterStore.inputs.optionSections"
+              :key="section"
+            >
               <h3 class="text--primary">
                 {{ $t(`filters.sections.${section}`) }}
 
@@ -57,7 +65,9 @@
 
               <div class="section-inputs">
                 <FilterOption
-                  v-for="(option, i) in filterStore.inputs.options.filter((o) => o.section == section)"
+                  v-for="(option, i) in filterStore.inputs.options.filter(
+                    (o) => o.section == section
+                  )"
                   :option="option"
                   :key="i"
                 />
@@ -114,7 +124,12 @@
 
         <section class="card_actions">
           <div class="action-buttons">
-            <button class="btn--action" style="width: 100%" @click="saveFilters" :data-selected="saveOptions">
+            <button
+              class="btn--action"
+              style="width: 100%"
+              @click="saveFilters"
+              :data-selected="saveOptions"
+            >
               {{ $t('filters.save') }}
             </button>
 
@@ -143,11 +158,10 @@ import StorageManager from '../../scripts/managers/storageManager';
 import { useStationFiltersStore } from '../../store/stationFiltersStore';
 import { useStore } from '../../store/store';
 
-import ActionButton from '../Global/ActionButton.vue';
 import FilterOption from './FilterOption.vue';
 
 export default defineComponent({
-  components: { ActionButton, FilterOption },
+  components: { FilterOption },
   mixins: [imageMixin, keyMixin, routerMixin],
 
   data: () => ({
@@ -160,7 +174,7 @@ export default defineComponent({
     currentRegion: { id: '', value: '' },
 
     delayInputTimer: -1,
-    chosenSearchScenery: '',
+    chosenSearchScenery: ''
   }),
 
   setup() {
@@ -171,7 +185,7 @@ export default defineComponent({
     return {
       isVisible,
       store,
-      filterStore,
+      filterStore
     };
   },
 
@@ -190,13 +204,15 @@ export default defineComponent({
   computed: {
     sortedStationList() {
       return this.store.stationList
-        .filter((s) => s.name.toLocaleLowerCase().includes(this.chosenSearchScenery.toLocaleLowerCase()))
+        .filter((s) =>
+          s.name.toLocaleLowerCase().includes(this.chosenSearchScenery.toLocaleLowerCase())
+        )
         .sort((s1, s2) => (s1.name > s2.name ? 1 : -1));
     },
 
     currentOptionsActive() {
       return true;
-    },
+    }
   },
 
   watch: {
@@ -213,7 +229,7 @@ export default defineComponent({
       this.$nextTick(() => {
         if (value) (this.$refs['cardEl'] as HTMLDivElement).focus();
       });
-    },
+    }
   },
 
   methods: {
@@ -265,8 +281,12 @@ export default defineComponent({
 
       StorageManager.registerStorage(this.STORAGE_KEY);
 
-      this.filterStore.inputs.options.forEach((option) => StorageManager.setBooleanValue(option.name, !option.value));
-      this.filterStore.inputs.sliders.forEach((slider) => StorageManager.setNumericValue(slider.name, slider.value));
+      this.filterStore.inputs.options.forEach((option) =>
+        StorageManager.setBooleanValue(option.name, !option.value)
+      );
+      this.filterStore.inputs.sliders.forEach((slider) =>
+        StorageManager.setNumericValue(slider.name, slider.value)
+      );
     },
 
     resetFilters() {
@@ -283,8 +303,8 @@ export default defineComponent({
 
     toggleCard() {
       this.isVisible = !this.isVisible;
-    },
-  },
+    }
+  }
 });
 </script>
 

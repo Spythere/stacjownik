@@ -43,7 +43,13 @@
           <g v-if="greenBlinkLight" filter="url(#filter0_d_843_28)">
             <circle cx="15" cy="17" r="7" fill="#00FF0A" />
 
-            <animate attributeType="XML" attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite" />
+            <animate
+              attributeType="XML"
+              attributeName="opacity"
+              values="1;0;1"
+              dur="1s"
+              repeatCount="indefinite"
+            />
           </g>
 
           <g v-if="redTopLight" filter="url(#filter1_d_843_28)">
@@ -56,7 +62,13 @@
           <g v-if="redBottomLight" filter="url(#filter3_d_843_28)">
             <circle cx="15" cy="74" r="7" fill="#F40000" />
 
-            <animate attributeType="XML" attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite" />
+            <animate
+              attributeType="XML"
+              attributeName="opacity"
+              values="1;0;1"
+              dur="1s"
+              repeatCount="indefinite"
+            />
           </g>
         </g>
 
@@ -82,7 +94,12 @@
             <feComposite in2="hardAlpha" operator="out" />
             <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 1 0 0 0 0 0.04 0 0 0 1 0" />
             <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_843_28" />
-            <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_843_28" result="shape" />
+            <feBlend
+              mode="normal"
+              in="SourceGraphic"
+              in2="effect1_dropShadow_843_28"
+              result="shape"
+            />
           </filter>
           <filter
             id="filter1_d_843_28"
@@ -104,7 +121,12 @@
             <feGaussianBlur stdDeviation="2.5" />
             <feColorMatrix type="matrix" values="0 0 0 0 0.770833 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0" />
             <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_843_28" />
-            <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_843_28" result="shape" />
+            <feBlend
+              mode="normal"
+              in="SourceGraphic"
+              in2="effect1_dropShadow_843_28"
+              result="shape"
+            />
           </filter>
           <filter
             id="filter2_d_843_28"
@@ -126,7 +148,12 @@
             <feGaussianBlur stdDeviation="2.5" />
             <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 0.72 0 0 0 0 0 0 0 0 1 0" />
             <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_843_28" />
-            <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_843_28" result="shape" />
+            <feBlend
+              mode="normal"
+              in="SourceGraphic"
+              in2="effect1_dropShadow_843_28"
+              result="shape"
+            />
           </filter>
           <filter
             id="filter3_d_843_28"
@@ -148,7 +175,12 @@
             <feGaussianBlur stdDeviation="2.5" />
             <feColorMatrix type="matrix" values="0 0 0 0 0.770833 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0" />
             <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_843_28" />
-            <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_843_28" result="shape" />
+            <feBlend
+              mode="normal"
+              in="SourceGraphic"
+              in2="effect1_dropShadow_843_28"
+              result="shape"
+            />
           </filter>
         </defs>
       </svg>
@@ -173,14 +205,14 @@ export default defineComponent({
       indicator: {
         offline: false,
         status: DataStatus.Loading,
-        message: 'data-status.S3',
+        message: 'data-status.S3'
       },
 
       greenLight: false,
       greenBlinkLight: false,
       redTopLight: false,
       orangeLight: false,
-      redBottomLight: false,
+      redBottomLight: false
     };
   },
 
@@ -193,7 +225,7 @@ export default defineComponent({
 
     return {
       dataStatus: store.dataStatuses,
-      store,
+      store
     };
   },
 
@@ -248,8 +280,8 @@ export default defineComponent({
           this.indicator.status = DataStatus.Loaded;
           this.indicator.message = 'data-status.S2';
         }
-      },
-    },
+      }
+    }
   },
 
   methods: {
@@ -280,8 +312,8 @@ export default defineComponent({
       if (status == DataStatus.Loading) {
         this.greenBlinkLight = true;
       }
-    },
-  },
+    }
+  }
 });
 </script>
 
@@ -375,4 +407,3 @@ export default defineComponent({
   }
 }
 </style>
-

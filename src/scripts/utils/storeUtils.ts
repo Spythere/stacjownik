@@ -2,7 +2,10 @@ import { ScheduledTrain, StopStatus } from '../interfaces/ScheduledTrain';
 import Train from '../interfaces/Train';
 import TrainStop from '../interfaces/TrainStop';
 
-export const getLocoURL = (locoType: string): string => `https://rj.td2.info.pl/dist/img/thumbnails/${locoType.includes('EN') ? locoType + 'rb' : locoType}.png`;
+export const getLocoURL = (locoType: string): string =>
+  `https://rj.td2.info.pl/dist/img/thumbnails/${
+    locoType.includes('EN') ? locoType + 'rb' : locoType
+  }.png`;
 
 export const getStatusID = (stationStatus: any): string => {
   if (!stationStatus) return 'unknown';
@@ -73,7 +76,11 @@ export const parseSpawns = (spawnString: string | null) => {
 
 export const getTimestamp = (date: string | null): number => (date ? new Date(date).getTime() : 0);
 
-export const getTrainStopStatus = (stopInfo: TrainStop, currentStationName: string, stationName: string) => {
+export const getTrainStopStatus = (
+  stopInfo: TrainStop,
+  currentStationName: string,
+  stationName: string
+) => {
   let stopStatus = StopStatus['arriving'],
     stopLabel = '',
     stopStatusID = -1;
@@ -107,7 +114,11 @@ export const getTrainStopStatus = (stopInfo: TrainStop, currentStationName: stri
   return { stopStatus, stopLabel, stopStatusID };
 };
 
-export function getScheduledTrain(train: Train, trainStopIndex: number, stationName: string): ScheduledTrain {
+export function getScheduledTrain(
+  train: Train,
+  trainStopIndex: number,
+  stationName: string
+): ScheduledTrain {
   const timetable = train.timetableData!;
   const followingStops = timetable.followingStops;
   const trainStop = followingStops[trainStopIndex];
@@ -192,6 +203,6 @@ export function getScheduledTrain(train: Train, trainStopIndex: number, stationN
     departureLine,
 
     nextArrivalLine,
-    prevDepartureLine,
+    prevDepartureLine
   };
 }

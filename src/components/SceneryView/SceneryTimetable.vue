@@ -6,15 +6,24 @@
         <span>{{ $t('scenery.timetables') }}</span>
 
         <span>
-          <span class="text--primary">{{ station.onlineInfo?.scheduledTrains?.length || '0' }}</span>
+          <span class="text--primary">{{
+            station.onlineInfo?.scheduledTrains?.length || '0'
+          }}</span>
           <span> / </span>
           <span class="text--grayed">
-            {{ station.onlineInfo?.scheduledTrains?.filter((train) => train.stopInfo.confirmed).length || '0' }}
+            {{
+              station.onlineInfo?.scheduledTrains?.filter((train) => train.stopInfo.confirmed)
+                .length || '0'
+            }}
           </span>
         </span>
 
         <span class="header_links">
-          <a :href="`https://pragotron-td2.web.app/board?name=${station.name}`" target="_blank" :title="$t('scenery.pragotron-link')">
+          <a
+            :href="`https://pragotron-td2.web.app/board?name=${station.name}`"
+            target="_blank"
+            :title="$t('scenery.pragotron-link')"
+          >
             <img :src="getIcon('pragotron')" alt="icon-pragotron" />
           </a>
 
@@ -41,11 +50,17 @@
     </div>
 
     <div class="timetable-list">
-      <div style="padding-bottom: 5em" v-if="store.dataStatuses.trains == 0 && computedScheduledTrains.length == 0">
+      <div
+        style="padding-bottom: 5em"
+        v-if="store.dataStatuses.trains == 0 && computedScheduledTrains.length == 0"
+      >
         <Loading />
       </div>
 
-      <span class="timetable-item empty" v-else-if="computedScheduledTrains.length == 0 && !station.onlineInfo">
+      <span
+        class="timetable-item empty"
+        v-else-if="computedScheduledTrains.length == 0 && !station.onlineInfo"
+      >
         {{ $t('scenery.offline') }}
       </span>
 
@@ -56,7 +71,7 @@
       <transition-group name="list-anim">
         <div
           class="timetable-item"
-          v-for="(scheduledTrain, i) in computedScheduledTrains"
+          v-for="scheduledTrain in computedScheduledTrains"
           :key="scheduledTrain.trainId"
           tabindex="0"
           @click.prevent.stop="selectModalTrain(scheduledTrain.trainId, $event.currentTarget)"
@@ -98,12 +113,15 @@
                 </div>
                 <div v-else>
                   <div>
-                    <s style="margin-right: 0.2em" class="text--grayed">{{ timestampToString(scheduledTrain.stopInfo.arrivalTimestamp) }}</s>
+                    <s style="margin-right: 0.2em" class="text--grayed">{{
+                      timestampToString(scheduledTrain.stopInfo.arrivalTimestamp)
+                    }}</s>
                   </div>
 
                   <span>
                     {{ timestampToString(scheduledTrain.stopInfo.arrivalRealTimestamp) }}
-                    ({{ scheduledTrain.stopInfo.arrivalDelay > 0 ? '+' : '' }}{{ scheduledTrain.stopInfo.arrivalDelay }})
+                    ({{ scheduledTrain.stopInfo.arrivalDelay > 0 ? '+' : ''
+                    }}{{ scheduledTrain.stopInfo.arrivalDelay }})
                   </span>
                 </div>
               </span>
@@ -116,7 +134,9 @@
 
               <span class="stop-time">
                 {{ scheduledTrain.stopInfo.stopTime || '' }}
-                {{ scheduledTrain.stopInfo.stopTime ? scheduledTrain.stopInfo.stopType || 'pt' : '' }}
+                {{
+                  scheduledTrain.stopInfo.stopTime ? scheduledTrain.stopInfo.stopType || 'pt' : ''
+                }}
               </span>
 
               <span class="stop-connection">
@@ -135,12 +155,15 @@
                 </div>
                 <div v-else>
                   <div>
-                    <s style="margin-right: 0.2em" class="text--grayed">{{ timestampToString(scheduledTrain.stopInfo.departureTimestamp) }}</s>
+                    <s style="margin-right: 0.2em" class="text--grayed">{{
+                      timestampToString(scheduledTrain.stopInfo.departureTimestamp)
+                    }}</s>
                   </div>
 
                   <span>
                     {{ timestampToString(scheduledTrain.stopInfo.departureRealTimestamp) }}
-                    ({{ scheduledTrain.stopInfo.departureDelay > 0 ? '+' : '' }}{{ scheduledTrain.stopInfo.departureDelay }})
+                    ({{ scheduledTrain.stopInfo.departureDelay > 0 ? '+' : ''
+                    }}{{ scheduledTrain.stopInfo.departureDelay }})
                   </span>
                 </div>
               </span>
@@ -153,12 +176,10 @@
 </template>
 
 <script lang="ts">
-import SelectBox from '../Global/SelectBox.vue';
-import { computed, defineComponent, PropType, ref } from '@vue/runtime-core';
+import { computed, defineComponent, PropType, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import Loading from '../Global/Loading.vue';
-import TrainModal from '../Global/TrainModal.vue';
 import dateMixin from '../../mixins/dateMixin';
 import routerMixin from '../../mixins/routerMixin';
 import Station from '../../scripts/interfaces/Station';
@@ -170,23 +191,23 @@ import ScheduledTrainStatus from './ScheduledTrainStatus.vue';
 export default defineComponent({
   name: 'SceneryTimetable',
 
-  components: { SelectBox, Loading, TrainModal, ScheduledTrainStatus },
+  components: { Loading, ScheduledTrainStatus },
 
   mixins: [dateMixin, routerMixin, imageMixin, modalTrainMixin],
 
   props: {
     station: {
       type: Object as PropType<Station>,
-      required: true,
+      required: true
     },
 
     timetableOnly: {
-      type: Boolean,
-    },
+      type: Boolean
+    }
   },
 
   data: () => ({
-    listOpen: false,
+    listOpen: false
   }),
 
   mounted() {
@@ -204,7 +225,9 @@ export default defineComponent({
     const store = useStore();
 
     const chosenCheckpoint = ref(
-      props.station?.generalInfo?.checkpoints?.length == 0 ? '' : props.station?.generalInfo?.checkpoints[0].checkpointName || null
+      props.station?.generalInfo?.checkpoints?.length == 0
+        ? ''
+        : props.station?.generalInfo?.checkpoints[0].checkpointName || null
     );
 
     const computedScheduledTrains = computed(() => {
@@ -213,7 +236,8 @@ export default defineComponent({
       const station = props.station as Station;
 
       let scheduledTrains =
-        station.generalInfo?.checkpoints.find((cp) => cp.checkpointName === chosenCheckpoint.value)?.scheduledTrains ||
+        station.generalInfo?.checkpoints.find((cp) => cp.checkpointName === chosenCheckpoint.value)
+          ?.scheduledTrains ||
         station.onlineInfo?.scheduledTrains ||
         [];
 
@@ -236,7 +260,7 @@ export default defineComponent({
       currentURL,
       chosenCheckpoint,
       computedScheduledTrains,
-      store,
+      store
     };
   },
 
@@ -246,7 +270,7 @@ export default defineComponent({
       if (this.chosenCheckpoint) url += `&checkpoint=${this.chosenCheckpoint}`;
 
       return url;
-    },
+    }
   },
 
   methods: {
@@ -267,8 +291,8 @@ export default defineComponent({
 
     showTimetableOnlyView() {
       this.$router.push(`${this.$route.fullPath}&timetableOnly=1`);
-    },
-  },
+    }
+  }
 });
 </script>
 

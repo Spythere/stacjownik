@@ -18,7 +18,11 @@
       <span class="badge">
         <span>{{ $t('journal.stock-length') }}</span>
         <span>
-          {{ currentHistoryIndex == 0 ? timetable.stockLength : stockHistory[currentHistoryIndex].stockLength || timetable.stockLength }}m
+          {{
+            currentHistoryIndex == 0
+              ? timetable.stockLength
+              : stockHistory[currentHistoryIndex].stockLength || timetable.stockLength
+          }}m
         </span>
       </span>
 
@@ -26,7 +30,11 @@
         <span>{{ $t('journal.stock-mass') }}</span>
         <span>
           {{
-            Math.floor((currentHistoryIndex == 0 ? timetable.stockMass! : stockHistory[currentHistoryIndex].stockMass || timetable.stockMass) / 1000)
+            Math.floor(
+              (currentHistoryIndex == 0
+                ? timetable.stockMass!
+                : stockHistory[currentHistoryIndex].stockMass || timetable.stockMass) / 1000
+            )
           }}t
         </span>
       </span>
@@ -34,13 +42,26 @@
 
     <!-- Historia zmian w składzie -->
     <div class="stock-history" v-if="stockHistory.length > 1">
-      <button class="btn--action" v-for="(sh, i) in stockHistory" :data-checked="i == currentHistoryIndex" @click.stop="currentHistoryIndex = i">
+      <button
+        v-for="(sh, i) in stockHistory"
+        :key="i"
+        class="btn--action"
+        :data-checked="i == currentHistoryIndex"
+        @click.stop="currentHistoryIndex = i"
+      >
         {{ sh.updatedAt }}
       </button>
     </div>
 
     <!-- <StockList :trainStockList="currentHistoryIndex == 0 ? timetable.stockString : stockHistory[currentHistoryIndex].stockString).split(';')" /> -->
-    <StockList :trainStockList="(currentHistoryIndex == 0 ? timetable.stockString : stockHistory[currentHistoryIndex].stockString).split(';') " />
+    <StockList
+      :trainStockList="
+        (currentHistoryIndex == 0
+          ? timetable.stockString
+          : stockHistory[currentHistoryIndex].stockString
+        ).split(';')
+      "
+    />
 
     <!-- <ul class="stock-list">
       <li
@@ -58,24 +79,24 @@
 import { PropType, defineComponent } from 'vue';
 import { TimetableHistory } from '../../../scripts/interfaces/api/TimetablesAPIData';
 import imageMixin from '../../../mixins/imageMixin';
-import TrainThumbnail from '../../Global/TrainThumbnail.vue';
 import StockList from '../../Global/StockList.vue';
 
 export default defineComponent({
   mixins: [imageMixin],
+  components: { StockList },
   props: {
     showExtraInfo: {
       type: Boolean,
-      required: true,
+      required: true
     },
     timetable: {
       type: Object as PropType<TimetableHistory>,
-      required: true,
-    },
+      required: true
+    }
   },
   data() {
     return {
-      currentHistoryIndex: 0,
+      currentHistoryIndex: 0
     };
   },
   computed: {
@@ -88,22 +109,21 @@ export default defineComponent({
           return {
             updatedAt: new Date(Number(historyData[0])).toLocaleTimeString(this.$i18n.locale, {
               hour: '2-digit',
-              minute: '2-digit',
+              minute: '2-digit'
             }),
             stockString: historyData[1],
             stockMass: Number(historyData[2]) || undefined,
-            stockLength: Number(historyData[3]) || undefined,
+            stockLength: Number(historyData[3]) || undefined
           };
         });
-    },
+    }
   },
   methods: {
     onImageError(e: Event) {
       const imageEl = e.target as HTMLImageElement;
       imageEl.src = this.getImage('unknown.png');
-    },
-  },
-  components: { TrainThumbnail, StockList },
+    }
+  }
 });
 </script>
 

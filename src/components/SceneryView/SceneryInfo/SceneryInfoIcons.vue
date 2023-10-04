@@ -76,7 +76,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { PropType, defineComponent } from 'vue';
 import imageMixin from '../../../mixins/imageMixin';
 import stationInfoMixin from '../../../mixins/stationInfoMixin';
 import styleMixin from '../../../mixins/styleMixin';
@@ -86,10 +86,10 @@ export default defineComponent({
   mixins: [stationInfoMixin, styleMixin, imageMixin],
   props: {
     station: {
-      type: Object as () => Station,
-      default: {},
-    },
-  },
+      type: Object as PropType<Station>,
+      required: true
+    }
+  }
 });
 </script>
 
@@ -118,4 +118,3 @@ export default defineComponent({
   }
 }
 </style>
-

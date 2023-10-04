@@ -1,9 +1,12 @@
 <template>
   <section class="scenery-table-section">
     <Loading v-if="dataStatus != DataStatus.Loaded && historyList.length == 0" />
-    <div class="no-history" v-else-if="historyList.length == 0">{{ $t('scenery.history-list-empty') }}</div>
 
-    <table class="scenery-history-table" v-else="historyList.length">
+    <div class="no-history" v-else-if="historyList.length == 0">
+      {{ $t('scenery.history-list-empty') }}
+    </div>
+
+    <table class="scenery-history-table" v-else>
       <thead>
         <th>{{ $t('scenery.dispatchers-history-hash') }}</th>
         <th>{{ $t('scenery.dispatchers-history-dispatcher') }}</th>
@@ -13,7 +16,7 @@
       </thead>
 
       <tbody>
-        <tr v-for="historyItem in historyList">
+        <tr v-for="historyItem in historyList" :key="historyItem.id">
           <td>#{{ historyItem.stationHash }}</td>
           <td>
             <router-link :to="`/journal/dispatchers?dispatcherName=${historyItem.dispatcherName}`">
@@ -24,7 +27,9 @@
             <b
               v-if="historyItem.dispatcherLevel !== null"
               class="level-badge dispatcher"
-              :style="calculateExpStyle(historyItem.dispatcherLevel, historyItem.dispatcherIsSupporter)"
+              :style="
+                calculateExpStyle(historyItem.dispatcherLevel, historyItem.dispatcherIsSupporter)
+              "
             >
               {{ historyItem.dispatcherLevel >= 2 ? historyItem.dispatcherLevel : 'L' }}
             </b>
@@ -37,7 +42,9 @@
               <b>{{ $d(historyItem.timestampFrom) }}</b>
 
               {{ timestampToString(historyItem.timestampFrom) }}
-              - {{ timestampToString(historyItem.timestampTo) }} ({{ calculateDuration(historyItem.currentDuration) }})
+              - {{ timestampToString(historyItem.timestampTo) }} ({{
+                calculateDuration(historyItem.currentDuration)
+              }})
             </div>
 
             <div class="dispatcher-online" v-else>
@@ -73,18 +80,19 @@ import listObserverMixin from '../../mixins/listObserverMixin';
 export default defineComponent({
   name: 'SceneryDispatchersHistory',
   mixins: [dateMixin, styleMixin, listObserverMixin],
+  components: { Loading },
   props: {
     station: {
       type: Object as PropType<Station>,
-      required: true,
-    },
+      required: true
+    }
   },
 
   data() {
     return {
       historyList: [] as DispatcherHistory[],
       dataStatus: DataStatus.Loading,
-      DataStatus,
+      DataStatus
     };
   },
 
@@ -113,9 +121,8 @@ export default defineComponent({
     },
     navigateToHistory() {
       this.$router.push(`/journal/dispatchers?sceneryName=${this.station.name}`);
-    },
-  },
-  components: { Loading },
+    }
+  }
 });
 </script>
 

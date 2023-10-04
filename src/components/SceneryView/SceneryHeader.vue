@@ -13,16 +13,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { PropType, defineComponent } from 'vue';
 import Station from '../../scripts/interfaces/Station';
 
 export default defineComponent({
   props: {
     station: {
-      type: Object as () => Station,
-      default: {},
-    },
-  },
+      type: Object as PropType<Station>,
+      required: true
+    }
+  }
 });
 </script>
 
@@ -52,4 +52,3 @@ export default defineComponent({
   font-size: 1.2em;
 }
 </style>
-

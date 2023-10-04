@@ -13,7 +13,12 @@
 
     <div class="schedule-wrapper" v-if="train.timetableData">
       <ul class="stop_list">
-        <li v-for="(stop, i) in train.timetableData.followingStops" :key="i" class="stop" :class="addClasses(stop, i)">
+        <li
+          v-for="(stop, i) in train.timetableData.followingStops"
+          :key="i"
+          class="stop"
+          :class="addClasses(stop, i)"
+        >
           <span class="stop_info">
             <div class="indicator"></div>
 
@@ -37,7 +42,12 @@
               <b>{{ stop.stopNameRAW }} </b>: <span v-html="stop.comments"></span>
             </div>
 
-            <span v-if="stop.departureLine == train.timetableData!.followingStops[i + 1].arrivalLine && !/sbl/gi.test(stop.departureLine!)">
+            <span
+              v-if="
+                stop.departureLine == train.timetableData!.followingStops[i + 1].arrivalLine &&
+                !/sbl/gi.test(stop.departureLine!)
+              "
+            >
               {{ stop.departureLine }}
             </span>
 
@@ -59,23 +69,22 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from '@vue/runtime-core';
+import { computed, defineComponent, PropType } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
 import imageMixin from '../../mixins/imageMixin';
 import Train from '../../scripts/interfaces/Train';
 import TrainStop from '../../scripts/interfaces/TrainStop';
 import { useStore } from '../../store/store';
 import StopDate from '../Global/StopDate.vue';
-import TrainThumbnail from '../Global/TrainThumbnail.vue';
 import StockList from '../Global/StockList.vue';
 
 export default defineComponent({
-  components: { StopDate, TrainThumbnail, StockList },
+  components: { StopDate, StockList },
   props: {
     train: {
       type: Object as PropType<Train>,
-      required: true,
-    },
+      required: true
+    }
   },
 
   mixins: [dateMixin, imageMixin],
@@ -97,15 +106,21 @@ export default defineComponent({
         );
 
         const activeMinorStopList: number[] = [];
-        if (lastMajorConfirmed + 1 >= props.train.timetableData!.followingStops.length) return activeMinorStopList;
+        if (lastMajorConfirmed + 1 >= props.train.timetableData!.followingStops.length)
+          return activeMinorStopList;
 
-        for (let i = lastMajorConfirmed + 1; i < props.train.timetableData!.followingStops.length; i++) {
-          if (/po\.|sbl/gi.test(props.train.timetableData!.followingStops[i].stopNameRAW)) activeMinorStopList.push(i);
+        for (
+          let i = lastMajorConfirmed + 1;
+          i < props.train.timetableData!.followingStops.length;
+          i++
+        ) {
+          if (/po\.|sbl/gi.test(props.train.timetableData!.followingStops[i].stopNameRAW))
+            activeMinorStopList.push(i);
           else break;
         }
 
         return activeMinorStopList;
-      }),
+      })
     };
   },
 
@@ -122,17 +137,18 @@ export default defineComponent({
         end: stop.terminatesHere,
         delayed: stop.departureDelay > 0,
         sbl: /sbl/gi.test(stop.stopName),
-        [stop.stopType.replaceAll(', ', '-')]: stop.stopType.match(new RegExp('ph|pm|pt')) && !stop.confirmed && !stop.beginsHere,
+        [stop.stopType.replaceAll(', ', '-')]:
+          stop.stopType.match(new RegExp('ph|pm|pt')) && !stop.confirmed && !stop.beginsHere,
         'minor-stop-active': this.activeMinorStops.includes(index),
-        'last-confirmed': index == this.lastConfirmed && !stop.terminatesHere,
+        'last-confirmed': index == this.lastConfirmed && !stop.terminatesHere
       };
     },
 
     onImageError(e: Event) {
       const imageEl = e.target as HTMLImageElement;
       imageEl.src = this.getImage('unknown.png');
-    },
-  },
+    }
+  }
 });
 </script>
 

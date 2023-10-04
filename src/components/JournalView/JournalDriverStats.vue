@@ -2,13 +2,17 @@
   <div class="journal-stats">
     <span v-if="store.driverStatsData">
       <h3>
-        {{ $t('journal.stats-title') }} <span class="text--primary">{{ store.driverStatsName.toUpperCase() }}</span>
+        {{ $t('journal.stats-title') }}
+        <span class="text--primary">{{ store.driverStatsName.toUpperCase() }}</span>
       </h3>
 
       <div class="info-stats">
         <span class="stat-badge">
           <span>{{ $t('journal.stats-timetables') }}</span>
-          <span>{{ store.driverStatsData._count.fulfilled }} / {{ store.driverStatsData._count._all }}</span>
+          <span
+            >{{ store.driverStatsData._count.fulfilled }} /
+            {{ store.driverStatsData._count._all }}</span
+          >
         </span>
 
         <span class="stat-badge">
@@ -39,7 +43,9 @@
       </div>
     </span>
 
-    <b v-else-if="store.driverStatsStatus == DataStatus.Loading">{{ $t('journal.stats-loading') }}</b>
+    <b v-else-if="store.driverStatsStatus == DataStatus.Loading">{{
+      $t('journal.stats-loading')
+    }}</b>
     <b v-else-if="store.driverStatsStatus == DataStatus.Error">
       {{ $t('journal.stats-error ') }}
     </b>
@@ -56,9 +62,9 @@ export default defineComponent({
   data() {
     return {
       store: useStore(),
-      DataStatus,
+      DataStatus
     };
-  },
+  }
 });
 </script>
 

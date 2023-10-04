@@ -15,9 +15,9 @@ const i18n = createI18n({
   fallbackLocale: 'pl',
   messages: {
     en: enLang,
-    pl: plLang,
+    pl: plLang
   },
-  enableLegacy: false,
+  enableLegacy: false
 });
 
 const clickOutsideDirective: Directive = {
@@ -29,7 +29,7 @@ const clickOutsideDirective: Directive = {
     };
 
     document.addEventListener('click', el.clickOutsideEvent);
-  },
+  }
 };
 
 createApp(App)

@@ -1,5 +1,14 @@
 {
-  "optionSections": ["reality", "package-access", "access", "control", "addons", "blockades", "signals", "status"],
+  "optionSections": [
+    "reality",
+    "package-access",
+    "access",
+    "control",
+    "addons",
+    "blockades",
+    "signals",
+    "status"
+  ],
 
   "options": [
     {

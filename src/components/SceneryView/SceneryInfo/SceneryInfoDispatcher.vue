@@ -3,7 +3,12 @@
     <div class="dispatcher" v-if="station.onlineInfo">
       <span
         class="dispatcher_level"
-        :style="calculateExpStyle(station.onlineInfo.dispatcherExp, station.onlineInfo.dispatcherIsSupporter)"
+        :style="
+          calculateExpStyle(
+            station.onlineInfo.dispatcherExp,
+            station.onlineInfo.dispatcherIsSupporter
+          )
+        "
       >
         {{ station.onlineInfo.dispatcherExp > 1 ? station.onlineInfo.dispatcherExp : 'L' }}
       </span>
@@ -30,7 +35,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { PropType, defineComponent } from 'vue';
 import dateMixin from '../../../mixins/dateMixin';
 import imageMixin from '../../../mixins/imageMixin';
 import routerMixin from '../../../mixins/routerMixin';
@@ -39,18 +44,18 @@ import Station from '../../../scripts/interfaces/Station';
 import StationStatusBadge from '../../Global/StationStatusBadge.vue';
 
 export default defineComponent({
-    mixins: [styleMixin, dateMixin, routerMixin, imageMixin],
-    props: {
-        station: {
-            type: Object as () => Station,
-            default: {},
-        },
-        onlineFrom: {
-            type: Number,
-            default: -1,
-        },
+  mixins: [styleMixin, dateMixin, routerMixin, imageMixin],
+  props: {
+    station: {
+      type: Object as PropType<Station>,
+      required: true
     },
-    components: { StationStatusBadge }
+    onlineFrom: {
+      type: Number,
+      default: -1
+    }
+  },
+  components: { StationStatusBadge }
 });
 </script>
 
@@ -98,4 +103,3 @@ export default defineComponent({
   }
 }
 </style>
-

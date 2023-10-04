@@ -27,7 +27,12 @@ interface Scenery {
   currentDispatcher: string;
   currentDispatcherId: number;
   currentDispatcherFrom: number;
-  dispatcherHistory: { dispatcherName: string; dispatcherId: number; dispatcherFrom: number; dispatcherTo: number }[];
+  dispatcherHistory: {
+    dispatcherName: string;
+    dispatcherId: number;
+    dispatcherFrom: number;
+    dispatcherTo: number;
+  }[];
 }
 
 export default Scenery;

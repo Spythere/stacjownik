@@ -1,7 +1,9 @@
 <template>
   <section class="scenery-table-section">
     <Loading v-if="dataStatus != DataStatus.Loaded" />
-    <div class="no-history" v-else-if="historyList.length == 0">{{ $t('scenery.history-list-empty') }}</div>
+    <div class="no-history" v-else-if="historyList.length == 0">
+      {{ $t('scenery.history-list-empty') }}
+    </div>
 
     <table class="scenery-history-table" v-else>
       <thead>
@@ -14,9 +16,11 @@
       </thead>
 
       <tbody>
-        <tr v-for="historyItem in historyList">
+        <tr v-for="historyItem in historyList" :key="historyItem.id">
           <td>
-            <router-link :to="`/journal/timetables?timetableId=${historyItem.id}`">#{{ historyItem.id }}</router-link>
+            <router-link :to="`/journal/timetables?timetableId=${historyItem.id}`"
+              >#{{ historyItem.id }}</router-link
+            >
           </td>
           <td>
             <b class="text--primary">{{ historyItem.trainCategoryCode }}</b> <br />
@@ -53,7 +57,10 @@ import axios from 'axios';
 import { defineComponent, PropType } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
 import { DataStatus } from '../../scripts/enums/DataStatus';
-import { TimetableHistory, SceneryTimetableHistory } from '../../scripts/interfaces/api/TimetablesAPIData';
+import {
+  TimetableHistory,
+  SceneryTimetableHistory
+} from '../../scripts/interfaces/api/TimetablesAPIData';
 import Station from '../../scripts/interfaces/Station';
 import { URLs } from '../../scripts/utils/apiURLs';
 import Loading from '../Global/Loading.vue';
@@ -65,15 +72,15 @@ export default defineComponent({
   props: {
     station: {
       type: Object as PropType<Station>,
-      required: true,
-    },
+      required: true
+    }
   },
 
   data() {
     return {
       historyList: [] as TimetableHistory[],
       dataStatus: DataStatus.Loading,
-      DataStatus,
+      DataStatus
     };
   },
 
@@ -98,9 +105,9 @@ export default defineComponent({
 
     navigateToHistory() {
       this.$router.push(`/journal/timetables?issuedFrom=${this.station.name}`);
-    },
+    }
   },
-  components: { Loading },
+  components: { Loading }
 });
 </script>
 

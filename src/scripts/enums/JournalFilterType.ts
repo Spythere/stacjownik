@@ -5,10 +5,10 @@ export const enum JournalFilterType {
   ALL = 'all',
   TWR = 'twr',
   SKR = 'skr',
-  TWR_SKR = 'twr-skr',
+  TWR_SKR = 'twr-skr'
 }
 
 export enum JournalFilterSection {
   TIMETABLE_STATUS = 'timetable-status',
-  TWRSKR = 'twrskr',
+  TWRSKR = 'twrskr'
 }

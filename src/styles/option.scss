@@ -1,41 +1,40 @@
+.option {
+  font-size: 1em;
 
-.option { 
-    font-size: 1em;
-    
-    input {
-        display: none;
+  input {
+    display: none;
+  }
+
+  span {
+    // user-select: none;
+    // -moz-user-select: none;
+    // -webkit-user-select: none;
+
+    width: 100%;
+    text-align: center;
+
+    cursor: pointer;
+
+    padding: 0.5em 0.55em;
+
+    display: inline-block;
+    position: relative;
+
+    transition: all 0.2s;
+
+    border-radius: 0.5em;
+
+    &:not(.checked) {
+      background-color: #585858;
+
+      &::before {
+        box-shadow: none;
+      }
     }
-        
-    span {
-        // user-select: none;
-        // -moz-user-select: none;
-        // -webkit-user-select: none;
+  }
 
-        width: 100%;
-        text-align: center;
-
-        cursor: pointer;
-
-        padding: 0.5em 0.55em;
-
-        display: inline-block;
-        position: relative;
-
-        transition: all 0.2s;
-
-        border-radius: 0.5em;
-
-        &:not(.checked) {
-            background-color: #585858;
-
-            &::before {
-                box-shadow: none;
-            }
-        }
-    }
-
-    &:focus span {
-        // outline: 1px solid white;
-        border: none;
-    }
+  &:focus span {
+    // outline: 1px solid white;
+    border: none;
+  }
 }

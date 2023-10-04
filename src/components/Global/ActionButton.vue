@@ -7,14 +7,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent } from 'vue';
 
 export default defineComponent({});
 </script>
 
 <style lang="scss">
-@import "../../styles/variables";
-@import "../../styles/responsive";
+@import '../../styles/variables';
+@import '../../styles/responsive';
 
 .button_content {
   display: flex;

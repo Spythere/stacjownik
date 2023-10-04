@@ -27,7 +27,7 @@ export default defineComponent({
 
   data() {
     return {
-      isTopBarVisible: false,
+      isTopBarVisible: false
     };
   },
 
@@ -35,7 +35,7 @@ export default defineComponent({
     const store = useStore();
 
     return {
-      store,
+      store
     };
   },
 
@@ -49,12 +49,14 @@ export default defineComponent({
 
   methods: {
     handleContentScroll(e: Event) {
-      const trainInfoCompHeight: number = (this.$refs['trainInfo'] as any).$el.getBoundingClientRect().height;
+      const trainInfoCompHeight: number = (
+        this.$refs['trainInfo'] as any
+      ).$el.getBoundingClientRect().height;
 
       const posTop = (e.target as HTMLElement).scrollTop;
       this.isTopBarVisible = posTop > trainInfoCompHeight;
-    },
-  },
+    }
+  }
 });
 </script>
 
@@ -144,7 +146,6 @@ export default defineComponent({
 }
 
 @include smallScreen {
-
   .modal_content {
     max-height: 85vh;
   }

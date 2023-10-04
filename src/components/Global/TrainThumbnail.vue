@@ -4,7 +4,9 @@
   <img
     class="train-thumbnail"
     v-else
-    :src="`https://rj.td2.info.pl/dist/img/thumbnails/${name.split(':')[0]}${stockType == 'loco-ezt' ? 'rb' : ''}.png`"
+    :src="`https://rj.td2.info.pl/dist/img/thumbnails/${name.split(':')[0]}${
+      stockType == 'loco-ezt' ? 'rb' : ''
+    }.png`"
     @error="onImageError"
     @load="onImageLoad"
     width="220"
@@ -14,7 +16,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import imageMixin from '../../mixins/imageMixin';
 import { useStore } from '../../store/store';
 import { RollingStockInfo } from '../../scripts/interfaces/github_api/StockInfoGithubData';
 
@@ -22,20 +23,20 @@ export default defineComponent({
   props: {
     name: {
       type: String,
-      required: true,
+      required: true
     },
 
     onlyFirstSegment: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
 
   data() {
     return {
       store: useStore(),
       isNotFound: false,
-      isLoaded: false,
+      isLoaded: false
     };
   },
 
@@ -53,10 +54,12 @@ export default defineComponent({
 
       return (
         Object.keys(this.store.rollingStockData.info).find((type) => {
-          return this.store.rollingStockData?.info[type as keyof RollingStockInfo].find((v) => v[0] === this.name.split(':')[0]);
+          return this.store.rollingStockData?.info[type as keyof RollingStockInfo].find(
+            (v) => v[0] === this.name.split(':')[0]
+          );
         }) || 'vehicle-unknown'
       );
-    },
+    }
   },
 
   methods: {
@@ -68,8 +71,8 @@ export default defineComponent({
     onImageLoad() {
       this.isNotFound = false;
       this.isLoaded = true;
-    },
-  },
+    }
+  }
 });
 </script>
 

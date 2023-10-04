@@ -48,19 +48,19 @@ export default defineComponent({
   props: {
     timetableHistory: {
       type: Array as PropType<TimetableHistory[]>,
-      required: true,
-    },
+      required: true
+    }
   },
   computed: {
     computedTimetableHistory() {
       return this.timetableHistory.map((timetable) => ({
         timetable,
-        showExtraInfo: ref(false),
+        showExtraInfo: ref(false)
       }));
-    },
+    }
   },
   methods: {},
-  components: { TimetableGeneral, TimetableStops, TimetableStatus, TimetableExtra },
+  components: { TimetableGeneral, TimetableStops, TimetableStatus, TimetableExtra }
 });
 </script>
 

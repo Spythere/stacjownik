@@ -8,7 +8,10 @@
 
         <Loading v-else-if="trains.length == 0 && store.dataStatuses.trains == 0" />
 
-        <div class="table-info no-trains" v-else-if="trains.length == 0 && store.dataStatuses.trains != 0">
+        <div
+          class="table-info no-trains"
+          v-else-if="trains.length == 0 && store.dataStatuses.trains != 0"
+        >
           {{ $t('trains.no-trains') }}
         </div>
 
@@ -44,8 +47,8 @@ export default defineComponent({
   props: {
     trains: {
       type: Array as PropType<Train[]>,
-      required: true,
-    },
+      required: true
+    }
   },
 
   mixins: [returnBtnMixin, modalTrainMixin],
@@ -66,7 +69,7 @@ export default defineComponent({
       sorterActive: inject('sorterActive') as {
         id: string | number;
         dir: number;
-      },
+      }
     };
   },
 
@@ -79,7 +82,7 @@ export default defineComponent({
         this.selectModalTrain(query.driverName! + query.trainNo!.toString());
       }, 20);
     }
-  },
+  }
 });
 </script>
 

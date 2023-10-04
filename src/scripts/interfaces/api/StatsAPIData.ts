@@ -49,4 +49,3 @@ export interface ITimetablesDailyStatsResponse {
     station: string;
   }[];
 }
-

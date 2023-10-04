@@ -13,13 +13,20 @@ function currentDelay(stops: TrainStop[] | undefined) {
   if (!stops) return -Infinity;
 
   const delay =
-    stops.find((stop, i) => (i == 0 && !stop.confirmed) || (i > 0 && stops[i - 1].confirmed && !stop.confirmed))
-      ?.departureDelay || 0;
+    stops.find(
+      (stop, i) =>
+        (i == 0 && !stop.confirmed) || (i > 0 && stops[i - 1].confirmed && !stop.confirmed)
+    )?.departureDelay || 0;
 
   return delay;
 }
 
-function filterTrainList(trainList: Train[], searchedTrain: string, searchedDriver: string, filters: TrainFilter[]) {
+function filterTrainList(
+  trainList: Train[],
+  searchedTrain: string,
+  searchedDriver: string,
+  filters: TrainFilter[]
+) {
   return trainList.filter((train) => {
     const isFiltered = filters.every((f) => {
       if (f.isActive) return true;
@@ -62,7 +69,9 @@ function filterTrainList(trainList: Train[], searchedTrain: string, searchedDriv
 
     return (
       (searchedTrain.length > 0 ? train.trainNo.toString().startsWith(searchedTrain) : true) &&
-      (searchedDriver.length > 0 ? train.driverName.toLowerCase().startsWith(searchedDriver.toLowerCase()) : true) &&
+      (searchedDriver.length > 0
+        ? train.driverName.toLowerCase().startsWith(searchedDriver.toLowerCase())
+        : true) &&
       (!train.timetableData ? train.online : train.timetableData) &&
       isFiltered
     );
@@ -73,7 +82,8 @@ function sortTrainList(trainList: Train[], sorterActive: { id: string; dir: numb
   return trainList.sort((a: Train, b: Train) => {
     switch (sorterActive.id) {
       case 'id':
-        if ((a.timetableData?.timetableId || -1) > (b.timetableData?.timetableId || -1)) return sorterActive.dir;
+        if ((a.timetableData?.timetableId || -1) > (b.timetableData?.timetableId || -1))
+          return sorterActive.dir;
 
         return -sorterActive.dir;
 
@@ -82,18 +92,25 @@ function sortTrainList(trainList: Train[], sorterActive: { id: string; dir: numb
         return -sorterActive.dir;
 
       case 'routeDistance':
-        if ((a.timetableData?.routeDistance || -1) > (b.timetableData?.routeDistance || -1)) return sorterActive.dir;
+        if ((a.timetableData?.routeDistance || -1) > (b.timetableData?.routeDistance || -1))
+          return sorterActive.dir;
 
         return -sorterActive.dir;
 
       case 'progress':
-        if (confirmedPercentage(a.timetableData?.followingStops) > confirmedPercentage(b.timetableData?.followingStops))
+        if (
+          confirmedPercentage(a.timetableData?.followingStops) >
+          confirmedPercentage(b.timetableData?.followingStops)
+        )
           return sorterActive.dir;
 
         return -sorterActive.dir;
 
       case 'delay':
-        if (currentDelay(a.timetableData?.followingStops) > currentDelay(b.timetableData?.followingStops))
+        if (
+          currentDelay(a.timetableData?.followingStops) >
+          currentDelay(b.timetableData?.followingStops)
+        )
           return sorterActive.dir;
 
         return -sorterActive.dir;

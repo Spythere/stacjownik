@@ -6,18 +6,22 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'StationsView',
-    component: () => import('../views/StationsView.vue'),
+    component: () => import('../views/StationsView.vue')
   },
   {
     path: '/trains',
     name: 'TrainsView',
     component: () => import('../views/TrainsView.vue'),
-    props: (route) => ({ train: route.query.train, driver: route.query.driver, trainId: route.query.trainId }),
+    props: (route) => ({
+      train: route.query.train,
+      driver: route.query.driver,
+      trainId: route.query.trainId
+    })
   },
   {
     path: '/scenery',
     name: 'SceneryView',
-    component: () => import('../views/SceneryView.vue'),
+    component: () => import('../views/SceneryView.vue')
   },
   {
     path: '/journal',
@@ -30,19 +34,22 @@ const routes: Array<RouteRecordRaw> = [
     props: (route) => ({
       trainNo: route.query.trainNo,
       driverName: route.query.driverName,
-      timetableId: route.query.timetableId,
-    }),
+      timetableId: route.query.timetableId
+    })
   },
   {
     path: '/journal/dispatchers',
     name: 'JournalDispatchers',
     component: JournalDispatchersVue,
-    props: (route) => ({ sceneryName: route.query.sceneryName, dispatcherName: route.query.dispatcherName }),
+    props: (route) => ({
+      sceneryName: route.query.sceneryName,
+      dispatcherName: route.query.dispatcherName
+    })
   },
   {
     path: '/:catchAll(.*)',
-    redirect: '/',
-  },
+    redirect: '/'
+  }
 ];
 
 const router = createRouter({
@@ -52,7 +59,7 @@ const router = createRouter({
     // if (from.name == 'SceneryView' && to.name == 'StationsView') return { el: `.last-selected`, top: 20 };
   },
   history: createWebHistory(),
-  routes,
+  routes
 });
 
 export default router;

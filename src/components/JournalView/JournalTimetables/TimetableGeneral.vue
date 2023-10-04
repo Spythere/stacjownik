@@ -45,7 +45,7 @@
         :class="{
           fulfilled: timetable.fulfilled,
           terminated: timetable.terminated && !timetable.fulfilled,
-          active: !timetable.terminated,
+          active: !timetable.terminated
         }"
       >
         {{
@@ -74,8 +74,8 @@ export default defineComponent({
   props: {
     timetable: {
       type: Object as PropType<TimetableHistory>,
-      required: true,
-    },
+      required: true
+    }
   },
 
   methods: {
@@ -83,8 +83,8 @@ export default defineComponent({
       if (timetable?.terminated) return;
 
       this.selectModalTrain(timetable.driverName + timetable.trainNo.toString(), target);
-    },
-  },
+    }
+  }
 });
 </script>
 

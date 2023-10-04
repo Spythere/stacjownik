@@ -1,4 +1,4 @@
-import { defineComponent, h } from 'vue';
+import { defineComponent } from 'vue';
 import imageMixin from './imageMixin';
 
 export default defineComponent({
@@ -7,10 +7,10 @@ export default defineComponent({
   data() {
     return {
       icons: {
-        arrow: this.getIcon('arrow-asc'),
+        arrow: this.getIcon('arrow-asc')
       },
 
-      showReturnButton: false,
+      showReturnButton: false
     };
   },
 
@@ -21,7 +21,7 @@ export default defineComponent({
 
     handleScroll() {
       this.showReturnButton = window.scrollY > window.innerHeight * 0.35;
-    },
+    }
   },
 
   activated() {
@@ -30,5 +30,5 @@ export default defineComponent({
 
   deactivated() {
     window.removeEventListener('wheel', this.handleScroll);
-  },
+  }
 });

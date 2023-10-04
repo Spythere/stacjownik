@@ -34,17 +34,15 @@
 import { defineComponent, provide, reactive, Ref, ref } from 'vue';
 import axios from 'axios';
 
-import ActionButton from '../components/Global/ActionButton.vue';
 import JournalOptions from '../components/JournalView/JournalOptions.vue';
-import DispatcherStats from '../components/JournalView/DispatcherStats.vue';
-import SearchBox from '../components/Global/SearchBox.vue';
-
-import Loading from '../components/Global/Loading.vue';
 import { URLs } from '../scripts/utils/apiURLs';
 import { DataStatus } from '../scripts/enums/DataStatus';
 import { useStore } from '../store/store';
 import JournalDispatchersList from '../components/JournalView/JournalDispatchersList.vue';
-import { JournalDispatcherSearcher, JournalDispatcherSorter } from '../scripts/types/JournalDispatcherTypes';
+import {
+  JournalDispatcherSearcher,
+  JournalDispatcherSorter
+} from '../scripts/types/JournalDispatcherTypes';
 import { DispatcherHistory } from '../scripts/interfaces/api/DispatchersAPIData';
 import JournalHeader from '../components/JournalView/JournalHeader.vue';
 import { LocationQuery } from 'vue-router';
@@ -53,26 +51,22 @@ const DISPATCHERS_API_URL = `${URLs.stacjownikAPI}/api/getDispatchers`;
 
 export default defineComponent({
   components: {
-    SearchBox,
-    ActionButton,
     JournalOptions,
-    DispatcherStats,
-    Loading,
     JournalDispatchersList,
-    JournalHeader,
+    JournalHeader
   },
   name: 'JournalDispatchers',
 
   props: {
     sceneryName: {
       type: String,
-      required: false,
+      required: false
     },
 
     dispatcherName: {
       type: String,
-      required: false,
-    },
+      required: false
+    }
   },
 
   data: () => ({
@@ -90,7 +84,7 @@ export default defineComponent({
     dataStatus: DataStatus.Loading,
     DataStatus,
 
-    historyList: [] as DispatcherHistory[],
+    historyList: [] as DispatcherHistory[]
   }),
 
   setup() {
@@ -100,7 +94,7 @@ export default defineComponent({
     const searchersValues = reactive({
       'search-dispatcher': '',
       'search-station': '',
-      'search-date': '',
+      'search-date': ''
     } as JournalDispatcherSearcher);
 
     const countFromIndex = ref(0);
@@ -123,15 +117,16 @@ export default defineComponent({
       countLimit,
 
       scrollElement,
-      maxCount: ref(15),
+      maxCount: ref(15)
     };
   },
 
   watch: {
     currentQueryArray(q: string[]) {
       this.currentOptionsActive =
-        q.length > 2 || q.some((qv) => qv.startsWith('sortBy=') && qv.split('=')[1] != 'timestampFrom');
-    },
+        q.length > 2 ||
+        q.some((qv) => qv.startsWith('sortBy=') && qv.split('=')[1] != 'timestampFrom');
+    }
   },
 
   computed: {
@@ -139,10 +134,10 @@ export default defineComponent({
       return this.historyList.filter(
         (doc) => doc.isOnline || (doc.currentDuration && doc.currentDuration > 10 * 60000)
       );
-    },
+    }
   },
 
-  beforeRouteUpdate(to, _) {
+  beforeRouteUpdate(to) {
     this.handleQueries(to.query);
     this.fetchHistoryData();
   },
@@ -158,7 +153,8 @@ export default defineComponent({
       const scrollTop = listElement.scrollTop;
       const elementHeight = listElement.scrollHeight - listElement.offsetHeight;
 
-      if (!this.scrollDataLoaded || this.scrollNoMoreData || this.dataStatus != DataStatus.Loaded) return;
+      if (!this.scrollDataLoaded || this.scrollNoMoreData || this.dataStatus != DataStatus.Loaded)
+        return;
 
       if (scrollTop > elementHeight * 0.85) this.addHistoryData();
     },
@@ -167,7 +163,8 @@ export default defineComponent({
       const queryKeys = Object.keys(query);
 
       if (queryKeys.includes('sceneryName')) this.setSearchers('', `${query.sceneryName}`, '');
-      if (queryKeys.includes('dispatcherName')) this.setSearchers('', '', `${query.dispatcherName}`);
+      if (queryKeys.includes('dispatcherName'))
+        this.setSearchers('', '', `${query.dispatcherName}`);
     },
 
     setSearchers(date: string, station: string, dispatcher: string) {
@@ -189,7 +186,9 @@ export default defineComponent({
       this.countFromIndex = this.historyList.length;
 
       const responseData: DispatcherHistory[] = await (
-        await axios.get(`${DISPATCHERS_API_URL}?${this.currentQuery}&countFrom=${this.countFromIndex}`)
+        await axios.get(
+          `${DISPATCHERS_API_URL}?${this.currentQuery}&countFrom=${this.countFromIndex}`
+        )
       ).data;
 
       if (!responseData) return;
@@ -210,12 +209,15 @@ export default defineComponent({
       const station = this.searchersValues['search-station'].trim();
       const dateString = this.searchersValues['search-date'].trim();
 
-      const timestampFrom = dateString ? Date.parse(new Date(dateString).toISOString()) - 120 * 60 * 1000 : undefined;
+      const timestampFrom = dateString
+        ? Date.parse(new Date(dateString).toISOString()) - 120 * 60 * 1000
+        : undefined;
       const timestampTo = timestampFrom ? timestampFrom + 86400000 : undefined;
 
       if (dispatcher) queries.push(`dispatcherName=${dispatcher}`);
       if (station) queries.push(`stationName=${station}`);
-      if (timestampFrom && timestampTo) queries.push(`timestampFrom=${timestampFrom}`, `timestampTo=${timestampTo}`);
+      if (timestampFrom && timestampTo)
+        queries.push(`timestampFrom=${timestampFrom}`, `timestampTo=${timestampTo}`);
 
       // API: const SORT_TYPES = ['allStopsCount', 'endDate', 'beginDate', 'routeDistance'];
       if (this.sorterActive.id == 'timestampFrom') queries.push('sortBy=timestampFrom');
@@ -260,8 +262,8 @@ export default defineComponent({
 
       this.scrollNoMoreData = false;
       this.scrollDataLoaded = true;
-    },
-  },
+    }
+  }
 });
 </script>
 

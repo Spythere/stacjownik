@@ -8,7 +8,7 @@
     </h3>
 
     <div
-      v-for="(train, i) in computedStationTrains"
+      v-for="train in computedStationTrains"
       class="badge user"
       :class="train.stopStatus"
       :key="train.trainId"
@@ -20,14 +20,17 @@
       <span class="user_name">{{ train.driverName }}</span>
     </div>
 
-    <div class="badge user badge-none" v-if="!computedStationTrains || computedStationTrains.length == 0">
+    <div
+      class="badge user badge-none"
+      v-if="!computedStationTrains || computedStationTrains.length == 0"
+    >
       {{ $t('scenery.no-users') }}
     </div>
   </section>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
+import { PropType, computed, defineComponent } from 'vue';
 import imageMixin from '../../../mixins/imageMixin';
 import modalTrainMixin from '../../../mixins/modalTrainMixin';
 import routerMixin from '../../../mixins/routerMixin';
@@ -39,9 +42,9 @@ export default defineComponent({
 
   props: {
     station: {
-      type: Object as () => Station,
-      default: {},
-    },
+      type: Object as PropType<Station>,
+      required: true
+    }
   },
 
   setup(props) {
@@ -55,17 +58,19 @@ export default defineComponent({
       if (!station.onlineInfo.stationTrains) return [];
 
       return station.onlineInfo.stationTrains.map((train) => {
-        const scheduledTrainStatus = station.onlineInfo?.scheduledTrains?.find((st) => st.trainNo === train.trainNo);
+        const scheduledTrainStatus = station.onlineInfo?.scheduledTrains?.find(
+          (st) => st.trainNo === train.trainNo
+        );
 
         return {
           ...train,
-          stopStatus: scheduledTrainStatus?.stopStatus || 'no-timetable',
+          stopStatus: scheduledTrainStatus?.stopStatus || 'no-timetable'
         };
       });
     });
 
     return { computedStationTrains, store };
-  },
+  }
 });
 </script>
 

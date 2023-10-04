@@ -19,7 +19,11 @@
           >
             <label :for="item.id" v-if="listOpen">
               <input type="button" :id="item.id" name="select-box" @click="selectOption(item)" />
-              <span :style="computedSelectedItem.id == item.id ? 'color: gold;' : ''" v-html="item.value"> </span>
+              <span
+                :style="computedSelectedItem.id == item.id ? 'color: gold;' : ''"
+                v-html="item.value"
+              >
+              </span>
             </label>
           </transition>
         </li>
@@ -45,18 +49,18 @@ export default defineComponent({
   props: {
     itemList: {
       type: Array as () => Item[],
-      required: true,
+      required: true
     },
 
     defaultItemIndex: {
       type: Number,
-      default: 0,
+      default: 0
     },
 
     prefix: {
       type: String,
-      default: '',
-    },
+      default: ''
+    }
   },
 
   setup(props) {
@@ -69,7 +73,10 @@ export default defineComponent({
     let selectedItem: Ref<Item> = ref(props.itemList[props.defaultItemIndex]);
 
     const computedSelectedItem = computed(() => {
-      return props.itemList.find((item) => item.id === selectedItem.value.id) || props.itemList[props.defaultItemIndex];
+      return (
+        props.itemList.find((item) => item.id === selectedItem.value.id) ||
+        props.itemList[props.defaultItemIndex]
+      );
     });
 
     return {
@@ -78,7 +85,7 @@ export default defineComponent({
       selectedItem,
       listRef,
       buttonRef,
-      activeEl,
+      activeEl
     };
   },
 
@@ -99,8 +106,8 @@ export default defineComponent({
     clickedOutside() {
       this.listOpen = false;
       this.buttonRef?.blur();
-    },
-  },
+    }
+  }
 });
 </script>
 

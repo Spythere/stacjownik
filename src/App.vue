@@ -6,8 +6,6 @@
       </keep-alive>
     </transition>
 
-    <UpdatePrompt />
-
     <AppHeader :current-lang="currentLang" @change-lang="changeLang" />
 
     <main class="app_main">
@@ -24,7 +22,9 @@
       {{ new Date().getUTCFullYear() }} |
       <a :href="releaseURL" target="_blank">v{{ VERSION }}{{ isOnProductionHost ? '' : 'dev' }}</a>
       <br />
-      <a href="https://discord.gg/x2mpNN3svk"><img :src="getIcon('discord', 'png')" alt="">&nbsp;<b>{{ $t('footer.discord') }}</b></a>
+      <a href="https://discord.gg/x2mpNN3svk"
+        ><img :src="getIcon('discord', 'png')" alt="" />&nbsp;<b>{{ $t('footer.discord') }}</b></a
+      >
 
       <div style="display: none">&int; ukryta taktyczna całka do programowania w HTMLu</div>
     </footer>
@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, KeepAlive, provide, ref, watch } from 'vue';
+import { computed, defineComponent, provide, ref, watch } from 'vue';
 
 import Clock from './components/App/Clock.vue';
 
@@ -46,9 +46,6 @@ import StorageManager from './scripts/managers/storageManager';
 import imageMixin from './mixins/imageMixin';
 import AppHeader from './components/App/AppHeader.vue';
 import axios from 'axios';
-import UpdatePrompt from './components/App/UpdatePrompt.vue';
-import { VERSION } from 'vue-i18n';
-import { RouterView } from 'vue-router';
 import useCustomSW from './mixins/useCustomSW';
 
 export default defineComponent({
@@ -57,8 +54,7 @@ export default defineComponent({
     StatusIndicator,
     SelectBox,
     TrainModal,
-    AppHeader,
-    UpdatePrompt,
+    AppHeader
   },
 
   mixins: [imageMixin],
@@ -67,7 +63,7 @@ export default defineComponent({
     const store = useStore();
     store.connectToAPI();
 
-    const { offlineReady } = useCustomSW();
+    useCustomSW();
 
     const isFilterCardVisible = ref(false);
 
@@ -77,10 +73,12 @@ export default defineComponent({
       store,
       isFilterCardVisible,
       onlineDispatchers: computed(() =>
-        store.stationList.filter((station) => station.onlineInfo && station.onlineInfo.region == store.region.id)
+        store.stationList.filter(
+          (station) => station.onlineInfo && station.onlineInfo.region == store.region.id
+        )
       ),
 
-      dispatcherDataStatus: store.dataStatuses.dispatchers,
+      dispatcherDataStatus: store.dataStatuses.dispatchers
     };
   },
 
@@ -89,7 +87,7 @@ export default defineComponent({
 
     currentLang: 'pl',
     releaseURL: '',
-    isOnProductionHost: location.hostname == 'stacjownik-td2.web.app',
+    isOnProductionHost: location.hostname == 'stacjownik-td2.web.app'
   }),
 
   created() {
@@ -104,7 +102,7 @@ export default defineComponent({
         stations: [],
         dispatchers: [],
         trains: [],
-        connectedSocketCount: 0,
+        connectedSocketCount: 0
       };
 
       this.store.setOnlineData();
@@ -170,8 +168,8 @@ export default defineComponent({
         this.changeLang('en');
         return;
       }
-    },
-  },
+    }
+  }
 });
 </script>
 

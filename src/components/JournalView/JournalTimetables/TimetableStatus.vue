@@ -6,13 +6,19 @@
     />
 
     <span>
-      <span :style="{ color: timetable.fulfilled ? 'lightgreen' : timetable.terminated ? 'salmon' : '' }">
+      <span
+        :style="{
+          color: timetable.fulfilled ? 'lightgreen' : timetable.terminated ? 'salmon' : ''
+        }"
+      >
         {{ timetable.currentDistance + ' km' }}
       </span>
       <span> / </span>
       <span class="text--primary">{{ timetable.routeDistance }} km</span>
       |
-      <span class="text--grayed">{{ timetable.confirmedStopsCount }}/{{ timetable.allStopsCount }}</span>
+      <span class="text--grayed"
+        >{{ timetable.confirmedStopsCount }}/{{ timetable.allStopsCount }}</span
+      >
     </span>
 
     <span class="text--grayed" v-if="timetable.currentSceneryName">
@@ -46,9 +52,9 @@ export default defineComponent({
   props: {
     timetable: {
       type: Object as PropType<TimetableHistory>,
-      required: true,
-    },
-  },
+      required: true
+    }
+  }
 });
 </script>
 

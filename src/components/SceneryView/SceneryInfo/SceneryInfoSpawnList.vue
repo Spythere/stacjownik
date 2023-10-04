@@ -18,14 +18,16 @@
       </span>
     </span>
 
-    <span class="badge spawn badge-none" v-if="!station.onlineInfo || station.onlineInfo.spawns.length == 0"
+    <span
+      class="badge spawn badge-none"
+      v-if="!station.onlineInfo || station.onlineInfo.spawns.length == 0"
       >{{ $t('scenery.no-spawns') }}
     </span>
   </section>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { PropType, defineComponent } from 'vue';
 import imageMixin from '../../../mixins/imageMixin';
 import Station from '../../../scripts/interfaces/Station';
 
@@ -34,16 +36,20 @@ export default defineComponent({
 
   props: {
     station: {
-      type: Object as () => Station,
-      default: {},
-    },
+      type: Object as PropType<Station>,
+      required: true
+    }
   },
 
   computed: {
     sortedSpawns() {
-      return this.station.onlineInfo?.spawns.sort((s1, s2) => (s1.spawnLength < s2.spawnLength ? 1 : -1));
-    },
-  },
+      if (!this.station.onlineInfo) return [];
+
+      return [...this.station.onlineInfo.spawns].sort((s1, s2) =>
+        s1.spawnLength < s2.spawnLength ? 1 : -1
+      );
+    }
+  }
 });
 </script>
 

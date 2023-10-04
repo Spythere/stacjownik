@@ -8,10 +8,15 @@ import Station from '../scripts/interfaces/Station';
 import StationRoutes from '../scripts/interfaces/StationRoutes';
 import Train from '../scripts/interfaces/Train';
 import { URLs } from '../scripts/utils/apiURLs';
-import { getStatusTimestamp, getStatusID, getScheduledTrain, parseSpawns } from '../scripts/utils/storeUtils';
+import {
+  getStatusTimestamp,
+  getStatusID,
+  getScheduledTrain,
+  parseSpawns
+} from '../scripts/utils/storeUtils';
 import { APIData, StationJSONData, StoreState } from '../scripts/interfaces/store/storeTypes';
 import packageInfo from '../../package.json';
-import { RollingStockInfo, RollingStockGithubData } from '../scripts/interfaces/github_api/StockInfoGithubData';
+import { RollingStockGithubData } from '../scripts/interfaces/github_api/StockInfoGithubData';
 
 export const useStore = defineStore('store', {
   state: () =>
@@ -48,15 +53,15 @@ export const useStore = defineStore('store', {
         sceneries: DataStatus.Loading,
         timetables: DataStatus.Loading,
         dispatchers: DataStatus.Loading,
-        trains: DataStatus.Loading,
+        trains: DataStatus.Loading
       },
 
       currentStatsTab: null,
 
       blockScroll: false,
       listenerLaunched: false,
-      modalLastClickedTarget: null,
-    } as StoreState),
+      modalLastClickedTarget: null
+    }) as StoreState,
 
   actions: {
     setTrainsOnlineData() {
@@ -65,7 +70,11 @@ export const useStore = defineStore('store', {
       if (!trains) return [];
 
       this.trainList = trains
-        .filter((train) => train.region === this.region.id && (train.online || train.timetable || train.lastSeen > Date.now() - 180000))
+        .filter(
+          (train) =>
+            train.region === this.region.id &&
+            (train.online || train.timetable || train.lastSeen > Date.now() - 180000)
+        )
         .map((train) => {
           const stock = train.stockString.split(';');
           const locoType = stock ? stock[0] : train.stockString;
@@ -107,9 +116,9 @@ export const useStore = defineStore('store', {
                   category: timetable.category,
                   followingStops: timetable.stopList,
                   routeDistance: timetable.stopList[timetable.stopList.length - 1].stopDistance,
-                  sceneries: timetable.sceneries,
+                  sceneries: timetable.sceneries
                 }
-              : undefined,
+              : undefined
           } as Train;
         });
     },
@@ -117,17 +126,30 @@ export const useStore = defineStore('store', {
     getDispatcherStatus(onlineStationData: StationAPIData) {
       const { dispatchers } = this.apiData;
 
-      const prevDispatcherStatus = this.lastDispatcherStatuses.find((dispatcher) => dispatcher.hash === onlineStationData.stationHash);
+      const prevDispatcherStatus = this.lastDispatcherStatuses.find(
+        (dispatcher) => dispatcher.hash === onlineStationData.stationHash
+      );
 
-      const stationStatus = !dispatchers ? undefined : dispatchers.find((status: string[]) => status[0] == onlineStationData.stationHash && status[1] == this.region.id) || -1;
+      const stationStatus = !dispatchers
+        ? undefined
+        : dispatchers.find(
+            (status: string[]) =>
+              status[0] == onlineStationData.stationHash && status[1] == this.region.id
+          ) || -1;
 
-      const statusTimestamp = prevDispatcherStatus && !dispatchers ? prevDispatcherStatus.statusTimestamp : getStatusTimestamp(stationStatus);
-      const statusID = prevDispatcherStatus && !dispatchers ? prevDispatcherStatus.statusID : getStatusID(stationStatus);
+      const statusTimestamp =
+        prevDispatcherStatus && !dispatchers
+          ? prevDispatcherStatus.statusTimestamp
+          : getStatusTimestamp(stationStatus);
+      const statusID =
+        prevDispatcherStatus && !dispatchers
+          ? prevDispatcherStatus.statusID
+          : getStatusID(stationStatus);
 
       return {
         hash: onlineStationData.stationHash,
         statusID,
-        statusTimestamp,
+        statusTimestamp
       };
     },
 
@@ -146,17 +168,34 @@ export const useStore = defineStore('store', {
           const stopName = stop.stopNameRAW.toLowerCase();
 
           if (stationName === stopName) return true;
-          if (stopName.includes(stationName) && !stop.stopName.includes('po.') && !stop.stopName.includes('podg.')) return true;
+          if (
+            stopName.includes(stationName) &&
+            !stop.stopName.includes('po.') &&
+            !stop.stopName.includes('podg.')
+          )
+            return true;
 
-          if (stationName.includes(stopName) && !stop.stopName.includes('po.') && !stop.stopName.includes('podg.')) return true;
+          if (
+            stationName.includes(stopName) &&
+            !stop.stopName.includes('po.') &&
+            !stop.stopName.includes('podg.')
+          )
+            return true;
 
-          if (stopName.includes('podg.') && stopName.split(', podg.')[0] && stationName.includes(stopName.split(', podg.')[0])) return true;
+          if (
+            stopName.includes('podg.') &&
+            stopName.split(', podg.')[0] &&
+            stationName.includes(stopName.split(', podg.')[0])
+          )
+            return true;
 
           if (
             stationGeneralInfo &&
             stationGeneralInfo.checkpoints &&
             stationGeneralInfo.checkpoints.length > 0 &&
-            stationGeneralInfo.checkpoints.some((cp) => cp.checkpointName.toLowerCase().includes(stop.stopNameRAW.toLowerCase()))
+            stationGeneralInfo.checkpoints.some((cp) =>
+              cp.checkpointName.toLowerCase().includes(stop.stopNameRAW.toLowerCase())
+            )
           )
             return true;
 
@@ -165,15 +204,25 @@ export const useStore = defineStore('store', {
 
         if (stopInfoIndex == -1) return acc;
 
-        const scheduledStopTrain = getScheduledTrain(train, stopInfoIndex, stationAPIData.stationName);
+        const scheduledStopTrain = getScheduledTrain(
+          train,
+          stopInfoIndex,
+          stationAPIData.stationName
+        );
 
         if (stationGeneralInfo?.checkpoints) {
           for (const checkpoint of stationGeneralInfo.checkpoints) {
-            const index = timetable.followingStops.findIndex((stop) => stop.stopNameRAW.toLowerCase() == checkpoint.checkpointName.toLowerCase());
+            const index = timetable.followingStops.findIndex(
+              (stop) => stop.stopNameRAW.toLowerCase() == checkpoint.checkpointName.toLowerCase()
+            );
 
             if (index == -1) continue;
 
-            const scheduledCheckpointTrain = getScheduledTrain(train, index, stationAPIData.stationName);
+            const scheduledCheckpointTrain = getScheduledTrain(
+              train,
+              index,
+              stationAPIData.stationName
+            );
             checkpoint.scheduledTrains.push(scheduledCheckpointTrain);
           }
         }
@@ -185,12 +234,17 @@ export const useStore = defineStore('store', {
 
     getStationTrains(stationAPIData: StationAPIData) {
       return this.trainList
-        .filter((train) => train?.region === this.region.id && train.online && train.currentStationName === stationAPIData.stationName)
+        .filter(
+          (train) =>
+            train?.region === this.region.id &&
+            train.online &&
+            train.currentStationName === stationAPIData.stationName
+        )
         .map((train) => ({
           driverName: train.driverName,
           driverId: train.driverId,
           trainNo: train.trainNo,
-          trainId: train.trainId,
+          trainId: train.trainId
         }));
     },
 
@@ -233,13 +287,13 @@ export const useStore = defineStore('store', {
           stationTrains,
           statusTimestamp: dispatcherStatus.statusTimestamp,
           statusID: dispatcherStatus.statusID,
-          scheduledTrains,
+          scheduledTrains
         };
 
         if (!station) {
           this.stationList.push({
             name: stationAPIData.stationName,
-            onlineInfo,
+            onlineInfo
           });
 
           return;
@@ -258,7 +312,9 @@ export const useStore = defineStore('store', {
     },
 
     async fetchStationsGeneralInfo() {
-      const sceneryData: StationJSONData[] = await (await axios.get(`${URLs.stacjownikAPI}/api/getSceneries`)).data;
+      const sceneryData: StationJSONData[] = await (
+        await axios.get(`${URLs.stacjownikAPI}/api/getSceneries`)
+      ).data;
 
       if (!sceneryData) {
         this.dataStatuses.sceneries = DataStatus.Error;
@@ -275,7 +331,9 @@ export const useStore = defineStore('store', {
             routes:
               scenery.routesInfo.reduce(
                 (acc, route) => {
-                  const propName: keyof StationRoutes = `${route.routeTracks == 2 ? 'twoWay' : 'oneWay'}${route.isElectric ? '' : 'No'}CatenaryRouteNames`;
+                  const propName: keyof StationRoutes = `${
+                    route.routeTracks == 2 ? 'twoWay' : 'oneWay'
+                  }${route.isElectric ? '' : 'No'}CatenaryRouteNames`;
 
                   acc[route.routeTracks == 2 ? 'twoWay' : 'oneWay'].push({
                     name: route.routeName,
@@ -285,7 +343,7 @@ export const useStore = defineStore('store', {
                     isInternal: route.isInternal,
                     tracks: route.routeTracks,
                     length: route.routeLength,
-                    speed: route.routeSpeed,
+                    speed: route.routeSpeed
                   });
 
                   if (!route.isInternal) acc[propName].push(route.routeName);
@@ -301,11 +359,15 @@ export const useStore = defineStore('store', {
                   oneWayCatenaryRouteNames: [],
                   oneWayNoCatenaryRouteNames: [],
                   twoWayCatenaryRouteNames: [],
-                  twoWayNoCatenaryRouteNames: [],
+                  twoWayNoCatenaryRouteNames: []
                 } as StationRoutes
               ) || {},
-            checkpoints: scenery.checkpoints ? scenery.checkpoints.split(';').map((sub) => ({ checkpointName: sub, scheduledTrains: [] })) : [],
-          },
+            checkpoints: scenery.checkpoints
+              ? scenery.checkpoints
+                  .split(';')
+                  .map((sub) => ({ checkpointName: sub, scheduledTrains: [] }))
+              : []
+          }
         };
       });
     },
@@ -327,11 +389,11 @@ export const useStore = defineStore('store', {
         rememberUpgrade: true,
         reconnection: true,
         extraHeaders: {
-          version: packageInfo.version,
-        },
+          version: packageInfo.version
+        }
       });
 
-      socket.on('connect_error', (err) => {
+      socket.on('connect_error', () => {
         this.dataStatuses.connection = DataStatus.Error;
       });
 
@@ -366,7 +428,11 @@ export const useStore = defineStore('store', {
 
     async fetchStockInfoData() {
       try {
-        this.rollingStockData = (await axios.get<RollingStockGithubData>('https://raw.githubusercontent.com/Spythere/api/main/td2/data/stockInfo.json')).data;
+        this.rollingStockData = (
+          await axios.get<RollingStockGithubData>(
+            'https://raw.githubusercontent.com/Spythere/api/main/td2/data/stockInfo.json'
+          )
+        ).data;
       } catch (error) {
         console.error('Ups! Wystąpił błąd podczas pobierania informacji o taborze z API:', error);
       }
@@ -383,10 +449,12 @@ export const useStore = defineStore('store', {
 
       this.dataStatuses.sceneries = DataStatus.Loaded;
       this.dataStatuses.trains = !this.apiData.trains ? DataStatus.Warning : DataStatus.Loaded;
-      this.dataStatuses.dispatchers = !this.apiData.dispatchers ? DataStatus.Warning : DataStatus.Loaded;
+      this.dataStatuses.dispatchers = !this.apiData.dispatchers
+        ? DataStatus.Warning
+        : DataStatus.Loaded;
 
       this.setTrainsOnlineData();
       this.setStationsOnlineInfo();
-    },
-  },
+    }
+  }
 });

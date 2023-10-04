@@ -1,7 +1,10 @@
 <template>
   <div class="progress-bar">
     <span class="bar-bg"></span>
-    <span class="bar-fg" :style="{ width: `${~~progressPercent}%`, backgroundColor: bgColor }"></span>
+    <span
+      class="bar-fg"
+      :style="{ width: `${~~progressPercent}%`, backgroundColor: bgColor }"
+    ></span>
   </div>
 </template>
 
@@ -12,12 +15,12 @@ export default defineComponent({
   props: {
     progressPercent: {
       type: Number,
-      required: true,
+      required: true
     },
     progressType: {
       type: String,
-      required: false,
-    },
+      required: false
+    }
   },
 
   computed: {
@@ -29,8 +32,8 @@ export default defineComponent({
         default:
           return 'springgreen';
       }
-    },
-  },
+    }
+  }
 });
 </script>
 

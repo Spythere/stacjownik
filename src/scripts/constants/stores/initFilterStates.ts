@@ -1,4 +1,4 @@
-import Filter from "../../interfaces/Filter";
+import Filter from '../../interfaces/Filter';
 
 export const filterInitStates: Filter = {
   default: false,
@@ -45,5 +45,5 @@ export const filterInitStates: Filter = {
 
   authors: '',
 
-  onlineFromHours: 0,
+  onlineFromHours: 0
 };
