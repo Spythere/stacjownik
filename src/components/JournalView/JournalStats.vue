@@ -60,7 +60,7 @@ let data = reactive({
 
 // Methods
 function onTabButtonClick(tab: TStatTab) {
-  if (lastClickedTab.value == tab || !areStatsOpen.value) areStatsOpen.value = !areStatsOpen.value;
+  if (lastClickedTab.value == tab || !lastClickedTab.value || !areStatsOpen.value) areStatsOpen.value = !areStatsOpen.value;
 
   if (tab == 'daily') {
     StorageManager.setBooleanValue('dailyStatsOpen', areStatsOpen.value);
@@ -86,6 +86,8 @@ watch(
 );
 
 onMounted(() => {
+  console.log(StorageManager.getBooleanValue('dailyStatsOpen'));
+
   if (StorageManager.getBooleanValue('dailyStatsOpen')) {
     areStatsOpen.value = true;
     store.currentStatsTab = 'daily';
