@@ -3,7 +3,7 @@
     <div class="bg" v-if="showOptions" @click="showOptions = false"></div>
 
     <button class="filter-button btn--filled btn--image" @click="toggleShowOptions" ref="button">
-      <img :src="getIcon('filter2')" alt="Open filters" />
+      <img src="/images/icon-filter2.svg" alt="Open filters icon" />
       {{ $t('options.filters') }} [F]
       <span class="active-indicator" v-if="currentOptionsActive"></span>
     </button>
@@ -23,7 +23,7 @@
                 v-model="searchedTrain"
               />
               <button class="search-exit">
-                <img :src="getIcon('exit')" alt="exit-icon" @click="onInputClear('train')" />
+                <img src="/images/icon-exit.svg" alt="Trains search clear icon" @click="onInputClear('train')" />
               </button>
             </div>
 
@@ -36,7 +36,7 @@
                 v-model="searchedDriver"
               />
               <button class="search-exit">
-                <img :src="getIcon('exit')" alt="exit-icon" @click="onInputClear('driver')" />
+                <img src="/images/icon-exit.svg" alt="Driver search clear icon" @click="onInputClear('driver')" />
               </button>
             </div>
           </div>
@@ -86,13 +86,12 @@
 
 <script lang="ts">
 import { defineComponent, inject, PropType } from 'vue';
-import imageMixin from '../../mixins/imageMixin';
 import keyMixin from '../../mixins/keyMixin';
 import { TrainFilterSection } from '../../scripts/enums/TrainFilterType';
 import { TrainFilter } from '../../scripts/interfaces/Trains/TrainFilter';
 
 export default defineComponent({
-  mixins: [imageMixin, keyMixin],
+  mixins: [keyMixin],
 
   props: {
     sorterOptionIds: {

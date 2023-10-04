@@ -78,11 +78,9 @@
 <script lang="ts">
 import { PropType, defineComponent } from 'vue';
 import { TimetableHistory } from '../../../scripts/interfaces/api/TimetablesAPIData';
-import imageMixin from '../../../mixins/imageMixin';
 import StockList from '../../Global/StockList.vue';
 
 export default defineComponent({
-  mixins: [imageMixin],
   components: { StockList },
   props: {
     showExtraInfo: {
@@ -121,7 +119,7 @@ export default defineComponent({
   methods: {
     onImageError(e: Event) {
       const imageEl = e.target as HTMLImageElement;
-      imageEl.src = this.getImage('unknown.png');
+      imageEl.src = '/images/icon-unknown.png';
     }
   }
 });

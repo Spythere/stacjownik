@@ -8,13 +8,13 @@
         @click="showOptions = !showOptions"
         ref="button"
       >
-        <img :src="getIcon('filter2')" alt="Open filters" />
+        <img src="/images/icon-filter2.svg" alt="Open filters" />
         {{ $t('options.filters') }} [F]
         <span class="active-indicator" v-if="currentOptionsActive"></span>
       </button>
 
       <button class="filter-button btn--filled btn--image" @click="refreshData">
-        <img :src="getIcon('refresh')" alt="Refresh data" />
+        <img src="/images/icon-refresh.svg" alt="Refresh data" />
         {{ $t('general.refresh') }}
       </button>
     </div>
@@ -51,7 +51,7 @@
                 />
 
                 <button class="search-exit" v-if="propName != 'search-date'">
-                  <img :src="getIcon('exit')" alt="exit-icon" @click="onInputClear(propName)" />
+                  <img src="/images/icon-exit.svg" alt="exit-icon" @click="onInputClear(propName)" />
                 </button>
               </div>
             </div>
@@ -108,7 +108,6 @@
 <script lang="ts">
 import axios from 'axios';
 import { defineComponent, inject, PropType } from 'vue';
-import imageMixin from '../../mixins/imageMixin';
 import keyMixin from '../../mixins/keyMixin';
 import { DataStatus } from '../../scripts/enums/DataStatus';
 import { DriverStatsAPIData } from '../../scripts/interfaces/api/DriverStatsAPIData';
@@ -119,7 +118,7 @@ import { JournalFilter } from '../../scripts/types/JournalTimetablesTypes';
 
 export default defineComponent({
   emits: ['onSearchConfirm', 'onOptionsReset', 'onRefreshData'],
-  mixins: [imageMixin, keyMixin],
+  mixins: [keyMixin],
 
   props: {
     sorterOptionIds: {

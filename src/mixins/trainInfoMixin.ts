@@ -1,11 +1,8 @@
 import { defineComponent } from 'vue';
 import Train from '../scripts/interfaces/Train';
 import TrainStop from '../scripts/interfaces/TrainStop';
-import imageMixin from './imageMixin';
 
 export default defineComponent({
-  mixins: [imageMixin],
-
   data: () => ({
     STATS: {
       main: [
@@ -155,7 +152,7 @@ export default defineComponent({
 
     onImageError(e: Event) {
       const imageEl = e.target as HTMLImageElement;
-      imageEl.src = this.getImage('unknown.png');
+      imageEl.src = '/images/icon-unknown.png';
     }
   }
 });

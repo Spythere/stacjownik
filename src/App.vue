@@ -22,9 +22,9 @@
       {{ new Date().getUTCFullYear() }} |
       <a :href="releaseURL" target="_blank">v{{ VERSION }}{{ isOnProductionHost ? '' : 'dev' }}</a>
       <br />
-      <a href="https://discord.gg/x2mpNN3svk"
-        ><img :src="getIcon('discord', 'png')" alt="" />&nbsp;<b>{{ $t('footer.discord') }}</b></a
-      >
+      <a href="https://discord.gg/x2mpNN3svk">
+        <img src="/images/icon-discord.png" alt="" />&nbsp;<b>{{ $t('footer.discord') }}</b>
+      </a>
 
       <div style="display: none">&int; ukryta taktyczna całka do programowania w HTMLu</div>
     </footer>
@@ -43,7 +43,6 @@ import SelectBox from './components/Global/SelectBox.vue';
 import { useStore } from './store/store';
 import TrainModal from './components/Global/TrainModal.vue';
 import StorageManager from './scripts/managers/storageManager';
-import imageMixin from './mixins/imageMixin';
 import AppHeader from './components/App/AppHeader.vue';
 import axios from 'axios';
 import useCustomSW from './mixins/useCustomSW';
@@ -56,8 +55,6 @@ export default defineComponent({
     TrainModal,
     AppHeader
   },
-
-  mixins: [imageMixin],
 
   setup() {
     const store = useStore();

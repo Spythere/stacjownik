@@ -1,6 +1,12 @@
 <template>
   <label @dblclick="handleDbClick">
-    <input type="checkbox" :class="option.section" :name="option.id" />
+    <input
+      :value="optionValue"
+      @input="$emit('update:optionValue', ($event.target as HTMLInputElement).value)"
+      type="checkbox"
+      :class="option.section"
+      :name="option.id"
+    />
     <span>
       {{ $t(`filters.${option.id}`) }}
     </span>
@@ -24,8 +30,15 @@ export default defineComponent({
     option: {
       type: Object as () => FilterOption,
       required: true
+    },
+
+    optionValue: {
+      type: Boolean,
+      required: true
     }
   },
+
+  emits: ['update:optionValue'],
 
   setup() {
     return {
@@ -45,6 +58,7 @@ export default defineComponent({
 
       this.filterStore.lastClickedFilterId = this.option.id;
       // this.option.value = true;
+      this.$emit('update:optionValue', true);
 
       this.filterStore.inputs.options
         .filter((option) => {

@@ -2,7 +2,7 @@
   <section class="scenery-timetable">
     <div class="timetable-header">
       <h3>
-        <img :src="getIcon('timetable')" alt="icon-timetable" />
+        <img src="/images/icon-timetable.svg" alt="icon-timetable" />
         <span>{{ $t('scenery.timetables') }}</span>
 
         <span>
@@ -24,11 +24,11 @@
             target="_blank"
             :title="$t('scenery.pragotron-link')"
           >
-            <img :src="getIcon('pragotron')" alt="icon-pragotron" />
+            <img src="/images/icon-pragotron.svg" alt="icon-pragotron" />
           </a>
 
           <a :href="tabliceZbiorczeHref" target="_blank" :title="$t('scenery.tablice-link')">
-            <img :src="getIcon('tablice', 'ico')" alt="icon-tablice" />
+            <img src="/images/icon-tablice.ico" alt="icon-tablice" />
           </a>
         </span>
       </h3>
@@ -84,7 +84,7 @@
                 {{ scheduledTrain.trainNo }}
 
                 <span class="g-tooltip" v-if="scheduledTrain.stopInfo.comments">
-                  <img :src="getIcon('warning')" />
+                  <img src="/images/icon-warning.svg" />
                   <span class="content" v-html="scheduledTrain.stopInfo.comments"> </span>
                 </span>
               </span>
@@ -184,7 +184,6 @@ import dateMixin from '../../mixins/dateMixin';
 import routerMixin from '../../mixins/routerMixin';
 import Station from '../../scripts/interfaces/Station';
 import { useStore } from '../../store/store';
-import imageMixin from '../../mixins/imageMixin';
 import modalTrainMixin from '../../mixins/modalTrainMixin';
 import ScheduledTrainStatus from './ScheduledTrainStatus.vue';
 
@@ -193,7 +192,7 @@ export default defineComponent({
 
   components: { Loading, ScheduledTrainStatus },
 
-  mixins: [dateMixin, routerMixin, imageMixin, modalTrainMixin],
+  mixins: [dateMixin, routerMixin, modalTrainMixin],
 
   props: {
     station: {

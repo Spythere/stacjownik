@@ -1,7 +1,7 @@
 <template>
   <section class="info-spawn-list">
     <h3 class="spawn-header section-header">
-      <img :src="getIcon('spawn')" alt="icon-spawn" />
+      <img src="/images/icon-spawn.svg" alt="Open spawns icon" />
       &nbsp;{{ $t('scenery.spawns') }} &nbsp;
       <span class="text--primary">{{ station.onlineInfo?.spawns.length || '0' }}</span>
     </h3>
@@ -28,12 +28,9 @@
 
 <script lang="ts">
 import { PropType, defineComponent } from 'vue';
-import imageMixin from '../../../mixins/imageMixin';
 import Station from '../../../scripts/interfaces/Station';
 
 export default defineComponent({
-  mixins: [imageMixin],
-
   props: {
     station: {
       type: Object as PropType<Station>,

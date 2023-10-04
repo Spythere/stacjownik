@@ -52,11 +52,8 @@
 import { PropType, defineComponent } from 'vue';
 import { useStore } from '../../store/store';
 import { RollingStockInfo } from '../../scripts/interfaces/github_api/StockInfoGithubData';
-import imageMixin from '../../mixins/imageMixin';
 
 export default defineComponent({
-  mixins: [imageMixin],
-
   props: {
     trainStockList: {
       type: Array as PropType<string[]>,

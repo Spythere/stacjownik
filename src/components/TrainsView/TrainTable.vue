@@ -35,7 +35,6 @@
 <script lang="ts">
 import { computed, defineComponent, inject, PropType, Ref } from 'vue';
 import modalTrainMixin from '../../mixins/modalTrainMixin';
-import returnBtnMixin from '../../mixins/returnBtnMixin';
 import Train from '../../scripts/interfaces/Train';
 import { useStore } from '../../store/store';
 import Loading from '../Global/Loading.vue';
@@ -51,7 +50,7 @@ export default defineComponent({
     }
   },
 
-  mixins: [returnBtnMixin, modalTrainMixin],
+  mixins: [modalTrainMixin],
 
   setup(props) {
     const store = useStore();

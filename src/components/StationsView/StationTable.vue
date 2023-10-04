@@ -16,7 +16,7 @@
                 <img
                   class="sort-icon"
                   v-if="sorterActive.headerName == headerName"
-                  :src="sorterActive.dir == 1 ? getIcon('arrow-asc') : getIcon('arrow-desc')"
+                  :src="`/images/icon-arrow-${sorterActive.dir == 1 ? 'asc' : 'desc'}.svg`"
                   alt="sort icon"
                 />
               </span>
@@ -30,7 +30,7 @@
             >
               <span class="header_wrapper">
                 <img
-                  :src="getIcon(headerName)"
+                  :src="`/images/icon-${headerName}.svg`"
                   :alt="headerName"
                   :title="$t(`sceneries.${headerName}`)"
                 />
@@ -38,7 +38,7 @@
                 <img
                   class="sort-icon"
                   v-if="sorterActive.headerName == headerName"
-                  :src="sorterActive.dir == 1 ? getIcon('arrow-asc') : getIcon('arrow-desc')"
+                  :src="`/images/icon-arrow-${sorterActive.dir == 1 ? 'asc' : 'desc'}.svg`"
                   alt="sort icon"
                 />
               </span>
@@ -79,16 +79,16 @@
                 </span>
 
                 <span v-else-if="station.generalInfo.availability == 'abandoned'">
-                  <img :src="getIcon('abandoned')" alt="non-public" :title="$t('desc.abandoned')" />
+                  <img src="/images/icon-abandoned.svg" alt="non-public" :title="$t('desc.abandoned')" />
                 </span>
 
                 <span v-else-if="station.generalInfo.availability == 'nonPublic'">
-                  <img :src="getIcon('lock')" alt="non-public" :title="$t('desc.non-public')" />
+                  <img src="/images/icon-lock.svg" alt="non-public" :title="$t('desc.non-public')" />
                 </span>
 
                 <span v-else>
                   <img
-                    :src="getIcon('unavailable')"
+                    src="/images/icon-unavailable.svg"
                     alt="unavailable"
                     :title="$t('desc.unavailable')"
                   />
@@ -185,7 +185,7 @@
                 <img
                   class="icon-info"
                   v-if="station.generalInfo.SUP"
-                  :src="getIcon('SUP')"
+                  src="/images/icon-SUP.svg"
                   alt="SUP (RASP-UZK)"
                   :title="$t('desc.SUP')"
                 />
@@ -195,7 +195,7 @@
                 <img
                   class="icon-info"
                   v-if="station.generalInfo.signalType"
-                  :src="getIcon(station.generalInfo.signalType)"
+                  :src="`/images/icon-${station.generalInfo.signalType}.svg`"
                   :alt="station.generalInfo.signalType"
                   :title="$t('desc.signals-type') + $t(`signals.${station.generalInfo.signalType}`)"
                 />
@@ -205,7 +205,7 @@
                 <img
                   class="icon-info"
                   v-if="station.generalInfo && station.generalInfo.routes.sblRouteNames.length > 0"
-                  :src="getIcon('SBL')"
+                  src="/images/icon-SBL.svg"
                   alt="SBL"
                   :title="$t('desc.SBL') + `${station.generalInfo.routes.sblRouteNames.join(',')}`"
                 />
@@ -215,7 +215,7 @@
             <td class="station_info" v-else>
               <img
                 class="icon-info"
-                :src="getIcon('unknown')"
+                src="/images/icon-unknown.svg"
                 alt="icon-unknown"
                 :title="$t('desc.unknown')"
               />
@@ -282,10 +282,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, PropType } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
-import imageMixin from '../../mixins/imageMixin';
-import returnBtnMixin from '../../mixins/returnBtnMixin';
 import stationInfoMixin from '../../mixins/stationInfoMixin';
 import styleMixin from '../../mixins/styleMixin';
 import { DataStatus } from '../../scripts/enums/DataStatus';
@@ -299,13 +297,13 @@ import StationStatusBadge from '../Global/StationStatusBadge.vue';
 export default defineComponent({
   props: {
     stations: {
-      type: Array as () => Station[],
+      type: Array as PropType<Station[]>,
       required: true
     }
   },
 
   components: { Loading, StationStatusBadge },
-  mixins: [styleMixin, dateMixin, stationInfoMixin, returnBtnMixin, imageMixin],
+  mixins: [styleMixin, dateMixin, stationInfoMixin],
 
   data: () => ({
     headIconsIds,

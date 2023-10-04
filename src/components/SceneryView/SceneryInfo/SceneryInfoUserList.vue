@@ -1,7 +1,7 @@
 <template>
   <section class="info-user-list">
     <h3 class="user-header section-header">
-      <img :src="getIcon('user')" alt="icon-user" />
+      <img src="/images/icon-user.svg" alt="Users icon" />
       &nbsp;{{ $t('scenery.users') }} &nbsp;
       <span class="text--primary">{{ station.onlineInfo?.currentUsers || '0' }}</span
       >&nbsp;/&nbsp;<span class="text--primary">{{ station.onlineInfo?.maxUsers || '0' }}</span>
@@ -31,14 +31,13 @@
 
 <script lang="ts">
 import { PropType, computed, defineComponent } from 'vue';
-import imageMixin from '../../../mixins/imageMixin';
 import modalTrainMixin from '../../../mixins/modalTrainMixin';
 import routerMixin from '../../../mixins/routerMixin';
 import Station from '../../../scripts/interfaces/Station';
 import { useStore } from '../../../store/store';
 
 export default defineComponent({
-  mixins: [routerMixin, imageMixin, modalTrainMixin],
+  mixins: [routerMixin, modalTrainMixin],
 
   props: {
     station: {

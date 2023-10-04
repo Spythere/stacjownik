@@ -21,7 +21,7 @@
       </router-link>
 
       <span class="dispatcher_likes text--primary">
-        <img :src="getIcon('like')" alt="icon-like" />
+        <img src="/images/icon-like.svg" alt="Likes count icon" />
         <span>{{ station.onlineInfo?.dispatcherRate || '0' }}</span>
       </span>
     </div>
@@ -37,14 +37,13 @@
 <script lang="ts">
 import { PropType, defineComponent } from 'vue';
 import dateMixin from '../../../mixins/dateMixin';
-import imageMixin from '../../../mixins/imageMixin';
 import routerMixin from '../../../mixins/routerMixin';
 import styleMixin from '../../../mixins/styleMixin';
 import Station from '../../../scripts/interfaces/Station';
 import StationStatusBadge from '../../Global/StationStatusBadge.vue';
 
 export default defineComponent({
-  mixins: [styleMixin, dateMixin, routerMixin, imageMixin],
+  mixins: [styleMixin, dateMixin, routerMixin],
   props: {
     station: {
       type: Object as PropType<Station>,

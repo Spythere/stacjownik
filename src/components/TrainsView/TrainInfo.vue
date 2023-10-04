@@ -40,7 +40,7 @@
         <img
           v-if="getSceneriesWithComments(train.timetableData).length > 0"
           class="image-warning"
-          :src="getIcon('warning')"
+          src="/images/icon-warning.svg"
           :title="`${$t('trains.timetable-comments')} (${getSceneriesWithComments(
             train.timetableData
           )})`"
@@ -106,7 +106,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import imageMixin from '../../mixins/imageMixin';
 import styleMixin from '../../mixins/styleMixin';
 import trainInfoMixin from '../../mixins/trainInfoMixin';
 import Train from '../../scripts/interfaces/Train';
@@ -114,6 +113,9 @@ import ProgressBar from '../Global/ProgressBar.vue';
 import TrainThumbnail from '../Global/TrainThumbnail.vue';
 
 export default defineComponent({
+  mixins: [trainInfoMixin, styleMixin],
+  components: { ProgressBar, TrainThumbnail },
+
   props: {
     train: {
       type: Object as () => Train,
@@ -123,9 +125,7 @@ export default defineComponent({
       type: Boolean,
       default: true
     }
-  },
-  mixins: [trainInfoMixin, imageMixin, styleMixin],
-  components: { ProgressBar, TrainThumbnail }
+  }
 });
 </script>
 

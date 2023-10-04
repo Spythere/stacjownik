@@ -71,7 +71,6 @@
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
-import imageMixin from '../../mixins/imageMixin';
 import Train from '../../scripts/interfaces/Train';
 import TrainStop from '../../scripts/interfaces/TrainStop';
 import { useStore } from '../../store/store';
@@ -87,7 +86,7 @@ export default defineComponent({
     }
   },
 
-  mixins: [dateMixin, imageMixin],
+  mixins: [dateMixin],
 
   emits: ['click'],
 
@@ -146,7 +145,7 @@ export default defineComponent({
 
     onImageError(e: Event) {
       const imageEl = e.target as HTMLImageElement;
-      imageEl.src = this.getImage('unknown.png');
+      imageEl.src = '/images/icon-unknown.png';
     }
   }
 });

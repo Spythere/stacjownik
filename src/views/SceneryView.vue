@@ -20,7 +20,7 @@
       <div class="scenery-left" v-if="!timetableOnly">
         <div class="scenery-actions">
           <button class="back-btn btn" :title="$t('scenery.return-btn')" @click="navigateTo('/')">
-            <img :src="getIcon('back')" alt="Back to scenery" />
+            <img src="/images/icon-back.svg" alt="Back to scenery" />
           </button>
         </div>
 
@@ -65,7 +65,6 @@ import SceneryTimetable from '../components/SceneryView/SceneryTimetable.vue';
 import SceneryTimetablesHistory from '../components/SceneryView/SceneryTimetablesHistory.vue';
 import SceneryDispatchersHistory from '../components/SceneryView/SceneryDispatchersHistory.vue';
 import ActionButton from '../components/Global/ActionButton.vue';
-import imageMixin from '../mixins/imageMixin';
 
 enum SceneryViewMode {
   'TIMETABLES_ACTIVE',
@@ -83,7 +82,7 @@ export default defineComponent({
     SceneryDispatchersHistory
   },
 
-  mixins: [routerMixin, imageMixin],
+  mixins: [routerMixin],
 
   data: () => ({
     viewModes: [

@@ -37,7 +37,6 @@
 import { defineComponent, provide, reactive, Ref, ref } from 'vue';
 import axios from 'axios';
 
-import imageMixin from '../mixins/imageMixin';
 import dateMixin from '../mixins/dateMixin';
 import routerMixin from '../mixins/routerMixin';
 import modalTrainMixin from '../mixins/modalTrainMixin';
@@ -71,7 +70,7 @@ export default defineComponent({
     JournalHeader,
     JournalTimetablesList
   },
-  mixins: [dateMixin, routerMixin, modalTrainMixin, imageMixin],
+  mixins: [dateMixin, routerMixin, modalTrainMixin],
 
   name: 'JournalTimetables',
 

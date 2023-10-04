@@ -5,7 +5,7 @@
         <span>{{ computedSelectedItem.selectedValue || computedSelectedItem.value }}</span>
 
         <div class="arrow">
-          <img :src="listOpen ? getIcon('arrow-asc') : getIcon('arrow-desc')" alt="arrow-icon" />
+          <img :src="`/images/icon-arrow-${listOpen ? 'asc' : 'desc'}.svg`" alt="Arrow icon" />
         </div>
       </button>
 
@@ -34,7 +34,6 @@
 
 <script lang="ts">
 import { defineComponent, Ref, ref, computed } from 'vue';
-import imageMixin from '../../mixins/imageMixin';
 
 interface Item {
   id: string;
@@ -44,7 +43,6 @@ interface Item {
 
 export default defineComponent({
   emits: ['selected'],
-  mixins: [imageMixin],
 
   props: {
     itemList: {

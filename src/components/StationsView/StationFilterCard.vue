@@ -2,7 +2,7 @@
   <section class="filter-card" v-click-outside="closeCard" @keydown.esc="closeCard">
     <div class="card_controls">
       <button class="btn--filled btn--image" @click="toggleCard">
-        <img class="button_icon" :src="getIcon('filter2')" alt="filter icon" />
+        <img class="button_icon" src="/images/icon-filter2.svg" alt="filter icon" />
         {{ $t('options.filters') }} [F]
         <span class="active-indicator" v-if="!filterStore.areFiltersAtDefault"></span>
       </button>
@@ -34,22 +34,6 @@
           <p class="card_info" v-html="$t('filters.desc')"></p>
 
           <section class="card_options">
-            <!-- QUICK ACTIONS (TODO) -->
-            <!-- <div class="quick-actions">
-              <h3 class="text--primary">{{ $t('filters.sections.quick') }}</h3>
-              <hr />
-
-              <div>
-                <button class="btn--action" style="width: 100%" @click="filterStore.handleQuickAction('all-available')">
-                  {{ $t('filters.all-available') }}
-                </button>
-
-                <button class="btn--action" style="width: 100%" @click="filterStore.handleQuickAction('all-free')">
-                  {{ $t('filters.all-free') }}
-                </button>
-              </div>
-            </div> -->
-
             <div
               class="option-section"
               v-for="section in filterStore.inputs.optionSections"
@@ -68,6 +52,7 @@
                   v-for="(option, i) in filterStore.inputs.options.filter(
                     (o) => o.section == section
                   )"
+                  v-model:optionValue="option.value"
                   :option="option"
                   :key="i"
                 />
@@ -151,7 +136,6 @@
 
 <script lang="ts">
 import { defineComponent, inject } from 'vue';
-import imageMixin from '../../mixins/imageMixin';
 import keyMixin from '../../mixins/keyMixin';
 import routerMixin from '../../mixins/routerMixin';
 import StorageManager from '../../scripts/managers/storageManager';
@@ -162,7 +146,7 @@ import FilterOption from './FilterOption.vue';
 
 export default defineComponent({
   components: { FilterOption },
-  mixins: [imageMixin, keyMixin, routerMixin],
+  mixins: [keyMixin, routerMixin],
 
   data: () => ({
     saveOptions: false,

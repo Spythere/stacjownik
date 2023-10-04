@@ -116,7 +116,6 @@ import { defineComponent, PropType } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
 import { DispatcherHistory } from '../../scripts/interfaces/api/DispatchersAPIData';
 import styleMixin from '../../mixins/styleMixin';
-import imageMixin from '../../mixins/imageMixin';
 import { DataStatus } from '../../scripts/enums/DataStatus';
 import { useStore } from '../../store/store';
 import Loading from '../Global/Loading.vue';
@@ -126,7 +125,7 @@ import AddDataButton from '../Global/AddDataButton.vue';
 export default defineComponent({
   components: { Loading, AddDataButton },
 
-  mixins: [dateMixin, styleMixin, imageMixin],
+  mixins: [dateMixin, styleMixin],
 
   props: {
     dispatcherHistory: {

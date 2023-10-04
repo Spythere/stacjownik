@@ -7,17 +7,14 @@
       @keypress="updateValue"
     />
 
-    <img class="search-exit" :src="getIcon('exit')" alt="exit-icon" @click="clearSearchValue" />
+    <img class="search-exit" src="/images/icon-exit.svg" alt="exit-icon" @click="clearSearchValue" />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, watch } from 'vue';
-import imageMixin from '../../mixins/imageMixin';
 
 export default defineComponent({
-  mixins: [imageMixin],
-
   emits: ['update:searchedValue', 'clearValue'],
   props: {
     searchedValue: {

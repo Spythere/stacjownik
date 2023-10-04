@@ -4,12 +4,12 @@
       <div class="header_icons">
         <span class="icons-top">
           <img
-            :src="getIcon('pl')"
+            src="/images/icon-pl.svg"
             alt="icon-pl"
             @click="changeLang('en')"
             v-if="currentLang == 'pl'"
           />
-          <img :src="getIcon('en', 'jpg')" alt="icon-en" @click="changeLang('pl')" v-else />
+          <img src="/images/icon-en.jpg" alt="icon-en" @click="changeLang('pl')" v-else />
         </span>
       </div>
 
@@ -18,7 +18,7 @@
 
         <span class="header_brand">
           <router-link to="/">
-            <img :src="getImage('stacjownik-header-logo.svg')" alt="Stacjownik" />
+            <img src="/images/stacjownik-header-logo.svg" alt="Stacjownik" />
           </router-link>
         </span>
 
@@ -26,7 +26,7 @@
           <Clock />
 
           <div class="info_counter">
-            <img :src="getIcon('dispatcher')" alt="icon dispatcher" />
+            <img src="/images/icon-dispatcher.svg" alt="icon dispatcher" />
             <span class="text--primary">{{ onlineDispatchersCount }}</span>
 
             <!-- <span class="g-tooltip">
@@ -36,7 +36,7 @@
 
             <span class="text--grayed"> / </span>
             <span class="text--primary">{{ onlineTrainsCount }}</span>
-            <img :src="getIcon('train')" alt="icon train" />
+            <img src="/images/icon-train.svg" alt="icon train" />
           </div>
 
           <span class="info_region">
@@ -70,14 +70,12 @@
 import { defineComponent } from 'vue';
 import { useStore } from '../../store/store';
 import options from '../../data/options.json';
-import imageMixin from '../../mixins/imageMixin';
 import SelectBox from '../Global/SelectBox.vue';
 import StatusIndicator from './StatusIndicator.vue';
 import Clock from './Clock.vue';
 
 export default defineComponent({
   emits: ['changeLang'],
-  mixins: [imageMixin],
   props: {
     currentLang: {
       type: String,
