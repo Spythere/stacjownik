@@ -87,6 +87,19 @@ export default defineComponent({
     };
   },
 
+  watch: {
+    '$route.query': {
+      immediate: true,
+      handler(newVal) {
+        if (newVal.region) {
+          const item = this.itemList.find((it) => it.id == newVal.region);
+
+          if (item) this.selectedItem = item;
+        }
+      }
+    }
+  },
+
   methods: {
     selectOption(item: Item) {
       this.selectedItem = item;

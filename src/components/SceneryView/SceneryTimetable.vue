@@ -6,14 +6,12 @@
         <span>{{ $t('scenery.timetables') }}</span>
 
         <span>
-          <span class="text--primary">{{
-            station.onlineInfo?.scheduledTrains?.length || '0'
-          }}</span>
+          <span class="text--primary">{{ onlineScenery?.scheduledTrains?.length || '0' }}</span>
           <span> / </span>
           <span class="text--grayed">
             {{
-              station.onlineInfo?.scheduledTrains?.filter((train) => train.stopInfo.confirmed)
-                .length || '0'
+              onlineScenery?.scheduledTrains?.filter((train) => train.stopInfo.confirmed).length ||
+              '0'
             }}
           </span>
         </span>
@@ -59,7 +57,7 @@
 
       <span
         class="timetable-item empty"
-        v-else-if="computedScheduledTrains.length == 0 && !station.onlineInfo"
+        v-else-if="computedScheduledTrains.length == 0 && !onlineScenery"
       >
         {{ $t('scenery.offline') }}
       </span>
@@ -186,6 +184,7 @@ import Station from '../../scripts/interfaces/Station';
 import { useStore } from '../../store/store';
 import modalTrainMixin from '../../mixins/modalTrainMixin';
 import ScheduledTrainStatus from './ScheduledTrainStatus.vue';
+import { OnlineScenery } from '../../scripts/interfaces/store/storeTypes';
 
 export default defineComponent({
   name: 'SceneryTimetable',
@@ -199,9 +198,9 @@ export default defineComponent({
       type: Object as PropType<Station>,
       required: true
     },
-
-    timetableOnly: {
-      type: Boolean
+    onlineScenery: {
+      type: Object as PropType<OnlineScenery>,
+      required: false
     }
   },
 
@@ -229,36 +228,9 @@ export default defineComponent({
         : props.station?.generalInfo?.checkpoints[0].checkpointName || null
     );
 
-    const computedScheduledTrains = computed(() => {
-      if (!props.station) return [];
-
-      const station = props.station as Station;
-
-      let scheduledTrains =
-        station.generalInfo?.checkpoints.find((cp) => cp.checkpointName === chosenCheckpoint.value)
-          ?.scheduledTrains ||
-        station.onlineInfo?.scheduledTrains ||
-        [];
-
-      if (!scheduledTrains) return [];
-
-      return (
-        scheduledTrains.sort((a, b) => {
-          if (a.stopStatusID > b.stopStatusID) return 1;
-          if (a.stopStatusID < b.stopStatusID) return -1;
-
-          if (a.stopInfo.arrivalTimestamp > b.stopInfo.arrivalTimestamp) return 1;
-          if (a.stopInfo.arrivalTimestamp < b.stopInfo.arrivalTimestamp) return -1;
-
-          return a.stopInfo.departureTimestamp > b.stopInfo.departureTimestamp ? 1 : -1;
-        }) || []
-      );
-    });
-
     return {
       currentURL,
       chosenCheckpoint,
-      computedScheduledTrains,
       store
     };
   },
@@ -269,27 +241,37 @@ export default defineComponent({
       if (this.chosenCheckpoint) url += `&checkpoint=${this.chosenCheckpoint}`;
 
       return url;
+    },
+
+    computedScheduledTrains() {
+      return (
+        this.onlineScenery?.scheduledTrains
+          ?.filter(
+            (train) =>
+              train.checkpointName.toLocaleLowerCase() ==
+              (this.chosenCheckpoint || this.station.name).toLocaleLowerCase()
+          )
+          .sort((a, b) => {
+            if (a.stopStatusID > b.stopStatusID) return 1;
+            if (a.stopStatusID < b.stopStatusID) return -1;
+
+            if (a.stopInfo.arrivalTimestamp > b.stopInfo.arrivalTimestamp) return 1;
+            if (a.stopInfo.arrivalTimestamp < b.stopInfo.arrivalTimestamp) return -1;
+
+            return a.stopInfo.departureTimestamp > b.stopInfo.departureTimestamp ? 1 : -1;
+          }) || []
+      );
     }
   },
 
   methods: {
     loadSelectedOption() {
-      if (!this.station) return;
-      if (!this.station.generalInfo) return;
-      if (!this.station.generalInfo.checkpoints) return;
-      if (this.station.generalInfo.checkpoints.length == 0) return;
-
-      if (this.chosenCheckpoint != '') return;
-
-      this.chosenCheckpoint = this.station.generalInfo.checkpoints[0].checkpointName;
+      this.chosenCheckpoint =
+        this.station.generalInfo?.checkpoints[0]?.checkpointName || this.station.name;
     },
 
     setCheckpoint(cp: { checkpointName: string }) {
       this.chosenCheckpoint = cp.checkpointName;
-    },
-
-    showTimetableOnlyView() {
-      this.$router.push(`${this.$route.fullPath}&timetableOnly=1`);
     }
   }
 });

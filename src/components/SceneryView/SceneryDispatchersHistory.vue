@@ -76,6 +76,7 @@ import { URLs } from '../../scripts/utils/apiURLs';
 import Loading from '../Global/Loading.vue';
 import styleMixin from '../../mixins/styleMixin';
 import listObserverMixin from '../../mixins/listObserverMixin';
+import { OnlineScenery } from '../../scripts/interfaces/store/storeTypes';
 
 export default defineComponent({
   name: 'SceneryDispatchersHistory',
@@ -85,6 +86,10 @@ export default defineComponent({
     station: {
       type: Object as PropType<Station>,
       required: true
+    },
+    onlineScenery: {
+      type: Object as PropType<OnlineScenery>,
+      required: false
     }
   },
 

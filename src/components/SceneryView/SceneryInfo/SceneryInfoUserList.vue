@@ -3,12 +3,12 @@
     <h3 class="user-header section-header">
       <img src="/images/icon-user.svg" alt="Users icon" />
       &nbsp;{{ $t('scenery.users') }} &nbsp;
-      <span class="text--primary">{{ station.onlineInfo?.currentUsers || '0' }}</span
-      >&nbsp;/&nbsp;<span class="text--primary">{{ station.onlineInfo?.maxUsers || '0' }}</span>
+      <span class="text--primary">{{ onlineScenery?.currentUsers || 0 }}</span
+      >&nbsp;/&nbsp;<span class="text--primary">{{ onlineScenery?.maxUsers || 0 }}</span>
     </h3>
 
     <div
-      v-for="train in computedStationTrains"
+      v-for="train in onlineScenery?.stationTrains"
       class="badge user"
       :class="train.stopStatus"
       :key="train.trainId"
@@ -22,7 +22,7 @@
 
     <div
       class="badge user badge-none"
-      v-if="!computedStationTrains || computedStationTrains.length == 0"
+      v-if="!onlineScenery?.scheduledTrains || onlineScenery.scheduledTrains.length == 0"
     >
       {{ $t('scenery.no-users') }}
     </div>
@@ -30,45 +30,19 @@
 </template>
 
 <script lang="ts">
-import { PropType, computed, defineComponent } from 'vue';
+import { PropType, defineComponent } from 'vue';
 import modalTrainMixin from '../../../mixins/modalTrainMixin';
 import routerMixin from '../../../mixins/routerMixin';
-import Station from '../../../scripts/interfaces/Station';
-import { useStore } from '../../../store/store';
+import { OnlineScenery } from '../../../scripts/interfaces/store/storeTypes';
 
 export default defineComponent({
   mixins: [routerMixin, modalTrainMixin],
 
   props: {
-    station: {
-      type: Object as PropType<Station>,
-      required: true
+    onlineScenery: {
+      type: Object as PropType<OnlineScenery>,
+      required: false
     }
-  },
-
-  setup(props) {
-    const store = useStore();
-
-    const computedStationTrains = computed(() => {
-      if (!props.station) return [];
-
-      const station = props.station as Station;
-      if (!station.onlineInfo) return [];
-      if (!station.onlineInfo.stationTrains) return [];
-
-      return station.onlineInfo.stationTrains.map((train) => {
-        const scheduledTrainStatus = station.onlineInfo?.scheduledTrains?.find(
-          (st) => st.trainNo === train.trainNo
-        );
-
-        return {
-          ...train,
-          stopStatus: scheduledTrainStatus?.stopStatus || 'no-timetable'
-        };
-      });
-    });
-
-    return { computedStationTrains, store };
   }
 });
 </script>

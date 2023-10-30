@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia';
 import inputData from '../data/options.json';
-import Station from '../scripts/interfaces/Station';
 import StorageManager from '../scripts/managers/storageManager';
 import { useStore } from './store';
 import { filterInitStates } from '../scripts/constants/stores/initFilterStates';
@@ -13,31 +12,28 @@ export const useStationFiltersStore = defineStore('stationFiltersStore', {
       inputs: inputData,
       filters: { ...filterInitStates },
       sorterActive: { headerName: 'station' as HeadIdsTypes, dir: 1 },
-      store: useStore(),
       lastClickedFilterId: ''
     };
   },
 
   getters: {
-    areFiltersAtDefault(state) {
+    areFiltersAtDefault: (state) => {
       return Object.keys(state.filters).every((f) => state.filters[f] === filterInitStates[f]);
+    },
+
+    filteredStationList: (state) => {
+      const store = useStore();
+      return store.stationList
+        .map((station) => ({
+          ...station,
+          onlineInfo: store.onlineSceneryList.find((os) => os.name == station.name)
+        }))
+        .filter((station) => filterStations(station, state.filters))
+        .sort((a, b) => sortStations(a, b, state.sorterActive));
     }
   },
 
   actions: {
-    getFilteredStationList(stationList: Station[], region: string): Station[] {
-      return stationList
-        .map((station) => {
-          if (station.onlineInfo && station.onlineInfo.region != region) {
-            delete station.onlineInfo;
-          }
-
-          return station;
-        })
-        .filter((station) => filterStations(station, this.filters))
-        .sort((a, b) => sortStations(a, b, this.sorterActive));
-    },
-
     setupFilters() {
       if (!StorageManager.isRegistered('options_saved')) return;
 

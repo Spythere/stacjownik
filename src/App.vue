@@ -32,20 +32,19 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, provide, ref, watch } from 'vue';
+import { defineComponent, watch } from 'vue';
 
 import Clock from './components/App/Clock.vue';
 
 import packageInfo from '.././package.json';
 
+import { useStore } from './store/store';
 import StatusIndicator from './components/App/StatusIndicator.vue';
 import SelectBox from './components/Global/SelectBox.vue';
-import { useStore } from './store/store';
 import TrainModal from './components/Global/TrainModal.vue';
 import StorageManager from './scripts/managers/storageManager';
 import AppHeader from './components/App/AppHeader.vue';
 import axios from 'axios';
-import useCustomSW from './mixins/useCustomSW';
 
 export default defineComponent({
   components: {
@@ -56,31 +55,9 @@ export default defineComponent({
     AppHeader
   },
 
-  setup() {
-    const store = useStore();
-    store.connectToAPI();
-
-    useCustomSW();
-
-    const isFilterCardVisible = ref(false);
-
-    provide('isFilterCardVisible', isFilterCardVisible);
-
-    return {
-      store,
-      isFilterCardVisible,
-      onlineDispatchers: computed(() =>
-        store.stationList.filter(
-          (station) => station.onlineInfo && station.onlineInfo.region == store.region.id
-        )
-      ),
-
-      dispatcherDataStatus: store.dataStatuses.dispatchers
-    };
-  },
-
   data: () => ({
     VERSION: packageInfo.version,
+    store: useStore(),
 
     currentLang: 'pl',
     releaseURL: '',
@@ -89,6 +66,7 @@ export default defineComponent({
 
   created() {
     this.loadLang();
+    this.store.connectToAPI();
 
     this.store.isOffline = !window.navigator.onLine;
 
@@ -116,12 +94,8 @@ export default defineComponent({
     watch(
       () => this.store.blockScroll,
       (value) => {
-        if (value) {
-          document.body.classList.add('no-scroll');
-          return;
-        }
-
-        document.body.classList.remove('no-scroll');
+        if (value) document.body.classList.add('no-scroll');
+        else document.body.classList.remove('no-scroll');
       }
     );
   },

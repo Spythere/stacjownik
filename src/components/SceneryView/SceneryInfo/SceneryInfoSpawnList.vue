@@ -3,14 +3,14 @@
     <h3 class="spawn-header section-header">
       <img src="/images/icon-spawn.svg" alt="Open spawns icon" />
       &nbsp;{{ $t('scenery.spawns') }} &nbsp;
-      <span class="text--primary">{{ station.onlineInfo?.spawns.length || '0' }}</span>
+      <span class="text--primary">{{ onlineScenery?.spawns.length || '0' }}</span>
     </h3>
 
-    <span v-if="station.onlineInfo">
+    <span v-if="onlineScenery">
       <span
         class="badge spawn"
         v-for="(spawn, i) in sortedSpawns"
-        :key="spawn.spawnName + station.onlineInfo?.dispatcherName + i"
+        :key="spawn.spawnName + onlineScenery?.dispatcherName + i"
         :data-electrified="spawn.isElectrified"
       >
         <span class="spawn_name">{{ spawn.spawnName }}</span>
@@ -18,9 +18,7 @@
       </span>
     </span>
 
-    <span
-      class="badge spawn badge-none"
-      v-if="!station.onlineInfo || station.onlineInfo.spawns.length == 0"
+    <span class="badge spawn badge-none" v-if="!onlineScenery || onlineScenery.spawns.length == 0"
       >{{ $t('scenery.no-spawns') }}
     </span>
   </section>
@@ -28,21 +26,21 @@
 
 <script lang="ts">
 import { PropType, defineComponent } from 'vue';
-import Station from '../../../scripts/interfaces/Station';
+import { OnlineScenery } from '../../../scripts/interfaces/store/storeTypes';
 
 export default defineComponent({
   props: {
-    station: {
-      type: Object as PropType<Station>,
-      required: true
+    onlineScenery: {
+      type: Object as PropType<OnlineScenery>,
+      required: false
     }
   },
 
   computed: {
     sortedSpawns() {
-      if (!this.station.onlineInfo) return [];
+      if (!this.onlineScenery) return [];
 
-      return [...this.station.onlineInfo.spawns].sort((s1, s2) =>
+      return [...this.onlineScenery.spawns].sort((s1, s2) =>
         s1.spawnLength < s2.spawnLength ? 1 : -1
       );
     }

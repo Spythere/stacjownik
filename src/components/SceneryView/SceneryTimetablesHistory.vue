@@ -65,6 +65,7 @@ import Station from '../../scripts/interfaces/Station';
 import { URLs } from '../../scripts/utils/apiURLs';
 import Loading from '../Global/Loading.vue';
 import listObserverMixin from '../../mixins/listObserverMixin';
+import { OnlineScenery } from '../../scripts/interfaces/store/storeTypes';
 
 export default defineComponent({
   name: 'SceneryTimetablesHistory',
@@ -73,6 +74,10 @@ export default defineComponent({
     station: {
       type: Object as PropType<Station>,
       required: true
+    },
+    onlineScenery: {
+      type: Object as PropType<OnlineScenery>,
+      required: false
     }
   },
 

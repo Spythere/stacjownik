@@ -33,19 +33,15 @@ export default defineComponent({
     filterCardOpen: false,
     modalHidden: true,
     STORAGE_KEY: 'options_saved',
-    focusedStationName: ''
+    focusedStationName: '',
+    filterStore: useStationFiltersStore(),
+    store: useStore()
   }),
 
-  setup() {
-    return {
-      filterStore: useStationFiltersStore(),
-      store: useStore()
-    };
-  },
 
   computed: {
     computedStationList() {
-      return this.filterStore.getFilteredStationList(this.store.stationList, this.store.region.id);
+      return this.filterStore.filteredStationList;
     }
   },
 

@@ -10,6 +10,8 @@ export enum StopStatus {
 }
 
 export interface ScheduledTrain {
+  checkpointName: string;
+
   trainId: string;
   trainNo: number;
 

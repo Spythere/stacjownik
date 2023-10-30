@@ -6,7 +6,10 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'StationsView',
-    component: () => import('../views/StationsView.vue')
+    component: () => import('../views/StationsView.vue'),
+    props: (route) => ({
+      region: route.query.region
+    })
   },
   {
     path: '/trains',
@@ -21,7 +24,11 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/scenery',
     name: 'SceneryView',
-    component: () => import('../views/SceneryView.vue')
+    component: () => import('../views/SceneryView.vue'),
+    props: (route) => ({
+      region: route.query.region,
+      station: route.query.station
+    })
   },
   {
     path: '/journal',
@@ -53,8 +60,10 @@ const routes: Array<RouteRecordRaw> = [
 ];
 
 const router = createRouter({
-  scrollBehavior(to, from) {
+  scrollBehavior(to, from, savedPosition) {
     if (to.name == 'SceneryView' && from.name) return { el: `.app_main` };
+
+    if (savedPosition) return savedPosition;
 
     // if (from.name == 'SceneryView' && to.name == 'StationsView') return { el: `.last-selected`, top: 20 };
   },

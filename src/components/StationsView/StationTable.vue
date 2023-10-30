@@ -79,11 +79,19 @@
                 </span>
 
                 <span v-else-if="station.generalInfo.availability == 'abandoned'">
-                  <img src="/images/icon-abandoned.svg" alt="non-public" :title="$t('desc.abandoned')" />
+                  <img
+                    src="/images/icon-abandoned.svg"
+                    alt="non-public"
+                    :title="$t('desc.abandoned')"
+                  />
                 </span>
 
                 <span v-else-if="station.generalInfo.availability == 'nonPublic'">
-                  <img src="/images/icon-lock.svg" alt="non-public" :title="$t('desc.non-public')" />
+                  <img
+                    src="/images/icon-lock.svg"
+                    alt="non-public"
+                    :title="$t('desc.non-public')"
+                  />
                 </span>
 
                 <span v-else>
@@ -234,7 +242,7 @@
             </td>
 
             <td
-              class="station_schedules"
+              class="station_schedules all"
               style="width: 30px"
               :class="{ inactive: !station.onlineInfo }"
             >
@@ -244,20 +252,23 @@
             </td>
 
             <td
-              class="station_schedules"
+              class="station_schedules unconfirmed"
               style="width: 30px"
               :class="{ inactive: !station.onlineInfo }"
             >
               <span style="color: #ccc">
                 {{
-                  station.onlineInfo?.scheduledTrains?.filter((train) => !train.stopInfo.confirmed)
-                    .length || 0
+                  new Set([
+                    ...(station.onlineInfo?.scheduledTrains
+                      ?.filter((train) => !train.stopInfo.confirmed)
+                      .map((train) => train.checkpointName) || [])
+                  ]).size || 0
                 }}
               </span>
             </td>
 
             <td
-              class="station_schedules"
+              class="station_schedules confirmed"
               style="width: 30px"
               :class="{ inactive: !station.onlineInfo }"
             >
@@ -336,9 +347,13 @@ export default defineComponent({
       if (!station) return;
 
       this.lastSelectedStationName = station.name;
+
       this.$router.push({
         name: 'SceneryView',
-        query: { station: station.name.replaceAll(' ', '_') }
+        query: {
+          station: station.name.replaceAll(' ', '_'),
+          region: this.$route.query.region || undefined
+        }
       });
     },
 

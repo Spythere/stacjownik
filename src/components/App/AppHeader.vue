@@ -82,28 +82,30 @@ export default defineComponent({
       required: true
     }
   },
+
   setup() {
     return {
       store: useStore()
     };
   },
+
   methods: {
     changeRegion(region: { id: string; value: string }) {
       this.store.changeRegion(region);
     },
+
     changeLang(lang: string) {
       this.$emit('changeLang', lang);
     }
   },
+
   computed: {
     onlineTrainsCount() {
       return this.store.trainList.filter((train) => train.online).length;
     },
 
     onlineDispatchersCount() {
-      return this.store.stationList.filter(
-        (station) => station.onlineInfo && station.onlineInfo.region == this.store.region.id
-      ).length;
+      return this.store.onlineSceneryList.length;
     },
 
     factorU() {

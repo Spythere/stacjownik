@@ -1,8 +1,8 @@
 <template>
   <label @dblclick="handleDbClick">
     <input
-      :value="optionValue"
-      @input="$emit('update:optionValue', ($event.target as HTMLInputElement).value)"
+      :checked="optionValue"
+      @input="$emit('update:optionValue', ($event.target as HTMLInputElement).checked)"
       type="checkbox"
       :class="option.section"
       :name="option.id"

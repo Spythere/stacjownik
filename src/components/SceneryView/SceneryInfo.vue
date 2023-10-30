@@ -1,6 +1,6 @@
 <template>
   <div class="scenery-info">
-    <section v-if="!timetableOnly">
+    <section>
       <div class="scenery-info-general" v-if="station.generalInfo">
         <SceneryInfoIcons :station="station" />
 
@@ -68,14 +68,14 @@
       <div style="margin: 2em 0; height: 2px; background-color: white"></div>
 
       <!-- info dispatcher -->
-      <SceneryInfoDispatcher :station="station" :onlineFrom="onlineFrom" />
+      <SceneryInfoDispatcher :onlineScenery="onlineScenery" />
 
       <div class="info-lists">
         <!-- user list -->
-        <SceneryInfoUserList :station="station" />
+        <SceneryInfoUserList :onlineScenery="onlineScenery" />
 
         <!-- spawn list -->
-        <SceneryInfoSpawnList :station="station" />
+        <SceneryInfoSpawnList :onlineScenery="onlineScenery" />
       </div>
     </section>
   </div>
@@ -90,6 +90,7 @@ import SceneryInfoUserList from './SceneryInfo/SceneryInfoUserList.vue';
 import SceneryInfoSpawnList from './SceneryInfo/SceneryInfoSpawnList.vue';
 import SceneryInfoRoutes from './SceneryInfo/SceneryInfoRoutes.vue';
 import Station from '../../scripts/interfaces/Station';
+import { OnlineScenery } from '../../scripts/interfaces/store/storeTypes';
 
 export default defineComponent({
   components: {
@@ -105,12 +106,11 @@ export default defineComponent({
       required: true
     },
 
-    timetableOnly: Boolean
+    onlineScenery: {
+      type: Object as PropType<OnlineScenery>,
+      required: false
+    }
   },
-
-  data: () => ({
-    onlineFrom: -1
-  })
 });
 </script>
 

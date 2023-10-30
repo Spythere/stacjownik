@@ -9,12 +9,18 @@ import StationRoutes from '../scripts/interfaces/StationRoutes';
 import Train from '../scripts/interfaces/Train';
 import { URLs } from '../scripts/utils/apiURLs';
 import {
-  getStatusTimestamp,
-  getStatusID,
-  getScheduledTrain,
-  parseSpawns
+  getDispatcherStatus,
+  getCheckpointTrain,
+  parseSpawns,
+  getScheduledTrains,
+  getStationTrains
 } from '../scripts/utils/storeUtils';
-import { APIData, StationJSONData, StoreState } from '../scripts/interfaces/store/storeTypes';
+import {
+  APIData,
+  OnlineScenery,
+  StationJSONData,
+  StoreState
+} from '../scripts/interfaces/store/storeTypes';
 import packageInfo from '../../package.json';
 import { RollingStockGithubData } from '../scripts/interfaces/github_api/StockInfoGithubData';
 
@@ -25,7 +31,7 @@ export const useStore = defineStore('store', {
       rollingStockData: undefined,
 
       stationList: [],
-      trainList: [],
+
       routesList: [],
 
       sceneryData: [],
@@ -63,13 +69,9 @@ export const useStore = defineStore('store', {
       modalLastClickedTarget: null
     }) as StoreState,
 
-  actions: {
-    setTrainsOnlineData() {
-      const { trains } = this.apiData;
-
-      if (!trains) return [];
-
-      this.trainList = trains
+  getters: {
+    trainList(): Train[] {
+      return (this.apiData?.trains ?? [])
         .filter(
           (train) =>
             train.region === this.region.id &&
@@ -123,193 +125,113 @@ export const useStore = defineStore('store', {
         });
     },
 
-    getDispatcherStatus(onlineStationData: StationAPIData) {
-      const { dispatchers } = this.apiData;
+    onlineSceneryList(state): OnlineScenery[] {
+      if (state.isOffline) return [];
+      if (!state.apiData?.stations) return [];
 
-      const prevDispatcherStatus = this.lastDispatcherStatuses.find(
-        (dispatcher) => dispatcher.hash === onlineStationData.stationHash
-      );
+      return state.apiData?.stations
+        ?.filter((apiStation) => apiStation.region == state.region.id && apiStation.isOnline)
+        .map((apiStation) => {
+          const dispatcherStatus = getDispatcherStatus(state as StoreState, apiStation);
+          const station = this.stationList.find((s) => s.name === apiStation.stationName);
 
-      const stationStatus = !dispatchers
-        ? undefined
-        : dispatchers.find(
-            (status: string[]) =>
-              status[0] == onlineStationData.stationHash && status[1] == this.region.id
-          ) || -1;
+          const scheduledTrains = getScheduledTrains(
+            this.trainList,
+            apiStation,
+            station?.generalInfo
+          );
 
-      const statusTimestamp =
-        prevDispatcherStatus && !dispatchers
-          ? prevDispatcherStatus.statusTimestamp
-          : getStatusTimestamp(stationStatus);
-      const statusID =
-        prevDispatcherStatus && !dispatchers
-          ? prevDispatcherStatus.statusID
-          : getStatusID(stationStatus);
+          const stationTrains = getStationTrains(
+            this.trainList,
+            scheduledTrains,
+            this.region.id,
+            apiStation
+          );
 
-      return {
-        hash: onlineStationData.stationHash,
-        statusID,
-        statusTimestamp
-      };
-    },
-
-    getScheduledTrains(stationGeneralInfo: Station['generalInfo'], stationAPIData: StationAPIData) {
-      const stationName = stationAPIData.stationName.toLowerCase();
-
-      stationGeneralInfo?.checkpoints.forEach((cp) => (cp.scheduledTrains.length = 0));
-
-      return this.trainList.reduce((acc: ScheduledTrain[], train) => {
-        if (!train.timetableData) return acc;
-
-        const timetable = train.timetableData;
-        if (!timetable.sceneries.includes(stationAPIData.stationHash)) return acc;
-
-        const stopInfoIndex = timetable.followingStops.findIndex((stop) => {
-          const stopName = stop.stopNameRAW.toLowerCase();
-
-          if (stationName === stopName) return true;
-          if (
-            stopName.includes(stationName) &&
-            !stop.stopName.includes('po.') &&
-            !stop.stopName.includes('podg.')
-          )
-            return true;
-
-          if (
-            stationName.includes(stopName) &&
-            !stop.stopName.includes('po.') &&
-            !stop.stopName.includes('podg.')
-          )
-            return true;
-
-          if (
-            stopName.includes('podg.') &&
-            stopName.split(', podg.')[0] &&
-            stationName.includes(stopName.split(', podg.')[0])
-          )
-            return true;
-
-          if (
-            stationGeneralInfo &&
-            stationGeneralInfo.checkpoints &&
-            stationGeneralInfo.checkpoints.length > 0 &&
-            stationGeneralInfo.checkpoints.some((cp) =>
-              cp.checkpointName.toLowerCase().includes(stop.stopNameRAW.toLowerCase())
-            )
-          )
-            return true;
-
-          return false;
+          return {
+            name: apiStation.stationName,
+            hash: apiStation.stationHash,
+            region: apiStation.region,
+            maxUsers: apiStation.maxUsers,
+            currentUsers: apiStation.currentUsers,
+            spawns: parseSpawns(apiStation.spawnString),
+            dispatcherName: apiStation.dispatcherName,
+            dispatcherRate: apiStation.dispatcherRate,
+            dispatcherId: apiStation.dispatcherId,
+            dispatcherExp: apiStation.dispatcherExp,
+            dispatcherIsSupporter: apiStation.dispatcherIsSupporter,
+            scheduledTrains: scheduledTrains,
+            stationTrains: stationTrains,
+            statusTimestamp: dispatcherStatus.statusTimestamp,
+            statusID: dispatcherStatus.statusID
+          };
         });
+    }
+  },
+  actions: {
+    // setStationsOnlineInfo() {
+    //   const onlineStationNames: string[] = [];
+    //   const prevDispatcherStatuses: StoreState['lastDispatcherStatuses'] = [];
 
-        if (stopInfoIndex == -1) return acc;
+    //   if (this.isOffline) {
+    //     this.stationList.forEach((station) => {
+    //       station.onlineInfo = undefined;
+    //     });
 
-        const scheduledStopTrain = getScheduledTrain(
-          train,
-          stopInfoIndex,
-          stationAPIData.stationName
-        );
+    //     return;
+    //   }
 
-        if (stationGeneralInfo?.checkpoints) {
-          for (const checkpoint of stationGeneralInfo.checkpoints) {
-            const index = timetable.followingStops.findIndex(
-              (stop) => stop.stopNameRAW.toLowerCase() == checkpoint.checkpointName.toLowerCase()
-            );
+    //   this.apiData.stations?.forEach((stationAPIData) => {
+    //     if (stationAPIData.region !== this.region.id || !stationAPIData.isOnline) return;
 
-            if (index == -1) continue;
+    //     const station = this.stationList.find((s) => s.name === stationAPIData.stationName);
 
-            const scheduledCheckpointTrain = getScheduledTrain(
-              train,
-              index,
-              stationAPIData.stationName
-            );
-            checkpoint.scheduledTrains.push(scheduledCheckpointTrain);
-          }
-        }
+    //     onlineStationNames.push(stationAPIData.stationName);
 
-        acc.push(scheduledStopTrain);
-        return acc;
-      }, []) as ScheduledTrain[];
-    },
+    //     const dispatcherStatus = this.getDispatcherStatus(stationAPIData);
+    //     prevDispatcherStatuses.push(dispatcherStatus);
 
-    getStationTrains(stationAPIData: StationAPIData) {
-      return this.trainList
-        .filter(
-          (train) =>
-            train?.region === this.region.id &&
-            train.online &&
-            train.currentStationName === stationAPIData.stationName
-        )
-        .map((train) => ({
-          driverName: train.driverName,
-          driverId: train.driverId,
-          trainNo: train.trainNo,
-          trainId: train.trainId
-        }));
-    },
+    //     const stationTrains = this.getStationTrains(stationAPIData);
+    //     const scheduledTrains = this.getScheduledTrains(station?.generalInfo, stationAPIData);
 
-    setStationsOnlineInfo() {
-      const onlineStationNames: string[] = [];
-      const prevDispatcherStatuses: StoreState['lastDispatcherStatuses'] = [];
+    //     const onlineInfo = {
+    //       name: stationAPIData.stationName,
+    //       hash: stationAPIData.stationHash,
+    //       region: stationAPIData.region,
+    //       maxUsers: stationAPIData.maxUsers,
+    //       currentUsers: stationAPIData.currentUsers,
+    //       spawns: parseSpawns(stationAPIData.spawnString),
+    //       dispatcherName: stationAPIData.dispatcherName,
+    //       dispatcherRate: stationAPIData.dispatcherRate,
+    //       dispatcherId: stationAPIData.dispatcherId,
+    //       dispatcherExp: stationAPIData.dispatcherExp,
+    //       dispatcherIsSupporter: stationAPIData.dispatcherIsSupporter,
+    //       stationTrains,
+    //       statusTimestamp: dispatcherStatus.statusTimestamp,
+    //       statusID: dispatcherStatus.statusID,
+    //       scheduledTrains
+    //     };
 
-      if (this.isOffline) {
-        this.stationList.forEach((station) => {
-          station.onlineInfo = undefined;
-        });
+    //     if (!station) {
+    //       this.stationList.push({
+    //         name: stationAPIData.stationName,
+    //         onlineInfo
+    //       });
 
-        return;
-      }
+    //       return;
+    //     }
 
-      this.apiData.stations?.forEach((stationAPIData) => {
-        if (stationAPIData.region !== this.region.id || !stationAPIData.isOnline) return;
-        const station = this.stationList.find((s) => s.name === stationAPIData.stationName);
+    //     station.onlineInfo = { ...onlineInfo };
+    //   });
 
-        onlineStationNames.push(stationAPIData.stationName);
+    //   this.stationList
+    //     .filter((station) => !onlineStationNames.includes(station.name) && station.onlineInfo)
+    //     .forEach((offlineStation) => {
+    //       offlineStation.onlineInfo = undefined;
+    //     });
 
-        const dispatcherStatus = this.getDispatcherStatus(stationAPIData);
-        prevDispatcherStatuses.push(dispatcherStatus);
-
-        const stationTrains = this.getStationTrains(stationAPIData);
-        const scheduledTrains = this.getScheduledTrains(station?.generalInfo, stationAPIData);
-
-        const onlineInfo = {
-          name: stationAPIData.stationName,
-          hash: stationAPIData.stationHash,
-          region: stationAPIData.region,
-          maxUsers: stationAPIData.maxUsers,
-          currentUsers: stationAPIData.currentUsers,
-          spawns: parseSpawns(stationAPIData.spawnString),
-          dispatcherName: stationAPIData.dispatcherName,
-          dispatcherRate: stationAPIData.dispatcherRate,
-          dispatcherId: stationAPIData.dispatcherId,
-          dispatcherExp: stationAPIData.dispatcherExp,
-          dispatcherIsSupporter: stationAPIData.dispatcherIsSupporter,
-          stationTrains,
-          statusTimestamp: dispatcherStatus.statusTimestamp,
-          statusID: dispatcherStatus.statusID,
-          scheduledTrains
-        };
-
-        if (!station) {
-          this.stationList.push({
-            name: stationAPIData.stationName,
-            onlineInfo
-          });
-
-          return;
-        }
-
-        station.onlineInfo = { ...onlineInfo };
-
-        this.stationList
-          .filter((station) => !onlineStationNames.includes(station.name) && station.onlineInfo)
-          .forEach((offlineStation) => {
-            offlineStation.onlineInfo = undefined;
-          });
-      });
-
-      if (this.apiData.dispatchers != null) this.lastDispatcherStatuses = prevDispatcherStatuses;
-    },
+    //   if (this.apiData.dispatchers != null) this.lastDispatcherStatuses = prevDispatcherStatuses;
+    // },
 
     async fetchStationsGeneralInfo() {
       const sceneryData: StationJSONData[] = await (
@@ -385,7 +307,7 @@ export const useStore = defineStore('store', {
       }
 
       const socket = io(URLs.stacjownikAPI, {
-        // transports: ['websocket', 'polling'],
+        transports: ['websocket', 'polling'],
         rememberUpgrade: true,
         reconnection: true,
         extraHeaders: {
@@ -405,7 +327,6 @@ export const useStore = defineStore('store', {
 
       socket.emit('FETCH_DATA', { version: packageInfo.version }, (data: APIData) => {
         this.dataStatuses.connection = DataStatus.Loaded;
-
         this.apiData = data;
         this.setOnlineData();
       });
@@ -414,10 +335,9 @@ export const useStore = defineStore('store', {
     },
 
     async connectToAPI() {
-      await this.fetchStationsGeneralInfo();
-      await this.fetchStockInfoData();
-
       this.connectToWebsocket();
+      this.fetchStockInfoData();
+      this.fetchStationsGeneralInfo();
     },
 
     async changeRegion(region: StoreState['region']) {
@@ -453,8 +373,7 @@ export const useStore = defineStore('store', {
         ? DataStatus.Warning
         : DataStatus.Loaded;
 
-      this.setTrainsOnlineData();
-      this.setStationsOnlineInfo();
+      // this.setStationsOnlineInfo();
     }
   }
 });

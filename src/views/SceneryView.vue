@@ -1,9 +1,6 @@
 <template>
   <div class="scenery-view">
-    <div
-      class="scenery-offline"
-      v-if="!stationInfo && isComponentVisible && store.dataStatuses.sceneries == 2"
-    >
+    <div class="scenery-offline" v-if="!stationInfo && store.dataStatuses.sceneries == 2">
       <div>{{ $t('scenery.no-scenery') }}</div>
 
       <action-button>
@@ -11,21 +8,16 @@
       </action-button>
     </div>
 
-    <div
-      class="scenery-wrapper"
-      v-if="stationInfo"
-      ref="card-wrapper"
-      :data-timetable-only="timetableOnly"
-    >
-      <div class="scenery-left" v-if="!timetableOnly">
+    <div class="scenery-wrapper" v-if="stationInfo" ref="card-wrapper">
+      <div class="scenery-left">
         <div class="scenery-actions">
           <button class="back-btn btn" :title="$t('scenery.return-btn')" @click="navigateTo('/')">
             <img src="/images/icon-back.svg" alt="Back to scenery" />
           </button>
         </div>
 
-        <SceneryHeader :station="stationInfo" />
-        <SceneryInfo :station="stationInfo" />
+        <SceneryHeader :station="stationInfo" :onlineScenery="onlineSceneryInfo" />
+        <SceneryInfo :station="stationInfo" :onlineScenery="onlineSceneryInfo" />
       </div>
 
       <div class="scenery-right">
@@ -44,6 +36,7 @@
         <keep-alive>
           <component
             :is="currentViewCompontent"
+            :onlineScenery="onlineSceneryInfo"
             :station="stationInfo"
             :key="currentViewCompontent"
           ></component>
@@ -82,9 +75,22 @@ export default defineComponent({
     SceneryDispatchersHistory
   },
 
+  props: {
+    region: {
+      type: String,
+      required: false
+    },
+
+    station: {
+      type: String,
+      required: true
+    }
+  },
+
   mixins: [routerMixin],
 
   data: () => ({
+    store: useStore(),
     viewModes: [
       {
         id: 'scenery.option-active-timetables',
@@ -111,24 +117,28 @@ export default defineComponent({
 
   setup() {
     const route = useRoute();
-    const store = useStore();
 
-    const timetableOnly = computed(() => (route.query['timetableOnly'] == '1' ? true : false));
     const isComponentVisible = computed(() => route.path === '/scenery');
 
-    const stationInfo = computed(() => {
-      return store.stationList.find(
-        (station) => station.name === route.query.station?.toString().replace(/_/g, ' ')
-      );
-    });
-
     return {
-      timetableOnly,
-      isComponentVisible,
-      stationInfo,
-      store
+      isComponentVisible
     };
   },
+
+  computed: {
+    stationInfo() {
+      return this.store.stationList.find(
+        (station) => station.name === this.station?.toString().replace(/_/g, ' ')
+      );
+    },
+
+    onlineSceneryInfo() {
+      return this.store.onlineSceneryList.find(
+        (scenery) => scenery.name === this.station?.toString().replace(/_/g, ' ')
+      );
+    }
+  },
+
   methods: {
     setViewMode(componentName: string) {
       this.currentViewCompontent = componentName;
