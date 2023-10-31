@@ -2,25 +2,23 @@ import axios from 'axios';
 import { defineStore } from 'pinia';
 import { io } from 'socket.io-client';
 import { DataStatus } from '../scripts/enums/DataStatus';
-import StationAPIData from '../scripts/interfaces/api/StationAPIData';
-import { ScheduledTrain } from '../scripts/interfaces/ScheduledTrain';
-import Station from '../scripts/interfaces/Station';
 import StationRoutes from '../scripts/interfaces/StationRoutes';
 import Train from '../scripts/interfaces/Train';
 import { URLs } from '../scripts/utils/apiURLs';
 import {
   getDispatcherStatus,
-  getCheckpointTrain,
   parseSpawns,
   getScheduledTrains,
   getStationTrains
 } from '../scripts/utils/storeUtils';
+
 import {
   APIData,
   OnlineScenery,
   StationJSONData,
   StoreState
 } from '../scripts/interfaces/store/storeTypes';
+
 import packageInfo from '../../package.json';
 import { RollingStockGithubData } from '../scripts/interfaces/github_api/StockInfoGithubData';
 
@@ -342,8 +340,6 @@ export const useStore = defineStore('store', {
 
     async changeRegion(region: StoreState['region']) {
       this.region = region;
-
-      await this.setOnlineData();
     },
 
     async fetchStockInfoData() {
@@ -372,8 +368,6 @@ export const useStore = defineStore('store', {
       this.dataStatuses.dispatchers = !this.apiData.dispatchers
         ? DataStatus.Warning
         : DataStatus.Loaded;
-
-      // this.setStationsOnlineInfo();
     }
   }
 });

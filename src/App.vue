@@ -100,6 +100,17 @@ export default defineComponent({
     );
   },
 
+  watch: {
+    '$route.query.region': {
+      immediate: true,
+      handler(regionQuery: string) {
+        if (regionQuery) {
+          this.store.region.id = regionQuery;
+        }
+      }
+    }
+  },
+
   methods: {
     changeLang(lang: string) {
       this.$i18n.locale = lang;
