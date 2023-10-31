@@ -86,8 +86,6 @@ watch(
 );
 
 onMounted(() => {
-  console.log(StorageManager.getBooleanValue('dailyStatsOpen'));
-
   if (StorageManager.getBooleanValue('dailyStatsOpen')) {
     areStatsOpen.value = true;
     store.currentStatsTab = 'daily';

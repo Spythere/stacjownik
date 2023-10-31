@@ -51,7 +51,11 @@
                 />
 
                 <button class="search-exit" v-if="propName != 'search-date'">
-                  <img src="/images/icon-exit.svg" alt="exit-icon" @click="onInputClear(propName)" />
+                  <img
+                    src="/images/icon-exit.svg"
+                    alt="exit-icon"
+                    @click="onInputClear(propName)"
+                  />
                 </button>
               </div>
             </div>
@@ -180,7 +184,7 @@ export default defineComponent({
   },
 
   watch: {
-    async driverStatsName() {
+    async 'store.driverStatsName'() {
       await this.fetchDriverStats();
 
       // if (value) this.store.currentStatsTab = 'driver';

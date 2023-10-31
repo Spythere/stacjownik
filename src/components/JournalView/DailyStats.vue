@@ -243,10 +243,6 @@ export default defineComponent({
 }
 
 @include smallScreen {
-  .daily-stats {
-    text-align: justify;
-  }
-
   h3 {
     text-align: center;
   }

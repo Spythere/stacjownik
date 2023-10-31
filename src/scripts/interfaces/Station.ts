@@ -1,4 +1,4 @@
-import { Availability } from './store/storeTypes';
+import { Availability, OnlineScenery } from './store/storeTypes';
 import { ScheduledTrain } from './ScheduledTrain';
 import StationRoutes from './StationRoutes';
 
@@ -32,33 +32,5 @@ export default interface Station {
     }[];
   };
 
-  onlineInfo?: {
-    hash: string;
-    name: string;
-    region: string;
-
-    maxUsers: number;
-    currentUsers: number;
-
-    spawns: { spawnName: string; spawnLength: number; isElectrified: boolean }[];
-    dispatcherRate: number;
-    dispatcherName: string;
-    dispatcherExp: number;
-    dispatcherId: number;
-    dispatcherIsSupporter: boolean;
-
-    statusTimestamp: number;
-    // statusTimeString: string;
-    statusID: string;
-
-    stationTrains?: {
-      driverName: string;
-      driverId: number;
-      trainNo: number;
-      trainId: string;
-      stopStatus?: string;
-    }[];
-
-    scheduledTrains?: ScheduledTrain[];
-  };
+  onlineInfo?: OnlineScenery;
 }

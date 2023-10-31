@@ -6,13 +6,10 @@
         <span>{{ $t('scenery.timetables') }}</span>
 
         <span>
-          <span class="text--primary">{{ onlineScenery?.scheduledTrains?.length || '0' }}</span>
+          <span class="text--primary">{{ onlineScenery?.scheduledTrainCount.all || 0 }}</span>
           <span> / </span>
           <span class="text--grayed">
-            {{
-              onlineScenery?.scheduledTrains?.filter((train) => train.stopInfo.confirmed).length ||
-              '0'
-            }}
+            {{ onlineScenery?.scheduledTrainCount.confirmed || '0' }}
           </span>
         </span>
 
@@ -48,27 +45,34 @@
     </div>
 
     <div class="timetable-list">
-      <div
-        style="padding-bottom: 5em"
-        v-if="store.dataStatuses.trains == 0 && computedScheduledTrains.length == 0"
-      >
-        <Loading />
-      </div>
-
-      <span
-        class="timetable-item empty"
-        v-else-if="computedScheduledTrains.length == 0 && !onlineScenery"
-      >
-        {{ $t('scenery.offline') }}
-      </span>
-
-      <span class="timetable-item empty" v-else-if="computedScheduledTrains.length == 0">
-        {{ $t('scenery.no-timetables') }}
-      </span>
-
       <transition-group name="list-anim">
         <div
+          style="padding-bottom: 5em"
+          v-if="store.dataStatuses.trains == 0 && computedScheduledTrains.length == 0"
+          key="list-loading"
+        >
+          <Loading />
+        </div>
+
+        <span
+          class="timetable-item empty"
+          v-else-if="computedScheduledTrains.length == 0 && !onlineScenery"
+          key="list-offline"
+        >
+          {{ $t('scenery.offline') }}
+        </span>
+
+        <div
+          class="timetable-item empty"
+          v-else-if="computedScheduledTrains.length == 0"
+          key="list-no-timetables"
+        >
+          {{ $t('scenery.no-timetables') }}
+        </div>
+
+        <div
           class="timetable-item"
+          v-else
           v-for="scheduledTrain in computedScheduledTrains"
           :key="scheduledTrain.trainId"
           tabindex="0"

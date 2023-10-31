@@ -43,9 +43,10 @@
 #app {
   color: white;
   font-size: 1rem;
+  overflow-x: hidden;
 
   @include smallScreen() {
-    font-size: calc(0.55rem + 1.1vw);
+    font-size: calc(0.65rem + 0.8vw);
   }
 
   @include screenLandscape() {

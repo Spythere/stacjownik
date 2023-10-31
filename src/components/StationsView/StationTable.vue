@@ -230,11 +230,9 @@
             </td>
 
             <td class="station_users" :class="{ inactive: !station.onlineInfo }">
-              <span>
-                <span class="highlight">{{ station.onlineInfo?.currentUsers || 0 }}</span>
-                /
-                <span class="highlight">{{ station.onlineInfo?.maxUsers || 0 }}</span>
-              </span>
+              <span>{{ station.onlineInfo?.currentUsers || 0 }}</span>
+              /
+              <span>{{ station.onlineInfo?.maxUsers || 0 }}</span>
             </td>
 
             <td class="station_spawns" :class="{ inactive: !station.onlineInfo }">
@@ -246,9 +244,7 @@
               style="width: 30px"
               :class="{ inactive: !station.onlineInfo }"
             >
-              <span class="highlight">
-                {{ station.onlineInfo?.scheduledTrains?.length || 0 }}
-              </span>
+              {{ station.onlineInfo?.scheduledTrainCount.all }}
             </td>
 
             <td
@@ -256,15 +252,7 @@
               style="width: 30px"
               :class="{ inactive: !station.onlineInfo }"
             >
-              <span style="color: #ccc">
-                {{
-                  new Set([
-                    ...(station.onlineInfo?.scheduledTrains
-                      ?.filter((train) => !train.stopInfo.confirmed)
-                      .map((train) => train.checkpointName) || [])
-                  ]).size || 0
-                }}
-              </span>
+              {{ station.onlineInfo?.scheduledTrainCount.unconfirmed }}
             </td>
 
             <td
@@ -272,12 +260,7 @@
               style="width: 30px"
               :class="{ inactive: !station.onlineInfo }"
             >
-              <span style="color: #66ff6c">
-                {{
-                  station.onlineInfo?.scheduledTrains?.filter((train) => train.stopInfo.confirmed)
-                    .length || 0
-                }}
-              </span>
+              {{ station.onlineInfo?.scheduledTrainCount.confirmed }}
             </td>
           </tr>
         </tbody>
@@ -389,10 +372,6 @@ $rowCol: #424242;
   &-leave-to {
     opacity: 0;
   }
-}
-
-.highlight {
-  color: gold;
 }
 
 section.station_table {
@@ -573,6 +552,26 @@ td.station {
     &.inactive {
       opacity: 0.2;
     }
+  }
+}
+
+.station_users {
+  span {
+    color: gold;
+  }
+}
+
+.station_schedules {
+  &.all {
+    color: gold;
+  }
+
+  &.unconfirmed {
+    color: #ccc;
+  }
+
+  &.confirmed {
+    color: lime;
   }
 }
 

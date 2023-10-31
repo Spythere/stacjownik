@@ -3,7 +3,7 @@
     <h3 class="user-header section-header">
       <img src="/images/icon-user.svg" alt="Users icon" />
       &nbsp;{{ $t('scenery.users') }} &nbsp;
-      <span class="text--primary">{{ onlineScenery?.currentUsers || 0 }}</span
+      <span class="text--primary">{{ onlineScenery?.stationTrains?.length || 0 }}</span
       >&nbsp;/&nbsp;<span class="text--primary">{{ onlineScenery?.maxUsers || 0 }}</span>
     </h3>
 
@@ -22,7 +22,7 @@
 
     <div
       class="badge user badge-none"
-      v-if="!onlineScenery?.scheduledTrains || onlineScenery.scheduledTrains.length == 0"
+      v-if="!onlineScenery?.stationTrains?.length"
     >
       {{ $t('scenery.no-users') }}
     </div>

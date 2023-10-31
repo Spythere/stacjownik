@@ -7,6 +7,7 @@ import { DriverStatsAPIData } from '../api/DriverStatsAPIData';
 import { RollingStockGithubData } from '../github_api/StockInfoGithubData';
 import Station from '../Station';
 import { ScheduledTrain } from '../ScheduledTrain';
+import { DispatcherStatusID } from '../../enums/DispatcherStatus';
 
 export type Availability = 'default' | 'unavailable' | 'nonPublic' | 'abandoned' | 'nonDefault';
 
@@ -15,7 +16,7 @@ export interface StoreState {
   apiData: APIData;
   rollingStockData?: RollingStockGithubData;
 
-  lastDispatcherStatuses: { hash: string; statusTimestamp: number; statusID: string }[];
+  lastDispatcherStatuses: { hash: string; statusTimestamp: number; statusID: DispatcherStatusID }[];
 
   sceneryData: any[][];
 
@@ -113,8 +114,16 @@ export interface OnlineScenery {
   dispatcherIsSupporter: boolean;
 
   statusTimestamp: number;
-  statusID: string;
+  statusID: DispatcherStatusID;
+
+  isOnline: boolean;
 
   stationTrains?: StationTrain[];
   scheduledTrains?: ScheduledTrain[];
+
+  scheduledTrainCount: {
+    all: number;
+    confirmed: number;
+    unconfirmed: number;
+  }
 }

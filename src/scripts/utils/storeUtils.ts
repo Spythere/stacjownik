@@ -1,3 +1,4 @@
+import { DispatcherStatusID } from '../enums/DispatcherStatus';
 import { ScheduledTrain, StopStatus } from '../interfaces/ScheduledTrain';
 import Station from '../interfaces/Station';
 import Train from '../interfaces/Train';
@@ -10,34 +11,39 @@ export const getLocoURL = (locoType: string): string =>
     locoType.includes('EN') ? locoType + 'rb' : locoType
   }.png`;
 
-export const getStatusID = (stationStatus: any): string => {
-  if (!stationStatus) return 'unknown';
-  if (stationStatus == -1) return 'not-signed';
+export const getStatusID = (
+  stationStatus: any[] | undefined,
+  isSWDROnline: boolean
+): DispatcherStatusID => {
+  if (isSWDROnline && !stationStatus) return DispatcherStatusID.Unauthorized;
+  if (!stationStatus) return DispatcherStatusID.Unknown;
+
+  // if (stationStatus == -1) return DispatcherStatusID.Unauthorized;
 
   const statusCode = stationStatus[2];
   const statusTimestamp = stationStatus[3];
 
   switch (statusCode) {
     case 0:
-      if (statusTimestamp - Date.now() > 21000000) return 'no-limit';
+      if (statusTimestamp - Date.now() > 21000000) return DispatcherStatusID.OnlineNoLimit;
 
-      return 'online';
+      return DispatcherStatusID.OnlineWithHours;
 
     case 1:
-      return 'brb';
+      return DispatcherStatusID.Afk;
 
     case 2:
-      if (statusTimestamp == 0) return 'ending';
+      if (statusTimestamp == 0) return DispatcherStatusID.Ending;
       break;
 
     case 3:
-      return 'no-space';
+      return DispatcherStatusID.NoSpace;
 
     default:
       break;
   }
 
-  return 'unavailable';
+  return DispatcherStatusID.Unavailable;
 };
 
 export const getStatusTimestamp = (stationStatus: any): number => {
@@ -219,12 +225,9 @@ export function getDispatcherStatus(state: StoreState, onlineStationData: Statio
     (dispatcher) => dispatcher.hash === onlineStationData.stationHash
   );
 
-  const stationStatus = !dispatchers
-    ? undefined
-    : dispatchers.find(
-        (status: string[]) =>
-          status[0] == onlineStationData.stationHash && status[1] == state.region.id
-      ) || -1;
+  const stationStatus = dispatchers?.find(
+    (status: string[]) => status[0] == onlineStationData.stationHash && status[1] == state.region.id
+  );
 
   const statusTimestamp =
     prevDispatcherStatus && !dispatchers
@@ -234,7 +237,7 @@ export function getDispatcherStatus(state: StoreState, onlineStationData: Statio
   const statusID =
     prevDispatcherStatus && !dispatchers
       ? prevDispatcherStatus.statusID
-      : getStatusID(stationStatus);
+      : getStatusID(stationStatus, onlineStationData.isOnline === 1);
 
   return {
     hash: onlineStationData.stationHash,
@@ -263,8 +266,8 @@ export function getScheduledTrains(
 
       return (
         stationName == stopName ||
-        (!/(po\.|podg\.)/.test(stationName) && stopName.includes(stationName)) ||
-        (!/(po\.|podg\.)/.test(stopName) && stationName.includes(stopName)) ||
+        (!/(po\.|podg\.)/.test(stopName) && stopName.includes(stationName)) ||
+        (!/(po\.|podg\.)/.test(stationName) && stationName.includes(stopName)) ||
         (stopName.split(', podg.')[0] !== undefined &&
           stationName.startsWith(stopName.split(', podg.')[0]))
       );

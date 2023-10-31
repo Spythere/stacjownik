@@ -1,4 +1,5 @@
 import { HeadIdsTypes } from '../data/stationHeaderNames';
+import { DispatcherStatusID } from '../enums/DispatcherStatus';
 import Filter from '../interfaces/Filter';
 import Station from '../interfaces/Station';
 
@@ -90,11 +91,15 @@ export const filterStations = (station: Station, filters: Filter) => {
   if (station.onlineInfo) {
     const { statusID, statusTimestamp } = station.onlineInfo;
 
-    const isEnding = statusID == 'ending' && filters['endingStatus'];
+    const isEnding = statusID == DispatcherStatusID.Ending && filters['endingStatus'];
+
     const isNotSigned =
       (statusID == 'not-signed' || statusID == 'unavailable') && filters['unavailableStatus'];
+
     const isAFK = statusID == 'brb' && filters['afkStatus'];
+
     const isNoSpace = statusID == 'no-space' && filters['noSpaceStatus'];
+
     const isOccupied = station.onlineInfo && filters['occupied'];
 
     const isOnlineInBounds =

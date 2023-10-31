@@ -80,7 +80,7 @@ export default defineComponent({
         connectedSocketCount: 0
       };
 
-      this.store.setOnlineData();
+      this.store.setStatuses();
     });
 
     window.addEventListener('online', () => {
