@@ -7,25 +7,24 @@
       >&nbsp;/&nbsp;<span class="text--primary">{{ onlineScenery?.maxUsers || 0 }}</span>
     </h3>
 
-    <div
-      v-for="train in onlineScenery?.stationTrains"
-      class="badge user"
-      :class="train.stopStatus"
-      :key="train.trainId"
-      tabindex="0"
-      @click.prevent="selectModalTrain(train.trainId, $event.currentTarget)"
-      @keydown.enter="selectModalTrain(train.trainId, $event.currentTarget)"
-    >
-      <span class="user_train">{{ train.trainNo }}</span>
-      <span class="user_name">{{ train.driverName }}</span>
-    </div>
+    <transition-group name="users-anim" tag="ul">
+      <li class="badge user badge-none" v-if="!onlineScenery?.stationTrains?.length" key="no-users">
+        {{ $t('scenery.no-users') }}
+      </li>
 
-    <div
-      class="badge user badge-none"
-      v-if="!onlineScenery?.stationTrains?.length"
-    >
-      {{ $t('scenery.no-users') }}
-    </div>
+      <li
+        v-for="train in onlineScenery?.stationTrains"
+        class="badge user"
+        :class="train.stopStatus"
+        :key="train.trainId"
+        tabindex="0"
+        @click.prevent="selectModalTrain(train.trainId, $event.currentTarget)"
+        @keydown.enter="selectModalTrain(train.trainId, $event.currentTarget)"
+      >
+        <span class="user_train">{{ train.trainNo }}</span>
+        <span class="user_name">{{ train.driverName }}</span>
+      </li>
+    </transition-group>
   </section>
 </template>
 
@@ -57,12 +56,10 @@ $disconnected: slategray;
 
 .info-user-list {
   width: 100%;
+}
 
-  ul {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
+ul {
+  position: relative;
 }
 
 .user {
@@ -104,6 +101,23 @@ $disconnected: slategray;
   &.offline {
     background: firebrick;
     pointer-events: none;
+  }
+}
+.users-anim {
+  &-move,
+  &-enter-active,
+  &-leave-active {
+    transition: all 250ms ease;
+  }
+
+  &-enter-from,
+  &-leave-to {
+    opacity: 0;
+    transform: translateX(5px);
+  }
+
+  &-leave-active {
+    position: absolute;
   }
 }
 </style>
