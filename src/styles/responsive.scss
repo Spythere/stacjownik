@@ -11,7 +11,7 @@
 }
 
 @mixin screenLandscape() {
-  @media only screen and (orientation: landscape) and (max-device-height: 450px)  {
+  @media only screen and (orientation: landscape) and (max-device-height: 450px) {
     @content;
   }
 }

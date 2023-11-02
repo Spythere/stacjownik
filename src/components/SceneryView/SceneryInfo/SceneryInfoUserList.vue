@@ -1,71 +1,48 @@
 <template>
   <section class="info-user-list">
     <h3 class="user-header section-header">
-      <img :src="getIcon('user')" alt="icon-user" />
+      <img src="/images/icon-user.svg" alt="Users icon" />
       &nbsp;{{ $t('scenery.users') }} &nbsp;
-      <span class="text--primary">{{ station.onlineInfo?.currentUsers || '0' }}</span
-      >&nbsp;/&nbsp;<span class="text--primary">{{ station.onlineInfo?.maxUsers || '0' }}</span>
+      <span class="text--primary">{{ onlineScenery?.stationTrains?.length || 0 }}</span
+      >&nbsp;/&nbsp;<span class="text--primary">{{ onlineScenery?.maxUsers || 0 }}</span>
     </h3>
 
-    <div
-      v-for="(train, i) in computedStationTrains"
-      class="badge user"
-      :class="train.stopStatus"
-      :key="train.trainId"
-      tabindex="0"
-      @click.prevent="selectModalTrain(train.trainId, $event.currentTarget)"
-      @keydown.enter="selectModalTrain(train.trainId, $event.currentTarget)"
-    >
-      <span class="user_train">{{ train.trainNo }}</span>
-      <span class="user_name">{{ train.driverName }}</span>
-    </div>
+    <transition-group name="users-anim" tag="ul">
+      <li class="badge user badge-none" v-if="!onlineScenery?.stationTrains?.length" key="no-users">
+        {{ $t('scenery.no-users') }}
+      </li>
 
-    <div class="badge user badge-none" v-if="!computedStationTrains || computedStationTrains.length == 0">
-      {{ $t('scenery.no-users') }}
-    </div>
+      <li
+        v-for="train in onlineScenery?.stationTrains"
+        class="badge user"
+        :class="train.stopStatus"
+        :key="train.trainId"
+        tabindex="0"
+        @click.prevent="selectModalTrain(train.trainId, $event.currentTarget)"
+        @keydown.enter="selectModalTrain(train.trainId, $event.currentTarget)"
+      >
+        <span class="user_train">{{ train.trainNo }}</span>
+        <span class="user_name">{{ train.driverName }}</span>
+      </li>
+    </transition-group>
   </section>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
-import imageMixin from '../../../mixins/imageMixin';
+import { PropType, defineComponent } from 'vue';
 import modalTrainMixin from '../../../mixins/modalTrainMixin';
 import routerMixin from '../../../mixins/routerMixin';
-import Station from '../../../scripts/interfaces/Station';
-import { useStore } from '../../../store/store';
+import { OnlineScenery } from '../../../scripts/interfaces/store/storeTypes';
 
 export default defineComponent({
-  mixins: [routerMixin, imageMixin, modalTrainMixin],
+  mixins: [routerMixin, modalTrainMixin],
 
   props: {
-    station: {
-      type: Object as () => Station,
-      default: {},
-    },
-  },
-
-  setup(props) {
-    const store = useStore();
-
-    const computedStationTrains = computed(() => {
-      if (!props.station) return [];
-
-      const station = props.station as Station;
-      if (!station.onlineInfo) return [];
-      if (!station.onlineInfo.stationTrains) return [];
-
-      return station.onlineInfo.stationTrains.map((train) => {
-        const scheduledTrainStatus = station.onlineInfo?.scheduledTrains?.find((st) => st.trainNo === train.trainNo);
-
-        return {
-          ...train,
-          stopStatus: scheduledTrainStatus?.stopStatus || 'no-timetable',
-        };
-      });
-    });
-
-    return { computedStationTrains, store };
-  },
+    onlineScenery: {
+      type: Object as PropType<OnlineScenery>,
+      required: false
+    }
+  }
 });
 </script>
 
@@ -79,12 +56,10 @@ $disconnected: slategray;
 
 .info-user-list {
   width: 100%;
+}
 
-  ul {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
+ul {
+  position: relative;
 }
 
 .user {
@@ -126,6 +101,23 @@ $disconnected: slategray;
   &.offline {
     background: firebrick;
     pointer-events: none;
+  }
+}
+.users-anim {
+  &-move,
+  &-enter-active,
+  &-leave-active {
+    transition: all 250ms ease;
+  }
+
+  &-enter-from,
+  &-leave-to {
+    opacity: 0;
+    transform: translateX(5px);
+  }
+
+  &-leave-active {
+    position: absolute;
   }
 }
 </style>

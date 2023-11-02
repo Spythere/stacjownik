@@ -6,10 +6,12 @@ export enum StopStatus {
   'departed-away' = 'departed-away',
   'online' = 'online',
   'stopped' = 'stopped',
-  'terminated' = 'terminated',
+  'terminated' = 'terminated'
 }
 
 export interface ScheduledTrain {
+  checkpointName: string;
+
   trainId: string;
   trainNo: number;
 

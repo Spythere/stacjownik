@@ -1,29 +1,32 @@
 <template>
   <section class="info-stats" :class="!station.onlineInfo ? 'no-stats' : ''">
     <span class="likes">
-      <img :src="getIcon('like')" alt="icon-like" />
+      <img src="/images/icon-like" alt="Likes count icon" />
       <span>{{ station.onlineInfo?.dispatcherRate || '0' }}</span>
     </span>
 
     <span class="users">
-      <img :src="getIcon('user')" alt="icon-user" />
+      <img src="/images/icon-user" alt="Users count icon" />
       <span>{{ station.onlineInfo?.currentUsers || '0' }}</span>
       /
       <span>{{ station.onlineInfo?.maxUsers || '0' }}</span>
     </span>
 
     <span class="spawns">
-      <img :src="getIcon('spawn')" alt="icon-spawn" />
+      <img src="/images/icon-spawn" alt="Spawns count icon" />
       <span>{{ station.onlineInfo?.spawns.length || '0' }}</span>
     </span>
 
     <span class="schedules">
-      <img :src="getIcon('timetable')" alt="icon-timetable" />
+      <img src="/images/icon-timetable" alt="Timetables count icon" />
       <span>
         <span style="color: #eee">{{ station.onlineInfo?.scheduledTrains?.length || '0' }}</span>
         /
         <span style="color: #bbb"
-          >{{ station.onlineInfo?.scheduledTrains?.filter((train) => train.stopInfo.confirmed).length || '0' }}
+          >{{
+            station.onlineInfo?.scheduledTrains?.filter((train) => train.stopInfo.confirmed)
+              .length || '0'
+          }}
         </span>
       </span>
     </span>
@@ -31,18 +34,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import imageMixin from '../../../mixins/imageMixin';
+import { PropType, defineComponent } from 'vue';
 import Station from '../../../scripts/interfaces/Station';
 
 export default defineComponent({
-  mixins: [imageMixin],
   props: {
     station: {
-      type: Object as () => Station,
-      default: {},
-    },
-  },
+      type: Object as PropType<Station>,
+      required: true
+    }
+  }
 });
 </script>
 

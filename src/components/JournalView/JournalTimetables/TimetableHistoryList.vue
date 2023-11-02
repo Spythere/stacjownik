@@ -23,7 +23,10 @@
 
           <button class="btn--option btn--show">
             {{ $t('journal.stock-info') }}
-            <img :src="getIcon(`arrow-${showExtraInfo.value ? 'asc' : 'desc'}`)" alt="Arrow" />
+            <img
+              :src="`/images/icon-arrow-${showExtraInfo.value ? 'asc' : 'desc'}.svg`"
+              alt="Arrow icon"
+            />
           </button>
           <!-- Extra -->
           <TimetableExtra :timetable="timetable" :showExtraInfo="showExtraInfo.value" />
@@ -35,7 +38,6 @@
 
 <script lang="ts">
 import { PropType, defineComponent, ref } from 'vue';
-import imageMixin from '../../../mixins/imageMixin';
 import { TimetableHistory } from '../../../scripts/interfaces/api/TimetablesAPIData';
 
 import TimetableGeneral from './TimetableGeneral.vue';
@@ -44,23 +46,22 @@ import TimetableStatus from './TimetableStatus.vue';
 import TimetableExtra from './TimetableExtra.vue';
 
 export default defineComponent({
-  mixins: [imageMixin],
   props: {
     timetableHistory: {
       type: Array as PropType<TimetableHistory[]>,
-      required: true,
-    },
+      required: true
+    }
   },
   computed: {
     computedTimetableHistory() {
       return this.timetableHistory.map((timetable) => ({
         timetable,
-        showExtraInfo: ref(false),
+        showExtraInfo: ref(false)
       }));
-    },
+    }
   },
   methods: {},
-  components: { TimetableGeneral, TimetableStops, TimetableStatus, TimetableExtra },
+  components: { TimetableGeneral, TimetableStops, TimetableStatus, TimetableExtra }
 });
 </script>
 

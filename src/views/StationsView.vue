@@ -3,7 +3,11 @@
     <div class="wrapper">
       <div class="body">
         <div class="options-bar">
-          <StationFilterCard :showCard="filterCardOpen" :exit="(filterCardOpen = false)" ref="filterCardRef" />
+          <StationFilterCard
+            :showCard="filterCardOpen"
+            :exit="(filterCardOpen = false)"
+            ref="filterCardRef"
+          />
         </div>
 
         <StationTable :stations="computedStationList" />
@@ -16,15 +20,13 @@
 import { defineComponent } from 'vue';
 import StationTable from '../components/StationsView/StationTable.vue';
 import StationFilterCard from '../components/StationsView/StationFilterCard.vue';
-import SelectBox from '../components/Global/SelectBox.vue';
 import { useStationFiltersStore } from '../store/stationFiltersStore';
 import { useStore } from '../store/store';
 
 export default defineComponent({
   components: {
     StationTable,
-    StationFilterCard,
-    SelectBox,
+    StationFilterCard
   },
 
   data: () => ({
@@ -32,24 +34,20 @@ export default defineComponent({
     modalHidden: true,
     STORAGE_KEY: 'options_saved',
     focusedStationName: '',
+    filterStore: useStationFiltersStore(),
+    store: useStore()
   }),
 
-  setup() {
-    return {
-      filterStore: useStationFiltersStore(),
-      store: useStore(),
-    };
-  },
 
   computed: {
     computedStationList() {
-      return this.filterStore.getFilteredStationList(this.store.stationList, this.store.region.id);
-    },
+      return this.filterStore.filteredStationList;
+    }
   },
 
   mounted() {
     this.filterStore.setupFilters();
-  },
+  }
 });
 </script>
 

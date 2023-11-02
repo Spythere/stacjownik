@@ -4,8 +4,14 @@
       <b>{{ $t('scenery.one-way-routes') }}</b>
 
       <ul class="routes-list">
-        <li v-for="route in station.generalInfo.routes.oneWay" @click="setActiveShowLength(route.name)">
-          <span :class="{ 'no-catenary': !route.catenary, internal: route.isInternal }"> {{ route.name }}</span>
+        <li
+          v-for="route in station.generalInfo.routes.oneWay"
+          :key="route.name"
+          @click="setActiveShowLength(route.name)"
+        >
+          <span :class="{ 'no-catenary': !route.catenary, internal: route.isInternal }">
+            {{ route.name }}</span
+          >
           <span v-if="route.speed" class="speed">
             {{ activeShowLength.includes(route.name) ? route.length + 'm' : route.speed }}
           </span>
@@ -18,8 +24,14 @@
       <b>{{ $t('scenery.two-way-routes') }}</b>
 
       <ul class="routes-list">
-        <li v-for="(route, i) in station.generalInfo.routes.twoWay" @click="setActiveShowLength(route.name)">
-          <span :class="{ 'no-catenary': !route.catenary, internal: route.isInternal }">{{ route.name }}</span>
+        <li
+          v-for="route in station.generalInfo.routes.twoWay"
+          :key="route.name"
+          @click="setActiveShowLength(route.name)"
+        >
+          <span :class="{ 'no-catenary': !route.catenary, internal: route.isInternal }">{{
+            route.name
+          }}</span>
           <span v-if="route.speed" class="speed">
             {{ activeShowLength.includes(route.name) ? route.length + 'm' : route.speed }}
           </span>
@@ -31,29 +43,30 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { PropType, defineComponent } from 'vue';
 import Station from '../../../scripts/interfaces/Station';
 
 export default defineComponent({
   props: {
     station: {
-      type: Object as () => Station,
-      default: {},
-    },
+      type: Object as PropType<Station>,
+      required: true
+    }
   },
 
   methods: {
     setActiveShowLength(name: string) {
-      if (this.activeShowLength.includes(name)) this.activeShowLength.splice(this.activeShowLength.indexOf(name), 1);
+      if (this.activeShowLength.includes(name))
+        this.activeShowLength.splice(this.activeShowLength.indexOf(name), 1);
       else this.activeShowLength.push(name);
-    },
+    }
   },
 
   data() {
     return {
-      activeShowLength: [] as string[],
+      activeShowLength: [] as string[]
     };
-  },
+  }
 });
 </script>
 

@@ -2,7 +2,7 @@ export enum TrainFilterSection {
   TRAIN_TYPE = 'TRAIN_TYPE',
   TIMETABLE_TYPE = 'TIMETABLE_TYPE',
   COMMENTS = 'COMMENTS',
-  TIMETABLE = 'TIMETABLE',
+  TIMETABLE = 'TIMETABLE'
 }
 
 export const enum TrainFilterType {
@@ -17,5 +17,5 @@ export const enum TrainFilterType {
   freight = 'freight',
   other = 'other',
   noTimetable = 'noTimetable',
-  withTimetable = 'withTimetable',
+  withTimetable = 'withTimetable'
 }

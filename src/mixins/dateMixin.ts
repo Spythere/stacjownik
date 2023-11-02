@@ -9,7 +9,7 @@ export default defineComponent({
         month: '2-digit',
         year: 'numeric',
         hour: '2-digit',
-        minute: '2-digit',
+        minute: '2-digit'
       });
     },
 
@@ -17,7 +17,7 @@ export default defineComponent({
       return new Date(dateString).toLocaleDateString(locale == 'pl' ? 'pl-PL' : 'en-GB', {
         day: 'numeric',
         month: '2-digit',
-        year: 'numeric',
+        year: 'numeric'
       });
     },
 
@@ -31,7 +31,7 @@ export default defineComponent({
     localeTime(dateString: string, locale: string) {
       return new Date(dateString).toLocaleTimeString(locale == 'pl' ? 'pl-PL' : 'en-GB', {
         hour: '2-digit',
-        minute: '2-digit',
+        minute: '2-digit'
       });
     },
 
@@ -43,7 +43,7 @@ export default defineComponent({
       return (
         date?.toLocaleTimeString('pl-PL', {
           hour: '2-digit',
-          minute: '2-digit',
+          minute: '2-digit'
         }) || ''
       );
     },
@@ -52,7 +52,7 @@ export default defineComponent({
       return timestamp
         ? new Date(timestamp).toLocaleTimeString('pl-PL', {
             hour: '2-digit',
-            minute: '2-digit',
+            minute: '2-digit'
           })
         : '';
     },
@@ -72,6 +72,6 @@ export default defineComponent({
         : showSeconds && secondsTotal <= 60
         ? this.$t('journal.seconds', { value: secondsTotal }, secondsTotal)
         : this.$t('journal.minutes', { value: minsTotal }, minsTotal);
-    },
-  },
+    }
+  }
 });

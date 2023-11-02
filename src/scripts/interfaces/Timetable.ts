@@ -1,4 +1,4 @@
-import TrainStop from "./TrainStop";
+import TrainStop from './TrainStop';
 
 export default interface Timetable {
   trainNo: number;
@@ -19,5 +19,5 @@ export default interface Timetable {
     routeDistance: number;
     followingStops: TrainStop[];
     followingSceneries: string[];
-  }
+  };
 }

@@ -3,24 +3,28 @@
     <div class="bg" v-if="showOptions" @click="showOptions = false"></div>
 
     <div class="actions-bar">
-      <button class="filter-button btn--filled btn--image" @click="showOptions = !showOptions" ref="button">
-        <img :src="getIcon('filter2')" alt="Open filters" />
+      <button
+        class="filter-button btn--filled btn--image"
+        @click="showOptions = !showOptions"
+        ref="button"
+      >
+        <img src="/images/icon-filter2.svg" alt="Open filters" />
         {{ $t('options.filters') }} [F]
         <span class="active-indicator" v-if="currentOptionsActive"></span>
       </button>
 
       <button class="filter-button btn--filled btn--image" @click="refreshData">
-        <img :src="getIcon('refresh')" alt="Refresh data" />
+        <img src="/images/icon-refresh.svg" alt="Refresh data" />
         {{ $t('general.refresh') }}
       </button>
     </div>
 
     <datalist id="search-driver">
-      <option v-for="sugg in driverSuggestions" :value="sugg"></option>
+      <option v-for="(sugg, i) in driverSuggestions" :key="i" :value="sugg"></option>
     </datalist>
 
     <datalist id="search-dispatcher">
-      <option v-for="sugg in dispatcherSuggestions" :value="sugg"></option>
+      <option v-for="(sugg, i) in dispatcherSuggestions" :key="i" :value="sugg"></option>
     </datalist>
 
     <transition name="options-anim">
@@ -29,7 +33,9 @@
           <h1 class="option-title">{{ $t('options.search-title') }}</h1>
           <div class="search_content">
             <div class="search" v-for="(_, propName) in searchersValues" :key="propName">
-              <label v-if="propName == 'search-date'" for="date">{{ $t(`options.search-${optionsType}-date`) }}</label>
+              <label v-if="propName == 'search-date'" for="date">{{
+                $t(`options.search-${optionsType}-date`)
+              }}</label>
 
               <div class="search-box">
                 <input
@@ -45,7 +51,11 @@
                 />
 
                 <button class="search-exit" v-if="propName != 'search-date'">
-                  <img :src="getIcon('exit')" alt="exit-icon" @click="onInputClear(propName)" />
+                  <img
+                    src="/images/icon-exit.svg"
+                    alt="exit-icon"
+                    @click="onInputClear(propName)"
+                  />
                 </button>
               </div>
             </div>
@@ -53,7 +63,7 @@
 
           <h1 class="option-title">{{ $t('options.sort-title') }}</h1>
           <div class="options_sorters">
-            <div v-for="opt in translatedSorterOptions">
+            <div v-for="opt in translatedSorterOptions" :key="opt.id">
               <button
                 class="sort-option btn--option"
                 :data-selected="opt.id == sorterActive.id"
@@ -67,12 +77,13 @@
           <h1 class="option-title" v-if="filters.length != 0">{{ $t('options.filter-title') }}</h1>
 
           <div class="options_filter-sections" v-if="filters.length != 0 && filterList">
-            <section class="filter-section" v-for="section in JournalFilterSection">
+            <section class="filter-section" v-for="section in JournalFilterSection" :key="section">
               <p>{{ $t(`options.filter-section-${section}`) }}</p>
 
               <div class="options_filters">
                 <button
                   v-for="filter in filterList.filter((f) => f.filterSection == section)"
+                  :key="filter.id"
                   class="filter-option btn--option"
                   :class="{ checked: filter.isActive }"
                   :id="filter.id"
@@ -101,47 +112,43 @@
 <script lang="ts">
 import axios from 'axios';
 import { defineComponent, inject, PropType } from 'vue';
-import imageMixin from '../../mixins/imageMixin';
 import keyMixin from '../../mixins/keyMixin';
 import { DataStatus } from '../../scripts/enums/DataStatus';
 import { DriverStatsAPIData } from '../../scripts/interfaces/api/DriverStatsAPIData';
 import { URLs } from '../../scripts/utils/apiURLs';
 import { useStore } from '../../store/store';
-import ActionButton from '../Global/ActionButton.vue';
-import SelectBox from '../Global/SelectBox.vue';
 import { JournalFilterSection } from '../../scripts/enums/JournalFilterType';
 import { JournalFilter } from '../../scripts/types/JournalTimetablesTypes';
 
 export default defineComponent({
-  components: { SelectBox, ActionButton },
   emits: ['onSearchConfirm', 'onOptionsReset', 'onRefreshData'],
-  mixins: [imageMixin, keyMixin],
+  mixins: [keyMixin],
 
   props: {
     sorterOptionIds: {
       type: Array as PropType<Array<string>>,
-      required: true,
+      required: true
     },
 
     filters: {
       type: Array as PropType<JournalFilter[]>,
-      default: [],
+      default: () => []
     },
 
     dataStatus: {
       type: Number as PropType<DataStatus>,
-      default: DataStatus.Initialized,
+      default: DataStatus.Initialized
     },
 
     currentOptionsActive: {
       type: Boolean,
-      default: false,
+      default: false
     },
 
     optionsType: {
       type: String,
-      required: true,
-    },
+      required: true
+    }
   },
 
   data() {
@@ -155,7 +162,7 @@ export default defineComponent({
       searchTimeout: 0,
       store: useStore(),
 
-      DataStatus,
+      DataStatus
     };
   },
 
@@ -163,26 +170,21 @@ export default defineComponent({
     return {
       searchersValues: inject('searchersValues') as { [key: string]: string },
       sorterActive: inject('sorterActive') as { id: string | number; dir: number },
-      // journalFilterActive: inject('journalFilterActive') as JournalFilter,
-      filterList: inject('filterList') as JournalFilter[] | undefined,
+      filterList: inject('filterList') as JournalFilter[] | undefined
     };
   },
 
   computed: {
-    driverStatsName() {
-      return this.store.driverStatsName;
-    },
-
     translatedSorterOptions() {
       return this.$props.sorterOptionIds.map((id) => ({
         id,
-        value: this.$t(`options.sort-${id}`),
+        value: this.$t(`options.sort-${id}`)
       }));
-    },
+    }
   },
 
   watch: {
-    async driverStatsName(value: string) {
+    async 'store.driverStatsName'() {
       await this.fetchDriverStats();
 
       // if (value) this.store.currentStatsTab = 'driver';
@@ -202,7 +204,7 @@ export default defineComponent({
       if (value.length < 3) return;
 
       this.startSearchTimeout('dispatcher', value);
-    },
+    }
   },
 
   methods: {
@@ -218,7 +220,9 @@ export default defineComponent({
         this.store.driverStatsStatus = DataStatus.Loading;
 
         const statsData: DriverStatsAPIData = await (
-          await axios.get(`${URLs.stacjownikAPI}/api/getDriverInfo?name=${this.store.driverStatsName}`)
+          await axios.get(
+            `${URLs.stacjownikAPI}/api/getDriverInfo?name=${this.store.driverStatsName}`
+          )
         ).data;
 
         this.store.driverStatsData = statsData;
@@ -268,7 +272,9 @@ export default defineComponent({
 
     onFilterChange(filter: JournalFilter) {
       // this.journalFilterActive = filter;
-      this.filterList?.filter((f) => f.filterSection === filter.filterSection).forEach((f) => (f.isActive = false));
+      this.filterList
+        ?.filter((f) => f.filterSection === filter.filterSection)
+        .forEach((f) => (f.isActive = false));
       filter.isActive = true;
 
       this.$emit('onSearchConfirm');
@@ -290,8 +296,8 @@ export default defineComponent({
 
     onResetButtonClick() {
       this.$emit('onOptionsReset');
-    },
-  },
+    }
+  }
 });
 </script>
 

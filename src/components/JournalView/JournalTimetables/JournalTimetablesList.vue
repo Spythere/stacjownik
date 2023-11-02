@@ -30,7 +30,9 @@
     </transition>
 
     <div class="journal_warning" v-if="scrollNoMoreData">{{ $t('journal.no-further-data') }}</div>
-    <div class="journal_warning" v-else-if="!scrollDataLoaded">{{ $t('journal.loading-further-data') }}</div>
+    <div class="journal_warning" v-else-if="!scrollDataLoaded">
+      {{ $t('journal.loading-further-data') }}
+    </div>
   </div>
 </template>
 
@@ -41,38 +43,37 @@ import { TimetableHistory } from '../../../scripts/interfaces/api/TimetablesAPID
 import { useStore } from '../../../store/store';
 
 import Loading from '../../Global/Loading.vue';
-import ProgressBar from '../../Global/ProgressBar.vue';
 import AddDataButton from '../../Global/AddDataButton.vue';
 import TimetableHistoryList from './TimetableHistoryList.vue';
 
 export default defineComponent({
-  components: { ProgressBar, Loading, AddDataButton, TimetableHistoryList },
+  components: { Loading, AddDataButton, TimetableHistoryList },
 
   props: {
     timetableHistory: {
       type: Array as PropType<TimetableHistory[]>,
-      required: true,
+      required: true
     },
     scrollNoMoreData: {
-      type: Boolean,
+      type: Boolean
     },
     scrollDataLoaded: {
-      type: Boolean,
+      type: Boolean
     },
     addHistoryData: {
-      type: Function as PropType<() => void>,
+      type: Function as PropType<() => void>
     },
     dataStatus: {
-      type: Number as PropType<DataStatus>,
-    },
+      type: Number as PropType<DataStatus>
+    }
   },
 
   data() {
     return {
       DataStatus,
-      store: useStore(),
+      store: useStore()
     };
-  },
+  }
 });
 </script>
 

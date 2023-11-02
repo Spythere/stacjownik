@@ -15,18 +15,18 @@ export default defineComponent({
   props: {
     scrollNoMoreData: {
       type: Boolean,
-      required: true,
+      required: true
     },
 
     scrollDataLoaded: {
       type: Boolean,
-      required: true,
+      required: true
     },
 
     list: {
       type: Array as PropType<any[]>,
-      required: true,
-    },
+      required: true
+    }
   },
 
   emits: ['addHistoryData'],
@@ -34,8 +34,8 @@ export default defineComponent({
   methods: {
     addHistoryData() {
       this.$emit('addHistoryData');
-    },
-  },
+    }
+  }
 });
 </script>
 

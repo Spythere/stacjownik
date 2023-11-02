@@ -5,7 +5,7 @@
         <span>{{ computedSelectedItem.selectedValue || computedSelectedItem.value }}</span>
 
         <div class="arrow">
-          <img :src="listOpen ? getIcon('arrow-asc') : getIcon('arrow-desc')" alt="arrow-icon" />
+          <img :src="`/images/icon-arrow-${listOpen ? 'asc' : 'desc'}.svg`" alt="Arrow icon" />
         </div>
       </button>
 
@@ -19,7 +19,11 @@
           >
             <label :for="item.id" v-if="listOpen">
               <input type="button" :id="item.id" name="select-box" @click="selectOption(item)" />
-              <span :style="computedSelectedItem.id == item.id ? 'color: gold;' : ''" v-html="item.value"> </span>
+              <span
+                :style="computedSelectedItem.id == item.id ? 'color: gold;' : ''"
+                v-html="item.value"
+              >
+              </span>
             </label>
           </transition>
         </li>
@@ -30,7 +34,6 @@
 
 <script lang="ts">
 import { defineComponent, Ref, ref, computed } from 'vue';
-import imageMixin from '../../mixins/imageMixin';
 
 interface Item {
   id: string;
@@ -40,23 +43,22 @@ interface Item {
 
 export default defineComponent({
   emits: ['selected'],
-  mixins: [imageMixin],
 
   props: {
     itemList: {
       type: Array as () => Item[],
-      required: true,
+      required: true
     },
 
     defaultItemIndex: {
       type: Number,
-      default: 0,
+      default: 0
     },
 
     prefix: {
       type: String,
-      default: '',
-    },
+      default: ''
+    }
   },
 
   setup(props) {
@@ -69,7 +71,10 @@ export default defineComponent({
     let selectedItem: Ref<Item> = ref(props.itemList[props.defaultItemIndex]);
 
     const computedSelectedItem = computed(() => {
-      return props.itemList.find((item) => item.id === selectedItem.value.id) || props.itemList[props.defaultItemIndex];
+      return (
+        props.itemList.find((item) => item.id === selectedItem.value.id) ||
+        props.itemList[props.defaultItemIndex]
+      );
     });
 
     return {
@@ -78,8 +83,21 @@ export default defineComponent({
       selectedItem,
       listRef,
       buttonRef,
-      activeEl,
+      activeEl
     };
+  },
+
+  watch: {
+    '$route.query': {
+      immediate: true,
+      handler(newVal) {
+        if (newVal.region) {
+          const item = this.itemList.find((it) => it.id == newVal.region);
+
+          if (item) this.selectedItem = item;
+        }
+      }
+    }
   },
 
   methods: {
@@ -99,8 +117,8 @@ export default defineComponent({
     clickedOutside() {
       this.listOpen = false;
       this.buttonRef?.blur();
-    },
-  },
+    }
+  }
 });
 </script>
 

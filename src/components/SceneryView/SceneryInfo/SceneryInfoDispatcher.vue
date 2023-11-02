@@ -1,56 +1,51 @@
 <template>
   <section class="info-dispatcher">
-    <div class="dispatcher" v-if="station.onlineInfo">
+    <div class="dispatcher" v-if="onlineScenery">
       <span
         class="dispatcher_level"
-        :style="calculateExpStyle(station.onlineInfo.dispatcherExp, station.onlineInfo.dispatcherIsSupporter)"
+        :style="calculateExpStyle(onlineScenery.dispatcherExp, onlineScenery.dispatcherIsSupporter)"
       >
-        {{ station.onlineInfo.dispatcherExp > 1 ? station.onlineInfo.dispatcherExp : 'L' }}
+        {{ onlineScenery.dispatcherExp > 1 ? onlineScenery.dispatcherExp : 'L' }}
       </span>
 
       <router-link
         class="dispatcher_name"
-        :to="`/journal/dispatchers?dispatcherName=${station.onlineInfo.dispatcherName}`"
+        :to="`/journal/dispatchers?dispatcherName=${onlineScenery.dispatcherName}`"
       >
-        {{ station.onlineInfo.dispatcherName }}
+        {{ onlineScenery.dispatcherName }}
       </router-link>
 
       <span class="dispatcher_likes text--primary">
-        <img :src="getIcon('like')" alt="icon-like" />
-        <span>{{ station.onlineInfo?.dispatcherRate || '0' }}</span>
+        <img src="/images/icon-like.svg" alt="Likes count icon" />
+        <span>{{ onlineScenery?.dispatcherRate || '0' }}</span>
       </span>
     </div>
 
     <StationStatusBadge
-      :statusID="station.onlineInfo?.statusID"
-      :isOnline="station.onlineInfo ? true : false"
-      :statusTimestamp="station.onlineInfo?.statusTimestamp"
+      :statusID="onlineScenery?.statusID"
+      :isOnline="onlineScenery ? true : false"
+      :statusTimestamp="onlineScenery?.statusTimestamp"
     />
   </section>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { PropType, defineComponent } from 'vue';
 import dateMixin from '../../../mixins/dateMixin';
-import imageMixin from '../../../mixins/imageMixin';
 import routerMixin from '../../../mixins/routerMixin';
 import styleMixin from '../../../mixins/styleMixin';
-import Station from '../../../scripts/interfaces/Station';
 import StationStatusBadge from '../../Global/StationStatusBadge.vue';
+import { OnlineScenery } from '../../../scripts/interfaces/store/storeTypes';
 
 export default defineComponent({
-    mixins: [styleMixin, dateMixin, routerMixin, imageMixin],
-    props: {
-        station: {
-            type: Object as () => Station,
-            default: {},
-        },
-        onlineFrom: {
-            type: Number,
-            default: -1,
-        },
-    },
-    components: { StationStatusBadge }
+  mixins: [styleMixin, dateMixin, routerMixin],
+  props: {
+    onlineScenery: {
+      type: Object as PropType<OnlineScenery>,
+      required: false
+    }
+  },
+  components: { StationStatusBadge }
 });
 </script>
 
@@ -98,4 +93,3 @@ export default defineComponent({
   }
 }
 </style>
-

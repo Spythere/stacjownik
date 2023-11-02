@@ -25,7 +25,7 @@ import { TrainFilter } from '../scripts/interfaces/Trains/TrainFilter';
 export default defineComponent({
   components: {
     TrainTable,
-    TrainOptions,
+    TrainOptions
   },
 
   mixins: [modalTrainMixin],
@@ -33,22 +33,22 @@ export default defineComponent({
   props: {
     train: {
       type: String,
-      required: false,
+      required: false
     },
 
     driver: {
       type: String,
-      required: false,
+      required: false
     },
 
     trainId: {
       type: String,
-      required: false,
-    },
+      required: false
+    }
   },
 
   data: () => ({
-    trainStatsOpen: false,
+    trainStatsOpen: false
   }),
 
   setup() {
@@ -69,14 +69,20 @@ export default defineComponent({
     provide('filterList', filterList);
 
     const computedTrains: ComputedRef<Train[]> = computed(() => {
-      return filteredTrainList(store.trainList, searchedTrain.value, searchedDriver.value, sorterActive, filterList);
+      return filteredTrainList(
+        store.trainList,
+        searchedTrain.value,
+        searchedDriver.value,
+        sorterActive,
+        filterList
+      );
     });
 
     watch([searchedTrain, searchedDriver, sorterActive, filterList], ([sT, sD, sA, fL]) => {
       const areFiltersActive = fL.some((f, i) => f.isActive !== initTrainFilters[i].isActive);
 
-      
-      currentOptionsActive.value = sT.length > 0 || sD.length > 0 || sA.id != 'routeDistance' || areFiltersActive;
+      currentOptionsActive.value =
+        sT.length > 0 || sD.length > 0 || sA.id != 'routeDistance' || areFiltersActive;
       console.log(sA.id);
     });
 
@@ -86,7 +92,7 @@ export default defineComponent({
       searchedDriver,
       sorterActive,
       store,
-      currentOptionsActive,
+      currentOptionsActive
     };
   },
 
@@ -101,7 +107,7 @@ export default defineComponent({
         this.selectModalTrain(this.trainId);
       }
     });
-  },
+  }
 });
 </script>
 

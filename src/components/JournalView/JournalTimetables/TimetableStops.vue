@@ -38,8 +38,8 @@ export default defineComponent({
 
     timetable: {
       type: Object as PropType<TimetableHistory>,
-      required: true,
-    },
+      required: true
+    }
   },
 
   computed: {
@@ -65,12 +65,18 @@ export default defineComponent({
         if (i == 0) return { stopName, html: beginDateHTML, confirmed };
         if (i == stopNames.length - 1) return { stopName, html: endDateHTML, confirmed };
 
-        const departureDateScheduled = this.stringToDate(timetable.checkpointDeparturesScheduled?.at(i));
+        const departureDateScheduled = this.stringToDate(
+          timetable.checkpointDeparturesScheduled?.at(i)
+        );
         const departureDateReal = this.stringToDate(timetable.checkpointDepartures?.at(i));
-        const arrivalDateScheduled = this.stringToDate(timetable.checkpointArrivalsScheduled?.at(i));
+        const arrivalDateScheduled = this.stringToDate(
+          timetable.checkpointArrivalsScheduled?.at(i)
+        );
         const arrivalDateReal = this.stringToDate(timetable.checkpointArrivals?.at(i));
         const arrivalHTML =
-          (arrivalDateReal && arrivalDateScheduled && arrivalDateReal?.getTime() != arrivalDateScheduled?.getTime()
+          (arrivalDateReal &&
+          arrivalDateScheduled &&
+          arrivalDateReal?.getTime() != arrivalDateScheduled?.getTime()
             ? `<s class="text--grayed">${this.parseDateToTimeString(arrivalDateScheduled)}</s> `
             : '') + this.parseDateToTimeString(arrivalDateReal || arrivalDateScheduled);
         const departureHTML =
@@ -83,8 +89,8 @@ export default defineComponent({
         if (html) html = ` (${html})`;
         return { stopName, html, confirmed };
       });
-    },
-  },
+    }
+  }
 });
 </script>
 

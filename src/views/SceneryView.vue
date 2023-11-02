@@ -1,6 +1,6 @@
 <template>
   <div class="scenery-view">
-    <div class="scenery-offline" v-if="!stationInfo && isComponentVisible && store.dataStatuses.sceneries == 2">
+    <div class="scenery-offline" v-if="!stationInfo && store.dataStatuses.sceneries == 2">
       <div>{{ $t('scenery.no-scenery') }}</div>
 
       <action-button>
@@ -8,22 +8,23 @@
       </action-button>
     </div>
 
-    <div class="scenery-wrapper" v-if="stationInfo" ref="card-wrapper" :data-timetable-only="timetableOnly">
-      <div class="scenery-left" v-if="!timetableOnly">
+    <div class="scenery-wrapper" v-if="stationInfo" ref="card-wrapper">
+      <div class="scenery-left">
         <div class="scenery-actions">
           <button class="back-btn btn" :title="$t('scenery.return-btn')" @click="navigateTo('/')">
-            <img :src="getIcon('back')" alt="Back to scenery" />
+            <img src="/images/icon-back.svg" alt="Back to scenery" />
           </button>
         </div>
 
-        <SceneryHeader :station="stationInfo" />
-        <SceneryInfo :station="stationInfo" />
+        <SceneryHeader :station="stationInfo" :onlineScenery="onlineSceneryInfo" />
+        <SceneryInfo :station="stationInfo" :onlineScenery="onlineSceneryInfo" />
       </div>
 
       <div class="scenery-right">
         <div class="info-actions">
           <button
-            v-for="viewMode in viewModes"
+            v-for="(viewMode, i) in viewModes"
+            :key="i"
             class="btn btn--option"
             @click="setViewMode(viewMode.component)"
             :data-checked="currentViewCompontent == viewMode.component"
@@ -33,7 +34,12 @@
         </div>
 
         <keep-alive>
-          <component :is="currentViewCompontent" :station="stationInfo" :key="currentViewCompontent"></component>
+          <component
+            :is="currentViewCompontent"
+            :onlineScenery="onlineSceneryInfo"
+            :station="stationInfo"
+            :key="currentViewCompontent"
+          ></component>
         </keep-alive>
       </div>
     </div>
@@ -41,7 +47,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from 'vue';
+import { computed, defineComponent } from 'vue';
 import { useRoute } from 'vue-router';
 import routerMixin from '../mixins/routerMixin';
 import { useStore } from '../store/store';
@@ -52,12 +58,11 @@ import SceneryTimetable from '../components/SceneryView/SceneryTimetable.vue';
 import SceneryTimetablesHistory from '../components/SceneryView/SceneryTimetablesHistory.vue';
 import SceneryDispatchersHistory from '../components/SceneryView/SceneryDispatchersHistory.vue';
 import ActionButton from '../components/Global/ActionButton.vue';
-import imageMixin from '../mixins/imageMixin';
 
 enum SceneryViewMode {
   'TIMETABLES_ACTIVE',
   'TIMETABLES_HISTORY',
-  'SCENERY_HISTORY',
+  'SCENERY_HISTORY'
 }
 
 export default defineComponent({
@@ -67,30 +72,43 @@ export default defineComponent({
     ActionButton,
     SceneryHeader,
     SceneryTimetablesHistory,
-    SceneryDispatchersHistory,
+    SceneryDispatchersHistory
   },
 
-  mixins: [routerMixin, imageMixin],
+  props: {
+    region: {
+      type: String,
+      required: false
+    },
+
+    station: {
+      type: String,
+      required: true
+    }
+  },
+
+  mixins: [routerMixin],
 
   data: () => ({
+    store: useStore(),
     viewModes: [
       {
         id: 'scenery.option-active-timetables',
-        component: 'SceneryTimetable',
+        component: 'SceneryTimetable'
       },
       {
         id: 'scenery.option-timetables-history',
-        component: 'SceneryTimetablesHistory',
+        component: 'SceneryTimetablesHistory'
       },
       {
         id: 'scenery.option-dispatchers-history',
-        component: 'SceneryDispatchersHistory',
-      },
+        component: 'SceneryDispatchersHistory'
+      }
     ],
     sceneryViewMode: SceneryViewMode,
     selectedCheckpoint: '',
     currentViewCompontent: 'SceneryTimetable',
-    onlineFrom: -1,
+    onlineFrom: -1
   }),
 
   activated() {
@@ -99,22 +117,28 @@ export default defineComponent({
 
   setup() {
     const route = useRoute();
-    const store = useStore();
 
-    const timetableOnly = computed(() => (route.query['timetableOnly'] == '1' ? true : false));
     const isComponentVisible = computed(() => route.path === '/scenery');
 
-    const stationInfo = computed(() => {
-      return store.stationList.find((station) => station.name === route.query.station?.toString().replace(/_/g, ' '));
-    });
-
     return {
-      timetableOnly,
-      isComponentVisible,
-      stationInfo,
-      store,
+      isComponentVisible
     };
   },
+
+  computed: {
+    stationInfo() {
+      return this.store.stationList.find(
+        (station) => station.name === this.station?.toString().replace(/_/g, ' ')
+      );
+    },
+
+    onlineSceneryInfo() {
+      return this.store.onlineSceneryList.find(
+        (scenery) => scenery.name === this.station?.toString().replace(/_/g, ' ')
+      );
+    }
+  },
+
   methods: {
     setViewMode(componentName: string) {
       this.currentViewCompontent = componentName;
@@ -128,8 +152,8 @@ export default defineComponent({
 
     selectCheckpoint(cp: { checkpointName: string }) {
       this.selectedCheckpoint = cp.checkpointName;
-    },
-  },
+    }
+  }
 });
 </script>
 

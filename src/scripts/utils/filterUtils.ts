@@ -1,8 +1,13 @@
 import { HeadIdsTypes } from '../data/stationHeaderNames';
+import { DispatcherStatusID } from '../enums/DispatcherStatus';
 import Filter from '../interfaces/Filter';
 import Station from '../interfaces/Station';
 
-export const sortStations = (a: Station, b: Station, sorter: { headerName: HeadIdsTypes; dir: number }) => {
+export const sortStations = (
+  a: Station,
+  b: Station,
+  sorter: { headerName: HeadIdsTypes; dir: number }
+) => {
   let diff = 0;
 
   switch (sorter.headerName) {
@@ -18,9 +23,15 @@ export const sortStations = (a: Station, b: Station, sorter: { headerName: HeadI
       break;
 
     case 'dispatcher':
-      if ((a.onlineInfo?.dispatcherName.toLowerCase() || '') > (b.onlineInfo?.dispatcherName.toLowerCase() || ''))
+      if (
+        (a.onlineInfo?.dispatcherName.toLowerCase() || '') >
+        (b.onlineInfo?.dispatcherName.toLowerCase() || '')
+      )
         return sorter.dir;
-      if ((a.onlineInfo?.dispatcherName.toLowerCase() || '') < (b.onlineInfo?.dispatcherName.toLowerCase() || ''))
+      if (
+        (a.onlineInfo?.dispatcherName.toLowerCase() || '') <
+        (b.onlineInfo?.dispatcherName.toLowerCase() || '')
+      )
         return -sorter.dir;
       break;
 
@@ -29,11 +40,15 @@ export const sortStations = (a: Station, b: Station, sorter: { headerName: HeadI
       break;
 
     case 'user':
-      diff = (b.onlineInfo ? b.onlineInfo.currentUsers : -1) - (a.onlineInfo ? a.onlineInfo.currentUsers : -1);
+      diff =
+        (b.onlineInfo ? b.onlineInfo.currentUsers : -1) -
+        (a.onlineInfo ? a.onlineInfo.currentUsers : -1);
       break;
 
     case 'spawn':
-      diff = (a.onlineInfo ? a.onlineInfo.spawns.length : -1) - (b.onlineInfo ? b.onlineInfo.spawns.length : -1);
+      diff =
+        (a.onlineInfo ? a.onlineInfo.spawns.length : -1) -
+        (b.onlineInfo ? b.onlineInfo.spawns.length : -1);
       break;
 
     case 'timetableConfirmed':
@@ -76,10 +91,15 @@ export const filterStations = (station: Station, filters: Filter) => {
   if (station.onlineInfo) {
     const { statusID, statusTimestamp } = station.onlineInfo;
 
-    const isEnding = statusID == 'ending' && filters['endingStatus'];
-    const isNotSigned = (statusID == 'not-signed' || statusID == 'unavailable') && filters['unavailableStatus'];
+    const isEnding = statusID == DispatcherStatusID.Ending && filters['endingStatus'];
+
+    const isNotSigned =
+      (statusID == 'not-signed' || statusID == 'unavailable') && filters['unavailableStatus'];
+
     const isAFK = statusID == 'brb' && filters['afkStatus'];
+
     const isNoSpace = statusID == 'no-space' && filters['noSpaceStatus'];
+
     const isOccupied = station.onlineInfo && filters['occupied'];
 
     const isOnlineInBounds =
@@ -89,15 +109,22 @@ export const filterStations = (station: Station, filters: Filter) => {
       (filters['onlineFromHours'] > 0 && statusTimestamp <= 0) ||
       (filters['onlineFromHours'] == 8 && statusID != 'no-limit');
 
-    if (isEnding || isOnlineInBounds || isNotSigned || isAFK || isNoSpace || isOccupied) return false;
+    if (isEnding || isOnlineInBounds || isNotSigned || isAFK || isNoSpace || isOccupied)
+      return false;
   }
 
-  if ((station.generalInfo?.availability == 'nonPublic' || !station.generalInfo) && filters['nonPublic']) return false;
+  if (
+    (station.generalInfo?.availability == 'nonPublic' || !station.generalInfo) &&
+    filters['nonPublic']
+  )
+    return false;
 
   if (station.generalInfo) {
-    const { routes, availability, controlType, lines, reqLevel, signalType, SUP, authors } = station.generalInfo;
+    const { routes, availability, controlType, lines, reqLevel, signalType, SUP, authors } =
+      station.generalInfo;
 
-    if (availability == 'unavailable' && filters['unavailable'] && !station.onlineInfo) return false;
+    if (availability == 'unavailable' && filters['unavailable'] && !station.onlineInfo)
+      return false;
     if (availability == 'abandoned' && filters['abandoned'] && !station.onlineInfo) return false;
     if (availability == 'default' && filters['default']) return false;
 

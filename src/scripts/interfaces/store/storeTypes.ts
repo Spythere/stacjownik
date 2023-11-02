@@ -2,21 +2,21 @@ import { Socket } from 'socket.io-client';
 import { DataStatus } from '../../enums/DataStatus';
 import StationAPIData from '../api/StationAPIData';
 import { TrainAPIData } from '../api/TrainAPIData';
-import Station from '../Station';
-import Train from '../Train';
 import { DispatcherStatsAPIData } from '../api/DispatcherStatsAPIData';
 import { DriverStatsAPIData } from '../api/DriverStatsAPIData';
 import { RollingStockGithubData } from '../github_api/StockInfoGithubData';
+import Station from '../Station';
+import { ScheduledTrain } from '../ScheduledTrain';
+import { DispatcherStatusID } from '../../enums/DispatcherStatus';
 
 export type Availability = 'default' | 'unavailable' | 'nonPublic' | 'abandoned' | 'nonDefault';
 
 export interface StoreState {
   stationList: Station[];
-  trainList: Train[];
   apiData: APIData;
   rollingStockData?: RollingStockGithubData;
 
-  lastDispatcherStatuses: { hash: string; statusTimestamp: number; statusID: string }[];
+  lastDispatcherStatuses: { hash: string; statusTimestamp: number; statusID: DispatcherStatusID }[];
 
   sceneryData: any[][];
 
@@ -90,4 +90,40 @@ export interface StationJSONData {
   authors?: string;
 
   availability: Availability;
+}
+
+export interface StationTrain {
+  driverName: string;
+  driverId: number;
+  trainNo: number;
+  trainId: string;
+  stopStatus: string;
+}
+
+export interface OnlineScenery {
+  name: string;
+  hash: string;
+  region: string;
+  maxUsers: number;
+  currentUsers: number;
+  spawns: { spawnName: string; spawnLength: number; isElectrified: boolean }[];
+  dispatcherName: string;
+  dispatcherRate: number;
+  dispatcherId: number;
+  dispatcherExp: number;
+  dispatcherIsSupporter: boolean;
+
+  statusTimestamp: number;
+  statusID: DispatcherStatusID;
+
+  isOnline: boolean;
+
+  stationTrains?: StationTrain[];
+  scheduledTrains?: ScheduledTrain[];
+
+  scheduledTrainCount: {
+    all: number;
+    confirmed: number;
+    unconfirmed: number;
+  }
 }

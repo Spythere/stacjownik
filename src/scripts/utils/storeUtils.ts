@@ -1,37 +1,49 @@
+import { DispatcherStatusID } from '../enums/DispatcherStatus';
 import { ScheduledTrain, StopStatus } from '../interfaces/ScheduledTrain';
+import Station from '../interfaces/Station';
 import Train from '../interfaces/Train';
 import TrainStop from '../interfaces/TrainStop';
+import StationAPIData from '../interfaces/api/StationAPIData';
+import { StationTrain, StoreState } from '../interfaces/store/storeTypes';
 
-export const getLocoURL = (locoType: string): string => `https://rj.td2.info.pl/dist/img/thumbnails/${locoType.includes('EN') ? locoType + 'rb' : locoType}.png`;
+export const getLocoURL = (locoType: string): string =>
+  `https://rj.td2.info.pl/dist/img/thumbnails/${
+    locoType.includes('EN') ? locoType + 'rb' : locoType
+  }.png`;
 
-export const getStatusID = (stationStatus: any): string => {
-  if (!stationStatus) return 'unknown';
-  if (stationStatus == -1) return 'not-signed';
+export const getStatusID = (
+  stationStatus: any[] | undefined,
+  isSWDROnline: boolean
+): DispatcherStatusID => {
+  if (isSWDROnline && !stationStatus) return DispatcherStatusID.Unauthorized;
+  if (!stationStatus) return DispatcherStatusID.Unknown;
+
+  // if (stationStatus == -1) return DispatcherStatusID.Unauthorized;
 
   const statusCode = stationStatus[2];
   const statusTimestamp = stationStatus[3];
 
   switch (statusCode) {
     case 0:
-      if (statusTimestamp - Date.now() > 21000000) return 'no-limit';
+      if (statusTimestamp - Date.now() > 21000000) return DispatcherStatusID.OnlineNoLimit;
 
-      return 'online';
+      return DispatcherStatusID.OnlineWithHours;
 
     case 1:
-      return 'brb';
+      return DispatcherStatusID.Afk;
 
     case 2:
-      if (statusTimestamp == 0) return 'ending';
+      if (statusTimestamp == 0) return DispatcherStatusID.Ending;
       break;
 
     case 3:
-      return 'no-space';
+      return DispatcherStatusID.NoSpace;
 
     default:
       break;
   }
 
-  return 'unavailable';
+  return DispatcherStatusID.Unavailable;
 };
 
 export const getStatusTimestamp = (stationStatus: any): number => {
@@ -73,7 +85,11 @@ export const parseSpawns = (spawnString: string | null) => {
 
 export const getTimestamp = (date: string | null): number => (date ? new Date(date).getTime() : 0);
 
-export const getTrainStopStatus = (stopInfo: TrainStop, currentStationName: string, stationName: string) => {
+export const getTrainStopStatus = (
+  stopInfo: TrainStop,
+  currentStationName: string,
+  sceneryName: string
+) => {
   let stopStatus = StopStatus['arriving'],
     stopLabel = '',
     stopStatusID = -1;
@@ -82,23 +98,23 @@ export const getTrainStopStatus = (stopInfo: TrainStop, currentStationName: stri
     stopStatus = StopStatus['terminated'];
     stopLabel = 'Skończył bieg';
     stopStatusID = 5;
-  } else if (!stopInfo.terminatesHere && stopInfo.confirmed && currentStationName == stationName) {
+  } else if (!stopInfo.terminatesHere && stopInfo.confirmed && currentStationName == sceneryName) {
     stopStatus = StopStatus['departed'];
     stopLabel = 'Odprawiony';
     stopStatusID = 2;
-  } else if (!stopInfo.terminatesHere && stopInfo.confirmed && currentStationName != stationName) {
+  } else if (!stopInfo.terminatesHere && stopInfo.confirmed && currentStationName != sceneryName) {
     stopStatus = StopStatus['departed-away'];
     stopLabel = 'Odjechał';
     stopStatusID = 4;
-  } else if (currentStationName == stationName && !stopInfo.stopped) {
+  } else if (currentStationName == sceneryName && !stopInfo.stopped) {
     stopStatus = StopStatus['online'];
     stopLabel = 'Na stacji';
     stopStatusID = 0;
-  } else if (currentStationName == stationName && stopInfo.stopped) {
+  } else if (currentStationName == sceneryName && stopInfo.stopped) {
     stopStatus = StopStatus['stopped'];
     stopLabel = 'Postój';
     stopStatusID = 1;
-  } else if (currentStationName != stationName) {
+  } else if (currentStationName != sceneryName) {
     stopStatus = StopStatus['arriving'];
     stopLabel = 'W drodze';
     stopStatusID = 3;
@@ -107,12 +123,16 @@ export const getTrainStopStatus = (stopInfo: TrainStop, currentStationName: stri
   return { stopStatus, stopLabel, stopStatusID };
 };
 
-export function getScheduledTrain(train: Train, trainStopIndex: number, stationName: string): ScheduledTrain {
+export function getCheckpointTrain(
+  train: Train,
+  trainStopIndex: number,
+  sceneryName: string
+): ScheduledTrain {
   const timetable = train.timetableData!;
   const followingStops = timetable.followingStops;
   const trainStop = followingStops[trainStopIndex];
 
-  const trainStopStatus = getTrainStopStatus(trainStop, train.currentStationName, stationName);
+  const trainStopStatus = getTrainStopStatus(trainStop, train.currentStationName, sceneryName);
 
   let prevStationName = '',
     nextStationName = '';
@@ -166,6 +186,8 @@ export function getScheduledTrain(train: Train, trainStopIndex: number, stationN
   }
 
   return {
+    checkpointName: trainStop.stopNameRAW,
+
     trainNo: train.trainNo,
     trainId: train.trainId,
 
@@ -192,6 +214,119 @@ export function getScheduledTrain(train: Train, trainStopIndex: number, stationN
     departureLine,
 
     nextArrivalLine,
-    prevDepartureLine,
+    prevDepartureLine
   };
+}
+
+export function getDispatcherStatus(state: StoreState, onlineStationData: StationAPIData) {
+  const { dispatchers } = state.apiData;
+
+  const prevDispatcherStatus = state.lastDispatcherStatuses.find(
+    (dispatcher) => dispatcher.hash === onlineStationData.stationHash
+  );
+
+  const stationStatus = dispatchers?.find(
+    (status: string[]) => status[0] == onlineStationData.stationHash && status[1] == state.region.id
+  );
+
+  const statusTimestamp =
+    prevDispatcherStatus && !dispatchers
+      ? prevDispatcherStatus.statusTimestamp
+      : getStatusTimestamp(stationStatus);
+
+  const statusID =
+    prevDispatcherStatus && !dispatchers
+      ? prevDispatcherStatus.statusID
+      : getStatusID(stationStatus, onlineStationData.isOnline === 1);
+
+  return {
+    hash: onlineStationData.stationHash,
+    statusID,
+    statusTimestamp
+  };
+}
+
+export function getScheduledTrains(
+  trainList: Train[],
+  stationAPIData: StationAPIData,
+  stationGeneralInfo: Station['generalInfo']
+): ScheduledTrain[] {
+  const stationName = stationAPIData.stationName.toLocaleLowerCase();
+
+  stationGeneralInfo?.checkpoints.forEach((cp) => (cp.scheduledTrains.length = 0));
+
+  return trainList.reduce((acc: ScheduledTrain[], train) => {
+    if (!train.timetableData) return acc;
+
+    const timetable = train.timetableData;
+    if (!timetable.sceneries.includes(stationAPIData.stationHash)) return acc;
+
+    const stopInfoIndex = timetable.followingStops.findIndex((stop) => {
+      const stopName = stop.stopNameRAW.toLowerCase();
+
+      return (
+        stationName == stopName ||
+        (!/(po\.|podg\.)/.test(stopName) && stopName.includes(stationName)) ||
+        (!/(po\.|podg\.)/.test(stationName) && stationName.includes(stopName)) ||
+        (stopName.split(', podg.')[0] !== undefined &&
+          stationName.startsWith(stopName.split(', podg.')[0]))
+      );
+    });
+
+    const checkpointScheduledTrains: ScheduledTrain[] = [];
+
+    if (stopInfoIndex != -1) {
+      checkpointScheduledTrains.push(
+        getCheckpointTrain(train, stopInfoIndex, stationAPIData.stationName)
+      );
+    }
+
+    stationGeneralInfo?.checkpoints?.forEach((checkpoint) => {
+      if (checkpoint.checkpointName.toLocaleLowerCase() == stationName) return;
+
+      if (
+        checkpointScheduledTrains.findIndex(
+          (cpTrain) =>
+            cpTrain.checkpointName.toLocaleLowerCase() ==
+            checkpoint.checkpointName.toLocaleLowerCase()
+        ) != -1
+      )
+        return;
+
+      const index = timetable.followingStops.findIndex(
+        (stop) => stop.stopNameRAW.toLowerCase() == checkpoint.checkpointName.toLowerCase()
+      );
+
+      if (index > -1)
+        checkpointScheduledTrains.push(
+          getCheckpointTrain(train, index, stationAPIData.stationName)
+        );
+    });
+
+    acc.push(...checkpointScheduledTrains);
+    return acc;
+  }, []) as ScheduledTrain[];
+}
+
+export function getStationTrains(
+  trainList: Train[],
+  scheduledTrainList: ScheduledTrain[],
+  region: string,
+  apiStation: StationAPIData
+): StationTrain[] {
+  return trainList
+    .filter(
+      (train) =>
+        train?.region === region &&
+        train.online &&
+        train.currentStationName === apiStation.stationName
+    )
+    .map((train) => ({
+      driverName: train.driverName,
+      driverId: train.driverId,
+      trainNo: train.trainNo,
+      trainId: train.trainId,
+      stopStatus:
+        scheduledTrainList.find((st) => st.trainNo === train.trainNo)?.stopStatus || 'no-timetable'
+    }));
 }

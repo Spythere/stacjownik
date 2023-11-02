@@ -3,6 +3,7 @@
     <div class="tabs">
       <button
         v-for="tab in data.tabs"
+        :key="tab.name"
         class="btn--filled"
         :data-selected="tab.name == store.currentStatsTab && areStatsOpen"
         :data-inactive="tab.inactive"
@@ -16,7 +17,10 @@
 
     <div class="stats-tab" v-show="areStatsOpen">
       <keep-alive>
-        <JournalDailyStats v-if="store.currentStatsTab == 'daily'" @toggleStatsOpen="toggleStatsOpen" />
+        <JournalDailyStats
+          v-if="store.currentStatsTab == 'daily'"
+          @toggleStatsOpen="toggleStatsOpen"
+        />
         <JournalDriverStats v-else-if="store.currentStatsTab == 'driver'" />
       </keep-alive>
     </div>
@@ -24,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, KeepAlive, onMounted, reactive, Ref, ref, watch } from 'vue';
+import { computed, onMounted, reactive, Ref, ref, watch } from 'vue';
 import { useStore } from '../../store/store';
 import JournalDailyStats from './DailyStats.vue';
 import JournalDriverStats from './JournalDriverStats.vue';
@@ -44,19 +48,19 @@ let data = reactive({
   tabs: [
     {
       name: 'daily',
-      titlePath: 'journal.daily-stats-title',
+      titlePath: 'journal.daily-stats-title'
     },
     {
       name: 'driver',
-      titlePath: 'journal.driver-stats-title',
+      titlePath: 'journal.driver-stats-title'
       // inactive: true,
-    },
-  ] as { name: TStatTab; titlePath: string; inactive?: boolean }[],
+    }
+  ] as { name: TStatTab; titlePath: string; inactive?: boolean }[]
 });
 
 // Methods
 function onTabButtonClick(tab: TStatTab) {
-  if (lastClickedTab.value == tab || !areStatsOpen.value) areStatsOpen.value = !areStatsOpen.value;
+  if (lastClickedTab.value == tab || !lastClickedTab.value || !areStatsOpen.value) areStatsOpen.value = !areStatsOpen.value;
 
   if (tab == 'daily') {
     StorageManager.setBooleanValue('dailyStatsOpen', areStatsOpen.value);
@@ -115,4 +119,3 @@ onMounted(() => {
   }
 }
 </style>
-

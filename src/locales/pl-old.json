@@ -10,12 +10,22 @@
     "trains": "POCIĄGI",
     "journal": "DZIENNIK",
     "loading": "Pobieranie danych...",
+    "support": "Wspomóż projekt",
     "error": "Wystąpił problem z załadowaniem danych!",
     "no-result": "Brak wyników o podanych kryteriach!",
+    "migration-warning": "Usługi Stacjownika będą niedostępne w godzinach 1:00-3:00 2 czerwca 2022r. z powodu migracji hostingów API!",
+    "migration-confirm": "Przyjąłem!",
     "offline": "Aplikacja w trybie offline!"
   },
   "footer": {
     "discord": "Serwer Discord Stacjownika"
+  },
+  "update": {
+    "title": "Nowa wersja Stacjownika jest dostępna!",
+    "paragraph1": "Miłego korzystania z aplikacji i niech S2 będzie z wami!",
+    "release-link": "Kliknij, aby przejrzeć listę zmian (GitHub)",
+    "confirm-button": "ZAKTUALIZUJ",
+    "later-button": "PÓŹNIEJ"
   },
   "data-status": {
     "S1-offline": "<b>Sygnał S1</b> <br> Aplikacja działa w trybie offline!",
@@ -28,15 +38,17 @@
     "S5-trains": "<b>Sygnał S5</b>  <br> Błąd podczas pobierania danych o pociągach online!"
   },
   "desc": {
-    "control-type": "Sterowanie:",
-    "signals-type": "Sygnalizacja:",
-    "SBL": "Sceneria posiada SBL na szlakach:",
+    "control-type": "Sterowanie: ",
+    "signals-type": "Sygnalizacja: ",
+    "SBL": "Sceneria posiada SBL na szlakach: ",
     "SUP": "Wymaga programu SUP do kontroli systemu RASP-UZK",
+    "TWB-all": "Sceneria posiada blokadę dwukierunkową na wszystkich szlakach",
+    "TWB-routes": "Sceneria posiada blokadę dwukierunkową na szlakach: ",
     "default": "Sceneria dostępna domyślnie w paczce z grą",
     "non-public": "Sceneria niepubliczna",
     "unavailable": "Sceneria niedostępna",
     "unknown": "Nieznana sceneria",
-    "real": "Sceneria z realnymi liniami kolejowymi:",
+    "real": "Sceneria z realnymi liniami kolejowymi: ",
     "abandoned": "Sceneria wycofana z rozgrywki"
   },
   "signals": {
@@ -228,6 +240,14 @@
     "loading": "Pobieranie danych o pociągach...",
     "offline": "Przejazd offline",
 
+    "stats": "STATYSTYKI RUCHU",
+    "stats-speed": "PRĘDKOŚCI POCIĄGÓW (MIN, ŚR, MAX) [km/h]",
+    "stats-length": "DŁUGOŚCI ROZKŁADÓW (MIN, ŚR, MAX) [km]",
+    "stats-categories": "KATEGORIE RJ",
+    "stats-special-twr": "WYSOKIEGO RYZYKA",
+    "stats-special-skr": "PRZEKROCZONA SKRAJNIA",
+    "stats-locos": "NAJCZĘSTSZE JEDNOSTKI",
+
     "current-scenery": "na scenerii",
     "current-signal": "przy semaforze",
     "current-track": "na szlaku",
@@ -241,6 +261,7 @@
     "detailed-timetable": "Szczegółowy rozkład jazdy pociągu ",
     "via-title": "Przez: ",
     "no-timetable": "brak rozkładu jazdy",
+    "distance-exceeded": "Uwaga! Z powodu wewnętrznego błędu serwera TD2, rozkłady jazdy o kilometrażu powyżej 200km mogą być niepoprawne!",
     "cars": "Wagony",
     "EZT": "EZT",
     "SZT": "SZT",
@@ -248,6 +269,7 @@
     "loco-diesel": "Spalinowóz",
     "timetable-comments": "Pociąg z uwagami eksploatacyjnymi",
     "comment": "Uwagi eksploatacyjne dla: ",
+    "table-limit": "Dla płynności działania strony pokazanych jest tylko 10 pociągów zgodnie z wybranymi filtrami.",
 
     "last-seen-now": "od niedawna",
     "last-seen-min": "od minuty",
@@ -317,7 +339,7 @@
     "driver-stats-info": "Wpisz nazwę użytkownika w filtrach [F], aby zobaczyć jego statystyki maszynisty!",
 
     "stats-loading": "Pobieranie statystyk...",
-    "stats-error": "Ups! Wystąpił błąd podczas próby pobrania statystyk!",
+    "stats-error": "Ups! Wystąpił błąd podczas próby pobrania statystyk! :/",
 
     "timetable-location-signal": "semafor:",
     "timetable-location-route": "szlak:",

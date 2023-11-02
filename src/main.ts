@@ -7,6 +7,7 @@ import plLang from './locales/pl.json';
 
 import { createI18n } from 'vue-i18n';
 import { createPinia } from 'pinia';
+import useCustomSW from './mixins/useCustomSW';
 
 const i18n = createI18n({
   locale: 'pl',
@@ -15,10 +16,13 @@ const i18n = createI18n({
   fallbackLocale: 'pl',
   messages: {
     en: enLang,
-    pl: plLang,
+    pl: plLang
   },
-  enableLegacy: false,
+  enableLegacy: false
 });
+
+// SW
+useCustomSW();
 
 const clickOutsideDirective: Directive = {
   mounted(el, binding) {
@@ -29,7 +33,7 @@ const clickOutsideDirective: Directive = {
     };
 
     document.addEventListener('click', el.clickOutsideEvent);
-  },
+  }
 };
 
 createApp(App)

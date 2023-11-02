@@ -1,6 +1,12 @@
 <template>
   <label @dblclick="handleDbClick">
-    <input v-model="option.value" type="checkbox" :class="option.section" :name="option.id" />
+    <input
+      :checked="optionValue"
+      @input="$emit('update:optionValue', ($event.target as HTMLInputElement).checked)"
+      type="checkbox"
+      :class="option.section"
+      :name="option.id"
+    />
     <span>
       {{ $t(`filters.${option.id}`) }}
     </span>
@@ -23,20 +29,27 @@ export default defineComponent({
   props: {
     option: {
       type: Object as () => FilterOption,
-      required: true,
+      required: true
     },
+
+    optionValue: {
+      type: Boolean,
+      required: true
+    }
   },
+
+  emits: ['update:optionValue'],
 
   setup() {
     return {
-      filterStore: useStationFiltersStore(),
+      filterStore: useStationFiltersStore()
     };
   },
 
   watch: {
     'option.value'() {
       this.filterStore.changeFilterValue(this.option.name, !this.option.value);
-    },
+    }
   },
 
   methods: {
@@ -44,7 +57,8 @@ export default defineComponent({
       e.preventDefault();
 
       this.filterStore.lastClickedFilterId = this.option.id;
-      this.option.value = true;
+      // this.option.value = true;
+      this.$emit('update:optionValue', true);
 
       this.filterStore.inputs.options
         .filter((option) => {
@@ -53,8 +67,8 @@ export default defineComponent({
         .forEach((option) => {
           option.value = !this.option.value;
         });
-    },
-  },
+    }
+  }
 });
 </script>
 
@@ -96,4 +110,3 @@ label {
   }
 }
 </style>
-

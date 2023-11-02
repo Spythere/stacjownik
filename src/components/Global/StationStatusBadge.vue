@@ -16,16 +16,16 @@ import dateMixin from '../../mixins/dateMixin';
 export default defineComponent({
   props: {
     statusID: {
-      type: String,
+      type: String
     },
     statusTimestamp: {
-      type: Number,
+      type: Number
     },
     isOnline: {
-      type: Boolean,
-    },
+      type: Boolean
+    }
   },
-  mixins: [dateMixin],
+  mixins: [dateMixin]
 });
 </script>
 

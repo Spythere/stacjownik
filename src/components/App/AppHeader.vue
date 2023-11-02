@@ -3,8 +3,13 @@
     <div class="header_container">
       <div class="header_icons">
         <span class="icons-top">
-          <img :src="getIcon('pl')" alt="icon-pl" @click="changeLang('en')" v-if="currentLang == 'pl'" />
-          <img :src="getIcon('en', 'jpg')" alt="icon-en" @click="changeLang('pl')" v-else />
+          <img
+            src="/images/icon-pl.svg"
+            alt="icon-pl"
+            @click="changeLang('en')"
+            v-if="currentLang == 'pl'"
+          />
+          <img src="/images/icon-en.jpg" alt="icon-en" @click="changeLang('pl')" v-else />
         </span>
       </div>
 
@@ -13,7 +18,7 @@
 
         <span class="header_brand">
           <router-link to="/">
-            <img :src="getImage('stacjownik-header-logo.svg')" alt="Stacjownik" />
+            <img src="/images/stacjownik-header-logo.svg" alt="Stacjownik" />
           </router-link>
         </span>
 
@@ -21,7 +26,7 @@
           <Clock />
 
           <div class="info_counter">
-            <img :src="getIcon('dispatcher')" alt="icon dispatcher" />
+            <img src="/images/icon-dispatcher.svg" alt="icon dispatcher" />
             <span class="text--primary">{{ onlineDispatchersCount }}</span>
 
             <!-- <span class="g-tooltip">
@@ -31,7 +36,7 @@
 
             <span class="text--grayed"> / </span>
             <span class="text--primary">{{ onlineTrainsCount }}</span>
-            <img :src="getIcon('train')" alt="icon train" />
+            <img src="/images/icon-train.svg" alt="icon train" />
           </div>
 
           <span class="info_region">
@@ -44,7 +49,9 @@
             {{ $t('app.sceneries') }}
           </router-link>
           /
-          <router-link class="route" active-class="route-active" to="/trains">{{ $t('app.trains') }}</router-link>
+          <router-link class="route" active-class="route-active" to="/trains">{{
+            $t('app.trains')
+          }}</router-link>
           /
           <router-link
             class="route"
@@ -63,63 +70,68 @@
 import { defineComponent } from 'vue';
 import { useStore } from '../../store/store';
 import options from '../../data/options.json';
-import imageMixin from '../../mixins/imageMixin';
 import SelectBox from '../Global/SelectBox.vue';
 import StatusIndicator from './StatusIndicator.vue';
 import Clock from './Clock.vue';
 
 export default defineComponent({
   emits: ['changeLang'],
-  mixins: [imageMixin],
   props: {
     currentLang: {
       type: String,
-      required: true,
-    },
+      required: true
+    }
   },
+
   setup() {
     return {
-      store: useStore(),
+      store: useStore()
     };
   },
+
   methods: {
     changeRegion(region: { id: string; value: string }) {
       this.store.changeRegion(region);
     },
+
     changeLang(lang: string) {
       this.$emit('changeLang', lang);
-    },
+    }
   },
+
   computed: {
     onlineTrainsCount() {
       return this.store.trainList.filter((train) => train.online).length;
     },
 
     onlineDispatchersCount() {
-      return this.store.stationList.filter(
-        (station) => station.onlineInfo && station.onlineInfo.region == this.store.region.id
-      ).length;
+      return this.store.onlineSceneryList.length;
     },
 
     factorU() {
-      return this.onlineDispatchersCount == 0 ? '-' : (this.onlineTrainsCount / this.onlineDispatchersCount).toFixed(2);
+      return this.onlineDispatchersCount == 0
+        ? '-'
+        : (this.onlineTrainsCount / this.onlineDispatchersCount).toFixed(2);
     },
 
     computedRegions() {
       return options.regions.map((region) => {
         const regionStationCount =
-          this.store.apiData.stations?.filter((station) => station.region == region.id && station.isOnline).length || 0;
+          this.store.apiData.stations?.filter(
+            (station) => station.region == region.id && station.isOnline
+          ).length || 0;
         const regionTrainCount =
-          this.store.apiData.trains?.filter((train) => train.region == region.id && train.online).length || 0;
+          this.store.apiData.trains?.filter((train) => train.region == region.id && train.online)
+            .length || 0;
         return {
           id: region.id,
           value: `${region.value} <div class='text--grayed'>${regionStationCount} / ${regionTrainCount}</div>`,
-          selectedValue: region.value,
+          selectedValue: region.value
         };
       });
-    },
+    }
   },
-  components: { SelectBox, StatusIndicator, Clock },
+  components: { SelectBox, StatusIndicator, Clock }
 });
 </script>
 <style lang="scss" scoped>

@@ -5,42 +5,42 @@ export const journalTimetableFilters: JournalFilter[] = [
   {
     id: JournalFilterType.ALL,
     filterSection: JournalFilterSection.TIMETABLE_STATUS,
-    isActive: true,
+    isActive: true
   },
 
   {
     id: JournalFilterType.ACTIVE,
     filterSection: JournalFilterSection.TIMETABLE_STATUS,
-    isActive: false,
+    isActive: false
   },
 
   {
     id: JournalFilterType.FULFILLED,
     filterSection: JournalFilterSection.TIMETABLE_STATUS,
-    isActive: false,
+    isActive: false
   },
 
   {
     id: JournalFilterType.ABANDONED,
     filterSection: JournalFilterSection.TIMETABLE_STATUS,
-    isActive: false,
+    isActive: false
   },
 
   {
     id: JournalFilterType.TWR_SKR,
     filterSection: JournalFilterSection.TWRSKR,
-    isActive: true,
+    isActive: true
   },
 
   {
     id: JournalFilterType.TWR,
     filterSection: JournalFilterSection.TWRSKR,
-    isActive: false,
+    isActive: false
   },
 
   {
     id: JournalFilterType.SKR,
     filterSection: JournalFilterSection.TWRSKR,
-    isActive: false,
-  },
+    isActive: false
+  }
 ];

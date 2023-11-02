@@ -1,49 +1,46 @@
 import { defineComponent } from 'vue';
 import Train from '../scripts/interfaces/Train';
 import TrainStop from '../scripts/interfaces/TrainStop';
-import imageMixin from './imageMixin';
 
 export default defineComponent({
-  mixins: [imageMixin],
-
   data: () => ({
     STATS: {
       main: [
         {
           name: 'speed',
-          unit: 'km/h',
+          unit: 'km/h'
         },
         {
           name: 'length',
-          unit: 'm',
+          unit: 'm'
         },
         {
           name: 'mass',
           unit: 't',
-          multiplier: 0.001,
-        },
+          multiplier: 0.001
+        }
       ],
 
       position: [
         {
           name: 'scenery',
-          prop: 'currentStationName',
+          prop: 'currentStationName'
         },
         {
           name: 'route',
-          prop: 'connectedTrack',
+          prop: 'connectedTrack'
         },
         {
           name: 'signal',
-          prop: 'signal',
+          prop: 'signal'
         },
         {
           name: 'distance',
           prop: 'distance',
-          unit: 'm',
-        },
-      ],
-    },
+          unit: 'm'
+        }
+      ]
+    }
   }),
 
   methods: {
@@ -64,11 +61,15 @@ export default defineComponent({
       positionString += this.$t('trains.current-scenery') + ' ';
 
       if (train.currentStationHash) positionString += train.currentStationName + ' ';
-      else positionString += train['currentStationName'].replace(/.[a-zA-Z0-9]+.sc/, '') + ' (offline) ';
+      else
+        positionString +=
+          train['currentStationName'].replace(/.[a-zA-Z0-9]+.sc/, '') + ' (offline) ';
 
-      if (train.signal) positionString += this.$t('trains.current-signal') + ' ' + train.signal + ' ';
+      if (train.signal)
+        positionString += this.$t('trains.current-signal') + ' ' + train.signal + ' ';
 
-      if (train.connectedTrack) positionString += this.$t('trains.current-track') + ' ' + train.connectedTrack + ' ';
+      if (train.connectedTrack)
+        positionString += this.$t('trains.current-track') + ' ' + train.connectedTrack + ' ';
 
       if (train.distance) positionString += `(${this.displayDistance(train.distance)})`;
 
@@ -81,9 +82,17 @@ export default defineComponent({
       return stops
         .reduce((acc: string[], stop: TrainStop, i: number) => {
           if (stop.stopType.includes('ph') && !stop.stopNameRAW.includes('po.'))
-            acc.push(`<strong style='color:${stop.confirmed ? 'springgreen' : 'white'}'>${stop.stopName}</strong>`);
+            acc.push(
+              `<strong style='color:${stop.confirmed ? 'springgreen' : 'white'}'>${
+                stop.stopName
+              }</strong>`
+            );
           else if (i > 0 && i < stops.length - 1 && !/po\.|sbl/gi.test(stop.stopNameRAW))
-            acc.push(`<span style='color:${stop.confirmed ? 'springgreen' : 'lightgray'}'>${stop.stopName}</span>`);
+            acc.push(
+              `<span style='color:${stop.confirmed ? 'springgreen' : 'lightgray'}'>${
+                stop.stopName
+              }</span>`
+            );
           return acc;
         }, [])
         .join(' > ');
@@ -94,16 +103,22 @@ export default defineComponent({
     },
 
     confirmedPercentage(stops: TrainStop[]) {
-      return Number(((stops.filter((stop) => stop.confirmed).length / stops.length) * 100).toFixed(0));
+      return Number(
+        ((stops.filter((stop) => stop.confirmed).length / stops.length) * 100).toFixed(0)
+      );
     },
 
     currentDelay(stops: TrainStop[]) {
       const delay =
-        stops.find((stop, i) => (i == 0 && !stop.confirmed) || (i > 0 && stops[i - 1].confirmed && !stop.confirmed))
-          ?.departureDelay || 0;
+        stops.find(
+          (stop, i) =>
+            (i == 0 && !stop.confirmed) || (i > 0 && stops[i - 1].confirmed && !stop.confirmed)
+        )?.departureDelay || 0;
 
-      if (delay > 0) return `<span style='color: salmon'>${this.$t('trains.delayed')} ${delay} min</span>`;
-      else if (delay < 0) return `<span style='color: lightgreen'>${this.$t('trains.preponed')} ${delay} min</span>`;
+      if (delay > 0)
+        return `<span style='color: salmon'>${this.$t('trains.delayed')} ${delay} min</span>`;
+      else if (delay < 0)
+        return `<span style='color: lightgreen'>${this.$t('trains.preponed')} ${delay} min</span>`;
       else return this.$t('trains.on-time');
     },
 
@@ -118,7 +133,7 @@ export default defineComponent({
 
     getSceneriesWithComments(timetableData: Train['timetableData']) {
       const commentList =
-        timetableData?.followingStops.reduce((acc, stop, i) => {
+        timetableData?.followingStops.reduce((acc, stop) => {
           if (stop.comments) acc.push(stop.stopNameRAW);
 
           return acc;
@@ -137,7 +152,7 @@ export default defineComponent({
 
     onImageError(e: Event) {
       const imageEl = e.target as HTMLImageElement;
-      imageEl.src = this.getImage('unknown.png');
-    },
-  },
+      imageEl.src = '/images/icon-unknown.png';
+    }
+  }
 });

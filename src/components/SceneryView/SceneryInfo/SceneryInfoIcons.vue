@@ -20,7 +20,7 @@
     <img
       v-if="station.generalInfo?.SUP"
       class="icon-info"
-      :src="getIcon('SUP')"
+      src="/images/icon-SUP.svg"
       alt="SUP (RASP-UZK)"
       :title="$t('desc.SUP')"
     />
@@ -28,7 +28,7 @@
     <img
       v-if="station.generalInfo?.signalType"
       class="icon-info"
-      :src="getIcon(station.generalInfo.signalType)"
+      :src="`/images/icon-${station.generalInfo.signalType}.svg`"
       :alt="station.generalInfo.signalType"
       :title="$t('desc.signals-type') + $t(`signals.${station.generalInfo.signalType}`)"
     />
@@ -36,7 +36,7 @@
     <img
       v-if="station.generalInfo?.availability == 'nonPublic'"
       class="icon-info"
-      :src="getIcon('lock')"
+      src="/images/icon-lock.svg"
       alt="Non-public scenery"
       :title="$t('desc.non-public')"
     />
@@ -44,7 +44,7 @@
     <img
       v-if="station.generalInfo?.availability == 'unavailable'"
       class="icon-info"
-      :src="getIcon('unavailable')"
+      src="/images/icon-unavailable.svg"
       alt="Unavailable scenery"
       :title="$t('desc.unavailable')"
     />
@@ -52,7 +52,7 @@
     <img
       v-if="station.generalInfo?.availability == 'abandoned'"
       class="icon-info"
-      :src="getIcon('abandoned')"
+      src="/images/icon-abandoned.svg"
       alt="Abandoned scenery"
       :title="$t('desc.abandoned')"
     />
@@ -60,7 +60,7 @@
     <img
       v-if="station.generalInfo?.lines"
       class="icon-info"
-      :src="getIcon('real')"
+      src="/images/icon-real.svg"
       alt="real scenery"
       :title="`${$t('desc.real')} ${station.generalInfo.lines}`"
     />
@@ -68,7 +68,7 @@
     <img
       v-if="!station.generalInfo"
       class="icon-info"
-      :src="getIcon('unknown')"
+      src="/images/icon-unknown.svg"
       alt="icon-unknown"
       :title="$t('desc.unknown')"
     />
@@ -76,20 +76,19 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import imageMixin from '../../../mixins/imageMixin';
+import { PropType, defineComponent } from 'vue';
 import stationInfoMixin from '../../../mixins/stationInfoMixin';
 import styleMixin from '../../../mixins/styleMixin';
 import Station from '../../../scripts/interfaces/Station';
 
 export default defineComponent({
-  mixins: [stationInfoMixin, styleMixin, imageMixin],
+  mixins: [stationInfoMixin, styleMixin],
   props: {
     station: {
-      type: Object as () => Station,
-      default: {},
-    },
-  },
+      type: Object as PropType<Station>,
+      required: true
+    }
+  }
 });
 </script>
 
@@ -118,4 +117,3 @@ export default defineComponent({
   }
 }
 </style>
-

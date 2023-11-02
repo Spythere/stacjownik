@@ -5,7 +5,7 @@
         <thead>
           <tr>
             <th
-              v-for="(headerName, i) in headIds"
+              v-for="headerName in headIds"
               :key="headerName"
               @click="changeSorter(headerName)"
               class="header-text"
@@ -16,25 +16,29 @@
                 <img
                   class="sort-icon"
                   v-if="sorterActive.headerName == headerName"
-                  :src="sorterActive.dir == 1 ? getIcon('arrow-asc') : getIcon('arrow-desc')"
+                  :src="`/images/icon-arrow-${sorterActive.dir == 1 ? 'asc' : 'desc'}.svg`"
                   alt="sort icon"
                 />
               </span>
             </th>
 
             <th
-              v-for="(headerName, i) in headIconsIds"
+              v-for="headerName in headIconsIds"
               :key="headerName"
               @click="changeSorter(headerName)"
               class="header-image"
             >
               <span class="header_wrapper">
-                <img :src="getIcon(headerName)" :alt="headerName" :title="$t(`sceneries.${headerName}`)" />
+                <img
+                  :src="`/images/icon-${headerName}.svg`"
+                  :alt="headerName"
+                  :title="$t(`sceneries.${headerName}`)"
+                />
 
                 <img
                   class="sort-icon"
                   v-if="sorterActive.headerName == headerName"
-                  :src="sorterActive.dir == 1 ? getIcon('arrow-asc') : getIcon('arrow-desc')"
+                  :src="`/images/icon-arrow-${sorterActive.dir == 1 ? 'asc' : 'desc'}.svg`"
                   alt="sort icon"
                 />
               </span>
@@ -55,7 +59,9 @@
             tabindex="0"
           >
             <td class="station_name" :class="station.generalInfo?.availability">
-              <b v-if="station.generalInfo?.project" style="color: salmon">{{ station.generalInfo.project }}</b>
+              <b v-if="station.generalInfo?.project" style="color: salmon">{{
+                station.generalInfo.project
+              }}</b>
               {{ station.name }}
             </td>
 
@@ -73,15 +79,27 @@
                 </span>
 
                 <span v-else-if="station.generalInfo.availability == 'abandoned'">
-                  <img :src="getIcon('abandoned')" alt="non-public" :title="$t('desc.abandoned')" />
+                  <img
+                    src="/images/icon-abandoned.svg"
+                    alt="non-public"
+                    :title="$t('desc.abandoned')"
+                  />
                 </span>
 
                 <span v-else-if="station.generalInfo.availability == 'nonPublic'">
-                  <img :src="getIcon('lock')" alt="non-public" :title="$t('desc.non-public')" />
+                  <img
+                    src="/images/icon-lock.svg"
+                    alt="non-public"
+                    :title="$t('desc.non-public')"
+                  />
                 </span>
 
                 <span v-else>
-                  <img :src="getIcon('unavailable')" alt="unavailable" :title="$t('desc.unavailable')" />
+                  <img
+                    src="/images/icon-unavailable.svg"
+                    alt="unavailable"
+                    :title="$t('desc.unavailable')"
+                  />
                 </span>
               </span>
 
@@ -103,7 +121,12 @@
             <td class="station_dispatcher-exp">
               <span
                 v-if="station.onlineInfo"
-                :style="calculateExpStyle(station.onlineInfo.dispatcherExp, station.onlineInfo.dispatcherIsSupporter)"
+                :style="
+                  calculateExpStyle(
+                    station.onlineInfo.dispatcherExp,
+                    station.onlineInfo.dispatcherIsSupporter
+                  )
+                "
               >
                 {{ 2 > station.onlineInfo.dispatcherExp ? 'L' : station.onlineInfo.dispatcherExp }}
               </span>
@@ -111,7 +134,10 @@
 
             <td class="station_tracks twoway">
               <span
-                v-if="station.generalInfo && station.generalInfo.routes.twoWayCatenaryRouteNames.length > 0"
+                v-if="
+                  station.generalInfo &&
+                  station.generalInfo.routes.twoWayCatenaryRouteNames.length > 0
+                "
                 class="track catenary"
                 :title="`Liczba zelektryfikowanych szlaków dwutorowych: ${station.generalInfo.routes.twoWayCatenaryRouteNames.length}`"
               >
@@ -119,7 +145,10 @@
               </span>
 
               <span
-                v-if="station.generalInfo && station.generalInfo.routes.twoWayNoCatenaryRouteNames.length > 0"
+                v-if="
+                  station.generalInfo &&
+                  station.generalInfo.routes.twoWayNoCatenaryRouteNames.length > 0
+                "
                 class="track no-catenary"
                 :title="`Liczba niezelektryfikowanych szlaków dwutorowych: ${station.generalInfo.routes.twoWayNoCatenaryRouteNames.length}`"
               >
@@ -129,7 +158,10 @@
               <span class="separator"></span>
 
               <span
-                v-if="station.generalInfo && station.generalInfo.routes.oneWayCatenaryRouteNames.length > 0"
+                v-if="
+                  station.generalInfo &&
+                  station.generalInfo.routes.oneWayCatenaryRouteNames.length > 0
+                "
                 class="track catenary"
                 :title="`Liczba zelektryfikowanych szlaków jednotorowych: ${station.generalInfo.routes.oneWayCatenaryRouteNames.length}`"
               >
@@ -137,7 +169,10 @@
               </span>
 
               <span
-                v-if="station.generalInfo && station.generalInfo.routes.oneWayNoCatenaryRouteNames.length > 0"
+                v-if="
+                  station.generalInfo &&
+                  station.generalInfo.routes.oneWayNoCatenaryRouteNames.length > 0
+                "
                 class="track no-catenary"
                 :title="`Liczba niezelektryfikowanych szlaków jednotorowych: ${station.generalInfo.routes.oneWayNoCatenaryRouteNames.length}`"
               >
@@ -158,7 +193,7 @@
                 <img
                   class="icon-info"
                   v-if="station.generalInfo.SUP"
-                  :src="getIcon('SUP')"
+                  src="/images/icon-SUP.svg"
                   alt="SUP (RASP-UZK)"
                   :title="$t('desc.SUP')"
                 />
@@ -168,7 +203,7 @@
                 <img
                   class="icon-info"
                   v-if="station.generalInfo.signalType"
-                  :src="getIcon(station.generalInfo.signalType)"
+                  :src="`/images/icon-${station.generalInfo.signalType}.svg`"
                   :alt="station.generalInfo.signalType"
                   :title="$t('desc.signals-type') + $t(`signals.${station.generalInfo.signalType}`)"
                 />
@@ -178,7 +213,7 @@
                 <img
                   class="icon-info"
                   v-if="station.generalInfo && station.generalInfo.routes.sblRouteNames.length > 0"
-                  :src="getIcon('SBL')"
+                  src="/images/icon-SBL.svg"
                   alt="SBL"
                   :title="$t('desc.SBL') + `${station.generalInfo.routes.sblRouteNames.join(',')}`"
                 />
@@ -186,37 +221,46 @@
             </td>
 
             <td class="station_info" v-else>
-              <img class="icon-info" :src="getIcon('unknown')" alt="icon-unknown" :title="$t('desc.unknown')" />
+              <img
+                class="icon-info"
+                src="/images/icon-unknown.svg"
+                alt="icon-unknown"
+                :title="$t('desc.unknown')"
+              />
             </td>
 
             <td class="station_users" :class="{ inactive: !station.onlineInfo }">
-              <span>
-                <span class="highlight">{{ station.onlineInfo?.currentUsers || 0 }}</span>
-                /
-                <span class="highlight">{{ station.onlineInfo?.maxUsers || 0 }}</span>
-              </span>
+              <span>{{ station.onlineInfo?.currentUsers || 0 }}</span>
+              /
+              <span>{{ station.onlineInfo?.maxUsers || 0 }}</span>
             </td>
 
             <td class="station_spawns" :class="{ inactive: !station.onlineInfo }">
               <span>{{ station.onlineInfo?.spawns.length || 0 }}</span>
             </td>
 
-            <td class="station_schedules" style="width: 30px" :class="{ inactive: !station.onlineInfo }">
-              <span class="highlight">
-                {{ station.onlineInfo?.scheduledTrains?.length || 0 }}
-              </span>
+            <td
+              class="station_schedules all"
+              style="width: 30px"
+              :class="{ inactive: !station.onlineInfo }"
+            >
+              {{ station.onlineInfo?.scheduledTrainCount.all }}
             </td>
 
-            <td class="station_schedules" style="width: 30px" :class="{ inactive: !station.onlineInfo }">
-              <span style="color: #ccc">
-                {{ station.onlineInfo?.scheduledTrains?.filter((train) => !train.stopInfo.confirmed).length || 0 }}
-              </span>
+            <td
+              class="station_schedules unconfirmed"
+              style="width: 30px"
+              :class="{ inactive: !station.onlineInfo }"
+            >
+              {{ station.onlineInfo?.scheduledTrainCount.unconfirmed }}
             </td>
 
-            <td class="station_schedules" style="width: 30px" :class="{ inactive: !station.onlineInfo }">
-              <span style="color: #66ff6c">
-                {{ station.onlineInfo?.scheduledTrains?.filter((train) => train.stopInfo.confirmed).length || 0 }}
-              </span>
+            <td
+              class="station_schedules confirmed"
+              style="width: 30px"
+              :class="{ inactive: !station.onlineInfo }"
+            >
+              {{ station.onlineInfo?.scheduledTrainCount.confirmed }}
             </td>
           </tr>
         </tbody>
@@ -232,10 +276,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, PropType } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
-import imageMixin from '../../mixins/imageMixin';
-import returnBtnMixin from '../../mixins/returnBtnMixin';
 import stationInfoMixin from '../../mixins/stationInfoMixin';
 import styleMixin from '../../mixins/styleMixin';
 import { DataStatus } from '../../scripts/enums/DataStatus';
@@ -249,24 +291,24 @@ import StationStatusBadge from '../Global/StationStatusBadge.vue';
 export default defineComponent({
   props: {
     stations: {
-      type: Array as () => Station[],
-      required: true,
-    },
+      type: Array as PropType<Station[]>,
+      required: true
+    }
   },
 
   components: { Loading, StationStatusBadge },
-  mixins: [styleMixin, dateMixin, stationInfoMixin, returnBtnMixin, imageMixin],
+  mixins: [styleMixin, dateMixin, stationInfoMixin],
 
   data: () => ({
     headIconsIds,
     headIds,
-    lastSelectedStationName: '',
+    lastSelectedStationName: ''
   }),
 
   computed: {
     sorterActive() {
       return this.stationFiltersStore.sorterActive;
-    },
+    }
   },
 
   setup() {
@@ -278,7 +320,7 @@ export default defineComponent({
     });
     return {
       isDataLoaded,
-      stationFiltersStore,
+      stationFiltersStore
     };
   },
 
@@ -288,9 +330,13 @@ export default defineComponent({
       if (!station) return;
 
       this.lastSelectedStationName = station.name;
+
       this.$router.push({
         name: 'SceneryView',
-        query: { station: station.name.replaceAll(' ', '_') },
+        query: {
+          station: station.name.replaceAll(' ', '_'),
+          region: this.$route.query.region || undefined
+        }
       });
     },
 
@@ -304,8 +350,8 @@ export default defineComponent({
       if (headerName == 'general' || headerName == 'routes') return;
 
       this.stationFiltersStore.changeSorter(headerName);
-    },
-  },
+    }
+  }
 });
 </script>
 
@@ -326,10 +372,6 @@ $rowCol: #424242;
   &-leave-to {
     opacity: 0;
   }
-}
-
-.highlight {
-  color: gold;
 }
 
 section.station_table {
@@ -510,6 +552,26 @@ td.station {
     &.inactive {
       opacity: 0.2;
     }
+  }
+}
+
+.station_users {
+  span {
+    color: gold;
+  }
+}
+
+.station_schedules {
+  &.all {
+    color: gold;
+  }
+
+  &.unconfirmed {
+    color: #ccc;
+  }
+
+  &.confirmed {
+    color: lime;
   }
 }
 

@@ -8,7 +8,10 @@
 
         <Loading v-else-if="trains.length == 0 && store.dataStatuses.trains == 0" />
 
-        <div class="table-info no-trains" v-else-if="trains.length == 0 && store.dataStatuses.trains != 0">
+        <div
+          class="table-info no-trains"
+          v-else-if="trains.length == 0 && store.dataStatuses.trains != 0"
+        >
           {{ $t('trains.no-trains') }}
         </div>
 
@@ -32,7 +35,6 @@
 <script lang="ts">
 import { computed, defineComponent, inject, PropType, Ref } from 'vue';
 import modalTrainMixin from '../../mixins/modalTrainMixin';
-import returnBtnMixin from '../../mixins/returnBtnMixin';
 import Train from '../../scripts/interfaces/Train';
 import { useStore } from '../../store/store';
 import Loading from '../Global/Loading.vue';
@@ -44,11 +46,11 @@ export default defineComponent({
   props: {
     trains: {
       type: Array as PropType<Train[]>,
-      required: true,
-    },
+      required: true
+    }
   },
 
-  mixins: [returnBtnMixin, modalTrainMixin],
+  mixins: [modalTrainMixin],
 
   setup(props) {
     const store = useStore();
@@ -66,7 +68,7 @@ export default defineComponent({
       sorterActive: inject('sorterActive') as {
         id: string | number;
         dir: number;
-      },
+      }
     };
   },
 
@@ -79,7 +81,7 @@ export default defineComponent({
         this.selectModalTrain(query.driverName! + query.trainNo!.toString());
       }, 20);
     }
-  },
+  }
 });
 </script>
 

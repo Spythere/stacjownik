@@ -14,7 +14,7 @@
 
         <div v-else>
           <h3>STATYSTYKI WYSTAWIONYCH ROZKŁADÓW</h3>
-          
+
           <div class="info-stats" v-if="store.dispatcherStatsData._count._all">
             <span class="stat-badge">
               <span>LICZBA</span>
@@ -36,8 +36,9 @@
 
           <h3>OSTATNIE WYSTAWIONE ROZKŁADY</h3>
           <div class="last-timetables">
-            <div class="timetable-row" v-for="timetable in timetables">
-              #{{ timetable.timetableId }} | <b>{{ timetable.trainCategoryCode }} {{ timetable.trainNo }}</b> |
+            <div class="timetable-row" v-for="timetable in timetables" :key="timetable.id">
+              #{{ timetable.timetableId }} |
+              <b>{{ timetable.trainCategoryCode }} {{ timetable.trainNo }}</b> |
               {{ timetable.driverName }} ({{ timetable.routeDistance }}km)
               <div>{{ timetable.route.replace('|', ' > ') }}</div>
             </div>
@@ -49,9 +50,8 @@
 </template>
 
 <script lang="ts">
-
 import axios from 'axios';
-import { computed, defineComponent } from 'vue';
+import { defineComponent } from 'vue';
 import { DispatcherStatsAPIData } from '../../scripts/interfaces/api/DispatcherStatsAPIData';
 import { TimetableHistory } from '../../scripts/interfaces/api/TimetablesAPIData';
 import { URLs } from '../../scripts/utils/apiURLs';
@@ -64,15 +64,8 @@ export default defineComponent({
   setup() {
     const store = useStore();
 
-    const statsData2 = computed(async () => {
-      return await (
-        await axios.get(`${URLs.stacjownikAPI}/api/getDispatcherInfo?name=${store.dispatcherStatsName}`)
-      ).data;
-    });
-
     return {
-      store,
-      statsData2,
+      store
     };
   },
 
@@ -80,7 +73,7 @@ export default defineComponent({
     return {
       cardVisible: false,
       lastDispatcherName: '',
-      timetables: [] as TimetableHistory[],
+      timetables: [] as TimetableHistory[]
     };
   },
 
@@ -98,18 +91,22 @@ export default defineComponent({
       }
 
       const statsData: DispatcherStatsAPIData = await (
-        await axios.get(`${URLs.stacjownikAPI}/api/getDispatcherInfo?name=${this.store.dispatcherStatsName}`)
+        await axios.get(
+          `${URLs.stacjownikAPI}/api/getDispatcherInfo?name=${this.store.dispatcherStatsName}`
+        )
       ).data;
 
       const timetables: TimetableHistory[] = await (
-        await axios.get(`${URLs.stacjownikAPI}/api/getTimetables?authorName=${this.store.dispatcherStatsName}`)
+        await axios.get(
+          `${URLs.stacjownikAPI}/api/getTimetables?authorName=${this.store.dispatcherStatsName}`
+        )
       ).data;
 
       this.timetables = timetables;
       this.store.dispatcherStatsData = statsData;
       this.lastDispatcherName = this.store.dispatcherStatsName;
-    },
-  },
+    }
+  }
 });
 </script>
 
@@ -163,11 +160,7 @@ h3 {
   text-align: center;
 }
 
-
 .last-timetables {
   overflow-y: auto;
 }
-
-
-
 </style>

@@ -1,17 +1,17 @@
-import { Ref, defineComponent } from 'vue';
+import { defineComponent } from 'vue';
 import { useStore } from '../store/store';
 
 export default defineComponent({
   data() {
     return {
-      store: useStore(),
+      store: useStore()
     };
   },
 
   computed: {
     chosenTrain() {
       return this.store.trainList.find((train) => train.trainId == this.store.chosenModalTrainId);
-    },
+    }
   },
 
   methods: {
@@ -28,6 +28,6 @@ export default defineComponent({
         (this.store.modalLastClickedTarget as any)?.focus();
         document.body.classList.remove('no-scroll');
       }, 150);
-    },
-  },
+    }
+  }
 });

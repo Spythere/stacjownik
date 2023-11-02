@@ -3,19 +3,33 @@
     <section class="train-route">
       <div class="train_general">
         <b class="warning-timeout" v-if="train.isTimeout" :title="$t('trains.timeout')">?</b>
-        <span class="timetable-id" v-if="train.timetableData">#{{ train.timetableData.timetableId }}</span>
+        <span class="timetable-id" v-if="train.timetableData"
+          >#{{ train.timetableData.timetableId }}</span
+        >
 
-        <span class="timetable_warnings" v-if="train.timetableData?.TWR || train.timetableData?.SKR">
-          <span class="train-badge twr" v-if="train.timetableData?.TWR" :title="$t('general.TWR')">TWR</span>
-          <span class="train-badge skr" v-if="train.timetableData?.SKR" :title="$t('general.SKR')">SKR</span>
+        <span
+          class="timetable_warnings"
+          v-if="train.timetableData?.TWR || train.timetableData?.SKR"
+        >
+          <span class="train-badge twr" v-if="train.timetableData?.TWR" :title="$t('general.TWR')"
+            >TWR</span
+          >
+          <span class="train-badge skr" v-if="train.timetableData?.SKR" :title="$t('general.SKR')"
+            >SKR</span
+          >
         </span>
 
         <strong>
-          <span v-if="train.timetableData" class="text--primary">{{ train.timetableData.category }}&nbsp;</span>
+          <span v-if="train.timetableData" class="text--primary"
+            >{{ train.timetableData.category }}&nbsp;</span
+          >
           <span class="train-number">{{ train.trainNo }}</span>
         </strong>
         <span>&bull;</span>
-        <b class="level-badge driver" :style="calculateExpStyle(train.driverLevel, train.isSupporter)">
+        <b
+          class="level-badge driver"
+          :style="calculateExpStyle(train.driverLevel, train.isSupporter)"
+        >
           {{ train.driverLevel < 2 ? 'L' : `${train.driverLevel}` }}
         </b>
         <span>{{ train.driverName }}</span>
@@ -26,8 +40,10 @@
         <img
           v-if="getSceneriesWithComments(train.timetableData).length > 0"
           class="image-warning"
-          :src="getIcon('warning')"
-          :title="`${$t('trains.timetable-comments')} (${getSceneriesWithComments(train.timetableData)})`"
+          src="/images/icon-warning.svg"
+          :title="`${$t('trains.timetable-comments')} (${getSceneriesWithComments(
+            train.timetableData
+          )})`"
         />
       </div>
 
@@ -51,8 +67,12 @@
         </span>
 
         <div class="train-status-badges">
-          <div v-if="!train.currentStationHash" class="train-badge offline">{{ $t('trains.scenery-offline') }}</div>
-          <div v-if="!train.online" class="train-badge offline">Offline {{ lastSeenMessage(train.lastSeen) }}</div>
+          <div v-if="!train.currentStationHash" class="train-badge offline">
+            {{ $t('trains.scenery-offline') }}
+          </div>
+          <div v-if="!train.online" class="train-badge offline">
+            Offline {{ lastSeenMessage(train.lastSeen) }}
+          </div>
         </div>
       </div>
 
@@ -75,7 +95,9 @@
       <div>
         <span v-for="(stat, i) in STATS.main" :key="stat.name">
           <span v-if="i > 0"> &bull; </span>
-          <span>{{ `${~~((train as any)[stat.name] * (stat.multiplier || 1))}${stat.unit}` }} </span>
+          <span
+            >{{ `${~~((train as any)[stat.name] * (stat.multiplier || 1))}${stat.unit}` }}
+          </span>
         </span>
       </div>
     </section>
@@ -84,7 +106,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import imageMixin from '../../mixins/imageMixin';
 import styleMixin from '../../mixins/styleMixin';
 import trainInfoMixin from '../../mixins/trainInfoMixin';
 import Train from '../../scripts/interfaces/Train';
@@ -92,18 +113,19 @@ import ProgressBar from '../Global/ProgressBar.vue';
 import TrainThumbnail from '../Global/TrainThumbnail.vue';
 
 export default defineComponent({
+  mixins: [trainInfoMixin, styleMixin],
+  components: { ProgressBar, TrainThumbnail },
+
   props: {
     train: {
       type: Object as () => Train,
-      required: true,
+      required: true
     },
     extended: {
       type: Boolean,
-      default: true,
-    },
-  },
-  mixins: [trainInfoMixin, imageMixin, styleMixin],
-  components: { ProgressBar, TrainThumbnail },
+      default: true
+    }
+  }
 });
 </script>
 
