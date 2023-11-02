@@ -135,6 +135,9 @@ export const useStore = defineStore('store', {
           .reduce((list, apiStation) => {
             if (apiStation.region != state.region.id) return list;
 
+            if (apiStation.isOnline !== 1 && Date.now() - apiStation.lastSeen > 1000 * 60 * 3)
+              return list;
+
             const dispatcherStatus = getDispatcherStatus(state as StoreState, apiStation);
 
             if (dispatcherStatus.statusID == DispatcherStatusID.Unknown) return list;
