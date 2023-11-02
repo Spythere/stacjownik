@@ -185,7 +185,8 @@ export const useStore = defineStore('store', {
               scheduledTrainCount: {
                 all: uniqueScheduledTrains.length,
                 confirmed: uniqueScheduledTrains.filter((train) => train.stopInfo.confirmed).length,
-                unconfirmed: uniqueScheduledTrains.filter((train) => !train.stopInfo.confirmed).length
+                unconfirmed: uniqueScheduledTrains.filter((train) => !train.stopInfo.confirmed)
+                  .length
               }
             });
 
@@ -271,11 +272,10 @@ export const useStore = defineStore('store', {
       const socket = io(URLs.stacjownikAPI, {
         transports: ['websocket', 'polling'],
         rememberUpgrade: true,
-        reconnection: true,
-        extraHeaders: {
-          version: packageInfo.version
-        }
+        reconnection: true
       });
+
+      socket.emit('CONNECTION', { version: packageInfo.version });
 
       socket.on('connect_error', () => {
         this.dataStatuses.connection = DataStatus.Error;

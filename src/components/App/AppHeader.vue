@@ -39,9 +39,9 @@
             <img src="/images/icon-train.svg" alt="icon train" />
           </div>
 
-          <span class="info_region">
-            <SelectBox :itemList="computedRegions" :defaultItemIndex="0" @selected="changeRegion" />
-          </span>
+          <div class="info_region">
+            <RegionDropdown />
+          </div>
         </span>
 
         <span class="header_links">
@@ -69,10 +69,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { useStore } from '../../store/store';
-import options from '../../data/options.json';
-import SelectBox from '../Global/SelectBox.vue';
 import StatusIndicator from './StatusIndicator.vue';
 import Clock from './Clock.vue';
+import RegionDropdown from '../Global/RegionDropdown.vue';
 
 export default defineComponent({
   emits: ['changeLang'],
@@ -90,10 +89,6 @@ export default defineComponent({
   },
 
   methods: {
-    changeRegion(region: { id: string; value: string }) {
-      this.store.changeRegion(region);
-    },
-
     changeLang(lang: string) {
       this.$emit('changeLang', lang);
     }
@@ -112,26 +107,9 @@ export default defineComponent({
       return this.onlineDispatchersCount == 0
         ? '-'
         : (this.onlineTrainsCount / this.onlineDispatchersCount).toFixed(2);
-    },
-
-    computedRegions() {
-      return options.regions.map((region) => {
-        const regionStationCount =
-          this.store.apiData.stations?.filter(
-            (station) => station.region == region.id && station.isOnline
-          ).length || 0;
-        const regionTrainCount =
-          this.store.apiData.trains?.filter((train) => train.region == region.id && train.online)
-            .length || 0;
-        return {
-          id: region.id,
-          value: `${region.value} <div class='text--grayed'>${regionStationCount} / ${regionTrainCount}</div>`,
-          selectedValue: region.value
-        };
-      });
     }
   },
-  components: { SelectBox, StatusIndicator, Clock }
+  components: { StatusIndicator, Clock, RegionDropdown }
 });
 </script>
 <style lang="scss" scoped>
@@ -227,23 +205,8 @@ export default defineComponent({
   }
 }
 
-// REGION SELECTION
 .info_region {
-  color: white;
-  font-weight: bold;
-
   display: flex;
   justify-content: flex-end;
-
-  .select-box_content button {
-    background-color: transparent;
-    font-weight: bold;
-    padding: 0.1em 0.5em;
-    color: paleturquoise;
-  }
-
-  .options {
-    font-size: 0.9em;
-  }
 }
 </style>

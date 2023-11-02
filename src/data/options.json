@@ -299,22 +299,27 @@
   "regions": [
     {
       "id": "eu",
+      "name": "PL1",
       "value": "PL1"
     },
     {
       "id": "cae",
+      "name": "PL2",
       "value": "PL2"
     },
     {
       "id": "usw",
+      "name": "DE",
       "value": "DE"
     },
     {
       "id": "us",
+      "name": "CZE",
       "value": "CZE"
     },
     {
       "id": "ru",
+      "name": "ENG",
       "value": "ENG"
     }
   ]

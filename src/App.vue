@@ -37,10 +37,10 @@ import { defineComponent, watch } from 'vue';
 import Clock from './components/App/Clock.vue';
 
 import packageInfo from '.././package.json';
+import { regions } from './data/options.json';
 
 import { useStore } from './store/store';
 import StatusIndicator from './components/App/StatusIndicator.vue';
-import SelectBox from './components/Global/SelectBox.vue';
 import TrainModal from './components/Global/TrainModal.vue';
 import StorageManager from './scripts/managers/storageManager';
 import AppHeader from './components/App/AppHeader.vue';
@@ -50,7 +50,6 @@ export default defineComponent({
   components: {
     Clock,
     StatusIndicator,
-    SelectBox,
     TrainModal,
     AppHeader
   },
@@ -105,7 +104,12 @@ export default defineComponent({
       immediate: true,
       handler(regionQuery: string) {
         if (regionQuery) {
-          this.store.region.id = regionQuery;
+          this.store.region.id =
+            regions.find(
+              (reg) =>
+                reg.id == regionQuery.toLocaleLowerCase() ||
+                reg.value.toLocaleLowerCase() == regionQuery.toLocaleLowerCase()
+            )?.id || 'eu';
         }
       }
     }
