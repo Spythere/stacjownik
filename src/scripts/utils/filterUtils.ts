@@ -53,28 +53,20 @@ export const sortStations = (
 
     case 'timetableConfirmed':
       diff =
-        (a.onlineInfo?.scheduledTrains
-          ? a.onlineInfo.scheduledTrains.filter((train) => train.stopInfo.confirmed).length
-          : -1) -
-        (b.onlineInfo?.scheduledTrains
-          ? b.onlineInfo.scheduledTrains.filter((train) => train.stopInfo.confirmed).length
-          : -1);
+        (a.onlineInfo?.scheduledTrainCount.confirmed ?? -1) -
+        (b.onlineInfo?.scheduledTrainCount.confirmed ?? -1);
       break;
 
     case 'timetableUnconfirmed':
       diff =
-        (a.onlineInfo?.scheduledTrains
-          ? a.onlineInfo.scheduledTrains.filter((train) => !train.stopInfo.confirmed).length
-          : -1) -
-        (b.onlineInfo?.scheduledTrains
-          ? b.onlineInfo.scheduledTrains.filter((train) => !train.stopInfo.confirmed).length
-          : -1);
+        (a.onlineInfo?.scheduledTrainCount.unconfirmed ?? -1) -
+        (b.onlineInfo?.scheduledTrainCount.unconfirmed ?? -1);
       break;
 
     case 'timetableAll':
       diff =
-        (a.onlineInfo?.scheduledTrains ? a.onlineInfo.scheduledTrains.length : -1) -
-        (b.onlineInfo?.scheduledTrains ? b.onlineInfo.scheduledTrains.length : -1);
+        (a.onlineInfo?.scheduledTrainCount.all ?? -1) -
+        (b.onlineInfo?.scheduledTrainCount.all ?? -1);
       break;
 
     default:
