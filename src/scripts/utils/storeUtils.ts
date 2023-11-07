@@ -1,50 +1,14 @@
-import { DispatcherStatusID } from '../enums/DispatcherStatus';
 import { ScheduledTrain, StopStatus } from '../interfaces/ScheduledTrain';
 import Station from '../interfaces/Station';
 import Train from '../interfaces/Train';
 import TrainStop from '../interfaces/TrainStop';
-import StationAPIData from '../interfaces/api/StationAPIData';
-import { StationTrain, StoreState } from '../interfaces/store/storeTypes';
+import ActiveSceneryAPIData from '../interfaces/api/SceneryAPIData';
+import { StationTrain } from '../interfaces/store/storeTypes';
 
 export const getLocoURL = (locoType: string): string =>
   `https://rj.td2.info.pl/dist/img/thumbnails/${
     locoType.includes('EN') ? locoType + 'rb' : locoType
   }.png`;
-
-export const getStatusID = (
-  stationStatus: any[] | undefined,
-  isSWDROnline: boolean
-): DispatcherStatusID => {
-  if (isSWDROnline && !stationStatus) return DispatcherStatusID.Unauthorized;
-  if (!stationStatus) return DispatcherStatusID.Unknown;
-
-  // if (stationStatus == -1) return DispatcherStatusID.Unauthorized;
-
-  const statusCode = stationStatus[2];
-  const statusTimestamp = stationStatus[3];
-
-  switch (statusCode) {
-    case 0:
-      if (statusTimestamp - Date.now() > 21000000) return DispatcherStatusID.OnlineNoLimit;
-
-      return DispatcherStatusID.OnlineWithHours;
-
-    case 1:
-      return DispatcherStatusID.Afk;
-
-    case 2:
-      if (statusTimestamp == 0) return DispatcherStatusID.Ending;
-      break;
-
-    case 3:
-      return DispatcherStatusID.NoSpace;
-
-    default:
-      break;
-  }
-
-  return DispatcherStatusID.Unavailable;
-};
 
 export const getStatusTimestamp = (stationStatus: any): number => {
   if (!stationStatus) return -2;
@@ -218,40 +182,12 @@ export function getCheckpointTrain(
   };
 }
 
-export function getDispatcherStatus(state: StoreState, onlineStationData: StationAPIData) {
-  const { dispatchers } = state.apiData;
-
-  const prevDispatcherStatus = state.lastDispatcherStatuses.find(
-    (dispatcher) => dispatcher.hash === onlineStationData.stationHash
-  );
-
-  const stationStatus = dispatchers?.find(
-    (status: string[]) => status[0] == onlineStationData.stationHash && status[1] == state.region.id
-  );
-
-  const statusTimestamp =
-    prevDispatcherStatus && !dispatchers
-      ? prevDispatcherStatus.statusTimestamp
-      : getStatusTimestamp(stationStatus);
-
-  const statusID =
-    prevDispatcherStatus && !dispatchers
-      ? prevDispatcherStatus.statusID
-      : getStatusID(stationStatus, onlineStationData.isOnline === 1);
-
-  return {
-    hash: onlineStationData.stationHash,
-    statusID,
-    statusTimestamp
-  };
-}
-
 export function getScheduledTrains(
   trainList: Train[],
-  stationAPIData: StationAPIData,
+  sceneryData: ActiveSceneryAPIData,
   stationGeneralInfo: Station['generalInfo']
 ): ScheduledTrain[] {
-  const stationName = stationAPIData.stationName.toLocaleLowerCase();
+  const stationName = sceneryData.stationName.toLocaleLowerCase();
 
   stationGeneralInfo?.checkpoints.forEach((cp) => (cp.scheduledTrains.length = 0));
 
@@ -259,7 +195,7 @@ export function getScheduledTrains(
     if (!train.timetableData) return acc;
 
     const timetable = train.timetableData;
-    if (!timetable.sceneries.includes(stationAPIData.stationHash)) return acc;
+    if (!timetable.sceneries.includes(sceneryData.stationHash)) return acc;
 
     const stopInfoIndex = timetable.followingStops.findIndex((stop) => {
       const stopName = stop.stopNameRAW.toLowerCase();
@@ -277,7 +213,7 @@ export function getScheduledTrains(
 
     if (stopInfoIndex != -1) {
       checkpointScheduledTrains.push(
-        getCheckpointTrain(train, stopInfoIndex, stationAPIData.stationName)
+        getCheckpointTrain(train, stopInfoIndex, sceneryData.stationName)
       );
     }
 
@@ -298,9 +234,7 @@ export function getScheduledTrains(
       );
 
       if (index > -1)
-        checkpointScheduledTrains.push(
-          getCheckpointTrain(train, index, stationAPIData.stationName)
-        );
+        checkpointScheduledTrains.push(getCheckpointTrain(train, index, sceneryData.stationName));
     });
 
     acc.push(...checkpointScheduledTrains);
@@ -312,14 +246,12 @@ export function getStationTrains(
   trainList: Train[],
   scheduledTrainList: ScheduledTrain[],
   region: string,
-  apiStation: StationAPIData
+  scenery: ActiveSceneryAPIData
 ): StationTrain[] {
   return trainList
     .filter(
       (train) =>
-        train?.region === region &&
-        train.online &&
-        train.currentStationName === apiStation.stationName
+        train?.region === region && train.online && train.currentStationName === scenery.stationName
     )
     .map((train) => ({
       driverName: train.driverName,

@@ -108,9 +108,8 @@
 
             <td class="station_status">
               <StationStatusBadge
-                :statusID="station.onlineInfo?.statusID"
                 :isOnline="station.onlineInfo ? true : false"
-                :statusTimestamp="station.onlineInfo?.statusTimestamp"
+                :dispatcherStatus="station.onlineInfo?.dispatcherStatus"
               />
             </td>
 

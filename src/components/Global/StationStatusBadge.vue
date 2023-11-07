@@ -1,7 +1,7 @@
 <template>
-  <span class="status-badge" :class="statusID" v-if="isOnline">
-    {{ $t(`status.${statusID}`) }}
-    {{ statusID == 'online' ? timestampToString(statusTimestamp!) : '' }}
+  <span class="status-badge" :class="statusName" v-if="isOnline">
+    {{ $t(`status.${statusName}`) }}
+    {{ dispatcherStatus && dispatcherStatus > 5 ? timestampToString(dispatcherStatus) : '' }}
   </span>
 
   <span class="status-badge free" v-else>
@@ -10,22 +10,52 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { PropType, defineComponent } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
+import { DispatcherStatus } from '../../scripts/enums/DispatcherStatus';
 
 export default defineComponent({
   props: {
-    statusID: {
-      type: String
-    },
-    statusTimestamp: {
-      type: Number
+    dispatcherStatus: {
+      type: Number as PropType<DispatcherStatus | number>
     },
     isOnline: {
       type: Boolean
     }
   },
-  mixins: [dateMixin]
+  mixins: [dateMixin],
+
+  computed: {
+    statusName() {
+      if (!this.dispatcherStatus) return 'free';
+
+      switch (this.dispatcherStatus) {
+        case DispatcherStatus.AFK:
+          return 'afk';
+
+        case DispatcherStatus.ENDING:
+          return 'ending';
+
+        case DispatcherStatus.INVALID:
+          return 'invalid';
+
+        case DispatcherStatus.NOT_LOGGED_IN:
+          return 'not-signed';
+
+        case DispatcherStatus.NO_SPACE:
+          return 'no-space';
+
+        case DispatcherStatus.UNAVAILABLE:
+          return 'unavailable';
+
+        case DispatcherStatus.UNKNOWN:
+          return 'unknown';
+
+        default:
+          return 'online';
+      }
+    }
+  }
 });
 </script>
 
@@ -34,10 +64,10 @@ $free: #8a8a8a;
 $ending: #e6c300;
 $no-limit: #117fc9;
 $unav: #ff3d5d;
-$brb: #e6a100;
+$afk: #e6a100;
 $no-space: #222;
 $online: #09a116;
-$unknown: rgb(185, 60, 60);
+$unknown: #b93c3c;
 
 .status-badge {
   border-radius: 1rem;
@@ -69,8 +99,8 @@ $unknown: rgb(185, 60, 60);
     font-size: 0.85em;
   }
 
-  &.brb {
-    background-color: $brb;
+  &.afk {
+    background-color: $afk;
     color: black;
     font-size: 0.95em;
   }
@@ -82,7 +112,8 @@ $unknown: rgb(185, 60, 60);
     font-size: 0.85em;
   }
 
-  &.unknown {
+  &.unknown,
+  &.invalid {
     background-color: $unknown;
     font-size: 0.95em;
   }

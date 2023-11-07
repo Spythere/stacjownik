@@ -7,16 +7,25 @@ import { DriverStatsAPIData } from '../api/DriverStatsAPIData';
 import { RollingStockGithubData } from '../github_api/StockInfoGithubData';
 import Station from '../Station';
 import { ScheduledTrain } from '../ScheduledTrain';
-import { DispatcherStatusID } from '../../enums/DispatcherStatus';
+import { DispatcherStatus } from '../../enums/DispatcherStatus';
+import ActiveSceneryAPIData from '../api/SceneryAPIData';
 
 export type Availability = 'default' | 'unavailable' | 'nonPublic' | 'abandoned' | 'nonDefault';
+
+export interface RegionCounters {
+  stationCount: number;
+  trainsCount: number;
+  timetablesCount: number;
+}
 
 export interface StoreState {
   stationList: Station[];
   apiData: APIData;
   rollingStockData?: RollingStockGithubData;
 
-  lastDispatcherStatuses: { hash: string; statusTimestamp: number; statusID: DispatcherStatusID }[];
+  regionOnlineCounters: RegionCounters[];
+
+  lastDispatcherStatuses: { hash: string; statusTimestamp: number; statusID: DispatcherStatus }[];
 
   sceneryData: any[][];
 
@@ -55,6 +64,8 @@ export interface APIData {
   stations?: StationAPIData[];
   dispatchers?: string[][];
   trains?: TrainAPIData[];
+  activeSceneries?: ActiveSceneryAPIData[];
+
   connectedSocketCount: number;
 }
 
@@ -113,8 +124,7 @@ export interface OnlineScenery {
   dispatcherExp: number;
   dispatcherIsSupporter: boolean;
 
-  statusTimestamp: number;
-  statusID: DispatcherStatusID;
+  dispatcherStatus: DispatcherStatus | number;
 
   isOnline: boolean;
 
@@ -125,5 +135,5 @@ export interface OnlineScenery {
     all: number;
     confirmed: number;
     unconfirmed: number;
-  }
+  };
 }

@@ -26,7 +26,9 @@ export const useStationFiltersStore = defineStore('stationFiltersStore', {
       return store.stationList
         .map((station) => ({
           ...station,
-          onlineInfo: store.onlineSceneryList.find((os) => os.name == station.name)
+          onlineInfo: store.onlineSceneryList.find(
+            (os) => os.name == station.name && os.region == store.region.id
+          )
         }))
         .filter((station) => filterStations(station, state.filters))
         .sort((a, b) => sortStations(a, b, state.sorterActive));

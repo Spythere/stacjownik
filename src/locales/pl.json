@@ -68,6 +68,7 @@
     "unavailable": "NIEDOSTĘPNY",
     "brb": "Z/W",
     "no-space": "BRAK MIEJSCA",
+    "invalid": "NIEWPISANY",
     "unknown": "NIEZNANY"
   },
   "options": {

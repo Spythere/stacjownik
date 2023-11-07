@@ -134,7 +134,9 @@ export default defineComponent({
 
     onlineSceneryInfo() {
       return this.store.onlineSceneryList.find(
-        (scenery) => scenery.name === this.station?.toString().replace(/_/g, ' ')
+        (scenery) =>
+          scenery.name === this.station?.toString().replace(/_/g, ' ') &&
+          scenery.region == this.store.region.id
       );
     }
   },

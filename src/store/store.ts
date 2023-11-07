@@ -5,12 +5,7 @@ import { DataStatus } from '../scripts/enums/DataStatus';
 import StationRoutes from '../scripts/interfaces/StationRoutes';
 import Train from '../scripts/interfaces/Train';
 import { URLs } from '../scripts/utils/apiURLs';
-import {
-  getDispatcherStatus,
-  parseSpawns,
-  getScheduledTrains,
-  getStationTrains
-} from '../scripts/utils/storeUtils';
+import { parseSpawns, getScheduledTrains, getStationTrains } from '../scripts/utils/storeUtils';
 
 import {
   APIData,
@@ -22,7 +17,7 @@ import {
 import packageInfo from '../../package.json';
 import { RollingStockGithubData } from '../scripts/interfaces/github_api/StockInfoGithubData';
 import { ScheduledTrain } from '../scripts/interfaces/ScheduledTrain';
-import { DispatcherStatusID } from '../scripts/enums/DispatcherStatus';
+import { DispatcherStatus } from '../scripts/enums/DispatcherStatus';
 
 export const useStore = defineStore('store', {
   state: () =>
@@ -31,6 +26,7 @@ export const useStore = defineStore('store', {
       rollingStockData: undefined,
 
       stationList: [],
+      regionOnlineCounters: [],
 
       routesList: [],
 
@@ -72,11 +68,7 @@ export const useStore = defineStore('store', {
   getters: {
     trainList(): Train[] {
       return (this.apiData?.trains ?? [])
-        .filter(
-          (train) =>
-            train.region === this.region.id &&
-            (train.online || train.timetable || train.lastSeen > Date.now() - 180000)
-        )
+        .filter((train) => train.online || train.timetable || train.lastSeen > Date.now() - 180000)
         .map((train) => {
           const stock = train.stockString.split(';');
           const locoType = stock ? stock[0] : train.stockString;
@@ -127,75 +119,59 @@ export const useStore = defineStore('store', {
 
     onlineSceneryList(state): OnlineScenery[] {
       if (state.isOffline) return [];
-      if (!state.apiData?.stations) return [];
+      if (!state.apiData?.activeSceneries) return [];
 
-      return (
-        state.apiData?.stations
-          // ?.filter((apiStation) => apiStation.region == state.region.id)
-          .reduce((list, apiStation) => {
-            if (apiStation.region != state.region.id) return list;
+      return state.apiData?.activeSceneries.reduce((list, scenery) => {
+        if (scenery.isOnline !== 1 && Date.now() - scenery.lastSeen > 1000 * 60 * 3) return list;
+        if (scenery.dispatcherStatus == DispatcherStatus.UNKNOWN) return list;
 
-            if (apiStation.isOnline !== 1 && Date.now() - apiStation.lastSeen > 1000 * 60 * 3)
-              return list;
+        const station = this.stationList.find((s) => s.name === scenery.stationName);
 
-            const dispatcherStatus = getDispatcherStatus(state as StoreState, apiStation);
+        const scheduledTrains = getScheduledTrains(this.trainList, scenery, station?.generalInfo);
 
-            if (dispatcherStatus.statusID == DispatcherStatusID.Unknown) return list;
+        const stationTrains = getStationTrains(
+          this.trainList,
+          scheduledTrains,
+          this.region.id,
+          scenery
+        );
 
-            const station = this.stationList.find((s) => s.name === apiStation.stationName);
+        // Remove checkpoint duplicates
+        const uniqueScheduledTrains = scheduledTrains.reduce(
+          (uniqueList, sTrain) =>
+            uniqueList.find((v) => v.trainId === sTrain.trainId)
+              ? uniqueList
+              : [...uniqueList, sTrain],
+          [] as ScheduledTrain[]
+        );
 
-            const scheduledTrains = getScheduledTrains(
-              this.trainList,
-              apiStation,
-              station?.generalInfo
-            );
+        list.push({
+          name: scenery.stationName,
+          hash: scenery.stationHash,
+          region: scenery.region,
+          maxUsers: scenery.maxUsers,
+          currentUsers: scenery.currentUsers,
+          spawns: parseSpawns(scenery.spawnString),
+          dispatcherName: scenery.dispatcherName,
+          dispatcherRate: scenery.dispatcherRate,
+          dispatcherId: scenery.dispatcherId,
+          dispatcherExp: scenery.dispatcherExp,
+          dispatcherIsSupporter: scenery.dispatcherIsSupporter,
+          scheduledTrains: scheduledTrains,
+          stationTrains: stationTrains,
+          dispatcherStatus: scenery.dispatcherStatus,
 
-            const stationTrains = getStationTrains(
-              this.trainList,
-              scheduledTrains,
-              this.region.id,
-              apiStation
-            );
+          isOnline: scenery.isOnline == 1,
 
-            // Remove checkpoint duplicates
-            const uniqueScheduledTrains = scheduledTrains.reduce(
-              (uniqueList, sTrain) =>
-                uniqueList.find((v) => v.trainId === sTrain.trainId)
-                  ? uniqueList
-                  : [...uniqueList, sTrain],
-              [] as ScheduledTrain[]
-            );
+          scheduledTrainCount: {
+            all: uniqueScheduledTrains.length,
+            confirmed: uniqueScheduledTrains.filter((train) => train.stopInfo.confirmed).length,
+            unconfirmed: uniqueScheduledTrains.filter((train) => !train.stopInfo.confirmed).length
+          }
+        });
 
-            list.push({
-              name: apiStation.stationName,
-              hash: apiStation.stationHash,
-              region: apiStation.region,
-              maxUsers: apiStation.maxUsers,
-              currentUsers: apiStation.currentUsers,
-              spawns: parseSpawns(apiStation.spawnString),
-              dispatcherName: apiStation.dispatcherName,
-              dispatcherRate: apiStation.dispatcherRate,
-              dispatcherId: apiStation.dispatcherId,
-              dispatcherExp: apiStation.dispatcherExp,
-              dispatcherIsSupporter: apiStation.dispatcherIsSupporter,
-              scheduledTrains: scheduledTrains,
-              stationTrains: stationTrains,
-              statusTimestamp: dispatcherStatus.statusTimestamp,
-              statusID: dispatcherStatus.statusID,
-
-              isOnline: apiStation.isOnline == 1,
-
-              scheduledTrainCount: {
-                all: uniqueScheduledTrains.length,
-                confirmed: uniqueScheduledTrains.filter((train) => train.stopInfo.confirmed).length,
-                unconfirmed: uniqueScheduledTrains.filter((train) => !train.stopInfo.confirmed)
-                  .length
-              }
-            });
-
-            return list;
-          }, [] as OnlineScenery[])
-      );
+        return list;
+      }, [] as OnlineScenery[]);
     }
   },
   actions: {
@@ -287,6 +263,7 @@ export const useStore = defineStore('store', {
       socket.on('UPDATE', (data: APIData) => {
         this.apiData = data;
         this.dataStatuses.connection = DataStatus.Loaded;
+
         this.setStatuses();
       });
 

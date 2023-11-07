@@ -72,7 +72,6 @@ function filterTrainList(
       (searchedDriver.length > 0
         ? train.driverName.toLowerCase().startsWith(searchedDriver.toLowerCase())
         : true) &&
-      (!train.timetableData ? train.online : train.timetableData) &&
       isFiltered
     );
   });

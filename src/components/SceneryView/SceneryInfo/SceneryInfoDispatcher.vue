@@ -22,9 +22,8 @@
     </div>
 
     <StationStatusBadge
-      :statusID="onlineScenery?.statusID"
       :isOnline="onlineScenery ? true : false"
-      :statusTimestamp="onlineScenery?.statusTimestamp"
+      :dispatcherStatus="onlineScenery?.dispatcherStatus"
     />
   </section>
 </template>

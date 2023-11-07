@@ -67,16 +67,15 @@ export default defineComponent({
     selectedItem() {
       return this.regionList[this.selectedItemIndex] || null;
     },
+
     regionList() {
       return regionsJSON.map((region) => {
-        const regionStationCount =
-          this.store.apiData.stations?.filter(
-            (station) => station.region == region.id && station.isOnline
-          ).length || 0;
+        const regionStationCount = this.store.onlineSceneryList.filter(
+          (scenery) => scenery.region == region.id
+        ).length;
 
         const regionTrainCount =
-          this.store.apiData.trains?.filter((train) => train.region == region.id && train.online)
-            .length || 0;
+          this.store.trainList.filter((train) => train.region == region.id).length || 0;
 
         return {
           id: region.id,

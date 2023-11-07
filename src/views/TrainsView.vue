@@ -70,7 +70,7 @@ export default defineComponent({
 
     const computedTrains: ComputedRef<Train[]> = computed(() => {
       return filteredTrainList(
-        store.trainList,
+        store.trainList.filter((train) => train.region == store.region.id),
         searchedTrain.value,
         searchedDriver.value,
         sorterActive,
@@ -83,7 +83,6 @@ export default defineComponent({
 
       currentOptionsActive.value =
         sT.length > 0 || sD.length > 0 || sA.id != 'routeDistance' || areFiltersActive;
-      console.log(sA.id);
     });
 
     return {
