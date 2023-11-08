@@ -122,7 +122,7 @@ export const useStore = defineStore('store', {
       if (!state.apiData?.activeSceneries) return [];
 
       return state.apiData?.activeSceneries.reduce((list, scenery) => {
-        if (scenery.isOnline !== 1 && Date.now() - scenery.lastSeen > 1000 * 60 * 3) return list;
+        if (scenery.isOnline !== 1 && Date.now() - scenery.lastSeen > 1000 * 60 * 2) return list;
         if (scenery.dispatcherStatus == DispatcherStatus.UNKNOWN) return list;
 
         const station = this.stationList.find((s) => s.name === scenery.stationName);

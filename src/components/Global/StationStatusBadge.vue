@@ -1,7 +1,11 @@
 <template>
   <span class="status-badge" :class="statusName" v-if="isOnline">
     {{ $t(`status.${statusName}`) }}
-    {{ dispatcherStatus && dispatcherStatus > 5 ? timestampToString(dispatcherStatus) : '' }}
+    {{
+      statusName == 'online' && dispatcherStatus && dispatcherStatus > 5
+        ? timestampToString(dispatcherStatus)
+        : ''
+    }}
   </span>
 
   <span class="status-badge free" v-else>
@@ -52,6 +56,7 @@ export default defineComponent({
           return 'unknown';
 
         default:
+          if (this.dispatcherStatus >= Date.now() + 25500000) return 'no-limit';
           return 'online';
       }
     }
