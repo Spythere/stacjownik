@@ -246,10 +246,6 @@ export default defineComponent({
     font-size: 1.15em;
   }
 
-  .train-stats {
-    font-size: 1.1em;
-  }
-
   .general-info,
   .general-status,
   .general-timetable {

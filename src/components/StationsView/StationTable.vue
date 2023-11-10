@@ -388,7 +388,8 @@ section.station_table {
 table {
   white-space: nowrap;
   border-collapse: collapse;
-  min-width: 1350px;
+  // min-width: 1350px;
+  width: 100%;
 
   @include smallScreen() {
     min-width: auto;

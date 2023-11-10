@@ -1,34 +1,31 @@
 <template>
-  <div class="train-table">
-    <transition name="anim" mode="out-in">
-      <div :key="store.dataStatuses.trains">
-        <div class="table-info" v-if="store.isOffline">
-          {{ $t('app.offline') }}
-        </div>
+  <div>
+    <transition-group name="list-anim" tag="ul" class="train-list">
+      <li class="table-info" key="offline" v-if="store.isOffline">
+        {{ $t('app.offline') }}
+      </li>
 
-        <Loading v-else-if="trains.length == 0 && store.dataStatuses.trains == 0" />
+      <Loading v-else-if="trains.length == 0 && store.dataStatuses.trains == 0" key="loading" />
 
-        <div
-          class="table-info no-trains"
-          v-else-if="trains.length == 0 && store.dataStatuses.trains != 0"
-        >
-          {{ $t('trains.no-trains') }}
-        </div>
+      <li
+        class="table-info"
+        key="no-trains"
+        v-else-if="trains.length == 0 && store.dataStatuses.trains != 0"
+      >
+        {{ $t('trains.no-trains') }}
+      </li>
 
-        <transition-group name="list-anim" tag="ul" class="train-list" v-else>
-          <li
-            class="train-row"
-            v-for="train in currentTrains"
-            :key="train.trainId"
-            tabindex="0"
-            @click.stop="selectModalTrain(train.trainId, $event.currentTarget)"
-            @keydown.enter="selectModalTrain(train.trainId, $event.currentTarget)"
-          >
-            <TrainInfo :train="train" />
-          </li>
-        </transition-group>
-      </div>
-    </transition>
+      <li
+        class="train-row"
+        v-for="train in currentTrains"
+        :key="train.trainId"
+        tabindex="0"
+        @click.stop="selectModalTrain(train.trainId, $event.currentTarget)"
+        @keydown.enter="selectModalTrain(train.trainId, $event.currentTarget)"
+      >
+        <TrainInfo :train="train" />
+      </li>
+    </transition-group>
   </div>
 </template>
 
@@ -104,6 +101,10 @@ export default defineComponent({
   }
 }
 
+.train-table {
+  position: relative;
+}
+
 .table-info {
   text-align: center;
 
@@ -149,6 +150,7 @@ img.train-image {
 .train {
   &-list {
     position: relative;
+    overflow-y: hidden;
 
     @include smallScreen() {
       width: 100%;

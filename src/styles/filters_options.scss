@@ -4,6 +4,7 @@
 
 .filters-options {
   margin-bottom: 0.5em;
+  position: relative;
 }
 
 .actions-bar {
@@ -57,7 +58,7 @@ h1.option-title {
   background-color: $bgCol;
   box-shadow: 0 5px 10px 2px #0f0f0f;
 
-  width: 97%;
+  width: 100%;
   max-width: 550px;
 
   padding: 1em;

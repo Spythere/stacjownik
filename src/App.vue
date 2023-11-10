@@ -72,7 +72,7 @@ export default defineComponent({
     window.addEventListener('offline', () => {
       this.store.isOffline = true;
 
-      this.store.activeData.sceneries = [];
+      this.store.activeData.activeSceneries = [];
       this.store.activeData.trains = [];
       this.store.activeData.connectedSocketCount = 0;
 
