@@ -51,16 +51,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { PropType, defineComponent } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
-import TrainStop from '../../scripts/interfaces/TrainStop';
+import { TrainStop } from '../../store/typings';
 
 export default defineComponent({
   mixins: [dateMixin],
 
   props: {
     stop: {
-      type: Object as () => TrainStop,
+      type: Object as PropType<TrainStop>,
       required: true
     }
   },

@@ -1,10 +1,58 @@
 import { defineStore } from 'pinia';
 import inputData from '../data/options.json';
-import StorageManager from '../scripts/managers/storageManager';
-import { useStore } from './store';
-import { filterInitStates } from '../scripts/constants/stores/initFilterStates';
+import { useStore } from './mainStore';
 import { filterStations, sortStations } from '../scripts/utils/filterUtils';
 import { HeadIdsTypes } from '../scripts/data/stationHeaderNames';
+import StorageManager from '../managers/storageManager';
+import { Filter } from '../components/StationsView/typings';
+
+const filterInitStates: Filter = {
+  default: false,
+  notDefault: false,
+  real: false,
+  fictional: false,
+  SPK: false,
+  SCS: false,
+  SPE: false,
+  SUP: false,
+  noSUP: false,
+  ręczne: false,
+  'ręczne+SPK': false,
+  'ręczne+SCS': false,
+  mechaniczne: false,
+  'mechaniczne+SPK': false,
+  'mechaniczne+SCS': false,
+  współczesna: false,
+  kształtowa: false,
+  historyczna: false,
+  mieszana: false,
+  SBL: false,
+  PBL: false,
+  minLevel: 0,
+  maxLevel: 20,
+  minOneWayCatenary: 0,
+  minOneWay: 0,
+  minTwoWayCatenary: 0,
+  minTwoWay: 0,
+  'include-selected': false,
+  'no-1track': false,
+  'no-2track': false,
+  free: true,
+  occupied: false,
+  ending: false,
+  nonPublic: false,
+  unavailable: true,
+  abandoned: true,
+  afkStatus: false,
+  endingStatus: false,
+  noSpaceStatus: false,
+  unavailableStatus: false,
+  unsignedStatus: false,
+
+  authors: '',
+
+  onlineFromHours: 0
+};
 
 export const useStationFiltersStore = defineStore('stationFiltersStore', {
   state() {

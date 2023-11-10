@@ -43,10 +43,10 @@
       </div>
     </span>
 
-    <b v-else-if="store.driverStatsStatus == DataStatus.Loading">{{
+    <b v-else-if="store.driverStatsStatus == Status.Data.Loading">{{
       $t('journal.stats-loading')
     }}</b>
-    <b v-else-if="store.driverStatsStatus == DataStatus.Error">
+    <b v-else-if="store.driverStatsStatus == Status.Data.Error">
       {{ $t('journal.stats-error ') }}
     </b>
     <b v-else>{{ $t('journal.driver-stats-info') }}</b>
@@ -55,14 +55,14 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { DataStatus } from '../../scripts/enums/DataStatus';
-import { useStore } from '../../store/store';
+import { useStore } from '../../store/mainStore';
+import { Status } from '../../typings/common';
 
 export default defineComponent({
   data() {
     return {
       store: useStore(),
-      DataStatus
+      Status: Status
     };
   }
 });

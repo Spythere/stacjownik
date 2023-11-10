@@ -45,23 +45,83 @@ import JournalOptions from '../components/JournalView/JournalOptions.vue';
 import JournalStats from '../components/JournalView/JournalStats.vue';
 import JournalHeader from '../components/JournalView/JournalHeader.vue';
 
-import { DataStatus } from '../scripts/enums/DataStatus';
-import { TimetableHistory } from '../scripts/interfaces/api/TimetablesAPIData';
 import { URLs } from '../scripts/utils/apiURLs';
-import { useStore } from '../store/store';
+import { useStore } from '../store/mainStore';
 
 import { LocationQuery } from 'vue-router';
-import { TimetablesQueryParams } from '../scripts/interfaces/api/TimetablesQueryParams';
-import { JournalFilterType } from '../scripts/enums/JournalFilterType';
-import {
-  JournalFilter,
-  JournalTimetableSearchType,
-  JournalTimetableSorter
-} from '../scripts/types/JournalTimetablesTypes';
-import { journalTimetableFilters } from '../constants/Journal/JournalTimetablesConsts';
+
 import JournalTimetablesList from '../components/JournalView/JournalTimetables/JournalTimetablesList.vue';
+import { Journal } from '../components/JournalView/typings';
+import { Status } from '../typings/common';
+import { API } from '../typings/api';
 
 const TIMETABLES_API_URL = `${URLs.stacjownikAPI}/api/getTimetables`;
+
+export const journalTimetableFilters: Journal.TimetableFilter[] = [
+  {
+    id: Journal.TimetableFilterId.ALL,
+    filterSection: Journal.FilterSection.TIMETABLE_STATUS,
+    isActive: true
+  },
+
+  {
+    id: Journal.TimetableFilterId.ACTIVE,
+    filterSection: Journal.FilterSection.TIMETABLE_STATUS,
+    isActive: false
+  },
+
+  {
+    id: Journal.TimetableFilterId.FULFILLED,
+    filterSection: Journal.FilterSection.TIMETABLE_STATUS,
+    isActive: false
+  },
+
+  {
+    id: Journal.TimetableFilterId.ABANDONED,
+    filterSection: Journal.FilterSection.TIMETABLE_STATUS,
+    isActive: false
+  },
+
+  {
+    id: Journal.TimetableFilterId.TWR_SKR,
+    filterSection: Journal.FilterSection.TWRSKR,
+    isActive: true
+  },
+
+  {
+    id: Journal.TimetableFilterId.TWR,
+    filterSection: Journal.FilterSection.TWRSKR,
+    isActive: false
+  },
+
+  {
+    id: Journal.TimetableFilterId.SKR,
+    filterSection: Journal.FilterSection.TWRSKR,
+    isActive: false
+  }
+];
+
+interface TimetablesQueryParams {
+  driverName?: string;
+  trainNo?: string;
+  timetableId?: string;
+
+  authorName?: string;
+  timestampFrom?: number;
+  timestampTo?: number;
+  issuedFrom?: string;
+
+  countFrom?: number;
+  countLimit?: number;
+
+  fulfilled?: number;
+  terminated?: number;
+
+  twr?: number;
+  skr?: number;
+
+  sortBy?: Journal.TimetableSorter['id'];
+}
 
 export default defineComponent({
   components: {
@@ -91,22 +151,20 @@ export default defineComponent({
     statsCardOpen: false,
     currentOptionsActive: false,
 
-    timetableHistory: [] as TimetableHistory[],
+    timetableHistory: [] as API.TimetableHistory.Response,
     journalTimetableFilters,
 
-    dataStatus: DataStatus.Loading,
-    dataErrorMessage: '',
-
-    DataStatus
+    dataStatus: Status.Data.Loading,
+    dataErrorMessage: ''
   }),
 
   setup() {
-    const sorterActive: JournalTimetableSorter = reactive({ id: 'timetableId', dir: 'desc' });
+    const sorterActive: Journal.TimetableSorter = reactive({ id: 'timetableId', dir: 'desc' });
     // const journalFilterActive = ref(journalTimetableFilters[0]);
-    const initFilters: readonly JournalFilter[] = JSON.parse(
+    const initFilters: readonly Journal.TimetableFilter[] = JSON.parse(
       JSON.stringify(journalTimetableFilters)
     );
-    const filterList: JournalFilter[] = reactive(JSON.parse(JSON.stringify(initFilters)));
+    const filterList: Journal.TimetableFilter[] = reactive(JSON.parse(JSON.stringify(initFilters)));
 
     const searchersValues = reactive({
       'search-train': '',
@@ -114,7 +172,7 @@ export default defineComponent({
       'search-dispatcher': '',
       'search-issuedFrom': '',
       'search-date': ''
-    } as JournalTimetableSearchType);
+    } as Journal.TimetableSearchType);
 
     const countFromIndex = ref(0);
     const countLimit = 15;
@@ -163,7 +221,7 @@ export default defineComponent({
       const scrollTop = listElement.scrollTop;
       const elementHeight = listElement.scrollHeight - listElement.offsetHeight;
 
-      if (!this.scrollDataLoaded || this.scrollNoMoreData || this.dataStatus != DataStatus.Loaded)
+      if (!this.scrollDataLoaded || this.scrollNoMoreData || this.dataStatus != Status.Data.Loaded)
         return;
 
       if (scrollTop > elementHeight * 0.85) this.addHistoryData();
@@ -213,7 +271,7 @@ export default defineComponent({
 
       this.currentQueryParams['countFrom'] = this.timetableHistory.length;
 
-      const responseData: TimetableHistory[] = await (
+      const responseData: API.TimetableHistory.Response = await (
         await axios.get(`${TIMETABLES_API_URL}`, {
           params: { ...this.currentQueryParams }
         })
@@ -248,37 +306,37 @@ export default defineComponent({
         .filter((f) => f.isActive)
         .forEach((f) => {
           switch (f.id) {
-            case JournalFilterType.ABANDONED:
+            case Journal.TimetableFilterId.ABANDONED:
               queryParams['fulfilled'] = 0;
               queryParams['terminated'] = 1;
               break;
 
-            case JournalFilterType.ACTIVE:
+            case Journal.TimetableFilterId.ACTIVE:
               queryParams['fulfilled'] = undefined;
               queryParams['terminated'] = 0;
               break;
 
-            case JournalFilterType.FULFILLED:
+            case Journal.TimetableFilterId.FULFILLED:
               queryParams['terminated'] = undefined;
               queryParams['fulfilled'] = 1;
               break;
 
-            case JournalFilterType.ALL:
+            case Journal.TimetableFilterId.ALL:
               queryParams['terminated'] = undefined;
               queryParams['fulfilled'] = undefined;
               break;
 
-            case JournalFilterType.TWR_SKR:
+            case Journal.TimetableFilterId.TWR_SKR:
               queryParams['twr'] = undefined;
               queryParams['skr'] = undefined;
               break;
 
-            case JournalFilterType.TWR:
+            case Journal.TimetableFilterId.TWR:
               queryParams['twr'] = 1;
               queryParams['skr'] = undefined;
               break;
 
-            case JournalFilterType.SKR:
+            case Journal.TimetableFilterId.SKR:
               queryParams['twr'] = undefined;
               queryParams['skr'] = 1;
               break;
@@ -301,19 +359,19 @@ export default defineComponent({
         this.sorterActive.id != 'timetableId' ? this.sorterActive.id : undefined;
 
       if (JSON.stringify(this.currentQueryParams) != JSON.stringify(queryParams))
-        this.dataStatus = DataStatus.Loading;
+        this.dataStatus = Status.Data.Loading;
 
       this.currentQueryParams = queryParams;
 
       try {
-        const responseData: TimetableHistory[] = await (
+        const responseData: API.TimetableHistory.Response = await (
           await axios.get(`${TIMETABLES_API_URL}`, {
             params: this.currentQueryParams
           })
         ).data;
 
         if (!responseData) {
-          this.dataStatus = DataStatus.Error;
+          this.dataStatus = Status.Data.Error;
           this.dataErrorMessage = 'Brak danych!';
           return;
         }
@@ -329,10 +387,10 @@ export default defineComponent({
             ? this.timetableHistory[0].driverName
             : '';
 
-        this.dataStatus = DataStatus.Loaded;
+        this.dataStatus = Status.Data.Loaded;
         this.dataRefreshedAt = new Date();
       } catch (error) {
-        this.dataStatus = DataStatus.Error;
+        this.dataStatus = Status.Data.Error;
         this.dataErrorMessage = 'Ups! Coś poszło nie tak!';
       }
 

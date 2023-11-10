@@ -56,16 +56,14 @@
 import axios from 'axios';
 import { defineComponent, PropType } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
-import { DataStatus } from '../../scripts/enums/DataStatus';
-import {
-  TimetableHistory,
-  SceneryTimetableHistory
-} from '../../scripts/interfaces/api/TimetablesAPIData';
+
 import Station from '../../scripts/interfaces/Station';
 import { URLs } from '../../scripts/utils/apiURLs';
 import Loading from '../Global/Loading.vue';
 import listObserverMixin from '../../mixins/listObserverMixin';
-import { OnlineScenery } from '../../scripts/interfaces/store/storeTypes';
+import { OnlineScenery } from '../../store/typings';
+import { API } from '../../typings/api';
+import { Status } from '../../typings/common';
 
 export default defineComponent({
   name: 'SceneryTimetablesHistory',
@@ -83,28 +81,28 @@ export default defineComponent({
 
   data() {
     return {
-      historyList: [] as TimetableHistory[],
-      dataStatus: DataStatus.Loading,
-      DataStatus
+      historyList: [] as API.TimetableHistory.Response,
+      dataStatus: Status.Data.Loading,
+      DataStatus: Status.Data
     };
   },
 
   async activated() {
-    const fetchedHistory = await this.fetchAPIData();
-    if (fetchedHistory) this.historyList = fetchedHistory.timetables;
+    this.fetchAPIData();
   },
 
   methods: {
-    async fetchAPIData(countFrom = 0, countLimit = 15): Promise<SceneryTimetableHistory | null> {
+    async fetchAPIData(countFrom = 0, countLimit = 15) {
       try {
-        const requestString = `${URLs.stacjownikAPI}/api/getIssuedTimetables?name=${this.station.name}&countFrom=${countFrom}&countLimit=${countLimit}`;
-        const historyAPIData: SceneryTimetableHistory = await (await axios.get(requestString)).data;
+        const requestString = `${URLs.stacjownikAPI}/api/getTimetables?issuedFrom=${this.station.name}&countFrom=${countFrom}&countLimit=${countLimit}`;
 
-        this.dataStatus = DataStatus.Loaded;
-        return historyAPIData;
+        const response: API.TimetableHistory.Response = await (await axios.get(requestString)).data;
+
+        this.historyList = response;
+
+        this.dataStatus = Status.Data.Loaded;
       } catch (error) {
         console.error(error);
-        return null;
       }
     },
 
@@ -120,3 +118,4 @@ export default defineComponent({
 @import '../../styles/responsive.scss';
 @import '../../styles/sceneryViewTables.scss';
 </style>
+../../store/storeTypes

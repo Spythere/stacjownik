@@ -52,11 +52,10 @@
 <script lang="ts">
 import axios from 'axios';
 import { defineComponent } from 'vue';
-import { DispatcherStatsAPIData } from '../../scripts/interfaces/api/DispatcherStatsAPIData';
-import { TimetableHistory } from '../../scripts/interfaces/api/TimetablesAPIData';
 import { URLs } from '../../scripts/utils/apiURLs';
-import { useStore } from '../../store/store';
+import { useStore } from '../../store/mainStore';
 import Loading from '../Global/Loading.vue';
+import { API } from '../../typings/api';
 
 export default defineComponent({
   components: { Loading },
@@ -73,7 +72,7 @@ export default defineComponent({
     return {
       cardVisible: false,
       lastDispatcherName: '',
-      timetables: [] as TimetableHistory[]
+      timetables: [] as API.TimetableHistory.Response
     };
   },
 
@@ -90,13 +89,13 @@ export default defineComponent({
         this.store.dispatcherStatsData = undefined;
       }
 
-      const statsData: DispatcherStatsAPIData = await (
+      const statsData: API.DispatcherStats.Response = await (
         await axios.get(
           `${URLs.stacjownikAPI}/api/getDispatcherInfo?name=${this.store.dispatcherStatsName}`
         )
       ).data;
 
-      const timetables: TimetableHistory[] = await (
+      const timetables: API.TimetableHistory.Response = await (
         await axios.get(
           `${URLs.stacjownikAPI}/api/getTimetables?authorName=${this.store.dispatcherStatsName}`
         )

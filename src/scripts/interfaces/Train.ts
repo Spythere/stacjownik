@@ -1,4 +1,4 @@
-import TrainStop from './TrainStop';
+import { TrainStop } from '../../store/typings';
 
 export default interface Train {
   trainId: string;

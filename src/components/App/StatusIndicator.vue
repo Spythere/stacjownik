@@ -194,9 +194,9 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { DataStatus } from '../../scripts/enums/DataStatus';
-import { useStore } from '../../store/store';
-import { StoreState } from '../../scripts/interfaces/store/storeTypes';
+import { StoreState } from '../../store/typings';
+import { useStore } from '../../store/mainStore';
+import { Status } from '../../typings/common';
 
 export default defineComponent({
   data() {
@@ -204,7 +204,7 @@ export default defineComponent({
       tooltipActive: false,
       indicator: {
         offline: false,
-        status: DataStatus.Loading,
+        status: Status.Data.Loading,
         message: 'data-status.S3'
       },
 
@@ -217,7 +217,7 @@ export default defineComponent({
   },
 
   mounted() {
-    this.setSignalStatus(DataStatus.Loading);
+    this.setSignalStatus(Status.Data.Loading);
   },
 
   setup() {
@@ -240,44 +240,44 @@ export default defineComponent({
         const dispatcherDataStatus = statuses.dispatchers;
 
         if (this.store.isOffline) {
-          this.setSignalStatus(DataStatus.Initialized);
-          this.indicator.status = DataStatus.Initialized;
+          this.setSignalStatus(Status.Data.Initialized);
+          this.indicator.status = Status.Data.Initialized;
           this.indicator.message = 'data-status.S1-offline';
           return;
         }
 
-        if (connectionStatus == DataStatus.Error) {
+        if (connectionStatus == Status.Data.Error) {
           this.setSignalStatus(connectionStatus);
           this.indicator.status = connectionStatus;
           this.indicator.message = 'data-status.S1a-connection';
           return;
         }
 
-        if (sceneryDataStatus == DataStatus.Error) {
+        if (sceneryDataStatus == Status.Data.Error) {
           this.setSignalStatus(sceneryDataStatus);
           this.indicator.status = sceneryDataStatus;
           this.indicator.message = 'data-status.S1a-sceneries';
           return;
         }
 
-        if (trainsDataStatus == DataStatus.Warning) {
+        if (trainsDataStatus == Status.Data.Warning) {
           this.setSignalStatus(trainsDataStatus);
           this.indicator.status = trainsDataStatus;
           this.indicator.message = 'data-status.S5-trains';
           return;
         }
 
-        if (dispatcherDataStatus == DataStatus.Warning) {
+        if (dispatcherDataStatus == Status.Data.Warning) {
           this.setSignalStatus(dispatcherDataStatus);
           this.indicator.status = dispatcherDataStatus;
           this.indicator.message = 'data-status.S5-dispatchers';
           return;
         }
 
-        if (sceneryDataStatus == DataStatus.Loaded) {
-          this.setSignalStatus(DataStatus.Loaded);
+        if (sceneryDataStatus == Status.Data.Loaded) {
+          this.setSignalStatus(Status.Data.Loaded);
 
-          this.indicator.status = DataStatus.Loaded;
+          this.indicator.status = Status.Data.Loaded;
           this.indicator.message = 'data-status.S2';
         }
       }
@@ -285,31 +285,31 @@ export default defineComponent({
   },
 
   methods: {
-    setSignalStatus(status: DataStatus) {
+    setSignalStatus(status: Status.Data) {
       this.greenLight = false;
       this.greenBlinkLight = false;
       this.redTopLight = false;
       this.orangeLight = false;
       this.redBottomLight = false;
 
-      if (status == DataStatus.Initialized) {
+      if (status == Status.Data.Initialized) {
         this.redTopLight = true;
       }
 
-      if (status == DataStatus.Loaded) {
+      if (status == Status.Data.Loaded) {
         this.greenLight = true;
       }
 
-      if (status == DataStatus.Warning) {
+      if (status == Status.Data.Warning) {
         this.orangeLight = true;
       }
 
-      if (status == DataStatus.Error) {
+      if (status == Status.Data.Error) {
         this.redTopLight = true;
         this.redBottomLight = true;
       }
 
-      if (status == DataStatus.Loading) {
+      if (status == Status.Data.Loading) {
         this.greenBlinkLight = true;
       }
     }

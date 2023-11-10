@@ -34,7 +34,7 @@ import dateMixin from '../../../mixins/dateMixin';
 import routerMixin from '../../../mixins/routerMixin';
 import styleMixin from '../../../mixins/styleMixin';
 import StationStatusBadge from '../../Global/StationStatusBadge.vue';
-import { OnlineScenery } from '../../../scripts/interfaces/store/storeTypes';
+import { OnlineScenery } from '../../../store/typings';
 
 export default defineComponent({
   mixins: [styleMixin, dateMixin, routerMixin],

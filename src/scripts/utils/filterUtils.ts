@@ -1,6 +1,6 @@
+import { Filter } from '../../components/StationsView/typings';
+import { Status } from '../../typings/common';
 import { HeadIdsTypes } from '../data/stationHeaderNames';
-import { DispatcherStatus } from '../enums/DispatcherStatus';
-import Filter from '../interfaces/Filter';
 import Station from '../interfaces/Station';
 
 export const sortStations = (
@@ -83,16 +83,17 @@ export const filterStations = (station: Station, filters: Filter) => {
   if (station.onlineInfo) {
     const { dispatcherStatus } = station.onlineInfo;
 
-    const isEnding = dispatcherStatus == DispatcherStatus.ENDING && filters['endingStatus'];
+    const isEnding = dispatcherStatus == Status.ActiveDispatcher.ENDING && filters['endingStatus'];
 
     const isNotSigned =
-      (dispatcherStatus == DispatcherStatus.NOT_LOGGED_IN ||
-        dispatcherStatus == DispatcherStatus.UNAVAILABLE) &&
+      (dispatcherStatus == Status.ActiveDispatcher.NOT_LOGGED_IN ||
+        dispatcherStatus == Status.ActiveDispatcher.UNAVAILABLE) &&
       filters['unavailableStatus'];
 
-    const isAFK = dispatcherStatus == DispatcherStatus.AFK && filters['afkStatus'];
+    const isAFK = dispatcherStatus == Status.ActiveDispatcher.AFK && filters['afkStatus'];
 
-    const isNoSpace = dispatcherStatus == DispatcherStatus.NO_SPACE && filters['noSpaceStatus'];
+    const isNoSpace =
+      dispatcherStatus == Status.ActiveDispatcher.NO_SPACE && filters['noSpaceStatus'];
 
     const isOccupied = station.onlineInfo && filters['occupied'];
 

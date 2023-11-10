@@ -24,8 +24,7 @@
 <script lang="ts">
 import { PropType, defineComponent } from 'vue';
 import dateMixin from '../../../mixins/dateMixin';
-
-import { TimetableHistory } from '../../../scripts/interfaces/api/TimetablesAPIData';
+import { API } from '../../../typings/api';
 
 export default defineComponent({
   mixins: [dateMixin],
@@ -37,7 +36,7 @@ export default defineComponent({
     },
 
     timetable: {
-      type: Object as PropType<TimetableHistory>,
+      type: Object as PropType<API.TimetableHistory.Data>,
       required: true
     }
   },

@@ -39,12 +39,12 @@ import Clock from './components/App/Clock.vue';
 import packageInfo from '.././package.json';
 import { regions } from './data/options.json';
 
-import { useStore } from './store/store';
+import { useStore } from './store/mainStore';
 import StatusIndicator from './components/App/StatusIndicator.vue';
 import TrainModal from './components/Global/TrainModal.vue';
-import StorageManager from './scripts/managers/storageManager';
 import AppHeader from './components/App/AppHeader.vue';
 import axios from 'axios';
+import StorageManager from './managers/storageManager';
 
 export default defineComponent({
   components: {
@@ -72,12 +72,9 @@ export default defineComponent({
     window.addEventListener('offline', () => {
       this.store.isOffline = true;
 
-      this.store.apiData = {
-        stations: [],
-        dispatchers: [],
-        trains: [],
-        connectedSocketCount: 0
-      };
+      this.store.activeData.sceneries = [];
+      this.store.activeData.trains = [];
+      this.store.activeData.connectedSocketCount = 0;
 
       this.store.setStatuses();
     });

@@ -1,16 +1,15 @@
-import { ScheduledTrain, StopStatus } from '../interfaces/ScheduledTrain';
-import Station from '../interfaces/Station';
-import Train from '../interfaces/Train';
-import TrainStop from '../interfaces/TrainStop';
-import ActiveSceneryAPIData from '../interfaces/api/SceneryAPIData';
-import { StationTrain } from '../interfaces/store/storeTypes';
+import Station from '../scripts/interfaces/Station';
+import Train from '../scripts/interfaces/Train';
+import { API } from '../typings/api';
+import { ScheduledTrain, StationTrain, StopStatus, TrainStop } from './typings';
 
-export const getLocoURL = (locoType: string): string =>
-  `https://rj.td2.info.pl/dist/img/thumbnails/${
+export function getLocoURL(locoType: string): string {
+  return `https://rj.td2.info.pl/dist/img/thumbnails/${
     locoType.includes('EN') ? locoType + 'rb' : locoType
   }.png`;
+}
 
-export const getStatusTimestamp = (stationStatus: any): number => {
+export function getStatusTimestamp(stationStatus: any): number {
   if (!stationStatus) return -2;
 
   const statusCode = stationStatus[2];
@@ -31,9 +30,9 @@ export const getStatusTimestamp = (stationStatus: any): number => {
   }
 
   return -1;
-};
+}
 
-export const parseSpawns = (spawnString: string | null) => {
+export function parseSpawns(spawnString: string | null) {
   if (!spawnString) return [];
   if (spawnString === 'NO_SPAWN') return [];
 
@@ -45,47 +44,49 @@ export const parseSpawns = (spawnString: string | null) => {
 
     return { spawnName, spawnLength, isElectrified };
   });
-};
+}
 
-export const getTimestamp = (date: string | null): number => (date ? new Date(date).getTime() : 0);
+export function getTimestamp(date: string | null): number {
+  return date ? new Date(date).getTime() : 0;
+}
 
-export const getTrainStopStatus = (
+export function getTrainStopStatus(
   stopInfo: TrainStop,
   currentStationName: string,
   sceneryName: string
-) => {
-  let stopStatus = StopStatus['arriving'],
+) {
+  let stopStatus = StopStatus.ARRIVING,
     stopLabel = '',
     stopStatusID = -1;
 
   if (stopInfo.terminatesHere && stopInfo.confirmed) {
-    stopStatus = StopStatus['terminated'];
+    stopStatus = StopStatus.TERMINATED;
     stopLabel = 'Skończył bieg';
     stopStatusID = 5;
   } else if (!stopInfo.terminatesHere && stopInfo.confirmed && currentStationName == sceneryName) {
-    stopStatus = StopStatus['departed'];
+    stopStatus = StopStatus.DEPARTED;
     stopLabel = 'Odprawiony';
     stopStatusID = 2;
   } else if (!stopInfo.terminatesHere && stopInfo.confirmed && currentStationName != sceneryName) {
-    stopStatus = StopStatus['departed-away'];
+    stopStatus = StopStatus.DEPARTED_AWAY;
     stopLabel = 'Odjechał';
     stopStatusID = 4;
   } else if (currentStationName == sceneryName && !stopInfo.stopped) {
-    stopStatus = StopStatus['online'];
+    stopStatus = StopStatus.ONLINE;
     stopLabel = 'Na stacji';
     stopStatusID = 0;
   } else if (currentStationName == sceneryName && stopInfo.stopped) {
-    stopStatus = StopStatus['stopped'];
+    stopStatus = StopStatus.STOPPED;
     stopLabel = 'Postój';
     stopStatusID = 1;
   } else if (currentStationName != sceneryName) {
-    stopStatus = StopStatus['arriving'];
+    stopStatus = StopStatus.ARRIVING;
     stopLabel = 'W drodze';
     stopStatusID = 3;
   }
 
   return { stopStatus, stopLabel, stopStatusID };
-};
+}
 
 export function getCheckpointTrain(
   train: Train,
@@ -184,7 +185,7 @@ export function getCheckpointTrain(
 
 export function getScheduledTrains(
   trainList: Train[],
-  sceneryData: ActiveSceneryAPIData,
+  sceneryData: API.ActiveSceneries.Data,
   stationGeneralInfo: Station['generalInfo']
 ): ScheduledTrain[] {
   const stationName = sceneryData.stationName.toLocaleLowerCase();
@@ -246,12 +247,14 @@ export function getStationTrains(
   trainList: Train[],
   scheduledTrainList: ScheduledTrain[],
   region: string,
-  scenery: ActiveSceneryAPIData
+  sceneryData: API.ActiveSceneries.Data
 ): StationTrain[] {
   return trainList
     .filter(
       (train) =>
-        train?.region === region && train.online && train.currentStationName === scenery.stationName
+        train?.region === region &&
+        train.online &&
+        train.currentStationName === sceneryData.stationName
     )
     .map((train) => ({
       driverName: train.driverName,

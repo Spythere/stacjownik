@@ -1,6 +1,6 @@
 import { defineComponent } from 'vue';
 import Train from '../scripts/interfaces/Train';
-import TrainStop from '../scripts/interfaces/TrainStop';
+import { TrainStop } from '../store/typings';
 
 export default defineComponent({
   data: () => ({

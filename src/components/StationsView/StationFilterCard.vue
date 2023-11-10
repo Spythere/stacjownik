@@ -138,11 +138,11 @@
 import { defineComponent, inject } from 'vue';
 import keyMixin from '../../mixins/keyMixin';
 import routerMixin from '../../mixins/routerMixin';
-import StorageManager from '../../scripts/managers/storageManager';
 import { useStationFiltersStore } from '../../store/stationFiltersStore';
-import { useStore } from '../../store/store';
+import { useStore } from '../../store/mainStore';
 
 import FilterOption from './FilterOption.vue';
+import StorageManager from '../../managers/storageManager';
 
 export default defineComponent({
   components: { FilterOption },

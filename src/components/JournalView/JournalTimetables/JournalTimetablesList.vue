@@ -6,9 +6,9 @@
           {{ $t('app.offline') }}
         </div>
 
-        <Loading v-else-if="dataStatus == DataStatus.Loading" />
+        <Loading v-else-if="dataStatus == Status.Data.Loading" />
 
-        <div v-else-if="dataStatus == DataStatus.Error" class="journal_warning error">
+        <div v-else-if="dataStatus == Status.Data.Error" class="journal_warning error">
           {{ $t('app.error') }}
         </div>
 
@@ -38,20 +38,20 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import { DataStatus } from '../../../scripts/enums/DataStatus';
-import { TimetableHistory } from '../../../scripts/interfaces/api/TimetablesAPIData';
-import { useStore } from '../../../store/store';
 
 import Loading from '../../Global/Loading.vue';
 import AddDataButton from '../../Global/AddDataButton.vue';
 import TimetableHistoryList from './TimetableHistoryList.vue';
+import { useStore } from '../../../store/mainStore';
+import { Status } from '../../../typings/common';
+import { API } from '../../../typings/api';
 
 export default defineComponent({
   components: { Loading, AddDataButton, TimetableHistoryList },
 
   props: {
     timetableHistory: {
-      type: Array as PropType<TimetableHistory[]>,
+      type: Array as PropType<API.TimetableHistory.Response>,
       required: true
     },
     scrollNoMoreData: {
@@ -64,13 +64,13 @@ export default defineComponent({
       type: Function as PropType<() => void>
     },
     dataStatus: {
-      type: Number as PropType<DataStatus>
+      type: Number as PropType<Status.Data>
     }
   },
 
   data() {
     return {
-      DataStatus,
+      Status,
       store: useStore()
     };
   }

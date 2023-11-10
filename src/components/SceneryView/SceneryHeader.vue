@@ -15,7 +15,7 @@
 <script lang="ts">
 import { PropType, defineComponent } from 'vue';
 import Station from '../../scripts/interfaces/Station';
-import { OnlineScenery } from '../../scripts/interfaces/store/storeTypes';
+import { OnlineScenery } from '../../store/typings';
 
 export default defineComponent({
   props: {
@@ -58,3 +58,4 @@ export default defineComponent({
   font-size: 1.2em;
 }
 </style>
+../../store/storeTypes

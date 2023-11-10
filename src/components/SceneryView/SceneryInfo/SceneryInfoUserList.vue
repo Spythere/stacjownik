@@ -32,7 +32,7 @@
 import { PropType, defineComponent } from 'vue';
 import modalTrainMixin from '../../../mixins/modalTrainMixin';
 import routerMixin from '../../../mixins/routerMixin';
-import { OnlineScenery } from '../../../scripts/interfaces/store/storeTypes';
+import { OnlineScenery } from '../../../store/typings';
 
 export default defineComponent({
   mixins: [routerMixin, modalTrainMixin],

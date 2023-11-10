@@ -36,16 +36,14 @@ import axios from 'axios';
 
 import JournalOptions from '../components/JournalView/JournalOptions.vue';
 import { URLs } from '../scripts/utils/apiURLs';
-import { DataStatus } from '../scripts/enums/DataStatus';
-import { useStore } from '../store/store';
+import { useStore } from '../store/mainStore';
 import JournalDispatchersList from '../components/JournalView/JournalDispatchersList.vue';
-import {
-  JournalDispatcherSearcher,
-  JournalDispatcherSorter
-} from '../scripts/types/JournalDispatcherTypes';
-import { DispatcherHistory } from '../scripts/interfaces/api/DispatchersAPIData';
+
 import JournalHeader from '../components/JournalView/JournalHeader.vue';
 import { LocationQuery } from 'vue-router';
+import { Journal } from '../components/JournalView/typings';
+import { API } from '../typings/api';
+import { Status } from '../typings/common';
 
 const DISPATCHERS_API_URL = `${URLs.stacjownikAPI}/api/getDispatchers`;
 
@@ -81,21 +79,20 @@ export default defineComponent({
     statsCardOpen: false,
     currentOptionsActive: false,
 
-    dataStatus: DataStatus.Loading,
-    DataStatus,
+    dataStatus: Status.Data.Loading,
 
-    historyList: [] as DispatcherHistory[]
+    historyList: [] as API.DispatcherHistory.Response
   }),
 
   setup() {
-    const sorterActive: JournalDispatcherSorter = reactive({ id: 'timestampFrom', dir: -1 });
+    const sorterActive: Journal.DispatcherSorter = reactive({ id: 'timestampFrom', dir: -1 });
     const journalFilterActive = ref({});
 
     const searchersValues = reactive({
       'search-dispatcher': '',
       'search-station': '',
       'search-date': ''
-    } as JournalDispatcherSearcher);
+    } as Journal.DispatcherSearcher);
 
     const countFromIndex = ref(0);
     const countLimit = 15;
@@ -153,7 +150,7 @@ export default defineComponent({
       const scrollTop = listElement.scrollTop;
       const elementHeight = listElement.scrollHeight - listElement.offsetHeight;
 
-      if (!this.scrollDataLoaded || this.scrollNoMoreData || this.dataStatus != DataStatus.Loaded)
+      if (!this.scrollDataLoaded || this.scrollNoMoreData || this.dataStatus != Status.Data.Loaded)
         return;
 
       if (scrollTop > elementHeight * 0.85) this.addHistoryData();
@@ -185,7 +182,7 @@ export default defineComponent({
 
       this.countFromIndex = this.historyList.length;
 
-      const responseData: DispatcherHistory[] = await (
+      const responseData: API.DispatcherHistory.Response = await (
         await axios.get(
           `${DISPATCHERS_API_URL}?${this.currentQuery}&countFrom=${this.countFromIndex}`
         )
@@ -226,20 +223,20 @@ export default defineComponent({
 
       queries.push('countLimit=30');
 
-      if (this.currentQuery != queries.join('&')) this.dataStatus = DataStatus.Loading;
+      if (this.currentQuery != queries.join('&')) this.dataStatus = Status.Data.Loading;
 
       this.currentQuery = queries.join('&');
       this.currentQueryArray = queries;
 
       try {
-        if (reset) this.dataStatus = DataStatus.Loading;
+        if (reset) this.dataStatus = Status.Data.Loading;
 
-        const responseData: DispatcherHistory[] = await (
+        const responseData: API.DispatcherHistory.Response = await (
           await axios.get(`${DISPATCHERS_API_URL}?${this.currentQuery}`)
         ).data;
 
         if (!responseData) {
-          this.dataStatus = DataStatus.Error;
+          this.dataStatus = Status.Data.Error;
           return;
         }
 
@@ -255,9 +252,9 @@ export default defineComponent({
             : '';
 
         this.dataRefreshedAt = new Date();
-        this.dataStatus = DataStatus.Loaded;
+        this.dataStatus = Status.Data.Loaded;
       } catch (error) {
-        this.dataStatus = DataStatus.Error;
+        this.dataStatus = Status.Data.Error;
       }
 
       this.scrollNoMoreData = false;

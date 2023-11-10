@@ -29,8 +29,8 @@
 
 <script lang="ts">
 import { defineComponent, Ref, ref } from 'vue';
-import { useStore } from '../../store/store';
 import { regions as regionsJSON } from '../../data/options.json';
+import { useStore } from '../../store/mainStore';
 
 interface Item {
   id: string;

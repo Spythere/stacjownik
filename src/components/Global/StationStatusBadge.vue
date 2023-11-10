@@ -16,12 +16,12 @@
 <script lang="ts">
 import { PropType, defineComponent } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
-import { DispatcherStatus } from '../../scripts/enums/DispatcherStatus';
+import { Status } from '../../typings/common';
 
 export default defineComponent({
   props: {
     dispatcherStatus: {
-      type: Number as PropType<DispatcherStatus | number>
+      type: Number as PropType<Status.ActiveDispatcher | number>
     },
     isOnline: {
       type: Boolean
@@ -34,25 +34,25 @@ export default defineComponent({
       if (!this.dispatcherStatus) return 'free';
 
       switch (this.dispatcherStatus) {
-        case DispatcherStatus.AFK:
+        case Status.ActiveDispatcher.AFK:
           return 'afk';
 
-        case DispatcherStatus.ENDING:
+        case Status.ActiveDispatcher.ENDING:
           return 'ending';
 
-        case DispatcherStatus.INVALID:
+        case Status.ActiveDispatcher.INVALID:
           return 'invalid';
 
-        case DispatcherStatus.NOT_LOGGED_IN:
+        case Status.ActiveDispatcher.NOT_LOGGED_IN:
           return 'not-signed';
 
-        case DispatcherStatus.NO_SPACE:
+        case Status.ActiveDispatcher.NO_SPACE:
           return 'no-space';
 
-        case DispatcherStatus.UNAVAILABLE:
+        case Status.ActiveDispatcher.UNAVAILABLE:
           return 'unavailable';
 
-        case DispatcherStatus.UNKNOWN:
+        case Status.ActiveDispatcher.UNKNOWN:
           return 'unknown';
 
         default:

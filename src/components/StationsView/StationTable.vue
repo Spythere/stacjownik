@@ -279,13 +279,13 @@ import { defineComponent, computed, PropType } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
 import stationInfoMixin from '../../mixins/stationInfoMixin';
 import styleMixin from '../../mixins/styleMixin';
-import { DataStatus } from '../../scripts/enums/DataStatus';
 import Station from '../../scripts/interfaces/Station';
 import { useStationFiltersStore } from '../../store/stationFiltersStore';
-import { useStore } from '../../store/store';
+import { useStore } from '../../store/mainStore';
 import Loading from '../Global/Loading.vue';
 import { HeadIdsTypes, headIconsIds, headIds } from '../../scripts/data/stationHeaderNames';
 import StationStatusBadge from '../Global/StationStatusBadge.vue';
+import { Status } from '../../typings/common';
 
 export default defineComponent({
   props: {
@@ -315,8 +315,9 @@ export default defineComponent({
     const stationFiltersStore = useStationFiltersStore();
 
     const isDataLoaded = computed(() => {
-      return store.dataStatuses.sceneries != DataStatus.Loading;
+      return store.dataStatuses.sceneries != Status.Data.Loading;
     });
+
     return {
       isDataLoaded,
       stationFiltersStore

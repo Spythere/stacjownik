@@ -50,8 +50,8 @@
 
 <script lang="ts">
 import { PropType, defineComponent } from 'vue';
-import { useStore } from '../../store/store';
-import { RollingStockInfo } from '../../scripts/interfaces/github_api/StockInfoGithubData';
+import { useStore } from '../../store/mainStore';
+import { API } from '../../typings/api';
 
 export default defineComponent({
   props: {
@@ -71,7 +71,7 @@ export default defineComponent({
     onImageError(event: Event, stockName: string) {
       const fallbackName =
         Object.keys(this.store.rollingStockData!.info).find((type) => {
-          return this.store.rollingStockData!.info[type as keyof RollingStockInfo].find(
+          return this.store.rollingStockData!.info[type as keyof API.RollingStock.Info].find(
             (v) => v[0] === stockName.split(':')[0]
           );
         }) || 'vehicle-unknown';

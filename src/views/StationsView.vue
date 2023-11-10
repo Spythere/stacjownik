@@ -21,7 +21,7 @@ import { defineComponent } from 'vue';
 import StationTable from '../components/StationsView/StationTable.vue';
 import StationFilterCard from '../components/StationsView/StationFilterCard.vue';
 import { useStationFiltersStore } from '../store/stationFiltersStore';
-import { useStore } from '../store/store';
+import { useStore } from '../store/mainStore';
 
 export default defineComponent({
   components: {
@@ -37,7 +37,6 @@ export default defineComponent({
     filterStore: useStationFiltersStore(),
     store: useStore()
   }),
-
 
   computed: {
     computedStationList() {

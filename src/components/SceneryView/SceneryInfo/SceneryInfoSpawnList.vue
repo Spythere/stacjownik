@@ -7,7 +7,11 @@
     </h3>
 
     <transition-group name="spawns-anim" tag="ul">
-      <li class="badge spawn badge-none" v-if="!onlineScenery || onlineScenery.spawns.length == 0" key="no-spawns">
+      <li
+        class="badge spawn badge-none"
+        v-if="!onlineScenery || onlineScenery.spawns.length == 0"
+        key="no-spawns"
+      >
         {{ $t('scenery.no-spawns') }}
       </li>
 
@@ -26,7 +30,7 @@
 
 <script lang="ts">
 import { PropType, defineComponent } from 'vue';
-import { OnlineScenery } from '../../../scripts/interfaces/store/storeTypes';
+import { OnlineScenery } from '../../../store/typings';
 
 export default defineComponent({
   props: {
