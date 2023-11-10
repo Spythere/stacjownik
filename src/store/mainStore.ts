@@ -61,7 +61,7 @@ export const useStore = defineStore('store', {
   getters: {
     trainList(): Train[] {
       return (this.activeData?.trains ?? [])
-        .filter((train) => train.online || train.timetable || train.lastSeen > Date.now() - 180000)
+        .filter((train) => train.timetable || train.online)
         .map((train) => {
           const stock = train.stockString.split(';');
           const locoType = stock ? stock[0] : train.stockString;
