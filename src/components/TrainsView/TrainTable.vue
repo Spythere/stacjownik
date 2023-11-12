@@ -151,6 +151,7 @@ img.train-image {
   &-list {
     position: relative;
     overflow-y: hidden;
+    min-height: 100%;
 
     @include smallScreen() {
       width: 100%;

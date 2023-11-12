@@ -188,7 +188,7 @@ export function getScheduledTrains(
   sceneryData: API.ActiveSceneries.Data,
   stationGeneralInfo: Station['generalInfo']
 ): ScheduledTrain[] {
-  const stationName = sceneryData.stationName.toLocaleLowerCase();
+  const stationNameLower = sceneryData.stationName.toLocaleLowerCase();
 
   stationGeneralInfo?.checkpoints.forEach((cp) => (cp.scheduledTrains.length = 0));
 
@@ -199,14 +199,14 @@ export function getScheduledTrains(
     if (!timetable.sceneries.includes(sceneryData.stationHash)) return acc;
 
     const stopInfoIndex = timetable.followingStops.findIndex((stop) => {
-      const stopName = stop.stopNameRAW.toLowerCase();
+      const stopNameLower = stop.stopNameRAW.toLocaleLowerCase();
 
       return (
-        stationName == stopName ||
-        (!/(po\.|podg\.)/.test(stopName) && stopName.includes(stationName)) ||
-        (!/(po\.|podg\.)/.test(stationName) && stationName.includes(stopName)) ||
-        (stopName.split(', podg.')[0] !== undefined &&
-          stationName.startsWith(stopName.split(', podg.')[0]))
+        stationNameLower == stopNameLower ||
+        (!/(po\.|podg\.)/.test(stopNameLower) && stopNameLower.includes(stationNameLower)) ||
+        (!/(po\.|podg\.)/.test(stationNameLower) && stationNameLower.includes(stopNameLower)) ||
+        (stopNameLower.split(', podg.')[0] !== undefined &&
+          stationNameLower.startsWith(stopNameLower.split(', podg.')[0]))
       );
     });
 
@@ -219,7 +219,7 @@ export function getScheduledTrains(
     }
 
     stationGeneralInfo?.checkpoints?.forEach((checkpoint) => {
-      if (checkpoint.checkpointName.toLocaleLowerCase() == stationName) return;
+      // if (checkpoint.checkpointName.toLocaleLowerCase() == stationNameLower) return;
 
       if (
         checkpointScheduledTrains.findIndex(
