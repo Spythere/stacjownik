@@ -78,7 +78,7 @@
     "not-signed": "NOT SIGNED IN",
     "no-limit": "NO LIMIT",
     "unavailable": "UNAVAILABLE",
-    "brb": "AFK",
+    "afk": "AFK",
     "no-space": "NO SPACE",
     "invalid": "INVALID HASH",
     "unknown": "UNKNOWN"
