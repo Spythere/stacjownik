@@ -10,6 +10,7 @@ export namespace Status {
   }
 
   export enum Data {
+    Offline = 2,
     Initialized = -1,
     Loading = 0,
     Error = 1,

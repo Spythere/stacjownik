@@ -66,6 +66,8 @@ enum SceneryViewMode {
 }
 
 export default defineComponent({
+  name: 'SceneryView',
+
   components: {
     SceneryInfo,
     SceneryTimetable,
