@@ -18,9 +18,9 @@
       <tbody>
         <tr v-for="historyItem in historyList" :key="historyItem.id">
           <td>
-            <router-link :to="`/journal/timetables?timetableId=${historyItem.id}`"
-              >#{{ historyItem.id }}</router-link
-            >
+            <router-link :to="`/journal/timetables?timetableId=${historyItem.id}`">
+              #{{ historyItem.id }}
+            </router-link>
           </td>
           <td>
             <b class="text--primary">{{ historyItem.trainCategoryCode }}</b> <br />
