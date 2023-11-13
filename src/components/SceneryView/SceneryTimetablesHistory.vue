@@ -1,6 +1,16 @@
 <template>
+  <!-- WIP -->
+  <!-- <div class="top-filters">
+    <button class="btn btn--option">ROZPOCZYNA BIEG</button>
+
+    <button class="btn btn--option">PRZEZ</button>
+
+    <button class="btn btn--option">KOŃCZY BIEG</button>
+  </div> -->
+
   <section class="scenery-table-section">
     <Loading v-if="dataStatus != DataStatus.Loaded" />
+
     <div class="no-history" v-else-if="historyList.length == 0">
       {{ $t('scenery.history-list-empty') }}
     </div>
@@ -117,5 +127,14 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '../../styles/responsive.scss';
 @import '../../styles/sceneryViewTables.scss';
+
+.top-filters {
+  display: flex;
+  justify-content: center;
+  gap: 0.5em;
+
+  button {
+    padding: 0.5em;
+  }
+}
 </style>
-../../store/storeTypes

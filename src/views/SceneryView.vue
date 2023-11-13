@@ -129,7 +129,7 @@ export default defineComponent({
 
   computed: {
     currentMode() {
-      return this.$route.query.view ?? 'SceneryTimetable';
+      return this.$route.query.view?.toString() ?? 'SceneryTimetable';
     },
 
     stationInfo() {
