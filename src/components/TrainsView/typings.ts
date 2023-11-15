@@ -1,63 +1,93 @@
-import { TrainFilterSection, TrainFilterType } from '../../scripts/enums/TrainFilterType';
-import { TrainFilter } from '../../scripts/interfaces/Trains/TrainFilter';
+export enum TrainFilterSection {
+  TRAIN_TYPE = 'TRAIN_TYPE',
+  TIMETABLE_TYPE = 'TIMETABLE_TYPE',
+  COMMENTS = 'COMMENTS',
+  TIMETABLE = 'TIMETABLE'
+}
+
+export const enum TrainFilterId {
+  noComments = 'noComments',
+  withComments = 'withComments',
+
+  twr = 'twr',
+  skr = 'skr',
+  common = 'common',
+
+  passenger = 'passenger',
+  freight = 'freight',
+  other = 'other',
+  noTimetable = 'noTimetable',
+  withTimetable = 'withTimetable'
+}
+
+export interface TrainFilter {
+  id: TrainFilterId;
+  section: TrainFilterSection;
+  isActive: boolean;
+}
+
+export interface TrainSorter {
+  id: string;
+  value: string;
+}
 
 export const trainFilters: TrainFilter[] = [
   {
-    id: TrainFilterType.twr,
+    id: TrainFilterId.twr,
     section: TrainFilterSection.TRAIN_TYPE,
     isActive: true
   },
   {
-    id: TrainFilterType.skr,
+    id: TrainFilterId.skr,
     section: TrainFilterSection.TRAIN_TYPE,
     isActive: true
   },
   {
-    id: TrainFilterType.common,
+    id: TrainFilterId.common,
     section: TrainFilterSection.TRAIN_TYPE,
     isActive: true
   },
 
   {
-    id: TrainFilterType.passenger,
+    id: TrainFilterId.passenger,
     section: TrainFilterSection.TIMETABLE_TYPE,
     isActive: true
   },
   {
-    id: TrainFilterType.freight,
+    id: TrainFilterId.freight,
     section: TrainFilterSection.TIMETABLE_TYPE,
     isActive: true
   },
   {
-    id: TrainFilterType.other,
+    id: TrainFilterId.other,
     section: TrainFilterSection.TIMETABLE_TYPE,
     isActive: true
   },
 
   {
-    id: TrainFilterType.withComments,
+    id: TrainFilterId.withComments,
     section: TrainFilterSection.COMMENTS,
     isActive: true
   },
   {
-    id: TrainFilterType.noComments,
+    id: TrainFilterId.noComments,
     section: TrainFilterSection.COMMENTS,
     isActive: true
   },
 
   {
-    id: TrainFilterType.withTimetable,
+    id: TrainFilterId.withTimetable,
     section: TrainFilterSection.TIMETABLE,
     isActive: true
   },
   {
-    id: TrainFilterType.noTimetable,
+    id: TrainFilterId.noTimetable,
     section: TrainFilterSection.TIMETABLE,
     isActive: true
   }
 ];
 
-export const sorterOptions = [
+export const sorterOptions: TrainSorter[] = [
   {
     id: 'distance',
     value: 'kilometraż'

@@ -6,9 +6,9 @@
           {{ $t('app.offline') }}
         </div>
 
-        <Loading v-else-if="dataStatus == DataStatus.Loading" />
+        <Loading v-else-if="dataStatus == Status.Data.Loading" />
 
-        <div v-else-if="dataStatus == DataStatus.Error" class="journal_warning error">
+        <div v-else-if="dataStatus == Status.Data.Error" class="journal_warning error">
           {{ $t('app.error') }}
         </div>
 
@@ -114,13 +114,13 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
-import { DispatcherHistory } from '../../scripts/interfaces/api/DispatchersAPIData';
 import styleMixin from '../../mixins/styleMixin';
-import { DataStatus } from '../../scripts/enums/DataStatus';
-import { useStore } from '../../store/store';
+import { useStore } from '../../store/mainStore';
 import Loading from '../Global/Loading.vue';
 import { regions } from '../../data/options.json';
 import AddDataButton from '../Global/AddDataButton.vue';
+import { API } from '../../typings/api';
+import { Status } from '../../typings/common';
 
 export default defineComponent({
   components: { Loading, AddDataButton },
@@ -129,7 +129,7 @@ export default defineComponent({
 
   props: {
     dispatcherHistory: {
-      type: Array as PropType<DispatcherHistory[]>,
+      type: Array as PropType<API.DispatcherHistory.Response>,
       required: true
     },
     scrollNoMoreData: {
@@ -142,13 +142,13 @@ export default defineComponent({
       type: Function as PropType<() => void>
     },
     dataStatus: {
-      type: Number as PropType<DataStatus>
+      type: Number as PropType<Status.Data>
     }
   },
 
   data() {
     return {
-      DataStatus,
+      Status,
       store: useStore(),
       regions
     };
@@ -166,7 +166,7 @@ export default defineComponent({
 
           return acc;
         },
-        [] as (DispatcherHistory | string)[]
+        [] as (API.DispatcherHistory.Data | string)[]
       );
     }
   },

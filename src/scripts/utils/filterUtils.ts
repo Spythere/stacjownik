@@ -1,6 +1,6 @@
+import { Filter } from '../../components/StationsView/typings';
+import { Status } from '../../typings/common';
 import { HeadIdsTypes } from '../data/stationHeaderNames';
-import { DispatcherStatusID } from '../enums/DispatcherStatus';
-import Filter from '../interfaces/Filter';
 import Station from '../interfaces/Station';
 
 export const sortStations = (
@@ -19,7 +19,7 @@ export const sortStations = (
       break;
 
     case 'status':
-      diff = (a.onlineInfo?.statusTimestamp || 0) - (b.onlineInfo?.statusTimestamp || 0);
+      diff = (a.onlineInfo?.dispatcherStatus || 0) - (b.onlineInfo?.dispatcherStatus || 0);
       break;
 
     case 'dispatcher':
@@ -81,27 +81,28 @@ export const filterStations = (station: Station, filters: Filter) => {
   if (!station.onlineInfo && filters['free']) return false;
 
   if (station.onlineInfo) {
-    const { statusID, statusTimestamp } = station.onlineInfo;
+    const { dispatcherStatus } = station.onlineInfo;
 
-    const isEnding = statusID == DispatcherStatusID.Ending && filters['endingStatus'];
+    const isEnding = dispatcherStatus == Status.ActiveDispatcher.ENDING && filters['endingStatus'];
 
     const isNotSigned =
-      (statusID == 'not-signed' || statusID == 'unavailable') && filters['unavailableStatus'];
+      (dispatcherStatus == Status.ActiveDispatcher.NOT_LOGGED_IN ||
+        dispatcherStatus == Status.ActiveDispatcher.UNAVAILABLE) &&
+      filters['unavailableStatus'];
 
-    const isAFK = statusID == 'brb' && filters['afkStatus'];
+    const isAFK = dispatcherStatus == Status.ActiveDispatcher.AFK && filters['afkStatus'];
 
-    const isNoSpace = statusID == 'no-space' && filters['noSpaceStatus'];
+    const isNoSpace =
+      dispatcherStatus == Status.ActiveDispatcher.NO_SPACE && filters['noSpaceStatus'];
 
     const isOccupied = station.onlineInfo && filters['occupied'];
 
-    const isOnlineInBounds =
-      (filters['onlineFromHours'] < 8 &&
-        statusTimestamp > 0 &&
-        statusTimestamp <= Date.now() + filters['onlineFromHours'] * 3600000) ||
-      (filters['onlineFromHours'] > 0 && statusTimestamp <= 0) ||
-      (filters['onlineFromHours'] == 8 && statusID != 'no-limit');
+    if (isEnding || isNotSigned || isAFK || isNoSpace || isOccupied) return false;
 
-    if (isEnding || isOnlineInBounds || isNotSigned || isAFK || isNoSpace || isOccupied)
+    if (
+      filters['onlineFromHours'] > 0 &&
+      dispatcherStatus <= Date.now() + filters['onlineFromHours'] * 3600000
+    )
       return false;
   }
 

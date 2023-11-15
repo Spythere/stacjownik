@@ -113,12 +113,11 @@
 import axios from 'axios';
 import { defineComponent, inject, PropType } from 'vue';
 import keyMixin from '../../mixins/keyMixin';
-import { DataStatus } from '../../scripts/enums/DataStatus';
-import { DriverStatsAPIData } from '../../scripts/interfaces/api/DriverStatsAPIData';
 import { URLs } from '../../scripts/utils/apiURLs';
-import { useStore } from '../../store/store';
-import { JournalFilterSection } from '../../scripts/enums/JournalFilterType';
-import { JournalFilter } from '../../scripts/types/JournalTimetablesTypes';
+import { useStore } from '../../store/mainStore';
+import { Journal } from './typings';
+import { API } from '../../typings/api';
+import { Status } from '../../typings/common';
 
 export default defineComponent({
   emits: ['onSearchConfirm', 'onOptionsReset', 'onRefreshData'],
@@ -131,13 +130,13 @@ export default defineComponent({
     },
 
     filters: {
-      type: Array as PropType<JournalFilter[]>,
+      type: Array as PropType<Journal.TimetableFilter[]>,
       default: () => []
     },
 
     dataStatus: {
-      type: Number as PropType<DataStatus>,
-      default: DataStatus.Initialized
+      type: Number as PropType<Status.Data>,
+      default: -1
     },
 
     currentOptionsActive: {
@@ -154,7 +153,6 @@ export default defineComponent({
   data() {
     return {
       showOptions: false,
-      JournalFilterSection,
 
       driverSuggestions: [] as string[],
       dispatcherSuggestions: [] as string[],
@@ -162,7 +160,7 @@ export default defineComponent({
       searchTimeout: 0,
       store: useStore(),
 
-      DataStatus
+      JournalFilterSection: Journal.FilterSection
     };
   },
 
@@ -170,7 +168,7 @@ export default defineComponent({
     return {
       searchersValues: inject('searchersValues') as { [key: string]: string },
       sorterActive: inject('sorterActive') as { id: string | number; dir: number },
-      filterList: inject('filterList') as JournalFilter[] | undefined
+      filterList: inject('filterList') as Journal.TimetableFilter[] | undefined
     };
   },
 
@@ -212,23 +210,23 @@ export default defineComponent({
       this.store.driverStatsData = undefined;
 
       if (!this.store.driverStatsName) {
-        this.store.driverStatsStatus = DataStatus.Initialized;
+        this.store.driverStatsStatus = Status.Data.Initialized;
         return;
       }
 
       try {
-        this.store.driverStatsStatus = DataStatus.Loading;
+        this.store.driverStatsStatus = Status.Data.Loading;
 
-        const statsData: DriverStatsAPIData = await (
+        const statsData: API.DriverStats.Response = await (
           await axios.get(
             `${URLs.stacjownikAPI}/api/getDriverInfo?name=${this.store.driverStatsName}`
           )
         ).data;
 
         this.store.driverStatsData = statsData;
-        this.store.driverStatsStatus = DataStatus.Loaded;
+        this.store.driverStatsStatus = Status.Data.Loaded;
       } catch (error) {
-        this.store.driverStatsStatus = DataStatus.Error;
+        this.store.driverStatsStatus = Status.Data.Error;
         console.error('Ups! Wystąpił błąd przy próbie pobrania statystyk maszynisty! :/');
       }
     },
@@ -270,7 +268,7 @@ export default defineComponent({
       this.$emit('onSearchConfirm');
     },
 
-    onFilterChange(filter: JournalFilter) {
+    onFilterChange(filter: Journal.TimetableFilter) {
       // this.journalFilterActive = filter;
       this.filterList
         ?.filter((f) => f.filterSection === filter.filterSection)

@@ -1,7 +1,6 @@
-import { TrainFilter } from '../interfaces/Trains/TrainFilter';
-import { TrainFilterType } from '../enums/TrainFilterType';
-import Train from '../interfaces/Train';
-import TrainStop from '../interfaces/TrainStop';
+import { TrainFilter, TrainFilterId } from '../components/TrainsView/typings';
+import Train from '../scripts/interfaces/Train';
+import { TrainStop } from '../store/typings';
 
 function confirmedPercentage(stops: TrainStop[] | undefined) {
   if (!stops) return -1;
@@ -32,34 +31,34 @@ function filterTrainList(
       if (f.isActive) return true;
 
       switch (f.id) {
-        case TrainFilterType.noTimetable:
+        case TrainFilterId.noTimetable:
           return train.timetableData;
 
-        case TrainFilterType.withTimetable:
+        case TrainFilterId.withTimetable:
           return !train.timetableData;
 
-        case TrainFilterType.withComments:
+        case TrainFilterId.withComments:
           return !train.timetableData?.followingStops.some((stop) => stop.comments);
 
-        case TrainFilterType.noComments:
+        case TrainFilterId.noComments:
           return train.timetableData?.followingStops.some((stop) => stop.comments);
 
-        case TrainFilterType.twr:
+        case TrainFilterId.twr:
           return !train.timetableData?.TWR;
 
-        case TrainFilterType.skr:
+        case TrainFilterId.skr:
           return !train.timetableData?.SKR;
 
-        case TrainFilterType.common:
+        case TrainFilterId.common:
           return train.timetableData?.SKR || train.timetableData?.TWR;
 
-        case TrainFilterType.passenger:
+        case TrainFilterId.passenger:
           return !/^[AMRE]\D{2}$/.test(train.timetableData?.category || '');
 
-        case TrainFilterType.freight:
+        case TrainFilterId.freight:
           return !train.timetableData?.category.startsWith('T');
 
-        case TrainFilterType.other:
+        case TrainFilterId.other:
           return !/^[PXZL]\D{2}$/.test(train.timetableData?.category || '');
 
         default:
@@ -72,7 +71,6 @@ function filterTrainList(
       (searchedDriver.length > 0
         ? train.driverName.toLowerCase().startsWith(searchedDriver.toLowerCase())
         : true) &&
-      (!train.timetableData ? train.online : train.timetableData) &&
       isFiltered
     );
   });

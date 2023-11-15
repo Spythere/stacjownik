@@ -38,17 +38,17 @@
 
 <script lang="ts">
 import { PropType, defineComponent, ref } from 'vue';
-import { TimetableHistory } from '../../../scripts/interfaces/api/TimetablesAPIData';
 
 import TimetableGeneral from './TimetableGeneral.vue';
 import TimetableStops from './TimetableStops.vue';
 import TimetableStatus from './TimetableStatus.vue';
 import TimetableExtra from './TimetableExtra.vue';
+import { API } from '../../../typings/api';
 
 export default defineComponent({
   props: {
     timetableHistory: {
-      type: Array as PropType<TimetableHistory[]>,
+      type: Array as PropType<API.TimetableHistory.Response>,
       required: true
     }
   },

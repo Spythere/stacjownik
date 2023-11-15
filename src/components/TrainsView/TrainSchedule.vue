@@ -72,10 +72,10 @@
 import { computed, defineComponent, PropType } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
 import Train from '../../scripts/interfaces/Train';
-import TrainStop from '../../scripts/interfaces/TrainStop';
-import { useStore } from '../../store/store';
+import { useStore } from '../../store/mainStore';
 import StopDate from '../Global/StopDate.vue';
 import StockList from '../Global/StockList.vue';
+import { TrainStop } from '../../store/typings';
 
 export default defineComponent({
   components: { StopDate, StockList },

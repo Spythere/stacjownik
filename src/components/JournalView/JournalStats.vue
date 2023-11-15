@@ -29,10 +29,10 @@
 
 <script setup lang="ts">
 import { computed, onMounted, reactive, Ref, ref, watch } from 'vue';
-import { useStore } from '../../store/store';
+import { useStore } from '../../store/mainStore';
 import JournalDailyStats from './DailyStats.vue';
 import JournalDriverStats from './JournalDriverStats.vue';
-import StorageManager from '../../scripts/managers/storageManager';
+import StorageManager from '../../managers/storageManager';
 
 // Types
 type TStatTab = 'daily' | 'driver';
@@ -60,7 +60,8 @@ let data = reactive({
 
 // Methods
 function onTabButtonClick(tab: TStatTab) {
-  if (lastClickedTab.value == tab || !lastClickedTab.value || !areStatsOpen.value) areStatsOpen.value = !areStatsOpen.value;
+  if (lastClickedTab.value == tab || !lastClickedTab.value || !areStatsOpen.value)
+    areStatsOpen.value = !areStatsOpen.value;
 
   if (tab == 'daily') {
     StorageManager.setBooleanValue('dailyStatsOpen', areStatsOpen.value);

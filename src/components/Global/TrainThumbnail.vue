@@ -16,8 +16,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useStore } from '../../store/store';
-import { RollingStockInfo } from '../../scripts/interfaces/github_api/StockInfoGithubData';
+import { useStore } from '../../store/mainStore';
+import { API } from '../../typings/api';
 
 export default defineComponent({
   props: {
@@ -54,7 +54,7 @@ export default defineComponent({
 
       return (
         Object.keys(this.store.rollingStockData.info).find((type) => {
-          return this.store.rollingStockData?.info[type as keyof RollingStockInfo].find(
+          return this.store.rollingStockData?.info[type as keyof API.RollingStock.Info].find(
             (v) => v[0] === this.name.split(':')[0]
           );
         }) || 'vehicle-unknown'

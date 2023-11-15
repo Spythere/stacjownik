@@ -77,8 +77,8 @@
 
 <script lang="ts">
 import { PropType, defineComponent } from 'vue';
-import { TimetableHistory } from '../../../scripts/interfaces/api/TimetablesAPIData';
 import StockList from '../../Global/StockList.vue';
+import { API } from '../../../typings/api';
 
 export default defineComponent({
   components: { StockList },
@@ -88,7 +88,7 @@ export default defineComponent({
       required: true
     },
     timetable: {
-      type: Object as PropType<TimetableHistory>,
+      type: Object as PropType<API.TimetableHistory.Data>,
       required: true
     }
   },

@@ -1,44 +1,44 @@
 <template>
-  <div class="train-table">
-    <transition name="anim" mode="out-in">
-      <div :key="store.dataStatuses.trains">
-        <div class="table-info" v-if="store.isOffline">
-          {{ $t('app.offline') }}
-        </div>
-
-        <Loading v-else-if="trains.length == 0 && store.dataStatuses.trains == 0" />
-
-        <div
-          class="table-info no-trains"
-          v-else-if="trains.length == 0 && store.dataStatuses.trains != 0"
-        >
-          {{ $t('trains.no-trains') }}
-        </div>
-
-        <transition-group name="list-anim" tag="ul" class="train-list" v-else>
-          <li
-            class="train-row"
-            v-for="train in currentTrains"
-            :key="train.trainId"
-            tabindex="0"
-            @click.stop="selectModalTrain(train.trainId, $event.currentTarget)"
-            @keydown.enter="selectModalTrain(train.trainId, $event.currentTarget)"
-          >
-            <TrainInfo :train="train" />
-          </li>
-        </transition-group>
+  <transition name="status-anim" mode="out-in" tag="div" class="train-table">
+    <div :key="store.dataStatuses.trains">
+      <div class="table-info" key="offline" v-if="store.isOffline">
+        {{ $t('app.offline') }}
       </div>
-    </transition>
-  </div>
+
+      <Loading v-else-if="trains.length == 0 && store.dataStatuses.trains == 0" key="loading" />
+
+      <div
+        class="table-info"
+        key="no-trains"
+        v-else-if="trains.length == 0 && store.dataStatuses.trains != 0"
+      >
+        {{ $t('trains.no-trains') }}
+      </div>
+
+      <transition-group name="list-anim" tag="ul">
+        <li
+          class="train-row"
+          v-for="train in trains"
+          :key="train.trainId"
+          tabindex="0"
+          @click.stop="selectModalTrain(train.trainId, $event.currentTarget)"
+          @keydown.enter="selectModalTrain(train.trainId, $event.currentTarget)"
+        >
+          <TrainInfo :train="train" />
+        </li>
+      </transition-group>
+    </div>
+  </transition>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, inject, PropType, Ref } from 'vue';
+import { defineComponent, inject, PropType, Ref } from 'vue';
 import modalTrainMixin from '../../mixins/modalTrainMixin';
 import Train from '../../scripts/interfaces/Train';
-import { useStore } from '../../store/store';
+import { useStore } from '../../store/mainStore';
 import Loading from '../Global/Loading.vue';
 import TrainInfo from './TrainInfo.vue';
+import { Status } from '../../typings/common';
 
 export default defineComponent({
   components: { Loading, TrainInfo },
@@ -56,20 +56,27 @@ export default defineComponent({
     const store = useStore();
     const searchedTrain = inject('searchedTrain') as Ref<string>;
     const searchedDriver = inject('searchedDriver') as Ref<string>;
-    const currentTrains = computed(() => {
-      return props.trains;
-    });
 
     return {
       searchedTrain,
       searchedDriver,
-      currentTrains,
       store,
       sorterActive: inject('sorterActive') as {
         id: string | number;
         dir: number;
       }
     };
+  },
+
+  computed: {
+    dataStatus() {
+      if (this.store.isOffline) return Status.Data.Offline;
+
+      if (this.trains.length == 0 && this.store.dataStatuses.trains == Status.Data.Loading)
+        return Status.Data.Loading;
+
+      return Status.Data.Loaded;
+    }
   },
 
   activated() {
@@ -89,19 +96,13 @@ export default defineComponent({
 @import '../../styles/responsive.scss';
 @import '../../styles/animations.scss';
 
-.anim {
-  &-enter-from,
-  &-leave-to {
-    opacity: 0;
-  }
+.train-table {
+  position: relative;
 
-  &-enter-active {
-    transition: all 100ms ease-out;
-  }
-
-  &-leave-active {
-    transition: all 100ms ease-out;
-  }
+  height: 90vh;
+  min-height: 550px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .table-info {
@@ -114,96 +115,11 @@ export default defineComponent({
   background: #1a1a1a;
 }
 
-img.train-image {
-  width: 12em;
-}
+li.train-row {
+  background-color: var(--clr-secondary);
+  margin-bottom: 1em;
+  width: 100%;
 
-.traffic-warning {
-  padding: 1em 0;
-  margin-bottom: 0.5em;
-  background: var(--clr-warning);
-}
-
-.timeouts-warning {
-  background-color: #333;
-
-  font-weight: bold;
-  font-size: 1.05em;
-
-  margin-bottom: 0.5em;
-  padding: 0.5em;
-}
-
-.warning-timeout {
-  background-color: #be3728;
-  color: white;
-
-  display: inline-block;
-  text-align: center;
-
-  width: 1.25em;
-  height: 1.25em;
-  border-radius: 50%;
-}
-
-.train {
-  &-list {
-    position: relative;
-
-    @include smallScreen() {
-      width: 100%;
-    }
-  }
-
-  &-row {
-    background-color: var(--clr-secondary);
-    margin-bottom: 1em;
-
-    cursor: pointer;
-  }
-
-  &_cars {
-    display: flex;
-    align-items: center;
-
-    overflow: auto;
-  }
-}
-
-.paginator {
-  display: flex;
-  justify-content: center;
-
-  &_item {
-    padding: 0.25em 0.5em;
-    margin: 0 0.5em;
-    outline: 2px solid salmon;
-
-    min-width: 30px;
-
-    text-align: center;
-
-    cursor: pointer;
-
-    &.page-number {
-      font-weight: bold;
-      color: gold;
-    }
-
-    &.disabled {
-      outline: 2px solid lightgray;
-      color: lightgray;
-    }
-
-    &:focus {
-      outline: 2px solid white;
-    }
-  }
-}
-
-@include smallScreen() {
-  .info-bottom {
-    text-align: center;
-  }
+  cursor: pointer;
 }
 </style>

@@ -108,9 +108,8 @@
 
             <td class="station_status">
               <StationStatusBadge
-                :statusID="station.onlineInfo?.statusID"
                 :isOnline="station.onlineInfo ? true : false"
-                :statusTimestamp="station.onlineInfo?.statusTimestamp"
+                :dispatcherStatus="station.onlineInfo?.dispatcherStatus"
               />
             </td>
 
@@ -280,13 +279,13 @@ import { defineComponent, computed, PropType } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
 import stationInfoMixin from '../../mixins/stationInfoMixin';
 import styleMixin from '../../mixins/styleMixin';
-import { DataStatus } from '../../scripts/enums/DataStatus';
 import Station from '../../scripts/interfaces/Station';
 import { useStationFiltersStore } from '../../store/stationFiltersStore';
-import { useStore } from '../../store/store';
+import { useStore } from '../../store/mainStore';
 import Loading from '../Global/Loading.vue';
 import { HeadIdsTypes, headIconsIds, headIds } from '../../scripts/data/stationHeaderNames';
 import StationStatusBadge from '../Global/StationStatusBadge.vue';
+import { Status } from '../../typings/common';
 
 export default defineComponent({
   props: {
@@ -316,8 +315,9 @@ export default defineComponent({
     const stationFiltersStore = useStationFiltersStore();
 
     const isDataLoaded = computed(() => {
-      return store.dataStatuses.sceneries != DataStatus.Loading;
+      return store.dataStatuses.sceneries != Status.Data.Loading;
     });
+
     return {
       isDataLoaded,
       stationFiltersStore
@@ -388,7 +388,8 @@ section.station_table {
 table {
   white-space: nowrap;
   border-collapse: collapse;
-  min-width: 1350px;
+  // min-width: 1350px;
+  width: 100%;
 
   @include smallScreen() {
     min-width: auto;

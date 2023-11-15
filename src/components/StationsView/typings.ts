@@ -1,4 +1,11 @@
-export default interface Filter {
+export interface FilterOption {
+  id: string;
+  name: string;
+  value: boolean;
+  defaultValue: boolean;
+}
+
+export interface Filter {
   [key: string]: boolean | number | string;
   default: boolean;
   notDefault: boolean;

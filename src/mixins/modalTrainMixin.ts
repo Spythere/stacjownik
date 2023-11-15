@@ -1,5 +1,5 @@
 import { defineComponent } from 'vue';
-import { useStore } from '../store/store';
+import { useStore } from '../store/mainStore';
 
 export default defineComponent({
   data() {

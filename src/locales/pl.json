@@ -66,8 +66,9 @@
     "not-signed": "NIEZALOGOWANY",
     "no-limit": "BEZ LIMITU",
     "unavailable": "NIEDOSTĘPNY",
-    "brb": "Z/W",
+    "afk": "Z/W",
     "no-space": "BRAK MIEJSCA",
+    "invalid": "NIEWPISANY",
     "unknown": "NIEZNANY"
   },
   "options": {

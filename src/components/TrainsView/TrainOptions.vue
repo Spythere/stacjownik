@@ -23,7 +23,11 @@
                 v-model="searchedTrain"
               />
               <button class="search-exit">
-                <img src="/images/icon-exit.svg" alt="Trains search clear icon" @click="onInputClear('train')" />
+                <img
+                  src="/images/icon-exit.svg"
+                  alt="Trains search clear icon"
+                  @click="onInputClear('train')"
+                />
               </button>
             </div>
 
@@ -36,7 +40,11 @@
                 v-model="searchedDriver"
               />
               <button class="search-exit">
-                <img src="/images/icon-exit.svg" alt="Driver search clear icon" @click="onInputClear('driver')" />
+                <img
+                  src="/images/icon-exit.svg"
+                  alt="Driver search clear icon"
+                  @click="onInputClear('driver')"
+                />
               </button>
             </div>
           </div>
@@ -87,8 +95,7 @@
 <script lang="ts">
 import { defineComponent, inject, PropType } from 'vue';
 import keyMixin from '../../mixins/keyMixin';
-import { TrainFilterSection } from '../../scripts/enums/TrainFilterType';
-import { TrainFilter } from '../../scripts/interfaces/Trains/TrainFilter';
+import { TrainFilter, TrainFilterSection } from './typings';
 
 export default defineComponent({
   mixins: [keyMixin],
@@ -152,9 +159,6 @@ export default defineComponent({
     },
 
     onFilterChange(filter: TrainFilter) {
-      // if (this.lastSelectedFilter?.id === filter.id)
-      //   this.trainFilterList.forEach((tf) => (tf.isActive = filter.id === tf.id));
-
       filter.isActive = !filter.isActive;
       this.lastSelectedFilter = filter;
     },

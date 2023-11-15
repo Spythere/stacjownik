@@ -68,7 +68,7 @@
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useStore } from '../../store/store';
+import { useStore } from '../../store/mainStore';
 import StatusIndicator from './StatusIndicator.vue';
 import Clock from './Clock.vue';
 import RegionDropdown from '../Global/RegionDropdown.vue';
@@ -96,11 +96,13 @@ export default defineComponent({
 
   computed: {
     onlineTrainsCount() {
-      return this.store.trainList.filter((train) => train.online).length;
+      return this.store.trainList.filter((train) => train.region == this.store.region.id).length;
     },
 
     onlineDispatchersCount() {
-      return this.store.onlineSceneryList.length;
+      return this.store.onlineSceneryList.filter(
+        (scenery) => scenery.region == this.store.region.id
+      ).length;
     },
 
     factorU() {

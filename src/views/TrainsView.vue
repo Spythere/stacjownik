@@ -15,12 +15,11 @@
 import { computed, ComputedRef, defineComponent, provide, reactive, ref, watch } from 'vue';
 import TrainOptions from '../components/TrainsView/TrainOptions.vue';
 import TrainTable from '../components/TrainsView/TrainTable.vue';
-import { trainFilters } from '../constants/Trains/TrainOptionsConsts';
 import modalTrainMixin from '../mixins/modalTrainMixin';
 import Train from '../scripts/interfaces/Train';
-import { filteredTrainList } from '../scripts/managers/trainFilterManager';
-import { useStore } from '../store/store';
-import { TrainFilter } from '../scripts/interfaces/Trains/TrainFilter';
+import { useStore } from '../store/mainStore';
+import { TrainFilter, trainFilters } from '../components/TrainsView/typings';
+import { filteredTrainList } from '../managers/trainFilterManager';
 
 export default defineComponent({
   components: {
@@ -70,7 +69,7 @@ export default defineComponent({
 
     const computedTrains: ComputedRef<Train[]> = computed(() => {
       return filteredTrainList(
-        store.trainList,
+        store.trainList.filter((train) => train.region == store.region.id),
         searchedTrain.value,
         searchedDriver.value,
         sorterActive,
@@ -83,7 +82,6 @@ export default defineComponent({
 
       currentOptionsActive.value =
         sT.length > 0 || sD.length > 0 || sA.id != 'routeDistance' || areFiltersActive;
-      console.log(sA.id);
     });
 
     return {
@@ -115,7 +113,7 @@ export default defineComponent({
 @import '../styles/responsive.scss';
 
 .trains-view {
-  min-height: 100%;
+  min-height: 600px;
   position: relative;
 }
 

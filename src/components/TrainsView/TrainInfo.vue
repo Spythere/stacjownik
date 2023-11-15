@@ -1,22 +1,22 @@
 <template>
   <div class="train-info">
-    <section class="train-route">
-      <div class="train_general">
+    <section class="train-general">
+      <div class="general-info">
         <b class="warning-timeout" v-if="train.isTimeout" :title="$t('trains.timeout')">?</b>
-        <span class="timetable-id" v-if="train.timetableData"
-          >#{{ train.timetableData.timetableId }}</span
-        >
+        <span class="timetable-id" v-if="train.timetableData">
+          #{{ train.timetableData.timetableId }}
+        </span>
 
         <span
-          class="timetable_warnings"
+          class="timetable-warnings"
           v-if="train.timetableData?.TWR || train.timetableData?.SKR"
         >
-          <span class="train-badge twr" v-if="train.timetableData?.TWR" :title="$t('general.TWR')"
-            >TWR</span
-          >
-          <span class="train-badge skr" v-if="train.timetableData?.SKR" :title="$t('general.SKR')"
-            >SKR</span
-          >
+          <span class="train-badge twr" v-if="train.timetableData?.TWR" :title="$t('general.TWR')">
+            TWR
+          </span>
+          <span class="train-badge skr" v-if="train.timetableData?.SKR" :title="$t('general.SKR')">
+            SKR
+          </span>
         </span>
 
         <strong>
@@ -35,7 +35,7 @@
         <span>{{ train.driverName }}</span>
       </div>
 
-      <div class="timetable_route" v-if="train.timetableData">
+      <div class="general-timetable" v-if="train.timetableData">
         <strong>{{ train.timetableData.route.replace('|', ' - ') }}</strong>
         <img
           v-if="getSceneriesWithComments(train.timetableData).length > 0"
@@ -49,27 +49,30 @@
 
       <hr style="margin: 0.25em 0" />
 
-      <div class="timetable_stops" v-if="train.timetableData">
+      <div class="general-stops" v-if="train.timetableData">
         <span v-if="train.timetableData.followingStops.length > 2">
           {{ $t('trains.via-title') }}
           <span v-html="displayStopList(train.timetableData.followingStops)"></span>
         </span>
       </div>
 
-      <div class="timetable_progress" style="margin-top: 0.5em" v-if="train.timetableData">
-        <ProgressBar :progressPercent="confirmedPercentage(train.timetableData.followingStops)" />
+      <div class="general-status">
+        <div class="timetable-progress" v-if="train.timetableData">
+          <ProgressBar :progressPercent="confirmedPercentage(train.timetableData.followingStops)" />
 
-        <span class="timetable_progress-distance">
-          &nbsp; {{ currentDistance(train.timetableData.followingStops) }} km /
-          <span class="text--primary"> {{ train.timetableData.routeDistance }} km </span>
-          |
-          <span v-html="currentDelay(train.timetableData.followingStops)"></span>
-        </span>
+          <span class="progress-distance">
+            &nbsp; {{ currentDistance(train.timetableData.followingStops) }} km /
+            <span class="text--primary"> {{ train.timetableData.routeDistance }} km </span>
+            |
+            <span v-html="currentDelay(train.timetableData.followingStops)"></span>
+          </span>
+        </div>
 
-        <div class="train-status-badges">
+        <div class="status-badges">
           <div v-if="!train.currentStationHash" class="train-badge offline">
             {{ $t('trains.scenery-offline') }}
           </div>
+
           <div v-if="!train.online" class="train-badge offline">
             Offline {{ lastSeenMessage(train.lastSeen) }}
           </div>
@@ -181,11 +184,17 @@ export default defineComponent({
   padding: 0 0.25em;
 }
 
-.timetable_stops {
-  font-size: 0.75em;
+.train-general {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
 }
 
-.train_general {
+.general-stops {
+  font-size: 0.8em;
+}
+
+.general-info {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -193,53 +202,39 @@ export default defineComponent({
   gap: 0.25em;
   margin-right: 1.5em;
 }
-.train-status-badges {
+.general-status {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  gap: 0.25em;
+}
+
+.status-badges {
   display: flex;
   flex-wrap: wrap;
 
   gap: 0.25em;
 }
 
-.train-driver {
-  &.supporter {
-    color: orange;
-    text-shadow: orange 0 0 5px;
-  }
-}
-
-.timetable_route {
+.general-timetable {
   display: flex;
   align-items: center;
-
-  margin-top: 0.5em;
 }
 
-.timetable_warnings {
+.timetable-warnings {
   display: flex;
   gap: 0.25em;
 }
 
-.timetable_progress {
+.timetable-progress {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
 }
 
-.timetable_progress-distance {
+.progress-distance {
   margin-right: 0.25em;
-}
-
-.comments {
-  display: flex;
-  align-items: center;
-
-  font-size: 0.9em;
-
-  margin-top: 1em;
-
-  img {
-    margin-right: 0.5em;
-  }
 }
 
 @include smallScreen() {
@@ -251,23 +246,13 @@ export default defineComponent({
     font-size: 1.15em;
   }
 
-  .train-stats {
-    font-size: 1.1em;
-  }
-
-  .train_general {
+  .general-info,
+  .general-status,
+  .general-timetable {
     justify-content: center;
   }
 
-  .train-status-badges {
-    justify-content: center;
-  }
-
-  .timetable_route {
-    justify-content: center;
-  }
-
-  .timetable_progress {
+  .timetable-progress {
     justify-content: center;
   }
 

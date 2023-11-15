@@ -11,7 +11,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import { ScheduledTrain, StopStatus } from '../../scripts/interfaces/ScheduledTrain';
+import { ScheduledTrain, StopStatus } from '../../store/typings';
 
 interface ScheduledTrainComp extends ScheduledTrain {
   stopStatusIndicator: string;
@@ -42,7 +42,7 @@ export default defineComponent({
         stopStatusIndicator = '';
 
       switch (stopStatus) {
-        case StopStatus.arriving:
+        case StopStatus.ARRIVING:
           stopStatusIndicator = `${this.$t('timetables.from')}: ${prevDepartureIndicator}`;
           stopStatusDescription = this.$t('timetables.desc-arriving', {
             prevStationName,
@@ -50,8 +50,8 @@ export default defineComponent({
           });
           break;
 
-        case StopStatus.online:
-        case StopStatus.stopped:
+        case StopStatus.ONLINE:
+        case StopStatus.STOPPED:
           stopStatusIndicator = nextArrivalLine
             ? `${this.$t('timetables.to')}: ${nextArrivalIndicator}`
             : `${this.$t('timetables.desc-end')}`;
@@ -60,7 +60,7 @@ export default defineComponent({
             : '';
           break;
 
-        case StopStatus.departed:
+        case StopStatus.DEPARTED:
           stopStatusIndicator = `${this.$t('timetables.to')}: ${nextArrivalIndicator}`;
           stopStatusDescription = this.$t('timetables.desc-departed', {
             nextStationName,
@@ -68,7 +68,7 @@ export default defineComponent({
           });
           break;
 
-        case StopStatus['departed-away']:
+        case StopStatus.DEPARTED_AWAY:
           stopStatusIndicator = `${this.$t('timetables.to')}: ${nextArrivalIndicator}`;
           stopStatusDescription = this.$t('timetables.desc-departed-away', {
             nextStationName,
@@ -76,7 +76,7 @@ export default defineComponent({
           });
           break;
 
-        case StopStatus.terminated:
+        case StopStatus.TERMINATED:
           stopStatusIndicator = `X ${this.$t('timetables.desc-terminated')}`;
           stopStatusDescription = this.$t('timetables.desc-terminated');
           break;

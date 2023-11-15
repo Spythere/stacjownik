@@ -61,7 +61,8 @@ const routes: Array<RouteRecordRaw> = [
 
 const router = createRouter({
   scrollBehavior(to, from, savedPosition) {
-    if (to.name == 'SceneryView' && from.name) return { el: `.app_main` };
+    if (to.name == 'SceneryView' && from.name && from.query['view'] === undefined)
+      return { el: `.app_main` };
 
     if (savedPosition) return savedPosition;
 

@@ -185,10 +185,10 @@ import Loading from '../Global/Loading.vue';
 import dateMixin from '../../mixins/dateMixin';
 import routerMixin from '../../mixins/routerMixin';
 import Station from '../../scripts/interfaces/Station';
-import { useStore } from '../../store/store';
+import { useStore } from '../../store/mainStore';
 import modalTrainMixin from '../../mixins/modalTrainMixin';
 import ScheduledTrainStatus from './ScheduledTrainStatus.vue';
-import { OnlineScenery } from '../../scripts/interfaces/store/storeTypes';
+import { OnlineScenery } from '../../store/typings';
 
 export default defineComponent({
   name: 'SceneryTimetable',

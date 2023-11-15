@@ -27,7 +27,7 @@
             :key="i"
             class="btn btn--option"
             @click="setViewMode(viewMode.component)"
-            :data-checked="currentViewCompontent == viewMode.component"
+            :data-checked="currentMode == viewMode.component"
           >
             {{ $t(viewMode.id) }}
           </button>
@@ -35,10 +35,10 @@
 
         <keep-alive>
           <component
-            :is="currentViewCompontent"
+            :is="currentMode"
             :onlineScenery="onlineSceneryInfo"
             :station="stationInfo"
-            :key="currentViewCompontent"
+            :key="currentMode"
           ></component>
         </keep-alive>
       </div>
@@ -50,7 +50,7 @@
 import { computed, defineComponent } from 'vue';
 import { useRoute } from 'vue-router';
 import routerMixin from '../mixins/routerMixin';
-import { useStore } from '../store/store';
+import { useStore } from '../store/mainStore';
 
 import SceneryInfo from '../components/SceneryView/SceneryInfo.vue';
 import SceneryHeader from '../components/SceneryView/SceneryHeader.vue';
@@ -66,6 +66,8 @@ enum SceneryViewMode {
 }
 
 export default defineComponent({
+  name: 'SceneryView',
+
   components: {
     SceneryInfo,
     SceneryTimetable,
@@ -111,9 +113,9 @@ export default defineComponent({
     onlineFrom: -1
   }),
 
-  activated() {
-    this.loadSelectedCheckpoint();
-  },
+  // activated() {
+  //   this.loadSelectedCheckpoint();
+  // },
 
   setup() {
     const route = useRoute();
@@ -126,6 +128,10 @@ export default defineComponent({
   },
 
   computed: {
+    currentMode() {
+      return this.$route.query.view?.toString() ?? 'SceneryTimetable';
+    },
+
     stationInfo() {
       return this.store.stationList.find(
         (station) => station.name === this.station?.toString().replace(/_/g, ' ')
@@ -134,14 +140,22 @@ export default defineComponent({
 
     onlineSceneryInfo() {
       return this.store.onlineSceneryList.find(
-        (scenery) => scenery.name === this.station?.toString().replace(/_/g, ' ')
+        (scenery) =>
+          scenery.name === this.station?.toString().replace(/_/g, ' ') &&
+          scenery.region == this.store.region.id
       );
     }
   },
 
   methods: {
     setViewMode(componentName: string) {
-      this.currentViewCompontent = componentName;
+      this.$router.push({
+        path: this.$route.path,
+        query: {
+          ...this.$route.query,
+          view: componentName
+        }
+      });
     },
 
     loadSelectedCheckpoint() {

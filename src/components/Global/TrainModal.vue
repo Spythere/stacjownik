@@ -16,7 +16,6 @@
 import { defineComponent } from 'vue';
 import modalTrainMixin from '../../mixins/modalTrainMixin';
 import trainInfoMixin from '../../mixins/trainInfoMixin';
-import { useStore } from '../../store/store';
 import TrainInfo from '../TrainsView/TrainInfo.vue';
 import TrainSchedule from '../TrainsView/TrainSchedule.vue';
 
@@ -27,14 +26,6 @@ export default defineComponent({
   data() {
     return {
       isTopBarVisible: false
-    };
-  },
-
-  setup() {
-    const store = useStore();
-
-    return {
-      store
     };
   },
 

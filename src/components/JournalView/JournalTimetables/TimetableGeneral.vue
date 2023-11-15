@@ -62,24 +62,24 @@
 
 <script lang="ts">
 import { PropType, defineComponent } from 'vue';
-import { TimetableHistory } from '../../../scripts/interfaces/api/TimetablesAPIData';
 
 import dateMixin from '../../../mixins/dateMixin';
 import modalTrainMixin from '../../../mixins/modalTrainMixin';
 import styleMixin from '../../../mixins/styleMixin';
+import { API } from '../../../typings/api';
 
 export default defineComponent({
   mixins: [dateMixin, modalTrainMixin, styleMixin],
 
   props: {
     timetable: {
-      type: Object as PropType<TimetableHistory>,
+      type: Object as PropType<API.TimetableHistory.Data>,
       required: true
     }
   },
 
   methods: {
-    showTimetable(timetable: TimetableHistory, target: EventTarget | null) {
+    showTimetable(timetable: API.TimetableHistory.Data, target: EventTarget | null) {
       if (timetable?.terminated) return;
 
       this.selectModalTrain(timetable.driverName + timetable.trainNo.toString(), target);

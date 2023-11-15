@@ -69,14 +69,14 @@
 import axios from 'axios';
 import { defineComponent, PropType } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
-import { DataStatus } from '../../scripts/enums/DataStatus';
-import { DispatcherHistory } from '../../scripts/interfaces/api/DispatchersAPIData';
 import Station from '../../scripts/interfaces/Station';
 import { URLs } from '../../scripts/utils/apiURLs';
 import Loading from '../Global/Loading.vue';
 import styleMixin from '../../mixins/styleMixin';
 import listObserverMixin from '../../mixins/listObserverMixin';
-import { OnlineScenery } from '../../scripts/interfaces/store/storeTypes';
+import { OnlineScenery } from '../../store/typings';
+import { API } from '../../typings/api';
+import { Status } from '../../typings/common';
 
 export default defineComponent({
   name: 'SceneryDispatchersHistory',
@@ -95,9 +95,9 @@ export default defineComponent({
 
   data() {
     return {
-      historyList: [] as DispatcherHistory[],
-      dataStatus: DataStatus.Loading,
-      DataStatus
+      historyList: [] as API.DispatcherHistory.Response,
+      dataStatus: Status.Data.Loading,
+      DataStatus: Status.Data
     };
   },
 
@@ -109,17 +109,22 @@ export default defineComponent({
   },
 
   methods: {
-    async fetchAPIData(countFrom = 0, countLimit = 30): Promise<DispatcherHistory[] | null> {
+    async fetchAPIData(
+      countFrom = 0,
+      countLimit = 30
+    ): Promise<API.DispatcherHistory.Response | null> {
       try {
-        this.dataStatus = DataStatus.Loading;
+        this.dataStatus = Status.Data.Loading;
 
         const requestString = `${URLs.stacjownikAPI}/api/getDispatchers?stationName=${this.station.name}&countFrom=${countFrom}&countLimit=${countLimit}`;
-        const historyAPIData: DispatcherHistory[] = await (await axios.get(requestString)).data;
+        const historyAPIData: API.DispatcherHistory.Response = await (
+          await axios.get(requestString)
+        ).data;
 
-        this.dataStatus = DataStatus.Loaded;
+        this.dataStatus = Status.Data.Loaded;
         return historyAPIData;
       } catch (error) {
-        this.dataStatus = DataStatus.Error;
+        this.dataStatus = Status.Data.Error;
         console.error(error);
         return null;
       }
@@ -153,3 +158,4 @@ export default defineComponent({
   }
 }
 </style>
+../../store/storeTypes

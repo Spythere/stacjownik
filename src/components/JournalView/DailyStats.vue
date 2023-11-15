@@ -1,7 +1,7 @@
 <template>
   <section class="daily-stats">
     <span :data-active="statsStatus">
-      <b v-if="statsStatus == DataStatus.Loading">
+      <b v-if="statsStatus == Status.Data.Loading">
         {{ $t('app.loading') }}
       </b>
 
@@ -32,24 +32,26 @@
           </i18n-t>
         </div>
 
-        <div v-if="stats.timetableId">
+        <div v-if="stats.maxTimetable">
           &bull;
           <i18n-t keypath="journal.timetable-stats-longest">
             <template #id>
-              <router-link :to="`/journal/timetables?timetableId=${stats.timetableId}`">
-                <b>{{ stats.timetableId }}</b>
+              <router-link :to="`/journal/timetables?timetableId=${stats.maxTimetable.id}`">
+                <b>{{ stats.maxTimetable.id }}</b>
               </router-link>
             </template>
             <template #author>
-              <router-link :to="`/journal/dispatchers?dispatcherName=${stats.timetableAuthor}`">
-                <b>{{ stats.timetableAuthor }}</b>
+              <router-link
+                :to="`/journal/dispatchers?dispatcherName=${stats.maxTimetable.authorName}`"
+              >
+                <b>{{ stats.maxTimetable.authorName }}</b>
               </router-link>
             </template>
             <template #driver>
-              <b class="text--primary">{{ stats.timetableDriver }}</b>
+              <b class="text--primary">{{ stats.maxTimetable.driverName }}</b>
             </template>
             <template #distance>
-              <b class="text--primary">{{ stats.timetableRouteDistance }} km</b>
+              <b class="text--primary">{{ stats.maxTimetable.routeDistance }} km</b>
             </template>
           </i18n-t>
         </div>
@@ -134,12 +136,10 @@
 import axios from 'axios';
 import { defineComponent } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
-import { DataStatus } from '../../scripts/enums/DataStatus';
-import {
-  ITimetablesDailyStats,
-  ITimetablesDailyStatsResponse
-} from '../../scripts/interfaces/api/StatsAPIData';
+
 import { URLs } from '../../scripts/utils/apiURLs';
+import { API } from '../../typings/api';
+import { Status } from '../../typings/common';
 
 export default defineComponent({
   mixins: [dateMixin],
@@ -147,22 +147,11 @@ export default defineComponent({
 
   data() {
     return {
-      DataStatus,
-      statsStatus: DataStatus.Loading,
+      Status,
+      statsStatus: Status.Data.Loading,
       intervalId: -1,
 
-      stats: {
-        totalTimetables: 0,
-        distanceSum: 0,
-        distanceAvg: 0,
-        timetableAuthor: '',
-        timetableDriver: '',
-        timetableId: 0,
-        timetableRouteDistance: 0,
-        longestDuties: [],
-        mostActiveDrivers: [],
-        mostActiveDispatchers: []
-      } as ITimetablesDailyStats
+      stats: {} as API.DailyStats.Response
     };
   },
 
@@ -187,28 +176,30 @@ export default defineComponent({
   methods: {
     async fetchDailyTimetableStats() {
       try {
-        const res: ITimetablesDailyStatsResponse = await (
+        const res: API.DailyStats.Response = await (
           await axios.get(`${URLs.stacjownikAPI}/api/getDailyTimetableStats`)
         ).data;
 
-        this.stats = {
-          totalTimetables: res.totalTimetables,
-          distanceSum: res.distanceSum,
-          distanceAvg: res.distanceAvg,
-          timetableAuthor: res.maxTimetable?.authorName || '',
-          timetableDriver: res.maxTimetable?.driverName || '',
-          timetableId: res.maxTimetable?.id || 0,
-          timetableRouteDistance: res.maxTimetable?.routeDistance || 0,
+        // this.stats = {
+        //   totalTimetables: res.totalTimetables,
+        //   distanceSum: res.distanceSum,
+        //   distanceAvg: res.distanceAvg,
+        //   // timetableAuthor: res.maxTimetable?.authorName || '',
+        //   // timetableDriver: res.maxTimetable?.driverName || '',
+        //   // timetableId: res.maxTimetable?.id || 0,
+        //   // timetableRouteDistance: res.maxTimetable?.routeDistance || 0,
 
-          mostActiveDispatchers: res.mostActiveDispatchers,
-          mostActiveDrivers: res.mostActiveDrivers,
-          longestDuties: res.longestDuties
-        };
+        //   mostActiveDispatchers: res.mostActiveDispatchers,
+        //   mostActiveDrivers: res.mostActiveDrivers,
+        //   longestDuties: res.longestDuties
+        // };
 
-        this.statsStatus = DataStatus.Loaded;
+        this.stats = res;
+
+        this.statsStatus = Status.Data.Loaded;
       } catch (error) {
         console.error('Ups! Wystąpił błąd podczas pobierania statystyk rozkładów jazdy...');
-        this.statsStatus = DataStatus.Error;
+        this.statsStatus = Status.Data.Error;
       }
     },
 
