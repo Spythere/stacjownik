@@ -2,6 +2,7 @@ export namespace Status {
   export enum ActiveDispatcher {
     INVALID = -2,
     UNKNOWN = -1,
+    NO_LIMIT = 0,
     AFK = 1,
     ENDING = 2,
     NO_SPACE = 3,
