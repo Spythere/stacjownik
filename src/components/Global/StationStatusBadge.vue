@@ -31,11 +31,14 @@ export default defineComponent({
 
   computed: {
     statusName() {
-      if (!this.dispatcherStatus) return 'free';
+      if (this.dispatcherStatus === undefined) return 'free';
 
       switch (this.dispatcherStatus) {
         case Status.ActiveDispatcher.AFK:
           return 'afk';
+
+        case Status.ActiveDispatcher.NO_LIMIT:
+          return 'no-limit';
 
         case Status.ActiveDispatcher.ENDING:
           return 'ending';
