@@ -24,6 +24,7 @@
     <StationStatusBadge
       :isOnline="onlineScenery ? true : false"
       :dispatcherStatus="onlineScenery?.dispatcherStatus"
+      :dispatcherTimestamp="onlineScenery?.dispatcherTimestamp"
     />
   </section>
 </template>

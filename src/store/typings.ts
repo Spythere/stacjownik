@@ -105,6 +105,7 @@ export interface OnlineScenery {
   dispatcherIsSupporter: boolean;
 
   dispatcherStatus: Status.ActiveDispatcher | number;
+  dispatcherTimestamp: number | null;
 
   isOnline: boolean;
 

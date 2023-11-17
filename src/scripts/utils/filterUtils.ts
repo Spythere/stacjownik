@@ -3,6 +3,17 @@ import { Status } from '../../typings/common';
 import { HeadIdsTypes } from '../data/stationHeaderNames';
 import Station from '../interfaces/Station';
 
+const dispatcherStatusPriority = [
+  Status.ActiveDispatcher.UNKNOWN,
+  Status.ActiveDispatcher.INVALID,
+  Status.ActiveDispatcher.NOT_LOGGED_IN,
+  Status.ActiveDispatcher.UNAVAILABLE,
+  Status.ActiveDispatcher.AFK,
+  Status.ActiveDispatcher.ENDING,
+  Status.ActiveDispatcher.NO_SPACE,
+  undefined
+];
+
 export const sortStations = (
   a: Station,
   b: Station,
@@ -19,7 +30,11 @@ export const sortStations = (
       break;
 
     case 'status':
-      diff = (a.onlineInfo?.dispatcherStatus || 0) - (b.onlineInfo?.dispatcherStatus || 0);
+      diff =
+        (a.onlineInfo?.dispatcherTimestamp ??
+          dispatcherStatusPriority.indexOf(a.onlineInfo?.dispatcherStatus)) -
+        (b.onlineInfo?.dispatcherTimestamp ??
+          dispatcherStatusPriority.indexOf(b.onlineInfo?.dispatcherStatus));
       break;
 
     case 'dispatcher':

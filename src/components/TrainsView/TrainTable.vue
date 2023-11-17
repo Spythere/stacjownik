@@ -52,7 +52,7 @@ export default defineComponent({
 
   mixins: [modalTrainMixin],
 
-  setup(props) {
+  setup() {
     const store = useStore();
     const searchedTrain = inject('searchedTrain') as Ref<string>;
     const searchedDriver = inject('searchedDriver') as Ref<string>;
