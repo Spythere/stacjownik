@@ -23,6 +23,9 @@ export default defineComponent({
     dispatcherStatus: {
       type: Number as PropType<Status.ActiveDispatcher | number>
     },
+    dispatcherTimestamp: {
+      type: Number as PropType<number | null>
+    },
     isOnline: {
       type: Boolean
     }
@@ -59,7 +62,9 @@ export default defineComponent({
           return 'unknown';
 
         default:
-          if (this.dispatcherStatus >= Date.now() + 25500000) return 'no-limit';
+          if (this.dispatcherTimestamp != null && this.dispatcherStatus >= Date.now() + 25500000)
+            return 'no-limit';
+
           return 'online';
       }
     }

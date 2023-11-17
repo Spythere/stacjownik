@@ -138,6 +138,13 @@ export const useStore = defineStore('store', {
           [] as ScheduledTrain[]
         );
 
+        const dispatcherTimestamp =
+          scenery.dispatcherStatus == Status.ActiveDispatcher.NO_LIMIT
+            ? Date.now() + 25500000
+            : scenery.dispatcherStatus > 5
+            ? scenery.dispatcherStatus
+            : null;
+
         list.push({
           name: scenery.stationName,
           hash: scenery.stationHash,
@@ -153,6 +160,7 @@ export const useStore = defineStore('store', {
           scheduledTrains: scheduledTrains,
           stationTrains: stationTrains,
           dispatcherStatus: scenery.dispatcherStatus,
+          dispatcherTimestamp: dispatcherTimestamp,
 
           isOnline: scenery.isOnline == 1,
 
