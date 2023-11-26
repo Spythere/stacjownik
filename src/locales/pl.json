@@ -1,4 +1,21 @@
 {
+  "donations": {
+    "button-title": "GROSZA DAJ",
+    "header": "Grosza daj Stacjownikowi!",
+    "p1": "<b>Hej o7!</b> Z tej strony Spythere, twórca Stacjownika, Pojazdownika oraz kilku innych aplikacji wspomagających rozgrywkę symulatora Train Driver 2!",
+    "p2": "{b1} to narzędzie całkowicie darmowe, tworzone i rozwijane dla społeczności symulatora TD2 nieprzerwanie od 2020 roku. Jednakże, część projektu jest podtrzymywana wyłącznie dzięki mojemu prywatnemu wkładowi finansowemu. Funkcje takie jak {b2} czy też {b3} działający na moim {link} (na który serdeczne zapraszam) muszą działać na wydzielonym serwerze, gdzie będą mogły zbierać i przetwarzać dane, aby następnie pokazać je na stronie.",
+    "p2-b1": "Stacjownik",
+    "p2-b2": "Dziennik",
+    "p2-b3": "Stacjobot",
+    "p2-a1": "serwerze Discord",
+    "p3": "<b>Jeśli masz możliwość i chcesz wspomóc moją twórczość dla symulatora, będę wdzięczny za wszelkie pomoce finansowe, które pozwolą na choćby częściowe pokrycie kosztów serwera oraz dalsze rozwijanie możliwości aplikacji!</b>",
+    "p4": "Każda osoba, która postanowi przelać co najmniej {b1} na rozwój Stacjownika, otrzyma na życzenie symboliczne {img}{b2} nicku użytkownika w zakładkach \"Scenerie\" i \"Pociągi\" aplikacji i moim serwerze Discord (po zweryfikowaniu autora płatności, najlepiej poprzez podanie nicku bezpośrednio przy niej).",
+    "p4-b1": "5 złotych",
+    "p4-b2": "wyróżnienie",
+    "p5": "Dzięki i miłego dalszego korzystania z moich narzędzi! <br /> ~Spythere",
+    "action-exit": "Może kiedy indziej...",
+    "action-confirm": "WSPOMÓŻ!"
+  },
   "general": {
     "and": " oraz ",
     "refresh": "ODŚWIEŻ",

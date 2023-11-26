@@ -1,17 +1,17 @@
 <template>
   <section class="stations-view">
     <div class="wrapper">
-      <div class="body">
-        <div class="options-bar">
-          <StationFilterCard
-            :showCard="filterCardOpen"
-            :exit="(filterCardOpen = false)"
-            ref="filterCardRef"
-          />
-        </div>
+      <div class="stations-options">
+        <StationFilterCard
+          :showCard="filterCardOpen"
+          :exit="(filterCardOpen = false)"
+          ref="filterCardRef"
+        />
 
-        <StationTable :stations="computedStationList" />
+        <Donation :isModalOpen="isDonationModalOpen" @toggleModal="toggleDonationModal" />
       </div>
+
+      <StationTable :stations="computedStationList" @toggleDonationModal="toggleDonationModal" />
     </div>
   </section>
 </template>
@@ -22,11 +22,13 @@ import StationTable from '../components/StationsView/StationTable.vue';
 import StationFilterCard from '../components/StationsView/StationFilterCard.vue';
 import { useStationFiltersStore } from '../store/stationFiltersStore';
 import { useStore } from '../store/mainStore';
+import Donation from '../components/Global/Donation.vue';
 
 export default defineComponent({
   components: {
     StationTable,
-    StationFilterCard
+    StationFilterCard,
+    Donation
   },
 
   data: () => ({
@@ -35,8 +37,14 @@ export default defineComponent({
     STORAGE_KEY: 'options_saved',
     focusedStationName: '',
     filterStore: useStationFiltersStore(),
-    store: useStore()
+    store: useStore(),
+
+    isDonationModalOpen: false
   }),
+
+  mounted() {
+    this.filterStore.setupFilters();
+  },
 
   computed: {
     computedStationList() {
@@ -44,8 +52,10 @@ export default defineComponent({
     }
   },
 
-  mounted() {
-    this.filterStore.setupFilters();
+  methods: {
+    toggleDonationModal(value: boolean) {
+      this.isDonationModalOpen = value;
+    }
   }
 });
 </script>
@@ -80,23 +90,21 @@ export default defineComponent({
 
 .stations-view {
   position: relative;
+  display: flex;
+  justify-content: center;
 
   padding: 1em 0;
   min-height: 100%;
 }
 
 .wrapper {
-  display: flex;
-  justify-content: center;
-}
-
-.body {
   max-width: 100%;
 }
 
-.options-bar {
+.stations-options {
   display: flex;
-  align-items: center;
+  justify-content: space-between;
+  gap: 0.5em;
 
   margin-bottom: 0.5em;
 }

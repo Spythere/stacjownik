@@ -85,9 +85,11 @@
                 <strong>{{ scheduledTrain.category }}</strong>
                 {{ scheduledTrain.trainNo }}
 
-                <span class="g-tooltip" v-if="scheduledTrain.stopInfo.comments">
+                <span
+                  v-if="scheduledTrain.stopInfo.comments"
+                  :title="scheduledTrain.stopInfo.comments"
+                >
                   <img src="/images/icon-warning.svg" />
-                  <span class="content" v-html="scheduledTrain.stopInfo.comments"> </span>
                 </span>
               </span>
               &nbsp;|&nbsp;

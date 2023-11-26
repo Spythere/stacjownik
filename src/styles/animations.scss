@@ -1,7 +1,11 @@
+$animDuration: 150ms;
+$animType: ease-in-out;
+
+// List animation
 .list-anim-move,
 .list-anim-enter-active,
 .list-anim-leave-active {
-  transition: all 250ms ease;
+  transition: all $animDuration ease;
 }
 
 .list-anim-enter-from,
@@ -15,6 +19,21 @@
   width: 100%;
 }
 
+// View animation
+.view-anim {
+  &-enter-from,
+  &-leave-to {
+    opacity: 0.02;
+  }
+
+  &-enter-active,
+  &-leave-active {
+    transition: all $animDuration $animType;
+    min-height: 100%;
+  }
+}
+
+// Data status list animation
 .status-anim {
   &-enter-from,
   &-leave-to {
@@ -22,10 +41,38 @@
   }
 
   &-enter-active {
-    transition: all 100ms ease-out;
+    transition: all $animDuration ease-out;
   }
 
   &-leave-active {
-    transition: all 100ms ease-out;
+    transition: all $animDuration ease-out;
+  }
+}
+
+// Card animation
+.card-anim {
+  &-enter-active,
+  &-leave-active {
+    transition: all $animDuration $animType;
+  }
+
+  &-enter-from,
+  &-leave-to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.45);
+  }
+}
+
+// Modal animation
+.modal-anim {
+  &-enter-active,
+  &-leave-active {
+    transition: all $animDuration $animType;
+  }
+
+  &-enter-from,
+  &-leave-to {
+    transform: translateY(-25%);
+    opacity: 0;
   }
 }

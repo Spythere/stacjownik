@@ -14,6 +14,8 @@
   --clr-error: #df3e3e;
   --clr-warning: #c59429;
 
+  --clr-honorable: #f47fff;
+
   font-size: 16px;
 }
 
@@ -51,38 +53,6 @@ body {
     @include smallScreen() {
       padding: 0;
     }
-  }
-}
-
-.g-tooltip {
-  position: relative;
-
-  display: inline-block;
-  vertical-align: middle;
-
-  .content {
-    position: absolute;
-    left: 0;
-
-    z-index: 100;
-
-    visibility: hidden;
-    opacity: 0;
-
-    min-width: 250px;
-
-    background-color: #202020;
-    text-align: center;
-
-    border-radius: 0.5em;
-
-    transition: opacity 0.3s;
-    padding: 0.25em;
-  }
-
-  &:hover > .content {
-    visibility: visible;
-    opacity: 1;
   }
 }
 
@@ -187,16 +157,23 @@ ul {
   &--grayed {
     color: #ccc;
   }
+
+  &--honorable {
+    color: var(--clr-honorable);
+    text-shadow: var(--clr-honorable) 0 0 10px;
+  }
 }
 
 button {
   cursor: pointer;
   color: white;
   background: none;
+  border-radius: 0.25em;
 
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 0.5em;
 
   padding: 0.25em 0.5em;
 
@@ -211,7 +188,6 @@ button {
 
 button.btn--filled {
   background-color: #1a1a1a;
-  border-radius: 0.25em;
 
   &:hover {
     background-color: #2a2a2a;
@@ -245,7 +221,6 @@ button.btn--image {
 
   img {
     width: 1.5em;
-    margin-right: 0.5em;
     vertical-align: middle;
   }
 }

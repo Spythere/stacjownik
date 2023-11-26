@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io-client';
 import Station from '../scripts/interfaces/Station';
-import { API, Websocket } from '../typings/api';
+import { API, GithubAPI, Websocket } from '../typings/api';
 import { Status } from '../typings/common';
 
 export type Availability = 'default' | 'unavailable' | 'nonPublic' | 'abandoned' | 'nonDefault';
@@ -15,6 +15,7 @@ export interface StoreState {
   stationList: Station[];
   activeData: Websocket.ActiveData;
   rollingStockData?: API.RollingStock.Response;
+  donatorsData: GithubAPI.Donators.Response;
 
   regionOnlineCounters: RegionCounters[];
 
@@ -55,6 +56,13 @@ export interface StoreState {
   listenerLaunched: boolean;
   blockScroll: boolean;
   modalLastClickedTarget: EventTarget | null;
+
+  tooltip: {
+    visible: boolean;
+    x: number;
+    y: number;
+    content: string;
+  };
 }
 
 export interface StationRoutesInfo {
@@ -187,7 +195,7 @@ export interface TrainStop {
   departureDelay: number;
   pointId: number;
 
-  comments?: any;
+  comments?: string;
 
   beginsHere: boolean;
   terminatesHere: boolean;

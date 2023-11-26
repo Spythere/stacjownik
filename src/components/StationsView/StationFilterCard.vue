@@ -295,19 +295,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '../../styles/responsive.scss';
 @import '../../styles/card.scss';
-
-.card-anim {
-  &-enter-active,
-  &-leave-active {
-    transition: all $animDuration $animType;
-  }
-
-  &-enter-from,
-  &-leave-to {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.45);
-  }
-}
+@import '../../styles/animations.scss';
 
 .card {
   display: grid;
