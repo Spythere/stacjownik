@@ -36,7 +36,7 @@
         <div class="train-driver">
           <b
             v-if="store.donatorsData.includes(train.driverName)"
-            title="Dyżurny wspierający projekt Stacjownika!"
+            :title="$t('donations.driver-message')"
           >
             {{ train.driverName }}
             <img src="/images/icon-diamond.svg" alt="donator diamond icon" />

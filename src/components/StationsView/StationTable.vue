@@ -117,7 +117,7 @@
               <span v-if="station.onlineInfo?.dispatcherName">
                 <b
                   v-if="store.donatorsData.includes(station.onlineInfo.dispatcherName)"
-                  title="Dyżurny wspierający projekt Stacjownika!"
+                  :title="$t('donations.dispatcher-message')"
                   @click.stop="openDonationModal"
                 >
                   <img src="/images/icon-diamond.svg" alt="" />
