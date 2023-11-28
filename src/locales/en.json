@@ -14,7 +14,9 @@
     "p4-b2": "a symbolic highlight",
     "p5": "Thank you and enjoy the app!<br />~ Spythere",
     "action-exit": "Maybe next time...",
-    "action-confirm": "DONATE!"
+    "action-confirm": "DONATE!",
+    "dispatcher-message": "Dispatcher supporting the Stacjownik project!",
+    "driver-message": "Driver supporting the Stacjownik project!"
   },
   "general": {
     "and": " and ",
