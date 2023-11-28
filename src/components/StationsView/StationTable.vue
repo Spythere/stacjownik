@@ -389,17 +389,15 @@ $rowCol: #424242;
   }
 }
 
-section.station_table {
-  overflow: auto;
-  overflow-y: hidden;
-  font-weight: 500;
-}
-
 table {
   white-space: nowrap;
   border-collapse: collapse;
   // min-width: 1350px;
   width: 100%;
+
+  overflow: auto;
+  overflow-y: hidden;
+  font-weight: 500;
 
   @include smallScreen() {
     min-width: auto;

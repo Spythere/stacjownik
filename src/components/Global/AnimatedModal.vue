@@ -45,6 +45,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '../../styles/responsive.scss';
+
 .body {
   position: fixed;
   top: 0;
@@ -79,5 +81,21 @@ export default defineComponent({
   width: 95%;
   max-width: 800px;
   max-height: 95vh;
+
+  & > :slotted(div) {
+    max-height: 95vh;
+  }
+}
+
+@include smallScreen {
+  .wrapper {
+    top: 0;
+    transform: translate(-50%, 1em);
+    max-height: 90vh;
+
+    & > :slotted(div) {
+      max-height: 90vh;
+    }
+  }
 }
 </style>

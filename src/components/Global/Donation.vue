@@ -141,7 +141,7 @@ export default defineComponent({
   display: grid;
   grid-template-rows: 1fr auto;
   gap: 1em;
-  max-height: 95vh;
+
   font-size: 1.1em;
 
   & > div {
@@ -172,8 +172,12 @@ export default defineComponent({
 }
 
 .modal_actions {
-  display: flex;
-  justify-content: flex-end;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13em, 1fr));
   gap: 0.5em;
+
+  form button {
+    width: 100%;
+  }
 }
 </style>
