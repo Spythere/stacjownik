@@ -38,7 +38,7 @@
           <br />
           <i18n-t keypath="donations.p4" tag="p">
             <template v-slot:img>
-              <img src="/images/icon-diamond.svg" alt="diamond donator icon" />
+              <img src="/images/icon-diamond.svg" alt="donator diamond icon" />
             </template>
 
             <template v-slot:b1>
@@ -46,7 +46,7 @@
             </template>
 
             <template v-slot:b2>
-              <b class="text--honorable">{{ $t('donations.p4-b2') }}</b>
+              <b>{{ $t('donations.p4-b2') }}</b>
             </template>
           </i18n-t>
           <br />
@@ -164,6 +164,7 @@ export default defineComponent({
 
 .modal_main {
   overflow: auto;
+
   img {
     max-height: 20px;
     margin-right: 5px;

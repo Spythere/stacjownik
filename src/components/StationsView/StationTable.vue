@@ -110,15 +110,14 @@
 
           <td class="station_dispatcher-name">
             <span v-if="station.onlineInfo?.dispatcherName">
-              <div
+              <b
                 v-if="store.donatorsData.includes(station.onlineInfo.dispatcherName)"
                 title="Dyżurny wspierający projekt Stacjownika!"
-                class="text--honorable"
                 @click.stop="openDonationModal"
               >
                 <img src="/images/icon-diamond.svg" alt="" />
                 {{ station.onlineInfo.dispatcherName }}
-              </div>
+              </b>
 
               <div v-else>
                 {{ station.onlineInfo.dispatcherName }}

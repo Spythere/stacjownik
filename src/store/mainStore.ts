@@ -314,7 +314,7 @@ export const useStore = defineStore('store', {
           'https://raw.githubusercontent.com/Spythere/api/main/td2/data/donators.json'
         );
 
-        if (response.data) this.donatorsData = ['Kryszakos'];
+        if (response.data) this.donatorsData = response.data;
       } catch (error) {
         console.error('Ups! Wystąpił błąd podczas pobierania informacji o donatorach:', error);
       }
