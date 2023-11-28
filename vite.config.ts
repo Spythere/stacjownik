@@ -19,9 +19,7 @@ export default defineConfig({
             handler: 'NetworkFirst',
             options: {
               cacheName: 'sceneries-cache',
-              expiration: {
-                maxAgeSeconds: 60 * 60 * 24 * 7 // <== 7 days
-              },
+
               cacheableResponse: {
                 statuses: [0, 200]
               }
@@ -32,9 +30,7 @@ export default defineConfig({
             handler: 'NetworkFirst',
             options: {
               cacheName: 'github-api-cache',
-              expiration: {
-                maxAgeSeconds: 60 * 60 * 24 * 7 // <== 7 days
-              },
+
               cacheableResponse: {
                 statuses: [0, 200]
               }

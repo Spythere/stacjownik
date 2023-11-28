@@ -328,4 +328,8 @@ export namespace GithubAPI {
       body: string;
     }
   }
+
+  export namespace Donators {
+    export type Response = string[];
+  }
 }

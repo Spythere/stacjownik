@@ -1,33 +1,7 @@
 @import './styles/responsive.scss';
 @import './styles/variables.scss';
 @import './styles/global.scss';
-
-// VUE ROUTE CHANGE ANIMATION
-.view-anim {
-  &-enter-from,
-  &-leave-to {
-    opacity: 0.02;
-  }
-
-  &-enter-active,
-  &-leave-active {
-    transition: all $animDuration $animType;
-    min-height: 100%;
-  }
-}
-
-.modal-anim {
-  &-enter-active,
-  &-leave-active {
-    transition: all $animDuration $animType;
-  }
-
-  &-enter-from,
-  &-leave-to {
-    transform: translateY(-25%);
-    opacity: 0;
-  }
-}
+@import './styles/animations.scss';
 
 .route {
   margin: 0 0.2em;
@@ -56,8 +30,6 @@
 
 // CONTAINER
 .app_container {
-  // display: flex;
-  // flex-flow: column;
   display: grid;
   grid-template-rows: auto 1fr auto;
   grid-template-columns: 100%;

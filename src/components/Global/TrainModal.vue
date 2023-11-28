@@ -35,17 +35,6 @@ export default defineComponent({
     this.$nextTick(() => {
       contentEl.focus();
     });
-  },
-
-  methods: {
-    handleContentScroll(e: Event) {
-      const trainInfoCompHeight: number = (
-        this.$refs['trainInfo'] as any
-      ).$el.getBoundingClientRect().height;
-
-      const posTop = (e.target as HTMLElement).scrollTop;
-      this.isTopBarVisible = posTop > trainInfoCompHeight;
-    }
   }
 });
 </script>

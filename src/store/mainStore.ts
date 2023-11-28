@@ -9,7 +9,7 @@ import { parseSpawns, getScheduledTrains, getStationTrains } from './utils';
 import { OnlineScenery, ScheduledTrain, StationJSONData, StoreState } from './typings';
 
 import packageInfo from '../../package.json';
-import { Websocket, API } from '../typings/api';
+import { Websocket, API, GithubAPI } from '../typings/api';
 import { Status } from '../typings/common';
 
 export const useStore = defineStore('store', {
@@ -17,6 +17,7 @@ export const useStore = defineStore('store', {
     ({
       activeData: {} as unknown,
       rollingStockData: undefined,
+      donatorsData: [],
 
       stationList: [],
       regionOnlineCounters: [],
@@ -55,7 +56,14 @@ export const useStore = defineStore('store', {
 
       blockScroll: false,
       listenerLaunched: false,
-      modalLastClickedTarget: null
+      modalLastClickedTarget: null,
+
+      tooltip: {
+        content: '',
+        visible: false,
+        x: 0,
+        y: 0
+      }
     }) as StoreState,
 
   getters: {
@@ -280,6 +288,7 @@ export const useStore = defineStore('store', {
     async connectToAPI() {
       this.connectToWebsocket();
       this.fetchStockInfoData();
+      this.fetchDonatorsData();
       this.fetchStationsGeneralInfo();
     },
 
@@ -299,6 +308,18 @@ export const useStore = defineStore('store', {
       }
     },
 
+    async fetchDonatorsData() {
+      try {
+        const response = await axios.get<GithubAPI.Donators.Response>(
+          'https://raw.githubusercontent.com/Spythere/api/main/td2/data/donators.json'
+        );
+
+        if (response.data) this.donatorsData = response.data;
+      } catch (error) {
+        console.error('Ups! Wystąpił błąd podczas pobierania informacji o donatorach:', error);
+      }
+    },
+
     async setStatuses() {
       if (!this.activeData.activeSceneries) {
         this.dataStatuses.sceneries = Status.Data.Error;
@@ -311,8 +332,6 @@ export const useStore = defineStore('store', {
       this.dataStatuses.sceneries = Status.Data.Loaded;
       this.dataStatuses.trains = !this.activeData.trains ? Status.Data.Warning : Status.Data.Loaded;
       this.dataStatuses.dispatchers = Status.Data.Loaded;
-
-      // if (this.apiData.dispatchers != null) this.lastDispatcherStatuses = prevDispatcherStatuses;
     }
   }
 });

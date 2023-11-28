@@ -235,10 +235,6 @@ table.scenery-history-table {
       margin: 0 auto;
     }
   }
-
-  @media screen and (max-width: 550px) {
-    font-size: 0.9em;
-  }
 }
 
 .text {

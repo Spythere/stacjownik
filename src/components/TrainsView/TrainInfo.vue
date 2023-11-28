@@ -32,7 +32,17 @@
         >
           {{ train.driverLevel < 2 ? 'L' : `${train.driverLevel}` }}
         </b>
-        <span>{{ train.driverName }}</span>
+
+        <div class="train-driver">
+          <b
+            v-if="store.donatorsData.includes(train.driverName)"
+            title="Dyżurny wspierający projekt Stacjownika!"
+          >
+            {{ train.driverName }}
+            <img src="/images/icon-diamond.svg" alt="donator diamond icon" />
+          </b>
+          <span v-else>{{ train.driverName }}</span>
+        </div>
       </div>
 
       <div class="general-timetable" v-if="train.timetableData">
@@ -114,6 +124,7 @@ import trainInfoMixin from '../../mixins/trainInfoMixin';
 import Train from '../../scripts/interfaces/Train';
 import ProgressBar from '../Global/ProgressBar.vue';
 import TrainThumbnail from '../Global/TrainThumbnail.vue';
+import { useStore } from '../../store/mainStore';
 
 export default defineComponent({
   mixins: [trainInfoMixin, styleMixin],
@@ -128,6 +139,12 @@ export default defineComponent({
       type: Boolean,
       default: true
     }
+  },
+
+  data() {
+    return {
+      store: useStore()
+    };
   }
 });
 </script>
@@ -169,6 +186,11 @@ export default defineComponent({
 
   background-color: #1a1a1a;
   gap: 0.5em;
+}
+
+.train-driver img {
+  max-height: 20px;
+  vertical-align: text-bottom;
 }
 
 .timetable-id {

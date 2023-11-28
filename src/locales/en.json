@@ -1,4 +1,21 @@
 {
+  "donations": {
+    "button-title": "TOSS A COIN",
+    "header": "Toss a coin to Stacjownik!",
+    "p1": "<b>Hello o7!</b> This is Spythere, the creator of Stacjownik, Pojazdownik and several other applications that enhance the gameplay of Train Driver 2!",
+    "p2": "{b1} is a completely free tool, created and continuously developed for the Train Driver 2 simulator community since 2020. However, a part of the project is sustained solely through my private financial contribution.  Features such as  {b2} or {b3} (operating on my {link} - to which you are warmly invited) must function on a dedicated server where they can collect and process data, and then display it on the website.",
+    "p2-b1": "Stacjownik",
+    "p2-b2": "Journal",
+    "p2-b3": "Stacjobot (Stacjownik bot)",
+    "p2-a1": "Discord server",
+    "p3": "<b>If you have the means and would like to support my work, I would be grateful for any financial assistance that could help cover at least some of the server costs and further enhance the capabilities of the application!</b>",
+    "p4": "Every person who decides to contribute at least {b1} for the development of Stacjownik, will receive (upon a personal request) {img}{b2} of username in the \"Sceneries\" and \"Trains\" tabs of the application, as well as on my Discord server (after verifying the payment author, preferably by providing the username directly with the payment).",
+    "p4-b1": "5 PLN",
+    "p4-b2": "a symbolic highlight",
+    "p5": "Thank you and enjoy the app!<br />~ Spythere",
+    "action-exit": "Maybe next time...",
+    "action-confirm": "DONATE!"
+  },
   "general": {
     "and": " and ",
     "refresh": "REFRESH",
