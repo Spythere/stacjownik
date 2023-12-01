@@ -1,15 +1,11 @@
+@import 'search_box.scss';
 @import 'responsive.scss';
 @import 'variables.scss';
-@import 'search_box.scss';
-
-.filters-options {
-  margin-bottom: 0.5em;
-  position: relative;
-}
 
 .actions-bar {
   display: flex;
   gap: 0.5em;
+  margin-bottom: 0.5em;
 }
 
 h1.option-title {
@@ -27,42 +23,6 @@ h1.option-title {
     background-color: white;
     border-radius: 2px;
   }
-}
-
-.options-anim {
-  &-enter-from,
-  &-leave-to {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-
-  &-enter-active,
-  &-leave-active {
-    transition: all 150ms ease;
-  }
-}
-
-.bg {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-
-  z-index: 10;
-}
-
-.options_wrapper {
-  position: absolute;
-
-  background-color: $bgCol;
-  box-shadow: 0 5px 10px 2px #0f0f0f;
-
-  width: 100%;
-  max-width: 550px;
-
-  padding: 1em;
-  z-index: 100;
 }
 
 .options_sorters {
@@ -144,11 +104,6 @@ h1.option-title {
       left: 50%;
       transform: translateX(-50%);
     }
-  }
-
-  .options_wrapper {
-    font-size: 1.1em;
-    max-width: 100%;
   }
 
   .options_filters,

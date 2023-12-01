@@ -1,6 +1,6 @@
 <template>
-  <div class="filters-options" @keydown.esc="showOptions = false">
-    <div class="bg" v-if="showOptions" @click="showOptions = false"></div>
+  <div class="dropdown" @keydown.esc="showOptions = false">
+    <div class="dropdown_background" v-if="showOptions" @click="showOptions = false"></div>
 
     <button class="filter-button btn--filled btn--image" @click="toggleShowOptions" ref="button">
       <img src="/images/icon-filter2.svg" alt="Open filters icon" />
@@ -8,8 +8,8 @@
       <span class="active-indicator" v-if="currentOptionsActive"></span>
     </button>
 
-    <transition name="options-anim">
-      <div class="options_wrapper" v-if="showOptions">
+    <transition name="dropdown-anim">
+      <div class="dropdown_wrapper" v-if="showOptions">
         <div class="options_content">
           <h1 class="option-title">{{ $t('options.search-title') }}</h1>
           <div class="search_content">
@@ -87,6 +87,8 @@
             </button>
           </div>
         </div>
+
+        <div tabindex="0" @focus="showOptions = false"></div>
       </div>
     </transition>
   </div>
@@ -184,7 +186,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/filters_options.scss';
+@import '../../styles/dropdown.scss';
+@import '../../styles/dropdown_filters.scss';
 
 .search_content > div {
   margin: 0.5em auto;

@@ -1,6 +1,6 @@
 <template>
-  <div class="filters-options" @keydown.esc="showOptions = false">
-    <div class="bg" v-if="showOptions" @click="showOptions = false"></div>
+  <div class="filters-options dropdown" @keydown.esc="showOptions = false">
+    <div class="dropdown_background" v-if="showOptions" @click="showOptions = false"></div>
 
     <div class="actions-bar">
       <button
@@ -27,8 +27,8 @@
       <option v-for="(sugg, i) in dispatcherSuggestions" :key="i" :value="sugg"></option>
     </datalist>
 
-    <transition name="options-anim">
-      <div class="options_wrapper" v-if="showOptions">
+    <transition name="dropdown-anim">
+      <div class="dropdown_wrapper" v-if="showOptions">
         <div class="options_content">
           <h1 class="option-title">{{ $t('options.search-title') }}</h1>
           <div class="search_content">
@@ -300,5 +300,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/filters_options.scss';
+@import '../../styles/dropdown.scss';
+@import '../../styles/dropdown_filters.scss';
 </style>

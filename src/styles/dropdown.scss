@@ -1,0 +1,46 @@
+@import 'responsive.scss';
+@import 'variables.scss';
+
+.dropdown-anim {
+  &-enter-from,
+  &-leave-to {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  &-enter-active,
+  &-leave-active {
+    transition: all 150ms ease;
+  }
+}
+
+.dropdown_background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+
+  z-index: 10;
+}
+
+.dropdown_wrapper {
+  position: absolute;
+  left: 0;
+
+  background-color: $bgCol;
+  box-shadow: 0 5px 10px 2px #0f0f0f;
+
+  width: 100%;
+  max-width: 550px;
+
+  padding: 1em;
+  z-index: 100;
+}
+
+@include smallScreen {
+  .dropdown_wrapper {
+    font-size: 1.1em;
+    max-width: 100%;
+  }
+}
