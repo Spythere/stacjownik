@@ -9,7 +9,7 @@ import { parseSpawns, getScheduledTrains, getStationTrains } from './utils';
 import { OnlineScenery, ScheduledTrain, StationJSONData, StoreState } from './typings';
 
 import packageInfo from '../../package.json';
-import { Websocket, API, GithubAPI } from '../typings/api';
+import { Websocket, API } from '../typings/api';
 import { Status } from '../typings/common';
 
 export const useStore = defineStore('store', {

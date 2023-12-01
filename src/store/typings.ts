@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io-client';
 import Station from '../scripts/interfaces/Station';
-import { API, GithubAPI, Websocket } from '../typings/api';
+import { API, Websocket } from '../typings/api';
 import { Status } from '../typings/common';
 
 export type Availability = 'default' | 'unavailable' | 'nonPublic' | 'abandoned' | 'nonDefault';
