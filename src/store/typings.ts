@@ -15,7 +15,7 @@ export interface StoreState {
   stationList: Station[];
   activeData: Websocket.ActiveData;
   rollingStockData?: API.RollingStock.Response;
-  donatorsData: GithubAPI.Donators.Response;
+  donatorsData: API.Donators.Response;
 
   regionOnlineCounters: RegionCounters[];
 

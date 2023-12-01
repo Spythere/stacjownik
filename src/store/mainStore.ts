@@ -310,8 +310,8 @@ export const useStore = defineStore('store', {
 
     async fetchDonatorsData() {
       try {
-        const response = await axios.get<GithubAPI.Donators.Response>(
-          'https://raw.githubusercontent.com/Spythere/api/main/td2/data/donators.json'
+        const response = await axios.get<API.Donators.Response>(
+          `${URLs.stacjownikAPI}/api/getDonators`
         );
 
         if (response.data) this.donatorsData = response.data;
