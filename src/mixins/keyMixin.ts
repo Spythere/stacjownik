@@ -16,6 +16,8 @@ export default defineComponent({
   },
 
   methods: {
+    onKeyDownFunction() {},
+
     handleKeyDown(e: KeyboardEvent) {
       if (!e.key) return;
       if (e.key.toLowerCase() == 'f' && !this.preventKeyDown && !e.ctrlKey && !e.altKey)
