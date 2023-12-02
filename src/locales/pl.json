@@ -286,9 +286,12 @@
     "avg-timetable": "ŚREDNI RJ",
     "top-categories": "Kategorie RJ",
     "top-vehicles": "Pojazdy w grze",
-    "top-units": "Jednostki w grze",
+    "top-units": "Najczęstsze jednostki w grze",
     "stats-loading": "Ładowanie...",
-    "stats-none": "Brak statystyk online dla wybranego serwera!"
+    "no-timetables": "Brak aktywnych rozkładów jazdy na tym serwerze!",
+    "no-vehicles": "Brak aktywnych pojazdów na tym serwerze!",
+    "no-units": "Brak aktywnych jednostek na tym serwerze!",
+    "no-stats": "Brak statystyk online dla wybranego serwera!"
   },
   "journal": {
     "title": "HISTORIA DYŻURÓW",

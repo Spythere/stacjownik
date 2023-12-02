@@ -27,6 +27,7 @@
 .dropdown_wrapper {
   position: absolute;
   left: 0;
+  top: calc(100% + 0.5em);
 
   background-color: $bgCol;
   box-shadow: 0 5px 10px 2px #0f0f0f;

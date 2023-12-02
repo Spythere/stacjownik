@@ -303,9 +303,12 @@
     "avg-timetable": "AVG TIMETABLE",
     "top-categories": "Timetable categories",
     "top-vehicles": "Vehicles online",
-    "top-units": "Units online",
+    "top-units": "Common units online",
     "stats-loading": "Loading...",
-    "stats-none": "No statistics available for the current region!"
+    "no-timetables": "No active timetables in this region!",
+    "no-vehicles": "No active vehicles in this region!",
+    "no-units": "No active units in this region!",
+    "no-stats": "No statistics available for the current region!"
   },
   "journal": {
     "title": "DISPATCHER HISTORY",

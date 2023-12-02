@@ -29,14 +29,14 @@
               <li class="badge" key="avg-speed">
                 <span>{{ $t('train-stats.avg-speed') }}</span>
                 <span>
-                  <b>{{ avgSpeed.toFixed(1) }} km/h</b>
+                  <b>{{ stats.avgSpeed.toFixed(1) }} km/h</b>
                 </span>
               </li>
 
               <li class="badge" key="avg-distance">
                 <span>{{ $t('train-stats.avg-timetable') }}</span>
                 <span>
-                  <b>{{ avgDistance.toFixed(1) }} km</b>
+                  <b>{{ stats.avgDistance.toFixed(1) }} km</b>
                 </span>
               </li>
             </transition-group>
@@ -46,33 +46,45 @@
             <h3>{{ $t('train-stats.top-categories') }}</h3>
 
             <transition-group tag="ul" name="stats-anim">
-              <li class="badge" v-for="top in topCategories" :key="top.name">
+              <li class="badge" v-for="top in stats.topCategories" :key="top.name">
                 <span>{{ top.name }}</span>
                 <span>{{ top.count }}</span>
               </li>
             </transition-group>
+
+            <span class="no-data" v-if="stats.topCategories.length == 0">
+              {{ $t('train-stats.no-timetables') }}
+            </span>
           </div>
 
           <div class="top-list vehicles">
             <h3>{{ $t('train-stats.top-vehicles') }}</h3>
 
             <transition-group tag="ul" name="stats-anim">
-              <li class="badge" v-for="top in topVehicles" :key="top.name">
+              <li class="badge" v-for="top in stats.topVehicles" :key="top.name">
                 <span>{{ top.name }}</span>
                 <span>{{ top.count }}</span>
               </li>
             </transition-group>
+
+            <span class="no-data" v-if="stats.topVehicles.length == 0">
+              {{ $t('train-stats.no-vehicles') }}
+            </span>
           </div>
 
           <div class="top-list vehicle-types">
             <h3>{{ $t('train-stats.top-units') }}</h3>
 
             <transition-group tag="ul" name="stats-anim">
-              <li class="badge" v-for="top in topUnits" :key="top.name">
+              <li class="badge" v-for="top in stats.topUnits.slice(0, 7)" :key="top.name">
                 <span>{{ top.name }}</span>
                 <span>{{ top.count }}</span>
               </li>
             </transition-group>
+
+            <span class="no-data" v-if="stats.topUnits.length == 0">
+              {{ $t('train-stats.no-units') }}
+            </span>
           </div>
         </div>
 
@@ -81,7 +93,7 @@
         </div>
 
         <div class="no-data" v-else>
-          {{ $t('train-stats.none-stats') }}
+          {{ $t('train-stats.no-stats') }}
         </div>
       </div>
     </transition>
@@ -96,6 +108,19 @@ import { Status } from '../../typings/common';
 interface ITop {
   name: string;
   count: number;
+}
+
+interface IStats {
+  timetableCount: number;
+  avgSpeed: number;
+  avgDistance: number;
+  topCategories: ITop[];
+  topVehicles: ITop[];
+  topUnits: ITop[];
+}
+
+function compareTop(top1: ITop, top2: ITop) {
+  return Math.sign(top2.count - top1.count) || top1.name.localeCompare(top2.name, 'pl-PL');
 }
 
 export default defineComponent({
@@ -116,68 +141,62 @@ export default defineComponent({
       return this.regionTrains.filter((train) => train.timetableData);
     },
 
-    avgSpeed() {
-      if (this.regionTrains.length == 0) return 0;
+    stats() {
+      const stats = this.regionTrains.reduce(
+        (acc, train, i, arr) => {
+          // AVG SPEED
+          acc.avgSpeed += train.speed / arr.length;
 
-      return (
-        this.regionTrains.reduce((acc, train) => (acc += train.speed), 0) / this.regionTrains.length
-      );
-    },
-
-    avgDistance() {
-      if (this.regionTrainsWithTT.length == 0) return 0;
-
-      return (
-        this.regionTrainsWithTT.reduce((acc, train) => {
-          acc += train.timetableData!.routeDistance;
-
-          return acc;
-        }, 0) / this.regionTrainsWithTT.length
-      );
-    },
-
-    topCategories() {
-      return this.regionTrainsWithTT
-        .reduce((acc, train) => {
-          const topCategory = acc.find((top) => top.name == train.timetableData!.category);
-
-          if (!topCategory) acc.push({ name: train.timetableData!.category, count: 1 });
-          else topCategory.count++;
-
-          return acc;
-        }, [] as ITop[])
-        .sort((c1, c2) => Math.sign(c2.count - c1.count))
-        .slice(0, 5);
-    },
-
-    topVehicles() {
-      return this.regionTrains
-        .reduce((acc, train) => {
+          // TOP VEHICLES
           const locoType = train.locoType.split('-')[0];
-          const topVehicle = acc.find((top) => top.name == locoType);
+          const topVehicle = acc.topVehicles.find((top) => top.name == locoType);
 
-          if (!topVehicle) acc.push({ name: locoType, count: 1 });
+          if (!topVehicle) acc.topVehicles.push({ name: locoType, count: 1 });
           else topVehicle.count++;
 
+          // TOP UNITS
+          const unitType = train.locoType;
+          const topUnit = acc.topUnits.find((top) => top.name == unitType);
+
+          if (!topUnit) acc.topUnits.push({ name: unitType, count: 1 });
+          else topUnit.count++;
+
+          if (train.timetableData !== undefined) {
+            acc.timetableCount++;
+            // AVG DISTANCE
+            acc.avgDistance += train.timetableData.routeDistance;
+
+            // TOP CATEGORIES
+            const topCategory = acc.topCategories.find(
+              (top) => top.name == train.timetableData!.category
+            );
+
+            if (!topCategory)
+              acc.topCategories.push({ name: train.timetableData!.category, count: 1 });
+            else topCategory.count++;
+          }
+
+          if (i == arr.length - 1 && acc.timetableCount != 0) {
+            acc.avgDistance /= acc.timetableCount;
+          }
+
           return acc;
-        }, [] as ITop[])
-        .sort((c1, c2) => Math.sign(c2.count - c1.count))
-        .slice(0, 8);
-    },
+        },
+        {
+          timetableCount: 0,
+          avgDistance: 0,
+          avgSpeed: 0,
+          topCategories: [],
+          topUnits: [],
+          topVehicles: []
+        } as IStats
+      );
 
-    topUnits() {
-      return this.regionTrains
-        .reduce((acc, train) => {
-          const locoType = train.locoType;
-          const topVehicle = acc.find((top) => top.name == locoType);
+      stats.topCategories.sort(compareTop);
+      stats.topUnits.sort(compareTop);
+      stats.topVehicles.sort(compareTop);
 
-          if (!topVehicle) acc.push({ name: locoType, count: 1 });
-          else topVehicle.count++;
-
-          return acc;
-        }, [] as ITop[])
-        .sort((c1, c2) => Math.sign(c2.count - c1.count))
-        .slice(0, 5);
+      return stats;
     }
   },
 
@@ -196,6 +215,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '../../styles/dropdown.scss';
 @import '../../styles/badge.scss';
+@import '../../styles/responsive.scss';
 
 h1 img {
   vertical-align: text-bottom;
@@ -214,6 +234,10 @@ h3 {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5em;
+
+  // @include smallScreen {
+  //   justify-content: center;
+  // }
 }
 
 .badge {
@@ -244,6 +268,13 @@ h3 {
 
   &-leave-active {
     position: absolute;
+  }
+}
+
+@include smallScreen {
+  h1,
+  .no-data {
+    text-align: center;
   }
 }
 </style>
