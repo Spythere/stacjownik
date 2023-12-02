@@ -4,74 +4,84 @@
 
     <button class="filter-button btn--filled btn--image" @click="toggleShowOptions" ref="button">
       <img src="/images/icon-stats.svg" alt="Open filters icon" />
-      STATYSTYKI
+      {{ $t('train-stats.stats-button') }}
     </button>
 
     <transition name="dropdown-anim">
       <div class="dropdown_wrapper" v-if="showOptions">
         <h1 class="text--primary">
           <img src="/images/icon-stats.svg" alt="Open filters icon" />
-          STATYSTYKI ONLINE
+          {{ $t('train-stats.title') }}
         </h1>
 
         <hr style="margin: 0.5em 0" />
 
-        <div class="top-list">
-          <transition-group tag="ul" name="stats-anim">
-            <li class="badge" key="timetable-count">
-              <span>AKTYWNE RJ</span>
-              <span>
-                <b>{{ timetableCount }}</b>
-              </span>
-            </li>
+        <div v-if="store.dataStatuses.trains == Status.Loaded && regionTrains.length > 0">
+          <div class="top-list general">
+            <transition-group tag="ul" name="stats-anim">
+              <li class="badge" key="timetable-count">
+                <span>{{ $t('train-stats.timetable-count') }}</span>
+                <span>
+                  <b>{{ regionTrainsWithTT.length }}</b>
+                </span>
+              </li>
 
-            <li class="badge" key="avg-speed">
-              <span>ŚREDNIA PRĘDKOŚĆ</span>
-              <span>
-                <b>{{ avgSpeed.toFixed(1) }} km/h</b>
-              </span>
-            </li>
+              <li class="badge" key="avg-speed">
+                <span>{{ $t('train-stats.avg-speed') }}</span>
+                <span>
+                  <b>{{ avgSpeed.toFixed(1) }} km/h</b>
+                </span>
+              </li>
 
-            <li class="badge" key="avg-speed">
-              <span>ŚREDNI RJ</span>
-              <span>
-                <b>{{ avgDistance.toFixed(1) }} km</b>
-              </span>
-            </li>
-          </transition-group>
+              <li class="badge" key="avg-distance">
+                <span>{{ $t('train-stats.avg-timetable') }}</span>
+                <span>
+                  <b>{{ avgDistance.toFixed(1) }} km</b>
+                </span>
+              </li>
+            </transition-group>
+          </div>
+
+          <div class="top-list categories">
+            <h3>{{ $t('train-stats.top-categories') }}</h3>
+
+            <transition-group tag="ul" name="stats-anim">
+              <li class="badge" v-for="top in topCategories" :key="top.name">
+                <span>{{ top.name }}</span>
+                <span>{{ top.count }}</span>
+              </li>
+            </transition-group>
+          </div>
+
+          <div class="top-list vehicles">
+            <h3>{{ $t('train-stats.top-vehicles') }}</h3>
+
+            <transition-group tag="ul" name="stats-anim">
+              <li class="badge" v-for="top in topVehicles" :key="top.name">
+                <span>{{ top.name }}</span>
+                <span>{{ top.count }}</span>
+              </li>
+            </transition-group>
+          </div>
+
+          <div class="top-list vehicle-types">
+            <h3>{{ $t('train-stats.top-units') }}</h3>
+
+            <transition-group tag="ul" name="stats-anim">
+              <li class="badge" v-for="top in topUnits" :key="top.name">
+                <span>{{ top.name }}</span>
+                <span>{{ top.count }}</span>
+              </li>
+            </transition-group>
+          </div>
         </div>
 
-        <div class="top-list categories" v-if="store.dataStatuses.trains == 2">
-          <h3>Najpopularniejsze kategorie RJ</h3>
-
-          <transition-group tag="ul" name="stats-anim">
-            <li class="badge" v-for="top in topCategories" :key="top.name">
-              <span>{{ top.name }}</span>
-              <span>{{ top.count }}</span>
-            </li>
-          </transition-group>
+        <div v-else-if="store.dataStatuses.trains != Status.Loaded">
+          {{ $t('train-stats.stats-loading') }}
         </div>
 
-        <div class="top-list vehicles" v-if="store.dataStatuses.trains == 2">
-          <h3>Najpopularniejsze pojazdy</h3>
-
-          <transition-group tag="ul" name="stats-anim">
-            <li class="badge" v-for="top in topVehicles" :key="top.name">
-              <span>{{ top.name }}</span>
-              <span>{{ top.count }}</span>
-            </li>
-          </transition-group>
-        </div>
-
-        <div class="top-list vehicle-types" v-if="store.dataStatuses.trains == 2">
-          <h3>Najpopularniejsze jednostki</h3>
-
-          <transition-group tag="ul" name="stats-anim">
-            <li class="badge" v-for="top in topUnits" :key="top.name">
-              <span>{{ top.name }}</span>
-              <span>{{ top.count }}</span>
-            </li>
-          </transition-group>
+        <div class="no-data" v-else>
+          {{ $t('train-stats.none-stats') }}
         </div>
       </div>
     </transition>
@@ -81,6 +91,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { useStore } from '../../store/mainStore';
+import { Status } from '../../typings/common';
 
 interface ITop {
   name: string;
@@ -91,7 +102,8 @@ export default defineComponent({
   data() {
     return {
       showOptions: false,
-      store: useStore()
+      store: useStore(),
+      Status: Status.Data
     };
   },
 
@@ -104,10 +116,6 @@ export default defineComponent({
       return this.regionTrains.filter((train) => train.timetableData);
     },
 
-    timetableCount() {
-      return this.regionTrainsWithTT.length;
-    },
-
     avgSpeed() {
       if (this.regionTrains.length == 0) return 0;
 
@@ -117,6 +125,8 @@ export default defineComponent({
     },
 
     avgDistance() {
+      if (this.regionTrainsWithTT.length == 0) return 0;
+
       return (
         this.regionTrainsWithTT.reduce((acc, train) => {
           acc += train.timetableData!.routeDistance;
@@ -193,6 +203,11 @@ h1 img {
 
 h3 {
   margin: 0.5em 0;
+}
+
+.no-data {
+  font-size: 1.1em;
+  color: #ccc;
 }
 
 .top-list ul {
