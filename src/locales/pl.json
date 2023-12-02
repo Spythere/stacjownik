@@ -9,12 +9,13 @@
     "p2-b3": "Stacjobot",
     "p2-a1": "serwerze Discord",
     "p3": "<b>Jeśli masz możliwość i chcesz wspomóc moją twórczość dla symulatora, będę wdzięczny za wszelkie pomoce finansowe, które pozwolą na choćby częściowe pokrycie kosztów serwera oraz dalsze rozwijanie możliwości aplikacji!</b>",
-    "p4": "Każda osoba, która postanowi przelać co najmniej {b1} na rozwój Stacjownika, otrzyma na życzenie symboliczne {img}{b2} nicku użytkownika w zakładkach \"Scenerie\" i \"Pociągi\" aplikacji i moim serwerze Discord (po zweryfikowaniu autora płatności, najlepiej poprzez podanie nicku bezpośrednio przy niej).",
+    "p4": "Każda osoba, która postanowi przelać co najmniej {b1} (w przypadku PayPala musi być to opłata brutto z dodatkową opłatą za transakcję) na rozwój Stacjownika, otrzyma na życzenie symboliczne {img}{b2} nicku użytkownika na stronie i moim serwerze Discord (po zweryfikowaniu autora płatności, najlepiej poprzez podanie nicku bezpośrednio przy niej).",
     "p4-b1": "5 złotych",
     "p4-b2": "wyróżnienie",
     "p5": "Dzięki i miłego korzystania z aplikacji! <br />~ Spythere",
     "action-exit": "Może kiedy indziej...",
-    "action-confirm": "WSPOMÓŻ!",
+    "action-paypal": "PRZELEJ PAYPALEM",
+    "action-buycoffee": "POSTAW KAWĘ!",
     "dispatcher-message": "Dyżurny wspierający projekt Stacjownika!",
     "driver-message": "Maszynista wspierający projekt Stacjownika!"
   },
@@ -276,6 +277,21 @@
     "scenery-offline": "Przejazd offline",
 
     "timeout": "Wystąpił problem z aktualizacją rozkładów jazdy z SWDR"
+  },
+  "train-stats": {
+    "stats-button": "STATYSTYKI",
+    "title": "STATYSTYKI ONLINE",
+    "timetable-count": "AKTYWNE RJ",
+    "avg-speed": "ŚREDNIA PRĘDKOŚĆ",
+    "avg-timetable": "ŚREDNI RJ",
+    "top-categories": "Kategorie RJ",
+    "top-vehicles": "Pojazdy w grze",
+    "top-units": "Najczęstsze jednostki w grze",
+    "stats-loading": "Ładowanie...",
+    "no-timetables": "Brak aktywnych rozkładów jazdy na tym serwerze!",
+    "no-vehicles": "Brak aktywnych pojazdów na tym serwerze!",
+    "no-units": "Brak aktywnych jednostek na tym serwerze!",
+    "no-stats": "Brak statystyk online dla wybranego serwera!"
   },
   "journal": {
     "title": "HISTORIA DYŻURÓW",

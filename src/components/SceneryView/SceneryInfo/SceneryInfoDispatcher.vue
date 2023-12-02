@@ -12,7 +12,14 @@
         class="dispatcher_name"
         :to="`/journal/dispatchers?dispatcherName=${onlineScenery.dispatcherName}`"
       >
-        {{ onlineScenery.dispatcherName }}
+        <span
+          class="text--donator"
+          v-if="isDonator(onlineScenery.dispatcherName)"
+          :title="$t('donations.dispatcher-message')"
+        >
+          {{ onlineScenery.dispatcherName }}
+        </span>
+        <span v-else>{{ onlineScenery.dispatcherName }}</span>
       </router-link>
 
       <span class="dispatcher_likes text--primary">
@@ -36,9 +43,10 @@ import routerMixin from '../../../mixins/routerMixin';
 import styleMixin from '../../../mixins/styleMixin';
 import StationStatusBadge from '../../Global/StationStatusBadge.vue';
 import { OnlineScenery } from '../../../store/typings';
+import donatorMixin from '../../../mixins/donatorMixin';
 
 export default defineComponent({
-  mixins: [styleMixin, dateMixin, routerMixin],
+  mixins: [styleMixin, dateMixin, routerMixin, donatorMixin],
   props: {
     onlineScenery: {
       type: Object as PropType<OnlineScenery>,

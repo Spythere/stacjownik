@@ -1,10 +1,14 @@
 <template>
   <section class="trains-view">
     <div class="trains_wrapper">
-      <TrainOptions
-        :sorter-option-ids="['routeDistance', 'id', 'progress', 'delay', 'mass', 'speed', 'length']"
-        :current-options-active="currentOptionsActive"
-      />
+      <div class="trains_topbar">
+        <TrainOptions
+          :sorter-option-ids="sorterIds"
+          :current-options-active="currentOptionsActive"
+        />
+
+        <TrainStats />
+      </div>
 
       <TrainTable :trains="computedTrains" />
     </div>
@@ -20,11 +24,13 @@ import Train from '../scripts/interfaces/Train';
 import { useStore } from '../store/mainStore';
 import { TrainFilter, trainFilters } from '../components/TrainsView/typings';
 import { filteredTrainList } from '../managers/trainFilterManager';
+import TrainStats from '../components/TrainsView/TrainStats.vue';
 
 export default defineComponent({
   components: {
     TrainTable,
-    TrainOptions
+    TrainOptions,
+    TrainStats
   },
 
   mixins: [modalTrainMixin],
@@ -47,7 +53,8 @@ export default defineComponent({
   },
 
   data: () => ({
-    trainStatsOpen: false
+    trainStatsOpen: false,
+    sorterIds: ['routeDistance', 'id', 'progress', 'delay', 'mass', 'speed', 'length']
   }),
 
   setup() {
@@ -120,5 +127,14 @@ export default defineComponent({
 .trains_wrapper {
   margin: 1rem auto;
   max-width: 1350px;
+}
+
+.trains_topbar {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+
+  position: relative;
+  margin-bottom: 0.5em;
 }
 </style>

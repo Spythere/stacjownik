@@ -14,7 +14,7 @@
   --clr-error: #df3e3e;
   --clr-warning: #c59429;
 
-  --clr-honorable: #f47fff;
+  --clr-donator: #f7a4ff;
 
   font-size: 16px;
 }
@@ -158,13 +158,14 @@ ul {
     color: #ccc;
   }
 
-  &--honorable {
-    color: var(--clr-honorable);
-    text-shadow: var(--clr-honorable) 0 0 10px;
+  &--donator {
+    color: var(--clr-donator);
+    text-shadow: var(--clr-donator) 0 0 10px;
   }
 }
 
-button {
+button,
+a.a-button {
   cursor: pointer;
   color: white;
   background: none;
@@ -184,44 +185,44 @@ button {
     pointer-events: none;
     opacity: 0.85;
   }
-}
 
-button.btn--filled {
-  background-color: #1a1a1a;
+  &.btn--filled {
+    background-color: #1a1a1a;
 
-  &:hover {
-    background-color: #2a2a2a;
+    &:hover {
+      background-color: #2a2a2a;
+    }
   }
-}
 
-button.btn--action {
-  background-color: #424242;
-  border-radius: 0.25em;
+  &.btn--action {
+    background-color: #424242;
+    border-radius: 0.25em;
 
-  &:hover {
-    background-color: #555;
+    &:hover {
+      background-color: #555;
+    }
   }
-}
 
-button.btn--option {
-  color: white;
-  background-color: #333;
+  &.btn--option {
+    color: white;
+    background-color: #333;
 
-  &.checked {
-    color: var(--clr-primary);
+    &.checked {
+      color: var(--clr-primary);
+      font-weight: bold;
+
+      background-color: #3c3c3c;
+    }
+  }
+
+  &.btn--image {
     font-weight: bold;
+    padding: 0.35em 0.75em;
 
-    background-color: #3c3c3c;
-  }
-}
-
-button.btn--image {
-  font-weight: bold;
-  padding: 0.35em 0.75em;
-
-  img {
-    width: 1.5em;
-    vertical-align: middle;
+    img {
+      width: 1.5em;
+      vertical-align: middle;
+    }
   }
 }
 

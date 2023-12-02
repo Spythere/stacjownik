@@ -80,10 +80,12 @@
 
         <div class="status-badges">
           <div v-if="!train.currentStationHash" class="train-badge offline">
+            <img src="/images/icon-offline.svg" alt="" />
             {{ $t('trains.scenery-offline') }}
           </div>
 
           <div v-if="!train.online" class="train-badge offline">
+            <img src="/images/icon-offline.svg" alt="" />
             Offline {{ lastSeenMessage(train.lastSeen) }}
           </div>
         </div>
@@ -237,6 +239,10 @@ export default defineComponent({
   flex-wrap: wrap;
 
   gap: 0.25em;
+
+  img {
+    height: 15px;
+  }
 }
 
 .general-timetable {

@@ -274,6 +274,10 @@ export namespace API {
       }[];
     }
   }
+
+  export namespace Donators {
+    export type Response = string[];
+  }
 }
 
 export namespace Websocket {
@@ -327,9 +331,5 @@ export namespace GithubAPI {
       zipball_url: string;
       body: string;
     }
-  }
-
-  export namespace Donators {
-    export type Response = string[];
   }
 }

@@ -46,6 +46,8 @@ import TimetableExtra from './TimetableExtra.vue';
 import { API } from '../../../typings/api';
 
 export default defineComponent({
+  components: { TimetableGeneral, TimetableStops, TimetableStatus, TimetableExtra },
+
   props: {
     timetableHistory: {
       type: Array as PropType<API.TimetableHistory.Response>,
@@ -59,9 +61,7 @@ export default defineComponent({
         showExtraInfo: ref(false)
       }));
     }
-  },
-  methods: {},
-  components: { TimetableGeneral, TimetableStops, TimetableStatus, TimetableExtra }
+  }
 });
 </script>
 

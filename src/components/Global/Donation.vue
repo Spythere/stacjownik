@@ -1,7 +1,7 @@
 <template>
   <div class="donation-modal" @keydown.esc="toggleModal(false)">
     <button
-      class="modal_button action btn--image"
+      class="btn-toggle btn--image"
       ref="btn"
       @click="toggleModal(true)"
       @focus="toggleModal(false)"
@@ -28,7 +28,7 @@
               <b>{{ $t('donations.p2-b3') }}</b>
             </template>
             <template v-slot:link>
-              <a href="https://discord.gg/x2mpNN3svk" target="_blank">
+              <a class="discord" href="https://discord.gg/x2mpNN3svk" target="_blank">
                 {{ $t('donations.p2-a1') }}
               </a>
             </template>
@@ -58,19 +58,28 @@
         </div>
 
         <div class="modal_actions">
-          <button class="modal_button exit btn--image" @click="toggleModal(false)">
+          <a
+            class="modal-action a-button btn--image coffee"
+            href="https://buycoffee.to/spythere"
+            target="_blank"
+          >
+            <img src="/images/icon-coffee.png" width="20" alt="buycoffee.to donation" />
+            {{ $t('donations.action-buycoffee') }}
+          </a>
+
+          <a
+            class="modal-action a-button btn--image paypal"
+            href="https://www.paypal.com/donate/?hosted_button_id=EDB3SKFAHXFTW"
+            target="_blank"
+          >
+            <img src="/images/icon-dollar.svg" alt="paypal donation" />
+            {{ $t('donations.action-paypal') }}
+          </a>
+
+          <button class="modal-action btn--image exit" @click="toggleModal(false)">
             <img src="/images/icon-exit.svg" alt="dollar donation icon" />
             {{ $t('donations.action-exit') }}
           </button>
-
-          <form action="https://www.paypal.com/donate" method="post">
-            <input type="hidden" name="hosted_button_id" value="EDB3SKFAHXFTW" />
-
-            <button class="modal_button action btn--image" @click="toggleModal(false)">
-              <img src="/images/icon-dollar.svg" alt="dollar donation icon" />
-              {{ $t('donations.action-confirm') }}
-            </button>
-          </form>
         </div>
       </div>
     </AnimatedModal>
@@ -99,25 +108,13 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '../../styles/responsive.scss';
 
-.modal_button {
-  &.action {
-    $btnColor: #254069;
+button.btn-toggle {
+  $btnColor: #254069;
 
-    background-color: $btnColor;
+  background-color: $btnColor;
 
-    &:hover {
-      background-color: lighten($btnColor, 10%);
-    }
-  }
-
-  &.exit {
-    $btnColor: crimson;
-
-    background-color: $btnColor;
-
-    &:hover {
-      background-color: lighten($btnColor, 10%);
-    }
+  &:hover {
+    background-color: lighten($btnColor, 5%);
   }
 
   @include smallScreen {
@@ -125,16 +122,6 @@ export default defineComponent({
       display: none;
     }
   }
-}
-
-.modal-logo {
-  position: absolute;
-  top: 0;
-  left: 50%;
-
-  width: 6em;
-
-  transform: translate(-50%, -50%);
 }
 
 .modal_content {
@@ -157,7 +144,7 @@ export default defineComponent({
     text-align: justify;
   }
 
-  a {
+  a.discord {
     text-decoration: underline;
   }
 }
@@ -174,11 +161,41 @@ export default defineComponent({
 
 .modal_actions {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(13em, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 0.5em;
 
   form button {
     width: 100%;
+  }
+}
+
+.modal_actions > .modal-action {
+  &.paypal {
+    $btnColor: #254069;
+
+    background-color: $btnColor;
+
+    &:hover {
+      background-color: lighten($btnColor, 5%);
+    }
+  }
+
+  &.coffee {
+    $btnColor: #009255;
+    background-color: $btnColor;
+
+    &:hover {
+      background-color: lighten($btnColor, 5%);
+    }
+  }
+
+  &.exit {
+    $btnColor: #686868;
+    background-color: $btnColor;
+
+    &:hover {
+      background-color: lighten($btnColor, 5%);
+    }
   }
 }
 </style>

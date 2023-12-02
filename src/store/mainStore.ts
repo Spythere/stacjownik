@@ -9,7 +9,7 @@ import { parseSpawns, getScheduledTrains, getStationTrains } from './utils';
 import { OnlineScenery, ScheduledTrain, StationJSONData, StoreState } from './typings';
 
 import packageInfo from '../../package.json';
-import { Websocket, API, GithubAPI } from '../typings/api';
+import { Websocket, API } from '../typings/api';
 import { Status } from '../typings/common';
 
 export const useStore = defineStore('store', {
@@ -310,8 +310,8 @@ export const useStore = defineStore('store', {
 
     async fetchDonatorsData() {
       try {
-        const response = await axios.get<GithubAPI.Donators.Response>(
-          'https://raw.githubusercontent.com/Spythere/api/main/td2/data/donators.json'
+        const response = await axios.get<API.Donators.Response>(
+          `${URLs.stacjownikAPI}/api/getDonators`
         );
 
         if (response.data) this.donatorsData = response.data;
