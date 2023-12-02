@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { defineStore } from 'pinia';
-import { io } from 'socket.io-client';
 import StationRoutes from '../scripts/interfaces/StationRoutes';
 import Train from '../scripts/interfaces/Train';
 import { URLs } from '../scripts/utils/apiURLs';
@@ -8,9 +7,10 @@ import { parseSpawns, getScheduledTrains, getStationTrains } from './utils';
 
 import { OnlineScenery, ScheduledTrain, StationJSONData, StoreState } from './typings';
 
-import packageInfo from '../../package.json';
-import { Websocket, API } from '../typings/api';
+import { API } from '../typings/api';
 import { Status } from '../typings/common';
+
+const API_INTERVAL_MS = 30000;
 
 export const useStore = defineStore('store', {
   state: () =>
@@ -32,7 +32,6 @@ export const useStore = defineStore('store', {
       trainCount: 0,
       stationCount: 0,
 
-      webSocket: undefined,
       isOffline: false,
 
       dispatcherStatsName: '',
@@ -245,7 +244,7 @@ export const useStore = defineStore('store', {
       });
     },
 
-    async connectToWebsocket() {
+    async fetchActiveData() {
       if (import.meta.env.VITE_APP_WS_DEV === '1') {
         const mockWebsocketData = await import('../data/mockWebsocketData.json');
         this.dataStatuses.connection = Status.Data.Loaded;
@@ -257,36 +256,27 @@ export const useStore = defineStore('store', {
         return;
       }
 
-      const socket = io(URLs.stacjownikAPI, {
-        transports: ['websocket', 'polling'],
-        rememberUpgrade: true,
-        reconnection: true
-      });
+      try {
+        const data = (
+          await axios.get<API.ActiveData.Response>(`${URLs.stacjownikAPI}/api/getActiveData`)
+        ).data;
 
-      socket.emit('CONNECTION', { version: packageInfo.version });
-
-      socket.on('connect_error', () => {
+        this.activeData = data;
+        this.dataStatuses.connection = Status.Data.Loaded;
+        this.setStatuses();
+      } catch (error) {
         this.dataStatuses.connection = Status.Data.Error;
-      });
-
-      socket.on('UPDATE', (data: Websocket.ActiveData) => {
-        this.activeData = data;
-        this.dataStatuses.connection = Status.Data.Loaded;
-
-        this.setStatuses();
-      });
-
-      socket.emit('FETCH_DATA', { version: packageInfo.version }, (data: Websocket.ActiveData) => {
-        this.dataStatuses.connection = Status.Data.Loaded;
-        this.activeData = data;
-        this.setStatuses();
-      });
-
-      this.webSocket = socket;
+        console.error('Wystąpił błąd podczas pobierania danych online z API!');
+      }
     },
 
-    async connectToAPI() {
-      this.connectToWebsocket();
+    async setupAPI() {
+      this.fetchActiveData();
+
+      setInterval(() => {
+        this.fetchActiveData();
+      }, API_INTERVAL_MS);
+
       this.fetchStockInfoData();
       this.fetchDonatorsData();
       this.fetchStationsGeneralInfo();
