@@ -65,7 +65,7 @@ export default defineComponent({
 
   created() {
     this.loadLang();
-    this.store.connectToAPI();
+    this.store.setupAPI();
 
     this.store.isOffline = !window.navigator.onLine;
 

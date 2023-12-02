@@ -1,6 +1,13 @@
 import { Status } from './common';
 
 export namespace API {
+  export namespace ActiveData {
+    export interface Response {
+      activeSceneries?: API.ActiveSceneries.Response;
+      trains?: API.ActiveTrains.Response;
+      connectedSocketCount: number;
+    }
+  }
   export namespace DispatcherHistory {
     export type Response = Data[];
 
@@ -277,14 +284,6 @@ export namespace API {
 
   export namespace Donators {
     export type Response = string[];
-  }
-}
-
-export namespace Websocket {
-  export interface ActiveData {
-    activeSceneries?: API.ActiveSceneries.Response;
-    trains?: API.ActiveTrains.Response;
-    connectedSocketCount: number;
   }
 }
 

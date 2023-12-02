@@ -1,6 +1,5 @@
-import { Socket } from 'socket.io-client';
 import Station from '../scripts/interfaces/Station';
-import { API, Websocket } from '../typings/api';
+import { API } from '../typings/api';
 import { Status } from '../typings/common';
 
 export type Availability = 'default' | 'unavailable' | 'nonPublic' | 'abandoned' | 'nonDefault';
@@ -13,7 +12,7 @@ export interface RegionCounters {
 
 export interface StoreState {
   stationList: Station[];
-  activeData: Websocket.ActiveData;
+  activeData: API.ActiveData.Response;
   rollingStockData?: API.RollingStock.Response;
   donatorsData: API.Donators.Response;
 
@@ -31,7 +30,6 @@ export interface StoreState {
   trainCount: number;
   stationCount: number;
 
-  webSocket?: Socket;
   isOffline: boolean;
 
   dispatcherStatsName: string;
