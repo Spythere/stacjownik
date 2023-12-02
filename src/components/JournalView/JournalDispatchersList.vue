@@ -43,7 +43,17 @@
                     <router-link
                       :to="`/journal/dispatchers?dispatcherName=${historyItem.dispatcherName}`"
                     >
-                      <b>{{ historyItem.dispatcherName }}</b>
+                      <b
+                        v-if="isDonator(historyItem.dispatcherName)"
+                        class="text--donator"
+                        :title="$t('donations.dispatcher-message')"
+                      >
+                        {{ historyItem.dispatcherName }}
+                      </b>
+
+                      <b v-else>
+                        {{ historyItem.dispatcherName }}
+                      </b>
                     </router-link>
                   </td>
                   <td>
@@ -121,11 +131,12 @@ import { regions } from '../../data/options.json';
 import AddDataButton from '../Global/AddDataButton.vue';
 import { API } from '../../typings/api';
 import { Status } from '../../typings/common';
+import donatorMixin from '../../mixins/donatorMixin';
 
 export default defineComponent({
   components: { Loading, AddDataButton },
 
-  mixins: [dateMixin, styleMixin],
+  mixins: [dateMixin, styleMixin, donatorMixin],
 
   props: {
     dispatcherHistory: {

@@ -28,7 +28,17 @@
         {{ timetable.driverLevel < 2 ? 'L' : `${timetable.driverLevel}` }}
       </strong>
 
-      <strong>{{ timetable.driverName }}</strong>
+      <strong
+        v-if="isDonator(timetable.driverName)"
+        class="text--donator"
+        :title="$t('donations.driver-message')"
+      >
+        {{ timetable.driverName }}
+      </strong>
+
+      <strong v-else>
+        {{ timetable.driverName }}
+      </strong>
     </span>
 
     <span class="general-time">
@@ -63,13 +73,14 @@
 <script lang="ts">
 import { PropType, defineComponent } from 'vue';
 
+import { API } from '../../../typings/api';
 import dateMixin from '../../../mixins/dateMixin';
 import modalTrainMixin from '../../../mixins/modalTrainMixin';
 import styleMixin from '../../../mixins/styleMixin';
-import { API } from '../../../typings/api';
+import donatorMixin from '../../../mixins/donatorMixin';
 
 export default defineComponent({
-  mixins: [dateMixin, modalTrainMixin, styleMixin],
+  mixins: [dateMixin, modalTrainMixin, styleMixin, donatorMixin],
 
   props: {
     timetable: {

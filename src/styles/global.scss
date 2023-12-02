@@ -14,7 +14,7 @@
   --clr-error: #df3e3e;
   --clr-warning: #c59429;
 
-  --clr-honorable: #f47fff;
+  --clr-donator: #f7a4ff;
 
   font-size: 16px;
 }
@@ -158,9 +158,9 @@ ul {
     color: #ccc;
   }
 
-  &--honorable {
-    color: var(--clr-honorable);
-    text-shadow: var(--clr-honorable) 0 0 10px;
+  &--donator {
+    color: var(--clr-donator);
+    text-shadow: var(--clr-donator) 0 0 10px;
   }
 }
 
