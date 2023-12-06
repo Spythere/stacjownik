@@ -255,7 +255,8 @@ export default defineComponent({
           ?.filter(
             (train) =>
               train.checkpointName.toLocaleLowerCase() ==
-              (this.chosenCheckpoint || this.station.name).toLocaleLowerCase()
+                (this.chosenCheckpoint || this.station.name).toLocaleLowerCase() &&
+              train.region == this.store.region.id
           )
           .sort((a, b) => {
             if (a.stopStatusID > b.stopStatusID) return 1;

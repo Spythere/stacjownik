@@ -164,6 +164,8 @@ export interface ScheduledTrain {
   stopLabel: string;
   stopStatus: StopStatus;
   stopStatusID: number;
+
+  region: string;
 }
 
 export enum StopStatus {
