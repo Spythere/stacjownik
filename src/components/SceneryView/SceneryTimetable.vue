@@ -13,7 +13,7 @@
           </span>
         </span>
 
-        <span class="header_links">
+        <span class="header_links" v-if="station">
           <a
             :href="`https://pragotron-td2.web.app/board?name=${station.name}`"
             target="_blank"
@@ -201,12 +201,10 @@ export default defineComponent({
 
   props: {
     station: {
-      type: Object as PropType<Station>,
-      required: true
+      type: Object as PropType<Station>
     },
     onlineScenery: {
-      type: Object as PropType<OnlineScenery>,
-      required: false
+      type: Object as PropType<OnlineScenery>
     }
   },
 
@@ -243,19 +241,22 @@ export default defineComponent({
 
   computed: {
     tabliceZbiorczeHref() {
-      let url = `https://tablice-td2.web.app/?station=${this.station.name}`;
+      let url = `https://tablice-td2.web.app/?station=${this.station!.name}`;
       if (this.chosenCheckpoint) url += `&checkpoint=${this.chosenCheckpoint}`;
 
       return url;
     },
 
     computedScheduledTrains() {
+      if (!this.station) return [];
+
       return (
         this.onlineScenery?.scheduledTrains
           ?.filter(
             (train) =>
               train.checkpointName.toLocaleLowerCase() ==
-              (this.chosenCheckpoint || this.station.name).toLocaleLowerCase()
+                (this.chosenCheckpoint || this.station!.name).toLocaleLowerCase() &&
+              train.region == this.store.region.id
           )
           .sort((a, b) => {
             if (a.stopStatusID > b.stopStatusID) return 1;
@@ -272,6 +273,8 @@ export default defineComponent({
 
   methods: {
     loadSelectedOption() {
+      if (!this.station) return;
+
       this.chosenCheckpoint =
         this.station.generalInfo?.checkpoints[0]?.checkpointName || this.station.name;
     },

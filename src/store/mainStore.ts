@@ -86,7 +86,7 @@ export const useStore = defineStore('store', {
 
             distance: train.distance,
             signal: train.signal,
-            online: train.online,
+            online: Boolean(train.online),
             driverId: train.driverId,
             driverName: train.driverName,
             currentStationName: train.currentStationName,
@@ -183,6 +183,91 @@ export const useStore = defineStore('store', {
     }
   },
   actions: {
+    async processStationsOnlineInfo() {
+      if (!this.activeData.activeSceneries) return;
+
+      const onlineSceneries = this.activeData.activeSceneries.reduce((acc, scenery) => {
+        const savedStation = this.stationList.find((st) => scenery.stationName === st.name);
+
+        if (scenery.isOnline !== 1 && Date.now() - scenery.lastSeen > 1000 * 60 * 2) return acc;
+        if (scenery.dispatcherStatus == Status.ActiveDispatcher.UNKNOWN) return acc;
+
+        const station = this.stationList.find((s) => s.name === scenery.stationName);
+
+        const scheduledTrains = getScheduledTrains(this.trainList, scenery, station?.generalInfo);
+
+        const stationTrains = getStationTrains(
+          this.trainList,
+          scheduledTrains,
+          this.region.id,
+          scenery
+        );
+
+        // Remove checkpoint duplicates
+        const uniqueScheduledTrains = scheduledTrains.reduce(
+          (uniqueList, sTrain) =>
+            uniqueList.find((v) => v.trainId === sTrain.trainId)
+              ? uniqueList
+              : [...uniqueList, sTrain],
+          [] as ScheduledTrain[]
+        );
+
+        const dispatcherTimestamp =
+          scenery.dispatcherStatus == Status.ActiveDispatcher.NO_LIMIT
+            ? Date.now() + 25500000
+            : scenery.dispatcherStatus > 5
+            ? scenery.dispatcherStatus
+            : null;
+
+        const onlineInfo = {
+          name: scenery.stationName,
+          hash: scenery.stationHash,
+          region: scenery.region,
+          maxUsers: scenery.maxUsers,
+          currentUsers: scenery.currentUsers,
+          spawns: parseSpawns(scenery.spawnString),
+          dispatcherName: scenery.dispatcherName,
+          dispatcherRate: scenery.dispatcherRate,
+          dispatcherId: scenery.dispatcherId,
+          dispatcherExp: scenery.dispatcherExp,
+          dispatcherIsSupporter: scenery.dispatcherIsSupporter,
+          scheduledTrains: scheduledTrains,
+          stationTrains: stationTrains,
+          dispatcherStatus: scenery.dispatcherStatus,
+          dispatcherTimestamp: dispatcherTimestamp,
+
+          isOnline: scenery.isOnline == 1,
+
+          scheduledTrainCount: {
+            all: uniqueScheduledTrains.length,
+            confirmed: uniqueScheduledTrains.filter((train) => train.stopInfo.confirmed).length,
+            unconfirmed: uniqueScheduledTrains.filter((train) => !train.stopInfo.confirmed).length
+          }
+        };
+
+        if (savedStation) savedStation.onlineInfo = onlineInfo;
+        else
+          this.stationList.push({
+            name: onlineInfo.name,
+            onlineInfo: onlineInfo
+          });
+
+        acc.push(onlineInfo);
+
+        return acc;
+      }, [] as OnlineScenery[]);
+
+      // Reset online info of already offline sceneries
+      this.stationList
+        .filter(
+          (station) =>
+            station.onlineInfo &&
+            onlineSceneries.findIndex(
+              (os) => os.region == station.onlineInfo!.region && station.name == os.name
+            ) != -1
+        )
+        .forEach((station) => (station.onlineInfo = undefined));
+    },
     async fetchStationsGeneralInfo() {
       const sceneryData: StationJSONData[] = await (
         await axios.get(`${URLs.stacjownikAPI}/api/getSceneries`)
@@ -245,10 +330,10 @@ export const useStore = defineStore('store', {
     },
 
     async fetchActiveData() {
-      if (import.meta.env.VITE_APP_WS_DEV === '1') {
-        const mockWebsocketData = await import('../data/mockWebsocketData.json');
+      if (import.meta.env.VITE_APP_API_MODE === 'mock') {
+        const mockActiveData = await import('../data/mockActiveData.json');
         this.dataStatuses.connection = Status.Data.Loaded;
-        this.activeData = mockWebsocketData as any;
+        this.activeData = mockActiveData;
         this.setStatuses();
 
         console.warn('Stacjownik działa w trybie mockowania danych z WS');
@@ -263,6 +348,7 @@ export const useStore = defineStore('store', {
 
         this.activeData = data;
         this.dataStatuses.connection = Status.Data.Loaded;
+
         this.setStatuses();
       } catch (error) {
         this.dataStatuses.connection = Status.Data.Error;

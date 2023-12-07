@@ -71,13 +71,25 @@ export const useStationFiltersStore = defineStore('stationFiltersStore', {
 
     filteredStationList: (state) => {
       const store = useStore();
-      return store.stationList
-        .map((station) => ({
+      const savedStationNames = store.stationList.map((s) => s.name);
+
+      const onlineUnsavedStations = store.onlineSceneryList
+        .filter((os) => !savedStationNames.includes(os.name) && os.region == store.region.id)
+        .map((os) => ({
+          name: os.name,
+          generalInfo: undefined,
+          onlineInfo: os
+        }));
+
+      return [
+        ...onlineUnsavedStations,
+        ...store.stationList.map((station) => ({
           ...station,
           onlineInfo: store.onlineSceneryList.find(
             (os) => os.name == station.name && os.region == store.region.id
           )
         }))
+      ]
         .filter((station) => filterStations(station, state.filters))
         .sort((a, b) => sortStations(a, b, state.sorterActive));
     }

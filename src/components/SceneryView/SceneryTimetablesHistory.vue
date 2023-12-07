@@ -80,12 +80,10 @@ export default defineComponent({
   mixins: [dateMixin, listObserverMixin],
   props: {
     station: {
-      type: Object as PropType<Station>,
-      required: true
+      type: Object as PropType<Station>
     },
     onlineScenery: {
-      type: Object as PropType<OnlineScenery>,
-      required: false
+      type: Object as PropType<OnlineScenery>
     }
   },
 
@@ -103,8 +101,15 @@ export default defineComponent({
 
   methods: {
     async fetchAPIData(countFrom = 0, countLimit = 15) {
+      if (!this.station && !this.onlineScenery) {
+        this.dataStatus = Status.Data.Loaded;
+        return;
+      }
+
       try {
-        const requestString = `${URLs.stacjownikAPI}/api/getTimetables?issuedFrom=${this.station.name}&countFrom=${countFrom}&countLimit=${countLimit}`;
+        const requestString = `${URLs.stacjownikAPI}/api/getTimetables?issuedFrom=${
+          this.station?.name || this.onlineScenery?.name
+        }&countFrom=${countFrom}&countLimit=${countLimit}`;
 
         const response: API.TimetableHistory.Response = await (await axios.get(requestString)).data;
 
@@ -117,7 +122,9 @@ export default defineComponent({
     },
 
     navigateToHistory() {
-      this.$router.push(`/journal/timetables?issuedFrom=${this.station.name}`);
+      this.$router.push(
+        `/journal/timetables?issuedFrom=${this.station?.name || this.onlineScenery?.name}`
+      );
     }
   },
   components: { Loading }

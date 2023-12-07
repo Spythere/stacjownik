@@ -175,6 +175,8 @@ export function getCheckpointTrain(
     stopStatus: trainStopStatus.stopStatus,
     stopStatusID: trainStopStatus.stopStatusID,
 
+    region: train.region,
+
     arrivingLine,
     departureLine,
 

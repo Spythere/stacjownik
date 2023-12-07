@@ -33,6 +33,8 @@
             >
               {{ historyItem.dispatcherLevel >= 2 ? historyItem.dispatcherLevel : 'L' }}
             </b>
+
+            <b v-else>?</b>
           </td>
           <td class="text--primary">
             <b>{{ historyItem.dispatcherRate }}</b>
@@ -84,12 +86,10 @@ export default defineComponent({
   components: { Loading },
   props: {
     station: {
-      type: Object as PropType<Station>,
-      required: true
+      type: Object as PropType<Station>
     },
     onlineScenery: {
-      type: Object as PropType<OnlineScenery>,
-      required: false
+      type: Object as PropType<OnlineScenery>
     }
   },
 
@@ -113,10 +113,17 @@ export default defineComponent({
       countFrom = 0,
       countLimit = 30
     ): Promise<API.DispatcherHistory.Response | null> {
+      if (!this.station && !this.onlineScenery) {
+        this.dataStatus = Status.Data.Loaded;
+        return null;
+      }
+
       try {
         this.dataStatus = Status.Data.Loading;
 
-        const requestString = `${URLs.stacjownikAPI}/api/getDispatchers?stationName=${this.station.name}&countFrom=${countFrom}&countLimit=${countLimit}`;
+        const requestString = `${URLs.stacjownikAPI}/api/getDispatchers?stationName=${
+          this.station?.name || this.onlineScenery?.name
+        }&countFrom=${countFrom}&countLimit=${countLimit}`;
         const historyAPIData: API.DispatcherHistory.Response = await (
           await axios.get(requestString)
         ).data;
@@ -130,7 +137,9 @@ export default defineComponent({
       }
     },
     navigateToHistory() {
-      this.$router.push(`/journal/dispatchers?sceneryName=${this.station.name}`);
+      this.$router.push(
+        `/journal/dispatchers?sceneryName=${this.station?.name || this.onlineScenery?.name}`
+      );
     }
   }
 });

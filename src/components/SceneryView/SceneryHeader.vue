@@ -1,11 +1,11 @@
 <template>
   <section class="info-header">
-    <a class="scenery-name" :href="station.generalInfo?.url" target="_blank">
-      {{ station.name }}
+    <a class="scenery-name" :href="station?.generalInfo?.url" target="_blank">
+      {{ stationName.replace(/_/g, ' ') }}
     </a>
 
-    <div class="scenery-abbrev">
-      {{ $t('scenery.abbrev') }} <b>{{ station.generalInfo?.abbr }}</b>
+    <div class="scenery-abbrev" v-if="station?.generalInfo?.abbr">
+      {{ $t('scenery.abbrev') }} <b>{{ station.generalInfo.abbr }}</b>
     </div>
 
     <div class="scenery-hash" v-if="onlineScenery?.hash">#{{ onlineScenery.hash }}</div>
@@ -20,13 +20,16 @@ import { OnlineScenery } from '../../store/typings';
 export default defineComponent({
   props: {
     station: {
-      type: Object as PropType<Station>,
+      type: Object as PropType<Station>
+    },
+
+    stationName: {
+      type: String,
       required: true
     },
 
     onlineScenery: {
-      type: Object as PropType<OnlineScenery>,
-      required: false
+      type: Object as PropType<OnlineScenery>
     }
   }
 });
@@ -58,4 +61,3 @@ export default defineComponent({
   font-size: 1.2em;
 }
 </style>
-../../store/storeTypes
