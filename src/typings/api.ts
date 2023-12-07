@@ -5,7 +5,6 @@ export namespace API {
     export interface Response {
       activeSceneries?: API.ActiveSceneries.Response;
       trains?: API.ActiveTrains.Response;
-      connectedSocketCount: number;
     }
   }
   export namespace DispatcherHistory {
@@ -123,9 +122,9 @@ export namespace API {
       driverLevel?: number;
 
       currentStationName: string;
-      currentStationHash: string;
+      currentStationHash?: string;
 
-      online: boolean;
+      online: number;
       lastSeen: number;
 
       region: string;
@@ -139,16 +138,16 @@ export namespace API {
       stopNameRAW: string;
       stopType: string;
       stopDistance: number;
-      pointId: number;
+      pointId: string;
 
       mainStop: boolean;
 
-      arrivalLine: string;
+      arrivalLine: string | null;
       arrivalTimestamp: number;
       arrivalRealTimestamp: number;
       arrivalDelay: number;
 
-      departureLine: string;
+      departureLine: string | null;
       departureTimestamp: number;
       departureRealTimestamp: number;
       departureDelay: number;
@@ -157,9 +156,9 @@ export namespace API {
 
       beginsHere: boolean;
       terminatesHere: boolean;
-      confirmed: boolean;
-      stopped: boolean;
-      stopTime: number;
+      confirmed: number;
+      stopped: number;
+      stopTime: number | null;
     }
 
     export interface Timetable {

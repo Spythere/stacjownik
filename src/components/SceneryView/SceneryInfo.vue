@@ -1,10 +1,10 @@
 <template>
   <div class="scenery-info">
     <section>
-      <div class="scenery-info-general" v-if="station.generalInfo">
+      <div class="scenery-info-general">
         <SceneryInfoIcons :station="station" />
 
-        <div class="scenery-general-list">
+        <div class="scenery-general-list" v-if="station?.generalInfo">
           <span>
             <b>{{ $t('availability.title') }}:</b>
             {{ $t(`availability.${station.generalInfo.availability}`) }}
@@ -46,11 +46,11 @@
           </span>
         </div>
 
-        <SceneryInfoRoutes :station="station" />
+        <SceneryInfoRoutes v-if="station" :station="station" />
 
         <div
           class="scenery-authors"
-          v-if="station.generalInfo.authors && station.generalInfo.authors.length > 0"
+          v-if="station?.generalInfo?.authors && station.generalInfo.authors.length > 0"
         >
           <b>
             {{
@@ -102,13 +102,11 @@ export default defineComponent({
   },
   props: {
     station: {
-      type: Object as PropType<Station>,
-      required: true
+      type: Object as PropType<Station>
     },
 
     onlineScenery: {
-      type: Object as PropType<OnlineScenery>,
-      required: false
+      type: Object as PropType<OnlineScenery>
     }
   }
 });

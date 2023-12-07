@@ -74,7 +74,6 @@ export default defineComponent({
 
       this.store.activeData.activeSceneries = [];
       this.store.activeData.trains = [];
-      this.store.activeData.connectedSocketCount = 0;
 
       this.store.setStatuses();
     });

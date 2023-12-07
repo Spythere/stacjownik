@@ -386,8 +386,8 @@
     "two-way-routes": "Szlaki dwutorowe",
 
     "option-active-timetables": "Aktywne rozkłady jazdy",
-    "option-timetables-history": "Historia rozkładów",
-    "option-dispatchers-history": "Historia dyżurów",
+    "option-timetables-history": "Historia rozkładów PL1",
+    "option-dispatchers-history": "Historia dyżurów PL1",
 
     "timetable-author-title": "Wydany przez",
     "timetable-author-unknown": "Autor nieznany",
