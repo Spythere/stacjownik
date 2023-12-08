@@ -201,8 +201,6 @@ button.back-btn {
   &-view {
     display: flex;
     justify-content: center;
-
-    min-height: 100vh;
   }
 
   &-offline {
@@ -231,6 +229,7 @@ button.back-btn {
 
   width: 100%;
   max-width: 1700px;
+  min-height: 100vh;
 
   margin: 1rem 0;
   text-align: center;
