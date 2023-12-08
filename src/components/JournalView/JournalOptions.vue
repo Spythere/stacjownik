@@ -184,8 +184,6 @@ export default defineComponent({
   watch: {
     async 'store.driverStatsName'() {
       await this.fetchDriverStats();
-
-      // if (value) this.store.currentStatsTab = 'driver';
     },
 
     async 'searchersValues.search-driver'(value: string | undefined) {

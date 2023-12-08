@@ -59,6 +59,8 @@ import { useStore } from '../../store/mainStore';
 import { Status } from '../../typings/common';
 
 export default defineComponent({
+  name: 'journal-driver-stats',
+
   data() {
     return {
       store: useStore(),

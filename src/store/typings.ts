@@ -41,8 +41,6 @@ export interface StoreState {
 
   chosenModalTrainId?: string;
 
-  currentStatsTab: 'daily' | 'driver' | null;
-
   dataStatuses: {
     connection: Status.Data;
     sceneries: Status.Data;

@@ -139,8 +139,10 @@ import { API } from '../../typings/api';
 import { Status } from '../../typings/common';
 
 export default defineComponent({
+  name: 'journal-daily-stats',
+
   mixins: [dateMixin],
-  emits: ['toggleStatsOpen'],
+  // emits: ['toggleStatsOpen'],
 
   data() {
     return {
@@ -154,7 +156,7 @@ export default defineComponent({
 
   activated() {
     this.startFetchingDailyStats();
-    this.$emit('toggleStatsOpen', true);
+    // this.$emit('toggleStatsOpen', true);
   },
 
   deactivated() {

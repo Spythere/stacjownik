@@ -51,8 +51,6 @@ export const useStore = defineStore('store', {
         trains: Status.Data.Loading
       },
 
-      currentStatsTab: null,
-
       blockScroll: false,
       listenerLaunched: false,
       modalLastClickedTarget: null,
