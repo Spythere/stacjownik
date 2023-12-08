@@ -10,7 +10,7 @@ import { OnlineScenery, ScheduledTrain, StationJSONData, StoreState } from './ty
 import { API } from '../typings/api';
 import { Status } from '../typings/common';
 
-const API_INTERVAL_MS = 30000;
+const API_INTERVAL_MS = 20000;
 
 export const useStore = defineStore('store', {
   state: () =>
