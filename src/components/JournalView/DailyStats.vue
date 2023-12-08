@@ -5,15 +5,12 @@
         {{ $t('app.loading') }}
       </b>
 
-      <b v-else-if="stats.distanceSum == null">
-        {{ $t('journal.daily-stats-info') }}
-      </b>
-
       <span class="stats-list" v-else>
         <h3>
           {{ $t('journal.daily-stats-title') }}
           <b class="text--primary">{{ new Date().toLocaleDateString($i18n.locale) }}</b>
         </h3>
+
         <hr style="margin-bottom: 0.5em" />
 
         <div v-if="stats.totalTimetables">
@@ -177,22 +174,8 @@ export default defineComponent({
     async fetchDailyTimetableStats() {
       try {
         const res: API.DailyStats.Response = await (
-          await axios.get(`${URLs.stacjownikAPI}/api/getDailyTimetableStats`)
+          await axios.get(`${URLs.stacjownikAPI}/api/getDailyStats`)
         ).data;
-
-        // this.stats = {
-        //   totalTimetables: res.totalTimetables,
-        //   distanceSum: res.distanceSum,
-        //   distanceAvg: res.distanceAvg,
-        //   // timetableAuthor: res.maxTimetable?.authorName || '',
-        //   // timetableDriver: res.maxTimetable?.driverName || '',
-        //   // timetableId: res.maxTimetable?.id || 0,
-        //   // timetableRouteDistance: res.maxTimetable?.routeDistance || 0,
-
-        //   mostActiveDispatchers: res.mostActiveDispatchers,
-        //   mostActiveDrivers: res.mostActiveDrivers,
-        //   longestDuties: res.longestDuties
-        // };
 
         this.stats = res;
 
