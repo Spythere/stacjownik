@@ -40,7 +40,14 @@
           </button>
         </div>
 
-        <keep-alive>
+        <div
+          v-if="
+            store.dataStatuses.sceneries == Status.Loading ||
+            store.dataStatuses.trains == Status.Loading
+          "
+        ></div>
+
+        <keep-alive v-else>
           <component
             :is="currentMode"
             :onlineScenery="onlineSceneryInfo"
@@ -65,6 +72,7 @@ import SceneryTimetable from '../components/SceneryView/SceneryTimetable.vue';
 import SceneryTimetablesHistory from '../components/SceneryView/SceneryTimetablesHistory.vue';
 import SceneryDispatchersHistory from '../components/SceneryView/SceneryDispatchersHistory.vue';
 import ActionButton from '../components/Global/ActionButton.vue';
+import { Status } from '../typings/common';
 
 enum SceneryViewMode {
   'TIMETABLES_ACTIVE',
@@ -117,7 +125,8 @@ export default defineComponent({
     sceneryViewMode: SceneryViewMode,
     selectedCheckpoint: '',
     currentViewCompontent: 'SceneryTimetable',
-    onlineFrom: -1
+    onlineFrom: -1,
+    Status: Status.Data
   }),
 
   // activated() {
