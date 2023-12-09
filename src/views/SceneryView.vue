@@ -42,8 +42,8 @@
 
         <div
           v-if="
-            store.dataStatuses.sceneries == Status.Loading ||
-            store.dataStatuses.trains == Status.Loading
+            apiStore.dataStatuses.sceneries == Status.Loading ||
+            apiStore.dataStatuses.trains == Status.Loading
           "
         ></div>
 
@@ -64,7 +64,7 @@
 import { computed, defineComponent } from 'vue';
 import { useRoute } from 'vue-router';
 import routerMixin from '../mixins/routerMixin';
-import { useStore } from '../store/mainStore';
+import { useMainStore } from '../store/mainStore';
 
 import SceneryInfo from '../components/SceneryView/SceneryInfo.vue';
 import SceneryHeader from '../components/SceneryView/SceneryHeader.vue';
@@ -73,6 +73,7 @@ import SceneryTimetablesHistory from '../components/SceneryView/SceneryTimetable
 import SceneryDispatchersHistory from '../components/SceneryView/SceneryDispatchersHistory.vue';
 import ActionButton from '../components/Global/ActionButton.vue';
 import { Status } from '../typings/common';
+import { useApiStore } from '../store/apiStore';
 
 enum SceneryViewMode {
   'TIMETABLES_ACTIVE',
@@ -107,7 +108,9 @@ export default defineComponent({
   mixins: [routerMixin],
 
   data: () => ({
-    store: useStore(),
+    store: useMainStore(),
+    apiStore: useApiStore(),
+
     viewModes: [
       {
         id: 'scenery.option-active-timetables',

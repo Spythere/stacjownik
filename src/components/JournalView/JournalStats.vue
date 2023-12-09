@@ -28,14 +28,14 @@
 
 <script setup lang="ts">
 import { computed, onMounted, reactive, Ref, ref, watch } from 'vue';
-import { useStore } from '../../store/mainStore';
+import { useMainStore } from '../../store/mainStore';
 import JournalDailyStats from './JournalDailyStats.vue';
 import JournalDriverStats from './JournalDriverStats.vue';
 import StorageManager from '../../managers/storageManager';
 
 export type JournalStatsTab = 'journal-driver-stats' | 'journal-daily-stats';
 
-const store = useStore();
+const store = useMainStore();
 const currentStatsTab: Ref<JournalStatsTab | null> = ref(null);
 
 let data = reactive({

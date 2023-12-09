@@ -35,7 +35,7 @@
 
         <div class="train-driver">
           <b
-            v-if="store.donatorsData.includes(train.driverName)"
+            v-if="apiStore.donatorsData.includes(train.driverName)"
             :title="$t('donations.driver-message')"
           >
             {{ train.driverName }}
@@ -126,7 +126,8 @@ import trainInfoMixin from '../../mixins/trainInfoMixin';
 import Train from '../../scripts/interfaces/Train';
 import ProgressBar from '../Global/ProgressBar.vue';
 import TrainThumbnail from '../Global/TrainThumbnail.vue';
-import { useStore } from '../../store/mainStore';
+import { useMainStore } from '../../store/mainStore';
+import { useApiStore } from '../../store/apiStore';
 
 export default defineComponent({
   mixins: [trainInfoMixin, styleMixin],
@@ -145,7 +146,8 @@ export default defineComponent({
 
   data() {
     return {
-      store: useStore()
+      store: useMainStore(),
+      apiStore: useApiStore()
     };
   }
 });

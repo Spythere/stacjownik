@@ -139,7 +139,7 @@ import { defineComponent, inject } from 'vue';
 import keyMixin from '../../mixins/keyMixin';
 import routerMixin from '../../mixins/routerMixin';
 import { useStationFiltersStore } from '../../store/stationFiltersStore';
-import { useStore } from '../../store/mainStore';
+import { useMainStore } from '../../store/mainStore';
 
 import FilterOption from './FilterOption.vue';
 import StorageManager from '../../managers/storageManager';
@@ -163,7 +163,7 @@ export default defineComponent({
 
   setup() {
     const isVisible = inject('isFilterCardVisible');
-    const store = useStore();
+    const store = useMainStore();
     const filterStore = useStationFiltersStore();
 
     return {

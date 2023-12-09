@@ -1,10 +1,10 @@
 import { defineComponent } from 'vue';
-import { useStore } from '../store/mainStore';
+import { useMainStore } from '../store/mainStore';
 
 export default defineComponent({
   data() {
     return {
-      store: useStore()
+      store: useMainStore()
     };
   },
 

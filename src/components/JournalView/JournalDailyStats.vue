@@ -193,7 +193,7 @@ export default defineComponent({
 
       if (this.intervalId != -1) return;
 
-      this.intervalId = setInterval(this.fetchDailyTimetableStats, 60000);
+      this.intervalId = window.setInterval(this.fetchDailyTimetableStats, 60000);
     },
 
     stopFetchingDailyStats() {

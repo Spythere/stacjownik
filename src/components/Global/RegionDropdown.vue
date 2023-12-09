@@ -30,7 +30,7 @@
 <script lang="ts">
 import { defineComponent, Ref, ref } from 'vue';
 import { regions as regionsJSON } from '../../data/options.json';
-import { useStore } from '../../store/mainStore';
+import { useMainStore } from '../../store/mainStore';
 
 interface Item {
   id: string;
@@ -41,7 +41,7 @@ interface Item {
 export default defineComponent({
   data() {
     return {
-      store: useStore(),
+      store: useMainStore(),
       selectedItemIndex: 0,
       listOpen: false
     };

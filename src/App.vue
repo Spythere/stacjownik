@@ -39,12 +39,13 @@ import Clock from './components/App/Clock.vue';
 import packageInfo from '.././package.json';
 import { regions } from './data/options.json';
 
-import { useStore } from './store/mainStore';
+import { useMainStore } from './store/mainStore';
 import StatusIndicator from './components/App/StatusIndicator.vue';
 import TrainModal from './components/Global/TrainModal.vue';
 import AppHeader from './components/App/AppHeader.vue';
 import axios from 'axios';
 import StorageManager from './managers/storageManager';
+import { useApiStore } from './store/apiStore';
 
 export default defineComponent({
   components: {
@@ -56,7 +57,8 @@ export default defineComponent({
 
   data: () => ({
     VERSION: packageInfo.version,
-    store: useStore(),
+    store: useMainStore(),
+    apiStore: useApiStore(),
 
     currentLang: 'pl',
     releaseURL: '',
@@ -65,17 +67,15 @@ export default defineComponent({
 
   created() {
     this.loadLang();
-    this.store.setupAPI();
+    this.apiStore.setupAPI();
 
     this.store.isOffline = !window.navigator.onLine;
 
     window.addEventListener('offline', () => {
       this.store.isOffline = true;
+      this.apiStore.activeData = undefined;
 
-      this.store.activeData.activeSceneries = [];
-      this.store.activeData.trains = [];
-
-      this.store.setStatuses();
+      this.apiStore.setDataStatuses();
     });
 
     window.addEventListener('online', () => {

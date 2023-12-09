@@ -114,7 +114,7 @@ import axios from 'axios';
 import { defineComponent, inject, PropType } from 'vue';
 import keyMixin from '../../mixins/keyMixin';
 import { URLs } from '../../scripts/utils/apiURLs';
-import { useStore } from '../../store/mainStore';
+import { useMainStore } from '../../store/mainStore';
 import { Journal } from './typings';
 import { API } from '../../typings/api';
 import { Status } from '../../typings/common';
@@ -158,7 +158,7 @@ export default defineComponent({
       dispatcherSuggestions: [] as string[],
 
       searchTimeout: 0,
-      store: useStore(),
+      store: useMainStore(),
 
       JournalFilterSection: Journal.FilterSection
     };
@@ -238,7 +238,7 @@ export default defineComponent({
 
       window.clearTimeout(this.searchTimeout);
 
-      this.searchTimeout = setTimeout(async () => {
+      this.searchTimeout = window.setTimeout(async () => {
         try {
           const suggestions: string[] = await (
             await axios.get(`${URLs.stacjownikAPI}/api/get${type}Suggestions?name=${value}`)
