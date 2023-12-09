@@ -116,7 +116,7 @@
             <td class="station_dispatcher-name">
               <span v-if="station.onlineInfo?.dispatcherName">
                 <b
-                  v-if="store.donatorsData.includes(station.onlineInfo.dispatcherName)"
+                  v-if="apiStore.donatorsData.includes(station.onlineInfo.dispatcherName)"
                   :title="$t('donations.dispatcher-message')"
                   @click.stop="openDonationModal"
                 >
@@ -294,11 +294,12 @@ import stationInfoMixin from '../../mixins/stationInfoMixin';
 import styleMixin from '../../mixins/styleMixin';
 import Station from '../../scripts/interfaces/Station';
 import { useStationFiltersStore } from '../../store/stationFiltersStore';
-import { useStore } from '../../store/mainStore';
+import { useMainStore } from '../../store/mainStore';
 import Loading from '../Global/Loading.vue';
 import { HeadIdsTypes, headIconsIds, headIds } from '../../scripts/data/stationHeaderNames';
 import StationStatusBadge from '../Global/StationStatusBadge.vue';
 import { Status } from '../../typings/common';
+import { useApiStore } from '../../store/apiStore';
 
 export default defineComponent({
   props: {
@@ -325,17 +326,19 @@ export default defineComponent({
   },
 
   setup() {
-    const store = useStore();
+    const mainStore = useMainStore();
+    const apiStore = useApiStore();
     const stationFiltersStore = useStationFiltersStore();
 
     const isDataLoaded = computed(() => {
-      return store.dataStatuses.sceneries != Status.Data.Loading;
+      return apiStore.dataStatuses.sceneries != Status.Data.Loading;
     });
 
     return {
       isDataLoaded,
       stationFiltersStore,
-      store
+      mainStore,
+      apiStore
     };
   },
 
@@ -357,7 +360,7 @@ export default defineComponent({
 
     openDonationModal(e: Event) {
       this.$emit('toggleDonationModal', true);
-      this.store.modalLastClickedTarget = e.target;
+      this.mainStore.modalLastClickedTarget = e.target;
     },
 
     openForumSite(e: Event, url: string | undefined) {

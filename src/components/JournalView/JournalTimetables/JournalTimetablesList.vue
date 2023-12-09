@@ -42,7 +42,7 @@ import { defineComponent, PropType } from 'vue';
 import Loading from '../../Global/Loading.vue';
 import AddDataButton from '../../Global/AddDataButton.vue';
 import TimetableHistoryList from './TimetableHistoryList.vue';
-import { useStore } from '../../../store/mainStore';
+import { useMainStore } from '../../../store/mainStore';
 import { Status } from '../../../typings/common';
 import { API } from '../../../typings/api';
 
@@ -71,7 +71,7 @@ export default defineComponent({
   data() {
     return {
       Status,
-      store: useStore()
+      store: useMainStore()
     };
   }
 });

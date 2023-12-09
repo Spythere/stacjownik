@@ -111,14 +111,15 @@ export default defineComponent({
 
   gap: 0.5em;
   margin-bottom: 0.5em;
-
-  @include smallScreen() {
-    justify-content: center;
-  }
 }
 
 .info-date {
   margin-right: 0.5em;
+}
+
+.badges {
+  display: flex;
+  gap: 0.25em;
 }
 
 .info-badge {
@@ -142,7 +143,14 @@ export default defineComponent({
   cursor: pointer;
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   align-items: center;
   gap: 0.25em;
+}
+
+@include smallScreen {
+  .item-general {
+    justify-content: center;
+  }
 }
 </style>

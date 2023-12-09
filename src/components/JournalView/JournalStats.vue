@@ -1,27 +1,26 @@
 <template>
   <div class="journal-stats" v-if="!store.isOffline">
-    <div class="tabs">
+    <div class="stats-buttons">
       <button
-        v-for="tab in data.tabs"
-        :key="tab.name"
-        class="btn--filled"
-        :data-selected="tab.name == store.currentStatsTab && areStatsOpen"
-        :data-inactive="tab.inactive"
-        :data-disabled="tab.inactive"
-        :disabled="tab.inactive"
-        @click="onTabButtonClick(tab.name)"
+        v-for="button in data.statsButtons"
+        :key="button.name"
+        class="btn--filled btn--image"
+        :data-selected="button.name == currentStatsTab"
+        @click="onTabButtonClick(button.name)"
       >
-        {{ $t(tab.titlePath) }}
+        <img
+          v-if="button.iconName"
+          :src="`/images/icon-${button.iconName}.svg`"
+          :alt="button.iconName"
+        />
+        {{ $t(button.localeKey) }}
       </button>
     </div>
 
-    <div class="stats-tab" v-show="areStatsOpen">
+    <div class="stats-tab" v-show="currentStatsTab !== null">
       <keep-alive>
-        <JournalDailyStats
-          v-if="store.currentStatsTab == 'daily'"
-          @toggleStatsOpen="toggleStatsOpen"
-        />
-        <JournalDriverStats v-else-if="store.currentStatsTab == 'driver'" />
+        <JournalDailyStats v-if="currentStatsTab == 'journal-daily-stats'" />
+        <JournalDriverStats v-else-if="currentStatsTab == 'journal-driver-stats'" />
       </keep-alive>
     </div>
   </div>
@@ -29,68 +28,50 @@
 
 <script setup lang="ts">
 import { computed, onMounted, reactive, Ref, ref, watch } from 'vue';
-import { useStore } from '../../store/mainStore';
-import JournalDailyStats from './DailyStats.vue';
+import { useMainStore } from '../../store/mainStore';
+import JournalDailyStats from './JournalDailyStats.vue';
 import JournalDriverStats from './JournalDriverStats.vue';
 import StorageManager from '../../managers/storageManager';
 
-// Types
-type TStatTab = 'daily' | 'driver';
+export type JournalStatsTab = 'journal-driver-stats' | 'journal-daily-stats';
 
-// Variables
-const store = useStore();
-
-const lastDailyStatsOpen = ref(false);
-const areStatsOpen = ref(false);
-const lastClickedTab: Ref<'daily' | 'driver' | null> = ref(null);
+const store = useMainStore();
+const currentStatsTab: Ref<JournalStatsTab | null> = ref(null);
 
 let data = reactive({
-  tabs: [
+  statsButtons: [
     {
-      name: 'daily',
-      titlePath: 'journal.daily-stats-title'
+      name: 'journal-daily-stats',
+      localeKey: 'journal.daily-stats-title',
+      iconName: 'stats'
     },
     {
-      name: 'driver',
-      titlePath: 'journal.driver-stats-title'
-      // inactive: true,
+      name: 'journal-driver-stats',
+      localeKey: 'journal.driver-stats-title',
+      iconName: 'user'
     }
-  ] as { name: TStatTab; titlePath: string; inactive?: boolean }[]
+  ] as { name: JournalStatsTab; localeKey: string; iconName?: string }[]
 });
 
-// Methods
-function onTabButtonClick(tab: TStatTab) {
-  if (lastClickedTab.value == tab || !lastClickedTab.value || !areStatsOpen.value)
-    areStatsOpen.value = !areStatsOpen.value;
-
-  if (tab == 'daily') {
-    StorageManager.setBooleanValue('dailyStatsOpen', areStatsOpen.value);
-    lastDailyStatsOpen.value = areStatsOpen.value;
-  }
-
-  store.currentStatsTab = tab;
-  lastClickedTab.value = tab;
-
-  if (areStatsOpen.value == false) store.currentStatsTab = null;
-}
-
-function toggleStatsOpen(open: boolean) {
-  areStatsOpen.value = open;
+function onTabButtonClick(tab: JournalStatsTab) {
+  currentStatsTab.value = tab == currentStatsTab.value ? null : tab;
+  StorageManager.setStringValue('journalStatsTab', currentStatsTab.value ?? '');
 }
 
 watch(
   computed(() => store.driverStatsData),
-  (statsData) => {
-    store.currentStatsTab = statsData ? 'driver' : lastClickedTab.value;
-    areStatsOpen.value = statsData ? true : lastClickedTab.value !== null;
+  (newData, prevData) => {
+    currentStatsTab.value =
+      JSON.stringify(prevData) !== JSON.stringify(newData) && newData !== undefined
+        ? 'journal-driver-stats'
+        : currentStatsTab.value;
   }
 );
 
 onMounted(() => {
-  if (StorageManager.getBooleanValue('dailyStatsOpen')) {
-    areStatsOpen.value = true;
-    store.currentStatsTab = 'daily';
-  }
+  const storedTab = StorageManager.getStringValue('journalStatsTab');
+
+  if (storedTab && storedTab !== '') currentStatsTab.value = storedTab as JournalStatsTab;
 });
 </script>
 
@@ -98,7 +79,7 @@ onMounted(() => {
 @import '../../styles/JournalStats.scss';
 @import '../../styles/variables.scss';
 
-.tabs {
+.stats-buttons {
   position: relative;
 
   display: flex;

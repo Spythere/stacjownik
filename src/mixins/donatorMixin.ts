@@ -1,16 +1,16 @@
 import { defineComponent } from 'vue';
-import { useStore } from '../store/mainStore';
+import { useApiStore } from '../store/apiStore';
 
 export default defineComponent({
   data() {
     return {
-      store: useStore()
+      apiStore: useApiStore()
     };
   },
 
   methods: {
     isDonator(name: string) {
-      return this.store.donatorsData.includes(name);
+      return this.apiStore.donatorsData.includes(name);
     }
   }
 });

@@ -40,7 +40,14 @@
           </button>
         </div>
 
-        <keep-alive>
+        <div
+          v-if="
+            apiStore.dataStatuses.sceneries == Status.Loading ||
+            apiStore.dataStatuses.trains == Status.Loading
+          "
+        ></div>
+
+        <keep-alive v-else>
           <component
             :is="currentMode"
             :onlineScenery="onlineSceneryInfo"
@@ -57,7 +64,7 @@
 import { computed, defineComponent } from 'vue';
 import { useRoute } from 'vue-router';
 import routerMixin from '../mixins/routerMixin';
-import { useStore } from '../store/mainStore';
+import { useMainStore } from '../store/mainStore';
 
 import SceneryInfo from '../components/SceneryView/SceneryInfo.vue';
 import SceneryHeader from '../components/SceneryView/SceneryHeader.vue';
@@ -65,6 +72,8 @@ import SceneryTimetable from '../components/SceneryView/SceneryTimetable.vue';
 import SceneryTimetablesHistory from '../components/SceneryView/SceneryTimetablesHistory.vue';
 import SceneryDispatchersHistory from '../components/SceneryView/SceneryDispatchersHistory.vue';
 import ActionButton from '../components/Global/ActionButton.vue';
+import { Status } from '../typings/common';
+import { useApiStore } from '../store/apiStore';
 
 enum SceneryViewMode {
   'TIMETABLES_ACTIVE',
@@ -99,7 +108,9 @@ export default defineComponent({
   mixins: [routerMixin],
 
   data: () => ({
-    store: useStore(),
+    store: useMainStore(),
+    apiStore: useApiStore(),
+
     viewModes: [
       {
         id: 'scenery.option-active-timetables',
@@ -117,7 +128,8 @@ export default defineComponent({
     sceneryViewMode: SceneryViewMode,
     selectedCheckpoint: '',
     currentViewCompontent: 'SceneryTimetable',
-    onlineFrom: -1
+    onlineFrom: -1,
+    Status: Status.Data
   }),
 
   // activated() {
@@ -192,8 +204,6 @@ button.back-btn {
   &-view {
     display: flex;
     justify-content: center;
-
-    min-height: 100vh;
   }
 
   &-offline {
@@ -222,6 +232,7 @@ button.back-btn {
 
   width: 100%;
   max-width: 1700px;
+  min-height: 100vh;
 
   margin: 1rem 0;
   text-align: center;

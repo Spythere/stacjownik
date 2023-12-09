@@ -48,7 +48,7 @@
       <transition-group name="list-anim">
         <div
           style="padding-bottom: 5em"
-          v-if="store.dataStatuses.trains == 0 && computedScheduledTrains.length == 0"
+          v-if="apiStore.dataStatuses.trains == 0 && computedScheduledTrains.length == 0"
           key="list-loading"
         >
           <Loading />
@@ -187,10 +187,11 @@ import Loading from '../Global/Loading.vue';
 import dateMixin from '../../mixins/dateMixin';
 import routerMixin from '../../mixins/routerMixin';
 import Station from '../../scripts/interfaces/Station';
-import { useStore } from '../../store/mainStore';
+import { useMainStore } from '../../store/mainStore';
 import modalTrainMixin from '../../mixins/modalTrainMixin';
 import ScheduledTrainStatus from './ScheduledTrainStatus.vue';
 import { OnlineScenery } from '../../store/typings';
+import { useApiStore } from '../../store/apiStore';
 
 export default defineComponent({
   name: 'SceneryTimetable',
@@ -224,7 +225,8 @@ export default defineComponent({
     const route = useRoute();
     const currentURL = computed(() => `${location.origin}${route.fullPath}`);
 
-    const store = useStore();
+    const apiStore = useApiStore();
+    const mainStore = useMainStore();
 
     const chosenCheckpoint = ref(
       props.station?.generalInfo?.checkpoints?.length == 0
@@ -235,7 +237,8 @@ export default defineComponent({
     return {
       currentURL,
       chosenCheckpoint,
-      store
+      apiStore,
+      mainStore
     };
   },
 
@@ -256,7 +259,7 @@ export default defineComponent({
             (train) =>
               train.checkpointName.toLocaleLowerCase() ==
                 (this.chosenCheckpoint || this.station!.name).toLocaleLowerCase() &&
-              train.region == this.store.region.id
+              train.region == this.mainStore.region.id
           )
           .sort((a, b) => {
             if (a.stopStatusID > b.stopStatusID) return 1;

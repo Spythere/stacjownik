@@ -21,7 +21,7 @@ import { defineComponent } from 'vue';
 import StationTable from '../components/StationsView/StationTable.vue';
 import StationFilterCard from '../components/StationsView/StationFilterCard.vue';
 import { useStationFiltersStore } from '../store/stationFiltersStore';
-import { useStore } from '../store/mainStore';
+import { useMainStore } from '../store/mainStore';
 import Donation from '../components/Global/Donation.vue';
 
 export default defineComponent({
@@ -37,7 +37,7 @@ export default defineComponent({
     STORAGE_KEY: 'options_saved',
     focusedStationName: '',
     filterStore: useStationFiltersStore(),
-    store: useStore(),
+    store: useMainStore(),
 
     isDonationModalOpen: false
   }),

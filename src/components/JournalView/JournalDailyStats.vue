@@ -5,15 +5,12 @@
         {{ $t('app.loading') }}
       </b>
 
-      <b v-else-if="stats.distanceSum == null">
-        {{ $t('journal.daily-stats-info') }}
-      </b>
-
       <span class="stats-list" v-else>
         <h3>
           {{ $t('journal.daily-stats-title') }}
           <b class="text--primary">{{ new Date().toLocaleDateString($i18n.locale) }}</b>
         </h3>
+
         <hr style="margin-bottom: 0.5em" />
 
         <div v-if="stats.totalTimetables">
@@ -142,8 +139,10 @@ import { API } from '../../typings/api';
 import { Status } from '../../typings/common';
 
 export default defineComponent({
+  name: 'journal-daily-stats',
+
   mixins: [dateMixin],
-  emits: ['toggleStatsOpen'],
+  // emits: ['toggleStatsOpen'],
 
   data() {
     return {
@@ -157,7 +156,7 @@ export default defineComponent({
 
   activated() {
     this.startFetchingDailyStats();
-    this.$emit('toggleStatsOpen', true);
+    // this.$emit('toggleStatsOpen', true);
   },
 
   deactivated() {
@@ -177,22 +176,8 @@ export default defineComponent({
     async fetchDailyTimetableStats() {
       try {
         const res: API.DailyStats.Response = await (
-          await axios.get(`${URLs.stacjownikAPI}/api/getDailyTimetableStats`)
+          await axios.get(`${URLs.stacjownikAPI}/api/getDailyStats`)
         ).data;
-
-        // this.stats = {
-        //   totalTimetables: res.totalTimetables,
-        //   distanceSum: res.distanceSum,
-        //   distanceAvg: res.distanceAvg,
-        //   // timetableAuthor: res.maxTimetable?.authorName || '',
-        //   // timetableDriver: res.maxTimetable?.driverName || '',
-        //   // timetableId: res.maxTimetable?.id || 0,
-        //   // timetableRouteDistance: res.maxTimetable?.routeDistance || 0,
-
-        //   mostActiveDispatchers: res.mostActiveDispatchers,
-        //   mostActiveDrivers: res.mostActiveDrivers,
-        //   longestDuties: res.longestDuties
-        // };
 
         this.stats = res;
 
@@ -208,7 +193,7 @@ export default defineComponent({
 
       if (this.intervalId != -1) return;
 
-      this.intervalId = setInterval(this.fetchDailyTimetableStats, 60000);
+      this.intervalId = window.setInterval(this.fetchDailyTimetableStats, 60000);
     },
 
     stopFetchingDailyStats() {

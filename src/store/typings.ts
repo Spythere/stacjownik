@@ -11,24 +11,7 @@ export interface RegionCounters {
 }
 
 export interface StoreState {
-  stationList: Station[];
-  activeData: API.ActiveData.Response;
-  rollingStockData?: API.RollingStock.Response;
-  donatorsData: API.Donators.Response;
-
-  regionOnlineCounters: RegionCounters[];
-
-  lastDispatcherStatuses: {
-    hash: string;
-    statusTimestamp: number;
-    statusID: Status.ActiveDispatcher;
-  }[];
-
-  sceneryData: any[][];
-
   region: { id: string; value: string };
-  trainCount: number;
-  stationCount: number;
 
   isOffline: boolean;
 
@@ -41,26 +24,8 @@ export interface StoreState {
 
   chosenModalTrainId?: string;
 
-  currentStatsTab: 'daily' | 'driver' | null;
-
-  dataStatuses: {
-    connection: Status.Data;
-    sceneries: Status.Data;
-    timetables: Status.Data;
-    dispatchers: Status.Data;
-    trains: Status.Data;
-  };
-
-  listenerLaunched: boolean;
   blockScroll: boolean;
   modalLastClickedTarget: EventTarget | null;
-
-  tooltip: {
-    visible: boolean;
-    x: number;
-    y: number;
-    content: string;
-  };
 }
 
 export interface StationRoutesInfo {

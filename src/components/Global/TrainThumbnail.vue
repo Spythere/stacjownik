@@ -16,8 +16,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useStore } from '../../store/mainStore';
 import { API } from '../../typings/api';
+import { useApiStore } from '../../store/apiStore';
 
 export default defineComponent({
   props: {
@@ -34,7 +34,7 @@ export default defineComponent({
 
   data() {
     return {
-      store: useStore(),
+      apiStore: useApiStore(),
       isNotFound: false,
       isLoaded: false
     };
@@ -50,11 +50,11 @@ export default defineComponent({
     },
 
     stockType() {
-      if (!this.store.rollingStockData) return 'vehicle-unknown';
+      if (!this.apiStore.rollingStockData) return 'vehicle-unknown';
 
       return (
-        Object.keys(this.store.rollingStockData.info).find((type) => {
-          return this.store.rollingStockData?.info[type as keyof API.RollingStock.Info].find(
+        Object.keys(this.apiStore.rollingStockData.info).find((type) => {
+          return this.apiStore.rollingStockData?.info[type as keyof API.RollingStock.Info].find(
             (v) => v[0] === this.name.split(':')[0]
           );
         }) || 'vehicle-unknown'

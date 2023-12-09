@@ -125,7 +125,7 @@
 import { defineComponent, PropType } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
 import styleMixin from '../../mixins/styleMixin';
-import { useStore } from '../../store/mainStore';
+import { useMainStore } from '../../store/mainStore';
 import Loading from '../Global/Loading.vue';
 import { regions } from '../../data/options.json';
 import AddDataButton from '../Global/AddDataButton.vue';
@@ -160,7 +160,7 @@ export default defineComponent({
   data() {
     return {
       Status,
-      store: useStore(),
+      store: useMainStore(),
       regions
     };
   },

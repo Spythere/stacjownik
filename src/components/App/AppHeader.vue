@@ -68,7 +68,7 @@
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useStore } from '../../store/mainStore';
+import { useMainStore } from '../../store/mainStore';
 import StatusIndicator from './StatusIndicator.vue';
 import Clock from './Clock.vue';
 import RegionDropdown from '../Global/RegionDropdown.vue';
@@ -84,7 +84,7 @@ export default defineComponent({
 
   setup() {
     return {
-      store: useStore()
+      store: useMainStore()
     };
   },
 

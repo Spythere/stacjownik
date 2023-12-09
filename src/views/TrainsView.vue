@@ -21,7 +21,7 @@ import TrainOptions from '../components/TrainsView/TrainOptions.vue';
 import TrainTable from '../components/TrainsView/TrainTable.vue';
 import modalTrainMixin from '../mixins/modalTrainMixin';
 import Train from '../scripts/interfaces/Train';
-import { useStore } from '../store/mainStore';
+import { useMainStore } from '../store/mainStore';
 import { TrainFilter, trainFilters } from '../components/TrainsView/typings';
 import { filteredTrainList } from '../managers/trainFilterManager';
 import TrainStats from '../components/TrainsView/TrainStats.vue';
@@ -58,7 +58,7 @@ export default defineComponent({
   }),
 
   setup() {
-    const store = useStore();
+    const store = useMainStore();
     const initTrainFilters = [...trainFilters.map((f) => ({ ...f }))];
 
     const sorterActive = reactive({ id: 'routeDistance', dir: -1 });

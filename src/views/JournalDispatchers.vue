@@ -36,7 +36,7 @@ import axios from 'axios';
 
 import JournalOptions from '../components/JournalView/JournalOptions.vue';
 import { URLs } from '../scripts/utils/apiURLs';
-import { useStore } from '../store/mainStore';
+import { useMainStore } from '../store/mainStore';
 import JournalDispatchersList from '../components/JournalView/JournalDispatchersList.vue';
 
 import JournalHeader from '../components/JournalView/JournalHeader.vue';
@@ -105,7 +105,7 @@ export default defineComponent({
     const scrollElement: Ref<HTMLElement | null> = ref(null);
 
     return {
-      store: useStore(),
+      store: useMainStore(),
 
       sorterActive,
       searchersValues,

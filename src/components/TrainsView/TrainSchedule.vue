@@ -72,7 +72,7 @@
 import { computed, defineComponent, PropType } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
 import Train from '../../scripts/interfaces/Train';
-import { useStore } from '../../store/mainStore';
+import { useMainStore } from '../../store/mainStore';
 import StopDate from '../Global/StopDate.vue';
 import StockList from '../Global/StockList.vue';
 import { TrainStop } from '../../store/typings';
@@ -92,7 +92,7 @@ export default defineComponent({
 
   setup(props) {
     return {
-      store: useStore(),
+      store: useMainStore(),
 
       lastConfirmed: computed(() => {
         return props.train.timetableData!.followingStops.findIndex(

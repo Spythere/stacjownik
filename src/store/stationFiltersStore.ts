@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import inputData from '../data/options.json';
-import { useStore } from './mainStore';
+import { useMainStore } from './mainStore';
 import { filterStations, sortStations } from '../scripts/utils/filterUtils';
 import { HeadIdsTypes } from '../scripts/data/stationHeaderNames';
 import StorageManager from '../managers/storageManager';
@@ -70,7 +70,7 @@ export const useStationFiltersStore = defineStore('stationFiltersStore', {
     },
 
     filteredStationList: (state) => {
-      const store = useStore();
+      const store = useMainStore();
       const savedStationNames = store.stationList.map((s) => s.name);
 
       const onlineUnsavedStations = store.onlineSceneryList

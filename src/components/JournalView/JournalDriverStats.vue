@@ -55,13 +55,15 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useStore } from '../../store/mainStore';
+import { useMainStore } from '../../store/mainStore';
 import { Status } from '../../typings/common';
 
 export default defineComponent({
+  name: 'journal-driver-stats',
+
   data() {
     return {
-      store: useStore(),
+      store: useMainStore(),
       Status: Status
     };
   }

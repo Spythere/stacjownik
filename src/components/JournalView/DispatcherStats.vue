@@ -53,7 +53,7 @@
 import axios from 'axios';
 import { defineComponent } from 'vue';
 import { URLs } from '../../scripts/utils/apiURLs';
-import { useStore } from '../../store/mainStore';
+import { useMainStore } from '../../store/mainStore';
 import Loading from '../Global/Loading.vue';
 import { API } from '../../typings/api';
 
@@ -61,7 +61,7 @@ export default defineComponent({
   components: { Loading },
 
   setup() {
-    const store = useStore();
+    const store = useMainStore();
 
     return {
       store

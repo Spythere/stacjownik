@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useStore } from '../../store/mainStore';
+import { useMainStore } from '../../store/mainStore';
 
 export default defineComponent({
   emits: ['toggleModal'],
@@ -23,7 +23,7 @@ export default defineComponent({
 
   data() {
     return {
-      store: useStore()
+      store: useMainStore()
     };
   },
 

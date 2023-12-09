@@ -46,7 +46,7 @@ import JournalStats from '../components/JournalView/JournalStats.vue';
 import JournalHeader from '../components/JournalView/JournalHeader.vue';
 
 import { URLs } from '../scripts/utils/apiURLs';
-import { useStore } from '../store/mainStore';
+import { useMainStore } from '../store/mainStore';
 
 import { LocationQuery } from 'vue-router';
 
@@ -194,7 +194,7 @@ export default defineComponent({
 
       scrollElement,
 
-      store: useStore()
+      store: useMainStore()
     };
   },
 

@@ -194,9 +194,9 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { StoreState } from '../../store/typings';
-import { useStore } from '../../store/mainStore';
+import { useMainStore } from '../../store/mainStore';
 import { Status } from '../../typings/common';
+import { useApiStore } from '../../store/apiStore';
 
 export default defineComponent({
   data() {
@@ -221,10 +221,11 @@ export default defineComponent({
   },
 
   setup() {
-    const store = useStore();
+    const store = useMainStore();
+    const apiStore = useApiStore();
 
     return {
-      dataStatus: store.dataStatuses,
+      dataStatus: apiStore.dataStatuses,
       store
     };
   },
@@ -233,7 +234,7 @@ export default defineComponent({
     dataStatus: {
       deep: true,
 
-      handler(statuses: StoreState['dataStatuses']) {
+      handler(statuses: any) {
         const connectionStatus = statuses.connection;
         const sceneryDataStatus = statuses.sceneries;
         const trainsDataStatus = statuses.trains;
