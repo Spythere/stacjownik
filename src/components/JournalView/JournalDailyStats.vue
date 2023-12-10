@@ -137,6 +137,7 @@ import dateMixin from '../../mixins/dateMixin';
 import { URLs } from '../../scripts/utils/apiURLs';
 import { API } from '../../typings/api';
 import { Status } from '../../typings/common';
+import http from '../../http';
 
 export default defineComponent({
   name: 'journal-daily-stats',
@@ -175,9 +176,7 @@ export default defineComponent({
   methods: {
     async fetchDailyTimetableStats() {
       try {
-        const res: API.DailyStats.Response = await (
-          await axios.get(`${URLs.stacjownikAPI}/api/getDailyStats`)
-        ).data;
+        const res: API.DailyStats.Response = await (await http.get('api/getDailyStats')).data;
 
         this.stats = res;
 

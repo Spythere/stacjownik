@@ -35,7 +35,6 @@
 
 <script lang="ts">
 import { defineComponent, provide, reactive, Ref, ref } from 'vue';
-import axios from 'axios';
 
 import dateMixin from '../mixins/dateMixin';
 import routerMixin from '../mixins/routerMixin';
@@ -45,7 +44,6 @@ import JournalOptions from '../components/JournalView/JournalOptions.vue';
 import JournalStats from '../components/JournalView/JournalStats.vue';
 import JournalHeader from '../components/JournalView/JournalHeader.vue';
 
-import { URLs } from '../scripts/utils/apiURLs';
 import { useMainStore } from '../store/mainStore';
 
 import { LocationQuery } from 'vue-router';
@@ -54,8 +52,7 @@ import JournalTimetablesList from '../components/JournalView/JournalTimetables/J
 import { Journal } from '../components/JournalView/typings';
 import { Status } from '../typings/common';
 import { API } from '../typings/api';
-
-const TIMETABLES_API_URL = `${URLs.stacjownikAPI}/api/getTimetables`;
+import http from '../http';
 
 export const journalTimetableFilters: Journal.TimetableFilter[] = [
   {
@@ -272,7 +269,7 @@ export default defineComponent({
       this.currentQueryParams['countFrom'] = this.timetableHistory.length;
 
       const responseData: API.TimetableHistory.Response = await (
-        await axios.get(`${TIMETABLES_API_URL}`, {
+        await http.get('api/getTimetables', {
           params: { ...this.currentQueryParams }
         })
       ).data;
@@ -365,7 +362,7 @@ export default defineComponent({
 
       try {
         const responseData: API.TimetableHistory.Response = await (
-          await axios.get(`${TIMETABLES_API_URL}`, {
+          await http.get('api/getTimetables', {
             params: this.currentQueryParams
           })
         ).data;

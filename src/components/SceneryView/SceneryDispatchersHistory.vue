@@ -79,6 +79,7 @@ import listObserverMixin from '../../mixins/listObserverMixin';
 import { OnlineScenery } from '../../store/typings';
 import { API } from '../../typings/api';
 import { Status } from '../../typings/common';
+import http from '../../http';
 
 export default defineComponent({
   name: 'SceneryDispatchersHistory',
@@ -121,11 +122,12 @@ export default defineComponent({
       try {
         this.dataStatus = Status.Data.Loading;
 
-        const requestString = `${URLs.stacjownikAPI}/api/getDispatchers?stationName=${
+        const requestString = `api/getDispatchers?stationName=${
           this.station?.name || this.onlineScenery?.name
         }&countFrom=${countFrom}&countLimit=${countLimit}`;
+
         const historyAPIData: API.DispatcherHistory.Response = await (
-          await axios.get(requestString)
+          await http.get(requestString)
         ).data;
 
         this.dataStatus = Status.Data.Loaded;
