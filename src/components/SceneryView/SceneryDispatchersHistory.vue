@@ -68,11 +68,9 @@
 </template>
 
 <script lang="ts">
-import axios from 'axios';
 import { defineComponent, PropType } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
 import Station from '../../scripts/interfaces/Station';
-import { URLs } from '../../scripts/utils/apiURLs';
 import Loading from '../Global/Loading.vue';
 import styleMixin from '../../mixins/styleMixin';
 import listObserverMixin from '../../mixins/listObserverMixin';
