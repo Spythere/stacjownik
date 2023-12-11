@@ -32,10 +32,8 @@
 
 <script lang="ts">
 import { defineComponent, provide, reactive, Ref, ref } from 'vue';
-import axios from 'axios';
 
 import JournalOptions from '../components/JournalView/JournalOptions.vue';
-import { URLs } from '../scripts/utils/apiURLs';
 import { useMainStore } from '../store/mainStore';
 import JournalDispatchersList from '../components/JournalView/JournalDispatchersList.vue';
 
@@ -44,8 +42,7 @@ import { LocationQuery } from 'vue-router';
 import { Journal } from '../components/JournalView/typings';
 import { API } from '../typings/api';
 import { Status } from '../typings/common';
-
-const DISPATCHERS_API_URL = `${URLs.stacjownikAPI}/api/getDispatchers`;
+import http from '../http';
 
 export default defineComponent({
   components: {
@@ -183,9 +180,7 @@ export default defineComponent({
       this.countFromIndex = this.historyList.length;
 
       const responseData: API.DispatcherHistory.Response = await (
-        await axios.get(
-          `${DISPATCHERS_API_URL}?${this.currentQuery}&countFrom=${this.countFromIndex}`
-        )
+        await http.get(`api/getDispatchers?${this.currentQuery}&countFrom=${this.countFromIndex}`)
       ).data;
 
       if (!responseData) return;
@@ -232,7 +227,7 @@ export default defineComponent({
         if (reset) this.dataStatus = Status.Data.Loading;
 
         const responseData: API.DispatcherHistory.Response = await (
-          await axios.get(`${DISPATCHERS_API_URL}?${this.currentQuery}`)
+          await http.get(`api/getDispatchers?${this.currentQuery}`)
         ).data;
 
         if (!responseData) {

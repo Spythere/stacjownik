@@ -110,14 +110,13 @@
 </template>
 
 <script lang="ts">
-import axios from 'axios';
 import { defineComponent, inject, PropType } from 'vue';
 import keyMixin from '../../mixins/keyMixin';
-import { URLs } from '../../scripts/utils/apiURLs';
 import { useMainStore } from '../../store/mainStore';
 import { Journal } from './typings';
 import { API } from '../../typings/api';
 import { Status } from '../../typings/common';
+import http from '../../http';
 
 export default defineComponent({
   emits: ['onSearchConfirm', 'onOptionsReset', 'onRefreshData'],
@@ -216,9 +215,7 @@ export default defineComponent({
         this.store.driverStatsStatus = Status.Data.Loading;
 
         const statsData: API.DriverStats.Response = await (
-          await axios.get(
-            `${URLs.stacjownikAPI}/api/getDriverInfo?name=${this.store.driverStatsName}`
-          )
+          await http.get(`api/getDriverInfo?name=${this.store.driverStatsName}`)
         ).data;
 
         this.store.driverStatsData = statsData;
@@ -241,7 +238,7 @@ export default defineComponent({
       this.searchTimeout = window.setTimeout(async () => {
         try {
           const suggestions: string[] = await (
-            await axios.get(`${URLs.stacjownikAPI}/api/get${type}Suggestions?name=${value}`)
+            await http.get(`api/get${type}Suggestions?name=${value}`)
           ).data;
 
           this[`${type}Suggestions`] = suggestions;

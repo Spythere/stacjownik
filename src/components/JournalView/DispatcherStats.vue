@@ -50,12 +50,11 @@
 </template>
 
 <script lang="ts">
-import axios from 'axios';
 import { defineComponent } from 'vue';
-import { URLs } from '../../scripts/utils/apiURLs';
 import { useMainStore } from '../../store/mainStore';
 import Loading from '../Global/Loading.vue';
 import { API } from '../../typings/api';
+import http from '../../http';
 
 export default defineComponent({
   components: { Loading },
@@ -90,15 +89,11 @@ export default defineComponent({
       }
 
       const statsData: API.DispatcherStats.Response = await (
-        await axios.get(
-          `${URLs.stacjownikAPI}/api/getDispatcherInfo?name=${this.store.dispatcherStatsName}`
-        )
+        await http.get('api/getDispatcherInfo?name=${this.store.dispatcherStatsName}')
       ).data;
 
       const timetables: API.TimetableHistory.Response = await (
-        await axios.get(
-          `${URLs.stacjownikAPI}/api/getTimetables?authorName=${this.store.dispatcherStatsName}`
-        )
+        await http.get('api/getTimetables?authorName=${this.store.dispatcherStatsName}')
       ).data;
 
       this.timetables = timetables;

@@ -63,17 +63,16 @@
 </template>
 
 <script lang="ts">
-import axios from 'axios';
 import { defineComponent, PropType } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
 
 import Station from '../../scripts/interfaces/Station';
-import { URLs } from '../../scripts/utils/apiURLs';
 import Loading from '../Global/Loading.vue';
 import listObserverMixin from '../../mixins/listObserverMixin';
 import { OnlineScenery } from '../../store/typings';
 import { API } from '../../typings/api';
 import { Status } from '../../typings/common';
+import http from '../../http';
 
 export default defineComponent({
   name: 'SceneryTimetablesHistory',
@@ -107,11 +106,11 @@ export default defineComponent({
       }
 
       try {
-        const requestString = `${URLs.stacjownikAPI}/api/getTimetables?issuedFrom=${
+        const requestString = `api/getTimetables?issuedFrom=${
           this.station?.name || this.onlineScenery?.name
         }&countFrom=${countFrom}&countLimit=${countLimit}`;
 
-        const response: API.TimetableHistory.Response = await (await axios.get(requestString)).data;
+        const response: API.TimetableHistory.Response = await (await http.get(requestString)).data;
 
         this.historyList = response;
 
