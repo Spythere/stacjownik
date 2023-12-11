@@ -130,11 +130,9 @@
 </template>
 
 <script lang="ts">
-import axios from 'axios';
 import { defineComponent } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
 
-import { URLs } from '../../scripts/utils/apiURLs';
 import { API } from '../../typings/api';
 import { Status } from '../../typings/common';
 import http from '../../http';

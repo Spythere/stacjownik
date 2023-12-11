@@ -50,9 +50,7 @@
 </template>
 
 <script lang="ts">
-import axios from 'axios';
 import { defineComponent } from 'vue';
-import { URLs } from '../../scripts/utils/apiURLs';
 import { useMainStore } from '../../store/mainStore';
 import Loading from '../Global/Loading.vue';
 import { API } from '../../typings/api';
