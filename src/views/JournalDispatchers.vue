@@ -3,15 +3,19 @@
     <JournalHeader />
 
     <div class="journal_wrapper">
-      <JournalOptions
-        @on-search-confirm="fetchHistoryData"
-        @on-options-reset="resetOptions"
-        @on-refresh-data="fetchHistoryData(true)"
-        :sorter-option-ids="['timestampFrom', 'duration']"
-        :data-status="dataStatus"
-        :current-options-active="currentOptionsActive"
-        optionsType="dispatchers"
-      />
+      <div class="journal_top-bar">
+        <JournalOptions
+          @on-search-confirm="fetchHistoryData"
+          @on-options-reset="resetOptions"
+          @on-refresh-data="fetchHistoryData(true)"
+          :sorter-option-ids="['timestampFrom', 'duration']"
+          :data-status="dataStatus"
+          :current-options-active="currentOptionsActive"
+          optionsType="dispatchers"
+        />
+
+        <JournalStats :statsButtons="statsButtons" />
+      </div>
 
       <div class="journal_refreshed-date" v-if="dataRefreshedAt">
         {{ $t('journal.data-refreshed-at') }}: {{ dataRefreshedAt.toLocaleString($i18n.locale) }}
@@ -33,22 +37,33 @@
 <script lang="ts">
 import { defineComponent, provide, reactive, Ref, ref } from 'vue';
 
-import JournalOptions from '../components/JournalView/JournalOptions.vue';
+import http from '../http';
 import { useMainStore } from '../store/mainStore';
-import JournalDispatchersList from '../components/JournalView/JournalDispatchersList.vue';
-
-import JournalHeader from '../components/JournalView/JournalHeader.vue';
 import { LocationQuery } from 'vue-router';
 import { Journal } from '../components/JournalView/typings';
 import { API } from '../typings/api';
 import { Status } from '../typings/common';
-import http from '../http';
+
+import JournalOptions from '../components/JournalView/JournalOptions.vue';
+import JournalDispatchersList from '../components/JournalView/JournalDispatchersList.vue';
+import JournalHeader from '../components/JournalView/JournalHeader.vue';
+import JournalStats from '../components/JournalView/JournalStats.vue';
+
+const statsButtons: Journal.StatsButton[] = [
+  {
+    tab: Journal.StatsTab.DISPATCHER_STATS,
+    localeKey: 'journal.dispatcher-stats-title',
+    iconName: 'user',
+    disabled: false
+  }
+];
 
 export default defineComponent({
   components: {
     JournalOptions,
     JournalDispatchersList,
-    JournalHeader
+    JournalHeader,
+    JournalStats
   },
   name: 'JournalDispatchers',
 
@@ -65,6 +80,8 @@ export default defineComponent({
   },
 
   data: () => ({
+    statsButtons,
+
     currentQuery: '',
     currentQueryArray: [] as string[],
     dataRefreshedAt: null as Date | null,
@@ -102,7 +119,7 @@ export default defineComponent({
     const scrollElement: Ref<HTMLElement | null> = ref(null);
 
     return {
-      store: useMainStore(),
+      mainStore: useMainStore(),
 
       sorterActive,
       searchersValues,
@@ -120,6 +137,12 @@ export default defineComponent({
       this.currentOptionsActive =
         q.length > 2 ||
         q.some((qv) => qv.startsWith('sortBy=') && qv.split('=')[1] != 'timestampFrom');
+    },
+
+    'mainStore.dispatcherStatsData'(stats) {
+      // console.log(stats);
+      // this.statsButtons.find((sb) => sb.tab == Journal.StatsTab.DRIVER_STATS)!.disabled =
+      //   driverStats === undefined;
     }
   },
 
@@ -241,7 +264,7 @@ export default defineComponent({
         this.historyList = responseData;
 
         // Stats display
-        this.store.dispatcherStatsName =
+        this.mainStore.dispatcherStatsName =
           this.historyList.length > 0 && this.searchersValues['search-dispatcher'].trim()
             ? this.historyList[0].dispatcherName
             : '';

@@ -1,10 +1,12 @@
 <template>
-  <div class="journal-stats">
-    <span v-if="store.driverStatsData">
+  <div class="journal-stats" v-if="store.driverStatsData">
+    <span>
       <h3>
         {{ $t('journal.stats-title') }}
         <span class="text--primary">{{ store.driverStatsName.toUpperCase() }}</span>
       </h3>
+
+      <hr class="header-separator" />
 
       <div class="info-stats">
         <span class="stat-badge">
@@ -43,13 +45,13 @@
       </div>
     </span>
 
-    <b v-else-if="store.driverStatsStatus == Status.Data.Loading">{{
+    <!-- <b v-else-if="store.driverStatsStatus == Status.Data.Loading">{{
       $t('journal.stats-loading')
     }}</b>
     <b v-else-if="store.driverStatsStatus == Status.Data.Error">
       {{ $t('journal.stats-error ') }}
     </b>
-    <b v-else>{{ $t('journal.driver-stats-info') }}</b>
+    <b v-else>{{ $t('journal.driver-stats-info') }}</b> -->
   </div>
 </template>
 

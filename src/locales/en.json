@@ -371,6 +371,9 @@
     "driver-stats-title": "DRIVER STATS",
     "driver-stats-info": "Enter a proper nickname into filters [F] to see user's driving statistics!",
 
+    "dispatcher-stats-title": "DISPATCHER STATS",
+    "dispatcher-stats-info": "Enter a proper nickname into filters [F] to see user's dispatcher statistics!",
+
     "stats-loading": "Fetching statistics...",
     "stats-error": "Oops! An unexpected error occurred while trying to fetch statistics! :/",
 

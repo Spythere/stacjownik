@@ -46,4 +46,17 @@ export namespace Journal {
     id: TimetableSorterKey;
     dir: 'asc' | 'desc';
   }
+
+  export enum StatsTab {
+    DRIVER_STATS = 'journal-driver-stats',
+    DISPATCHER_STATS = 'journal-dispatcher-stats',
+    DAILY_STATS = 'journal-daily-stats'
+  }
+
+  export interface StatsButton {
+    tab: StatsTab;
+    localeKey: string;
+    iconName: string;
+    disabled: boolean;
+  }
 }

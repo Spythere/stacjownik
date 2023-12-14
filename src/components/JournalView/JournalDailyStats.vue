@@ -1,128 +1,138 @@
 <template>
   <section class="daily-stats">
     <span :data-active="statsStatus">
-      <b v-if="statsStatus == Status.Data.Loading">
-        {{ $t('app.loading') }}
-      </b>
-
-      <span class="stats-list" v-else>
+      <span class="stats-list">
         <h3>
           {{ $t('journal.daily-stats-title') }}
           <b class="text--primary">{{ new Date().toLocaleDateString($i18n.locale) }}</b>
         </h3>
 
-        <hr style="margin-bottom: 0.5em" />
+        <hr class="header-separator" />
 
-        <div v-if="stats.totalTimetables">
-          &bull;
-          <i18n-t keypath="journal.timetable-stats-total">
-            <template #count>
-              <b class="text--primary">
-                {{ stats.totalTimetables }}
-                {{ $t('journal.timetable-count', stats.totalTimetables) }}
-              </b>
-            </template>
+        <b v-if="statsStatus == Status.Data.Loading">
+          {{ $t('app.loading') }}
+        </b>
 
-            <template #distance>
-              <b class="text--primary"> {{ stats.distanceSum?.toFixed(2) }} km</b>
-            </template>
-          </i18n-t>
-        </div>
+        <b class="text--error" v-else-if="statsStatus == Status.Data.Error">
+          {{ $t('journal.stats-error') }}
+        </b>
 
-        <div v-if="stats.maxTimetable">
-          &bull;
-          <i18n-t keypath="journal.timetable-stats-longest">
-            <template #id>
-              <router-link :to="`/journal/timetables?timetableId=${stats.maxTimetable.id}`">
-                <b>{{ stats.maxTimetable.id }}</b>
-              </router-link>
-            </template>
-            <template #author>
-              <router-link
-                :to="`/journal/dispatchers?dispatcherName=${stats.maxTimetable.authorName}`"
-              >
-                <b>{{ stats.maxTimetable.authorName }}</b>
-              </router-link>
-            </template>
-            <template #driver>
-              <b class="text--primary">{{ stats.maxTimetable.driverName }}</b>
-            </template>
-            <template #distance>
-              <b class="text--primary">{{ stats.maxTimetable.routeDistance }} km</b>
-            </template>
-          </i18n-t>
-        </div>
+        <b v-else-if="topDispatchers.length == 0">
+          {{ $t('journal.daily-stats-info') }}
+        </b>
 
-        <div v-if="topDispatchers.length == 1">
-          &bull;
-          <i18n-t keypath="journal.timetable-stats-most-active-dr">
-            <template #dispatcher>
-              <router-link :to="`/journal/dispatchers?dispatcherName=${topDispatchers[0].name}`">
-                <b>{{ topDispatchers[0].name }}</b>
-              </router-link>
-            </template>
-            <template #count>
-              <b class="text--primary">
-                {{ topDispatchers[0].count }}
-                {{ $t('journal.timetable-count', topDispatchers[0].count) }}
-              </b>
-            </template>
-          </i18n-t>
-        </div>
+        <div v-else>
+          <div v-if="stats.totalTimetables">
+            &bull;
+            <i18n-t keypath="journal.timetable-stats-total">
+              <template #count>
+                <b class="text--primary">
+                  {{ stats.totalTimetables }}
+                  {{ $t('journal.timetable-count', stats.totalTimetables) }}
+                </b>
+              </template>
 
-        <div v-if="topDispatchers.length > 1">
-          &bull;
-          <i18n-t keypath="journal.timetable-stats-most-active-dr-many">
-            <template #dispatchers>
-              <span v-for="(disp, i) in topDispatchers" :key="i">
-                <span v-if="i == topDispatchers.length - 1"> {{ $t('general.and') }} </span>
+              <template #distance>
+                <b class="text--primary"> {{ stats.distanceSum?.toFixed(2) }} km</b>
+              </template>
+            </i18n-t>
+          </div>
 
-                <router-link :to="`/journal/dispatchers?dispatcherName=${disp.name}`">
-                  <b>{{ disp.name }}</b>
+          <div v-if="stats.maxTimetable">
+            &bull;
+            <i18n-t keypath="journal.timetable-stats-longest">
+              <template #id>
+                <router-link :to="`/journal/timetables?timetableId=${stats.maxTimetable.id}`">
+                  <b>{{ stats.maxTimetable.id }}</b>
                 </router-link>
+              </template>
+              <template #author>
+                <router-link
+                  :to="`/journal/dispatchers?dispatcherName=${stats.maxTimetable.authorName}`"
+                >
+                  <b>{{ stats.maxTimetable.authorName }}</b>
+                </router-link>
+              </template>
+              <template #driver>
+                <b class="text--primary">{{ stats.maxTimetable.driverName }}</b>
+              </template>
+              <template #distance>
+                <b class="text--primary">{{ stats.maxTimetable.routeDistance }} km</b>
+              </template>
+            </i18n-t>
+          </div>
 
-                <span v-if="i < topDispatchers.length - 2">, </span>
-              </span>
-            </template>
+          <div v-if="topDispatchers.length == 1">
+            &bull;
+            <i18n-t keypath="journal.timetable-stats-most-active-dr">
+              <template #dispatcher>
+                <router-link :to="`/journal/dispatchers?dispatcherName=${topDispatchers[0].name}`">
+                  <b>{{ topDispatchers[0].name }}</b>
+                </router-link>
+              </template>
+              <template #count>
+                <b class="text--primary">
+                  {{ topDispatchers[0].count }}
+                  {{ $t('journal.timetable-count', topDispatchers[0].count) }}
+                </b>
+              </template>
+            </i18n-t>
+          </div>
 
-            <template #count>
-              <b class="text--primary">
-                {{ topDispatchers[0].count }}
-                {{ $t('journal.timetable-count', topDispatchers[0].count) }}
-              </b>
-            </template>
-          </i18n-t>
-        </div>
+          <div v-if="topDispatchers.length > 1">
+            &bull;
+            <i18n-t keypath="journal.timetable-stats-most-active-dr-many">
+              <template #dispatchers>
+                <span v-for="(disp, i) in topDispatchers" :key="i">
+                  <span v-if="i == topDispatchers.length - 1"> {{ $t('general.and') }} </span>
 
-        <div v-if="stats.longestDuties.length > 0">
-          &bull;
-          <i18n-t keypath="journal.timetable-stats-longest-duties">
-            <template #dispatcher>
-              <router-link
-                :to="`/journal/dispatchers?dispatcherName=${stats.longestDuties[0].name}`"
-              >
-                <b>{{ stats.longestDuties[0].name }}</b>
-              </router-link>
-            </template>
+                  <router-link :to="`/journal/dispatchers?dispatcherName=${disp.name}`">
+                    <b>{{ disp.name }}</b>
+                  </router-link>
 
-            <template #station>{{ stats.longestDuties[0].station }}</template>
+                  <span v-if="i < topDispatchers.length - 2">, </span>
+                </span>
+              </template>
 
-            <template #duration>
-              {{ calculateDuration(stats.longestDuties[0].duration) }}
-            </template>
-          </i18n-t>
-        </div>
+              <template #count>
+                <b class="text--primary">
+                  {{ topDispatchers[0].count }}
+                  {{ $t('journal.timetable-count', topDispatchers[0].count) }}
+                </b>
+              </template>
+            </i18n-t>
+          </div>
 
-        <div v-if="stats.mostActiveDrivers.length > 0">
-          &bull;
-          <i18n-t keypath="journal.timetable-stats-most-active-driver">
-            <template #driver>
-              <b class="text--primary">{{ stats.mostActiveDrivers[0].name }}</b>
-            </template>
-            <template #distance>
-              <b class="text--primary">{{ stats.mostActiveDrivers[0].distance.toFixed(2) }} km</b>
-            </template>
-          </i18n-t>
+          <div v-if="stats.longestDuties.length > 0">
+            &bull;
+            <i18n-t keypath="journal.timetable-stats-longest-duties">
+              <template #dispatcher>
+                <router-link
+                  :to="`/journal/dispatchers?dispatcherName=${stats.longestDuties[0].name}`"
+                >
+                  <b>{{ stats.longestDuties[0].name }}</b>
+                </router-link>
+              </template>
+
+              <template #station>{{ stats.longestDuties[0].station }}</template>
+
+              <template #duration>
+                {{ calculateDuration(stats.longestDuties[0].duration) }}
+              </template>
+            </i18n-t>
+          </div>
+
+          <div v-if="stats.mostActiveDrivers.length > 0">
+            &bull;
+            <i18n-t keypath="journal.timetable-stats-most-active-driver">
+              <template #driver>
+                <b class="text--primary">{{ stats.mostActiveDrivers[0].name }}</b>
+              </template>
+              <template #distance>
+                <b class="text--primary">{{ stats.mostActiveDrivers[0].distance.toFixed(2) }} km</b>
+              </template>
+            </i18n-t>
+          </div>
         </div>
       </span>
     </span>
@@ -203,6 +213,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '../../styles/responsive.scss';
+@import '../../styles/JournalStats.scss';
 
 .daily-stats {
   text-align: left;

@@ -57,6 +57,7 @@ import { API } from '../../typings/api';
 import http from '../../http';
 
 export default defineComponent({
+  name: 'journal-dispatcher-stats',
   components: { Loading },
 
   setup() {

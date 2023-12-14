@@ -3,18 +3,20 @@
     <JournalHeader />
 
     <div class="journal_wrapper">
-      <JournalOptions
-        @on-search-confirm="fetchHistoryData"
-        @on-options-reset="resetOptions"
-        @on-refresh-data="fetchHistoryData"
-        :sorter-option-ids="['timetableId', 'beginDate', 'routeDistance', 'allStopsCount']"
-        :filters="journalTimetableFilters"
-        :currentOptionsActive="currentOptionsActive"
-        :data-status="dataStatus"
-        optionsType="timetables"
-      />
+      <div class="journal_top-bar">
+        <JournalOptions
+          @on-search-confirm="fetchHistoryData"
+          @on-options-reset="resetOptions"
+          @on-refresh-data="fetchHistoryData"
+          :sorter-option-ids="['timetableId', 'beginDate', 'routeDistance', 'allStopsCount']"
+          :filters="journalTimetableFilters"
+          :currentOptionsActive="currentOptionsActive"
+          :data-status="dataStatus"
+          optionsType="timetables"
+        />
 
-      <JournalStats />
+        <JournalStats :statsButtons="statsButtons" />
+      </div>
 
       <div class="journal_refreshed-date" v-if="dataRefreshedAt">
         {{ $t('journal.data-refreshed-at') }}: {{ dataRefreshedAt.toLocaleString($i18n.locale) }}
@@ -138,6 +140,24 @@ export default defineComponent({
   },
 
   data: () => ({
+    journalTimetableFilters,
+    mainStore: useMainStore(),
+
+    statsButtons: [
+      {
+        tab: Journal.StatsTab.DAILY_STATS,
+        localeKey: 'journal.daily-stats-title',
+        iconName: 'stats',
+        disabled: false
+      },
+      {
+        tab: Journal.StatsTab.DRIVER_STATS,
+        localeKey: 'journal.driver-stats-title',
+        iconName: 'user',
+        disabled: true
+      }
+    ],
+
     currentQueryParams: {} as TimetablesQueryParams,
     dataRefreshedAt: null as Date | null,
 
@@ -149,7 +169,6 @@ export default defineComponent({
     currentOptionsActive: false,
 
     timetableHistory: [] as API.TimetableHistory.Response,
-    journalTimetableFilters,
 
     dataStatus: Status.Data.Loading,
     dataErrorMessage: ''
@@ -189,15 +208,18 @@ export default defineComponent({
       countFromIndex,
       countLimit,
 
-      scrollElement,
-
-      store: useMainStore()
+      scrollElement
     };
   },
 
   watch: {
     currentQueryParams(q: TimetablesQueryParams) {
       this.currentOptionsActive = Object.values(q).some((v) => v !== undefined);
+    },
+
+    'mainStore.driverStatsData'(driverStats) {
+      this.statsButtons.find((sb) => sb.tab == Journal.StatsTab.DRIVER_STATS)!.disabled =
+        driverStats === undefined;
     }
   },
 

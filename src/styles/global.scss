@@ -11,7 +11,7 @@
   --clr-skr: #ff5100;
   --clr-twr: #ffbb00;
 
-  --clr-error: #df3e3e;
+  --clr-error: #fa3636;
   --clr-warning: #c59429;
 
   --clr-donator: #f7a4ff;
@@ -158,6 +158,10 @@ ul {
     color: #ccc;
   }
 
+  &--error {
+    color: var(--clr-error);
+  }
+
   &--donator {
     color: var(--clr-donator);
     text-shadow: var(--clr-donator) 0 0 10px;
@@ -183,7 +187,7 @@ a.a-button {
   &[data-disabled='true'] {
     user-select: none;
     pointer-events: none;
-    opacity: 0.85;
+    opacity: 0.7;
   }
 
   &.btn--filled {
