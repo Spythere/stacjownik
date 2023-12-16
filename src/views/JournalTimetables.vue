@@ -146,13 +146,13 @@ export default defineComponent({
     statsButtons: [
       {
         tab: Journal.StatsTab.DAILY_STATS,
-        localeKey: 'journal.daily-stats-title',
+        localeKey: 'journal.daily-stats-button',
         iconName: 'stats',
         disabled: false
       },
       {
         tab: Journal.StatsTab.DRIVER_STATS,
-        localeKey: 'journal.driver-stats-title',
+        localeKey: 'journal.driver-stats-button',
         iconName: 'user',
         disabled: true
       }

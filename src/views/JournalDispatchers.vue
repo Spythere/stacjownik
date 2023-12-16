@@ -52,9 +52,9 @@ import JournalStats from '../components/JournalView/JournalStats.vue';
 const statsButtons: Journal.StatsButton[] = [
   {
     tab: Journal.StatsTab.DISPATCHER_STATS,
-    localeKey: 'journal.dispatcher-stats-title',
+    localeKey: 'journal.dispatcher-stats-button',
     iconName: 'user',
-    disabled: false
+    disabled: true
   }
 ];
 
@@ -140,9 +140,10 @@ export default defineComponent({
     },
 
     'mainStore.dispatcherStatsData'(stats) {
-      // console.log(stats);
-      // this.statsButtons.find((sb) => sb.tab == Journal.StatsTab.DRIVER_STATS)!.disabled =
-      //   driverStats === undefined;
+      console.log('dispatcher stats', stats);
+
+      this.statsButtons.find((sb) => sb.tab == Journal.StatsTab.DISPATCHER_STATS)!.disabled =
+        stats === undefined;
     }
   },
 

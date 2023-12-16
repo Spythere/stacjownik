@@ -47,6 +47,9 @@ import { Journal } from './typings';
 import JournalDailyStats from './JournalDailyStats.vue';
 import JournalDispatcherStats from './JournalDispatcherStats.vue';
 import JournalDriverStats from './JournalDriverStats.vue';
+import { Status } from '../../typings/common';
+import http from '../../http';
+import { API } from '../../typings/api';
 
 export default defineComponent({
   components: { JournalDailyStats, JournalDriverStats, JournalDispatcherStats },
@@ -63,24 +66,68 @@ export default defineComponent({
       currentStatsTab: null as Journal.StatsTab | null
     };
   },
-  mounted() {
-    // const storedTab = StorageManager.getStringValue('journalStatsTab');
-    // if (storedTab && storedTab !== '' && this.statsButtons.some((b) => b.tab == storedTab))
-    //   this.currentStatsTab = storedTab as Journal.StatsTab;
+
+  watch: {
+    async 'mainStore.driverStatsName'(val) {
+      await this.fetchDriverStats();
+    },
+
+    async 'mainStore.dispatcherStatsName'() {
+      await this.fetchDispatcherStats();
+    }
   },
-  // watch: {
-  //   'mainStore.driverStatsData'(newData, prevData) {
-  //     this.currentStatsTab =
-  //       JSON.stringify(prevData) !== JSON.stringify(newData) && newData !== undefined
-  //         ? Journal.StatsTab.DRIVER_STATS
-  //         : this.currentStatsTab;
-  //   }
-  // },
+
   methods: {
     onTabButtonClick(tab: Journal.StatsTab) {
       this.currentStatsTab = tab == this.currentStatsTab ? null : tab;
 
       StorageManager.setStringValue('journalStatsTab', this.currentStatsTab ?? '');
+    },
+
+    async fetchDriverStats() {
+      if (!this.mainStore.driverStatsName) {
+        this.mainStore.driverStatsData = undefined;
+        this.mainStore.driverStatsStatus = Status.Data.Initialized;
+        return;
+      }
+
+      try {
+        this.mainStore.driverStatsStatus = Status.Data.Loading;
+
+        const statsData: API.DriverStats.Response = await (
+          await http.get(`api/getDriverInfo?name=${this.mainStore.driverStatsName}`)
+        ).data;
+
+        this.mainStore.driverStatsData = statsData;
+        this.mainStore.driverStatsStatus = Status.Data.Loaded;
+      } catch (error) {
+        this.mainStore.driverStatsData = undefined;
+        this.mainStore.driverStatsStatus = Status.Data.Error;
+        console.error('Ups! Wystąpił błąd przy próbie pobrania statystyk maszynisty! :/');
+      }
+    },
+
+    async fetchDispatcherStats() {
+      if (!this.mainStore.dispatcherStatsName) {
+        this.mainStore.dispatcherStatsData = undefined;
+        return;
+      }
+
+      try {
+        const statsData: API.DispatcherStats.Response = await (
+          await http.get('api/getDispatcherInfo', {
+            params: {
+              name: this.mainStore.dispatcherStatsName
+            }
+          })
+        ).data;
+
+        this.mainStore.dispatcherStatsData = statsData;
+      } catch (error) {
+        this.mainStore.dispatcherStatsData = undefined;
+
+        console.error('Ups! Wystąpił błąd przy próbie pobrania statystyk dyżurnego! :/');
+      }
     }
   }
 });

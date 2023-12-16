@@ -114,7 +114,6 @@ import { defineComponent, inject, PropType } from 'vue';
 import keyMixin from '../../mixins/keyMixin';
 import { useMainStore } from '../../store/mainStore';
 import { Journal } from './typings';
-import { API } from '../../typings/api';
 import { Status } from '../../typings/common';
 import http from '../../http';
 
@@ -181,10 +180,6 @@ export default defineComponent({
   },
 
   watch: {
-    async 'store.driverStatsName'() {
-      await this.fetchDriverStats();
-    },
-
     async 'searchersValues.search-driver'(value: string | undefined) {
       clearTimeout(this.searchTimeout);
 
@@ -203,29 +198,6 @@ export default defineComponent({
   },
 
   methods: {
-    async fetchDriverStats() {
-      this.store.driverStatsData = undefined;
-
-      if (!this.store.driverStatsName) {
-        this.store.driverStatsStatus = Status.Data.Initialized;
-        return;
-      }
-
-      try {
-        this.store.driverStatsStatus = Status.Data.Loading;
-
-        const statsData: API.DriverStats.Response = await (
-          await http.get(`api/getDriverInfo?name=${this.store.driverStatsName}`)
-        ).data;
-
-        this.store.driverStatsData = statsData;
-        this.store.driverStatsStatus = Status.Data.Loaded;
-      } catch (error) {
-        this.store.driverStatsStatus = Status.Data.Error;
-        console.error('Ups! Wystąpił błąd przy próbie pobrania statystyk maszynisty! :/');
-      }
-    },
-
     refreshData() {
       this.$emit('onRefreshData');
     },

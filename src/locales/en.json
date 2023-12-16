@@ -347,8 +347,6 @@
     "last-seen-at": "Last seen at",
     "currently-at": "Currently at",
 
-    "stats-title": "DRIVING STATISTICS OF",
-
     "stats-timetables": "TIMETABLES",
     "stats-longest-timetable": "LONGEST TIMETABLE",
     "stats-avg-timetable": "AVERAGE TIMETABLE LENGTH",
@@ -365,13 +363,16 @@
 
     "timetable-count": "timetable | timetables",
 
-    "daily-stats-title": "DAILY STATS",
+    "daily-stats-button": "DAILY STATS",
+    "daily-stats-title": "STATS OF THE DAY",
     "daily-stats-info": "Today's statistics are unavailable yet!",
 
-    "driver-stats-title": "DRIVER STATS",
+    "driver-stats-button": "DRIVER STATS",
+    "driver-stats-title": "{name}'s DRIVER STATS",
     "driver-stats-info": "Enter a proper nickname into filters [F] to see user's driving statistics!",
 
-    "dispatcher-stats-title": "DISPATCHER STATS",
+    "dispatcher-stats-button": "DISPATCHER STATS",
+    "dispatcher-stats-title": "{name}'s DISPATCHER STATS",
     "dispatcher-stats-info": "Enter a proper nickname into filters [F] to see user's dispatcher statistics!",
 
     "stats-loading": "Fetching statistics...",

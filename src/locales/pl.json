@@ -326,8 +326,6 @@
 
     "load-data": "Pobierz dalszą historię...",
 
-    "stats-title": "STATYSTYKI MASZYNISTY",
-
     "last-seen-at": "Ostatnio widziany na: ",
     "currently-at": "Obecnie na scenerii: ",
 
@@ -346,13 +344,17 @@
 
     "timetable-count": "rozkład jazdy | rozkładów jazdy",
 
+    "daily-stats-button": "STATYSTYKI DNIA",
     "daily-stats-title": "STATYSTYKI DNIA",
+
     "daily-stats-info": "Dzisiejsze statystyki nie są jeszcze dostępne!",
 
-    "driver-stats-title": "STAT. MASZYNISTY",
+    "driver-stats-button": "STAT. MASZYNISTY",
+    "driver-stats-title": "STATYSTYKI MASZYNISTY {name}",
     "driver-stats-info": "Wpisz nazwę użytkownika w filtrach [F], aby zobaczyć jego statystyki maszynisty!",
 
-    "dispatcher-stats-title": "STATYSTYKI DYŻURNEGO",
+    "dispatcher-stats-button": "STATYSTYKI DYŻURNEGO",
+    "dispatcher-stats-title": "STATYSTYKI DYŻURNEGO {name}",
     "dispatcher-stats-info": "Wpisz nazwę użytkownika w filtrach [F], aby zobaczyć jego statystyki dyżurnego!",
 
     "stats-loading": "Pobieranie statystyk...",

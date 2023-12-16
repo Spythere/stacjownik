@@ -1,9 +1,12 @@
 <template>
-  <div class="journal-stats" v-if="store.driverStatsData">
+  <div class="journal-stats driver" v-if="store.driverStatsData">
     <span>
       <h3>
-        {{ $t('journal.stats-title') }}
-        <span class="text--primary">{{ store.driverStatsName.toUpperCase() }}</span>
+        <i18n-t keypath="journal.driver-stats-title">
+          <template #name>
+            <span class="text--primary">{{ store.driverStatsName.toUpperCase() }}</span>
+          </template>
+        </i18n-t>
       </h3>
 
       <hr class="header-separator" />
