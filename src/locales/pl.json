@@ -133,7 +133,8 @@
     "filter-noComments": "BEZ UWAG",
     "filter-twr": "WYS. RYZYKA",
     "filter-skr": "SKRAJNIA",
-    "filter-twr-skr": "WSZYSTKIE",
+    "filter-twr-skr": "TWR/SKR",
+    "filter-all-statuses": "WSZYSTKIE",
     "filter-common": "ZWYKŁE",
     "filter-passenger": "PASAŻERSKIE",
     "filter-freight": "TOWAROWE",
@@ -145,9 +146,9 @@
     "filter-clear": "WYŁĄCZ FILTRY",
 
     "filter-section-timetable-status": "STATUS ROZKŁADU JAZDY",
-    "filter-section-twrskr": "UWAGI",
+    "filter-section-special": "TYPY SPECJALNE",
 
-    "filter-all": "WSZYSTKIE",
+    "filter-all-specials": "WSZYSTKIE",
     "filter-abandoned": "PORZUCONE",
     "filter-fulfilled": "WYPEŁNIONE",
     "filter-active": "AKTYWNE"

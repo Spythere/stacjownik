@@ -20,10 +20,11 @@ export namespace Journal {
   };
 
   export const enum TimetableFilterId {
+    ALL_STATUSES = 'all-statuses',
     ACTIVE = 'active',
     FULFILLED = 'fulfilled',
     ABANDONED = 'abandoned',
-    ALL = 'all',
+    ALL_SPECIALS = 'all-specials',
     TWR = 'twr',
     SKR = 'skr',
     TWR_SKR = 'twr-skr'
@@ -31,13 +32,14 @@ export namespace Journal {
 
   export enum FilterSection {
     TIMETABLE_STATUS = 'timetable-status',
-    TWRSKR = 'twrskr'
+    SPECIAL = 'special'
   }
 
   export interface TimetableFilter {
     id: TimetableFilterId;
     filterSection: string;
     isActive: boolean;
+    default: boolean;
   }
 
   export type TimetableSorterKey = 'timetableId' | 'beginDate' | 'distance' | 'total-stops';

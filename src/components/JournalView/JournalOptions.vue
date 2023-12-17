@@ -33,7 +33,7 @@
           <h1 class="option-title">{{ $t('options.search-title') }}</h1>
           <div class="search_content">
             <div class="search" v-for="(_, propName) in searchersValues" :key="propName">
-              <label v-if="propName == 'search-date'" for="date">{{
+              <label v-if="propName == 'search-date'" for="search-date">{{
                 $t(`options.search-${optionsType}-date`)
               }}</label>
 
@@ -47,6 +47,7 @@
                   :placeholder="$t(`options.${propName}`)"
                   :type="propName == 'search-date' ? 'date' : 'text'"
                   :min="propName == 'search-date' ? '2022-02-01' : undefined"
+                  :id="`${propName}`"
                   :list="propName.toString()"
                 />
 

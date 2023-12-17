@@ -144,7 +144,8 @@
     "filter-withComments": "COMMENTS",
     "filter-twr": "HIGH RISK CARGO",
     "filter-skr": "EXCEEDED GAUGE",
-    "filter-twr-skr": "ALL TYPES",
+    "filter-twr-skr": "BOTH TYPES",
+    "filter-all-specials": "ALL",
     "filter-common": "NO WARNINGS",
     "filter-passenger": "PASSENGER",
     "filter-freight": "FREIGHT",
@@ -156,9 +157,9 @@
     "filter-clear": "CLEAR FILTERS",
 
     "filter-section-timetable-status": "TIMETABLE STATUS",
-    "filter-section-twrskr": "WARNINGS",
+    "filter-section-special": "SPECIAL TYPE",
 
-    "filter-all": "ALL ENTRIES",
+    "filter-all-statuses": "ALL",
     "filter-abandoned": "ABANDONED",
     "filter-fulfilled": "FULFILLED",
     "filter-active": "ACTIVE"

@@ -28,7 +28,7 @@
       <tbody>
         <tr v-for="historyItem in historyList" :key="historyItem.id">
           <td>
-            <router-link :to="`/journal/timetables?timetableId=${historyItem.id}`">
+            <router-link :to="`/journal/timetables?search-train=%23${historyItem.id}`">
               #{{ historyItem.id }}
             </router-link>
           </td>
@@ -37,11 +37,16 @@
             {{ historyItem.trainNo }}
           </td>
           <td>{{ historyItem.route.replace('|', ' -> ') }}</td>
-          <td>{{ historyItem.driverName }}</td>
+          <td>
+            <router-link :to="`/journal/timetables?search-driver=${historyItem.driverName}`">
+              {{ historyItem.driverName }}
+            </router-link>
+          </td>
+
           <td>
             <router-link
               v-if="historyItem.authorName"
-              :to="`/journal/timetables?authorName=${historyItem.authorName}`"
+              :to="`/journal/timetables?search-dispatcher=${historyItem.authorName}`"
               >{{ historyItem.authorName }}
             </router-link>
             <i v-else>{{ $t('scenery.timetable-author-unknown') }}</i>
@@ -99,18 +104,20 @@ export default defineComponent({
   },
 
   methods: {
-    async fetchAPIData(countFrom = 0, countLimit = 15) {
+    async fetchAPIData() {
       if (!this.station && !this.onlineScenery) {
         this.dataStatus = Status.Data.Loaded;
         return;
       }
 
       try {
-        const requestString = `api/getTimetables?issuedFrom=${
-          this.station?.name || this.onlineScenery?.name
-        }&countFrom=${countFrom}&countLimit=${countLimit}`;
-
-        const response: API.TimetableHistory.Response = await (await http.get(requestString)).data;
+        const response: API.TimetableHistory.Response = await (
+          await http.get('api/getTimetables', {
+            params: {
+              issuedFrom: this.station?.name
+            }
+          })
+        ).data;
 
         this.historyList = response;
 
@@ -121,9 +128,12 @@ export default defineComponent({
     },
 
     navigateToHistory() {
-      this.$router.push(
-        `/journal/timetables?issuedFrom=${this.station?.name || this.onlineScenery?.name}`
-      );
+      this.$router.push({
+        path: '/journal/timetables',
+        query: {
+          'search-issuedFrom': this.station?.name || this.onlineScenery?.name
+        }
+      });
     }
   },
   components: { Loading }

@@ -166,6 +166,15 @@ export default defineComponent({
   },
 
   methods: {
+    handleRouteParams() {
+      this.$router.push({
+        query: {
+          'search-date': this.searchersValues['search-date'] || undefined,
+          'search-station': this.searchersValues['search-station'] || undefined,
+          'search-dispatcher': this.searchersValues['search-dispatcher'] || undefined
+        }
+      });
+    },
     handleScroll(e: Event) {
       const listElement = e.target as HTMLElement;
       const scrollTop = listElement.scrollTop;
@@ -178,21 +187,19 @@ export default defineComponent({
     },
 
     handleQueries(query: LocationQuery) {
-      const queryKeys = Object.keys(query);
-
-      if (queryKeys.includes('sceneryName')) this.setSearchers('', `${query.sceneryName}`, '');
-      if (queryKeys.includes('dispatcherName'))
-        this.setSearchers('', '', `${query.dispatcherName}`);
+      // if (queryKeys.includes('sceneryName')) this.setSearchers('', `${query.sceneryName}`, '');
+      // if (queryKeys.includes('dispatcherName'))
+      //   this.setSearchers('', '', `${query.dispatcherName}`);
     },
 
-    setSearchers(date: string, station: string, dispatcher: string) {
-      this.searchersValues['search-date'] = date;
-      this.searchersValues['search-station'] = station;
-      this.searchersValues['search-dispatcher'] = dispatcher;
+    setSearchers(searchers: { [key: string]: string }) {
+      this.searchersValues['search-date'] = searchers['search-date'] ?? '';
+      this.searchersValues['search-station'] = searchers['search-station'] ?? '';
+      this.searchersValues['search-dispatcher'] = searchers['search-dispatcher'] ?? '';
     },
 
     resetOptions() {
-      this.setSearchers('', '', '');
+      this.setSearchers({});
       this.sorterActive.id = 'timestampFrom';
 
       this.fetchHistoryData();

@@ -5,9 +5,9 @@
     <div class="journal_wrapper">
       <div class="journal_top-bar">
         <JournalOptions
-          @on-search-confirm="fetchHistoryData"
-          @on-options-reset="resetOptions"
-          @on-refresh-data="fetchHistoryData"
+          @onSearchConfirm="onSearchConfirm"
+          @onOptionsReset="resetOptions"
+          @onRefreshData="fetchHistoryData"
           :sorter-option-ids="['timetableId', 'beginDate', 'routeDistance', 'allStopsCount']"
           :filters="journalTimetableFilters"
           :currentOptionsActive="currentOptionsActive"
@@ -58,45 +58,58 @@ import http from '../http';
 
 export const journalTimetableFilters: Journal.TimetableFilter[] = [
   {
-    id: Journal.TimetableFilterId.ALL,
+    id: Journal.TimetableFilterId.ALL_STATUSES,
     filterSection: Journal.FilterSection.TIMETABLE_STATUS,
-    isActive: true
+    isActive: true,
+    default: true
   },
 
   {
     id: Journal.TimetableFilterId.ACTIVE,
     filterSection: Journal.FilterSection.TIMETABLE_STATUS,
-    isActive: false
+    isActive: false,
+    default: false
   },
 
   {
     id: Journal.TimetableFilterId.FULFILLED,
     filterSection: Journal.FilterSection.TIMETABLE_STATUS,
-    isActive: false
+    isActive: false,
+    default: false
   },
 
   {
     id: Journal.TimetableFilterId.ABANDONED,
     filterSection: Journal.FilterSection.TIMETABLE_STATUS,
-    isActive: false
+    isActive: false,
+    default: false
   },
 
   {
-    id: Journal.TimetableFilterId.TWR_SKR,
-    filterSection: Journal.FilterSection.TWRSKR,
-    isActive: true
+    id: Journal.TimetableFilterId.ALL_SPECIALS,
+    filterSection: Journal.FilterSection.SPECIAL,
+    isActive: true,
+    default: true
   },
 
   {
     id: Journal.TimetableFilterId.TWR,
-    filterSection: Journal.FilterSection.TWRSKR,
-    isActive: false
+    filterSection: Journal.FilterSection.SPECIAL,
+    isActive: false,
+    default: false
   },
 
   {
     id: Journal.TimetableFilterId.SKR,
-    filterSection: Journal.FilterSection.TWRSKR,
-    isActive: false
+    filterSection: Journal.FilterSection.SPECIAL,
+    isActive: false,
+    default: false
+  },
+  {
+    id: Journal.TimetableFilterId.TWR_SKR,
+    filterSection: Journal.FilterSection.SPECIAL,
+    isActive: false,
+    default: false
   }
 ];
 
@@ -176,10 +189,11 @@ export default defineComponent({
 
   setup() {
     const sorterActive: Journal.TimetableSorter = reactive({ id: 'timetableId', dir: 'desc' });
-    // const journalFilterActive = ref(journalTimetableFilters[0]);
+
     const initFilters: readonly Journal.TimetableFilter[] = JSON.parse(
       JSON.stringify(journalTimetableFilters)
     );
+
     const filterList: Journal.TimetableFilter[] = reactive(JSON.parse(JSON.stringify(initFilters)));
 
     const searchersValues = reactive({
@@ -235,6 +249,38 @@ export default defineComponent({
   },
 
   methods: {
+    onSearchConfirm() {
+      this.handleRouteParams();
+
+      this.fetchHistoryData();
+    },
+
+    handleRouteParams() {
+      this.$router.push({
+        query: {
+          ...this.$route.query,
+          'sorter-active': this.sorterActive.id != 'timetableId' ? this.sorterActive.id : undefined,
+          ...Object.keys(this.searchersValues).reduce(
+            (acc, k) => {
+              const searchVal = this.searchersValues[k as Journal.TimetableSearchKey];
+
+              acc[k] = searchVal || undefined;
+
+              return acc;
+            },
+            {} as { [k: string]: string | undefined }
+          ),
+          ...this.filterList.reduce(
+            (acc, f) => {
+              if (f.isActive) acc[f.filterSection] = f.default ? undefined : f.id;
+              return acc;
+            },
+            {} as { [k: string]: string | undefined }
+          )
+        }
+      });
+    },
+
     handleScroll(e: Event) {
       const listElement = e.target as HTMLElement;
       const scrollTop = listElement.scrollTop;
@@ -247,32 +293,28 @@ export default defineComponent({
     },
 
     handleQueries(query: LocationQuery) {
-      const queryKeys = Object.keys(query);
-
-      if (queryKeys.includes('timetableId'))
-        this.setSearchers('', '', `#${query.timetableId}`, '', '');
-      if (queryKeys.includes('issuedFrom'))
-        this.setSearchers('', '', '', '', `${query.issuedFrom}`);
-      if (queryKeys.includes('authorName'))
-        this.setSearchers('', '', '', `${query.authorName}`, '');
+      this.setOptions(query as any);
     },
 
-    setSearchers(
-      date: string,
-      driver: string,
-      train: string,
-      dispatcher: string,
-      issuedFrom: string
-    ) {
-      this.searchersValues['search-date'] = date;
-      this.searchersValues['search-driver'] = driver;
-      this.searchersValues['search-train'] = train;
-      this.searchersValues['search-dispatcher'] = dispatcher;
-      this.searchersValues['search-issuedFrom'] = issuedFrom;
+    setOptions(options: { [key: string]: string }) {
+      this.searchersValues['search-date'] = options['search-date'] ?? '';
+      this.searchersValues['search-driver'] = options['search-driver'] ?? '';
+      this.searchersValues['search-train'] = options['search-train'] ?? '';
+      this.searchersValues['search-dispatcher'] = options['search-dispatcher'] ?? '';
+      this.searchersValues['search-issuedFrom'] = options['search-issuedFrom'] ?? '';
+
+      this.sorterActive.id =
+        (options['sorter-active'] as Journal.TimetableSorterKey) ?? 'timetableId';
+
+      this.filterList.forEach((f) => {
+        f.isActive =
+          options[f.filterSection] === f.id ||
+          (options[f.filterSection] === undefined && f.default);
+      });
     },
 
     resetOptions() {
-      this.setSearchers('', '', '', '', '');
+      this.setOptions({});
 
       this.sorterActive.id = 'timetableId';
 
@@ -282,6 +324,7 @@ export default defineComponent({
             this.initFilters.find((initFilter) => initFilter.id == f.id)?.isActive || false)
       );
 
+      this.handleRouteParams();
       this.fetchHistoryData();
     },
 
@@ -340,12 +383,12 @@ export default defineComponent({
               queryParams['fulfilled'] = 1;
               break;
 
-            case Journal.TimetableFilterId.ALL:
+            case Journal.TimetableFilterId.ALL_STATUSES:
               queryParams['terminated'] = undefined;
               queryParams['fulfilled'] = undefined;
               break;
 
-            case Journal.TimetableFilterId.TWR_SKR:
+            case Journal.TimetableFilterId.ALL_SPECIALS:
               queryParams['twr'] = undefined;
               queryParams['skr'] = undefined;
               break;
@@ -356,7 +399,12 @@ export default defineComponent({
               break;
 
             case Journal.TimetableFilterId.SKR:
-              queryParams['twr'] = undefined;
+              queryParams['twr'] = 0;
+              queryParams['skr'] = 1;
+              break;
+
+            case Journal.TimetableFilterId.TWR_SKR:
+              queryParams['twr'] = 1;
               queryParams['skr'] = 1;
               break;
 
