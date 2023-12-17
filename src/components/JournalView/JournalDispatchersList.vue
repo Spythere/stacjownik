@@ -33,7 +33,7 @@
                 <tr v-for="historyItem in dispatcherHistory" :key="historyItem.id">
                   <td>
                     <router-link
-                      :to="`/journal/dispatchers?sceneryName=${historyItem.stationName}`"
+                      :to="`/journal/dispatchers?search-station=${historyItem.stationName}`"
                     >
                       <b>{{ historyItem.stationName }}</b>
                     </router-link>
@@ -41,7 +41,7 @@
                   <td>#{{ historyItem.stationHash }}</td>
                   <td>
                     <router-link
-                      :to="`/journal/dispatchers?dispatcherName=${historyItem.dispatcherName}`"
+                      :to="`/journal/dispatchers?search-dispatcher=${historyItem.dispatcherName}`"
                     >
                       <b
                         v-if="isDonator(historyItem.dispatcherName)"
@@ -167,8 +167,6 @@ export default defineComponent({
 
   computed: {
     computedDispatcherHistory() {
-      console.log(this.dispatcherHistory.length);
-
       return this.dispatcherHistory.reduce(
         (acc, historyItem, i) => {
           if (this.isAnotherDay(i - 1, i))

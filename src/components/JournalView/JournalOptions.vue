@@ -41,7 +41,7 @@
                 <input
                   class="search-input"
                   v-model="searchersValues[propName]"
-                  @keydown.enter="onSearchConfirm"
+                  @keydown.enter="searchConfirm"
                   @focus="preventKeyDown = true"
                   @blur="preventKeyDown = false"
                   :placeholder="$t(`options.${propName}`)"
@@ -199,6 +199,36 @@ export default defineComponent({
   },
 
   methods: {
+    // filters & sorters from URL params
+    handleRouteParams() {
+      this.$router.push({
+        query: {
+          ...this.$route.query,
+          'sorter-active':
+            this.sorterOptionIds.indexOf(`${this.sorterActive.id}`) != 0
+              ? this.sorterActive.id
+              : undefined,
+          ...Object.keys(this.searchersValues).reduce(
+            (acc, k) => {
+              const searchVal = this.searchersValues[k as Journal.TimetableSearchKey];
+
+              acc[k] = searchVal || undefined;
+
+              return acc;
+            },
+            {} as { [k: string]: string | undefined }
+          ),
+          ...this.filterList?.reduce(
+            (acc, f) => {
+              if (f.isActive) acc[f.filterSection] = f.default ? undefined : f.id;
+              return acc;
+            },
+            {} as { [k: string]: string | undefined }
+          )
+        }
+      });
+    },
+
     refreshData() {
       this.$emit('onRefreshData');
     },
@@ -233,7 +263,7 @@ export default defineComponent({
     onSorterChange(item: { id: string | number; value: string }) {
       this.sorterActive.id = item.id;
       this.sorterActive.dir = -1;
-      this.$emit('onSearchConfirm');
+      this.searchConfirm();
     },
 
     onFilterChange(filter: Journal.TimetableFilter) {
@@ -243,25 +273,27 @@ export default defineComponent({
         .forEach((f) => (f.isActive = false));
       filter.isActive = true;
 
-      this.$emit('onSearchConfirm');
+      this.searchConfirm();
     },
 
     onInputClear(id: any) {
       this.searchersValues[id] = '';
-      this.$emit('onSearchConfirm');
+      this.searchConfirm();
     },
 
-    onSearchConfirm() {
+    searchConfirm() {
       this.$emit('onSearchConfirm');
+      this.handleRouteParams();
     },
 
     onSearchButtonConfirm() {
       this.showOptions = false;
-      this.$emit('onSearchConfirm');
+      this.searchConfirm();
     },
 
     onResetButtonClick() {
       this.$emit('onOptionsReset');
+      this.handleRouteParams();
     }
   }
 });

@@ -10,8 +10,6 @@ export default defineComponent({
     mountObserver(actionFunction: () => void, target: Element) {
       this.observer = new IntersectionObserver(
         (entries) => {
-          console.log(entries);
-
           if (entries[0].intersectionRatio > 0.5) actionFunction();
         },
         { threshold: 0.2 }

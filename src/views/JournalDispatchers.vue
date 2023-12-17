@@ -140,8 +140,6 @@ export default defineComponent({
     },
 
     'mainStore.dispatcherStatsData'(stats) {
-      console.log('dispatcher stats', stats);
-
       this.statsButtons.find((sb) => sb.tab == Journal.StatsTab.DISPATCHER_STATS)!.disabled =
         stats === undefined;
     }
@@ -175,6 +173,7 @@ export default defineComponent({
         }
       });
     },
+
     handleScroll(e: Event) {
       const listElement = e.target as HTMLElement;
       const scrollTop = listElement.scrollTop;
@@ -187,19 +186,17 @@ export default defineComponent({
     },
 
     handleQueries(query: LocationQuery) {
-      // if (queryKeys.includes('sceneryName')) this.setSearchers('', `${query.sceneryName}`, '');
-      // if (queryKeys.includes('dispatcherName'))
-      //   this.setSearchers('', '', `${query.dispatcherName}`);
+      this.setOptions(query as any);
     },
 
-    setSearchers(searchers: { [key: string]: string }) {
+    setOptions(searchers: { [key: string]: string }) {
       this.searchersValues['search-date'] = searchers['search-date'] ?? '';
       this.searchersValues['search-station'] = searchers['search-station'] ?? '';
       this.searchersValues['search-dispatcher'] = searchers['search-dispatcher'] ?? '';
     },
 
     resetOptions() {
-      this.setSearchers({});
+      this.setOptions({});
       this.sorterActive.id = 'timestampFrom';
 
       this.fetchHistoryData();

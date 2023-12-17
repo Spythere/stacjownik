@@ -250,35 +250,7 @@ export default defineComponent({
 
   methods: {
     onSearchConfirm() {
-      this.handleRouteParams();
-
       this.fetchHistoryData();
-    },
-
-    handleRouteParams() {
-      this.$router.push({
-        query: {
-          ...this.$route.query,
-          'sorter-active': this.sorterActive.id != 'timetableId' ? this.sorterActive.id : undefined,
-          ...Object.keys(this.searchersValues).reduce(
-            (acc, k) => {
-              const searchVal = this.searchersValues[k as Journal.TimetableSearchKey];
-
-              acc[k] = searchVal || undefined;
-
-              return acc;
-            },
-            {} as { [k: string]: string | undefined }
-          ),
-          ...this.filterList.reduce(
-            (acc, f) => {
-              if (f.isActive) acc[f.filterSection] = f.default ? undefined : f.id;
-              return acc;
-            },
-            {} as { [k: string]: string | undefined }
-          )
-        }
-      });
     },
 
     handleScroll(e: Event) {
@@ -316,15 +288,15 @@ export default defineComponent({
     resetOptions() {
       this.setOptions({});
 
-      this.sorterActive.id = 'timetableId';
+      // this.sorterActive.id = 'timetableId';
 
-      this.filterList.forEach(
-        (f) =>
-          (f.isActive =
-            this.initFilters.find((initFilter) => initFilter.id == f.id)?.isActive || false)
-      );
+      // this.filterList.forEach(
+      //   (f) =>
+      //     (f.isActive =
+      //       this.initFilters.find((initFilter) => initFilter.id == f.id)?.isActive || false)
+      // );
 
-      this.handleRouteParams();
+      // this.handleRouteParams();
       this.fetchHistoryData();
     },
 

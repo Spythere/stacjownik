@@ -19,7 +19,9 @@
         <tr v-for="historyItem in historyList" :key="historyItem.id">
           <td>#{{ historyItem.stationHash }}</td>
           <td>
-            <router-link :to="`/journal/dispatchers?dispatcherName=${historyItem.dispatcherName}`">
+            <router-link
+              :to="`/journal/dispatchers?search-dispatcher=${historyItem.dispatcherName}`"
+            >
               <b>{{ historyItem.dispatcherName }}</b>
             </router-link>
           </td>
