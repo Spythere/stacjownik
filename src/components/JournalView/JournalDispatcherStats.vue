@@ -3,7 +3,10 @@
     class="journal-stats dispatcher"
     v-if="store.dispatcherStatsName && store.dispatcherStatsData"
   >
-    <span class="loading" v-if="!store.dispatcherStatsData._count._all">
+    <span
+      class="loading"
+      v-if="!store.dispatcherStatsData.issuedTimetables || !store.dispatcherStatsData.services"
+    >
       Ten dyżurny nie ma jeszcze szczegółowych statystyk!
     </span>
 
@@ -18,22 +21,34 @@
 
       <hr class="header-separator" />
 
-      <div class="info-stats" v-if="store.dispatcherStatsData._count._all">
+      <div class="info-stats">
         <span class="stat-badge">
-          <span>LICZBA</span>
-          <span>{{ store.dispatcherStatsData._count._all }}</span>
+          <span>DYŻURY</span>
+          <span>{{ store.dispatcherStatsData.services.count }}</span>
         </span>
         <span class="stat-badge">
-          <span>SUMA (KM)</span>
-          <span>{{ store.dispatcherStatsData._sum.routeDistance.toFixed(2) }}km</span>
+          <span>WYSTAWIONE RJ</span>
+          <span>{{ store.dispatcherStatsData.issuedTimetables.count }}</span>
         </span>
         <span class="stat-badge">
-          <span>NAJDŁUŻSZY</span>
-          <span>{{ store.dispatcherStatsData._max.routeDistance.toFixed(2) }}km</span>
+          <span>MAKS. CZAS DYŻURU</span>
+          <span>{{ calculateDuration(store.dispatcherStatsData.services.durationMax) }}</span>
         </span>
         <span class="stat-badge">
-          <span>ŚREDNIO</span>
-          <span>{{ store.dispatcherStatsData._avg.routeDistance.toFixed(2) }}km</span>
+          <span>ŚREDNI CZAS DYŻURU</span>
+          <span>{{ calculateDuration(store.dispatcherStatsData.services.durationAvg) }}</span>
+        </span>
+        <span class="stat-badge">
+          <span>SUMA WYSTAWIONYCH RJ</span>
+          <span>{{ store.dispatcherStatsData.issuedTimetables.distanceSum.toFixed(2) }}km</span>
+        </span>
+        <span class="stat-badge">
+          <span>NAJDŁUŻSZY WYSTAWIONY RJ</span>
+          <span>{{ store.dispatcherStatsData.issuedTimetables.distanceMax.toFixed(2) }}km</span>
+        </span>
+        <span class="stat-badge">
+          <span>ŚREDNIA WYSTAWIONYCH RJ</span>
+          <span>{{ store.dispatcherStatsData.issuedTimetables.distanceAvg.toFixed(2) }}km</span>
         </span>
       </div>
     </span>
@@ -43,9 +58,12 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { useMainStore } from '../../store/mainStore';
+import dateMixin from '../../mixins/dateMixin';
 
 export default defineComponent({
   name: 'journal-dispatcher-stats',
+
+  mixins: [dateMixin],
 
   setup() {
     const store = useMainStore();

@@ -115,12 +115,14 @@ export default defineComponent({
 
       try {
         const statsData: API.DispatcherStats.Response = await (
-          await http.get('api/getDispatcherInfo', {
+          await http.get('api/getDispatcherStats', {
             params: {
               name: this.mainStore.dispatcherStatsName
             }
           })
         ).data;
+
+        console.log(statsData);
 
         this.mainStore.dispatcherStatsData = statsData;
       } catch (error) {

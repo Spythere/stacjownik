@@ -31,7 +31,11 @@ export namespace API {
 
   export namespace DispatcherStats {
     export interface DistanceStat {
-      routeDistance: number;
+      routeDistance: number | null;
+    }
+
+    export interface DurationStat {
+      currentDuration: number | null;
     }
 
     export interface Count {
@@ -39,11 +43,18 @@ export namespace API {
     }
 
     export interface Response {
-      _sum: DistanceStat;
-      _max: DistanceStat;
-      _min: DistanceStat;
-      _avg: DistanceStat;
-      _count: Count;
+      services: {
+        count: number;
+        durationMax: number;
+        durationAvg: number;
+      } | null;
+
+      issuedTimetables: {
+        count: number;
+        distanceMax: number;
+        distanceAvg: number;
+        distanceSum: number;
+      } | null;
     }
   }
 
