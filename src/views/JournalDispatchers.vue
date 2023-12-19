@@ -52,7 +52,7 @@ import JournalStats from '../components/JournalView/JournalStats.vue';
 const statsButtons: Journal.StatsButton[] = [
   {
     tab: Journal.StatsTab.DISPATCHER_STATS,
-    localeKey: 'journal.dispatcher-stats-button',
+    localeKey: 'journal.dispatcher-stats.button',
     iconName: 'user',
     disabled: true
   }
