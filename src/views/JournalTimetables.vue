@@ -5,7 +5,6 @@
     <div class="journal_wrapper">
       <div class="journal_top-bar">
         <JournalOptions
-          @onSearchConfirm="onSearchConfirm"
           @onOptionsReset="resetOptions"
           @onRefreshData="fetchHistoryData"
           :sorter-option-ids="['timetableId', 'beginDate', 'routeDistance', 'allStopsCount']"
@@ -119,8 +118,12 @@ interface TimetablesQueryParams {
   timetableId?: string;
 
   authorName?: string;
-  timestampFrom?: number;
-  timestampTo?: number;
+  // timestampFrom?: number;
+  // timestampTo?: number;
+
+  dateFrom?: string;
+  dateTo?: string;
+
   issuedFrom?: string;
 
   countFrom?: number;
@@ -234,6 +237,10 @@ export default defineComponent({
     'mainStore.driverStatsData'(driverStats) {
       this.statsButtons.find((sb) => sb.tab == Journal.StatsTab.DRIVER_STATS)!.disabled =
         driverStats === undefined;
+    },
+
+    async 'mainStore.driverStatsName'() {
+      this.fetchDriverStats();
     }
   },
 
@@ -249,10 +256,6 @@ export default defineComponent({
   },
 
   methods: {
-    onSearchConfirm() {
-      this.fetchHistoryData();
-    },
-
     handleScroll(e: Event) {
       const listElement = e.target as HTMLElement;
       const scrollTop = listElement.scrollTop;
@@ -266,6 +269,29 @@ export default defineComponent({
 
     handleQueries(query: LocationQuery) {
       this.setOptions(query as any);
+    },
+
+    async fetchDriverStats() {
+      if (!this.mainStore.driverStatsName) {
+        this.mainStore.driverStatsData = undefined;
+        this.mainStore.driverStatsStatus = Status.Data.Initialized;
+        return;
+      }
+
+      try {
+        this.mainStore.driverStatsStatus = Status.Data.Loading;
+
+        const statsData: API.DriverStats.Response = await (
+          await http.get(`api/getDriverInfo?name=${this.mainStore.driverStatsName}`)
+        ).data;
+
+        this.mainStore.driverStatsData = statsData;
+        this.mainStore.driverStatsStatus = Status.Data.Loaded;
+      } catch (error) {
+        this.mainStore.driverStatsData = undefined;
+        this.mainStore.driverStatsStatus = Status.Data.Error;
+        console.error('Ups! Wystąpił błąd przy próbie pobrania statystyk maszynisty! :/');
+      }
     },
 
     setOptions(options: { [key: string]: string }) {
@@ -287,17 +313,6 @@ export default defineComponent({
 
     resetOptions() {
       this.setOptions({});
-
-      // this.sorterActive.id = 'timetableId';
-
-      // this.filterList.forEach(
-      //   (f) =>
-      //     (f.isActive =
-      //       this.initFilters.find((initFilter) => initFilter.id == f.id)?.isActive || false)
-      // );
-
-      // this.handleRouteParams();
-      this.fetchHistoryData();
     },
 
     async addHistoryData() {
@@ -326,13 +341,19 @@ export default defineComponent({
       const driverName = this.searchersValues['search-driver'].trim() || undefined;
       const trainNo = this.searchersValues['search-train'].trim() || undefined;
       const authorName = this.searchersValues['search-dispatcher'].trim() || undefined;
-      const dateString = this.searchersValues['search-date'].trim() || undefined;
+      const dateFrom = this.searchersValues['search-date'].trim() || undefined;
       const issuedFrom = this.searchersValues['search-issuedFrom'].trim() || undefined;
 
-      const timestampFrom = dateString
-        ? Date.parse(new Date(dateString).toISOString()) - 120 * 60 * 1000
-        : undefined;
-      const timestampTo = timestampFrom ? timestampFrom + 86400000 : undefined;
+      let dateTo: string | undefined = undefined;
+
+      if (dateFrom) {
+        const d = new Date(dateFrom);
+        d.setDate(d.getDate() + 1);
+
+        dateTo = d.toISOString().split('T')[0];
+      }
+      // const timestampFrom = dateString ? Date.parse(new Date(dateString).toISOString()) : undefined;
+      // const timestampTo = timestampFrom ? timestampFrom + 86400000 : undefined;
 
       const queryParams: TimetablesQueryParams = {};
 
@@ -367,7 +388,7 @@ export default defineComponent({
 
             case Journal.TimetableFilterId.TWR:
               queryParams['twr'] = 1;
-              queryParams['skr'] = undefined;
+              queryParams['skr'] = 0;
               break;
 
             case Journal.TimetableFilterId.SKR:
@@ -391,8 +412,8 @@ export default defineComponent({
       queryParams['countLimit'] = undefined;
 
       queryParams['authorName'] = authorName;
-      queryParams['timestampFrom'] = timestampFrom;
-      queryParams['timestampTo'] = timestampTo;
+      queryParams['dateFrom'] = dateFrom;
+      queryParams['dateTo'] = dateTo;
       queryParams['issuedFrom'] = issuedFrom;
       queryParams['sortBy'] =
         this.sorterActive.id != 'timetableId' ? this.sorterActive.id : undefined;

@@ -123,15 +123,15 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import dateMixin from '../../mixins/dateMixin';
-import styleMixin from '../../mixins/styleMixin';
-import { useMainStore } from '../../store/mainStore';
-import Loading from '../Global/Loading.vue';
-import { regions } from '../../data/options.json';
-import AddDataButton from '../Global/AddDataButton.vue';
-import { API } from '../../typings/api';
-import { Status } from '../../typings/common';
-import donatorMixin from '../../mixins/donatorMixin';
+import { regions } from '../../../data/options.json';
+import { useMainStore } from '../../../store/mainStore';
+import { API } from '../../../typings/api';
+import { Status } from '../../../typings/common';
+import Loading from '../../Global/Loading.vue';
+import AddDataButton from '../../Global/AddDataButton.vue';
+import dateMixin from '../../../mixins/dateMixin';
+import donatorMixin from '../../../mixins/donatorMixin';
+import styleMixin from '../../../mixins/styleMixin';
 
 export default defineComponent({
   components: { Loading, AddDataButton },
@@ -200,11 +200,11 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/animations.scss';
-@import '../../styles/responsive.scss';
-@import '../../styles/badge.scss';
-@import '../../styles/variables.scss';
-@import '../../styles/JournalSection.scss';
+@import '../../../styles/animations.scss';
+@import '../../../styles/responsive.scss';
+@import '../../../styles/badge.scss';
+@import '../../../styles/variables.scss';
+@import '../../../styles/JournalSection.scss';
 
 table.scenery-history-table {
   --_bg-table: #111;

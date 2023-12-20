@@ -44,8 +44,8 @@ import { Journal } from '../components/JournalView/typings';
 import { API } from '../typings/api';
 import { Status } from '../typings/common';
 
+import JournalDispatchersList from '../components/JournalView/JournalDispatchers/JournalDispatchersList.vue';
 import JournalOptions from '../components/JournalView/JournalOptions.vue';
-import JournalDispatchersList from '../components/JournalView/JournalDispatchersList.vue';
 import JournalHeader from '../components/JournalView/JournalHeader.vue';
 import JournalStats from '../components/JournalView/JournalStats.vue';
 
@@ -61,9 +61,9 @@ const statsButtons: Journal.StatsButton[] = [
 export default defineComponent({
   components: {
     JournalOptions,
-    JournalDispatchersList,
     JournalHeader,
-    JournalStats
+    JournalStats,
+    JournalDispatchersList
   },
   name: 'JournalDispatchers',
 
@@ -142,6 +142,10 @@ export default defineComponent({
     'mainStore.dispatcherStatsData'(stats) {
       this.statsButtons.find((sb) => sb.tab == Journal.StatsTab.DISPATCHER_STATS)!.disabled =
         stats === undefined;
+    },
+
+    async 'mainStore.dispatcherStatsName'() {
+      this.fetchDispatcherStats();
     }
   },
 
@@ -189,6 +193,29 @@ export default defineComponent({
       this.setOptions(query as any);
     },
 
+    async fetchDispatcherStats() {
+      if (!this.mainStore.dispatcherStatsName) {
+        this.mainStore.dispatcherStatsData = undefined;
+        return;
+      }
+
+      try {
+        const statsData: API.DispatcherStats.Response = await (
+          await http.get('api/getDispatcherStats', {
+            params: {
+              name: this.mainStore.dispatcherStatsName
+            }
+          })
+        ).data;
+
+        this.mainStore.dispatcherStatsData = statsData;
+      } catch (error) {
+        this.mainStore.dispatcherStatsData = undefined;
+
+        console.error('Ups! Wystąpił błąd przy próbie pobrania statystyk dyżurnego! :/');
+      }
+    },
+
     setOptions(searchers: { [key: string]: string }) {
       this.searchersValues['search-date'] = searchers['search-date'] ?? '';
       this.searchersValues['search-station'] = searchers['search-station'] ?? '';
@@ -198,8 +225,6 @@ export default defineComponent({
     resetOptions() {
       this.setOptions({});
       this.sorterActive.id = 'timestampFrom';
-
-      this.fetchHistoryData();
     },
 
     async addHistoryData() {

@@ -52,8 +52,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useMainStore } from '../../store/mainStore';
-import { Status } from '../../typings/common';
+import { useMainStore } from '../../../store/mainStore';
+import { Status } from '../../../typings/common';
 
 export default defineComponent({
   name: 'journal-driver-stats',
@@ -68,5 +68,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/JournalStats.scss';
+@import '../../../styles/JournalStats.scss';
 </style>

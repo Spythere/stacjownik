@@ -61,8 +61,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useMainStore } from '../../store/mainStore';
-import dateMixin from '../../mixins/dateMixin';
+import dateMixin from '../../../mixins/dateMixin';
+import { useMainStore } from '../../../store/mainStore';
 
 export default defineComponent({
   name: 'journal-dispatcher-stats',
@@ -81,5 +81,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/JournalStats.scss';
+@import '../../../styles/JournalStats.scss';
 </style>

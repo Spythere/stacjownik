@@ -248,7 +248,7 @@ export default defineComponent({
         } catch (error) {
           this[`${type}Suggestions`] = [];
         }
-      }, 450);
+      }, 250);
     },
 
     // Override keyMixin function
