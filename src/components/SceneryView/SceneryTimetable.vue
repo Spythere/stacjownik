@@ -48,7 +48,7 @@
       <transition-group name="list-anim">
         <div
           style="padding-bottom: 5em"
-          v-if="apiStore.dataStatuses.trains == 0 && computedScheduledTrains.length == 0"
+          v-if="apiStore.dataStatuses.connection == 0 && computedScheduledTrains.length == 0"
           key="list-loading"
         >
           <Loading />

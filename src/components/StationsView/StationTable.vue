@@ -279,7 +279,7 @@
       </table>
     </div>
 
-    <Loading v-if="apiStore.dataStatuses.sceneries == Status.Loading" />
+    <Loading v-if="apiStore.dataStatuses.connection == Status.Loading" />
 
     <div class="no-stations" v-else-if="stations.length == 0">
       {{ $t('sceneries.no-stations') }}
