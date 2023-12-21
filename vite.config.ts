@@ -6,20 +6,22 @@ export default defineConfig({
   server: {
     port: 5001
   },
+  publicDir: 'public',
   plugins: [
     vue(),
     VitePWA({
       registerType: 'autoUpdate',
+      includeAssets: ['/images/*.png', '/fonts/*.woff', '/fonts/*.woff2'],
 
       workbox: {
+        disableDevLogs: true,
         globPatterns: ['**/*.{js,css,html,png,svg,jpg}'],
         runtimeCaching: [
           {
-            urlPattern: new RegExp('^https://stacjownik.spythere.pl/api/getSceneries', 'i'),
+            urlPattern: new RegExp('^https://stacjownik.spythere.eu/api/getSceneries', 'i'),
             handler: 'NetworkFirst',
             options: {
               cacheName: 'sceneries-cache',
-
               cacheableResponse: {
                 statuses: [0, 200]
               }

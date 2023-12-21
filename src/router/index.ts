@@ -18,7 +18,8 @@ const routes: Array<RouteRecordRaw> = [
     props: (route) => ({
       train: route.query.train,
       driver: route.query.driver,
-      trainId: route.query.trainId
+      trainId: route.query.trainId,
+      region: route.query.region
     })
   },
   {
@@ -37,12 +38,18 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/journal/timetables',
     name: 'JournalTimetables',
-    component: JournalTimetablesVue
+    component: JournalTimetablesVue,
+    props: (route) => ({
+      region: route.query.region
+    })
   },
   {
     path: '/journal/dispatchers',
     name: 'JournalDispatchers',
-    component: JournalDispatchersVue
+    component: JournalDispatchersVue,
+    props: (route) => ({
+      region: route.query.region
+    })
   },
   {
     path: '/:catchAll(.*)',

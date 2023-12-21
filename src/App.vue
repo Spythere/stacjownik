@@ -37,7 +37,6 @@ import { defineComponent, watch } from 'vue';
 import Clock from './components/App/Clock.vue';
 
 import packageInfo from '.././package.json';
-import { regions } from './data/options.json';
 
 import { useMainStore } from './store/mainStore';
 import StatusIndicator from './components/App/StatusIndicator.vue';
@@ -46,6 +45,7 @@ import AppHeader from './components/App/AppHeader.vue';
 import axios from 'axios';
 import StorageManager from './managers/storageManager';
 import { useApiStore } from './store/apiStore';
+import { Status } from './typings/common';
 
 export default defineComponent({
   components: {
@@ -66,26 +66,10 @@ export default defineComponent({
   }),
 
   created() {
-    this.loadLang();
-    this.apiStore.setupAPI();
-
-    this.store.isOffline = !window.navigator.onLine;
-
-    window.addEventListener('offline', () => {
-      this.store.isOffline = true;
-      this.apiStore.activeData = undefined;
-
-      this.apiStore.setDataStatuses();
-    });
-
-    window.addEventListener('online', () => {
-      this.store.isOffline = false;
-    });
+    this.init();
   },
 
   async mounted() {
-    this.setReleaseURL();
-
     watch(
       () => this.store.blockScroll,
       (value) => {
@@ -95,23 +79,39 @@ export default defineComponent({
     );
   },
 
-  watch: {
-    '$route.query.region': {
-      immediate: true,
-      handler(regionQuery: string) {
-        if (regionQuery) {
-          this.store.region.id =
-            regions.find(
-              (reg) =>
-                reg.id == regionQuery.toLocaleLowerCase() ||
-                reg.value.toLocaleLowerCase() == regionQuery.toLocaleLowerCase()
-            )?.id || 'eu';
-        }
-      }
-    }
-  },
-
   methods: {
+    init() {
+      this.loadLang();
+      this.setReleaseURL();
+      this.setupOfflineHandling();
+
+      this.apiStore.setupAPI();
+    },
+
+    setupOfflineHandling() {
+      this.store.isOffline = !window.navigator.onLine;
+
+      if (this.store.isOffline) this.handleOfflineMode();
+
+      window.addEventListener('offline', this.handleOfflineMode);
+      window.addEventListener('online', this.handleOnlineMode);
+    },
+
+    handleOfflineMode() {
+      this.store.isOffline = true;
+
+      this.apiStore.stopActiveDataScheduler();
+      this.apiStore.activeData = undefined;
+
+      this.apiStore.dataStatuses.connection = Status.Data.Offline;
+    },
+
+    handleOnlineMode() {
+      this.store.isOffline = false;
+
+      this.apiStore.setupAPI();
+    },
+
     changeLang(lang: string) {
       this.$i18n.locale = lang;
       this.currentLang = lang;

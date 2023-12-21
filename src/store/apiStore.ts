@@ -18,7 +18,9 @@ export const useApiStore = defineStore('apiStore', {
     activeData: undefined as API.ActiveData.Response | undefined,
     rollingStockData: undefined as API.RollingStock.Response | undefined,
     donatorsData: [] as API.Donators.Response,
-    sceneryData: [] as StationJSONData[]
+    sceneryData: [] as StationJSONData[],
+
+    activeDataTimeout: undefined as number | undefined
   }),
 
   actions: {
@@ -28,22 +30,32 @@ export const useApiStore = defineStore('apiStore', {
       this.fetchDonatorsData();
       this.fetchStationsGeneralInfo();
 
-      this.scheduleFetchActiveData();
+      if (this.activeDataTimeout === undefined) this.startActiveDataScheduler();
     },
 
-    async setDataStatuses() {
-      if (!this.activeData?.activeSceneries) {
-        this.dataStatuses.sceneries = Status.Data.Error;
-        this.dataStatuses.trains = Status.Data.Error;
-        this.dataStatuses.dispatchers = Status.Data.Error;
+    // async setDataStatuses() {
+    //   if (!window.navigator.onLine) {
+    //     this.dataStatuses.connection = Status.Data.Offline;
+    //     this.dataStatuses.sceneries = Status.Data.Offline;
+    //     this.dataStatuses.trains = Status.Data.Offline;
+    //     this.dataStatuses.dispatchers = Status.Data.Offline;
+    //     this.dataStatuses.timetables = Status.Data.Offline;
+    //   }
 
-        return;
-      }
+    //   if (!this.activeData?.activeSceneries) {
+    //     this.dataStatuses.connection = Status.Data.Loaded;
+    //     this.dataStatuses.sceneries = Status.Data.Error;
+    //     this.dataStatuses.trains = Status.Data.Error;
+    //     this.dataStatuses.dispatchers = Status.Data.Error;
 
-      this.dataStatuses.sceneries = Status.Data.Loaded;
-      this.dataStatuses.trains = !this.activeData.trains ? Status.Data.Warning : Status.Data.Loaded;
-      this.dataStatuses.dispatchers = Status.Data.Loaded;
-    },
+    //     return;
+    //   }
+
+    //   this.dataStatuses.connection = Status.Data.Loaded;
+    //   this.dataStatuses.sceneries = Status.Data.Loaded;
+    //   this.dataStatuses.trains = !this.activeData.trains ? Status.Data.Warning : Status.Data.Loaded;
+    //   this.dataStatuses.dispatchers = Status.Data.Loaded;
+    // },
 
     async fetchDonatorsData() {
       try {
@@ -67,12 +79,16 @@ export const useApiStore = defineStore('apiStore', {
       }
     },
 
-    async scheduleFetchActiveData() {
+    async startActiveDataScheduler() {
+      if (!window.navigator.onLine) {
+        this.dataStatuses.connection = Status.Data.Offline;
+        return;
+      }
+
       if (import.meta.env.VITE_API_MODE === 'mock') {
         const mockActiveData = await import('../data/mockActiveData.json');
         this.dataStatuses.connection = Status.Data.Loaded;
         this.activeData = mockActiveData;
-        this.setDataStatuses();
 
         console.warn('Stacjownik działa w trybie mockowania danych z WS');
 
@@ -84,19 +100,22 @@ export const useApiStore = defineStore('apiStore', {
 
         this.activeData = data;
         this.dataStatuses.connection = Status.Data.Loaded;
-
-        this.setDataStatuses();
       } catch (error) {
         this.dataStatuses.connection = Status.Data.Error;
         console.error('Wystąpił błąd podczas pobierania danych online z API!');
       } finally {
-        setTimeout(
+        this.activeDataTimeout = window.setTimeout(
           () => {
-            this.scheduleFetchActiveData();
+            this.startActiveDataScheduler();
           },
           ~~(1000 * (Math.random() * (25 - 20) + 25))
         );
       }
+    },
+
+    async stopActiveDataScheduler() {
+      window.clearTimeout(this.activeDataTimeout);
+      this.activeDataTimeout = undefined;
     },
 
     async fetchStationsGeneralInfo() {
@@ -108,6 +127,7 @@ export const useApiStore = defineStore('apiStore', {
         return;
       }
 
+      this.dataStatuses.sceneries = Status.Data.Loaded;
       this.sceneryData = sceneryData;
     }
   }

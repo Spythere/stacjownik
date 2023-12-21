@@ -5,13 +5,12 @@
         {{ $t('app.offline') }}
       </div>
 
-      <Loading v-else-if="trains.length == 0 && apiStore.dataStatuses.trains == 0" key="loading" />
+      <Loading
+        v-else-if="trains.length == 0 && apiStore.dataStatuses.connection == 0"
+        key="loading"
+      />
 
-      <div
-        class="table-info"
-        key="no-trains"
-        v-else-if="trains.length == 0 && apiStore.dataStatuses.trains != 0"
-      >
+      <div class="table-info" key="no-trains" v-else-if="trains.length == 0">
         {{ $t('trains.no-trains') }}
       </div>
 

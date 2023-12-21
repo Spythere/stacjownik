@@ -240,9 +240,9 @@ export default defineComponent({
         const trainsDataStatus = statuses.trains;
         const dispatcherDataStatus = statuses.dispatchers;
 
-        if (this.store.isOffline) {
-          this.setSignalStatus(Status.Data.Initialized);
-          this.indicator.status = Status.Data.Initialized;
+        if (connectionStatus == Status.Data.Offline) {
+          this.setSignalStatus(Status.Data.Offline);
+          this.indicator.status = Status.Data.Offline;
           this.indicator.message = 'data-status.S1-offline';
           return;
         }
@@ -293,7 +293,7 @@ export default defineComponent({
       this.orangeLight = false;
       this.redBottomLight = false;
 
-      if (status == Status.Data.Initialized) {
+      if (status == Status.Data.Initialized || status == Status.Data.Offline) {
         this.redTopLight = true;
       }
 
