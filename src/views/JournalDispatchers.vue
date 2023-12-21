@@ -106,7 +106,7 @@ export default defineComponent({
       'search-dispatcher': '',
       'search-station': '',
       'search-date': ''
-    } as Journal.DispatcherSearcher);
+    } as Journal.DispatcherSearchType);
 
     const countFromIndex = ref(0);
     const countLimit = 15;
@@ -216,10 +216,13 @@ export default defineComponent({
       }
     },
 
-    setOptions(searchers: { [key: string]: string }) {
-      this.searchersValues['search-date'] = searchers['search-date'] ?? '';
-      this.searchersValues['search-station'] = searchers['search-station'] ?? '';
-      this.searchersValues['search-dispatcher'] = searchers['search-dispatcher'] ?? '';
+    setOptions(options: { [key: string]: string }) {
+      this.searchersValues['search-date'] = options['search-date'] ?? '';
+      this.searchersValues['search-station'] = options['search-station'] ?? '';
+      this.searchersValues['search-dispatcher'] = options['search-dispatcher'] ?? '';
+
+      this.sorterActive.id =
+        (options['sorter-active'] as Journal.DispatcherSorterKey) ?? 'timestampFrom';
     },
 
     resetOptions() {

@@ -1,12 +1,5 @@
 export namespace Journal {
-  export type DispatcherSearcher = {
-    [key in 'search-dispatcher' | 'search-station' | 'search-date']: string;
-  };
-
-  export interface DispatcherSorter {
-    id: 'timestampFrom' | 'duration';
-    dir: -1 | 1;
-  }
+  export type DispatcherSearchKey = 'search-dispatcher' | 'search-station' | 'search-date';
 
   export type TimetableSearchKey =
     | 'search-driver'
@@ -18,6 +11,23 @@ export namespace Journal {
   export type TimetableSearchType = {
     [key in TimetableSearchKey]: string;
   };
+
+  export type DispatcherSearchType = {
+    [key in DispatcherSearchKey]: string;
+  };
+
+  export type TimetableSorterKey = 'timetableId' | 'beginDate' | 'distance' | 'total-stops';
+  export type DispatcherSorterKey = 'timestampFrom' | 'duration';
+
+  export interface DispatcherSorter {
+    id: DispatcherSorterKey;
+    dir: -1 | 1;
+  }
+
+  export interface TimetableSorter {
+    id: TimetableSorterKey;
+    dir: 'asc' | 'desc';
+  }
 
   export const enum TimetableFilterId {
     ALL_STATUSES = 'all-statuses',
@@ -40,13 +50,6 @@ export namespace Journal {
     filterSection: string;
     isActive: boolean;
     default: boolean;
-  }
-
-  export type TimetableSorterKey = 'timetableId' | 'beginDate' | 'distance' | 'total-stops';
-
-  export interface TimetableSorter {
-    id: TimetableSorterKey;
-    dir: 'asc' | 'desc';
   }
 
   export enum StatsTab {
