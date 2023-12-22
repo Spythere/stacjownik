@@ -42,13 +42,13 @@
             &bull;
             <i18n-t keypath="journal.daily-stats.longest">
               <template #id>
-                <router-link :to="`/journal/timetables?timetableId=${stats.maxTimetable.id}`">
+                <router-link :to="`/journal/timetables?search-train=%23${stats.maxTimetable.id}`">
                   <b>{{ stats.maxTimetable.id }}</b>
                 </router-link>
               </template>
               <template #author>
                 <router-link
-                  :to="`/journal/dispatchers?dispatcherName=${stats.maxTimetable.authorName}`"
+                  :to="`/journal/timetables?search-dispatcher=${stats.maxTimetable.authorName}`"
                 >
                   <b>{{ stats.maxTimetable.authorName }}</b>
                 </router-link>
@@ -66,7 +66,9 @@
             &bull;
             <i18n-t keypath="journal.daily-stats.most-active-dr">
               <template #dispatcher>
-                <router-link :to="`/journal/dispatchers?dispatcherName=${topDispatchers[0].name}`">
+                <router-link
+                  :to="`/journal/dispatchers?search-dispatcher=${topDispatchers[0].name}`"
+                >
                   <b>{{ topDispatchers[0].name }}</b>
                 </router-link>
               </template>
@@ -86,7 +88,7 @@
                 <span v-for="(disp, i) in topDispatchers" :key="i">
                   <span v-if="i == topDispatchers.length - 1"> {{ $t('general.and') }} </span>
 
-                  <router-link :to="`/journal/dispatchers?dispatcherName=${disp.name}`">
+                  <router-link :to="`/journal/dispatchers?search-dispatcher=${disp.name}`">
                     <b>{{ disp.name }}</b>
                   </router-link>
 
@@ -108,7 +110,7 @@
             <i18n-t keypath="journal.daily-stats.longest-duties">
               <template #dispatcher>
                 <router-link
-                  :to="`/journal/dispatchers?dispatcherName=${stats.longestDuties[0].name}`"
+                  :to="`/journal/dispatchers?search-dispatcher=${stats.longestDuties[0].name}`"
                 >
                   <b>{{ stats.longestDuties[0].name }}</b>
                 </router-link>
@@ -126,12 +128,37 @@
             &bull;
             <i18n-t keypath="journal.daily-stats.most-active-driver">
               <template #driver>
-                <b class="text--primary">{{ stats.mostActiveDrivers[0].name }}</b>
+                <router-link
+                  :to="`/journal/timetables?search-driver=${stats.mostActiveDrivers[0].name}`"
+                >
+                  <b>{{ stats.mostActiveDrivers[0].name }}</b>
+                </router-link>
               </template>
               <template #distance>
                 <b class="text--primary">{{ stats.mostActiveDrivers[0].distance.toFixed(2) }} km</b>
               </template>
             </i18n-t>
+          </div>
+
+          <hr class="section-separator" />
+
+          <div class="stats-badges">
+            <span
+              class="stat-badge"
+              v-for="key in [
+                'rippedSwitches',
+                'derailments',
+                'skippedStopSignals',
+                'radioStops',
+                'kills'
+              ]"
+              :key="key"
+            >
+              <span>{{ $t(`journal.daily-stats.${key}`) }}</span>
+              <span>{{
+                Object.entries(stats.globalDiff).find(([k, v]) => k == key)?.[1] || '--'
+              }}</span>
+            </span>
           </div>
         </div>
       </span>
@@ -214,6 +241,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '../../styles/responsive.scss';
 @import '../../styles/JournalStats.scss';
+@import '../../styles/badge.scss';
 
 .daily-stats {
   text-align: left;
@@ -224,6 +252,12 @@ export default defineComponent({
 
 .stats-list a {
   text-decoration: underline;
+}
+
+.stats-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
 }
 
 @include smallScreen {

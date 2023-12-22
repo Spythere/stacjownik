@@ -369,7 +369,13 @@
       "most-active-dr-many": "The most active dispatchers: {dispatchers} (created {count} each)",
       "most-active-driver": "The most active driver: {driver} (total driven distance: {distance})",
       "longest-duties": "The longest service: {dispatcher} at {station} (duration: {duration})",
-      "count": "timetable | timetables"
+      "count": "timetable | timetables",
+
+      "rippedSwitches": "RIPPED SWITCHES",
+      "derailments": "DERAILMENTS",
+      "skippedStopSignals": "SKIPPED STOP SIGNALS",
+      "radioStops": "RADIOSTOPS",
+      "kills": "KILLS"
     },
 
     "dispatcher-stats": {

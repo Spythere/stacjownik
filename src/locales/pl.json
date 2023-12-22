@@ -351,7 +351,13 @@
       "most-active-dr-many": "Najaktywniejsi dyżurni: {dispatchers} (stworzyli po {count})",
       "most-active-driver": "Najaktywniejszy maszynista: {driver} (łączny przejechany dystans: {distance})",
       "longest-duties": "Najdłuższa służba: {dispatcher} na scenerii {station} (czas trwania: {duration})",
-      "count": "rozkład jazdy | rozkładów jazdy"
+      "count": "rozkład jazdy | rozkładów jazdy",
+
+      "rippedSwitches": "ROZPRUTE ZWROTNICE",
+      "derailments": "WYKOLEJENIA",
+      "skippedStopSignals": "POMINIĘTE S1",
+      "radioStops": "RADIOSTOPY",
+      "kills": "POTRĄCENIA"
     },
 
     "dispatcher-stats": {

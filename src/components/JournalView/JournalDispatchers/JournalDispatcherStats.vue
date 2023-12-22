@@ -32,7 +32,7 @@
         </span>
       </div>
 
-      <hr style="margin: 1em 0" />
+      <hr class="section-separator" />
 
       <div class="info-stats">
         <span class="stat-badge" v-if="stats.issuedTimetables">

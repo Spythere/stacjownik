@@ -169,7 +169,7 @@ export default defineComponent({
       {
         tab: Journal.StatsTab.DRIVER_STATS,
         localeKey: 'journal.driver-stats.button',
-        iconName: 'user',
+        iconName: 'train',
         disabled: true
       }
     ],
