@@ -140,7 +140,7 @@ export default defineComponent({
     },
     navigateToHistory() {
       this.$router.push(
-        `/journal/dispatchers?sceneryName=${this.station?.name || this.onlineScenery?.name}`
+        `/journal/dispatchers?search-station=${this.station?.name || this.onlineScenery?.name}`
       );
     }
   }
