@@ -9,7 +9,6 @@ import { Status } from '../typings/common';
 import Station from '../scripts/interfaces/Station';
 import { useApiStore } from './apiStore';
 import { API } from '../typings/api';
-import http from '../http';
 
 export const useMainStore = defineStore('store', {
   state: () =>
