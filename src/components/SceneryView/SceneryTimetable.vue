@@ -14,13 +14,13 @@
         </span>
 
         <span class="header_links" v-if="station">
-          <a
+          <!-- <a
             :href="`https://pragotron-td2.web.app/board?name=${station.name}`"
             target="_blank"
             :title="$t('scenery.pragotron-link')"
           >
             <img src="/images/icon-pragotron.svg" alt="icon-pragotron" />
-          </a>
+          </a> -->
 
           <a :href="tabliceZbiorczeHref" target="_blank" :title="$t('scenery.tablice-link')">
             <img src="/images/icon-tablice.ico" alt="icon-tablice" />
