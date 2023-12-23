@@ -30,7 +30,8 @@
   top: calc(100% + 0.5em);
 
   background-color: $bgCol;
-  box-shadow: 0 5px 10px 2px #0f0f0f;
+  // box-shadow: 0 5px 10px 2px #0f0f0f;
+  box-shadow: 0 0 5px 1px $accentCol;
 
   width: 100%;
   max-width: 550px;

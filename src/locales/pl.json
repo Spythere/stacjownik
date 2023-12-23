@@ -133,7 +133,8 @@
     "filter-noComments": "BEZ UWAG",
     "filter-twr": "WYS. RYZYKA",
     "filter-skr": "SKRAJNIA",
-    "filter-twr-skr": "WSZYSTKIE",
+    "filter-twr-skr": "TWR/SKR",
+    "filter-all-statuses": "WSZYSTKIE",
     "filter-common": "ZWYKŁE",
     "filter-passenger": "PASAŻERSKIE",
     "filter-freight": "TOWAROWE",
@@ -145,9 +146,9 @@
     "filter-clear": "WYŁĄCZ FILTRY",
 
     "filter-section-timetable-status": "STATUS ROZKŁADU JAZDY",
-    "filter-section-twrskr": "UWAGI",
+    "filter-section-special": "TYPY SPECJALNE",
 
-    "filter-all": "WSZYSTKIE",
+    "filter-all-specials": "WSZYSTKIE",
     "filter-abandoned": "PORZUCONE",
     "filter-fulfilled": "WYPEŁNIONE",
     "filter-active": "AKTYWNE"
@@ -326,31 +327,51 @@
 
     "load-data": "Pobierz dalszą historię...",
 
-    "stats-title": "STATYSTYKI MASZYNISTY",
-
     "last-seen-at": "Ostatnio widziany na: ",
     "currently-at": "Obecnie na scenerii: ",
 
-    "stats-timetables": "ROZKŁADY JAZDY",
-    "stats-longest-timetable": "NAJDŁUŻSZY RJ",
-    "stats-avg-timetable": "ŚREDNIA DŁUGOŚĆ RJ",
-    "stats-distance": "DYSTANS",
-    "stats-stations": "STACJE",
+    "driver-stats": {
+      "button": "STAT. MASZYNISTY",
+      "title": "STATYSTYKI MASZYNISTY {name}",
+      "info": "Wpisz nazwę użytkownika w filtrach [F], aby zobaczyć jego statystyki maszynisty!",
+      "timetables": "ROZKŁADY JAZDY",
+      "longest-timetable": "NAJDŁUŻSZY RJ",
+      "avg-timetable": "ŚREDNIA DŁUGOŚĆ RJ",
+      "distance": "DYSTANS",
+      "stations": "STACJE"
+    },
 
-    "timetable-stats-total": "Stworzone rozkłady jazdy: {count} (łączny dystans: {distance})",
-    "timetable-stats-longest": "Najdłuższy rozkład jazdy: #{id} (stworzony przez dyżurnego {author} dla maszynisty {driver} o dystansie {distance})",
-    "timetable-stats-most-active-dr": "Najaktywniejszy dyżurny: {dispatcher} (stworzył {count})",
-    "timetable-stats-most-active-dr-many": "Najaktywniejsi dyżurni: {dispatchers} (stworzyli po {count})",
-    "timetable-stats-most-active-driver": "Najaktywniejszy maszynista: {driver} (łączny przejechany dystans: {distance})",
-    "timetable-stats-longest-duties": "Najdłuższa służba: {dispatcher} na scenerii {station} (czas trwania: {duration})",
+    "daily-stats": {
+      "button": "STATYSTYKI DNIA",
+      "title": "STATYSTYKI DNIA",
+      "info": "Dzisiejsze statystyki nie są jeszcze dostępne!",
+      "total": "Stworzone rozkłady jazdy: {count} (łączny dystans: {distance})",
+      "longest": "Najdłuższy rozkład jazdy: #{id} (stworzony przez dyżurnego {author} dla maszynisty {driver} o dystansie {distance})",
+      "most-active-dr": "Najaktywniejszy dyżurny: {dispatcher} (stworzył {count})",
+      "most-active-dr-many": "Najaktywniejsi dyżurni: {dispatchers} (stworzyli po {count})",
+      "most-active-driver": "Najaktywniejszy maszynista: {driver} (łączny przejechany dystans: {distance})",
+      "longest-duties": "Najdłuższa służba: {dispatcher} na scenerii {station} (czas trwania: {duration})",
+      "count": "rozkład jazdy | rozkładów jazdy",
 
-    "timetable-count": "rozkład jazdy | rozkładów jazdy",
+      "rippedSwitches": "ROZPRUTE ZWROTNICE",
+      "derailments": "WYKOLEJENIA",
+      "skippedStopSignals": "POMINIĘTE S1",
+      "radioStops": "RADIOSTOPY",
+      "kills": "POTRĄCENIA"
+    },
 
-    "daily-stats-title": "STATYSTYKI DNIA",
-    "daily-stats-info": "Dzisiejsze statystyki nie są jeszcze dostępne!",
-
-    "driver-stats-title": "STATYSTYKI GRACZA",
-    "driver-stats-info": "Wpisz nazwę użytkownika w filtrach [F], aby zobaczyć jego statystyki maszynisty!",
+    "dispatcher-stats": {
+      "button": "STATYSTYKI DYŻURNEGO",
+      "title": "STATYSTYKI DYŻURNEGO {name}",
+      "info": "Wpisz nazwę użytkownika w filtrach [F], aby zobaczyć jego statystyki dyżurnego!",
+      "services-count": "DYŻURY",
+      "service-max": "MAKS. CZAS DYŻURU",
+      "service-avg": "ŚREDNI CZAS DYŻURU",
+      "timetables-count": "WYSTAWIONE RJ",
+      "timetables-sum": "SUMA WYSTAWIONYCH RJ",
+      "timetables-max": "NAJDŁUŻSZY WYSTAWIONY RJ",
+      "timetables-avg": "ŚREDNIA WYSTAWIONYCH RJ"
+    },
 
     "stats-loading": "Pobieranie statystyk...",
     "stats-error": "Ups! Wystąpił błąd podczas próby pobrania statystyk!",

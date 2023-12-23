@@ -59,6 +59,21 @@ export default defineComponent({
     'store.region.id': {
       handler(regionId) {
         this.selectedItemIndex = this.regionList.findIndex((reg) => reg.id == regionId);
+
+        console.log('region id', regionId);
+      }
+    },
+    '$route.query.region': {
+      immediate: true,
+      handler(regionQuery: string) {
+        if (regionQuery) {
+          this.store.region.id =
+            regionsJSON.find(
+              (reg) =>
+                reg.id == regionQuery.toLocaleLowerCase() ||
+                reg.value.toLocaleLowerCase() == regionQuery.toLocaleLowerCase()
+            )?.id || 'eu';
+        }
       }
     }
   },

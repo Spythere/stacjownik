@@ -1,12 +1,24 @@
 <template>
-  <div class="journal-stats" v-if="!store.isOffline">
-    <div class="stats-buttons">
+  <div
+    class="journal-stats dropdown"
+    v-if="!mainStore.isOffline"
+    @keydown.esc="currentStatsTab = null"
+  >
+    <div
+      class="dropdown_background"
+      v-if="currentStatsTab !== null"
+      @click="currentStatsTab = null"
+    ></div>
+
+    <div class="actions-bar">
       <button
-        v-for="button in data.statsButtons"
-        :key="button.name"
+        v-for="button in statsButtons"
+        :key="button.tab"
         class="btn--filled btn--image"
-        :data-selected="button.name == currentStatsTab"
-        @click="onTabButtonClick(button.name)"
+        :data-selected="button.tab == currentStatsTab"
+        :data-disabled="button.disabled"
+        :disabled="button.disabled"
+        @click="onTabButtonClick(button.tab)"
       >
         <img
           v-if="button.iconName"
@@ -17,87 +29,57 @@
       </button>
     </div>
 
-    <div class="stats-tab" v-show="currentStatsTab !== null">
-      <keep-alive>
-        <JournalDailyStats v-if="currentStatsTab == 'journal-daily-stats'" />
-        <JournalDriverStats v-else-if="currentStatsTab == 'journal-driver-stats'" />
-      </keep-alive>
-    </div>
+    <transition name="dropdown-anim">
+      <div class="dropdown_wrapper" v-if="currentStatsTab !== null">
+        <keep-alive>
+          <component :is="currentStatsTab" :key="currentStatsTab"></component>
+        </keep-alive>
+      </div>
+    </transition>
   </div>
 </template>
 
-<script setup lang="ts">
-import { computed, onMounted, reactive, Ref, ref, watch } from 'vue';
+<script lang="ts">
+import { defineComponent, PropType } from 'vue';
 import { useMainStore } from '../../store/mainStore';
-import JournalDailyStats from './JournalDailyStats.vue';
-import JournalDriverStats from './JournalDriverStats.vue';
 import StorageManager from '../../managers/storageManager';
+import { Journal } from './typings';
+import JournalDailyStats from './JournalDailyStats.vue';
+import JournalDispatcherStats from '../JournalView/JournalDispatchers/JournalDispatcherStats.vue';
+import JournalDriverStats from '../JournalView/JournalTimetables/JournalDriverStats.vue';
 
-export type JournalStatsTab = 'journal-driver-stats' | 'journal-daily-stats';
-
-const store = useMainStore();
-const currentStatsTab: Ref<JournalStatsTab | null> = ref(null);
-
-let data = reactive({
-  statsButtons: [
-    {
-      name: 'journal-daily-stats',
-      localeKey: 'journal.daily-stats-title',
-      iconName: 'stats'
-    },
-    {
-      name: 'journal-driver-stats',
-      localeKey: 'journal.driver-stats-title',
-      iconName: 'user'
+export default defineComponent({
+  components: { JournalDailyStats, JournalDriverStats, JournalDispatcherStats },
+  props: {
+    statsButtons: {
+      type: Array as PropType<Journal.StatsButton[]>,
+      required: true
     }
-  ] as { name: JournalStatsTab; localeKey: string; iconName?: string }[]
-});
+  },
+  data() {
+    return {
+      Journal,
+      mainStore: useMainStore(),
+      currentStatsTab: null as Journal.StatsTab | null
+    };
+  },
 
-function onTabButtonClick(tab: JournalStatsTab) {
-  currentStatsTab.value = tab == currentStatsTab.value ? null : tab;
-  StorageManager.setStringValue('journalStatsTab', currentStatsTab.value ?? '');
-}
+  methods: {
+    onTabButtonClick(tab: Journal.StatsTab) {
+      this.currentStatsTab = tab == this.currentStatsTab ? null : tab;
 
-watch(
-  computed(() => store.driverStatsData),
-  (newData, prevData) => {
-    currentStatsTab.value =
-      JSON.stringify(prevData) !== JSON.stringify(newData) && newData !== undefined
-        ? 'journal-driver-stats'
-        : currentStatsTab.value;
+      StorageManager.setStringValue('journalStatsTab', this.currentStatsTab ?? '');
+    }
   }
-);
-
-onMounted(() => {
-  const storedTab = StorageManager.getStringValue('journalStatsTab');
-
-  if (storedTab && storedTab !== '') currentStatsTab.value = storedTab as JournalStatsTab;
 });
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/JournalStats.scss';
+@import '../../styles/dropdown.scss';
+@import '../../styles/dropdown_filters.scss';
 @import '../../styles/variables.scss';
 
-.stats-buttons {
-  position: relative;
-
-  display: flex;
-  gap: 0.5em;
-
-  margin-bottom: 0.5em;
-
-  button {
-    font-weight: bold;
-    padding: 0.5em 0.75em;
-
-    &[data-inactive='true'] {
-      color: gray;
-    }
-
-    &[data-selected='true'] {
-      color: $accentCol;
-    }
-  }
+.dropdown_wrapper {
+  max-width: 100%;
 }
 </style>

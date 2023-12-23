@@ -16,7 +16,7 @@
 
         <hr style="margin: 0.5em 0" />
 
-        <div v-if="apiStore.dataStatuses.trains == Status.Loaded && regionTrains.length > 0">
+        <div v-if="apiStore.dataStatuses.connection == Status.Loaded && regionTrains.length > 0">
           <div class="top-list general">
             <transition-group tag="ul" name="stats-anim">
               <li class="badge" key="timetable-count">
@@ -88,7 +88,7 @@
           </div>
         </div>
 
-        <div v-else-if="apiStore.dataStatuses.trains != Status.Loaded">
+        <div v-else-if="apiStore.dataStatuses.connection != Status.Loaded">
           {{ $t('train-stats.stats-loading') }}
         </div>
 

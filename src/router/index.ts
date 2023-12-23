@@ -18,7 +18,8 @@ const routes: Array<RouteRecordRaw> = [
     props: (route) => ({
       train: route.query.train,
       driver: route.query.driver,
-      trainId: route.query.trainId
+      trainId: route.query.trainId,
+      region: route.query.region
     })
   },
   {
@@ -39,9 +40,7 @@ const routes: Array<RouteRecordRaw> = [
     name: 'JournalTimetables',
     component: JournalTimetablesVue,
     props: (route) => ({
-      trainNo: route.query.trainNo,
-      driverName: route.query.driverName,
-      timetableId: route.query.timetableId
+      region: route.query.region
     })
   },
   {
@@ -49,8 +48,7 @@ const routes: Array<RouteRecordRaw> = [
     name: 'JournalDispatchers',
     component: JournalDispatchersVue,
     props: (route) => ({
-      sceneryName: route.query.sceneryName,
-      dispatcherName: route.query.dispatcherName
+      region: route.query.region
     })
   },
   {

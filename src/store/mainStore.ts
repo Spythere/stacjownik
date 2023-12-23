@@ -18,7 +18,7 @@ export const useMainStore = defineStore('store', {
       isOffline: false,
 
       dispatcherStatsName: '',
-      dispatcherStatsData: undefined,
+      dispatcherStatsStatus: Status.Data.Initialized,
 
       driverStatsName: '',
       driverStatsData: undefined,

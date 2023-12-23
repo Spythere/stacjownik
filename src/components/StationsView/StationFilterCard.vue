@@ -447,7 +447,7 @@ export default defineComponent({
 
 .section-inputs {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 0.5em;
   margin: 1em 0;
 }

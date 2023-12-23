@@ -279,7 +279,7 @@
       </table>
     </div>
 
-    <Loading v-if="!isDataLoaded && stations.length == 0" />
+    <Loading v-if="apiStore.dataStatuses.connection == Status.Loading" />
 
     <div class="no-stations" v-else-if="stations.length == 0">
       {{ $t('sceneries.no-stations') }}
@@ -288,7 +288,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType } from 'vue';
+import { defineComponent, PropType } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
 import stationInfoMixin from '../../mixins/stationInfoMixin';
 import styleMixin from '../../mixins/styleMixin';
@@ -330,12 +330,8 @@ export default defineComponent({
     const apiStore = useApiStore();
     const stationFiltersStore = useStationFiltersStore();
 
-    const isDataLoaded = computed(() => {
-      return apiStore.dataStatuses.sceneries != Status.Data.Loading;
-    });
-
     return {
-      isDataLoaded,
+      Status: Status.Data,
       stationFiltersStore,
       mainStore,
       apiStore

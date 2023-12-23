@@ -19,7 +19,9 @@
         <tr v-for="historyItem in historyList" :key="historyItem.id">
           <td>#{{ historyItem.stationHash }}</td>
           <td>
-            <router-link :to="`/journal/dispatchers?dispatcherName=${historyItem.dispatcherName}`">
+            <router-link
+              :to="`/journal/dispatchers?search-dispatcher=${historyItem.dispatcherName}`"
+            >
               <b>{{ historyItem.dispatcherName }}</b>
             </router-link>
           </td>
@@ -138,7 +140,7 @@ export default defineComponent({
     },
     navigateToHistory() {
       this.$router.push(
-        `/journal/dispatchers?sceneryName=${this.station?.name || this.onlineScenery?.name}`
+        `/journal/dispatchers?search-station=${this.station?.name || this.onlineScenery?.name}`
       );
     }
   }

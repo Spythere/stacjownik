@@ -1,4 +1,3 @@
-import Station from '../scripts/interfaces/Station';
 import { API } from '../typings/api';
 import { Status } from '../typings/common';
 

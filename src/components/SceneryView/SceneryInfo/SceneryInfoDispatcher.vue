@@ -10,7 +10,7 @@
 
       <router-link
         class="dispatcher_name"
-        :to="`/journal/dispatchers?dispatcherName=${onlineScenery.dispatcherName}`"
+        :to="`/journal/dispatchers?search-dispatcher=${onlineScenery.dispatcherName}`"
       >
         <span
           class="text--donator"

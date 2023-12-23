@@ -1,16 +1,5 @@
 <template>
   <div class="scenery-view">
-    <!-- <div
-      class="scenery-offline"
-      v-if="!stationInfo && !onlineSceneryInfo && store.dataStatuses.sceneries == 2"
-    >
-      <div>{{ $t('scenery.no-scenery') }}</div>
-
-      <action-button>
-        <router-link to="/">{{ $t('scenery.return-btn') }}</router-link>
-      </action-button>
-    </div> -->
-
     <div class="scenery-wrapper" ref="card-wrapper">
       <div class="scenery-left">
         <div class="scenery-actions">
@@ -43,7 +32,7 @@
         <div
           v-if="
             apiStore.dataStatuses.sceneries == Status.Loading ||
-            apiStore.dataStatuses.trains == Status.Loading
+            apiStore.dataStatuses.connection == Status.Loading
           "
         ></div>
 

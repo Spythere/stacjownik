@@ -31,7 +31,11 @@ export namespace API {
 
   export namespace DispatcherStats {
     export interface DistanceStat {
-      routeDistance: number;
+      routeDistance: number | null;
+    }
+
+    export interface DurationStat {
+      currentDuration: number | null;
     }
 
     export interface Count {
@@ -39,11 +43,18 @@ export namespace API {
     }
 
     export interface Response {
-      _sum: DistanceStat;
-      _max: DistanceStat;
-      _min: DistanceStat;
-      _avg: DistanceStat;
-      _count: Count;
+      services: {
+        count: number;
+        durationMax: number;
+        durationAvg: number;
+      } | null;
+
+      issuedTimetables: {
+        count: number;
+        distanceMax: number;
+        distanceAvg: number;
+        distanceSum: number;
+      } | null;
     }
   }
 
@@ -263,21 +274,47 @@ export namespace API {
       distanceAvg: number;
       maxTimetable: API.TimetableHistory.Data | null;
 
-      mostActiveDispatchers: {
-        name: string;
-        count: number;
-      }[];
+      globalDiff: GlobalDiff;
+      globalMax: GlobalMax;
 
-      mostActiveDrivers: {
-        name: string;
-        distance: number;
-      }[];
+      mostActiveDispatchers: MostActiveDispatcher[];
+      mostActiveDrivers: MostActiveDriver[];
 
-      longestDuties: {
-        name: string;
-        duration: number;
-        station: string;
-      }[];
+      longestDuties: LongestDuty[];
+    }
+
+    export interface MostActiveDispatcher {
+      name: string;
+      count: number;
+    }
+
+    export interface MostActiveDriver {
+      name: string;
+      distance: number;
+    }
+
+    export interface LongestDuty {
+      name: string;
+      duration: number;
+      station: string;
+    }
+
+    export interface GlobalDiff {
+      rippedSwitches: number;
+      derailments: number;
+      skippedStopSignals: number;
+      radioStops: number;
+      kills: number;
+      drivenKilometers: number;
+      routedTrains: number;
+    }
+
+    export interface GlobalMax {
+      _max: {
+        drivers: number;
+        dispatchers: number;
+        timetables: number;
+      };
     }
   }
 
