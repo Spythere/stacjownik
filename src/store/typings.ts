@@ -44,6 +44,7 @@ export interface StationJSONData {
   lines: string;
   project: string;
   projectUrl: string;
+  hash: string;
 
   reqLevel: number;
 
