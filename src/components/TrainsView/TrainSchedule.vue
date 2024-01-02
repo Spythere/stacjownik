@@ -14,16 +14,20 @@
           :data-stop-type="stop.type"
           :data-minor-stop-active="stop.isActive"
           :data-last-confirmed="stop.isLastConfirmed"
-          :data-track-count="stop.arrivalTrackCount ?? stop.departureTrackCount"
+          :data-track-count-arrival="stop.arrivalTrackCount"
+          :data-track-count-departure="stop.departureTrackCount"
+          :data-electrified-arrival="stop.currentArrivalRoute?.isElectric ?? false"
+          :data-electrified-departure="stop.currentDepartureRoute?.isElectric ?? false"
         >
           <span class="stop_info">
             <span class="distance">
-              {{ stop.distance.toFixed(1) }}
+              {{ stop.distance ? stop.distance.toFixed(1) : '' }}
             </span>
 
             <div class="progress">
+              <div class="line line_node line_node-top"></div>
               <div class="node"></div>
-              <div class="line line_stop" v-if="stop.status == 'stopped'"></div>
+              <div class="line line_node line_node-bottom"></div>
             </div>
 
             <StopLabel :stop="stop" />
@@ -32,8 +36,12 @@
           <div class="stop_line" v-if="i < scheduleStops.length - 1">
             <!-- Grid placeholder -->
             <div class="line-speed">
-              <div>{{ stop.departureSpeed }}</div>
-              <div>{{ stop.arrivalSpeed }}</div>
+              <div class="speed-departure" v-if="stop.currentDepartureRoute">
+                {{ stop.currentDepartureRoute.routeSpeed }}
+              </div>
+              <div class="speed-next-arrival" v-if="stop.nextArrivalRoute">
+                {{ stop.nextArrivalRoute.routeSpeed }}
+              </div>
             </div>
 
             <div class="progress">
@@ -53,14 +61,15 @@
               <!-- Routes  -->
               <span
                 v-if="
-                  stop.departureLine == train.timetableData!.followingStops[i + 1].arrivalLine &&
-                  !/sbl/gi.test(stop.departureLine!)
+                  stop.departureLine &&
+                  stop.departureLine == scheduleStops[i + 1]?.arrivalLine &&
+                  !/sbl/gi.test(stop.departureLine)
                 "
               >
                 {{ stop.departureLine }}
               </span>
 
-              <span v-else-if="!/sbl/gi.test(stop.departureLine!)">
+              <span v-else-if="stop.departureLine && !/sbl/gi.test(stop.departureLine)">
                 <div>{{ stop.departureLine }}</div>
                 <div
                   class="scenery-change-name"
@@ -72,11 +81,9 @@
                   {{ scheduleStops[i + 1].sceneryName }}
                 </div>
                 <div>
-                  {{ train.timetableData!.followingStops[i + 1].arrivalLine }}
+                  {{ scheduleStops[i + 1].arrivalLine }}
                 </div>
               </span>
-
-              <!-- || {{ stop.departureSpeed || '---' }} || {{ stop.arrivalSpeed || '---' }} -->
             </div>
           </div>
         </div>
@@ -93,6 +100,7 @@ import StopLabel from './StopLabel.vue';
 import StockList from '../Global/StockList.vue';
 import { useMainStore } from '../../store/mainStore';
 import { useApiStore } from '../../store/apiStore';
+import { StationRoutesInfo } from '../../store/typings';
 
 export interface TrainScheduleStop {
   nameHtml: string;
@@ -121,14 +129,15 @@ export interface TrainScheduleStop {
   sceneryHash: string;
   distance: number;
 
-  departureLine: string | null;
+  arrivalTrackCount: number;
+  departureTrackCount: number;
+
+  currentArrivalRoute?: StationRoutesInfo;
+  currentDepartureRoute?: StationRoutesInfo;
+  nextArrivalRoute?: StationRoutesInfo;
+
   arrivalLine: string | null;
-
-  arrivalSpeed: number | null;
-  departureSpeed: number | null;
-
-  arrivalTrackCount: number | null;
-  departureTrackCount: number | null;
+  departureLine: string | null;
 
   comments: string | null;
 }
@@ -156,7 +165,8 @@ export default defineComponent({
   computed: {
     scheduleStops(): TrainScheduleStop[] {
       let currentSceneryIndex = 0;
-      let lastTrackCount = 2;
+      let lastDepartureTrackCount = 2;
+      let lastArrivalTrackCount = 2;
 
       return (
         this.train.timetableData?.followingStops.map((stop, i, arr) => {
@@ -180,23 +190,20 @@ export default defineComponent({
               this.timetableSceneryNames[currentSceneryIndex + 1]?.toLocaleLowerCase()
           );
 
-          const arrivalLineInfo = nextSceneryInfo?.routesInfo.find(
-            (r) => r.routeName == arr[i + 1]?.arrivalLine
-          );
-
-          const departureLineInfo = sceneryInfo?.routesInfo.find(
+          const currentDepartureRoute = sceneryInfo?.routesInfo.find(
             (r) => r.routeName == stop.departureLine
           );
 
-          // let nextOuterLineName = '';
-          // for(let j = i; i < arr.length - 2; i++) {
-          //   if(arr[j].departureLine && arr[j].departureLine != arr[j+1].arrivalLine) {
-          //     nextOuterLineName = arr[j].departureLine!;
-          //     break
-          //   }
-          // }
+          const currentArrivalRoute = sceneryInfo?.routesInfo.find(
+            (r) => r.routeName == stop.arrivalLine
+          );
 
-          lastTrackCount = departureLineInfo?.routeTracks ?? lastTrackCount;
+          const nextArrivalRoute = nextSceneryInfo?.routesInfo.find(
+            (r) => r.routeName == arr[i + 1]?.arrivalLine
+          );
+
+          lastDepartureTrackCount = currentDepartureRoute?.routeTracks ?? lastDepartureTrackCount;
+          lastArrivalTrackCount = currentArrivalRoute?.routeTracks ?? lastArrivalTrackCount;
 
           return {
             nameHtml: stop.stopName,
@@ -218,11 +225,15 @@ export default defineComponent({
             arrivalLine: stop.arrivalLine,
             departureLine: stop.departureLine,
 
-            arrivalSpeed: arrivalLineInfo?.routeSpeed ?? null,
-            departureSpeed: departureLineInfo?.routeSpeed ?? null,
+            // arrivalSpeed: nextArrivalRoute?.routeSpeed ?? null,
+            // departureSpeed: currentDepartureRoute?.routeSpeed ?? null,
 
-            arrivalTrackCount: arrivalLineInfo?.routeTracks ?? null,
-            departureTrackCount: departureLineInfo?.routeTracks ?? lastTrackCount,
+            arrivalTrackCount: currentArrivalRoute?.routeTracks ?? lastArrivalTrackCount,
+            departureTrackCount: currentDepartureRoute?.routeTracks ?? lastDepartureTrackCount,
+
+            currentArrivalRoute,
+            currentDepartureRoute,
+            nextArrivalRoute,
 
             type: stop.stopType,
             distance: stop.stopDistance,
@@ -279,13 +290,13 @@ export default defineComponent({
             sceneryHash
         )
         .reverse();
-    },
-
-    timetableOuterRoutes() {
-      // for (let i = 0; i < this.scheduleStops.length; i++) {}
-
-      return [];
     }
+
+    // timetableOuterRoutes() {
+    //   // for (let i = 0; i < this.scheduleStops.length; i++) {}
+
+    //   return [];
+    // }
   },
 
   methods: {
@@ -329,9 +340,9 @@ $haltClr: #f8bb36;
   display: flex;
   flex-direction: column;
   overflow-y: hidden;
-  gap: 0.25em;
+  gap: 5px;
 
-  padding: 0.25em 0;
+  padding: 5px 0;
 }
 
 .stop {
@@ -340,12 +351,20 @@ $haltClr: #f8bb36;
     .node {
       border-color: lightgreen;
     }
+
+    .line_node-top {
+      display: none;
+    }
   }
 
   // End stop
   &[data-position='end'] {
     .node {
       border-color: salmon;
+    }
+
+    .line_node-bottom {
+      display: none;
     }
   }
 
@@ -362,12 +381,24 @@ $haltClr: #f8bb36;
     .progress > .line {
       animation: 0.5s ease-in-out alternate infinite blink;
     }
+
+    & + div {
+      .progress > .line_node-top {
+        animation: 0.5s ease-in-out alternate infinite blink;
+      }
+    }
   }
 
   // Last confirmed outpost / checkpoint
   &[data-last-confirmed='true'] {
     .progress > .line_connection {
       animation: 0.5s ease-in-out alternate infinite blink;
+    }
+
+    & + div {
+      .progress > .line_node-top {
+        animation: 0.5s ease-in-out alternate infinite blink;
+      }
     }
   }
 
@@ -387,11 +418,40 @@ $haltClr: #f8bb36;
     .progress > .node {
       border-color: $stoppedClr;
     }
+
+    .progress > .line_node {
+      border-color: $stoppedClr;
+    }
   }
 
-  &[data-track-count='2'] {
+  // Track count node lines
+  &[data-track-count-departure='2'] {
     .progress > .line {
       width: 6px;
+    }
+  }
+
+  &[data-track-count-arrival='2'] {
+    .progress > .line_node-top {
+      width: 6px;
+    }
+  }
+
+  &[data-track-count-arrival='1'] {
+    .progress > .line_node-top {
+      width: 4px;
+    }
+  }
+
+  &[data-electrified-departure] {
+    .stop_line > .line-speed > .speed-departure {
+      color: #00c1c7;
+    }
+  }
+
+  &[data-electrified-arrival] {
+    .stop_line > .line-speed > .speed-next-arrival {
+      color: #00c1c7;
     }
   }
 }
@@ -407,8 +467,8 @@ $haltClr: #f8bb36;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  color: gold;
-  gap: 5px;
+  color: #9b9b9b;
+  gap: 10px;
 }
 
 .stop_info {
@@ -419,14 +479,13 @@ $haltClr: #f8bb36;
 .stop_line {
   font-size: 0.8em;
   color: #ccc;
-  margin-top: 0.25em;
+  margin-top: 5px;
 }
 
 .distance {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #d6d6d6;
   font-size: 0.75em;
 }
 
@@ -464,8 +523,19 @@ $haltClr: #f8bb36;
     border-right: 2px solid $barClr;
 
     &.line_connection {
-      top: -1em;
-      height: calc(100% + 2em);
+      transform: translate(-50%, -6px);
+      height: calc(100% + 12px);
+      // height: calc(100% + 0.25em);
+    }
+
+    &.line_node-top {
+      top: 0;
+      height: 50%;
+    }
+
+    &.line_node-bottom {
+      top: 50%;
+      height: 50%;
     }
 
     &.line_stop {
