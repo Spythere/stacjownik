@@ -14,10 +14,7 @@
           :data-stop-type="stop.type"
           :data-minor-stop-active="stop.isActive"
           :data-last-confirmed="stop.isLastConfirmed"
-          :data-track-count-arrival="stop.arrivalTrackCount"
-          :data-track-count-departure="stop.departureTrackCount"
-          :data-electrified-arrival="stop.currentArrivalRoute?.isElectric ?? false"
-          :data-electrified-departure="stop.currentDepartureRoute?.isElectric ?? false"
+          x
         >
           <span class="stop_info">
             <span class="distance">
@@ -35,13 +32,13 @@
 
           <div class="stop_line" v-if="i < scheduleStops.length - 1">
             <!-- Grid placeholder -->
-            <div class="line-speed">
-              <div class="speed-departure" v-if="stop.currentDepartureRoute">
+            <div>
+              <!-- <div class="speed-departure" v-if="stop.currentDepartureRoute">
                 {{ stop.currentDepartureRoute.routeSpeed }}
               </div>
               <div class="speed-next-arrival" v-if="stop.nextArrivalRoute">
                 {{ stop.nextArrivalRoute.routeSpeed }}
-              </div>
+              </div> -->
             </div>
 
             <div class="progress">
@@ -49,10 +46,6 @@
             </div>
 
             <div class="bottom-line-info">
-              <!-- <div>
-                {{ stop.sceneryName }}
-              </div> -->
-
               <div class="info-comments" v-if="stop.comments" style="color: salmon">
                 <img src="/images/icon-warning.svg" alt="icon-warning" width="20" />
                 <b v-html="stop.comments"></b>
@@ -100,7 +93,6 @@ import StopLabel from './StopLabel.vue';
 import StockList from '../Global/StockList.vue';
 import { useMainStore } from '../../store/mainStore';
 import { useApiStore } from '../../store/apiStore';
-import { StationRoutesInfo } from '../../store/typings';
 
 export interface TrainScheduleStop {
   nameHtml: string;
@@ -129,12 +121,12 @@ export interface TrainScheduleStop {
   sceneryHash: string;
   distance: number;
 
-  arrivalTrackCount: number;
-  departureTrackCount: number;
+  // arrivalTrackCount: number;
+  // departureTrackCount: number;
 
-  currentArrivalRoute?: StationRoutesInfo;
-  currentDepartureRoute?: StationRoutesInfo;
-  nextArrivalRoute?: StationRoutesInfo;
+  // currentArrivalRoute?: StationRoutesInfo;
+  // currentDepartureRoute?: StationRoutesInfo;
+  // nextArrivalRoute?: StationRoutesInfo;
 
   arrivalLine: string | null;
   departureLine: string | null;
@@ -165,8 +157,8 @@ export default defineComponent({
   computed: {
     scheduleStops(): TrainScheduleStop[] {
       let currentSceneryIndex = 0;
-      let lastDepartureTrackCount = 2;
-      let lastArrivalTrackCount = 2;
+      // let lastDepartureTrackCount = 2;
+      // let lastArrivalTrackCount = 2;
 
       return (
         this.train.timetableData?.followingStops.map((stop, i, arr) => {
@@ -178,32 +170,32 @@ export default defineComponent({
           )
             currentSceneryIndex++;
 
-          const sceneryInfo = this.apiStore.sceneryData.find(
-            (sd) =>
-              sd.name.toLocaleLowerCase() ==
-              this.timetableSceneryNames[currentSceneryIndex].toLocaleLowerCase()
-          );
+          // const sceneryInfo = this.apiStore.sceneryData.find(
+          //   (sd) =>
+          //     sd.name.toLocaleLowerCase() ==
+          //     this.timetableSceneryNames[currentSceneryIndex].toLocaleLowerCase()
+          // );
 
-          const nextSceneryInfo = this.apiStore.sceneryData.find(
-            (sd) =>
-              sd.name.toLocaleLowerCase() ==
-              this.timetableSceneryNames[currentSceneryIndex + 1]?.toLocaleLowerCase()
-          );
+          // const nextSceneryInfo = this.apiStore.sceneryData.find(
+          //   (sd) =>
+          //     sd.name.toLocaleLowerCase() ==
+          //     this.timetableSceneryNames[currentSceneryIndex + 1]?.toLocaleLowerCase()
+          // );
 
-          const currentDepartureRoute = sceneryInfo?.routesInfo.find(
-            (r) => r.routeName == stop.departureLine
-          );
+          // const currentDepartureRoute = sceneryInfo?.routesInfo.find(
+          //   (r) => r.routeName == stop.departureLine
+          // );
 
-          const currentArrivalRoute = sceneryInfo?.routesInfo.find(
-            (r) => r.routeName == stop.arrivalLine
-          );
+          // const currentArrivalRoute = sceneryInfo?.routesInfo.find(
+          //   (r) => r.routeName == stop.arrivalLine
+          // );
 
-          const nextArrivalRoute = nextSceneryInfo?.routesInfo.find(
-            (r) => r.routeName == arr[i + 1]?.arrivalLine
-          );
+          // const nextArrivalRoute = nextSceneryInfo?.routesInfo.find(
+          //   (r) => r.routeName == arr[i + 1]?.arrivalLine
+          // );
 
-          lastDepartureTrackCount = currentDepartureRoute?.routeTracks ?? lastDepartureTrackCount;
-          lastArrivalTrackCount = currentArrivalRoute?.routeTracks ?? lastArrivalTrackCount;
+          // lastDepartureTrackCount = currentDepartureRoute?.routeTracks ?? lastDepartureTrackCount;
+          // lastArrivalTrackCount = currentArrivalRoute?.routeTracks ?? lastArrivalTrackCount;
 
           return {
             nameHtml: stop.stopName,
@@ -228,12 +220,12 @@ export default defineComponent({
             // arrivalSpeed: nextArrivalRoute?.routeSpeed ?? null,
             // departureSpeed: currentDepartureRoute?.routeSpeed ?? null,
 
-            arrivalTrackCount: currentArrivalRoute?.routeTracks ?? lastArrivalTrackCount,
-            departureTrackCount: currentDepartureRoute?.routeTracks ?? lastDepartureTrackCount,
+            // arrivalTrackCount: currentArrivalRoute?.routeTracks ?? lastArrivalTrackCount,
+            // departureTrackCount: currentDepartureRoute?.routeTracks ?? lastDepartureTrackCount,
 
-            currentArrivalRoute,
-            currentDepartureRoute,
-            nextArrivalRoute,
+            // currentArrivalRoute,
+            // currentDepartureRoute,
+            // nextArrivalRoute,
 
             type: stop.stopType,
             distance: stop.stopDistance,
