@@ -283,12 +283,6 @@ export default defineComponent({
         )
         .reverse();
     }
-
-    // timetableOuterRoutes() {
-    //   // for (let i = 0; i < this.scheduleStops.length; i++) {}
-
-    //   return [];
-    // }
   },
 
   methods: {
@@ -306,6 +300,8 @@ $barClr: #b1b1b1;
 $confirmedClr: #4ae24a;
 $stoppedClr: #f55f31;
 $haltClr: #f8bb36;
+
+$blinkAnim: 0.5s ease-in-out alternate infinite blink;
 
 @keyframes blink {
   from {
@@ -371,12 +367,12 @@ $haltClr: #f8bb36;
 
   &[data-minor-stop-active='true'] {
     .progress > .line {
-      animation: 0.5s ease-in-out alternate infinite blink;
+      animation: $blinkAnim;
     }
 
     & + div {
       .progress > .line_node-top {
-        animation: 0.5s ease-in-out alternate infinite blink;
+        animation: $blinkAnim;
       }
     }
   }
@@ -384,12 +380,16 @@ $haltClr: #f8bb36;
   // Last confirmed outpost / checkpoint
   &[data-last-confirmed='true'] {
     .progress > .line_connection {
-      animation: 0.5s ease-in-out alternate infinite blink;
+      animation: $blinkAnim;
+    }
+
+    .progress > .line_node-bottom {
+      animation: $blinkAnim;
     }
 
     & + div {
       .progress > .line_node-top {
-        animation: 0.5s ease-in-out alternate infinite blink;
+        animation: $blinkAnim;
       }
     }
   }
@@ -416,7 +416,7 @@ $haltClr: #f8bb36;
     }
   }
 
-  // Track count node lines
+  // Unused so far
   &[data-track-count-departure='2'] {
     .progress > .line {
       width: 6px;
