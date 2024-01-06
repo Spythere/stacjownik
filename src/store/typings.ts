@@ -35,6 +35,7 @@ export interface StationRoutesInfo {
   routeLength: number;
   routeSpeed: number;
   routeTracks: number;
+  hidden?: boolean;
 }
 
 export interface StationJSONData {

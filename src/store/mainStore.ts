@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia';
-import StationRoutes from '../scripts/interfaces/StationRoutes';
 import Train from '../scripts/interfaces/Train';
 import { parseSpawns, getScheduledTrains, getStationTrains } from './utils';
 
@@ -9,6 +8,7 @@ import { Status } from '../typings/common';
 import Station from '../scripts/interfaces/Station';
 import { useApiStore } from './apiStore';
 import { API } from '../typings/api';
+import { StationRoutes } from '../scripts/interfaces/StationRoutes';
 
 export const useMainStore = defineStore('store', {
   state: () =>
@@ -155,46 +155,39 @@ export const useMainStore = defineStore('store', {
       const apiStore = useApiStore();
 
       return apiStore.sceneryData.map((scenery) => {
+        const routes = scenery.routesInfo.reduce(
+          (acc, route) => {
+            const tracksKey = route.routeTracks == 2 ? 'twoWay' : 'oneWay';
+            const isElectric = route.isElectric;
+            const routesKey: keyof StationRoutes = `${tracksKey}${
+              !isElectric ? 'No' : ''
+            }CatenaryRouteNames`;
+
+            if (!route.isInternal) acc[routesKey].push(route.routeName);
+            if (route.isRouteSBL) acc['sblRouteNames'].push(route.routeName);
+
+            acc[tracksKey].push(route);
+
+            return acc;
+          },
+          {
+            oneWay: [],
+            oneWayCatenaryRouteNames: [],
+            oneWayNoCatenaryRouteNames: [],
+            twoWay: [],
+            twoWayCatenaryRouteNames: [],
+            twoWayNoCatenaryRouteNames: [],
+            sblRouteNames: []
+          } as StationRoutes
+        );
+
         return {
           name: scenery.name,
 
           generalInfo: {
             ...scenery,
             authors: scenery.authors?.split(',').map((a) => a.trim()),
-            routes:
-              scenery.routesInfo.reduce(
-                (acc, route) => {
-                  const propName: keyof StationRoutes = `${
-                    route.routeTracks == 2 ? 'twoWay' : 'oneWay'
-                  }${route.isElectric ? '' : 'No'}CatenaryRouteNames`;
-
-                  acc[route.routeTracks == 2 ? 'twoWay' : 'oneWay'].push({
-                    name: route.routeName,
-                    SBL: route.isRouteSBL,
-                    TWB: false,
-                    catenary: route.isElectric,
-                    isInternal: route.isInternal,
-                    tracks: route.routeTracks,
-                    length: route.routeLength,
-                    speed: route.routeSpeed
-                  });
-
-                  if (!route.isInternal) acc[propName].push(route.routeName);
-
-                  if (route.isRouteSBL) acc['sblRouteNames'].push(route.routeName);
-
-                  return acc;
-                },
-                {
-                  oneWay: [],
-                  twoWay: [],
-                  sblRouteNames: [],
-                  oneWayCatenaryRouteNames: [],
-                  oneWayNoCatenaryRouteNames: [],
-                  twoWayCatenaryRouteNames: [],
-                  twoWayNoCatenaryRouteNames: []
-                } as StationRoutes
-              ) || {},
+            routes: routes,
             checkpoints: scenery.checkpoints
               ? scenery.checkpoints
                   .split(';')
