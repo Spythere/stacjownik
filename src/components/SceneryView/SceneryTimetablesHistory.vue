@@ -114,7 +114,7 @@ export default defineComponent({
         const response: API.TimetableHistory.Response = await (
           await http.get('api/getTimetables', {
             params: {
-              issuedFrom: this.station?.name
+              issuedFrom: this.station?.name || this.onlineScenery?.name
             }
           })
         ).data;
