@@ -60,8 +60,9 @@
             </div>
           </section>
 
-          <section class="card_timestamp" style="text-align: center">
-            <div>{{ $t('filters.minimum-hours-title') }}</div>
+          <section class="card_timestamp">
+            <h3 class="section-header">{{ $t('filters.minimum-hours-title') }}</h3>
+
             <span class="clock">
               <button class="btn--action" @click="subHour">-</button>
               <span>{{
@@ -75,16 +76,27 @@
             </span>
           </section>
 
+          <datalist id="authors">
+            <option v-for="(author, i) in authors" :key="i" :value="author"></option>
+          </datalist>
+
           <section class="card_authors-search">
-            <input
-              type="text"
-              :placeholder="$t('filters.authors-search')"
-              name="authors"
-              v-model="authorsInputValue"
-              @input="handleAuthorsInput"
-              @focus="preventKeyDown = true"
-              @blur="preventKeyDown = false"
-            />
+            <h3 class="section-header">{{ $t('filters.authors-search') }}</h3>
+
+            <form action="javascript:void(0);" @submit="handleAuthorsInput">
+              <input
+                type="text"
+                id="author"
+                list="authors"
+                name="authors"
+                :placeholder="$t('filters.authors-placeholder')"
+                v-model="authorsInputValue"
+                @focus="preventKeyDown = true"
+                @blur="preventKeyDown = false"
+              />
+
+              <button class="btn--action">{{ $t('filters.authors-button-title') }}</button>
+            </form>
           </section>
 
           <section class="card_sliders">
@@ -196,6 +208,19 @@ export default defineComponent({
 
     currentOptionsActive() {
       return true;
+    },
+
+    authors() {
+      return this.store.stationList
+        .reduce((acc, station) => {
+          station.generalInfo?.authors?.forEach((author) => {
+            if (author.trim() != '' && !acc.includes(author.toLocaleLowerCase()))
+              acc.push(author.toLocaleLowerCase());
+          });
+
+          return acc;
+        }, [] as string[])
+        .sort((a, b) => a.localeCompare(b));
     }
   },
 
@@ -230,12 +255,12 @@ export default defineComponent({
       if (this.saveOptions) StorageManager.setStringValue(target.name, target.value);
     },
 
-    handleAuthorsInput(e: Event) {
-      clearTimeout(this.delayInputTimer);
+    handleAuthorsInput() {
+      console.log(this.authorsInputValue);
 
-      this.delayInputTimer = window.setTimeout(() => {
-        this.handleInput(e);
-      }, 400);
+      this.filterStore.changeFilterValue('authors', this.authorsInputValue);
+
+      if (this.saveOptions) StorageManager.setStringValue('authors', this.authorsInputValue);
     },
 
     changeNumericFilterValue(name: string, value: number, saveToStorage = false) {
@@ -297,136 +322,139 @@ export default defineComponent({
 @import '../../styles/card.scss';
 @import '../../styles/animations.scss';
 
+h3.section-header {
+  text-align: center;
+  margin: 0.5em 0;
+}
+
 .card {
   display: grid;
   grid-template-rows: 1fr auto;
+}
 
-  &_info {
-    background-color: #111;
-    padding: 0.5em;
+.card_info {
+  background-color: #111;
+  padding: 0.5em;
+}
+
+.card_controls {
+  display: flex;
+  gap: 0.5em;
+
+  input {
+    border-radius: 0.5em 0.5em 0 0;
+    height: 100%;
+  }
+}
+
+.card_content {
+  padding: 1em 0.5em;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 1em;
+  overflow: auto;
+}
+
+.card_title {
+  font-size: 2em;
+  font-weight: 700;
+  color: $accentCol;
+
+  text-align: center;
+}
+
+.card_regions {
+  display: flex;
+  justify-content: center;
+
+  label > input {
+    display: none;
   }
 
-  &_controls {
+  label > span {
+    padding: 0.25em 0.5em;
+    margin: 0 0.25em;
+
+    cursor: pointer;
+
+    background-color: gray;
+
+    &.checked {
+      background-color: seagreen;
+    }
+  }
+}
+
+.card_timestamp {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  .clock {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 1.2em;
+    text-align: center;
+
+    span {
+      min-width: 120px;
+      font-weight: bold;
+      color: $accentCol;
+    }
+
+    button {
+      padding: 0.2em 0.6em;
+    }
+  }
+}
+
+.card_authors-search {
+  margin: 1em 0;
+
+  form {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5em;
+    width: 100%;
+    margin-top: 1em;
+  }
+
+  input {
+    width: 70%;
+    max-width: 400px;
+    padding: 0.5em;
+    outline: 1px solid white;
+  }
+}
+
+.card_actions {
+  width: 100%;
+  padding: 0.5em;
+
+  .filter-option {
+    max-width: 50%;
+    margin: 0 auto;
+  }
+
+  .action-buttons {
     display: flex;
     gap: 0.5em;
-
-    input {
-      border-radius: 0.5em 0.5em 0 0;
-      height: 100%;
-    }
-  }
-
-  &_content {
-    padding: 1em 0.5em;
-
-    display: flex;
-    flex-direction: column;
-
-    gap: 1em;
-    overflow: auto;
-  }
-
-  &_title {
-    font-size: 2em;
-    font-weight: 700;
-    color: $accentCol;
-
-    text-align: center;
-  }
-
-  &_regions {
-    display: flex;
-    justify-content: center;
-
-    label > input {
-      display: none;
-    }
-
-    label > span {
-      padding: 0.25em 0.5em;
-      margin: 0 0.25em;
-
-      cursor: pointer;
-
-      background-color: gray;
-
-      &.checked {
-        background-color: seagreen;
-      }
-    }
-  }
-
-  &_timestamp {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-
-    .clock {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      font-size: 1.2em;
-      margin-top: 0.5em;
-
-      span {
-        min-width: 120px;
-        font-weight: bold;
-        color: $accentCol;
-      }
-
-      button {
-        padding: 0.2em 0.6em;
-      }
-    }
-  }
-
-  &_modes {
-    display: flex;
-    justify-content: center;
-
-    .option {
-      margin: 0 1em;
-    }
-  }
-
-  &_authors-search {
-    display: inline-block;
-    margin: 0 auto;
-    width: 60%;
-    min-width: 240px;
-
-    input {
-      width: 100%;
-      padding: 0.5em;
-      border: 1px solid white;
-    }
-  }
-
-  &_actions {
     width: 100%;
-    padding: 0.5em;
 
-    .filter-option {
-      max-width: 50%;
+    margin-top: 0.5em;
+
+    button {
+      width: 50%;
       margin: 0 auto;
-    }
+      padding: 0.5em;
 
-    .action-buttons {
-      display: flex;
-      gap: 0.5em;
-      width: 100%;
-
-      margin-top: 0.5em;
-
-      button {
-        width: 50%;
-        margin: 0 auto;
-        padding: 0.5em;
-
-        &[data-selected='true'] {
-          background-color: forestgreen;
-        }
+      &[data-selected='true'] {
+        background-color: forestgreen;
       }
     }
   }

@@ -33,16 +33,17 @@
 
 <script lang="ts">
 import { defineComponent, watch } from 'vue';
+import axios from 'axios';
+import packageInfo from '.././package.json';
 
 import Clock from './components/App/Clock.vue';
 
-import packageInfo from '.././package.json';
-
 import { useMainStore } from './store/mainStore';
+
 import StatusIndicator from './components/App/StatusIndicator.vue';
-import TrainModal from './components/Global/TrainModal.vue';
 import AppHeader from './components/App/AppHeader.vue';
-import axios from 'axios';
+import TrainModal from './components/TrainsView/TrainModal.vue';
+
 import StorageManager from './managers/storageManager';
 import { useApiStore } from './store/apiStore';
 import { Status } from './typings/common';
@@ -51,8 +52,8 @@ export default defineComponent({
   components: {
     Clock,
     StatusIndicator,
-    TrainModal,
-    AppHeader
+    AppHeader,
+    TrainModal
   },
 
   data: () => ({

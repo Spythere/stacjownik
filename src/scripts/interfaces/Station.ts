@@ -1,5 +1,5 @@
 import { Availability, OnlineScenery, ScheduledTrain } from '../../store/typings';
-import StationRoutes from './StationRoutes';
+import { StationRoutes } from './StationRoutes';
 
 export default interface Station {
   name: string;

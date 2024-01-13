@@ -1,25 +1,8 @@
-export default interface StationRoutes {
-  oneWay: {
-    name: string;
-    catenary: boolean;
-    SBL: boolean;
-    TWB: boolean;
-    isInternal: boolean;
-    tracks: number;
-    speed: number;
-    length: number;
-  }[];
+import { StationRoutesInfo } from '../../store/typings';
 
-  twoWay: {
-    name: string;
-    catenary: boolean;
-    SBL: boolean;
-    TWB: boolean;
-    isInternal: boolean;
-    tracks: number;
-    speed: number;
-    length: number;
-  }[];
+export interface StationRoutes {
+  oneWay: StationRoutesInfo[];
+  twoWay: StationRoutesInfo[];
 
   /* [catenary, noCatenary] */
   oneWayCatenaryRouteNames: string[];

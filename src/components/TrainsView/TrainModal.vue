@@ -15,19 +15,12 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import modalTrainMixin from '../../mixins/modalTrainMixin';
-import trainInfoMixin from '../../mixins/trainInfoMixin';
-import TrainInfo from '../TrainsView/TrainInfo.vue';
-import TrainSchedule from '../TrainsView/TrainSchedule.vue';
+import TrainInfo from './TrainInfo.vue';
+import TrainSchedule from './TrainSchedule.vue';
 
 export default defineComponent({
   components: { TrainInfo, TrainSchedule },
-  mixins: [trainInfoMixin, modalTrainMixin],
-
-  data() {
-    return {
-      isTopBarVisible: false
-    };
-  },
+  mixins: [modalTrainMixin],
 
   activated() {
     const contentEl = this.$refs['content'] as HTMLElement;

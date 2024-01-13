@@ -218,7 +218,9 @@
       "routes-2t-other": "SZLAKI DWUTOROWE NIEZELEKTR. (MINIMUM)"
     },
 
-    "authors-search": "Szukaj autora (uwzględnia inne filtry)",
+    "authors-search": "SZUKAJ AUTORA (uwzględnia inne filtry):",
+    "authors-placeholder": "Wpisz nick autora...",
+    "authors-button-title": "Szukaj",
     "minimum-hours-title": "POKAŻ TYLKO SCENERIE DOSTĘPNE MINIMUM DO:",
     "now": "TERAZ",
     "hour": " godz.",

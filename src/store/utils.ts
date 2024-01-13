@@ -196,6 +196,7 @@ export function getScheduledTrains(
 
   return trainList.reduce((acc: ScheduledTrain[], train) => {
     if (!train.timetableData) return acc;
+    if (train.region != sceneryData.region) return acc;
 
     const timetable = train.timetableData;
     if (!timetable.sceneries.includes(sceneryData.stationHash)) return acc;

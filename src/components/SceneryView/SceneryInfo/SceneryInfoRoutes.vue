@@ -1,41 +1,49 @@
 <template>
   <section class="info-routes" v-if="station.generalInfo">
-    <div class="routes one-way" v-if="station.generalInfo.routes.oneWay.length > 0">
+    <div class="routes one-way" v-if="filteredOneWayRoutes.length > 0">
       <b>{{ $t('scenery.one-way-routes') }}</b>
 
       <ul class="routes-list">
         <li
-          v-for="route in station.generalInfo.routes.oneWay"
-          :key="route.name"
-          @click="setActiveShowLength(route.name)"
+          v-for="route in filteredOneWayRoutes"
+          :key="route.routeName"
+          @click="setActiveShowLength(route.routeName)"
         >
-          <span :class="{ 'no-catenary': !route.catenary, internal: route.isInternal }">
-            {{ route.name }}</span
+          <span :class="{ 'no-catenary': !route.isElectric, internal: route.isInternal }">
+            {{ route.routeName }}</span
           >
-          <span v-if="route.speed" class="speed">
-            {{ activeShowLength.includes(route.name) ? route.length + 'm' : route.speed }}
+          <span v-if="route.routeSpeed" class="speed">
+            {{
+              activeShowLength.includes(route.routeName)
+                ? route.routeLength + 'm'
+                : route.routeSpeed
+            }}
           </span>
-          <span v-if="route.SBL" class="sbl">SBL</span>
+          <span v-if="route.isRouteSBL" class="sbl">SBL</span>
         </li>
       </ul>
     </div>
 
-    <div class="routes two-way" v-if="station.generalInfo.routes.twoWay.length > 0">
+    <div class="routes two-way" v-if="filteredTwoWayRoutes.length > 0">
       <b>{{ $t('scenery.two-way-routes') }}</b>
 
       <ul class="routes-list">
         <li
-          v-for="route in station.generalInfo.routes.twoWay"
-          :key="route.name"
-          @click="setActiveShowLength(route.name)"
+          v-for="route in filteredTwoWayRoutes"
+          :key="route.routeName"
+          @click="setActiveShowLength(route.routeName)"
         >
-          <span :class="{ 'no-catenary': !route.catenary, internal: route.isInternal }">{{
-            route.name
+          <span :class="{ 'no-catenary': !route.isElectric, internal: route.isInternal }">{{
+            route.routeName
           }}</span>
-          <span v-if="route.speed" class="speed">
-            {{ activeShowLength.includes(route.name) ? route.length + 'm' : route.speed }}
+          <span v-if="route.routeSpeed" class="speed">
+            {{
+              activeShowLength.includes(route.routeName)
+                ? route.routeLength + 'm'
+                : route.routeSpeed
+            }}
           </span>
-          <span v-if="route.SBL" class="sbl">SBL</span>
+          <span v-if="route.isRouteSBL" class="sbl">SBL</span>
         </li>
       </ul>
     </div>
@@ -45,6 +53,9 @@
 <script lang="ts">
 import { PropType, defineComponent } from 'vue';
 import Station from '../../../scripts/interfaces/Station';
+import { StationRoutesInfo } from '../../../store/typings';
+
+const routeFilter = (route: StationRoutesInfo) => !route.hidden;
 
 export default defineComponent({
   props: {
@@ -66,6 +77,16 @@ export default defineComponent({
     return {
       activeShowLength: [] as string[]
     };
+  },
+
+  computed: {
+    filteredOneWayRoutes() {
+      return this.station.generalInfo?.routes.oneWay.filter(routeFilter) || [];
+    },
+
+    filteredTwoWayRoutes() {
+      return this.station.generalInfo?.routes.twoWay.filter(routeFilter) || [];
+    }
   }
 });
 </script>
