@@ -8732,7 +8732,7 @@
             "departureDelay": 0,
             "beginsHere": true,
             "terminatesHere": false,
-            "confirmed": 0,
+            "confirmed": 1,
             "stopped": 0,
             "stopTime": null
           },
@@ -9380,7 +9380,7 @@
             "stopType": "",
             "stopDistance": 123.62,
             "pointId": "1663532077406",
-            "comments": null,
+            "comments": "test123",
             "mainStop": true,
             "arrivalLine": "Sk",
             "arrivalTimestamp": 1701889320000,
