@@ -29,8 +29,9 @@
     <span
       v-if="
         stop.duration ||
-        (stop.status == 'stopped' && stop.position != 'begin') ||
-        stop.departureDelay != stop.arrivalDelay
+        (stop.status == 'stopped' &&
+          stop.position != 'begin' &&
+          stop.departureDelay != stop.arrivalDelay)
       "
       class="date stop"
       :data-stop-types="stop.type.replace(', ', '-')"
