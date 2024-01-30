@@ -368,3 +368,11 @@ export namespace GithubAPI {
     }
   }
 }
+
+export namespace Websocket {
+  export interface Payload {
+    activeSceneries: API.ActiveSceneries.Response;
+    activeTrains: API.ActiveTrains.Response;
+    connectedSocketCount: number;
+  }
+}
