@@ -34,7 +34,7 @@ export const useMainStore = defineStore('store', {
     trainList(): Train[] {
       const apiStore = useApiStore();
 
-      return (apiStore.activeData?.trains ?? [])
+      return (apiStore.websocketData?.activeTrains ?? [])
         .filter((train) => train.timetable || train.online)
         .map((train) => {
           const stock = train.stockString.split(';');
@@ -88,9 +88,9 @@ export const useMainStore = defineStore('store', {
       const apiStore = useApiStore();
 
       if (state.isOffline) return [];
-      if (!apiStore.activeData?.activeSceneries) return [];
+      if (!apiStore.websocketData?.activeSceneries) return [];
 
-      return apiStore.activeData?.activeSceneries.reduce((list, scenery) => {
+      return apiStore.websocketData?.activeSceneries.reduce((list, scenery) => {
         if (scenery.isOnline !== 1 && Date.now() - scenery.lastSeen > 1000 * 60 * 2) return list;
         if (scenery.dispatcherStatus == Status.ActiveDispatcher.UNKNOWN) return list;
 
@@ -196,97 +196,6 @@ export const useMainStore = defineStore('store', {
           }
         };
       });
-    }
-  },
-  actions: {
-    async processStationsOnlineInfo(activeData: API.ActiveData.Response) {
-      if (!activeData.activeSceneries) return;
-
-      const onlineSceneries = activeData.activeSceneries.reduce((acc, scenery) => {
-        const savedStation = this.stationList.find((st) => scenery.stationName === st.name);
-
-        if (scenery.isOnline !== 1 && Date.now() - scenery.lastSeen > 1000 * 60 * 2) return acc;
-        if (scenery.dispatcherStatus == Status.ActiveDispatcher.UNKNOWN) return acc;
-
-        const station = this.stationList.find((s) => s.name === scenery.stationName);
-
-        const scheduledTrains = getScheduledTrains(this.trainList, scenery, station?.generalInfo);
-
-        const stationTrains = getStationTrains(
-          this.trainList,
-          scheduledTrains,
-          this.region.id,
-          scenery
-        );
-
-        // Remove checkpoint duplicates
-        const uniqueScheduledTrains = scheduledTrains.reduce(
-          (uniqueList, sTrain) =>
-            uniqueList.find((v) => v.trainId === sTrain.trainId)
-              ? uniqueList
-              : [...uniqueList, sTrain],
-          [] as ScheduledTrain[]
-        );
-
-        const dispatcherTimestamp =
-          scenery.dispatcherStatus == Status.ActiveDispatcher.NO_LIMIT
-            ? Date.now() + 25500000
-            : scenery.dispatcherStatus > 5
-            ? scenery.dispatcherStatus
-            : null;
-
-        const onlineInfo = {
-          name: scenery.stationName,
-          hash: scenery.stationHash,
-          region: scenery.region,
-          maxUsers: scenery.maxUsers,
-          currentUsers: scenery.currentUsers,
-          spawns: parseSpawns(scenery.spawnString),
-          dispatcherName: scenery.dispatcherName,
-          dispatcherRate: scenery.dispatcherRate,
-          dispatcherId: scenery.dispatcherId,
-          dispatcherExp: scenery.dispatcherExp,
-          dispatcherIsSupporter: scenery.dispatcherIsSupporter,
-          scheduledTrains: scheduledTrains,
-          stationTrains: stationTrains,
-          dispatcherStatus: scenery.dispatcherStatus,
-          dispatcherTimestamp: dispatcherTimestamp,
-
-          isOnline: scenery.isOnline == 1,
-
-          scheduledTrainCount: {
-            all: uniqueScheduledTrains.length,
-            confirmed: uniqueScheduledTrains.filter((train) => train.stopInfo.confirmed).length,
-            unconfirmed: uniqueScheduledTrains.filter((train) => !train.stopInfo.confirmed).length
-          }
-        };
-
-        if (savedStation) savedStation.onlineInfo = onlineInfo;
-        else
-          this.stationList.push({
-            name: onlineInfo.name,
-            onlineInfo: onlineInfo
-          });
-
-        acc.push(onlineInfo);
-
-        return acc;
-      }, [] as OnlineScenery[]);
-
-      // Reset online info of already offline sceneries
-      this.stationList
-        .filter(
-          (station) =>
-            station.onlineInfo &&
-            onlineSceneries.findIndex(
-              (os) => os.region == station.onlineInfo!.region && station.name == os.name
-            ) != -1
-        )
-        .forEach((station) => (station.onlineInfo = undefined));
-    },
-
-    async changeRegion(region: StoreState['region']) {
-      this.region = region;
     }
   }
 });

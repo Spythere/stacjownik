@@ -18,6 +18,7 @@
     "howler": "^2.2.4",
     "pinia": "^2.1.6",
     "sass": "^1.67.0",
+    "socket.io-client": "^4.7.4",
     "vue": "^3.3.4",
     "vue-i18n": "^9.4.1",
     "vue-router": "^4.2.4"

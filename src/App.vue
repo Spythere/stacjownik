@@ -47,6 +47,8 @@ import TrainModal from './components/TrainsView/TrainModal.vue';
 import StorageManager from './managers/storageManager';
 import { useApiStore } from './store/apiStore';
 import { Status } from './typings/common';
+import { Websocket } from './typings/api';
+import socket from './websocket';
 
 export default defineComponent({
   components: {
@@ -86,7 +88,39 @@ export default defineComponent({
       this.setReleaseURL();
       this.setupOfflineHandling();
 
-      this.apiStore.setupAPI();
+      this.apiStore.setupStaticAPIData();
+      this.connectToWebsocket();
+    },
+
+    async connectToWebsocket() {
+      this.apiStore.dataStatuses.connection = Status.Data.Loading;
+
+      console.log('ws connecting');
+
+      socket.on('connect_error', (err) => {
+        console.error(`WS connection error: ${err.message}`);
+
+        this.apiStore.dataStatuses.connection = Status.Data.Error;
+        this.apiStore.websocketData = undefined;
+      });
+
+      let timeFrom = Date.now();
+      socket.on('connect', () => {
+        socket.emit('CONNECTION', { version: packageInfo.version }, () => {
+          console.log(`Connection time: ${Date.now() - timeFrom}ms`);
+        });
+
+        console.log('ws connected');
+      });
+
+      socket.on('UPDATE', (data: Websocket.Payload) => {
+        console.log('ws update');
+
+        this.apiStore.websocketData = data;
+        this.apiStore.dataStatuses.connection = Status.Data.Loaded;
+      });
+
+      this.fetchWebsocketData();
     },
 
     setupOfflineHandling() {
@@ -101,16 +135,24 @@ export default defineComponent({
     handleOfflineMode() {
       this.store.isOffline = true;
 
-      this.apiStore.stopActiveDataScheduler();
-      this.apiStore.activeData = undefined;
-
+      this.apiStore.websocketData = undefined;
       this.apiStore.dataStatuses.connection = Status.Data.Offline;
     },
 
     handleOnlineMode() {
       this.store.isOffline = false;
 
-      this.apiStore.setupAPI();
+      this.apiStore.setupStaticAPIData();
+      this.connectToWebsocket();
+    },
+
+    fetchWebsocketData() {
+      socket.emit('FETCH_DATA', (data: Websocket.Payload) => {
+        console.log('ws fetch data');
+
+        this.apiStore.websocketData = data;
+        this.apiStore.dataStatuses.connection = Status.Data.Loaded;
+      });
     },
 
     changeLang(lang: string) {
