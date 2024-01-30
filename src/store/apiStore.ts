@@ -4,8 +4,6 @@ import { API, Websocket } from '../typings/api';
 import axios from 'axios';
 import { Status } from '../typings/common';
 import { StationJSONData } from './typings';
-import { io } from 'socket.io-client';
-import packageInfo from '../../package.json';
 
 export const useApiStore = defineStore('apiStore', {
   state: () => ({
