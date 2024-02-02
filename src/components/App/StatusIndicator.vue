@@ -269,14 +269,6 @@ export default defineComponent({
       const dataStatuses = this.apiStore.dataStatuses;
       const swdrStatuses = this.apiStore.activeData?.apiStatuses;
 
-      let lights = {
-        greenBlinkLight: false,
-        greenLight: false,
-        orangeLight: false,
-        redBottomLight: false,
-        redTopLight: false
-      };
-
       let message = 'S3';
 
       switch (dataStatuses.connection) {
