@@ -1,18 +1,18 @@
 import { defineStore } from 'pinia';
 import http from '../http';
-import { API, Websocket } from '../typings/api';
+import { API, APIDataStatus } from '../typings/api';
 import axios from 'axios';
 import { Status } from '../typings/common';
 import { StationJSONData } from './typings';
+
+// Update seconds cron for active data scheduler
+const UPDATE_SECONDS = [3, 23, 43];
 
 export const useApiStore = defineStore('apiStore', {
   state: () => ({
     dataStatuses: {
       connection: Status.Data.Loading,
-      sceneries: Status.Data.Loading,
-      timetables: Status.Data.Loading,
-      dispatchers: Status.Data.Loading,
-      trains: Status.Data.Loading
+      sceneries: Status.Data.Loading
     },
 
     activeData: undefined as API.ActiveData.Response | undefined,
@@ -20,17 +20,45 @@ export const useApiStore = defineStore('apiStore', {
     donatorsData: [] as API.Donators.Response,
     sceneryData: [] as StationJSONData[],
 
-    websocketData: undefined as Websocket.Payload | undefined
-
-    // activeDataTimeout: undefined as number | undefined
+    activeDataScheduler: undefined as number | undefined
   }),
 
   actions: {
-    async setupStaticAPIData() {
+    async setupAPIData() {
       // Static data
       this.fetchStockInfoData();
       this.fetchDonatorsData();
       this.fetchStationsGeneralInfo();
+
+      // Active data schedueler
+      this.fetchActiveData();
+      this.setupActiveDataFetcher();
+    },
+
+    async setupActiveDataFetcher() {
+      if (this.activeDataScheduler) return;
+
+      this.dataStatuses.connection = Status.Data.Loading;
+
+      this.activeDataScheduler = window.setInterval(() => {
+        if (UPDATE_SECONDS.includes(new Date().getSeconds())) {
+          this.fetchActiveData();
+        }
+      }, 1000);
+    },
+
+    async fetchActiveData() {
+      try {
+        const response = await http.get<API.ActiveData.Response>('api/getActiveData');
+
+        this.activeData = response.data;
+        this.dataStatuses.connection = Status.Data.Loaded;
+
+        console.log('Fetching active data at ' + new Date().toLocaleTimeString('pl-PL'));
+      } catch (error) {
+        this.dataStatuses.connection = Status.Data.Error;
+        console.error('Ups! Wystąpił błąd podczas pobierania danych online:', error);
+      }
     },
 
     async fetchDonatorsData() {
