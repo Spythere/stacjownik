@@ -1,10 +1,22 @@
 import { Status } from './common';
 
+export enum APIDataStatus {
+  OK = 'OK',
+  WARNING = 'WARNING'
+}
 export namespace API {
   export namespace ActiveData {
+    export interface APIStatuses {
+      stationsAPI: APIDataStatus;
+      trainsAPI: APIDataStatus;
+      dispatchersAPI: APIDataStatus;
+      sceneryRequirementsAPI: APIDataStatus;
+    }
+
     export interface Response {
       activeSceneries?: API.ActiveSceneries.Response;
       trains?: API.ActiveTrains.Response;
+      apiStatuses?: APIStatuses;
     }
   }
   export namespace DispatcherHistory {

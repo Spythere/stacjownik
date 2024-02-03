@@ -7,7 +7,6 @@ import { OnlineScenery, ScheduledTrain, StoreState } from './typings';
 import { Status } from '../typings/common';
 import Station from '../scripts/interfaces/Station';
 import { useApiStore } from './apiStore';
-import { API } from '../typings/api';
 import { StationRoutes } from '../scripts/interfaces/StationRoutes';
 
 export const useMainStore = defineStore('store', {
@@ -34,7 +33,7 @@ export const useMainStore = defineStore('store', {
     trainList(): Train[] {
       const apiStore = useApiStore();
 
-      return (apiStore.websocketData?.activeTrains ?? [])
+      return (apiStore.activeData?.trains ?? [])
         .filter((train) => train.timetable || train.online)
         .map((train) => {
           const stock = train.stockString.split(';');
@@ -88,9 +87,9 @@ export const useMainStore = defineStore('store', {
       const apiStore = useApiStore();
 
       if (state.isOffline) return [];
-      if (!apiStore.websocketData?.activeSceneries) return [];
+      if (!apiStore.activeData?.activeSceneries) return [];
 
-      return apiStore.websocketData?.activeSceneries.reduce((list, scenery) => {
+      return apiStore.activeData?.activeSceneries.reduce((list, scenery) => {
         if (scenery.isOnline !== 1 && Date.now() - scenery.lastSeen > 1000 * 60 * 2) return list;
         if (scenery.dispatcherStatus == Status.ActiveDispatcher.UNKNOWN) return list;
 
