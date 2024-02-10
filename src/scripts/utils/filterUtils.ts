@@ -93,29 +93,32 @@ export const sortStations = (
 };
 
 export const filterStations = (station: Station, filters: Filter) => {
-  if (filters['free'] && !station.onlineInfo) return false;
+  if (filters['free'] && (!station.onlineInfo || station.onlineInfo.dispatcherId == -1))
+    return false;
 
-  if (station.onlineInfo) {
+  if (station.onlineInfo && station.onlineInfo.dispatcherId != -1) {
     const { dispatcherStatus } = station.onlineInfo;
 
-    const isEnding = dispatcherStatus == Status.ActiveDispatcher.ENDING && filters['endingStatus'];
+    const excludeEnding =
+      dispatcherStatus == Status.ActiveDispatcher.ENDING && filters['endingStatus'];
 
-    const isNotSigned =
+    const excludeNotSigned =
       (dispatcherStatus == Status.ActiveDispatcher.NOT_LOGGED_IN ||
         dispatcherStatus == Status.ActiveDispatcher.UNAVAILABLE) &&
       filters['unavailableStatus'];
 
-    const isAFK = dispatcherStatus == Status.ActiveDispatcher.AFK && filters['afkStatus'];
+    const excludeAFK = dispatcherStatus == Status.ActiveDispatcher.AFK && filters['afkStatus'];
 
-    const isNoSpace =
+    const excludeNoSpace =
       dispatcherStatus == Status.ActiveDispatcher.NO_SPACE && filters['noSpaceStatus'];
 
-    const isOccupied = station.onlineInfo && filters['occupied'];
+    const excludeOccupied = station.onlineInfo && filters['occupied'];
 
-    const isActiveFree =
-      dispatcherStatus == Status.ActiveDispatcher.FREE && filters['withActiveTimetables'];
+    // const isActiveFree =
+    //   dispatcherStatus == Status.ActiveDispatcher.FREE && filters['withActiveTimetables'];
 
-    if (isEnding || isNotSigned || isAFK || isNoSpace || isOccupied || isActiveFree) return false;
+    if (excludeEnding || excludeAFK || excludeNoSpace || excludeNotSigned || excludeOccupied)
+      return false;
 
     if (
       filters['onlineFromHours'] > 0 &&
