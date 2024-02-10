@@ -101,7 +101,7 @@ export default defineComponent({
 
     onlineDispatchersCount() {
       return this.store.activeSceneryList.filter(
-        (scenery) => scenery.region == this.store.region.id
+        (scenery) => scenery.region == this.store.region.id && scenery.dispatcherId != -1
       ).length;
     },
 

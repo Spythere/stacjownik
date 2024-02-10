@@ -93,7 +93,7 @@ export const sortStations = (
 };
 
 export const filterStations = (station: Station, filters: Filter) => {
-  if (!station.onlineInfo && filters['free']) return false;
+  if (filters['free'] && !station.onlineInfo) return false;
 
   if (station.onlineInfo) {
     const { dispatcherStatus } = station.onlineInfo;
@@ -112,7 +112,10 @@ export const filterStations = (station: Station, filters: Filter) => {
 
     const isOccupied = station.onlineInfo && filters['occupied'];
 
-    if (isEnding || isNotSigned || isAFK || isNoSpace || isOccupied) return false;
+    const isActiveFree =
+      dispatcherStatus == Status.ActiveDispatcher.FREE && filters['withActiveTimetables'];
+
+    if (isEnding || isNotSigned || isAFK || isNoSpace || isOccupied || isActiveFree) return false;
 
     if (
       filters['onlineFromHours'] > 0 &&

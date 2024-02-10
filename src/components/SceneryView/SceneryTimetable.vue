@@ -33,12 +33,12 @@
           {{ (i > 0 && '&bull;') || '' }}
 
           <button
-            :key="cp.checkpointName"
+            :key="cp"
             class="checkpoint_item"
-            :class="{ current: chosenCheckpoint === cp.checkpointName }"
+            :class="{ current: chosenCheckpoint === cp }"
             @click="setCheckpoint(cp)"
           >
-            {{ cp.checkpointName }}
+            {{ cp }}
           </button>
         </span>
       </div>
@@ -231,7 +231,7 @@ export default defineComponent({
     const chosenCheckpoint = ref(
       props.station?.generalInfo?.checkpoints?.length == 0
         ? ''
-        : props.station?.generalInfo?.checkpoints[0].checkpointName || null
+        : props.station?.generalInfo?.checkpoints[0] ?? null
     );
 
     return {
@@ -278,12 +278,11 @@ export default defineComponent({
     loadSelectedOption() {
       if (!this.station) return;
 
-      this.chosenCheckpoint =
-        this.station.generalInfo?.checkpoints[0]?.checkpointName || this.station.name;
+      this.chosenCheckpoint = this.station.generalInfo?.checkpoints[0] ?? this.station.name;
     },
 
-    setCheckpoint(cp: { checkpointName: string }) {
-      this.chosenCheckpoint = cp.checkpointName;
+    setCheckpoint(cp: string) {
+      this.chosenCheckpoint = cp;
     }
   }
 });

@@ -26,10 +26,7 @@ export default interface Station {
     availability: Availability;
     routes: StationRoutes;
 
-    checkpoints: {
-      checkpointName: string;
-      scheduledTrains: ScheduledTrain[];
-    }[];
+    checkpoints: string[];
   };
 
   onlineInfo?: ActiveScenery;

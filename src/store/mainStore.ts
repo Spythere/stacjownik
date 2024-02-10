@@ -166,31 +166,28 @@ export const useMainStore = defineStore('store', {
           dispatcherId: scenery.dispatcherId,
           dispatcherExp: scenery.dispatcherExp,
           dispatcherIsSupporter: scenery.dispatcherIsSupporter,
+          dispatcherStatus: scenery.dispatcherStatus,
+          dispatcherTimestamp: dispatcherTimestamp,
+
+          isOnline: scenery.isOnline == 1,
+
           scheduledTrains: [],
           stationTrains: [],
           scheduledTrainCount: {
             all: 0,
             confirmed: 0,
             unconfirmed: 0
-          },
-          // scheduledTrains: scheduledTrains,
-          // stationTrains: stationTrains,
-          dispatcherStatus: scenery.dispatcherStatus,
-          dispatcherTimestamp: dispatcherTimestamp,
-
-          isOnline: scenery.isOnline == 1
-
-          // scheduledTrainCount: {
-          //   all: uniqueScheduledTrains.length,
-          //   confirmed: uniqueScheduledTrains.filter((train) => train.stopInfo.confirmed).length,
-          //   unconfirmed: uniqueScheduledTrains.filter((train) => !train.stopInfo.confirmed).length
-          // }
+          }
         });
 
         return list;
       }, [] as ActiveScenery[]);
 
-      [...onlineActiveSceneries, ...offlineActiveSceneries].forEach((scenery) => {
+      const allActiveSceneries = [...onlineActiveSceneries, ...offlineActiveSceneries];
+
+      for (let i = 0, n = allActiveSceneries.length; i < n; i++) {
+        const scenery = allActiveSceneries[i];
+
         const station = this.stationList.find((s) => s.name === scenery.name);
 
         const scheduledTrains = getScheduledTrains(
@@ -224,11 +221,11 @@ export const useMainStore = defineStore('store', {
           confirmed: uniqueScheduledTrains.filter((train) => train.stopInfo.confirmed).length,
           unconfirmed: uniqueScheduledTrains.filter((train) => !train.stopInfo.confirmed).length
         };
-      });
+      }
 
       console.timeEnd('d');
 
-      return [...onlineActiveSceneries, ...offlineActiveSceneries];
+      return allActiveSceneries;
     },
 
     stationList(): Station[] {
@@ -268,11 +265,7 @@ export const useMainStore = defineStore('store', {
             ...scenery,
             authors: scenery.authors?.split(',').map((a) => a.trim()),
             routes: routes,
-            checkpoints: scenery.checkpoints
-              ? scenery.checkpoints
-                  .split(';')
-                  .map((sub) => ({ checkpointName: sub, scheduledTrains: [] }))
-              : []
+            checkpoints: scenery.checkpoints?.split(';') ?? []
           }
         };
       });

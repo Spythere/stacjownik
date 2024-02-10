@@ -42,14 +42,13 @@ export interface Filter {
   nonPublic: boolean;
   unavailable: boolean;
   abandoned: boolean;
-
   endingStatus: boolean;
   afkStatus: boolean;
   noSpaceStatus: boolean;
   unavailableStatus: boolean;
   unsignedStatus: boolean;
-
   authors: string;
-
   onlineFromHours: number;
+  withActiveTimetables: boolean;
+  withoutActiveTimetables: boolean;
 }

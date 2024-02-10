@@ -169,11 +169,7 @@ export default defineComponent({
     loadSelectedCheckpoint() {
       if (!this.stationInfo?.generalInfo?.checkpoints) return;
       if (this.stationInfo.generalInfo.checkpoints.length == 0) return;
-      this.selectedCheckpoint = this.stationInfo.generalInfo.checkpoints[0].checkpointName;
-    },
-
-    selectCheckpoint(cp: { checkpointName: string }) {
-      this.selectedCheckpoint = cp.checkpointName;
+      this.selectedCheckpoint = this.stationInfo.generalInfo.checkpoints[0];
     }
   }
 });

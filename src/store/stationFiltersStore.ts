@@ -48,6 +48,8 @@ const filterInitStates: Filter = {
   noSpaceStatus: false,
   unavailableStatus: false,
   unsignedStatus: false,
+  withActiveTimetables: false,
+  withoutActiveTimetables: false,
 
   authors: '',
 
