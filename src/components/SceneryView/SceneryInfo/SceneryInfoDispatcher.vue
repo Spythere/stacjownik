@@ -1,6 +1,6 @@
 <template>
   <section class="info-dispatcher">
-    <div class="dispatcher" v-if="onlineScenery">
+    <div class="dispatcher" v-if="onlineScenery && onlineScenery.dispatcherExp != -1">
       <span
         class="dispatcher_level"
         :style="calculateExpStyle(onlineScenery.dispatcherExp, onlineScenery.dispatcherIsSupporter)"
@@ -42,14 +42,14 @@ import dateMixin from '../../../mixins/dateMixin';
 import routerMixin from '../../../mixins/routerMixin';
 import styleMixin from '../../../mixins/styleMixin';
 import StationStatusBadge from '../../Global/StationStatusBadge.vue';
-import { OnlineScenery } from '../../../store/typings';
+import { ActiveScenery } from '../../../store/typings';
 import donatorMixin from '../../../mixins/donatorMixin';
 
 export default defineComponent({
   mixins: [styleMixin, dateMixin, routerMixin, donatorMixin],
   props: {
     onlineScenery: {
-      type: Object as PropType<OnlineScenery>,
+      type: Object as PropType<ActiveScenery>,
       required: false
     }
   },

@@ -33,5 +33,6 @@ export default interface Train {
     SKR: boolean;
     routeDistance: number;
     sceneries: string[];
+    sceneryNames: string[];
   };
 }

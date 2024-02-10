@@ -63,7 +63,7 @@ export interface StationJSONData {
   availability: Availability;
 }
 
-export interface OnlineScenery {
+export interface ActiveScenery {
   name: string;
   hash: string;
   region: string;

@@ -1,5 +1,6 @@
 export namespace Status {
   export enum ActiveDispatcher {
+    FREE = -3,
     INVALID = -2,
     UNKNOWN = -1,
     NO_LIMIT = 0,

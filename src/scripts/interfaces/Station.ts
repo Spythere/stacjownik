@@ -1,4 +1,4 @@
-import { Availability, OnlineScenery, ScheduledTrain } from '../../store/typings';
+import { Availability, ActiveScenery, ScheduledTrain } from '../../store/typings';
 import { StationRoutes } from './StationRoutes';
 
 export default interface Station {
@@ -8,6 +8,7 @@ export default interface Station {
     name: string;
     url: string;
     abbr: string;
+    hash?: string;
 
     reqLevel: number;
     // supportersOnly: boolean;
@@ -31,5 +32,5 @@ export default interface Station {
     }[];
   };
 
-  onlineInfo?: OnlineScenery;
+  onlineInfo?: ActiveScenery;
 }

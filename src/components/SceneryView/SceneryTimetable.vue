@@ -6,10 +6,10 @@
         <span>{{ $t('scenery.timetables') }}</span>
 
         <span>
-          <span class="text--primary">{{ onlineScenery?.scheduledTrainCount.all || 0 }}</span>
+          <span class="text--primary">{{ onlineScenery?.scheduledTrainCount.all ?? 0 }}</span>
           <span> / </span>
           <span class="text--grayed">
-            {{ onlineScenery?.scheduledTrainCount.confirmed || '0' }}
+            {{ onlineScenery?.scheduledTrainCount.confirmed ?? 0 }}
           </span>
         </span>
 
@@ -190,7 +190,7 @@ import Station from '../../scripts/interfaces/Station';
 import { useMainStore } from '../../store/mainStore';
 import modalTrainMixin from '../../mixins/modalTrainMixin';
 import ScheduledTrainStatus from './ScheduledTrainStatus.vue';
-import { OnlineScenery } from '../../store/typings';
+import { ActiveScenery } from '../../store/typings';
 import { useApiStore } from '../../store/apiStore';
 
 export default defineComponent({
@@ -205,7 +205,7 @@ export default defineComponent({
       type: Object as PropType<Station>
     },
     onlineScenery: {
-      type: Object as PropType<OnlineScenery>
+      type: Object as PropType<ActiveScenery>
     }
   },
 

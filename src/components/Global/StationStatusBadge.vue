@@ -61,6 +61,9 @@ export default defineComponent({
         case Status.ActiveDispatcher.UNKNOWN:
           return 'unknown';
 
+        case Status.ActiveDispatcher.FREE:
+          return 'free';
+
         default:
           if (this.dispatcherTimestamp != null && this.dispatcherStatus >= Date.now() + 25500000)
             return 'no-limit';

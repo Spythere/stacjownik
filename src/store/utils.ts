@@ -187,43 +187,31 @@ export function getCheckpointTrain(
 
 export function getScheduledTrains(
   trainList: Train[],
-  sceneryData: API.ActiveSceneries.Data,
-  stationGeneralInfo: Station['generalInfo']
+  stationGeneralInfo: Station['generalInfo'],
+  stationName: string,
+  region: string
+  // sceneryData: API.ActiveSceneries.Data,
 ): ScheduledTrain[] {
-  const stationNameLower = sceneryData.stationName.toLocaleLowerCase();
-
   stationGeneralInfo?.checkpoints.forEach((cp) => (cp.scheduledTrains.length = 0));
 
   return trainList.reduce((acc: ScheduledTrain[], train) => {
     if (!train.timetableData) return acc;
-    if (train.region != sceneryData.region) return acc;
+    if (train.region != region) return acc;
 
     const timetable = train.timetableData;
-    if (!timetable.sceneries.includes(sceneryData.stationHash)) return acc;
+    if (!timetable.sceneryNames.includes(stationName)) return acc;
 
     const stopInfoIndex = timetable.followingStops.findIndex((stop) => {
-      const stopNameLower = stop.stopNameRAW.toLocaleLowerCase();
-
-      return (
-        stationNameLower == stopNameLower ||
-        (!/(po\.|podg\.)/.test(stopNameLower) && stopNameLower.includes(stationNameLower)) ||
-        (!/(po\.|podg\.)/.test(stationNameLower) && stationNameLower.includes(stopNameLower)) ||
-        (stopNameLower.split(', podg.')[0] !== undefined &&
-          stationNameLower.startsWith(stopNameLower.split(', podg.')[0]))
-      );
+      return stationName.toLocaleLowerCase() == stop.stopNameRAW.toLocaleLowerCase();
     });
 
     const checkpointScheduledTrains: ScheduledTrain[] = [];
 
     if (stopInfoIndex != -1) {
-      checkpointScheduledTrains.push(
-        getCheckpointTrain(train, stopInfoIndex, sceneryData.stationName)
-      );
+      checkpointScheduledTrains.push(getCheckpointTrain(train, stopInfoIndex, stationName));
     }
 
     stationGeneralInfo?.checkpoints?.forEach((checkpoint) => {
-      // if (checkpoint.checkpointName.toLocaleLowerCase() == stationNameLower) return;
-
       if (
         checkpointScheduledTrains.findIndex(
           (cpTrain) =>
@@ -237,8 +225,7 @@ export function getScheduledTrains(
         (stop) => stop.stopNameRAW.toLowerCase() == checkpoint.checkpointName.toLowerCase()
       );
 
-      if (index > -1)
-        checkpointScheduledTrains.push(getCheckpointTrain(train, index, sceneryData.stationName));
+      if (index > -1) checkpointScheduledTrains.push(getCheckpointTrain(train, index, stationName));
     });
 
     acc.push(...checkpointScheduledTrains);
@@ -250,14 +237,12 @@ export function getStationTrains(
   trainList: Train[],
   scheduledTrainList: ScheduledTrain[],
   region: string,
-  sceneryData: API.ActiveSceneries.Data
+  stationName: string
 ): StationTrain[] {
   return trainList
     .filter(
       (train) =>
-        train?.region === region &&
-        train.online &&
-        train.currentStationName === sceneryData.stationName
+        train?.region === region && train.online && train.currentStationName === stationName
     )
     .map((train) => ({
       driverName: train.driverName,

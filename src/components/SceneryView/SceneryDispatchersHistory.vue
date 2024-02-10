@@ -76,7 +76,7 @@ import Station from '../../scripts/interfaces/Station';
 import Loading from '../Global/Loading.vue';
 import styleMixin from '../../mixins/styleMixin';
 import listObserverMixin from '../../mixins/listObserverMixin';
-import { OnlineScenery } from '../../store/typings';
+import { ActiveScenery } from '../../store/typings';
 import { API } from '../../typings/api';
 import { Status } from '../../typings/common';
 import http from '../../http';
@@ -90,7 +90,7 @@ export default defineComponent({
       type: Object as PropType<Station>
     },
     onlineScenery: {
-      type: Object as PropType<OnlineScenery>
+      type: Object as PropType<ActiveScenery>
     }
   },
 
