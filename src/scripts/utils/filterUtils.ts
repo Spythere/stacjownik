@@ -96,7 +96,7 @@ export const filterStations = (station: Station, filters: Filter) => {
   if (filters['free'] && (!station.onlineInfo || station.onlineInfo.dispatcherId == -1))
     return false;
 
-  if (station.onlineInfo && station.onlineInfo.dispatcherId != -1) {
+  if (station.onlineInfo) {
     const { dispatcherStatus } = station.onlineInfo;
 
     const excludeEnding =
@@ -112,12 +112,21 @@ export const filterStations = (station: Station, filters: Filter) => {
     const excludeNoSpace =
       dispatcherStatus == Status.ActiveDispatcher.NO_SPACE && filters['noSpaceStatus'];
 
-    const excludeOccupied = station.onlineInfo && filters['occupied'];
+    const excludeOccupied = filters['occupied'] && dispatcherStatus != Status.ActiveDispatcher.FREE;
 
-    // const isActiveFree =
-    //   dispatcherStatus == Status.ActiveDispatcher.FREE && filters['withActiveTimetables'];
+    const excludeActiveTTs =
+      (dispatcherStatus == Status.ActiveDispatcher.FREE ||
+        station.onlineInfo.scheduledTrainCount.all != 0) &&
+      filters['withActiveTimetables'];
 
-    if (excludeEnding || excludeAFK || excludeNoSpace || excludeNotSigned || excludeOccupied)
+    if (
+      excludeEnding ||
+      excludeAFK ||
+      excludeNoSpace ||
+      excludeNotSigned ||
+      excludeOccupied ||
+      excludeActiveTTs
+    )
       return false;
 
     if (
@@ -126,6 +135,12 @@ export const filterStations = (station: Station, filters: Filter) => {
     )
       return false;
   }
+
+  const excludeNoActiveTTs =
+    filters['withoutActiveTimetables'] &&
+    (!station.onlineInfo || station.onlineInfo.scheduledTrainCount.all == 0);
+
+  if (excludeNoActiveTTs) return false;
 
   if (
     (station.generalInfo?.availability == 'nonPublic' || !station.generalInfo) &&

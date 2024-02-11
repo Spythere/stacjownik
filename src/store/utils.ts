@@ -1,6 +1,5 @@
 import Station from '../scripts/interfaces/Station';
 import Train from '../scripts/interfaces/Train';
-import { API } from '../typings/api';
 import { ScheduledTrain, StationTrain, StopStatus, TrainStop } from './typings';
 
 export function getLocoURL(locoType: string): string {
