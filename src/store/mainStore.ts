@@ -99,8 +99,6 @@ export const useMainStore = defineStore('store', {
 
       if (!apiStore.activeData?.activeSceneries) return [];
 
-      console.time('d');
-
       const offlineActiveSceneries = this.trainList.reduce((acc, train) => {
         if (!train.timetableData) return acc;
 
@@ -222,8 +220,6 @@ export const useMainStore = defineStore('store', {
           unconfirmed: uniqueScheduledTrains.filter((train) => !train.stopInfo.confirmed).length
         };
       }
-
-      console.timeEnd('d');
 
       return allActiveSceneries;
     },

@@ -110,7 +110,7 @@ export function getCheckpointTrain(
   for (let i = trainStopIndex; i >= 0; i--) {
     const stop = followingStops[i];
 
-    if (/strong|podg/g.test(stop.stopName) && !prevStationName && i <= trainStopIndex - 1)
+    if (/strong|podg\.|pe\./g.test(stop.stopName) && !prevStationName && i <= trainStopIndex - 1)
       prevStationName = stop.stopNameRAW.replace(/,.*/g, '');
 
     if (stop.arrivalLine != null && !arrivingLine && !/-|_|it|sbl/gi.test(stop.arrivalLine)) {
@@ -122,7 +122,7 @@ export function getCheckpointTrain(
   for (let i = trainStopIndex; i < followingStops.length; i++) {
     const stop = followingStops[i];
 
-    if (/strong|podg/g.test(stop.stopName) && !nextStationName && i > trainStopIndex)
+    if (/strong|podg\.|pe\./g.test(stop.stopName) && !nextStationName && i > trainStopIndex)
       nextStationName = stop.stopNameRAW.replace(/,.*/g, '');
 
     if (stop.departureLine && !departureLine && !/-|_|it|sbl/gi.test(stop.departureLine)) {
