@@ -93,26 +93,41 @@ export const sortStations = (
 };
 
 export const filterStations = (station: Station, filters: Filter) => {
-  if (!station.onlineInfo && filters['free']) return false;
+  if (filters['free'] && (!station.onlineInfo || station.onlineInfo.dispatcherId == -1))
+    return false;
 
   if (station.onlineInfo) {
     const { dispatcherStatus } = station.onlineInfo;
 
-    const isEnding = dispatcherStatus == Status.ActiveDispatcher.ENDING && filters['endingStatus'];
+    const excludeEnding =
+      dispatcherStatus == Status.ActiveDispatcher.ENDING && filters['endingStatus'];
 
-    const isNotSigned =
+    const excludeNotSigned =
       (dispatcherStatus == Status.ActiveDispatcher.NOT_LOGGED_IN ||
         dispatcherStatus == Status.ActiveDispatcher.UNAVAILABLE) &&
       filters['unavailableStatus'];
 
-    const isAFK = dispatcherStatus == Status.ActiveDispatcher.AFK && filters['afkStatus'];
+    const excludeAFK = dispatcherStatus == Status.ActiveDispatcher.AFK && filters['afkStatus'];
 
-    const isNoSpace =
+    const excludeNoSpace =
       dispatcherStatus == Status.ActiveDispatcher.NO_SPACE && filters['noSpaceStatus'];
 
-    const isOccupied = station.onlineInfo && filters['occupied'];
+    const excludeOccupied = filters['occupied'] && dispatcherStatus != Status.ActiveDispatcher.FREE;
 
-    if (isEnding || isNotSigned || isAFK || isNoSpace || isOccupied) return false;
+    const excludeActiveTTs =
+      (dispatcherStatus == Status.ActiveDispatcher.FREE ||
+        station.onlineInfo.scheduledTrainCount.all != 0) &&
+      filters['withActiveTimetables'];
+
+    if (
+      excludeEnding ||
+      excludeAFK ||
+      excludeNoSpace ||
+      excludeNotSigned ||
+      excludeOccupied ||
+      excludeActiveTTs
+    )
+      return false;
 
     if (
       filters['onlineFromHours'] > 0 &&
@@ -120,6 +135,12 @@ export const filterStations = (station: Station, filters: Filter) => {
     )
       return false;
   }
+
+  const excludeNoActiveTTs =
+    filters['withoutActiveTimetables'] &&
+    (!station.onlineInfo || station.onlineInfo.scheduledTrainCount.all == 0);
+
+  if (excludeNoActiveTTs) return false;
 
   if (
     (station.generalInfo?.availability == 'nonPublic' || !station.generalInfo) &&

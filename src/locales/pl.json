@@ -165,7 +165,8 @@
       "signals": "TYP SYGNALIZACJI",
       "addons": "DODATKOWE PROGRAMY",
       "blockades": "BLOKADY LINIOWE",
-      "status": "STATUS ONLINE"
+      "status": "STATUS ONLINE",
+      "timetables": "AKTYWNE ROZKŁADY JAZDY"
     },
 
     "all-available": "WSZYSTKIE DOSTĘPNE",
@@ -208,6 +209,9 @@
 
     "free": "WOLNA",
     "occupied": "ZAJĘTA",
+
+    "withActiveTimetables": "AKTYWNE RJ",
+    "withoutActiveTimetables": "BEZ AKTYWNYCH RJ",
 
     "sliders": {
       "min-lvl": "MIN. WYMAGANY POZIOM DYŻURNEGO",

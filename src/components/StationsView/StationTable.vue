@@ -132,7 +132,7 @@
 
             <td class="station_dispatcher-exp">
               <span
-                v-if="station.onlineInfo"
+                v-if="station.onlineInfo && station.onlineInfo?.dispatcherExp != -1"
                 :style="
                   calculateExpStyle(
                     station.onlineInfo.dispatcherExp,

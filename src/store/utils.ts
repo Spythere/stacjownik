@@ -1,6 +1,5 @@
 import Station from '../scripts/interfaces/Station';
 import Train from '../scripts/interfaces/Train';
-import { API } from '../typings/api';
 import { ScheduledTrain, StationTrain, StopStatus, TrainStop } from './typings';
 
 export function getLocoURL(locoType: string): string {
@@ -102,51 +101,33 @@ export function getCheckpointTrain(
   let prevStationName = '',
     nextStationName = '';
 
-  let prevDepartureLine: string | null = null,
-    nextArrivalLine: string | null = null;
-
-  for (let i = trainStopIndex - 1; i >= 0; i--) {
-    if (/strong|podg/g.test(followingStops[i].stopName)) {
-      prevStationName = followingStops[i].stopNameRAW.replace(/,.*/g, '');
-
-      break;
-    }
-  }
-
-  for (let i = trainStopIndex + 1; i < followingStops.length; i++) {
-    if (/strong|podg/g.test(followingStops[i].stopName)) {
-      nextStationName = followingStops[i].stopNameRAW.replace(/,.*/g, '');
-
-      break;
-    }
-  }
-
   let departureLine: string | null = null;
   let arrivingLine: string | null = null;
 
-  for (let i = trainStopIndex; i < followingStops.length; i++) {
-    const currentStop = followingStops[i];
+  let prevDepartureLine: string | null = null,
+    nextArrivalLine: string | null = null;
 
-    if (currentStop.departureLine == null) continue;
+  for (let i = trainStopIndex; i >= 0; i--) {
+    const stop = followingStops[i];
 
-    if (!/-|_|it|sbl/gi.test(currentStop.departureLine)) {
-      departureLine = currentStop.departureLine;
-      nextArrivalLine = followingStops[i + 1]?.arrivalLine || null;
+    if (/strong|podg\.|pe\./g.test(stop.stopName) && !prevStationName && i <= trainStopIndex - 1)
+      prevStationName = stop.stopNameRAW.replace(/,.*/g, '');
 
-      break;
+    if (stop.arrivalLine != null && !arrivingLine && !/-|_|it|sbl/gi.test(stop.arrivalLine)) {
+      arrivingLine = stop.arrivalLine;
+      prevDepartureLine = followingStops[i - 1]?.departureLine || null;
     }
   }
 
-  for (let i = trainStopIndex; i >= 0; i--) {
-    const currentStop = followingStops[i];
+  for (let i = trainStopIndex; i < followingStops.length; i++) {
+    const stop = followingStops[i];
 
-    if (currentStop.arrivalLine == null) continue;
+    if (/strong|podg\.|pe\./g.test(stop.stopName) && !nextStationName && i > trainStopIndex)
+      nextStationName = stop.stopNameRAW.replace(/,.*/g, '');
 
-    if (!/-|_|it|sbl/gi.test(currentStop.arrivalLine)) {
-      arrivingLine = currentStop.arrivalLine;
-      prevDepartureLine = followingStops[i - 1]?.departureLine || null;
-
-      break;
+    if (stop.departureLine && !departureLine && !/-|_|it|sbl/gi.test(stop.departureLine)) {
+      departureLine = stop.departureLine;
+      nextArrivalLine = followingStops[i + 1]?.arrivalLine || null;
     }
   }
 
@@ -177,8 +158,8 @@ export function getCheckpointTrain(
 
     region: train.region,
 
-    arrivingLine,
-    departureLine,
+    arrivingLine: arrivingLine,
+    departureLine: departureLine,
 
     nextArrivalLine,
     prevDepartureLine
@@ -187,59 +168,33 @@ export function getCheckpointTrain(
 
 export function getScheduledTrains(
   trainList: Train[],
-  sceneryData: API.ActiveSceneries.Data,
-  stationGeneralInfo: Station['generalInfo']
+  stationGeneralInfo: Station['generalInfo'],
+  stationName: string,
+  region: string
+  // sceneryData: API.ActiveSceneries.Data,
 ): ScheduledTrain[] {
-  const stationNameLower = sceneryData.stationName.toLocaleLowerCase();
-
-  stationGeneralInfo?.checkpoints.forEach((cp) => (cp.scheduledTrains.length = 0));
+  // stationGeneralInfo?.checkpoints.forEach((cp) => (cp.scheduledTrains.length = 0));
 
   return trainList.reduce((acc: ScheduledTrain[], train) => {
     if (!train.timetableData) return acc;
-    if (train.region != sceneryData.region) return acc;
+    if (train.region != region) return acc;
 
     const timetable = train.timetableData;
-    if (!timetable.sceneries.includes(sceneryData.stationHash)) return acc;
+    if (!timetable.sceneryNames.includes(stationName)) return acc;
 
-    const stopInfoIndex = timetable.followingStops.findIndex((stop) => {
-      const stopNameLower = stop.stopNameRAW.toLocaleLowerCase();
-
-      return (
-        stationNameLower == stopNameLower ||
-        (!/(po\.|podg\.)/.test(stopNameLower) && stopNameLower.includes(stationNameLower)) ||
-        (!/(po\.|podg\.)/.test(stationNameLower) && stationNameLower.includes(stopNameLower)) ||
-        (stopNameLower.split(', podg.')[0] !== undefined &&
-          stationNameLower.startsWith(stopNameLower.split(', podg.')[0]))
-      );
-    });
+    const checkpoints = [stationName];
+    if (stationGeneralInfo?.checkpoints) checkpoints.push(...stationGeneralInfo.checkpoints);
 
     const checkpointScheduledTrains: ScheduledTrain[] = [];
-
-    if (stopInfoIndex != -1) {
-      checkpointScheduledTrains.push(
-        getCheckpointTrain(train, stopInfoIndex, sceneryData.stationName)
-      );
-    }
-
-    stationGeneralInfo?.checkpoints?.forEach((checkpoint) => {
-      // if (checkpoint.checkpointName.toLocaleLowerCase() == stationNameLower) return;
-
+    for (let i = 0; i < timetable.followingStops.length; i++) {
       if (
-        checkpointScheduledTrains.findIndex(
-          (cpTrain) =>
-            cpTrain.checkpointName.toLocaleLowerCase() ==
-            checkpoint.checkpointName.toLocaleLowerCase()
-        ) != -1
-      )
-        return;
-
-      const index = timetable.followingStops.findIndex(
-        (stop) => stop.stopNameRAW.toLowerCase() == checkpoint.checkpointName.toLowerCase()
-      );
-
-      if (index > -1)
-        checkpointScheduledTrains.push(getCheckpointTrain(train, index, sceneryData.stationName));
-    });
+        new RegExp(`^(${checkpoints.join('|')})$`, 'i').test(
+          timetable.followingStops[i].stopNameRAW
+        )
+      ) {
+        checkpointScheduledTrains.push(getCheckpointTrain(train, i, stationName));
+      }
+    }
 
     acc.push(...checkpointScheduledTrains);
     return acc;
@@ -250,14 +205,12 @@ export function getStationTrains(
   trainList: Train[],
   scheduledTrainList: ScheduledTrain[],
   region: string,
-  sceneryData: API.ActiveSceneries.Data
+  stationName: string
 ): StationTrain[] {
   return trainList
     .filter(
       (train) =>
-        train?.region === region &&
-        train.online &&
-        train.currentStationName === sceneryData.stationName
+        train?.region === region && train.online && train.currentStationName === stationName
     )
     .map((train) => ({
       driverName: train.driverName,

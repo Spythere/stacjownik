@@ -48,6 +48,8 @@ const filterInitStates: Filter = {
   noSpaceStatus: false,
   unavailableStatus: false,
   unsignedStatus: false,
+  withActiveTimetables: false,
+  withoutActiveTimetables: false,
 
   authors: '',
 
@@ -73,7 +75,7 @@ export const useStationFiltersStore = defineStore('stationFiltersStore', {
       const store = useMainStore();
       const savedStationNames = store.stationList.map((s) => s.name);
 
-      const onlineUnsavedStations = store.onlineSceneryList
+      const onlineUnsavedStations = store.activeSceneryList
         .filter((os) => !savedStationNames.includes(os.name) && os.region == store.region.id)
         .map((os) => ({
           name: os.name,
@@ -85,7 +87,8 @@ export const useStationFiltersStore = defineStore('stationFiltersStore', {
         ...onlineUnsavedStations,
         ...store.stationList.map((station) => ({
           ...station,
-          onlineInfo: store.onlineSceneryList.find(
+          // append to 'onlineInfo' object for filtering legacy reasons - to optimize later (hopefully)
+          onlineInfo: store.activeSceneryList.find(
             (os) => os.name == station.name && os.region == store.region.id
           )
         }))

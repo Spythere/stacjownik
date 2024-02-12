@@ -181,7 +181,7 @@ export default defineComponent({
             isSBL: /sbl/gi.test(stop.stopName),
             position: stop.beginsHere ? 'begin' : stop.terminatesHere ? 'end' : 'en-route',
             sceneryHash: '',
-            sceneryName: this.timetableSceneryNames[currentSceneryIndex],
+            sceneryName: this.train.timetableData!.sceneryNames[currentSceneryIndex],
             status: stop.confirmed ? 'confirmed' : stop.stopped ? 'stopped' : 'unconfirmed'
           };
         }) ?? []
@@ -216,19 +216,6 @@ export default defineComponent({
       }
 
       return activeMinorStopList;
-    },
-
-    timetableSceneryNames() {
-      if (!this.train.timetableData?.sceneries) return [];
-
-      return this.train.timetableData?.sceneries
-        .map(
-          (sceneryHash) =>
-            this.store.onlineSceneryList.find((st) => st.hash === sceneryHash)?.name ??
-            this.apiStore.sceneryData.find((sd) => sd.hash === sceneryHash)?.name ??
-            sceneryHash
-        )
-        .reverse();
     }
   },
 

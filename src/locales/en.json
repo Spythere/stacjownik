@@ -176,7 +176,8 @@
       "signals": "SIGNALLING",
       "addons": "ADDITIONAL PROGRAMS",
       "blockades": "BLOCK SIGNALLING",
-      "status": "ONLINE STATUS"
+      "status": "ONLINE STATUS",
+      "timetables": "ACTIVE TIMETABLES"
     },
 
     "all-available": "ALL AVAILABLE",
@@ -219,6 +220,10 @@
     "historical": "HISTORICAL",
     "free": "FREE",
     "occupied": "OCCUPIED",
+
+    "withActiveTimetables": "ACTIVE",
+    "withoutActiveTimetables": "NO ACTIVE",
+
     "sliders": {
       "min-lvl": "MIN. REQUIRED DISPATCHER LEVEL",
       "max-lvl": "MAX. REQUIRED DISPATCHER LEVEL",

@@ -6,10 +6,10 @@
         <span>{{ $t('scenery.timetables') }}</span>
 
         <span>
-          <span class="text--primary">{{ onlineScenery?.scheduledTrainCount.all || 0 }}</span>
+          <span class="text--primary">{{ onlineScenery?.scheduledTrainCount.all ?? 0 }}</span>
           <span> / </span>
           <span class="text--grayed">
-            {{ onlineScenery?.scheduledTrainCount.confirmed || '0' }}
+            {{ onlineScenery?.scheduledTrainCount.confirmed ?? 0 }}
           </span>
         </span>
 
@@ -33,12 +33,12 @@
           {{ (i > 0 && '&bull;') || '' }}
 
           <button
-            :key="cp.checkpointName"
+            :key="cp"
             class="checkpoint_item"
-            :class="{ current: chosenCheckpoint === cp.checkpointName }"
+            :class="{ current: chosenCheckpoint === cp }"
             @click="setCheckpoint(cp)"
           >
-            {{ cp.checkpointName }}
+            {{ cp }}
           </button>
         </span>
       </div>
@@ -190,7 +190,7 @@ import Station from '../../scripts/interfaces/Station';
 import { useMainStore } from '../../store/mainStore';
 import modalTrainMixin from '../../mixins/modalTrainMixin';
 import ScheduledTrainStatus from './ScheduledTrainStatus.vue';
-import { OnlineScenery } from '../../store/typings';
+import { ActiveScenery } from '../../store/typings';
 import { useApiStore } from '../../store/apiStore';
 
 export default defineComponent({
@@ -205,7 +205,7 @@ export default defineComponent({
       type: Object as PropType<Station>
     },
     onlineScenery: {
-      type: Object as PropType<OnlineScenery>
+      type: Object as PropType<ActiveScenery>
     }
   },
 
@@ -231,7 +231,7 @@ export default defineComponent({
     const chosenCheckpoint = ref(
       props.station?.generalInfo?.checkpoints?.length == 0
         ? ''
-        : props.station?.generalInfo?.checkpoints[0].checkpointName || null
+        : props.station?.generalInfo?.checkpoints[0] ?? null
     );
 
     return {
@@ -278,12 +278,11 @@ export default defineComponent({
     loadSelectedOption() {
       if (!this.station) return;
 
-      this.chosenCheckpoint =
-        this.station.generalInfo?.checkpoints[0]?.checkpointName || this.station.name;
+      this.chosenCheckpoint = this.station.generalInfo?.checkpoints[0] ?? this.station.name;
     },
 
-    setCheckpoint(cp: { checkpointName: string }) {
-      this.chosenCheckpoint = cp.checkpointName;
+    setCheckpoint(cp: string) {
+      this.chosenCheckpoint = cp;
     }
   }
 });

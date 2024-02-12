@@ -30,12 +30,12 @@
 
 <script lang="ts">
 import { PropType, defineComponent } from 'vue';
-import { OnlineScenery } from '../../../store/typings';
+import { ActiveScenery } from '../../../store/typings';
 
 export default defineComponent({
   props: {
     onlineScenery: {
-      type: Object as PropType<OnlineScenery>,
+      type: Object as PropType<ActiveScenery>,
       required: false
     }
   },
