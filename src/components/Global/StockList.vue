@@ -1,7 +1,7 @@
 <template>
   <div class="stock-list">
     <ul>
-      <li v-for="(stockName, i) in trainStockList" :key="i">
+      <li v-for="(stockName, i) in computedStockList" :key="i">
         <p>
           {{ stockName.split(':')[0].split('_').splice(0, 2).join(' ') }}
           {{ stockName.split(':')[1] }}
@@ -18,7 +18,7 @@
           />
 
           <img
-            v-if="/^(EN|2EN)/.test(stockName)"
+            v-if="/^(EN|2EN)/.test(stockName) && !tractionOnly"
             :src="`https://rj.td2.info.pl/dist/img/thumbnails/${stockName.split(':')[0]}s.png`"
             @error="
               (event) => ((event.target as HTMLImageElement).src = '/images/icon-loco-ezt-s.png')
@@ -27,7 +27,7 @@
 
           <img
             class="train-thumbnail"
-            v-if="/^EN71/.test(stockName)"
+            v-if="/^EN71/.test(stockName) && !tractionOnly"
             :src="`https://rj.td2.info.pl/dist/img/thumbnails/${stockName.split(':')[0]}s.png`"
             @error="
               (event) => ((event.target as HTMLImageElement).src = '/images/icon-loco-ezt-s.png')
@@ -36,7 +36,7 @@
 
           <img
             class="train-thumbnail"
-            v-if="/^(EN|2EN)/.test(stockName)"
+            v-if="/^(EN|2EN)/.test(stockName) && !tractionOnly"
             :src="`https://rj.td2.info.pl/dist/img/thumbnails/${stockName.split(':')[0]}ra.png`"
             @error="
               (event) => ((event.target as HTMLImageElement).src = '/images/icon-loco-ezt-ra.png')
@@ -58,6 +58,10 @@ export default defineComponent({
     trainStockList: {
       type: Array as PropType<string[]>,
       required: true
+    },
+    tractionOnly: {
+      type: Boolean,
+      required: false
     }
   },
 
@@ -67,14 +71,35 @@ export default defineComponent({
     };
   },
 
+  computed: {
+    computedStockList() {
+      return this.tractionOnly ? this.trainStockList.slice(0, 1) : this.trainStockList;
+    }
+  },
+
   methods: {
     onImageError(event: Event, stockName: string) {
-      const fallbackName =
-        Object.keys(this.apiStore.rollingStockData!.info).find((type) => {
-          return this.apiStore.rollingStockData!.info[type as keyof API.RollingStock.Info].find(
-            (v) => v[0] === stockName.split(':')[0]
-          );
-        }) || 'vehicle-unknown';
+      let fallbackName = '';
+
+      const isLoco = /.-\d/.test(stockName);
+
+      if (isLoco) {
+        fallbackName += 'loco-';
+        fallbackName += /^\d?EN\d{2}/.test(stockName)
+          ? 'ezt'
+          : /^SN\d{2}/.test(stockName)
+          ? 'szt'
+          : /^\d?E/.test(stockName)
+          ? 'e'
+          : 's';
+      } else {
+        const isCarPassenger = /(\d{3}a|(Bau|Gor)\d{2}|304C)_/.test(stockName);
+
+        fallbackName += 'car-';
+        fallbackName += isCarPassenger ? 'passenger' : 'cargo';
+      }
+
+      console.log(stockName, fallbackName);
 
       (event.target as HTMLImageElement).src = `/images/icon-${fallbackName}.png`;
     }

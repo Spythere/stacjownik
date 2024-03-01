@@ -97,13 +97,11 @@
     </section>
 
     <section class="train-stats">
-      <TrainThumbnail :name="train.locoType" :onlyFirstSegment="true" />
+      <StockList :trainStockList="train.stockList" :tractionOnly="true" />
 
       <div class="text--grayed">
-        {{ train.locoType }}
         <span v-if="train.stockList.length > 1">
-          &nbsp;&bull; {{ $t('trains.cars') }}:
-          <span class="count">{{ train.stockList.length - 1 }}</span>
+          {{ $t('trains.cars') }}: {{ train.stockList.length - 1 }}
         </span>
       </div>
 
@@ -125,13 +123,13 @@ import styleMixin from '../../mixins/styleMixin';
 import trainInfoMixin from '../../mixins/trainInfoMixin';
 import Train from '../../scripts/interfaces/Train';
 import ProgressBar from '../Global/ProgressBar.vue';
-import TrainThumbnail from '../Global/TrainThumbnail.vue';
 import { useMainStore } from '../../store/mainStore';
 import { useApiStore } from '../../store/apiStore';
+import StockList from '../Global/StockList.vue';
 
 export default defineComponent({
   mixins: [trainInfoMixin, styleMixin],
-  components: { ProgressBar, TrainThumbnail },
+  components: { ProgressBar, StockList },
 
   props: {
     train: {
@@ -152,13 +150,6 @@ export default defineComponent({
   }
 });
 </script>
-
-<!-- Global style for TrainThumbnail -->
-<style lang="scss">
-.train-stats .train-thumbnail {
-  max-width: 100%;
-}
-</style>
 
 <style lang="scss" scoped>
 @import '../../styles/responsive.scss';

@@ -16,7 +16,6 @@ export const useApiStore = defineStore('apiStore', {
     },
 
     activeData: undefined as API.ActiveData.Response | undefined,
-    rollingStockData: undefined as API.RollingStock.Response | undefined,
     donatorsData: [] as API.Donators.Response,
     sceneryData: [] as StationJSONData[],
 
@@ -26,7 +25,6 @@ export const useApiStore = defineStore('apiStore', {
   actions: {
     async setupAPIData() {
       // Static data
-      this.fetchStockInfoData();
       this.fetchDonatorsData();
       this.fetchStationsGeneralInfo();
 
@@ -68,18 +66,6 @@ export const useApiStore = defineStore('apiStore', {
         this.donatorsData = response.data;
       } catch (error) {
         console.error('Ups! Wystąpił błąd podczas pobierania informacji o donatorach:', error);
-      }
-    },
-
-    async fetchStockInfoData() {
-      try {
-        this.rollingStockData = (
-          await axios.get<API.RollingStock.Response>(
-            'https://raw.githubusercontent.com/Spythere/api/main/td2/data/stockInfo.json'
-          )
-        ).data;
-      } catch (error) {
-        console.error('Ups! Wystąpił błąd podczas pobierania informacji o taborze z API:', error);
       }
     },
 
