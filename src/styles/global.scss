@@ -18,12 +18,14 @@
 
   --clr-donator: #f7a4ff;
 
+  --no-scroll-padding: 17px;
+
   font-size: 16px;
 }
 
 ::-webkit-scrollbar {
-  width: 15px;
-  height: 15px;
+  width: var(--no-scroll-padding);
+  height: var(--no-scroll-padding);
   background-color: transparent;
 
   &-track {
@@ -50,7 +52,7 @@ body {
 
   &.no-scroll {
     overflow-y: hidden;
-    padding-right: 15px;
+    padding-right: var(--no-scroll-padding);
 
     @include smallScreen() {
       padding: 0;
