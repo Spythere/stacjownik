@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia';
 import http from '../http';
 import { API } from '../typings/api';
-import axios from 'axios';
 import { Status } from '../typings/common';
 import { StationJSONData } from './typings';
 

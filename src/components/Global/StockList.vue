@@ -50,7 +50,6 @@
 
 <script lang="ts">
 import { PropType, defineComponent } from 'vue';
-import { API } from '../../typings/api';
 import { useApiStore } from '../../store/apiStore';
 
 export default defineComponent({
