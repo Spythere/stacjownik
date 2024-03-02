@@ -192,7 +192,7 @@
               </span>
             </td>
 
-            <td class="station_info" v-if="station.generalInfo">
+            <td class="station-info" v-if="station.generalInfo">
               <span
                 class="scenery-icon icon-info"
                 :class="station.generalInfo.controlType.replace('+', '-')"
@@ -201,25 +201,21 @@
               >
               </span>
 
-              <span>
-                <img
-                  class="icon-info"
-                  v-if="station.generalInfo.SUP"
-                  src="/images/icon-SUP.svg"
-                  alt="SUP (RASP-UZK)"
-                  :title="$t('desc.SUP')"
-                />
-              </span>
+              <img
+                class="icon-info"
+                v-if="station.generalInfo.signalType"
+                :src="`/images/icon-${station.generalInfo.signalType}.svg`"
+                :alt="station.generalInfo.signalType"
+                :title="$t('desc.signals-type') + $t(`signals.${station.generalInfo.signalType}`)"
+              />
 
-              <span>
-                <img
-                  class="icon-info"
-                  v-if="station.generalInfo.signalType"
-                  :src="`/images/icon-${station.generalInfo.signalType}.svg`"
-                  :alt="station.generalInfo.signalType"
-                  :title="$t('desc.signals-type') + $t(`signals.${station.generalInfo.signalType}`)"
-                />
-              </span>
+              <img
+                class="icon-info"
+                v-if="station.generalInfo.SUP"
+                src="/images/icon-SUP.svg"
+                alt="SUP (RASP-UZK)"
+                :title="$t('desc.SUP')"
+              />
             </td>
 
             <td class="station-info" v-else>
@@ -530,30 +526,19 @@ tr {
 }
 
 .station-info {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
   /* Images */
   .icon-info {
-    // display: flex;
-    // justify-content: center;
-    // align-items: center;
+    vertical-align: middle;
+    line-height: 32px;
 
     width: 32px;
     height: 32px;
     font-size: 12px;
 
-    margin: 0 0.2em;
+    margin: 0 4px;
 
-    outline: 2px solid #444;
-    border-radius: 0.5em;
-
-    @include smallScreen() {
-      width: 24px;
-      height: 24px;
-      font-size: 10px;
-    }
+    outline: 2px solid #2b2b2b;
+    border-radius: 5px;
   }
 }
 
