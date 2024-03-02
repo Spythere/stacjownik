@@ -176,21 +176,21 @@ export const filterStations = (station: Station, filters: Filter) => {
 
     if (
       filters['no-1track'] &&
-      (routes.oneWayCatenaryRouteNames.length != 0 || routes.oneWayNoCatenaryRouteNames.length != 0)
+      (routes.singleElectrifiedNames.length != 0 || routes.singleOtherNames.length != 0)
     )
       return false;
 
     if (
       filters['no-2track'] &&
-      (routes.twoWayCatenaryRouteNames.length != 0 || routes.twoWayNoCatenaryRouteNames.length != 0)
+      (routes.doubleElectrifiedNames.length != 0 || routes.doubleOtherNames.length != 0)
     )
       return false;
 
-    if (routes.oneWayCatenaryRouteNames.length < filters['minOneWayCatenary']) return false;
-    if (routes.oneWayNoCatenaryRouteNames.length < filters['minOneWay']) return false;
+    if (routes.singleElectrifiedNames.length < filters['minOneWayCatenary']) return false;
+    if (routes.singleOtherNames.length < filters['minOneWay']) return false;
 
-    if (routes.twoWayCatenaryRouteNames.length < filters['minTwoWayCatenary']) return false;
-    if (routes.twoWayNoCatenaryRouteNames.length < filters['minTwoWay']) return false;
+    if (routes.doubleElectrifiedNames.length < filters['minTwoWayCatenary']) return false;
+    if (routes.doubleOtherNames.length < filters['minTwoWay']) return false;
 
     if (filters[controlType]) return false;
     if (filters[signalType]) return false;
@@ -198,8 +198,8 @@ export const filterStations = (station: Station, filters: Filter) => {
     if (filters['SUP'] && SUP) return false;
     if (filters['noSUP'] && !SUP) return false;
 
-    if (filters['SBL'] && routes.sblRouteNames.length > 0) return false;
-    if (filters['PBL'] && routes.sblRouteNames.length == 0) return false;
+    if (filters['SBL'] && routes.sblNames.length > 0) return false;
+    if (filters['PBL'] && routes.sblNames.length == 0) return false;
 
     if (
       filters['authors'].length > 3 &&

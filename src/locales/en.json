@@ -238,7 +238,7 @@
       "status": "Status",
       "dispatcher": "Dispatcher",
       "dispatcher-lvl": "Dispatcher\nlevel",
-      "routes": "Routes\ndouble / single",
+      "routes": "Routes\ndouble {'|'} single",
       "general": "General info",
       "user": "Drivers online",
       "spawn": "Spawns online",

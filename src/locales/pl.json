@@ -230,7 +230,7 @@
       "status": "Status",
       "dispatcher": "Dyżurny",
       "dispatcher-lvl": "Poziom\ndyżurnego",
-      "routes": "Szlaki\n2tor / 1tor",
+      "routes": "Szlaki\n2tor {'|'} 1tor",
       "general": "Informacje\nogólne",
       "user": "Maszyniści online",
       "spawn": "Otwarte spawny",

@@ -144,60 +144,54 @@
               </span>
             </td>
 
-            <td class="station-tracks twoway">
-              <span
-                v-if="
-                  station.generalInfo &&
-                  station.generalInfo.routes.twoWayCatenaryRouteNames.length > 0
-                "
-                class="track catenary"
-                :title="`${$t('sceneries.info.double-track-routes-catenary')}${
-                  station.generalInfo.routes.twoWayCatenaryRouteNames.length
-                }`"
-              >
-                {{ station.generalInfo.routes.twoWayCatenaryRouteNames.length }}
-              </span>
+            <td class="station-tracks">
+              <div v-if="station.generalInfo">
+                <div class="double-tracks">
+                  <span
+                    v-if="station.generalInfo.routes.doubleElectrifiedNames.length != 0"
+                    class="track catenary"
+                    :title="`${$t('sceneries.info.double-track-routes-catenary')}${
+                      station.generalInfo.routes.doubleElectrifiedNames.length
+                    }`"
+                  >
+                    {{ station.generalInfo.routes.doubleElectrifiedNames.length }}
+                  </span>
 
-              <span
-                v-if="
-                  station.generalInfo &&
-                  station.generalInfo.routes.twoWayNoCatenaryRouteNames.length > 0
-                "
-                class="track no-catenary"
-                :title="`${$t('sceneries.info.double-track-routes-other')}${
-                  station.generalInfo.routes.twoWayNoCatenaryRouteNames.length
-                }`"
-              >
-                {{ station.generalInfo.routes.twoWayNoCatenaryRouteNames.length }}
-              </span>
+                  <span
+                    v-if="station.generalInfo.routes.doubleOtherNames.length != 0"
+                    class="track no-catenary"
+                    :title="`${$t('sceneries.info.double-track-routes-other')}${
+                      station.generalInfo.routes.doubleOtherNames.length
+                    }`"
+                  >
+                    {{ station.generalInfo.routes.doubleOtherNames.length }}
+                  </span>
+                </div>
 
-              <span class="separator"></span>
+                <div class="separator"></div>
 
-              <span
-                v-if="
-                  station.generalInfo &&
-                  station.generalInfo.routes.oneWayCatenaryRouteNames.length > 0
-                "
-                class="track catenary"
-                :title="`${$t('sceneries.info.single-track-routes-catenary')}${
-                  station.generalInfo.routes.oneWayCatenaryRouteNames.length
-                }`"
-              >
-                {{ station.generalInfo.routes.oneWayCatenaryRouteNames.length }}
-              </span>
+                <div class="single-tracks">
+                  <span
+                    v-if="station.generalInfo.routes.singleElectrifiedNames.length != 0"
+                    class="track catenary"
+                    :title="`${$t('sceneries.info.single-track-routes-catenary')}${
+                      station.generalInfo.routes.singleElectrifiedNames.length
+                    }`"
+                  >
+                    {{ station.generalInfo.routes.singleElectrifiedNames.length }}
+                  </span>
 
-              <span
-                v-if="
-                  station.generalInfo &&
-                  station.generalInfo.routes.oneWayNoCatenaryRouteNames.length > 0
-                "
-                class="track no-catenary"
-                :title="`${$t('sceneries.info.single-track-routes-other')}${
-                  station.generalInfo.routes.oneWayNoCatenaryRouteNames.length
-                }`"
-              >
-                {{ station.generalInfo.routes.oneWayNoCatenaryRouteNames.length }}
-              </span>
+                  <span
+                    v-if="station.generalInfo.routes.singleOtherNames.length != 0"
+                    class="track no-catenary"
+                    :title="`${$t('sceneries.info.single-track-routes-other')}${
+                      station.generalInfo.routes.singleOtherNames.length
+                    }`"
+                  >
+                    {{ station.generalInfo.routes.singleOtherNames.length }}
+                  </span>
+                </div>
+              </div>
             </td>
 
             <td class="station-info" v-if="station.generalInfo">
@@ -541,6 +535,10 @@ tr {
 
 .station-info {
   /* Images */
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+
   .icon-info {
     vertical-align: middle;
     line-height: 32px;
@@ -549,14 +547,34 @@ tr {
     height: 32px;
     font-size: 12px;
 
-    margin: 0 4px;
-
     outline: 2px solid #2b2b2b;
     border-radius: 5px;
   }
 }
 
 .station-tracks {
+  & > div {
+    display: grid;
+    grid-template-columns: 3em 3px 3em;
+    gap: 5px;
+    justify-content: center;
+
+    & > div {
+      display: flex;
+      gap: 5px;
+
+      &.double-tracks {
+        justify-content: flex-end;
+      }
+
+      &.single-tracks {
+        justify-content: flex-start;
+      }
+    }
+  }
+
+  text-align: center;
+
   .no-catenary {
     background-color: #939393;
   }
@@ -566,14 +584,15 @@ tr {
   }
 
   .separator {
-    border-left: 3px solid #b3b3b3;
+    background-color: #b3b3b3;
+    padding: 2px;
   }
 
   .track {
-    margin: 0 0.35em;
-    padding: 0.35em;
-    font-size: 1.05em;
-    white-space: pre-wrap;
+    width: 1.25em;
+    text-align: center;
+    padding: 0.35em 0;
+    font-size: 1.1em;
   }
 }
 

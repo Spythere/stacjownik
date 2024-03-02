@@ -81,11 +81,11 @@ export default defineComponent({
 
   computed: {
     filteredOneWayRoutes() {
-      return this.station.generalInfo?.routes.oneWay.filter(routeFilter) || [];
+      return this.station.generalInfo?.routes.single.filter(routeFilter) || [];
     },
 
     filteredTwoWayRoutes() {
-      return this.station.generalInfo?.routes.twoWay.filter(routeFilter) || [];
+      return this.station.generalInfo?.routes.double.filter(routeFilter) || [];
     }
   }
 });
