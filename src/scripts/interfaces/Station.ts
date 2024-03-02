@@ -1,4 +1,4 @@
-import { Availability, ActiveScenery, ScheduledTrain } from '../../store/typings';
+import { Availability, ActiveScenery } from '../../store/typings';
 import { StationRoutes } from './StationRoutes';
 
 export default interface Station {
