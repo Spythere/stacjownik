@@ -77,7 +77,7 @@ import listObserverMixin from '../../mixins/listObserverMixin';
 import { ActiveScenery } from '../../store/typings';
 import { API } from '../../typings/api';
 import { Status } from '../../typings/common';
-import http from '../../http';
+import { useApiStore } from '../../store/apiStore';
 
 export default defineComponent({
   name: 'SceneryTimetablesHistory',
@@ -94,6 +94,7 @@ export default defineComponent({
   data() {
     return {
       historyList: [] as API.TimetableHistory.Response,
+      apiStore: useApiStore(),
       dataStatus: Status.Data.Loading,
       DataStatus: Status.Data
     };
@@ -112,7 +113,7 @@ export default defineComponent({
 
       try {
         const response: API.TimetableHistory.Response = await (
-          await http.get('api/getTimetables', {
+          await this.apiStore.client!.get('api/getTimetables', {
             params: {
               issuedFrom: this.station?.name || this.onlineScenery?.name
             }

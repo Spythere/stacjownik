@@ -99,6 +99,7 @@ export default defineComponent({
 
 .wrapper {
   max-width: 100%;
+  width: 1700px;
 }
 
 .stations-options {

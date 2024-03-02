@@ -1,11 +1,17 @@
 import { defineStore } from 'pinia';
-import http from '../http';
 import { API } from '../typings/api';
 import { Status } from '../typings/common';
 import { StationJSONData } from './typings';
+import axios, { AxiosInstance } from 'axios';
 
 // Update seconds cron for active data scheduler
 const UPDATE_SECONDS = [3, 23, 43];
+
+export enum APIMode {
+  PRODUCTION = 0,
+  DEV = 1,
+  MOCK = 2
+}
 
 export const useApiStore = defineStore('apiStore', {
   state: () => ({
@@ -18,11 +24,34 @@ export const useApiStore = defineStore('apiStore', {
     donatorsData: [] as API.Donators.Response,
     sceneryData: [] as StationJSONData[],
 
+    client: undefined as AxiosInstance | undefined,
+
     activeDataScheduler: undefined as number | undefined
   }),
 
   actions: {
     async setupAPIData() {
+      let baseURL = 'https://stacjownik.spythere.eu';
+
+      switch (import.meta.env.VITE_API_MODE) {
+        case 'development':
+          baseURL = 'http://localhost:3001';
+          break;
+        case 'mocking':
+          baseURL = 'http://localhost:3123';
+          break;
+        default:
+          break;
+      }
+
+      this.client = axios.create({
+        baseURL
+      });
+
+      this.connectToAPI();
+    },
+
+    async connectToAPI() {
       // Static data
       this.fetchDonatorsData();
       this.fetchStationsGeneralInfo();
@@ -46,7 +75,7 @@ export const useApiStore = defineStore('apiStore', {
 
     async fetchActiveData() {
       try {
-        const response = await http.get<API.ActiveData.Response>('api/getActiveData');
+        const response = await this.client!.get<API.ActiveData.Response>('api/getActiveData');
 
         this.activeData = response.data;
         this.dataStatuses.connection = Status.Data.Loaded;
@@ -60,7 +89,7 @@ export const useApiStore = defineStore('apiStore', {
 
     async fetchDonatorsData() {
       try {
-        const response = await http.get<API.Donators.Response>('api/getDonators');
+        const response = await this.client!.get<API.Donators.Response>('api/getDonators');
 
         this.donatorsData = response.data;
       } catch (error) {
@@ -69,8 +98,9 @@ export const useApiStore = defineStore('apiStore', {
     },
 
     async fetchStationsGeneralInfo() {
-      const sceneryData: StationJSONData[] = (await http.get<StationJSONData[]>('api/getSceneries'))
-        .data;
+      const sceneryData: StationJSONData[] = (
+        await this.client!.get<StationJSONData[]>('api/getSceneries')
+      ).data;
 
       if (!sceneryData) {
         this.dataStatuses.sceneries = Status.Data.Error;

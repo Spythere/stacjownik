@@ -87,6 +87,8 @@ export default defineComponent({
       this.setupOfflineHandling();
 
       this.apiStore.setupAPIData();
+
+      if (!this.isOnProductionHost) document.title = 'Stacjownik Dev';
     },
 
     setupOfflineHandling() {
@@ -108,7 +110,7 @@ export default defineComponent({
     handleOnlineMode() {
       this.store.isOffline = false;
 
-      this.apiStore.setupAPIData();
+      this.apiStore.connectToAPI();
     },
 
     changeLang(lang: string) {

@@ -79,7 +79,7 @@ import listObserverMixin from '../../mixins/listObserverMixin';
 import { ActiveScenery } from '../../store/typings';
 import { API } from '../../typings/api';
 import { Status } from '../../typings/common';
-import http from '../../http';
+import { useApiStore } from '../../store/apiStore';
 
 export default defineComponent({
   name: 'SceneryDispatchersHistory',
@@ -98,7 +98,8 @@ export default defineComponent({
     return {
       historyList: [] as API.DispatcherHistory.Response,
       dataStatus: Status.Data.Loading,
-      DataStatus: Status.Data
+      DataStatus: Status.Data,
+      apiStore: useApiStore()
     };
   },
 
@@ -127,7 +128,7 @@ export default defineComponent({
         }&countFrom=${countFrom}&countLimit=${countLimit}`;
 
         const historyAPIData: API.DispatcherHistory.Response = await (
-          await http.get(requestString)
+          await this.apiStore.client!.get(requestString)
         ).data;
 
         this.dataStatus = Status.Data.Loaded;

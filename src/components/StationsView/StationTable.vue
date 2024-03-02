@@ -27,6 +27,7 @@
               :key="headerName"
               @click="changeSorter(headerName)"
               class="header-image"
+              :class="headerName"
             >
               <span class="header_wrapper">
                 <img
@@ -48,24 +49,23 @@
 
         <tbody>
           <tr
-            class="station"
+            v-for="station in stations"
             :class="{ 'last-selected': lastSelectedStationName == station.name }"
-            v-for="(station, i) in stations"
-            :key="i + station.name"
+            :key="station.name"
             @click.left="setScenery(station.name)"
             @click.right="openForumSite($event, station.generalInfo?.url)"
             @keydown.enter="setScenery(station.name)"
             @keydown.space="openForumSite($event, station.generalInfo?.url)"
             tabindex="0"
           >
-            <td class="station_name" :class="station.generalInfo?.availability">
+            <td class="station-name" :class="station.generalInfo?.availability">
               <b v-if="station.generalInfo?.project" style="color: salmon">{{
                 station.generalInfo.project
               }}</b>
               {{ station.name }}
             </td>
 
-            <td class="station_level">
+            <td class="station-level">
               <span v-if="station.generalInfo">
                 <span
                   v-if="
@@ -106,14 +106,14 @@
               <span v-else> ? </span>
             </td>
 
-            <td class="station_status">
+            <td class="station-status">
               <StationStatusBadge
                 :isOnline="station.onlineInfo ? true : false"
                 :dispatcherStatus="station.onlineInfo?.dispatcherStatus"
               />
             </td>
 
-            <td class="station_dispatcher-name">
+            <td class="station-dispatcher-name">
               <span v-if="station.onlineInfo?.dispatcherName">
                 <b
                   v-if="apiStore.donatorsData.includes(station.onlineInfo.dispatcherName)"
@@ -130,7 +130,7 @@
               </span>
             </td>
 
-            <td class="station_dispatcher-exp">
+            <td class="station-dispatcher-exp">
               <span
                 v-if="station.onlineInfo && station.onlineInfo?.dispatcherExp != -1"
                 :style="
@@ -144,7 +144,7 @@
               </span>
             </td>
 
-            <td class="station_tracks twoway">
+            <td class="station-tracks twoway">
               <span
                 v-if="
                   station.generalInfo &&
@@ -220,19 +220,9 @@
                   :title="$t('desc.signals-type') + $t(`signals.${station.generalInfo.signalType}`)"
                 />
               </span>
-
-              <span>
-                <img
-                  class="icon-info"
-                  v-if="station.generalInfo && station.generalInfo.routes.sblRouteNames.length > 0"
-                  src="/images/icon-SBL.svg"
-                  alt="SBL"
-                  :title="$t('desc.SBL') + `${station.generalInfo.routes.sblRouteNames.join(',')}`"
-                />
-              </span>
             </td>
 
-            <td class="station_info" v-else>
+            <td class="station-info" v-else>
               <img
                 class="icon-info"
                 src="/images/icon-unknown.svg"
@@ -241,10 +231,10 @@
               />
             </td>
 
-            <td class="station_users" :class="{ inactive: !station.onlineInfo }">
-              <span>{{ station.onlineInfo?.currentUsers || 0 }}</span>
+            <td class="station-users" :class="{ inactive: !station.onlineInfo }">
+              <span class="text--primary">{{ station.onlineInfo?.currentUsers || 0 }}</span>
               /
-              <span>{{ station.onlineInfo?.maxUsers || 0 }}</span>
+              <span class="text--primary">{{ station.onlineInfo?.maxUsers || 0 }}</span>
             </td>
 
             <td class="station_spawns" :class="{ inactive: !station.onlineInfo }">
@@ -252,7 +242,7 @@
             </td>
 
             <td
-              class="station_schedules all"
+              class="station-schedules all"
               style="width: 30px"
               :class="{ inactive: !station.onlineInfo }"
             >
@@ -260,7 +250,7 @@
             </td>
 
             <td
-              class="station_schedules unconfirmed"
+              class="station-schedules unconfirmed"
               style="width: 30px"
               :class="{ inactive: !station.onlineInfo }"
             >
@@ -268,7 +258,7 @@
             </td>
 
             <td
-              class="station_schedules confirmed"
+              class="station-schedules confirmed"
               style="width: 30px"
               :class="{ inactive: !station.onlineInfo }"
             >
@@ -399,10 +389,18 @@ $rowCol: #424242;
   font-weight: 500;
 }
 
+.no-stations {
+  text-align: center;
+  font-size: 1.5em;
+
+  padding: 1em;
+  margin: 1em 0;
+
+  background: #333;
+}
+
 table {
-  white-space: nowrap;
   border-collapse: collapse;
-  // min-width: 1350px;
   width: 100%;
 
   @include smallScreen() {
@@ -418,11 +416,15 @@ table {
     top: 0;
 
     &.header-text {
-      min-width: 140px;
+      min-width: 10em;
     }
 
     &.header-image {
-      min-width: 60px;
+      min-width: 65px;
+
+      &.user {
+        min-width: 80px;
+      }
     }
 
     padding: 0.5em 0.25em;
@@ -447,7 +449,7 @@ table {
   }
 }
 
-tr.station {
+tr {
   background-color: $rowCol;
 
   &:nth-child(even) {
@@ -466,6 +468,10 @@ tr.station {
 
     cursor: pointer;
 
+    &.inactive {
+      opacity: 0.2;
+    }
+
     @include smallScreen() {
       margin: 0;
       padding: 0.3em 0.5em;
@@ -474,118 +480,105 @@ tr.station {
   }
 }
 
-td.station {
-  &_name {
-    font-weight: bold;
+.station-name {
+  font-weight: bold;
+  max-width: 200px;
 
-    &.default {
-      color: $accentCol;
-    }
-
-    &.nonPublic {
-      color: #bebebe;
-    }
-
-    &.unavailable {
-      font-weight: 500;
-      color: #bebebe;
-    }
+  &.default {
+    color: $accentCol;
   }
 
-  &_level,
-  &_dispatcher-exp {
-    span {
-      display: block;
-
-      width: 2em;
-      height: 2em;
-      line-height: 2em;
-      margin: 0 auto;
-    }
-
-    img {
-      width: 2em;
-      border-radius: 50%;
-    }
+  &.nonPublic {
+    color: #bebebe;
   }
 
-  // &_dispatcher-name {
-  //   position: relative;
-  // }
+  &.unavailable {
+    font-weight: 500;
+    color: #bebebe;
+  }
+}
 
-  &_dispatcher-name img {
+.station-level,
+.station-dispatcher-exp {
+  span {
+    display: block;
+
+    width: 2em;
+    height: 2em;
+    line-height: 2em;
+    margin: 0 auto;
+  }
+
+  img {
+    width: 2em;
+    border-radius: 50%;
+  }
+}
+
+.station-dispatcher-name {
+  img {
     max-width: 1.35em;
     vertical-align: text-bottom;
   }
-
-  &_level {
-    span {
-      background-color: #888;
-      border-radius: 50%;
-    }
-  }
-
-  &_info {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    /* Images */
-    .icon-info {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      width: 32px;
-      height: 32px;
-      font-size: 12px;
-
-      margin: 0 0.2em;
-
-      outline: 2px solid #444;
-      border-radius: 0.5em;
-
-      @include smallScreen() {
-        width: 24px;
-        height: 24px;
-        font-size: 10px;
-      }
-    }
-  }
-
-  &_tracks {
-    .no-catenary {
-      background-color: #939393;
-    }
-
-    .catenary {
-      background-color: #009dce;
-    }
-
-    .track {
-      margin: 0 0.35em;
-      padding: 0.35em;
-      font-size: 1.05em;
-      white-space: pre-wrap;
-    }
-  }
-
-  &_users,
-  &_spawns,
-  &_schedules {
-    &.inactive {
-      opacity: 0.2;
-    }
-  }
 }
 
-.station_users {
+.station-level {
   span {
-    color: gold;
+    background-color: #888;
+    border-radius: 50%;
   }
 }
 
-.station_schedules {
+.station-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Images */
+  .icon-info {
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
+
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+
+    margin: 0 0.2em;
+
+    outline: 2px solid #444;
+    border-radius: 0.5em;
+
+    @include smallScreen() {
+      width: 24px;
+      height: 24px;
+      font-size: 10px;
+    }
+  }
+}
+
+.station-tracks {
+  .no-catenary {
+    background-color: #939393;
+  }
+
+  .catenary {
+    background-color: #009dce;
+  }
+
+  .separator {
+    border-left: 3px solid #b3b3b3;
+  }
+
+  .track {
+    margin: 0 0.35em;
+    padding: 0.35em;
+    font-size: 1.05em;
+    white-space: pre-wrap;
+  }
+}
+
+.station-schedules {
   &.all {
     color: gold;
   }
@@ -597,19 +590,5 @@ td.station {
   &.confirmed {
     color: lime;
   }
-}
-
-.separator {
-  border-left: 3px solid #b3b3b3;
-}
-
-.no-stations {
-  text-align: center;
-  font-size: 1.5em;
-
-  padding: 1em;
-  margin: 1em 0;
-
-  background: #333;
 }
 </style>
