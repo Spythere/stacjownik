@@ -11,7 +11,7 @@
               class="header-text"
             >
               <span class="header_wrapper">
-                <div v-html="$t(`sceneries.${headerName}`)"></div>
+                <div v-html="$t(`sceneries.headers.${headerName}`)"></div>
 
                 <img
                   class="sort-icon"
@@ -33,7 +33,7 @@
                 <img
                   :src="`/images/icon-${headerName}.svg`"
                   :alt="headerName"
-                  :title="$t(`sceneries.${headerName}`)"
+                  :title="$t(`sceneries.headers.${headerName}`)"
                 />
 
                 <img
@@ -82,7 +82,7 @@
                   <img
                     src="/images/icon-abandoned.svg"
                     alt="non-public"
-                    :title="$t('desc.abandoned')"
+                    :title="$t('sceneries.info.abandoned')"
                   />
                 </span>
 
@@ -90,7 +90,7 @@
                   <img
                     src="/images/icon-lock.svg"
                     alt="non-public"
-                    :title="$t('desc.non-public')"
+                    :title="$t('sceneries.info.non-public')"
                   />
                 </span>
 
@@ -98,7 +98,7 @@
                   <img
                     src="/images/icon-unavailable.svg"
                     alt="unavailable"
-                    :title="$t('desc.unavailable')"
+                    :title="$t('sceneries.info.unavailable')"
                   />
                 </span>
               </span>
@@ -151,7 +151,9 @@
                   station.generalInfo.routes.twoWayCatenaryRouteNames.length > 0
                 "
                 class="track catenary"
-                :title="`Liczba zelektryfikowanych szlaków dwutorowych: ${station.generalInfo.routes.twoWayCatenaryRouteNames.length}`"
+                :title="`${$t('sceneries.info.double-track-routes-catenary')}${
+                  station.generalInfo.routes.twoWayCatenaryRouteNames.length
+                }`"
               >
                 {{ station.generalInfo.routes.twoWayCatenaryRouteNames.length }}
               </span>
@@ -162,7 +164,9 @@
                   station.generalInfo.routes.twoWayNoCatenaryRouteNames.length > 0
                 "
                 class="track no-catenary"
-                :title="`Liczba niezelektryfikowanych szlaków dwutorowych: ${station.generalInfo.routes.twoWayNoCatenaryRouteNames.length}`"
+                :title="`${$t('sceneries.info.double-track-routes-other')}${
+                  station.generalInfo.routes.twoWayNoCatenaryRouteNames.length
+                }`"
               >
                 {{ station.generalInfo.routes.twoWayNoCatenaryRouteNames.length }}
               </span>
@@ -175,7 +179,9 @@
                   station.generalInfo.routes.oneWayCatenaryRouteNames.length > 0
                 "
                 class="track catenary"
-                :title="`Liczba zelektryfikowanych szlaków jednotorowych: ${station.generalInfo.routes.oneWayCatenaryRouteNames.length}`"
+                :title="`${$t('sceneries.info.single-track-routes-catenary')}${
+                  station.generalInfo.routes.oneWayCatenaryRouteNames.length
+                }`"
               >
                 {{ station.generalInfo.routes.oneWayCatenaryRouteNames.length }}
               </span>
@@ -186,7 +192,9 @@
                   station.generalInfo.routes.oneWayNoCatenaryRouteNames.length > 0
                 "
                 class="track no-catenary"
-                :title="`Liczba niezelektryfikowanych szlaków jednotorowych: ${station.generalInfo.routes.oneWayNoCatenaryRouteNames.length}`"
+                :title="`${$t('sceneries.info.single-track-routes-other')}${
+                  station.generalInfo.routes.oneWayNoCatenaryRouteNames.length
+                }`"
               >
                 {{ station.generalInfo.routes.oneWayNoCatenaryRouteNames.length }}
               </span>
@@ -196,7 +204,10 @@
               <span
                 class="scenery-icon icon-info"
                 :class="station.generalInfo.controlType.replace('+', '-')"
-                :title="$t('desc.control-type') + $t(`controls.${station.generalInfo.controlType}`)"
+                :title="
+                  $t('sceneries.info.control-type') +
+                  $t(`controls.${station.generalInfo.controlType}`)
+                "
                 v-html="getControlTypeAbbrev(station.generalInfo.controlType)"
               >
               </span>
@@ -206,7 +217,10 @@
                 v-if="station.generalInfo.signalType"
                 :src="`/images/icon-${station.generalInfo.signalType}.svg`"
                 :alt="station.generalInfo.signalType"
-                :title="$t('desc.signals-type') + $t(`signals.${station.generalInfo.signalType}`)"
+                :title="
+                  $t('sceneries.info.signals-type') +
+                  $t(`signals.${station.generalInfo.signalType}`)
+                "
               />
 
               <img
@@ -214,7 +228,7 @@
                 v-if="station.generalInfo.SUP"
                 src="/images/icon-SUP.svg"
                 alt="SUP (RASP-UZK)"
-                :title="$t('desc.SUP')"
+                :title="$t('sceneries.info.SUP')"
               />
             </td>
 
@@ -223,7 +237,7 @@
                 class="icon-info"
                 src="/images/icon-unknown.svg"
                 alt="icon-unknown"
-                :title="$t('desc.unknown')"
+                :title="$t('sceneries.info.unknown')"
               />
             </td>
 
