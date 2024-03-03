@@ -8,9 +8,18 @@
           ref="filterCardRef"
         />
 
-        <Donation :isModalOpen="isDonationModalOpen" @toggleModal="toggleDonationModal" />
+        <button
+          class="btn-donation btn--image"
+          ref="btn"
+          @click="isDonationModalOpen = true"
+          @focus="isDonationModalOpen = false"
+        >
+          <img src="/images/icon-dollar.svg" alt="dollar donation icon" />
+          <span>{{ $t('donations.button-title') }}</span>
+        </button>
       </div>
 
+      <Donation :isModalOpen="isDonationModalOpen" @toggleModal="toggleDonationModal" />
       <StationTable :stations="computedStationList" @toggleDonationModal="toggleDonationModal" />
     </div>
   </section>
@@ -108,5 +117,21 @@ export default defineComponent({
   gap: 0.5em;
 
   margin-bottom: 0.5em;
+}
+
+button.btn-donation {
+  $btnColor: #254069;
+
+  background-color: $btnColor;
+
+  &:hover {
+    background-color: lighten($btnColor, 5%);
+  }
+
+  @include smallScreen {
+    span {
+      display: none;
+    }
+  }
 }
 </style>

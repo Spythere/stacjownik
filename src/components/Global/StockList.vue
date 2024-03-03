@@ -98,8 +98,6 @@ export default defineComponent({
         fallbackName += isCarPassenger ? 'passenger' : 'cargo';
       }
 
-      console.log(stockName, fallbackName);
-
       (event.target as HTMLImageElement).src = `/images/icon-${fallbackName}.png`;
     }
   }

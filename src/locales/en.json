@@ -2,6 +2,7 @@
   "donations": {
     "button-title": "TOSS A COIN",
     "header": "Toss a coin to Stacjownik!",
+    "donator-title": "Project is supported by more than <b>{count}</b> people, including:",
     "p1": "<b>Hello o7!</b> This is Spythere, the creator of Stacjownik, Pojazdownik and several other applications that enhance the gameplay of Train Driver 2!",
     "p2": "{b1} is a completely free tool, created and continuously developed for the Train Driver 2 simulator community since 2020. However, a part of the project is sustained solely through my private financial contribution.  Features such as  {b2} or {b3} (operating on my {link} - to which you are warmly invited) must function on a dedicated server where they can collect and process data, and then display it on the website.",
     "p2-b1": "Stacjownik",
