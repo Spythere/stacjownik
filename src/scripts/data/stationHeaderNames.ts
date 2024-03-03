@@ -11,6 +11,7 @@ export const headIds = [
 
 export const headIconsIds = [
   'user',
+  'like',
   'spawn',
   'timetableAll',
   'timetableUnconfirmed',

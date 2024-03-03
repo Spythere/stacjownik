@@ -54,10 +54,26 @@ export const sortStations = (
       diff = (a.onlineInfo?.dispatcherExp || 0) - (b.onlineInfo?.dispatcherExp || 0);
       break;
 
+    case 'routes-single':
+      diff =
+        (a.generalInfo?.routes.single.length ?? -1) - (b.generalInfo?.routes.single.length ?? -1);
+      break;
+
+    case 'routes-double':
+      diff =
+        (a.generalInfo?.routes.double.length ?? -1) - (b.generalInfo?.routes.double.length ?? -1);
+      break;
+
     case 'user':
       diff =
         (b.onlineInfo ? b.onlineInfo.currentUsers : -1) -
         (a.onlineInfo ? a.onlineInfo.currentUsers : -1);
+      break;
+
+    case 'like':
+      diff =
+        (b.onlineInfo ? b.onlineInfo.dispatcherRate : -Infinity) -
+        (a.onlineInfo ? a.onlineInfo.dispatcherRate : -Infinity);
       break;
 
     case 'spawn':

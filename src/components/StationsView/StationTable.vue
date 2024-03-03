@@ -240,8 +240,12 @@
               <span class="text--primary">{{ station.onlineInfo?.maxUsers || 0 }}</span>
             </td>
 
-            <td class="station_spawns" :class="{ inactive: !station.onlineInfo }">
-              <span>{{ station.onlineInfo?.spawns.length || 0 }}</span>
+            <td class="station-likes">
+              <span>{{ station.onlineInfo?.dispatcherRate ?? 0 }}</span>
+            </td>
+
+            <td class="station-spawns" :class="{ inactive: !station.onlineInfo }">
+              <span>{{ station.onlineInfo?.spawns.length ?? 0 }}</span>
             </td>
 
             <td
@@ -406,12 +410,8 @@ table {
   border-collapse: collapse;
   table-layout: fixed;
   width: 100%;
-  min-width: 1200px;
+  min-width: 1250px;
   white-space: wrap;
-
-  @include smallScreen() {
-    min-width: auto;
-  }
 
   thead tr {
     background-color: $bgCol;
@@ -426,7 +426,7 @@ table {
     }
 
     &.min-lvl {
-      width: 100px;
+      width: 120px;
     }
 
     &.status {
@@ -443,19 +443,19 @@ table {
 
     &.routes-double,
     &.routes-single {
-      width: 75px;
+      width: 80px;
     }
 
     &.general {
       width: 160px;
     }
 
-    &.user {
-      width: 150px;
-    }
-
     &.header-image {
-      width: 50px;
+      width: 60px;
+
+      &.user {
+        width: 75px;
+      }
     }
 
     padding: 0.5em 0.25em;
@@ -564,11 +564,11 @@ tr {
 .station-info {
   .icon-info {
     vertical-align: middle;
-    line-height: 32px;
+    line-height: 2.5em;
 
-    width: 32px;
-    height: 32px;
-    font-size: 12px;
+    width: 2.5em;
+    height: 2.5em;
+    font-size: 0.8em;
     margin: 0 3px;
 
     outline: 2px solid #2b2b2b;

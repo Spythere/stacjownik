@@ -230,6 +230,8 @@ export const useMainStore = defineStore('store', {
       return apiStore.sceneryData.map((scenery) => {
         const routes = scenery.routesInfo.reduce(
           (acc, route) => {
+            if (route.hidden) return acc;
+
             const tracksKey = route.routeTracks == 2 ? 'double' : 'single';
             const isElectric = route.isElectric;
             const routesKey: keyof StationRoutes = `${tracksKey}${
