@@ -236,6 +236,7 @@ button.back-btn {
   height: 95vh;
   min-height: 750px;
   max-height: 1000px;
+  overflow: auto;
 
   display: flex;
   flex-direction: column;
