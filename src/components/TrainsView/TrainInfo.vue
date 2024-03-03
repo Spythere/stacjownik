@@ -168,7 +168,7 @@ export default defineComponent({
   flex-direction: column;
   text-align: center;
 
-  gap: 0.5em;
+  line-height: 1.5em;
 }
 
 .train-info {

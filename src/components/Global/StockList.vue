@@ -150,7 +150,7 @@ img {
 p {
   text-align: center;
   color: #aaa;
-  font-size: 0.9em;
+  font-size: 0.95em;
   margin-bottom: 1em;
 }
 </style>
