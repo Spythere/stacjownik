@@ -100,17 +100,18 @@
       <StockList :trainStockList="train.stockList" :tractionOnly="true" />
 
       <div>
-        <span v-for="(stat, i) in STATS.main" :key="stat.name">
-          <span v-if="i > 0"> &bull; </span>
-          <span
-            >{{ `${~~((train as any)[stat.name] * (stat.multiplier || 1))}${stat.unit}` }}
-          </span>
-        </span>
-      </div>
+        <span>{{ train.speed }}km/h</span>
 
-      <span v-if="train.stockList.length > 1" class="text--grayed">
-        {{ $t('trains.cars') }}: {{ train.stockList.length - 1 }}
-      </span>
+        <div>
+          <span> {{ train.length }}m</span>
+          &bull;
+          <span> {{ (train.mass / 1000).toFixed(1) }}t</span>
+          <span v-if="train.stockList.length > 1">
+            &bull;
+            {{ $t('trains.cars') }}: {{ train.stockList.length - 1 }}
+          </span>
+        </div>
+      </div>
     </section>
   </div>
 </template>
@@ -167,7 +168,7 @@ export default defineComponent({
   flex-direction: column;
   text-align: center;
 
-  gap: 0.25em;
+  gap: 0.5em;
 }
 
 .train-info {
