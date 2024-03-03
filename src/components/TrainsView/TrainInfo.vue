@@ -99,12 +99,6 @@
     <section class="train-stats">
       <StockList :trainStockList="train.stockList" :tractionOnly="true" />
 
-      <div class="text--grayed">
-        <span v-if="train.stockList.length > 1">
-          {{ $t('trains.cars') }}: {{ train.stockList.length - 1 }}
-        </span>
-      </div>
-
       <div>
         <span v-for="(stat, i) in STATS.main" :key="stat.name">
           <span v-if="i > 0"> &bull; </span>
@@ -113,6 +107,10 @@
           </span>
         </span>
       </div>
+
+      <span v-if="train.stockList.length > 1" class="text--grayed">
+        {{ $t('trains.cars') }}: {{ train.stockList.length - 1 }}
+      </span>
     </section>
   </div>
 </template>

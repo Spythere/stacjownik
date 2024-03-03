@@ -1,6 +1,22 @@
 <template>
   <div class="stock-list">
-    <ul>
+    <div v-if="tractionOnly">
+      <p>
+        {{ computedStockList[0].split(':')[0].split('_').splice(0, 2).join(' ') }}
+        {{ computedStockList[0].split(':')[1] }}
+      </p>
+
+      <img
+        :src="`https://rj.td2.info.pl/dist/img/thumbnails/${computedStockList[0].split(':')[0]}${
+          /^EN/.test(computedStockList[0]) ? 'rb' : ''
+        }.png`"
+        @error="onImageError($event, computedStockList[0])"
+        width="400"
+        height="60"
+      />
+    </div>
+
+    <ul v-else>
       <li v-for="(stockName, i) in computedStockList" :key="i">
         <p>
           {{ stockName.split(':')[0].split('_').splice(0, 2).join(' ') }}
@@ -17,8 +33,9 @@
             height="60"
           />
 
+          <!-- /// Manualne dodawanie miniaturek członów dla kibelków /// -->
           <img
-            v-if="/^(EN|2EN)/.test(stockName) && !tractionOnly"
+            v-if="/^(EN|2EN)/.test(stockName)"
             :src="`https://rj.td2.info.pl/dist/img/thumbnails/${stockName.split(':')[0]}s.png`"
             @error="
               (event) => ((event.target as HTMLImageElement).src = '/images/icon-loco-ezt-s.png')
@@ -27,7 +44,7 @@
 
           <img
             class="train-thumbnail"
-            v-if="/^EN71/.test(stockName) && !tractionOnly"
+            v-if="/^EN71/.test(stockName)"
             :src="`https://rj.td2.info.pl/dist/img/thumbnails/${stockName.split(':')[0]}s.png`"
             @error="
               (event) => ((event.target as HTMLImageElement).src = '/images/icon-loco-ezt-s.png')
@@ -36,12 +53,13 @@
 
           <img
             class="train-thumbnail"
-            v-if="/^(EN|2EN)/.test(stockName) && !tractionOnly"
+            v-if="/^(EN|2EN)/.test(stockName)"
             :src="`https://rj.td2.info.pl/dist/img/thumbnails/${stockName.split(':')[0]}ra.png`"
             @error="
               (event) => ((event.target as HTMLImageElement).src = '/images/icon-loco-ezt-ra.png')
             "
           />
+          <!-- ///  -->
         </span>
       </li>
     </ul>
