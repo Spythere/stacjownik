@@ -4,7 +4,8 @@ export const headIds = [
   'status',
   'dispatcher',
   'dispatcher-lvl',
-  'routes',
+  'routes-single',
+  'routes-double',
   'general'
 ] as const;
 
