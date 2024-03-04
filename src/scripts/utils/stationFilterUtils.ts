@@ -72,8 +72,8 @@ export const sortStations = (
 
     case 'like':
       diff =
-        (b.onlineInfo ? b.onlineInfo.dispatcherRate : -Infinity) -
-        (a.onlineInfo ? a.onlineInfo.dispatcherRate : -Infinity);
+        (a.onlineInfo ? a.onlineInfo.dispatcherRate : -Infinity) -
+        (b.onlineInfo ? b.onlineInfo.dispatcherRate : -Infinity);
       break;
 
     case 'spawn':
