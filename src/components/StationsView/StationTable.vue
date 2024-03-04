@@ -246,17 +246,17 @@
               </td>
 
               <td class="station-users" :class="{ inactive: !station.onlineInfo }">
-                <span class="text--primary">{{ station.onlineInfo?.currentUsers || 0 }}</span>
+                <span class="text--primary">{{ station.onlineInfo?.currentUsers ?? '-' }}</span>
                 /
-                <span class="text--primary">{{ station.onlineInfo?.maxUsers || 0 }}</span>
+                <span class="text--primary">{{ station.onlineInfo?.maxUsers ?? '-' }}</span>
               </td>
 
-              <td class="station-likes">
-                <span>{{ station.onlineInfo?.dispatcherRate ?? 0 }}</span>
+              <td class="station-likes" :class="{ inactive: !station.onlineInfo }">
+                <span>{{ station.onlineInfo?.dispatcherRate ?? '-' }}</span>
               </td>
 
               <td class="station-spawns" :class="{ inactive: !station.onlineInfo }">
-                <span>{{ station.onlineInfo?.spawns.length ?? 0 }}</span>
+                <span>{{ station.onlineInfo?.spawns.length ?? '-' }}</span>
               </td>
 
               <td
@@ -264,7 +264,7 @@
                 style="width: 30px"
                 :class="{ inactive: !station.onlineInfo }"
               >
-                {{ station.onlineInfo?.scheduledTrainCount.all }}
+                {{ station.onlineInfo?.scheduledTrainCount.all ?? '-' }}
               </td>
 
               <td
@@ -272,7 +272,7 @@
                 style="width: 30px"
                 :class="{ inactive: !station.onlineInfo }"
               >
-                {{ station.onlineInfo?.scheduledTrainCount.unconfirmed }}
+                {{ station.onlineInfo?.scheduledTrainCount.unconfirmed ?? '-' }}
               </td>
 
               <td
@@ -280,7 +280,7 @@
                 style="width: 30px"
                 :class="{ inactive: !station.onlineInfo }"
               >
-                {{ station.onlineInfo?.scheduledTrainCount.confirmed }}
+                {{ station.onlineInfo?.scheduledTrainCount.confirmed ?? '-' }}
               </td>
             </tr>
           </tbody>
