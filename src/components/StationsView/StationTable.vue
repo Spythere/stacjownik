@@ -1,294 +1,298 @@
 <template>
   <section class="station_table">
-    <div class="table_wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th
-              v-for="headerName in headIds"
-              :key="headerName"
-              @click="changeSorter(headerName)"
-              class="header-text"
-              :class="headerName"
+    <transition name="status-anim">
+      <div class="table_wrapper" :key="apiStore.dataStatuses.connection">
+        <table>
+          <thead>
+            <tr>
+              <th
+                v-for="headerName in headIds"
+                :key="headerName"
+                @click="changeSorter(headerName)"
+                class="header-text"
+                :class="headerName"
+              >
+                <span class="header_wrapper">
+                  <div v-html="$t(`sceneries.headers.${headerName}`)"></div>
+
+                  <img
+                    class="sort-icon"
+                    v-if="sorterActive.headerName == headerName"
+                    :src="`/images/icon-arrow-${sorterActive.dir == 1 ? 'asc' : 'desc'}.svg`"
+                    alt="sort icon"
+                  />
+                </span>
+              </th>
+
+              <th
+                v-for="headerName in headIconsIds"
+                :key="headerName"
+                @click="changeSorter(headerName)"
+                class="header-image"
+                :class="headerName"
+              >
+                <span class="header_wrapper">
+                  <img
+                    :src="`/images/icon-${headerName}.svg`"
+                    :alt="headerName"
+                    :title="$t(`sceneries.headers.${headerName}`)"
+                  />
+
+                  <img
+                    class="sort-icon"
+                    v-if="sorterActive.headerName == headerName"
+                    :src="`/images/icon-arrow-${sorterActive.dir == 1 ? 'asc' : 'desc'}.svg`"
+                    alt="sort icon"
+                  />
+                </span>
+              </th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr
+              v-for="station in stations"
+              :class="{ 'last-selected': lastSelectedStationName == station.name }"
+              :key="station.name"
+              @click.left="setScenery(station.name)"
+              @click.right="openForumSite($event, station.generalInfo?.url)"
+              @keydown.enter="setScenery(station.name)"
+              @keydown.space="openForumSite($event, station.generalInfo?.url)"
+              tabindex="0"
             >
-              <span class="header_wrapper">
-                <div v-html="$t(`sceneries.headers.${headerName}`)"></div>
+              <td class="station-name" :class="station.generalInfo?.availability">
+                <b v-if="station.generalInfo?.project" style="color: salmon">{{
+                  station.generalInfo.project
+                }}</b>
+                {{ station.name }}
+              </td>
 
-                <img
-                  class="sort-icon"
-                  v-if="sorterActive.headerName == headerName"
-                  :src="`/images/icon-arrow-${sorterActive.dir == 1 ? 'asc' : 'desc'}.svg`"
-                  alt="sort icon"
+              <td class="station-level">
+                <span v-if="station.generalInfo">
+                  <span
+                    v-if="
+                      station.generalInfo.reqLevel > -1 &&
+                      station.generalInfo.availability != 'nonPublic' &&
+                      station.generalInfo.availability != 'unavailable'
+                    "
+                    :style="calculateExpStyle(station.generalInfo.reqLevel)"
+                  >
+                    {{ station.generalInfo.reqLevel >= 2 ? station.generalInfo.reqLevel : 'L' }}
+                  </span>
+
+                  <span v-else-if="station.generalInfo.availability == 'abandoned'">
+                    <img
+                      src="/images/icon-abandoned.svg"
+                      alt="non-public"
+                      :title="$t('sceneries.info.abandoned')"
+                    />
+                  </span>
+
+                  <span v-else-if="station.generalInfo.availability == 'nonPublic'">
+                    <img
+                      src="/images/icon-lock.svg"
+                      alt="non-public"
+                      :title="$t('sceneries.info.non-public')"
+                    />
+                  </span>
+
+                  <span v-else>
+                    <img
+                      src="/images/icon-unavailable.svg"
+                      alt="unavailable"
+                      :title="$t('sceneries.info.unavailable')"
+                    />
+                  </span>
+                </span>
+
+                <span v-else> ? </span>
+              </td>
+
+              <td class="station-status">
+                <StationStatusBadge
+                  :isOnline="station.onlineInfo ? true : false"
+                  :dispatcherStatus="station.onlineInfo?.dispatcherStatus"
                 />
-              </span>
-            </th>
+              </td>
 
-            <th
-              v-for="headerName in headIconsIds"
-              :key="headerName"
-              @click="changeSorter(headerName)"
-              class="header-image"
-              :class="headerName"
-            >
-              <span class="header_wrapper">
-                <img
-                  :src="`/images/icon-${headerName}.svg`"
-                  :alt="headerName"
-                  :title="$t(`sceneries.headers.${headerName}`)"
-                />
+              <td class="station-dispatcher-name">
+                <span v-if="station.onlineInfo?.dispatcherName">
+                  <b
+                    v-if="apiStore.donatorsData.includes(station.onlineInfo.dispatcherName)"
+                    :title="$t('donations.dispatcher-message')"
+                    @click.stop="openDonationModal"
+                  >
+                    <img src="/images/icon-diamond.svg" alt="" />
+                    {{ station.onlineInfo.dispatcherName }}
+                  </b>
 
-                <img
-                  class="sort-icon"
-                  v-if="sorterActive.headerName == headerName"
-                  :src="`/images/icon-arrow-${sorterActive.dir == 1 ? 'asc' : 'desc'}.svg`"
-                  alt="sort icon"
-                />
-              </span>
-            </th>
-          </tr>
-        </thead>
+                  <div v-else>
+                    {{ station.onlineInfo.dispatcherName }}
+                  </div>
+                </span>
+              </td>
 
-        <tbody>
-          <tr
-            v-for="station in stations"
-            :class="{ 'last-selected': lastSelectedStationName == station.name }"
-            :key="station.name"
-            @click.left="setScenery(station.name)"
-            @click.right="openForumSite($event, station.generalInfo?.url)"
-            @keydown.enter="setScenery(station.name)"
-            @keydown.space="openForumSite($event, station.generalInfo?.url)"
-            tabindex="0"
-          >
-            <td class="station-name" :class="station.generalInfo?.availability">
-              <b v-if="station.generalInfo?.project" style="color: salmon">{{
-                station.generalInfo.project
-              }}</b>
-              {{ station.name }}
-            </td>
-
-            <td class="station-level">
-              <span v-if="station.generalInfo">
+              <td class="station-dispatcher-exp">
                 <span
-                  v-if="
-                    station.generalInfo.reqLevel > -1 &&
-                    station.generalInfo.availability != 'nonPublic' &&
-                    station.generalInfo.availability != 'unavailable'
+                  v-if="station.onlineInfo && station.onlineInfo?.dispatcherExp != -1"
+                  :style="
+                    calculateExpStyle(
+                      station.onlineInfo.dispatcherExp,
+                      station.onlineInfo.dispatcherIsSupporter
+                    )
                   "
-                  :style="calculateExpStyle(station.generalInfo.reqLevel)"
                 >
-                  {{ station.generalInfo.reqLevel >= 2 ? station.generalInfo.reqLevel : 'L' }}
+                  {{
+                    station.onlineInfo.dispatcherExp < 2 ? 'L' : station.onlineInfo.dispatcherExp
+                  }}
                 </span>
+              </td>
 
-                <span v-else-if="station.generalInfo.availability == 'abandoned'">
-                  <img
-                    src="/images/icon-abandoned.svg"
-                    alt="non-public"
-                    :title="$t('sceneries.info.abandoned')"
-                  />
-                </span>
+              <td class="station-tracks">
+                <div v-if="station.generalInfo">
+                  <span
+                    v-if="station.generalInfo.routes.singleElectrifiedNames.length != 0"
+                    class="track catenary"
+                    :title="`${$t('sceneries.info.single-track-routes-catenary')}${
+                      station.generalInfo.routes.singleElectrifiedNames.length
+                    }`"
+                  >
+                    {{ station.generalInfo.routes.singleElectrifiedNames.length }}
+                  </span>
 
-                <span v-else-if="station.generalInfo.availability == 'nonPublic'">
-                  <img
-                    src="/images/icon-lock.svg"
-                    alt="non-public"
-                    :title="$t('sceneries.info.non-public')"
-                  />
-                </span>
-
-                <span v-else>
-                  <img
-                    src="/images/icon-unavailable.svg"
-                    alt="unavailable"
-                    :title="$t('sceneries.info.unavailable')"
-                  />
-                </span>
-              </span>
-
-              <span v-else> ? </span>
-            </td>
-
-            <td class="station-status">
-              <StationStatusBadge
-                :isOnline="station.onlineInfo ? true : false"
-                :dispatcherStatus="station.onlineInfo?.dispatcherStatus"
-              />
-            </td>
-
-            <td class="station-dispatcher-name">
-              <span v-if="station.onlineInfo?.dispatcherName">
-                <b
-                  v-if="apiStore.donatorsData.includes(station.onlineInfo.dispatcherName)"
-                  :title="$t('donations.dispatcher-message')"
-                  @click.stop="openDonationModal"
-                >
-                  <img src="/images/icon-diamond.svg" alt="" />
-                  {{ station.onlineInfo.dispatcherName }}
-                </b>
-
-                <div v-else>
-                  {{ station.onlineInfo.dispatcherName }}
+                  <span
+                    v-if="station.generalInfo.routes.singleOtherNames.length != 0"
+                    class="track no-catenary"
+                    :title="`${$t('sceneries.info.single-track-routes-other')}${
+                      station.generalInfo.routes.singleOtherNames.length
+                    }`"
+                  >
+                    {{ station.generalInfo.routes.singleOtherNames.length }}
+                  </span>
                 </div>
-              </span>
-            </td>
+              </td>
 
-            <td class="station-dispatcher-exp">
-              <span
-                v-if="station.onlineInfo && station.onlineInfo?.dispatcherExp != -1"
-                :style="
-                  calculateExpStyle(
-                    station.onlineInfo.dispatcherExp,
-                    station.onlineInfo.dispatcherIsSupporter
-                  )
-                "
+              <td class="station-tracks">
+                <div v-if="station.generalInfo">
+                  <span
+                    v-if="station.generalInfo.routes.doubleElectrifiedNames.length != 0"
+                    class="track catenary"
+                    :title="`${$t('sceneries.info.double-track-routes-catenary')}${
+                      station.generalInfo.routes.doubleElectrifiedNames.length
+                    }`"
+                  >
+                    {{ station.generalInfo.routes.doubleElectrifiedNames.length }}
+                  </span>
+
+                  <span
+                    v-if="station.generalInfo.routes.doubleOtherNames.length != 0"
+                    class="track no-catenary"
+                    :title="`${$t('sceneries.info.double-track-routes-other')}${
+                      station.generalInfo.routes.doubleOtherNames.length
+                    }`"
+                  >
+                    {{ station.generalInfo.routes.doubleOtherNames.length }}
+                  </span>
+                </div>
+              </td>
+
+              <td class="station-info" v-if="station.generalInfo">
+                <span
+                  class="scenery-icon icon-info"
+                  :class="station.generalInfo.controlType.replace('+', '-')"
+                  :title="
+                    $t('sceneries.info.control-type') +
+                    $t(`controls.${station.generalInfo.controlType}`)
+                  "
+                  v-html="getControlTypeAbbrev(station.generalInfo.controlType)"
+                >
+                </span>
+
+                <img
+                  class="icon-info"
+                  v-if="station.generalInfo.signalType"
+                  :src="`/images/icon-${station.generalInfo.signalType}.svg`"
+                  :alt="station.generalInfo.signalType"
+                  :title="
+                    $t('sceneries.info.signals-type') +
+                    $t(`signals.${station.generalInfo.signalType}`)
+                  "
+                />
+
+                <img
+                  class="icon-info"
+                  v-if="station.generalInfo.SUP"
+                  src="/images/icon-SUP.svg"
+                  alt="SUP (RASP-UZK)"
+                  :title="$t('sceneries.info.SUP')"
+                />
+
+                <img
+                  class="icon-info"
+                  v-if="station.generalInfo.ASDEK"
+                  src="/images/icon-ASDEK.svg"
+                  alt="dSAT ASDEK"
+                  :title="$t('sceneries.info.ASDEK')"
+                />
+              </td>
+
+              <td class="station-info" v-else>
+                <img
+                  class="icon-info"
+                  src="/images/icon-unknown.svg"
+                  alt="icon-unknown"
+                  :title="$t('sceneries.info.unknown')"
+                />
+              </td>
+
+              <td class="station-users" :class="{ inactive: !station.onlineInfo }">
+                <span class="text--primary">{{ station.onlineInfo?.currentUsers || 0 }}</span>
+                /
+                <span class="text--primary">{{ station.onlineInfo?.maxUsers || 0 }}</span>
+              </td>
+
+              <td class="station-likes">
+                <span>{{ station.onlineInfo?.dispatcherRate ?? 0 }}</span>
+              </td>
+
+              <td class="station-spawns" :class="{ inactive: !station.onlineInfo }">
+                <span>{{ station.onlineInfo?.spawns.length ?? 0 }}</span>
+              </td>
+
+              <td
+                class="station-schedules all"
+                style="width: 30px"
+                :class="{ inactive: !station.onlineInfo }"
               >
-                {{ station.onlineInfo.dispatcherExp < 2 ? 'L' : station.onlineInfo.dispatcherExp }}
-              </span>
-            </td>
+                {{ station.onlineInfo?.scheduledTrainCount.all }}
+              </td>
 
-            <td class="station-tracks">
-              <div v-if="station.generalInfo">
-                <span
-                  v-if="station.generalInfo.routes.singleElectrifiedNames.length != 0"
-                  class="track catenary"
-                  :title="`${$t('sceneries.info.single-track-routes-catenary')}${
-                    station.generalInfo.routes.singleElectrifiedNames.length
-                  }`"
-                >
-                  {{ station.generalInfo.routes.singleElectrifiedNames.length }}
-                </span>
-
-                <span
-                  v-if="station.generalInfo.routes.singleOtherNames.length != 0"
-                  class="track no-catenary"
-                  :title="`${$t('sceneries.info.single-track-routes-other')}${
-                    station.generalInfo.routes.singleOtherNames.length
-                  }`"
-                >
-                  {{ station.generalInfo.routes.singleOtherNames.length }}
-                </span>
-              </div>
-            </td>
-
-            <td class="station-tracks">
-              <div v-if="station.generalInfo">
-                <span
-                  v-if="station.generalInfo.routes.doubleElectrifiedNames.length != 0"
-                  class="track catenary"
-                  :title="`${$t('sceneries.info.double-track-routes-catenary')}${
-                    station.generalInfo.routes.doubleElectrifiedNames.length
-                  }`"
-                >
-                  {{ station.generalInfo.routes.doubleElectrifiedNames.length }}
-                </span>
-
-                <span
-                  v-if="station.generalInfo.routes.doubleOtherNames.length != 0"
-                  class="track no-catenary"
-                  :title="`${$t('sceneries.info.double-track-routes-other')}${
-                    station.generalInfo.routes.doubleOtherNames.length
-                  }`"
-                >
-                  {{ station.generalInfo.routes.doubleOtherNames.length }}
-                </span>
-              </div>
-            </td>
-
-            <td class="station-info" v-if="station.generalInfo">
-              <span
-                class="scenery-icon icon-info"
-                :class="station.generalInfo.controlType.replace('+', '-')"
-                :title="
-                  $t('sceneries.info.control-type') +
-                  $t(`controls.${station.generalInfo.controlType}`)
-                "
-                v-html="getControlTypeAbbrev(station.generalInfo.controlType)"
+              <td
+                class="station-schedules unconfirmed"
+                style="width: 30px"
+                :class="{ inactive: !station.onlineInfo }"
               >
-              </span>
+                {{ station.onlineInfo?.scheduledTrainCount.unconfirmed }}
+              </td>
 
-              <img
-                class="icon-info"
-                v-if="station.generalInfo.signalType"
-                :src="`/images/icon-${station.generalInfo.signalType}.svg`"
-                :alt="station.generalInfo.signalType"
-                :title="
-                  $t('sceneries.info.signals-type') +
-                  $t(`signals.${station.generalInfo.signalType}`)
-                "
-              />
+              <td
+                class="station-schedules confirmed"
+                style="width: 30px"
+                :class="{ inactive: !station.onlineInfo }"
+              >
+                {{ station.onlineInfo?.scheduledTrainCount.confirmed }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
 
-              <img
-                class="icon-info"
-                v-if="station.generalInfo.SUP"
-                src="/images/icon-SUP.svg"
-                alt="SUP (RASP-UZK)"
-                :title="$t('sceneries.info.SUP')"
-              />
+        <Loading v-if="apiStore.dataStatuses.connection == Status.Loading" />
 
-              <img
-                class="icon-info"
-                v-if="station.generalInfo.ASDEK"
-                src="/images/icon-ASDEK.svg"
-                alt="dSAT ASDEK"
-                :title="$t('sceneries.info.ASDEK')"
-              />
-            </td>
-
-            <td class="station-info" v-else>
-              <img
-                class="icon-info"
-                src="/images/icon-unknown.svg"
-                alt="icon-unknown"
-                :title="$t('sceneries.info.unknown')"
-              />
-            </td>
-
-            <td class="station-users" :class="{ inactive: !station.onlineInfo }">
-              <span class="text--primary">{{ station.onlineInfo?.currentUsers || 0 }}</span>
-              /
-              <span class="text--primary">{{ station.onlineInfo?.maxUsers || 0 }}</span>
-            </td>
-
-            <td class="station-likes">
-              <span>{{ station.onlineInfo?.dispatcherRate ?? 0 }}</span>
-            </td>
-
-            <td class="station-spawns" :class="{ inactive: !station.onlineInfo }">
-              <span>{{ station.onlineInfo?.spawns.length ?? 0 }}</span>
-            </td>
-
-            <td
-              class="station-schedules all"
-              style="width: 30px"
-              :class="{ inactive: !station.onlineInfo }"
-            >
-              {{ station.onlineInfo?.scheduledTrainCount.all }}
-            </td>
-
-            <td
-              class="station-schedules unconfirmed"
-              style="width: 30px"
-              :class="{ inactive: !station.onlineInfo }"
-            >
-              {{ station.onlineInfo?.scheduledTrainCount.unconfirmed }}
-            </td>
-
-            <td
-              class="station-schedules confirmed"
-              style="width: 30px"
-              :class="{ inactive: !station.onlineInfo }"
-            >
-              {{ station.onlineInfo?.scheduledTrainCount.confirmed }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <Loading v-if="apiStore.dataStatuses.connection == Status.Loading" />
-
-    <div class="no-stations" v-else-if="stations.length == 0">
-      {{ $t('sceneries.no-stations') }}
-    </div>
+        <div class="no-stations" v-else-if="stations.length == 0">
+          {{ $t('sceneries.no-stations') }}
+        </div>
+      </div>
+    </transition>
   </section>
 </template>
 
@@ -400,8 +404,9 @@ $rowCol: #424242;
 
 .table_wrapper {
   overflow: auto;
-  overflow-y: hidden;
   font-weight: 500;
+  height: 90vh;
+  min-height: 550px;
 }
 
 .no-stations {
@@ -430,39 +435,39 @@ table {
     top: 0;
 
     &.station {
-      width: 200px;
+      width: 12em;
     }
 
     &.min-lvl {
-      width: 120px;
+      width: 4em;
     }
 
     &.status {
-      width: 140px;
+      width: 10em;
     }
 
     &.dispatcher {
-      width: 230px;
+      width: 12em;
     }
 
     &.dispatcher-lvl {
-      width: 100px;
+      width: 6em;
     }
 
     &.routes-double,
     &.routes-single {
-      width: 80px;
+      width: 7em;
     }
 
     &.general {
-      width: 160px;
+      width: 10em;
     }
 
     &.header-image {
-      width: 60px;
+      width: 3.5em;
 
       &.user {
-        width: 75px;
+        width: 5em;
       }
     }
 

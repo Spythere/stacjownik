@@ -225,9 +225,8 @@
   },
   "sceneries": {
     "headers": {
-      "station": "Stacja",
-      "abbr": "Skrót\nposterunku",
-      "min-lvl": "Poziom\nstacji",
+      "station": "Sceneria",
+      "min-lvl": "Poziom\nscenerii",
       "status": "Status",
       "dispatcher": "Dyżurny",
       "dispatcher-lvl": "Poziom\ndyżurnego",

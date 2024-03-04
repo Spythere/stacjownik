@@ -234,8 +234,8 @@
   },
   "sceneries": {
     "headers": {
-      "station": "Station",
-      "min-lvl": "Station\nlevel",
+      "station": "Scenery",
+      "min-lvl": "Scenery\nlevel",
       "status": "Status",
       "dispatcher": "Dispatcher",
       "dispatcher-lvl": "Dispatcher\nlevel",
