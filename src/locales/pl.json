@@ -227,7 +227,7 @@
     "headers": {
       "station": "Stacja",
       "abbr": "Skrót\nposterunku",
-      "min-lvl": "Min. poziom\ndyżurnego",
+      "min-lvl": "Poziom\nstacji",
       "status": "Status",
       "dispatcher": "Dyżurny",
       "dispatcher-lvl": "Poziom\ndyżurnego",
@@ -235,6 +235,7 @@
       "routes-double": "Szlaki\n2-torowe",
       "general": "Informacje\nogólne",
       "user": "Maszyniści online",
+      "like": "Ocena dyżurnego",
       "spawn": "Otwarte spawny",
       "timetableAll": "Aktywne rozkłady jazdy",
       "timetableConfirmed": "Zatwierdzone rozkłady jazdy",

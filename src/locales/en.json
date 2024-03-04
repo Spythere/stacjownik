@@ -235,13 +235,15 @@
   "sceneries": {
     "headers": {
       "station": "Station",
-      "min-lvl": "Min. dispatcher\nlevel",
+      "min-lvl": "Station\nlevel",
       "status": "Status",
       "dispatcher": "Dispatcher",
       "dispatcher-lvl": "Dispatcher\nlevel",
-      "routes": "Routes\ndouble {'|'} single",
+      "routes-single": "1-track\nroutes",
+      "routes-double": "2-track\nroutes",
       "general": "General info",
       "user": "Drivers online",
+      "like": "Dispatcher rating",
       "spawn": "Spawns online",
       "timetableAll": "Active timetables",
       "timetableConfirmed": "Confirmed timetables",
