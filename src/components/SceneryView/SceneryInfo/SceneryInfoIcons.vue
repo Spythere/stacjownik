@@ -29,14 +29,6 @@
     </span>
 
     <img
-      v-if="station?.generalInfo?.SUP"
-      class="icon-info"
-      src="/images/icon-SUP.svg"
-      alt="SUP (RASP-UZK)"
-      :title="$t('sceneries.info.SUP')"
-    />
-
-    <img
       v-if="station?.generalInfo?.signalType"
       class="icon-info"
       :src="`/images/icon-${station.generalInfo.signalType}.svg`"
@@ -66,6 +58,22 @@
       src="/images/icon-abandoned.svg"
       alt="Abandoned scenery"
       :title="$t('sceneries.info.abandoned')"
+    />
+
+    <img
+      v-if="station?.generalInfo?.SUP"
+      class="icon-info"
+      src="/images/icon-SUP.svg"
+      alt="SUP (RASP-UZK)"
+      :title="$t('sceneries.info.SUP')"
+    />
+
+    <img
+      v-if="station?.generalInfo?.ASDEK"
+      class="icon-info"
+      src="/images/icon-ASDEK.svg"
+      alt="dSAT ASDEK"
+      :title="$t('sceneries.info.ASDEK')"
     />
 
     <img

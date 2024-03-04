@@ -21,6 +21,7 @@ export default interface Station {
     controlType: string;
 
     SUP: boolean;
+    ASDEK: boolean;
     authors?: string[];
 
     availability: Availability;

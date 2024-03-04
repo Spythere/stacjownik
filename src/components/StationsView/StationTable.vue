@@ -223,6 +223,14 @@
                 alt="SUP (RASP-UZK)"
                 :title="$t('sceneries.info.SUP')"
               />
+
+              <img
+                class="icon-info"
+                v-if="station.generalInfo.ASDEK"
+                src="/images/icon-ASDEK.svg"
+                alt="dSAT ASDEK"
+                :title="$t('sceneries.info.ASDEK')"
+              />
             </td>
 
             <td class="station-info" v-else>

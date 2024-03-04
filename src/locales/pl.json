@@ -245,6 +245,7 @@
       "signals-type": "Sygnalizacja: ",
       "SBL": "Sceneria posiada SBL na szlakach: ",
       "SUP": "Wymaga programu SUP do kontroli systemu RASP-UZK",
+      "ASDEK": "Wymaga programu ASDEK do detekcji stanów awaryjnych taboru w ruchu",
       "default": "Sceneria dostępna domyślnie w paczce z grą",
       "non-public": "Sceneria niepubliczna",
       "unavailable": "Sceneria niedostępna",
