@@ -53,6 +53,7 @@ export interface StationJSONData {
   controlType: string;
 
   SUP: boolean;
+  ASDEK: boolean;
 
   // routes: string;
   routesInfo: StationRoutesInfo[];
