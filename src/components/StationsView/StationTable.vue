@@ -1,6 +1,6 @@
 <template>
   <section class="station_table">
-    <transition name="status-anim">
+    <transition name="status-anim" mode="out-in">
       <div class="table_wrapper" :key="apiStore.dataStatuses.connection">
         <table>
           <thead>

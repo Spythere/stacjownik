@@ -6,6 +6,8 @@
       </keep-alive>
     </transition>
 
+    <!-- <UpdateModal /> -->
+
     <AppHeader :current-lang="currentLang" @change-lang="changeLang" />
 
     <main class="app_main">
@@ -47,13 +49,15 @@ import TrainModal from './components/TrainsView/TrainModal.vue';
 import StorageManager from './managers/storageManager';
 import { useApiStore } from './store/apiStore';
 import { Status } from './typings/common';
+import UpdateModal from './components/App/UpdateModal.vue';
 
 export default defineComponent({
   components: {
     Clock,
     StatusIndicator,
     AppHeader,
-    TrainModal
+    TrainModal,
+    UpdateModal
   },
 
   data: () => ({
