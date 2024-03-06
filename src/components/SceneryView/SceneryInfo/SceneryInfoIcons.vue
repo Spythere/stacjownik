@@ -5,7 +5,7 @@
         class="icon-info"
         src="/images/icon-unknown.svg"
         alt="icon-unknown"
-        :title="$t('desc.unknown')"
+        :title="$t('sceneries.info.unknown')"
       />
     </span>
 
@@ -21,25 +21,19 @@
       v-if="station?.generalInfo"
       class="scenery-icon icon-info"
       :class="station?.generalInfo.controlType.replace('+', '-')"
-      :title="$t('desc.control-type') + $t(`controls.${station?.generalInfo.controlType}`)"
+      :title="
+        $t('sceneries.info.control-type') + $t(`controls.${station?.generalInfo.controlType}`)
+      "
       v-html="getControlTypeAbbrev(station?.generalInfo.controlType)"
     >
     </span>
-
-    <img
-      v-if="station?.generalInfo?.SUP"
-      class="icon-info"
-      src="/images/icon-SUP.svg"
-      alt="SUP (RASP-UZK)"
-      :title="$t('desc.SUP')"
-    />
 
     <img
       v-if="station?.generalInfo?.signalType"
       class="icon-info"
       :src="`/images/icon-${station.generalInfo.signalType}.svg`"
       :alt="station.generalInfo.signalType"
-      :title="$t('desc.signals-type') + $t(`signals.${station.generalInfo.signalType}`)"
+      :title="$t('sceneries.info.signals-type') + $t(`signals.${station.generalInfo.signalType}`)"
     />
 
     <img
@@ -47,7 +41,7 @@
       class="icon-info"
       src="/images/icon-lock.svg"
       alt="Non-public scenery"
-      :title="$t('desc.non-public')"
+      :title="$t('sceneries.info.non-public')"
     />
 
     <img
@@ -55,7 +49,7 @@
       class="icon-info"
       src="/images/icon-unavailable.svg"
       alt="Unavailable scenery"
-      :title="$t('desc.unavailable')"
+      :title="$t('sceneries.info.unavailable')"
     />
 
     <img
@@ -63,7 +57,23 @@
       class="icon-info"
       src="/images/icon-abandoned.svg"
       alt="Abandoned scenery"
-      :title="$t('desc.abandoned')"
+      :title="$t('sceneries.info.abandoned')"
+    />
+
+    <img
+      v-if="station?.generalInfo?.SUP"
+      class="icon-info"
+      src="/images/icon-SUP.svg"
+      alt="SUP (RASP-UZK)"
+      :title="$t('sceneries.info.SUP')"
+    />
+
+    <img
+      v-if="station?.generalInfo?.ASDEK"
+      class="icon-info"
+      src="/images/icon-ASDEK.svg"
+      alt="dSAT ASDEK"
+      :title="$t('sceneries.info.ASDEK')"
     />
 
     <img
@@ -71,7 +81,7 @@
       class="icon-info"
       src="/images/icon-real.svg"
       alt="real scenery"
-      :title="`${$t('desc.real')} ${station.generalInfo.lines}`"
+      :title="`${$t('sceneries.info.real')} ${station.generalInfo.lines}`"
     />
   </section>
 </template>

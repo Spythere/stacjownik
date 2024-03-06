@@ -86,7 +86,7 @@ $online: #09a116;
 $unknown: #b93c3c;
 
 .status-badge {
-  border-radius: 1rem;
+  border-radius: 1em;
   font-weight: 500;
 
   padding: 0.2em 0.55em;

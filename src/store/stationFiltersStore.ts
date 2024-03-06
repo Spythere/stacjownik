@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import inputData from '../data/options.json';
 import { useMainStore } from './mainStore';
-import { filterStations, sortStations } from '../scripts/utils/filterUtils';
+import { filterStations, sortStations } from '../scripts/utils/stationFilterUtils';
 import { HeadIdsTypes } from '../scripts/data/stationHeaderNames';
 import StorageManager from '../managers/storageManager';
 import { Filter } from '../components/StationsView/typings';
@@ -16,6 +16,8 @@ const filterInitStates: Filter = {
   SPE: false,
   SUP: false,
   noSUP: false,
+  ASDEK: false,
+  noASDEK: false,
   ręczne: false,
   'ręczne+SPK': false,
   'ręczne+SCS': false,

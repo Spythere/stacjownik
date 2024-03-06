@@ -53,7 +53,7 @@ import JournalTimetablesList from '../components/JournalView/JournalTimetables/J
 import { Journal } from '../components/JournalView/typings';
 import { Status } from '../typings/common';
 import { API } from '../typings/api';
-import http from '../http';
+import { useApiStore } from '../store/apiStore';
 
 export const journalTimetableFilters: Journal.TimetableFilter[] = [
   {
@@ -158,6 +158,7 @@ export default defineComponent({
   data: () => ({
     journalTimetableFilters,
     mainStore: useMainStore(),
+    apiStore: useApiStore(),
 
     statsButtons: [
       {
@@ -282,7 +283,9 @@ export default defineComponent({
         this.mainStore.driverStatsStatus = Status.Data.Loading;
 
         const statsData: API.DriverStats.Response = await (
-          await http.get(`api/getDriverInfo?name=${this.mainStore.driverStatsName}`)
+          await this.apiStore.client!.get(
+            `api/getDriverInfo?name=${this.mainStore.driverStatsName}`
+          )
         ).data;
 
         this.mainStore.driverStatsData = statsData;
@@ -321,7 +324,7 @@ export default defineComponent({
       this.currentQueryParams['countFrom'] = this.timetableHistory.length;
 
       const responseData: API.TimetableHistory.Response = await (
-        await http.get('api/getTimetables', {
+        await this.apiStore.client!.get('api/getTimetables', {
           params: { ...this.currentQueryParams }
         })
       ).data;
@@ -425,7 +428,7 @@ export default defineComponent({
 
       try {
         const responseData: API.TimetableHistory.Response = await (
-          await http.get('api/getTimetables', {
+          await this.apiStore.client!.get('api/getTimetables', {
             params: this.currentQueryParams
           })
         ).data;

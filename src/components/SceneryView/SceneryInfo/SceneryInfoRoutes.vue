@@ -1,11 +1,11 @@
 <template>
   <section class="info-routes" v-if="station.generalInfo">
-    <div class="routes one-way" v-if="filteredOneWayRoutes.length > 0">
+    <div class="routes one-way" v-if="oneWayRoutes.length > 0">
       <b>{{ $t('scenery.one-way-routes') }}</b>
 
       <ul class="routes-list">
         <li
-          v-for="route in filteredOneWayRoutes"
+          v-for="route in oneWayRoutes"
           :key="route.routeName"
           @click="setActiveShowLength(route.routeName)"
         >
@@ -24,12 +24,12 @@
       </ul>
     </div>
 
-    <div class="routes two-way" v-if="filteredTwoWayRoutes.length > 0">
+    <div class="routes two-way" v-if="twoWayRoutes.length > 0">
       <b>{{ $t('scenery.two-way-routes') }}</b>
 
       <ul class="routes-list">
         <li
-          v-for="route in filteredTwoWayRoutes"
+          v-for="route in twoWayRoutes"
           :key="route.routeName"
           @click="setActiveShowLength(route.routeName)"
         >
@@ -53,9 +53,6 @@
 <script lang="ts">
 import { PropType, defineComponent } from 'vue';
 import Station from '../../../scripts/interfaces/Station';
-import { StationRoutesInfo } from '../../../store/typings';
-
-const routeFilter = (route: StationRoutesInfo) => !route.hidden;
 
 export default defineComponent({
   props: {
@@ -80,12 +77,12 @@ export default defineComponent({
   },
 
   computed: {
-    filteredOneWayRoutes() {
-      return this.station.generalInfo?.routes.oneWay.filter(routeFilter) || [];
+    oneWayRoutes() {
+      return this.station.generalInfo?.routes.single ?? [];
     },
 
-    filteredTwoWayRoutes() {
-      return this.station.generalInfo?.routes.twoWay.filter(routeFilter) || [];
+    twoWayRoutes() {
+      return this.station.generalInfo?.routes.double ?? [];
     }
   }
 });

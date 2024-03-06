@@ -2,6 +2,7 @@
   "donations": {
     "button-title": "GROSZA DAJ",
     "header": "Grosza daj Stacjownikowi!",
+    "donator-title": "Projekt ma już ponad <b>{count}</b> wspierających, w tym:",
     "p1": "<b>Hej o7!</b> Z tej strony Spythere, twórca Stacjownika, Pojazdownika oraz kilku innych aplikacji wspomagających rozgrywkę symulatora Train Driver 2!",
     "p2": "{b1} to narzędzie całkowicie darmowe, tworzone i rozwijane dla społeczności symulatora TD2 nieprzerwanie od 2020 roku. Jednakże, część projektu jest podtrzymywana wyłącznie dzięki mojemu prywatnemu wkładowi finansowemu. Funkcje takie jak {b2} czy też {b3} działający na moim {link} (na który serdeczne zapraszam) muszą działać na wydzielonym serwerze, gdzie będą mogły zbierać i przetwarzać dane, aby następnie pokazać je na stronie.",
     "p2-b1": "Stacjownik",
@@ -46,18 +47,6 @@
     "S5-timetables": "<b>Sygnał S5</b> <br> Rozkłady jazdy mogą być niekompletne!",
     "S5-dispatchers": "<b>Sygnał S5</b> <br> Błąd podczas pobierania danych o statusach dyżurnych ruchu!",
     "S5-trains": "<b>Sygnał S5</b>  <br> Błąd podczas pobierania danych o pociągach online!"
-  },
-  "desc": {
-    "control-type": "Sterowanie:",
-    "signals-type": "Sygnalizacja:",
-    "SBL": "Sceneria posiada SBL na szlakach:",
-    "SUP": "Wymaga programu SUP do kontroli systemu RASP-UZK",
-    "default": "Sceneria dostępna domyślnie w paczce z grą",
-    "non-public": "Sceneria niepubliczna",
-    "unavailable": "Sceneria niedostępna",
-    "unknown": "Nieznana sceneria",
-    "real": "Sceneria z realnymi liniami kolejowymi:",
-    "abandoned": "Sceneria wycofana z rozgrywki"
   },
   "signals": {
     "title": "Sygnalizacja",
@@ -198,6 +187,9 @@
     "SUP": "SUP (RASP-UZK)",
     "noSUP": "BEZ SUP",
 
+    "ASDEK": "ASDEK",
+    "noASDEK": "BEZ ASDEK-a",
+
     "SBL": "SAMOCZYNNA",
     "PBL": "PÓŁSAMOCZYNNA",
 
@@ -210,8 +202,8 @@
     "free": "WOLNA",
     "occupied": "ZAJĘTA",
 
-    "withActiveTimetables": "AKTYWNE RJ",
-    "withoutActiveTimetables": "BEZ AKTYWNYCH RJ",
+    "withActiveTimetables": "AKTYWNE",
+    "withoutActiveTimetables": "BEZ AKTYWNYCH",
 
     "sliders": {
       "min-lvl": "MIN. WYMAGANY POZIOM DYŻURNEGO",
@@ -235,19 +227,39 @@
     "close": "ZAMKNIJ FILTRY"
   },
   "sceneries": {
-    "station": "Stacja",
-    "abbr": "Skrót\nposterunku",
-    "min-lvl": "Min. poziom\ndyżurnego",
-    "status": "Status",
-    "dispatcher": "Dyżurny",
-    "dispatcher-lvl": "Poziom\ndyżurnego",
-    "routes": "Szlaki\n2tor / 1tor",
-    "general": "Informacje\nogólne",
-    "user": "Maszyniści online",
-    "spawn": "Otwarte spawny",
-    "timetableAll": "Aktywne rozkłady jazdy",
-    "timetableConfirmed": "Zatwierdzone rozkłady jazdy",
-    "timetableUnconfirmed": "Niezatwierdzone rozkłady jazdy",
+    "headers": {
+      "station": "Sceneria",
+      "min-lvl": "Poziom\nscenerii",
+      "status": "Status",
+      "dispatcher": "Dyżurny",
+      "dispatcher-lvl": "Poziom\ndyżurnego",
+      "routes-single": "Szlaki\n1-torowe",
+      "routes-double": "Szlaki\n2-torowe",
+      "general": "Informacje\nogólne",
+      "user": "Maszyniści online",
+      "like": "Ocena dyżurnego",
+      "spawn": "Otwarte spawny",
+      "timetableAll": "Aktywne rozkłady jazdy",
+      "timetableConfirmed": "Zatwierdzone rozkłady jazdy",
+      "timetableUnconfirmed": "Niezatwierdzone rozkłady jazdy"
+    },
+    "info": {
+      "control-type": "Sterowanie: ",
+      "signals-type": "Sygnalizacja: ",
+      "SBL": "Sceneria posiada SBL na szlakach: ",
+      "SUP": "Wymaga programu SUP do kontroli systemu RASP-UZK",
+      "ASDEK": "Wymaga programu ASDEK do detekcji stanów awaryjnych taboru w ruchu",
+      "default": "Sceneria dostępna domyślnie w paczce z grą",
+      "non-public": "Sceneria niepubliczna",
+      "unavailable": "Sceneria niedostępna",
+      "abandoned": "Sceneria wycofana z rozgrywki",
+      "unknown": "Nieznana sceneria",
+      "real": "Sceneria z realnymi liniami kolejowymi: ",
+      "double-track-routes-catenary": "Liczba zelektryfikowanych szlaków dwutorowych: ",
+      "single-track-routes-catenary": "Liczba zelektryfikowanych szlaków jednotorowych: ",
+      "double-track-routes-other": "Liczba niezelektryfikowanych szlaków dwutorowych: ",
+      "single-track-routes-other": "Liczba niezelektryfikowanych szlaków jednotorowych: "
+    },
     "no-stations": "Brak stacji do wyświetlenia!",
     "scenery-search": "Wyszukaj scenerię..."
   },

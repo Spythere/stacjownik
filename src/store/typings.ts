@@ -14,6 +14,8 @@ export interface StoreState {
 
   isOffline: boolean;
 
+  isNewUpdate: boolean;
+
   dispatcherStatsName: string;
   dispatcherStatsData?: API.DispatcherStats.Response;
 
@@ -53,6 +55,7 @@ export interface StationJSONData {
   controlType: string;
 
   SUP: boolean;
+  ASDEK: boolean;
 
   // routes: string;
   routesInfo: StationRoutesInfo[];

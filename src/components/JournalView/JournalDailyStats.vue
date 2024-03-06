@@ -172,7 +172,7 @@ import dateMixin from '../../mixins/dateMixin';
 
 import { API } from '../../typings/api';
 import { Status } from '../../typings/common';
-import http from '../../http';
+import { useApiStore } from '../../store/apiStore';
 
 export default defineComponent({
   name: 'journal-daily-stats',
@@ -186,7 +186,8 @@ export default defineComponent({
       statsStatus: Status.Data.Loading,
       intervalId: -1,
 
-      stats: {} as API.DailyStats.Response
+      stats: {} as API.DailyStats.Response,
+      apiStore: useApiStore()
     };
   },
 
@@ -211,7 +212,9 @@ export default defineComponent({
   methods: {
     async fetchDailyTimetableStats() {
       try {
-        const res: API.DailyStats.Response = await (await http.get('api/getDailyStats')).data;
+        const res: API.DailyStats.Response = await (
+          await this.apiStore.client!.get('api/getDailyStats')
+        ).data;
 
         this.stats = res;
 

@@ -97,23 +97,20 @@
     </section>
 
     <section class="train-stats">
-      <TrainThumbnail :name="train.locoType" :onlyFirstSegment="true" />
-
-      <div class="text--grayed">
-        {{ train.locoType }}
-        <span v-if="train.stockList.length > 1">
-          &nbsp;&bull; {{ $t('trains.cars') }}:
-          <span class="count">{{ train.stockList.length - 1 }}</span>
-        </span>
-      </div>
+      <StockList :trainStockList="train.stockList" :tractionOnly="true" />
 
       <div>
-        <span v-for="(stat, i) in STATS.main" :key="stat.name">
-          <span v-if="i > 0"> &bull; </span>
-          <span
-            >{{ `${~~((train as any)[stat.name] * (stat.multiplier || 1))}${stat.unit}` }}
+        <span>{{ train.speed }}km/h</span>
+
+        <div>
+          <span> {{ train.length }}m</span>
+          &bull;
+          <span> {{ (train.mass / 1000).toFixed(1) }}t</span>
+          <span v-if="train.stockList.length > 1">
+            &bull;
+            {{ $t('trains.cars') }}: {{ train.stockList.length - 1 }}
           </span>
-        </span>
+        </div>
       </div>
     </section>
   </div>
@@ -125,13 +122,13 @@ import styleMixin from '../../mixins/styleMixin';
 import trainInfoMixin from '../../mixins/trainInfoMixin';
 import Train from '../../scripts/interfaces/Train';
 import ProgressBar from '../Global/ProgressBar.vue';
-import TrainThumbnail from '../Global/TrainThumbnail.vue';
 import { useMainStore } from '../../store/mainStore';
 import { useApiStore } from '../../store/apiStore';
+import StockList from '../Global/StockList.vue';
 
 export default defineComponent({
   mixins: [trainInfoMixin, styleMixin],
-  components: { ProgressBar, TrainThumbnail },
+  components: { ProgressBar, StockList },
 
   props: {
     train: {
@@ -153,13 +150,6 @@ export default defineComponent({
 });
 </script>
 
-<!-- Global style for TrainThumbnail -->
-<style lang="scss">
-.train-stats .train-thumbnail {
-  max-width: 100%;
-}
-</style>
-
 <style lang="scss" scoped>
 @import '../../styles/responsive.scss';
 @import '../../styles/badge.scss';
@@ -178,7 +168,7 @@ export default defineComponent({
   flex-direction: column;
   text-align: center;
 
-  gap: 0.25em;
+  line-height: 1.5em;
 }
 
 .train-info {

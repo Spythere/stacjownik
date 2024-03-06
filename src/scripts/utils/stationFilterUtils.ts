@@ -54,10 +54,28 @@ export const sortStations = (
       diff = (a.onlineInfo?.dispatcherExp || 0) - (b.onlineInfo?.dispatcherExp || 0);
       break;
 
+    case 'routes-single':
+      diff =
+        (a.generalInfo?.routes.single.filter((r) => !r.hidden && !r.isInternal).length ?? -1) -
+        (b.generalInfo?.routes.single.filter((r) => !r.hidden && !r.isInternal).length ?? -1);
+      break;
+
+    case 'routes-double':
+      diff =
+        (a.generalInfo?.routes.double.filter((r) => !r.hidden && !r.isInternal).length ?? -1) -
+        (b.generalInfo?.routes.double.filter((r) => !r.hidden && !r.isInternal).length ?? -1);
+      break;
+
     case 'user':
       diff =
         (b.onlineInfo ? b.onlineInfo.currentUsers : -1) -
         (a.onlineInfo ? a.onlineInfo.currentUsers : -1);
+      break;
+
+    case 'like':
+      diff =
+        (a.onlineInfo ? a.onlineInfo.dispatcherRate : -Infinity) -
+        (b.onlineInfo ? b.onlineInfo.dispatcherRate : -Infinity);
       break;
 
     case 'spawn':
@@ -149,7 +167,7 @@ export const filterStations = (station: Station, filters: Filter) => {
     return false;
 
   if (station.generalInfo) {
-    const { routes, availability, controlType, lines, reqLevel, signalType, SUP, authors } =
+    const { routes, availability, controlType, lines, reqLevel, signalType, SUP, ASDEK, authors } =
       station.generalInfo;
 
     if (availability == 'unavailable' && filters['unavailable'] && !station.onlineInfo)
@@ -176,21 +194,21 @@ export const filterStations = (station: Station, filters: Filter) => {
 
     if (
       filters['no-1track'] &&
-      (routes.oneWayCatenaryRouteNames.length != 0 || routes.oneWayNoCatenaryRouteNames.length != 0)
+      (routes.singleElectrifiedNames.length != 0 || routes.singleOtherNames.length != 0)
     )
       return false;
 
     if (
       filters['no-2track'] &&
-      (routes.twoWayCatenaryRouteNames.length != 0 || routes.twoWayNoCatenaryRouteNames.length != 0)
+      (routes.doubleElectrifiedNames.length != 0 || routes.doubleOtherNames.length != 0)
     )
       return false;
 
-    if (routes.oneWayCatenaryRouteNames.length < filters['minOneWayCatenary']) return false;
-    if (routes.oneWayNoCatenaryRouteNames.length < filters['minOneWay']) return false;
+    if (routes.singleElectrifiedNames.length < filters['minOneWayCatenary']) return false;
+    if (routes.singleOtherNames.length < filters['minOneWay']) return false;
 
-    if (routes.twoWayCatenaryRouteNames.length < filters['minTwoWayCatenary']) return false;
-    if (routes.twoWayNoCatenaryRouteNames.length < filters['minTwoWay']) return false;
+    if (routes.doubleElectrifiedNames.length < filters['minTwoWayCatenary']) return false;
+    if (routes.doubleOtherNames.length < filters['minTwoWay']) return false;
 
     if (filters[controlType]) return false;
     if (filters[signalType]) return false;
@@ -198,8 +216,11 @@ export const filterStations = (station: Station, filters: Filter) => {
     if (filters['SUP'] && SUP) return false;
     if (filters['noSUP'] && !SUP) return false;
 
-    if (filters['SBL'] && routes.sblRouteNames.length > 0) return false;
-    if (filters['PBL'] && routes.sblRouteNames.length == 0) return false;
+    if (filters['ASDEK'] && ASDEK) return false;
+    if (filters['noASDEK'] && !ASDEK) return false;
+
+    if (filters['SBL'] && routes.sblNames.length > 0) return false;
+    if (filters['PBL'] && routes.sblNames.length == 0) return false;
 
     if (
       filters['authors'].length > 3 &&

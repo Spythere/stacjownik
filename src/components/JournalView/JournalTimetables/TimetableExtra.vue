@@ -53,7 +53,6 @@
       </button>
     </div>
 
-    <!-- <StockList :trainStockList="currentHistoryIndex == 0 ? timetable.stockString : stockHistory[currentHistoryIndex].stockString).split(';')" /> -->
     <StockList
       :trainStockList="
         (currentHistoryIndex == 0
@@ -63,15 +62,6 @@
       "
     />
 
-    <!-- <ul class="stock-list">
-      <li
-        v-for="(stockName, i) in (currentHistoryIndex == 0 ? timetable.stockString : stockHistory[currentHistoryIndex].stockString).split(';')"
-        :key="i"
-      >
-        <div>{{ stockName.split(':')[0].split('_').splice(0, 2).join(' ') }} {{ stockName.split(':')[1] }}</div>
-        <TrainThumbnail :name="stockName" />
-      </li>
-    </ul> -->
   </div>
 </template>
 

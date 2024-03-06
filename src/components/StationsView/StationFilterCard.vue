@@ -256,8 +256,6 @@ export default defineComponent({
     },
 
     handleAuthorsInput() {
-      console.log(this.authorsInputValue);
-
       this.filterStore.changeFilterValue('authors', this.authorsInputValue);
 
       if (this.saveOptions) StorageManager.setStringValue('authors', this.authorsInputValue);

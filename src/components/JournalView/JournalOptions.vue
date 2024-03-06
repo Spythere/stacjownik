@@ -116,7 +116,7 @@ import keyMixin from '../../mixins/keyMixin';
 import { useMainStore } from '../../store/mainStore';
 import { Journal } from './typings';
 import { Status } from '../../typings/common';
-import http from '../../http';
+import { useApiStore } from '../../store/apiStore';
 
 export default defineComponent({
   emits: ['onSearchConfirm', 'onOptionsReset', 'onRefreshData'],
@@ -158,6 +158,7 @@ export default defineComponent({
 
       searchTimeout: 0,
       store: useMainStore(),
+      apiStore: useApiStore(),
 
       JournalFilterSection: Journal.FilterSection
     };
@@ -241,7 +242,7 @@ export default defineComponent({
       this.searchTimeout = window.setTimeout(async () => {
         try {
           const suggestions: string[] = await (
-            await http.get(`api/get${type}Suggestions?name=${value}`)
+            await this.apiStore.client!.get(`api/get${type}Suggestions?name=${value}`)
           ).data;
 
           this[`${type}Suggestions`] = suggestions;

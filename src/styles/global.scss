@@ -18,12 +18,15 @@
 
   --clr-donator: #f7a4ff;
 
+  --no-scroll-padding: 17px;
+  --max-container-width: 1700px;
+
   font-size: 16px;
 }
 
 ::-webkit-scrollbar {
-  width: 15px;
-  height: 15px;
+  width: var(--no-scroll-padding);
+  height: var(--no-scroll-padding);
   background-color: transparent;
 
   &-track {
@@ -46,11 +49,14 @@ body {
   padding: 0;
   font-family: 'Quicksand', sans-serif;
   font-weight: 500;
+  text-rendering: optimizeLegibility !important;
+  -webkit-font-smoothing: antialiased !important;
+
   overflow-y: scroll;
 
   &.no-scroll {
     overflow-y: hidden;
-    padding-right: 15px;
+    padding-right: var(--no-scroll-padding);
 
     @include smallScreen() {
       padding: 0;

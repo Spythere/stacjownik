@@ -1,14 +1,14 @@
 {
   "optionSections": [
+    "status",
+    "timetables",
     "reality",
     "package-access",
     "access",
     "control",
-    "addons",
     "blockades",
     "signals",
-    "status",
-    "timetables"
+    "addons"
   ],
 
   "options": [
@@ -135,6 +135,20 @@
     {
       "id": "noSUP",
       "name": "noSUP",
+      "section": "addons",
+      "value": true,
+      "defaultValue": true
+    },
+    {
+      "id": "ASDEK",
+      "name": "ASDEK",
+      "section": "addons",
+      "value": true,
+      "defaultValue": true
+    },
+    {
+      "id": "noASDEK",
+      "name": "noASDEK",
       "section": "addons",
       "value": true,
       "defaultValue": true

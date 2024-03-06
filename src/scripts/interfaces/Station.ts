@@ -1,4 +1,4 @@
-import { Availability, ActiveScenery, ScheduledTrain } from '../../store/typings';
+import { Availability, ActiveScenery } from '../../store/typings';
 import { StationRoutes } from './StationRoutes';
 
 export default interface Station {
@@ -21,6 +21,7 @@ export default interface Station {
     controlType: string;
 
     SUP: boolean;
+    ASDEK: boolean;
     authors?: string[];
 
     availability: Availability;

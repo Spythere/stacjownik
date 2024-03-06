@@ -15,6 +15,7 @@ export const useMainStore = defineStore('store', {
       region: { id: 'eu', value: 'PL1' },
 
       isOffline: false,
+      isNewUpdate: false,
 
       dispatcherStatsName: '',
       dispatcherStatsStatus: Status.Data.Initialized,
@@ -230,27 +231,29 @@ export const useMainStore = defineStore('store', {
       return apiStore.sceneryData.map((scenery) => {
         const routes = scenery.routesInfo.reduce(
           (acc, route) => {
-            const tracksKey = route.routeTracks == 2 ? 'twoWay' : 'oneWay';
+            if (route.hidden) return acc;
+
+            const tracksKey = route.routeTracks == 2 ? 'double' : 'single';
             const isElectric = route.isElectric;
             const routesKey: keyof StationRoutes = `${tracksKey}${
-              !isElectric ? 'No' : ''
-            }CatenaryRouteNames`;
+              !isElectric ? 'Other' : 'Electrified'
+            }Names`;
 
             if (!route.isInternal) acc[routesKey].push(route.routeName);
-            if (route.isRouteSBL) acc['sblRouteNames'].push(route.routeName);
+            if (route.isRouteSBL) acc['sblNames'].push(route.routeName);
 
             acc[tracksKey].push(route);
 
             return acc;
           },
           {
-            oneWay: [],
-            oneWayCatenaryRouteNames: [],
-            oneWayNoCatenaryRouteNames: [],
-            twoWay: [],
-            twoWayCatenaryRouteNames: [],
-            twoWayNoCatenaryRouteNames: [],
-            sblRouteNames: []
+            single: [],
+            singleElectrifiedNames: [],
+            singleOtherNames: [],
+            double: [],
+            doubleElectrifiedNames: [],
+            doubleOtherNames: [],
+            sblNames: []
           } as StationRoutes
         );
 

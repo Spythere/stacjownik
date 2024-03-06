@@ -2,6 +2,7 @@
   "donations": {
     "button-title": "TOSS A COIN",
     "header": "Toss a coin to Stacjownik!",
+    "donator-title": "Project is supported by more than <b>{count}</b> people, including:",
     "p1": "<b>Hello o7!</b> This is Spythere, the creator of Stacjownik, Pojazdownik and several other applications that enhance the gameplay of Train Driver 2!",
     "p2": "{b1} is a completely free tool, created and continuously developed for the Train Driver 2 simulator community since 2020. However, a part of the project is sustained solely through my private financial contribution.  Features such as  {b2} or {b3} (operating on my {link} - to which you are warmly invited) must function on a dedicated server where they can collect and process data, and then display it on the website.",
     "p2-b1": "Stacjownik",
@@ -56,20 +57,6 @@
     "S5-timetables": "<b>S5 signal</b> <br> Timetables might be incorrect or missing!",
     "S5-dispatchers": "<b>S5 signal</b> <br> Cannot load dispatchers status data!",
     "S5-trains": "<b>S5 signal</b> <br> Cannot load online trains data!"
-  },
-  "desc": {
-    "control-type": "Control type: ",
-    "signals-type": "Signals type:  ",
-    "SBL": "This scenery has automatic block signalling (ABS/SBL) system on following routes: ",
-    "SUP": "Requires the SUP application (level crossing remote control simulator)",
-    "TWB-all": "This scenery has two-way route blockade on all routes",
-    "TWB-routes": "This scenery has two-way route blockade on following routes: ",
-    "default": "This scenery is available by default",
-    "non-public": "This scenery is not public",
-    "unknown": "This scenery isn't recognizable right now",
-    "unavailable": "This scenery is unavailable",
-    "abandoned": "This scenery is no longer supported by its creators",
-    "real": "Scenery with real lines: "
   },
   "signals": {
     "title": "Signal type",
@@ -211,6 +198,9 @@
     "SUP": "SUP (RASP-UZK)",
     "noSUP": "WITHOUT SUP",
 
+    "ASDEK": "ASDEK",
+    "noASDEK": "NO ASDEK",
+
     "SBL": "AUTOMATIC (SBL)",
     "PBL": "SEMIAUTOMATIC (PBL)",
 
@@ -246,18 +236,41 @@
     "close": "CLOSE FILTERS"
   },
   "sceneries": {
-    "station": "Station",
-    "min-lvl": "Min. dispatcher\nlevel",
-    "status": "Status",
-    "dispatcher": "Dispatcher",
-    "dispatcher-lvl": "Dispatcher\nlevel",
-    "routes": "Routes\ndouble / single",
-    "general": "General info",
-    "user": "Drivers online",
-    "spawn": "Spawns online",
-    "timetableAll": "Active timetables",
-    "timetableConfirmed": "Confirmed timetables",
-    "timetableUnconfirmed": "Unconfirmed timetables",
+    "headers": {
+      "station": "Scenery",
+      "min-lvl": "Scenery\nlevel",
+      "status": "Status",
+      "dispatcher": "Dispatcher",
+      "dispatcher-lvl": "Dispatcher\nlevel",
+      "routes-single": "1-track\nroutes",
+      "routes-double": "2-track\nroutes",
+      "general": "General info",
+      "user": "Drivers online",
+      "like": "Dispatcher rating",
+      "spawn": "Spawns online",
+      "timetableAll": "Active timetables",
+      "timetableConfirmed": "Confirmed timetables",
+      "timetableUnconfirmed": "Unconfirmed timetables"
+    },
+    "info": {
+      "control-type": "Control type: ",
+      "signals-type": "Signals type: ",
+      "SBL": "This scenery has automatic block signalling (ABS/SBL) system on following routes: ",
+      "SUP": "Requires the SUP program (level crossing remote control)",
+      "ASDEK": "Requires the ASDEK program (defect detection of moving rolling stock)",
+      "TWB-all": "This scenery has two-way route blockade on all routes",
+      "TWB-routes": "This scenery has two-way route blockade on following routes: ",
+      "default": "This scenery is available by default",
+      "non-public": "This scenery is not public",
+      "unavailable": "This scenery is unavailable",
+      "abandoned": "This scenery is no longer supported by its creators",
+      "unknown": "This scenery isn't recognizable right now",
+      "real": "Scenery with real lines: ",
+      "double-track-routes-catenary": "Electrified double-track routes count: ",
+      "single-track-routes-catenary": "Electrified single-track routes count: ",
+      "double-track-routes-other": "Not electrified double-track routes count: ",
+      "single-track-routes-other": "Not electrified single-track routes count:  "
+    },
     "no-stations": "No stations to show here!",
     "scenery-search": "Search for scenery..."
   },

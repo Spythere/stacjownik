@@ -4,7 +4,8 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
   server: {
-    port: 5001
+    port: 5001,
+    open: true
   },
   publicDir: 'public',
   plugins: [

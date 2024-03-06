@@ -59,8 +59,6 @@ export default defineComponent({
     'store.region.id': {
       handler(regionId) {
         this.selectedItemIndex = this.regionList.findIndex((reg) => reg.id == regionId);
-
-        console.log('region id', regionId);
       }
     },
     '$route.query.region': {

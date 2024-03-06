@@ -210,13 +210,13 @@ button.back-btn {
 
 .scenery-wrapper {
   display: grid;
-  grid-template-columns: 4fr 5fr;
+  grid-template-columns: 4fr 6fr;
   gap: 0 1em;
 
   position: relative;
 
   width: 100%;
-  max-width: 1700px;
+  max-width: var(--max-container-width);
   min-height: 100vh;
 
   margin: 1rem 0;
@@ -234,9 +234,8 @@ button.back-btn {
   padding: 1em 0.5em;
 
   height: 95vh;
-  min-height: 550px;
+  min-height: 750px;
   max-height: 1000px;
-
   overflow: auto;
 
   display: flex;
@@ -248,7 +247,7 @@ button.back-btn {
   padding: 1em 0.5em;
 
   height: 95vh;
-  min-height: 550px;
+  min-height: 750px;
   max-height: 1000px;
 
   display: grid;

@@ -37,7 +37,6 @@
 <script lang="ts">
 import { defineComponent, provide, reactive, Ref, ref } from 'vue';
 
-import http from '../http';
 import { useMainStore } from '../store/mainStore';
 import { LocationQuery } from 'vue-router';
 import { Journal } from '../components/JournalView/typings';
@@ -48,6 +47,7 @@ import JournalDispatchersList from '../components/JournalView/JournalDispatchers
 import JournalOptions from '../components/JournalView/JournalOptions.vue';
 import JournalHeader from '../components/JournalView/JournalHeader.vue';
 import JournalStats from '../components/JournalView/JournalStats.vue';
+import { useApiStore } from '../store/apiStore';
 
 const statsButtons: Journal.StatsButton[] = [
   {
@@ -120,6 +120,7 @@ export default defineComponent({
 
     return {
       mainStore: useMainStore(),
+      apiStore: useApiStore(),
 
       sorterActive,
       searchersValues,
@@ -201,7 +202,7 @@ export default defineComponent({
 
       try {
         const statsData: API.DispatcherStats.Response = await (
-          await http.get('api/getDispatcherStats', {
+          await this.apiStore.client!.get('api/getDispatcherStats', {
             params: {
               name: this.mainStore.dispatcherStatsName
             }
@@ -236,7 +237,9 @@ export default defineComponent({
       this.countFromIndex = this.historyList.length;
 
       const responseData: API.DispatcherHistory.Response = await (
-        await http.get(`api/getDispatchers?${this.currentQuery}&countFrom=${this.countFromIndex}`)
+        await this.apiStore.client!.get(
+          `api/getDispatchers?${this.currentQuery}&countFrom=${this.countFromIndex}`
+        )
       ).data;
 
       if (!responseData) return;
@@ -283,7 +286,7 @@ export default defineComponent({
         if (reset) this.dataStatus = Status.Data.Loading;
 
         const responseData: API.DispatcherHistory.Response = await (
-          await http.get(`api/getDispatchers?${this.currentQuery}`)
+          await this.apiStore.client!.get(`api/getDispatchers?${this.currentQuery}`)
         ).data;
 
         if (!responseData) {
