@@ -14,6 +14,8 @@ export interface StoreState {
 
   isOffline: boolean;
 
+  isNewUpdate: boolean;
+
   dispatcherStatsName: string;
   dispatcherStatsData?: API.DispatcherStats.Response;
 

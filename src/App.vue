@@ -6,8 +6,6 @@
       </keep-alive>
     </transition>
 
-    <!-- <UpdateModal /> -->
-
     <AppHeader :current-lang="currentLang" @change-lang="changeLang" />
 
     <main class="app_main">
@@ -36,7 +34,7 @@
 <script lang="ts">
 import { defineComponent, watch } from 'vue';
 import axios from 'axios';
-import packageInfo from '.././package.json';
+import { version } from '.././package.json';
 
 import Clock from './components/App/Clock.vue';
 
@@ -49,19 +47,19 @@ import TrainModal from './components/TrainsView/TrainModal.vue';
 import StorageManager from './managers/storageManager';
 import { useApiStore } from './store/apiStore';
 import { Status } from './typings/common';
-import UpdateModal from './components/App/UpdateModal.vue';
+
+const STORAGE_VERSION_KEY = 'app_version';
 
 export default defineComponent({
   components: {
     Clock,
     StatusIndicator,
     AppHeader,
-    TrainModal,
-    UpdateModal
+    TrainModal
   },
 
   data: () => ({
-    VERSION: packageInfo.version,
+    VERSION: version,
     store: useMainStore(),
     apiStore: useApiStore(),
 
@@ -89,10 +87,27 @@ export default defineComponent({
       this.loadLang();
       this.setReleaseURL();
       this.setupOfflineHandling();
+      this.checkAppVersion();
 
       this.apiStore.setupAPIData();
 
       if (!this.isOnProductionHost) document.title = 'Stacjownik Dev';
+    },
+
+    checkAppVersion() {
+      if (import.meta.env.DEV) {
+        this.store.isNewUpdate = true;
+
+        return;
+      }
+
+      const storageVersion = StorageManager.getStringValue(STORAGE_VERSION_KEY);
+
+      if (storageVersion === undefined || storageVersion != version) {
+        this.store.isNewUpdate = true;
+
+        StorageManager.setStringValue(STORAGE_VERSION_KEY, version);
+      }
     },
 
     setupOfflineHandling() {

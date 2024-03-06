@@ -196,21 +196,22 @@
                 </div>
               </td>
 
-              <td class="station-info" v-if="station.generalInfo">
+              <td class="station-info">
                 <span
+                  v-if="station.generalInfo?.signalType"
                   class="scenery-icon icon-info"
-                  :class="station.generalInfo.controlType.replace('+', '-')"
+                  :class="station.generalInfo?.controlType.replace('+', '-')"
                   :title="
                     $t('sceneries.info.control-type') +
-                    $t(`controls.${station.generalInfo.controlType}`)
+                    $t(`controls.${station.generalInfo?.controlType}`)
                   "
                   v-html="getControlTypeAbbrev(station.generalInfo.controlType)"
                 >
                 </span>
 
                 <img
+                  v-if="station.generalInfo?.signalType"
                   class="icon-info"
-                  v-if="station.generalInfo.signalType"
                   :src="`/images/icon-${station.generalInfo.signalType}.svg`"
                   :alt="station.generalInfo.signalType"
                   :title="
@@ -220,24 +221,23 @@
                 />
 
                 <img
+                  v-if="station.generalInfo?.SUP"
                   class="icon-info"
-                  v-if="station.generalInfo.SUP"
                   src="/images/icon-SUP.svg"
                   alt="SUP (RASP-UZK)"
                   :title="$t('sceneries.info.SUP')"
                 />
 
                 <img
+                  v-if="station.generalInfo?.ASDEK"
                   class="icon-info"
-                  v-if="station.generalInfo.ASDEK"
                   src="/images/icon-ASDEK.svg"
                   alt="dSAT ASDEK"
                   :title="$t('sceneries.info.ASDEK')"
                 />
-              </td>
 
-              <td class="station-info" v-else>
                 <img
+                  v-if="!station.generalInfo"
                   class="icon-info"
                   src="/images/icon-unknown.svg"
                   alt="icon-unknown"
@@ -460,7 +460,7 @@ table {
     }
 
     &.general {
-      width: 10em;
+      width: 11em;
     }
 
     &.header-image {

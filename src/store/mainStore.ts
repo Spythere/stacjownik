@@ -15,6 +15,7 @@ export const useMainStore = defineStore('store', {
       region: { id: 'eu', value: 'PL1' },
 
       isOffline: false,
+      isNewUpdate: false,
 
       dispatcherStatsName: '',
       dispatcherStatsStatus: Status.Data.Initialized,

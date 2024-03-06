@@ -56,12 +56,14 @@ export const sortStations = (
 
     case 'routes-single':
       diff =
-        (a.generalInfo?.routes.single.length ?? -1) - (b.generalInfo?.routes.single.length ?? -1);
+        (a.generalInfo?.routes.single.filter((r) => !r.hidden && !r.isInternal).length ?? -1) -
+        (b.generalInfo?.routes.single.filter((r) => !r.hidden && !r.isInternal).length ?? -1);
       break;
 
     case 'routes-double':
       diff =
-        (a.generalInfo?.routes.double.length ?? -1) - (b.generalInfo?.routes.double.length ?? -1);
+        (a.generalInfo?.routes.double.filter((r) => !r.hidden && !r.isInternal).length ?? -1) -
+        (b.generalInfo?.routes.double.filter((r) => !r.hidden && !r.isInternal).length ?? -1);
       break;
 
     case 'user':
