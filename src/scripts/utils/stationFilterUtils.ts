@@ -167,7 +167,7 @@ export const filterStations = (station: Station, filters: Filter) => {
     return false;
 
   if (station.generalInfo) {
-    const { routes, availability, controlType, lines, reqLevel, signalType, SUP, authors } =
+    const { routes, availability, controlType, lines, reqLevel, signalType, SUP, ASDEK, authors } =
       station.generalInfo;
 
     if (availability == 'unavailable' && filters['unavailable'] && !station.onlineInfo)
@@ -215,6 +215,9 @@ export const filterStations = (station: Station, filters: Filter) => {
 
     if (filters['SUP'] && SUP) return false;
     if (filters['noSUP'] && !SUP) return false;
+
+    if (filters['ASDEK'] && ASDEK) return false;
+    if (filters['noASDEK'] && !ASDEK) return false;
 
     if (filters['SBL'] && routes.sblNames.length > 0) return false;
     if (filters['PBL'] && routes.sblNames.length == 0) return false;

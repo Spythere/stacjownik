@@ -16,6 +16,8 @@ const filterInitStates: Filter = {
   SPE: false,
   SUP: false,
   noSUP: false,
+  ASDEK: false,
+  noASDEK: false,
   ręczne: false,
   'ręczne+SPK': false,
   'ręczne+SCS': false,

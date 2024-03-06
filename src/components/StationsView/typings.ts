@@ -16,6 +16,8 @@ export interface Filter {
   SPE: boolean;
   SUP: boolean;
   noSUP: boolean;
+  ASDEK: boolean;
+  noASDEK: boolean;
   ręczne: boolean;
   'ręczne+SPK': boolean;
   'ręczne+SCS': boolean;

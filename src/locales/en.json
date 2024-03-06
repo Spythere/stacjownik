@@ -198,6 +198,9 @@
     "SUP": "SUP (RASP-UZK)",
     "noSUP": "WITHOUT SUP",
 
+    "ASDEK": "ASDEK",
+    "noASDEK": "NO ASDEK",
+
     "SBL": "AUTOMATIC (SBL)",
     "PBL": "SEMIAUTOMATIC (PBL)",
 
