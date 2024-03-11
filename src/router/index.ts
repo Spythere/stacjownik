@@ -1,6 +1,4 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
-import JournalDispatchersVue from '../views/JournalDispatchers.vue';
-import JournalTimetablesVue from '../views/JournalTimetables.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -38,7 +36,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/journal/timetables',
     name: 'JournalTimetables',
-    component: JournalTimetablesVue,
+    component: () => import('../views/JournalTimetables.vue'),
     props: (route) => ({
       region: route.query.region
     })
@@ -46,7 +44,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/journal/dispatchers',
     name: 'JournalDispatchers',
-    component: JournalDispatchersVue,
+    component: () => import('../views/JournalDispatchers.vue'),
     props: (route) => ({
       region: route.query.region
     })
