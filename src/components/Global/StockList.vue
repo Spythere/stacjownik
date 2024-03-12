@@ -98,7 +98,7 @@ export default defineComponent({
     onImageError(event: Event, stockName: string) {
       let fallbackName = '';
 
-      const isLoco = /.-\d/.test(stockName);
+      const isLoco = /.-\d{3}/.test(stockName);
 
       if (isLoco) {
         fallbackName += 'loco-';

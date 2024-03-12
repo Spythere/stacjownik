@@ -148,11 +148,6 @@ export default defineComponent({
       if (distance < 1000) return `${distance}m`;
 
       return `${(distance / 1000).toPrecision(2)}km`;
-    },
-
-    onImageError(e: Event) {
-      const imageEl = e.target as HTMLImageElement;
-      imageEl.src = '/images/icon-unknown.png';
     }
   }
 });
