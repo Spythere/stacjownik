@@ -73,6 +73,12 @@ export default defineComponent({
   },
 
   async mounted() {
+    window.addEventListener('focus', () => {
+      if (Date.now() - this.apiStore.lastFetchData.getTime() < 15000) return;
+
+      this.apiStore.fetchActiveData();
+    });
+
     watch(
       () => this.store.blockScroll,
       (value) => {
