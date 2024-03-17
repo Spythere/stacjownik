@@ -74,7 +74,7 @@
           class="timetable-item"
           v-else
           v-for="scheduledTrain in computedScheduledTrains"
-          :key="scheduledTrain.trainId"
+          :key="scheduledTrain.trainId + scheduledTrain.stopInfo.arrivalTimestamp"
           tabindex="0"
           @click.prevent.stop="selectModalTrain(scheduledTrain.trainId, $event.currentTarget)"
           @keydown.enter.prevent="selectModalTrain(scheduledTrain.trainId, $event.currentTarget)"

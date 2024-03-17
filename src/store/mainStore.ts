@@ -107,7 +107,10 @@ export const useMainStore = defineStore('store', {
           if (
             acc.findIndex((v) => v.name == name && v.region == train.region) != -1 ||
             apiStore.activeData?.activeSceneries?.findIndex(
-              (sc) => sc.stationName === name && sc.region == train.region
+              (sc) =>
+                sc.stationName === name &&
+                sc.region == train.region &&
+                Date.now() - sc.lastSeen < 1000 * 60 * 2
             ) != -1
           )
             return acc;
