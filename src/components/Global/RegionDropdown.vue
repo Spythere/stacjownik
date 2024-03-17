@@ -84,7 +84,7 @@ export default defineComponent({
     regionList() {
       return regionsJSON.map((region) => {
         const regionStationCount = this.store.activeSceneryList.filter(
-          (scenery) => scenery.region == region.id
+          (scenery) => scenery.region == region.id && scenery.dispatcherId != -1
         ).length;
 
         const regionTrainCount =
