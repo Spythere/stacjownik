@@ -24,6 +24,8 @@ export const useApiStore = defineStore('apiStore', {
     donatorsData: [] as API.Donators.Response,
     sceneryData: [] as StationJSONData[],
 
+    lastFetchData: new Date(),
+
     client: undefined as AxiosInstance | undefined,
 
     activeDataScheduler: undefined as number | undefined
@@ -64,20 +66,19 @@ export const useApiStore = defineStore('apiStore', {
     async setupActiveDataFetcher() {
       if (this.activeDataScheduler) return;
 
-      this.dataStatuses.connection = Status.Data.Loading;
-
       this.activeDataScheduler = window.setInterval(() => {
-        if (UPDATE_SECONDS.includes(new Date().getSeconds())) {
-          this.fetchActiveData();
-        }
-      }, 1000);
+        this.fetchActiveData();
+      }, 25000);
     },
 
     async fetchActiveData() {
+      if (!this.activeData) this.dataStatuses.connection = Status.Data.Loading;
+
       try {
         const response = await this.client!.get<API.ActiveData.Response>('api/getActiveData');
 
         this.activeData = response.data;
+        this.lastFetchData = new Date();
         this.dataStatuses.connection = Status.Data.Loaded;
 
         console.log('Fetching active data at ' + new Date().toLocaleTimeString('pl-PL'));
