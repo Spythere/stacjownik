@@ -36,7 +36,11 @@
         <div class="train-driver">
           <b
             v-if="apiStore.donatorsData.includes(train.driverName)"
-            :title="$t('donations.driver-message')"
+            @mouseenter="
+              popupStore.onPopUpShow($event, 'DonatorPopUp', $t('donations.driver-message'))
+            "
+            @mousemove="popupStore.onPopUpMove"
+            @mouseleave="popupStore.onPopUpHide"
           >
             {{ train.driverName }}
             <img src="/images/icon-diamond.svg" alt="donator diamond icon" />
@@ -47,14 +51,22 @@
 
       <div class="general-timetable" v-if="train.timetableData">
         <strong>{{ train.timetableData.route.replace('|', ' - ') }}</strong>
-        <img
+        <span
           v-if="getSceneriesWithComments(train.timetableData).length > 0"
-          class="image-warning"
-          src="/images/icon-warning.svg"
-          :title="`${$t('trains.timetable-comments')} (${getSceneriesWithComments(
-            train.timetableData
-          )})`"
-        />
+          @mouseenter="
+            popupStore.onPopUpShow(
+              $event,
+              'TrainCommentsPopUp',
+              `${$t('trains.timetable-comments')} (${getSceneriesWithComments(
+                train.timetableData
+              )})`
+            )
+          "
+          @mousemove="popupStore.onPopUpMove"
+          @mouseleave="popupStore.onPopUpHide"
+        >
+          <img class="image-warning" src="/images/icon-warning.svg" />
+        </span>
       </div>
 
       <hr style="margin: 0.25em 0" />
@@ -125,6 +137,7 @@ import ProgressBar from '../Global/ProgressBar.vue';
 import { useMainStore } from '../../store/mainStore';
 import { useApiStore } from '../../store/apiStore';
 import StockList from '../Global/StockList.vue';
+import { usePopupStore } from '../../store/popupStore';
 
 export default defineComponent({
   mixins: [trainInfoMixin, styleMixin],
@@ -144,7 +157,8 @@ export default defineComponent({
   data() {
     return {
       store: useMainStore(),
-      apiStore: useApiStore()
+      apiStore: useApiStore(),
+      popupStore: usePopupStore()
     };
   }
 });

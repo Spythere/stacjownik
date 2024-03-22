@@ -1,5 +1,7 @@
 <template>
   <div class="app_container" v-cloak>
+    <PopUp />
+
     <transition name="modal-anim">
       <keep-alive>
         <TrainModal v-if="store.chosenModalTrainId" />
@@ -36,15 +38,14 @@ import { defineComponent, watch } from 'vue';
 import axios from 'axios';
 import { version } from '.././package.json';
 
-import Clock from './components/App/Clock.vue';
-
 import { useMainStore } from './store/mainStore';
 
+import Clock from './components/App/Clock.vue';
 import StatusIndicator from './components/App/StatusIndicator.vue';
 import AppHeader from './components/App/AppHeader.vue';
 import TrainModal from './components/TrainsView/TrainModal.vue';
-
 import StorageManager from './managers/storageManager';
+import PopUp from './components/PopUp/PopUp.vue';
 import { useApiStore } from './store/apiStore';
 import { Status } from './typings/common';
 
@@ -55,7 +56,8 @@ export default defineComponent({
     Clock,
     StatusIndicator,
     AppHeader,
-    TrainModal
+    TrainModal,
+    PopUp
   },
 
   data: () => ({
@@ -217,6 +219,7 @@ export default defineComponent({
   grid-template-columns: 100%;
 
   min-height: 100vh;
+  position: relative;
 }
 
 .app_main {

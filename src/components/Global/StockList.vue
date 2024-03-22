@@ -7,11 +7,12 @@
       </p>
 
       <img
+        class="traction-only"
         :src="`https://rj.td2.info.pl/dist/img/thumbnails/${computedStockList[0].split(':')[0]}${
           /^EN/.test(computedStockList[0]) ? 'rb' : ''
         }.png`"
         @error="onImageError($event, computedStockList[0])"
-        width="400"
+        width="300"
         height="60"
       />
     </div>
@@ -23,7 +24,13 @@
           {{ stockName.split(':')[1] }}
         </p>
 
-        <span>
+        <span
+          @mouseenter="
+            popupStore.onPopUpShow($event, 'VehiclePreviewPopUp', stockName.split(':')[0])
+          "
+          @mousemove="popupStore.onPopUpMove"
+          @mouseleave="popupStore.onPopUpHide"
+        >
           <img
             :src="`https://rj.td2.info.pl/dist/img/thumbnails/${stockName.split(':')[0]}${
               /^EN/.test(stockName) ? 'rb' : ''
@@ -69,6 +76,7 @@
 <script lang="ts">
 import { PropType, defineComponent } from 'vue';
 import { useApiStore } from '../../store/apiStore';
+import { usePopupStore } from '../../store/popupStore';
 
 export default defineComponent({
   props: {
@@ -84,7 +92,8 @@ export default defineComponent({
 
   data() {
     return {
-      apiStore: useApiStore()
+      apiStore: useApiStore(),
+      popupStore: usePopupStore()
     };
   },
 
@@ -139,12 +148,17 @@ export default defineComponent({
 ul > li > span {
   display: flex;
   align-items: flex-end;
+  cursor: crosshair;
 }
 
 img {
   max-height: 60px;
   width: auto;
   height: auto;
+}
+
+img.traction-only {
+  max-width: 100%;
 }
 
 p {

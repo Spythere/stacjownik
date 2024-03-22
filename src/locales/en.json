@@ -48,6 +48,10 @@
     "confirm-button": "UPDATE NOW",
     "later-button": "LATER"
   },
+  "vehicle-preview": {
+    "loading": "Loading preview...",
+    "error": "Oops! The vehicle preview seems to be missing! :/"
+  },
   "data-status": {
     "S1-offline": "<b>S1 signal</b> <br> The app is working in offline mode!",
     "S1a-connection": "<b>S1a signal</b> <br> Cannot connect with Stacjownik API service!",
