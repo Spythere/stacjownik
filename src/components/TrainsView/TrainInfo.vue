@@ -46,6 +46,11 @@
             <img src="/images/icon-diamond.svg" alt="donator diamond icon" />
           </b>
           <span v-else>{{ train.driverName }}</span>
+          &bull;
+          <button class="btn--image btn--text btn-journal" v-if="extended">
+            <img src="/images/icon-train.svg" alt="" />
+            DZIENNIK
+          </button>
         </div>
       </div>
 
@@ -149,8 +154,7 @@ export default defineComponent({
       required: true
     },
     extended: {
-      type: Boolean,
-      default: true
+      type: Boolean
     }
   },
 
@@ -199,6 +203,11 @@ export default defineComponent({
 .train-driver img {
   max-height: 20px;
   vertical-align: text-bottom;
+}
+
+.btn-journal {
+  display: inline-block;
+  padding: 0;
 }
 
 .timetable-id {

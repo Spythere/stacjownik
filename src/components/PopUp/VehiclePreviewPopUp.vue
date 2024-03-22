@@ -10,6 +10,7 @@
       v-if="popupStore.currentPopupContent"
       @load="onImageLoad"
       @error="onImageError"
+      @click="popupStore.onPopUpHide"
       width="300"
       height="176"
       class="rounded-md w-full h-auto"

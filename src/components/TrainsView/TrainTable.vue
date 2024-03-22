@@ -20,7 +20,7 @@
           @click.stop="selectModalTrain(train.trainId, $event.currentTarget)"
           @keydown.enter="selectModalTrain(train.trainId, $event.currentTarget)"
         >
-          <TrainInfo :train="train" />
+          <TrainInfo :train="train" :extended="false" />
         </li>
       </transition-group>
     </div>

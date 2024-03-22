@@ -6,7 +6,7 @@
         <img src="/images/icon-exit.svg" alt="close card" />
       </button>
 
-      <TrainInfo :train="chosenTrain" :extended="false" ref="trainInfo" />
+      <TrainInfo :train="chosenTrain" :extended="true" ref="trainInfo" />
       <TrainSchedule :train="chosenTrain" tabindex="0" />
     </div>
   </div>
