@@ -120,15 +120,8 @@
                   <b
                     v-if="apiStore.donatorsData.includes(station.onlineInfo.dispatcherName)"
                     @click.stop="openDonationModal"
-                    @mouseenter="
-                      popupStore.onPopUpShow(
-                        $event,
-                        'DonatorPopUp',
-                        $t('donations.dispatcher-message')
-                      )
-                    "
-                    @mousemove="popupStore.onPopUpMove"
-                    @mouseleave="popupStore.onPopUpHide"
+                    data-popup-key="DonatorPopUp"
+                    :data-popup-content="$t('donations.dispatcher-message')"
                   >
                     <img src="/images/icon-diamond.svg" alt="" />
                     {{ station.onlineInfo.dispatcherName }}
@@ -380,6 +373,7 @@ export default defineComponent({
     openDonationModal(e: Event) {
       this.$emit('toggleDonationModal', true);
       this.mainStore.modalLastClickedTarget = e.target;
+      this.popupStore.currentPopupComponent = null;
     },
 
     openForumSite(e: Event, url: string | undefined) {

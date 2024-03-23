@@ -24,14 +24,11 @@
           {{ stockName.split(':')[1] }}
         </p>
 
-        <span
-          @mouseenter="
-            popupStore.onPopUpShow($event, 'VehiclePreviewPopUp', stockName.split(':')[0])
-          "
-          @mousemove="popupStore.onPopUpMove"
-          @mouseleave="popupStore.onPopUpHide"
-        >
+        <span>
           <img
+            :data-mouseover="stockName"
+            data-popup-key="VehiclePreviewPopUp"
+            :data-popup-content="stockName.split(':')[0]"
             :src="`https://rj.td2.info.pl/dist/img/thumbnails/${stockName.split(':')[0]}${
               /^EN/.test(stockName) ? 'rb' : ''
             }.png`"
@@ -42,6 +39,9 @@
 
           <!-- /// Manualne dodawanie miniaturek członów dla kibelków /// -->
           <img
+            :data-mouseover="stockName"
+            data-popup-key="VehiclePreviewPopUp"
+            :data-popup-content="stockName.split(':')[0]"
             v-if="/^(EN|2EN)/.test(stockName)"
             :src="`https://rj.td2.info.pl/dist/img/thumbnails/${stockName.split(':')[0]}s.png`"
             @error="
@@ -50,7 +50,9 @@
           />
 
           <img
-            class="train-thumbnail"
+            :data-mouseover="stockName"
+            data-popup-key="VehiclePreviewPopUp"
+            :data-popup-content="stockName.split(':')[0]"
             v-if="/^EN71/.test(stockName)"
             :src="`https://rj.td2.info.pl/dist/img/thumbnails/${stockName.split(':')[0]}s.png`"
             @error="
@@ -59,7 +61,9 @@
           />
 
           <img
-            class="train-thumbnail"
+            :data-mouseover="stockName"
+            data-popup-key="VehiclePreviewPopUp"
+            :data-popup-content="stockName.split(':')[0]"
             v-if="/^(EN|2EN)/.test(stockName)"
             :src="`https://rj.td2.info.pl/dist/img/thumbnails/${stockName.split(':')[0]}ra.png`"
             @error="
@@ -76,7 +80,6 @@
 <script lang="ts">
 import { PropType, defineComponent } from 'vue';
 import { useApiStore } from '../../store/apiStore';
-import { usePopupStore } from '../../store/popupStore';
 
 export default defineComponent({
   props: {
@@ -92,8 +95,7 @@ export default defineComponent({
 
   data() {
     return {
-      apiStore: useApiStore(),
-      popupStore: usePopupStore()
+      apiStore: useApiStore()
     };
   },
 

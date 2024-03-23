@@ -1,4 +1,4 @@
-$animDuration: 150ms;
+$animDuration: 95ms;
 $animType: ease-in-out;
 
 // List animation
@@ -72,7 +72,6 @@ $animType: ease-in-out;
 
   &-enter-from,
   &-leave-to {
-    transform: translateY(-25%);
     opacity: 0;
   }
 }

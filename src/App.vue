@@ -48,6 +48,7 @@ import StorageManager from './managers/storageManager';
 import PopUp from './components/PopUp/PopUp.vue';
 import { useApiStore } from './store/apiStore';
 import { Status } from './typings/common';
+import { usePopupStore } from './store/popupStore';
 
 const STORAGE_VERSION_KEY = 'app_version';
 
@@ -64,6 +65,7 @@ export default defineComponent({
     VERSION: version,
     store: useMainStore(),
     apiStore: useApiStore(),
+    popupStore: usePopupStore(),
 
     currentLang: 'pl',
     releaseURL: '',
@@ -79,6 +81,28 @@ export default defineComponent({
       if (Date.now() - this.apiStore.lastFetchData.getTime() < 15000) return;
 
       this.apiStore.fetchActiveData();
+    });
+
+    // popup handling
+    window.addEventListener('mousemove', (e: MouseEvent) => {
+      e.stopPropagation();
+
+      const targetEl = e
+        .composedPath()
+        .find((p) => p instanceof HTMLElement && p.getAttribute('data-popup-key'));
+
+      if (!targetEl || !(targetEl instanceof HTMLElement)) {
+        if (this.popupStore.currentPopupComponent != null) this.popupStore.onPopUpHide();
+
+        return;
+      }
+
+      const popupComponentKey = targetEl.getAttribute('data-popup-key');
+      const popupContent = targetEl.getAttribute('data-popup-content');
+
+      if (popupComponentKey && popupContent)
+        this.popupStore.onPopUpShow(e, popupComponentKey, popupContent);
+      else if (this.popupStore.currentPopupComponent != null) this.popupStore.onPopUpHide();
     });
 
     watch(

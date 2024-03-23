@@ -36,21 +36,22 @@
         <div class="train-driver">
           <b
             v-if="apiStore.donatorsData.includes(train.driverName)"
-            @mouseenter="
-              popupStore.onPopUpShow($event, 'DonatorPopUp', $t('donations.driver-message'))
-            "
-            @mousemove="popupStore.onPopUpMove"
-            @mouseleave="popupStore.onPopUpHide"
+            data-popup-key="DonatorPopUp"
+            :data-popup-content="$t('donations.driver-message')"
           >
             {{ train.driverName }}
             <img src="/images/icon-diamond.svg" alt="donator diamond icon" />
           </b>
+
           <span v-else>{{ train.driverName }}</span>
-          &bull;
-          <button class="btn--image btn--text btn-journal" v-if="extended">
-            <img src="/images/icon-train.svg" alt="" />
-            DZIENNIK
-          </button>
+
+          <span v-if="extended">
+            &bull;
+            <button class="btn--image btn--text btn-timetable" @click="navigateToJournal">
+              <img src="/images/icon-train.svg" alt="" />
+              DZIENNIK
+            </button>
+          </span>
         </div>
       </div>
 
@@ -58,17 +59,10 @@
         <strong>{{ train.timetableData.route.replace('|', ' - ') }}</strong>
         <span
           v-if="getSceneriesWithComments(train.timetableData).length > 0"
-          @mouseenter="
-            popupStore.onPopUpShow(
-              $event,
-              'TrainCommentsPopUp',
-              `${$t('trains.timetable-comments')} (${getSceneriesWithComments(
-                train.timetableData
-              )})`
-            )
-          "
-          @mousemove="popupStore.onPopUpMove"
-          @mouseleave="popupStore.onPopUpHide"
+          data-popup-key="TrainCommentsPopUp"
+          :data-popup-content="`${$t('trains.timetable-comments')} (${getSceneriesWithComments(
+            train.timetableData
+          )})`"
         >
           <img class="image-warning" src="/images/icon-warning.svg" />
         </span>
@@ -143,9 +137,10 @@ import { useMainStore } from '../../store/mainStore';
 import { useApiStore } from '../../store/apiStore';
 import StockList from '../Global/StockList.vue';
 import { usePopupStore } from '../../store/popupStore';
+import modalTrainMixin from '../../mixins/modalTrainMixin';
 
 export default defineComponent({
-  mixins: [trainInfoMixin, styleMixin],
+  mixins: [trainInfoMixin, styleMixin, modalTrainMixin],
   components: { ProgressBar, StockList },
 
   props: {
@@ -164,6 +159,19 @@ export default defineComponent({
       apiStore: useApiStore(),
       popupStore: usePopupStore()
     };
+  },
+
+  methods: {
+    navigateToJournal() {
+      this.$router.push({
+        path: '/journal/timetables',
+        query: {
+          'search-driver': this.train.driverName
+        }
+      });
+
+      this.closeModal();
+    }
   }
 });
 </script>
@@ -205,7 +213,7 @@ export default defineComponent({
   vertical-align: text-bottom;
 }
 
-.btn-journal {
+.btn-timetable {
   display: inline-block;
   padding: 0;
 }
