@@ -35,16 +35,14 @@
         {{ timetable.driverName }}
       </strong>
 
-      <span v-if="timetable.terminated == false">
-        &bull;
-        <button
-          class="btn--image btn-timetable"
-          @click.stop="showTimetable(timetable, $event.currentTarget)"
-        >
-          <img src="/images/icon-train.svg" alt="" />
-          RJ ONLINE
-        </button>
-      </span>
+      <button
+        v-if="timetable.terminated == false"
+        class="btn--image btn--action btn-timetable"
+        @click.stop="showTimetable(timetable, $event.currentTarget)"
+      >
+        <img src="/images/icon-train.svg" alt="" />
+        {{ $t('journal.timetable-online-button') }}
+      </button>
     </span>
 
     <span class="general-time">
@@ -156,7 +154,12 @@ export default defineComponent({
 
 .btn-timetable {
   display: inline-block;
-  padding: 0;
+  padding: 0.1em 0.4em;
+  margin-left: 0.5em;
+
+  img {
+    vertical-align: top;
+  }
 }
 
 @include smallScreen {

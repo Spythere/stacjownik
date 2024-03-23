@@ -45,13 +45,14 @@
 
           <span v-else>{{ train.driverName }}</span>
 
-          <span v-if="extended">
-            &bull;
-            <button class="btn--image btn--text btn-timetable" @click="navigateToJournal">
-              <img src="/images/icon-train.svg" alt="" />
-              DZIENNIK
-            </button>
-          </span>
+          <button
+            class="btn--image btn--action btn-timetable"
+            @click="navigateToJournal"
+            v-if="extended"
+          >
+            <img src="/images/icon-train.svg" alt="" />
+            {{ $t('trains.journal-button') }}
+          </button>
         </div>
       </div>
 
@@ -182,8 +183,8 @@ export default defineComponent({
 
 .image-warning {
   height: 1em;
-
   margin-left: 0.5em;
+  vertical-align: middle;
 }
 
 .train-stats {
@@ -215,7 +216,8 @@ export default defineComponent({
 
 .btn-timetable {
   display: inline-block;
-  padding: 0;
+  padding: 0.25em;
+  margin-left: 0.5em;
 }
 
 .timetable-id {
@@ -293,8 +295,6 @@ export default defineComponent({
     grid-template-columns: 1fr;
     gap: 1em 0;
     text-align: center;
-
-    font-size: 1.15em;
   }
 
   .general-info,

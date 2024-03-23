@@ -34,7 +34,8 @@ export default defineComponent({
           const isOutside =
             val.y + previewEl.getBoundingClientRect().height > window.innerHeight + window.scrollY;
 
-          previewEl.style.transform = `translate(-50%, calc(${
+          // previewEl.style.transform = `translate(-${~~((val.x / window.innerWidth) * 100)}%, calc(${isOutside ? '-100% - 1.5rem' : '1.5rem'}))`;
+          previewEl.style.transform = `translate(-${~~((val.x / window.innerWidth) * 100)}%, calc(${
             isOutside ? '-100% - 1.5rem' : '1.5rem'
           }))`;
         });

@@ -319,7 +319,9 @@
     "last-seen-ago": "since {minutes} minutes",
 
     "scenery-offline": "Offline ride",
-    "timeout": "An error occured while trying to refresh SWDR timetable data!"
+    "timeout": "An error occured while trying to refresh SWDR timetable data!",
+
+    "journal-button": "DRIVER'S JOURNAL"
   },
   "train-stats": {
     "stats-button": "STATISTICS",
@@ -355,6 +357,7 @@
     "timetable-active": "ACTIVE",
     "timetable-fulfilled": "FULFILLED",
     "timetable-abandoned": "ABANDONED",
+    "timetable-online-button": "ONLINE TIMETABLE",
 
     "online-since": "ONLINE SINCE",
     "duty-lasted": "The duty lasted",
