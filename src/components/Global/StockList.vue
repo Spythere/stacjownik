@@ -33,6 +33,7 @@
               /^EN/.test(stockName) ? 'rb' : ''
             }.png`"
             @error="onImageError($event, stockName)"
+            @click.stop="() => {}"
             width="400"
             height="60"
           />
@@ -47,6 +48,7 @@
             @error="
               (event) => ((event.target as HTMLImageElement).src = '/images/icon-loco-ezt-s.png')
             "
+            @click.stop="() => {}"
           />
 
           <img
@@ -58,6 +60,7 @@
             @error="
               (event) => ((event.target as HTMLImageElement).src = '/images/icon-loco-ezt-s.png')
             "
+            @click.stop="() => {}"
           />
 
           <img
@@ -69,6 +72,7 @@
             @error="
               (event) => ((event.target as HTMLImageElement).src = '/images/icon-loco-ezt-ra.png')
             "
+            @click.stop="() => {}"
           />
           <!-- ///  -->
         </span>
