@@ -5,7 +5,7 @@
         v-for="{ timetable, showExtraInfo } in computedTimetableHistory"
         class="journal_item"
         :key="timetable.id"
-        @click="showExtraInfo.value = !showExtraInfo.value"
+        @click.stop.prevent="showExtraInfo.value = !showExtraInfo.value"
       >
         <div class="journal_item-info">
           <!-- General -->

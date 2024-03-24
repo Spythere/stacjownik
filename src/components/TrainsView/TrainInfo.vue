@@ -36,25 +36,37 @@
         <div class="train-driver">
           <b
             v-if="apiStore.donatorsData.includes(train.driverName)"
-            :title="$t('donations.driver-message')"
+            data-popup-key="DonatorPopUp"
+            :data-popup-content="$t('donations.driver-message')"
           >
             {{ train.driverName }}
             <img src="/images/icon-diamond.svg" alt="donator diamond icon" />
           </b>
+
           <span v-else>{{ train.driverName }}</span>
+
+          <button
+            class="btn--image btn--action btn-timetable"
+            @click="navigateToJournal"
+            v-if="extended"
+          >
+            <img src="/images/icon-train.svg" alt="" />
+            {{ $t('trains.journal-button') }}
+          </button>
         </div>
       </div>
 
       <div class="general-timetable" v-if="train.timetableData">
         <strong>{{ train.timetableData.route.replace('|', ' - ') }}</strong>
-        <img
+        <span
           v-if="getSceneriesWithComments(train.timetableData).length > 0"
-          class="image-warning"
-          src="/images/icon-warning.svg"
-          :title="`${$t('trains.timetable-comments')} (${getSceneriesWithComments(
+          data-popup-key="TrainCommentsPopUp"
+          :data-popup-content="`${$t('trains.timetable-comments')} (${getSceneriesWithComments(
             train.timetableData
           )})`"
-        />
+        >
+          <img class="image-warning" src="/images/icon-warning.svg" />
+        </span>
       </div>
 
       <hr style="margin: 0.25em 0" />
@@ -125,9 +137,11 @@ import ProgressBar from '../Global/ProgressBar.vue';
 import { useMainStore } from '../../store/mainStore';
 import { useApiStore } from '../../store/apiStore';
 import StockList from '../Global/StockList.vue';
+import { usePopupStore } from '../../store/popupStore';
+import modalTrainMixin from '../../mixins/modalTrainMixin';
 
 export default defineComponent({
-  mixins: [trainInfoMixin, styleMixin],
+  mixins: [trainInfoMixin, styleMixin, modalTrainMixin],
   components: { ProgressBar, StockList },
 
   props: {
@@ -136,16 +150,29 @@ export default defineComponent({
       required: true
     },
     extended: {
-      type: Boolean,
-      default: true
+      type: Boolean
     }
   },
 
   data() {
     return {
       store: useMainStore(),
-      apiStore: useApiStore()
+      apiStore: useApiStore(),
+      popupStore: usePopupStore()
     };
+  },
+
+  methods: {
+    navigateToJournal() {
+      this.$router.push({
+        path: '/journal/timetables',
+        query: {
+          'search-driver': this.train.driverName
+        }
+      });
+
+      this.closeModal();
+    }
   }
 });
 </script>
@@ -156,8 +183,8 @@ export default defineComponent({
 
 .image-warning {
   height: 1em;
-
   margin-left: 0.5em;
+  vertical-align: middle;
 }
 
 .train-stats {
@@ -185,6 +212,12 @@ export default defineComponent({
 .train-driver img {
   max-height: 20px;
   vertical-align: text-bottom;
+}
+
+.btn-timetable {
+  display: inline-block;
+  padding: 0.25em;
+  margin-left: 0.5em;
 }
 
 .timetable-id {
@@ -262,8 +295,6 @@ export default defineComponent({
     grid-template-columns: 1fr;
     gap: 1em 0;
     text-align: center;
-
-    font-size: 1.15em;
   }
 
   .general-info,

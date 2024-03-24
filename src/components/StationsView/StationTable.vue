@@ -119,8 +119,9 @@
                 <span v-if="station.onlineInfo?.dispatcherName">
                   <b
                     v-if="apiStore.donatorsData.includes(station.onlineInfo.dispatcherName)"
-                    :title="$t('donations.dispatcher-message')"
                     @click.stop="openDonationModal"
+                    data-popup-key="DonatorPopUp"
+                    :data-popup-content="$t('donations.dispatcher-message')"
                   >
                     <img src="/images/icon-diamond.svg" alt="" />
                     {{ station.onlineInfo.dispatcherName }}
@@ -311,6 +312,7 @@ import { HeadIdsTypes, headIconsIds, headIds } from '../../scripts/data/stationH
 import StationStatusBadge from '../Global/StationStatusBadge.vue';
 import { Status } from '../../typings/common';
 import { useApiStore } from '../../store/apiStore';
+import { usePopupStore } from '../../store/popupStore';
 
 export default defineComponent({
   props: {
@@ -339,13 +341,16 @@ export default defineComponent({
   setup() {
     const mainStore = useMainStore();
     const apiStore = useApiStore();
+    const popupStore = usePopupStore();
+
     const stationFiltersStore = useStationFiltersStore();
 
     return {
       Status: Status.Data,
       stationFiltersStore,
       mainStore,
-      apiStore
+      apiStore,
+      popupStore
     };
   },
 
@@ -368,6 +373,7 @@ export default defineComponent({
     openDonationModal(e: Event) {
       this.$emit('toggleDonationModal', true);
       this.mainStore.modalLastClickedTarget = e.target;
+      this.popupStore.currentPopupComponent = null;
     },
 
     openForumSite(e: Event, url: string | undefined) {

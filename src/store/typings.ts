@@ -11,20 +11,14 @@ export interface RegionCounters {
 
 export interface StoreState {
   region: { id: string; value: string };
-
   isOffline: boolean;
-
   isNewUpdate: boolean;
-
   dispatcherStatsName: string;
   dispatcherStatsData?: API.DispatcherStats.Response;
-
   driverStatsName: string;
   driverStatsData?: API.DriverStats.Response;
   driverStatsStatus: Status.Data;
-
   chosenModalTrainId?: string;
-
   blockScroll: boolean;
   modalLastClickedTarget: EventTarget | null;
 }

@@ -1,11 +1,6 @@
 <template>
   <div class="item-general">
-    <span
-      class="general-train"
-      tabindex="0"
-      @click.stop="showTimetable(timetable, $event.currentTarget)"
-      @keydown.enter="showTimetable(timetable, $event.currentTarget)"
-    >
+    <span class="general-train">
       <span class="text--grayed">#{{ timetable.id }}</span>
 
       <span class="badges" v-if="timetable.skr || timetable.twr">
@@ -39,6 +34,15 @@
       <strong v-else>
         {{ timetable.driverName }}
       </strong>
+
+      <button
+        v-if="timetable.terminated == false"
+        class="btn--image btn--action btn-timetable"
+        @click.stop="showTimetable(timetable, $event.currentTarget)"
+      >
+        <img src="/images/icon-train.svg" alt="" />
+        {{ $t('journal.timetable-online-button') }}
+      </button>
     </span>
 
     <span class="general-time">
@@ -146,6 +150,16 @@ export default defineComponent({
   justify-content: center;
   align-items: center;
   gap: 0.25em;
+}
+
+.btn-timetable {
+  display: inline-block;
+  padding: 0.1em 0.4em;
+  margin-left: 0.5em;
+
+  img {
+    vertical-align: top;
+  }
 }
 
 @include smallScreen {

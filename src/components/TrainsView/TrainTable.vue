@@ -1,13 +1,13 @@
 <template>
   <transition name="status-anim" mode="out-in" tag="div" class="train-table">
     <div :key="apiStore.dataStatuses.connection">
-      <div class="table-info" key="offline" v-if="store.isOffline">
+      <div class="table-warning" key="offline" v-if="store.isOffline">
         {{ $t('app.offline') }}
       </div>
 
       <Loading v-else-if="apiStore.dataStatuses.connection == Status.Loading" key="loading" />
 
-      <div class="table-info" key="no-trains" v-else-if="trains.length == 0">
+      <div class="table-warning" key="no-trains" v-else-if="trains.length == 0">
         {{ $t('trains.no-trains') }}
       </div>
 
@@ -20,7 +20,7 @@
           @click.stop="selectModalTrain(train.trainId, $event.currentTarget)"
           @keydown.enter="selectModalTrain(train.trainId, $event.currentTarget)"
         >
-          <TrainInfo :train="train" />
+          <TrainInfo :train="train" :extended="false" />
         </li>
       </transition-group>
     </div>
@@ -105,7 +105,7 @@ export default defineComponent({
   overflow-x: hidden;
 }
 
-.table-info {
+.table-warning {
   text-align: center;
 
   padding: 1em 0;

@@ -38,6 +38,10 @@
   "footer": {
     "discord": "Serwer Discord Stacjownika"
   },
+  "vehicle-preview": {
+    "loading": "Ładowanie podglądu...",
+    "error": "Ups! Nie znaleziono podglądu pojazdu! :/"
+  },
   "data-status": {
     "S1-offline": "<b>Sygnał S1</b> <br> Aplikacja działa w trybie offline!",
     "S1a-connection": "<b>Sygnał S1a</b> <br> Błąd podczas próby połączenia się z API Stacjownika!",
@@ -295,7 +299,9 @@
 
     "scenery-offline": "Przejazd offline",
 
-    "timeout": "Wystąpił problem z aktualizacją rozkładów jazdy z SWDR"
+    "timeout": "Wystąpił problem z aktualizacją rozkładów jazdy z SWDR",
+
+    "journal-button": "DZIENNIK MASZYNISTY"
   },
   "train-stats": {
     "stats-button": "STATYSTYKI",
@@ -337,6 +343,7 @@
     "timetable-active": "AKTYWNY",
     "timetable-fulfilled": "WYPEŁNIONY",
     "timetable-abandoned": "PORZUCONY",
+    "timetable-online-button": "RJ ONLINE",
 
     "stock-info": "DODATKOWE INFORMACJE",
     "stock-length": "Długość",
