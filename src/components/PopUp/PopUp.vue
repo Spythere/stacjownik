@@ -31,7 +31,10 @@ export default defineComponent({
         let translateX = '0px',
           translateY = '30px';
 
-        if (val.x <= boxWidth / 2) {
+        if (clientWidth < 500) {
+          previewEl.style.left = '50%';
+          translateX = '-50%';
+        } else if (val.x <= boxWidth / 2) {
           previewEl.style.left = '0';
           translateX = '0px';
         } else if (val.x >= clientWidth - boxWidth / 2) {

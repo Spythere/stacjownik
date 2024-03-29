@@ -126,7 +126,7 @@
           {{ $t('trains.cars') }}: {{ train.stockList.length - 1 }}
         </span>
         |
-        <span>{{ train.speed }}km/h</span>
+        <span class="text--primary">{{ train.speed }} km/h</span>
       </div>
 
       <div class="driver_position text--grayed" style="margin-top: 0.25em">

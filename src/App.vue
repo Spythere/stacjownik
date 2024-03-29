@@ -85,8 +85,6 @@ export default defineComponent({
 
     // popup handling
     window.addEventListener('mousemove', (e: MouseEvent) => {
-      e.stopPropagation();
-
       const targetEl = e
         .composedPath()
         .find((p) => p instanceof HTMLElement && p.getAttribute('data-popup-key'));
@@ -243,6 +241,7 @@ export default defineComponent({
   grid-template-columns: 100%;
 
   min-height: 100vh;
+  position: relative;
 }
 
 .app_main {
