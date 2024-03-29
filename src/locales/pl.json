@@ -26,6 +26,13 @@
     "TWR": "Towar niebezpieczny wysokiego ryzyka",
     "SKR": "Przekroczona skrajnia"
   },
+  "update": {
+    "title": "Aktualizacja Stacjownika!",
+    "version": "Wersja {0}",
+    "confirm-button": "UPDATE NOW",
+    "later-button": "LATER",
+    "content": "dymki kontekstowe po najechaniu kursorem na m.in. sponsorów projektu i uwagi eksploatacyjne\npodgląd pojazdu po najechaniu kursorem na jego miniaturkę w karcie aktywnego rozkładu jazdy oraz dzienniku RJ\nodnośnik do historii RJ maszynisty w widoku karty aktywnego rozkładu jazdy\nodnośnik do karty aktywnego rozkładu jazdy maszynisty w dzienniku (dostępny tylko dla pociągów online)\nnowa karta ze zmianami w aktualizacji"
+  },
   "app": {
     "sceneries": "SCENERIE",
     "trains": "POCIĄGI",
