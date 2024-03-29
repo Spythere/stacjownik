@@ -57,14 +57,14 @@
         </div>
 
         <div v-if="extended">
-          <button class="btn--image btn--action btn-timetable" @click="navigateToJournal">
+          <button class="btn-timetable btn--image btn--action" @click="navigateToJournal">
             <img src="/images/icon-train.svg" alt="train icon" />
             <span>
               {{ $t('trains.journal-button') }}
             </span>
           </button>
 
-          <button class="btn--image btn--action btn-exit" @click="closeModal">
+          <button class="btn-exit btn--image btn--action" @click="closeModal">
             <img src="/images/icon-exit.svg" alt="modal exit icon" />
           </button>
         </div>
@@ -270,6 +270,8 @@ export default defineComponent({
 .general-top-bar {
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5em;
 
   & > div {
     display: flex;
@@ -331,26 +333,10 @@ export default defineComponent({
   .train-info {
     grid-template-columns: 1fr;
     gap: 1em 0;
-    text-align: center;
   }
 
-  .general-info,
-  .general-status,
-  .general-timetable {
-    justify-content: center;
-  }
-
-  .timetable-progress {
-    justify-content: center;
-  }
-
-  .comments {
-    flex-direction: column;
-    justify-content: center;
-
-    img {
-      margin: 0 0 0.5em 0;
-    }
+  .btn-timetable > span {
+    display: none;
   }
 }
 </style>

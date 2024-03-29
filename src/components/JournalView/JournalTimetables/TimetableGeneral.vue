@@ -144,12 +144,14 @@ export default defineComponent({
 }
 
 .general-train {
-  cursor: pointer;
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
   gap: 0.25em;
+
+  cursor: pointer;
+  line-height: 2;
 }
 
 .btn-timetable {
