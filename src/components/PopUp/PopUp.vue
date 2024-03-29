@@ -25,19 +25,31 @@ export default defineComponent({
       deep: true,
       handler(val: typeof this.popupStore.popupPosition) {
         const previewEl = this.$refs['preview'] as HTMLElement;
+        const clientWidth = document.body.clientWidth;
+        const boxWidth = previewEl.getBoundingClientRect().width;
+
+        let translateX = '0px',
+          translateY = '30px';
+
+        if (val.x <= boxWidth / 2) {
+          previewEl.style.left = '0';
+          translateX = '0px';
+        } else if (val.x >= clientWidth - boxWidth / 2) {
+          previewEl.style.left = '100%';
+          translateX = '-100%';
+        } else {
+          previewEl.style.left = `${val.x}px`;
+          translateX = '-50%';
+        }
 
         previewEl.style.top = `${val.y}px`;
-        previewEl.style.left = `${val.x}px`;
-        previewEl.style.transform = 'translateY(1.5rem)';
 
         this.$nextTick(() => {
           const isOutside =
-            val.y + previewEl.getBoundingClientRect().height > window.innerHeight + window.scrollY;
+            val.y + previewEl.getBoundingClientRect().height >= window.innerHeight + window.scrollY;
 
-          // previewEl.style.transform = `translate(-${~~((val.x / window.innerWidth) * 100)}%, calc(${isOutside ? '-100% - 1.5rem' : '1.5rem'}))`;
-          previewEl.style.transform = `translate(-${~~((val.x / window.innerWidth) * 100)}%, calc(${
-            isOutside ? '-100% - 1.5rem' : '1.5rem'
-          }))`;
+          if (isOutside) translateY = 'calc(-100% - 30px)';
+          previewEl.style.transform = `translate(${translateX}, ${translateY})`;
         });
       }
     }

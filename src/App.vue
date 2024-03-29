@@ -243,7 +243,6 @@ export default defineComponent({
   grid-template-columns: 100%;
 
   min-height: 100vh;
-  position: relative;
 }
 
 .app_main {
