@@ -14,7 +14,7 @@
       width="300"
       height="176"
       class="rounded-md w-full h-auto"
-      :src="`https://spythere.github.io/api/td2/images/${popupStore.currentPopupContent}--300px.jpg`"
+      :src="`https://static.spythere.eu/images/${popupStore.currentPopupContent}--300px.jpg`"
     />
 
     <div class="vehicle-name" v-if="imageState != 'error'">
