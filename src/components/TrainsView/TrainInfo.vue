@@ -1,57 +1,71 @@
 <template>
-  <div class="train-info">
+  <div class="train-info" :data-extended="extended">
     <section class="train-general">
-      <div class="general-info">
-        <b class="warning-timeout" v-if="train.isTimeout" :title="$t('trains.timeout')">?</b>
-        <span class="timetable-id" v-if="train.timetableData">
-          #{{ train.timetableData.timetableId }}
-        </span>
-
-        <span
-          class="timetable-warnings"
-          v-if="train.timetableData?.TWR || train.timetableData?.SKR"
-        >
-          <span class="train-badge twr" v-if="train.timetableData?.TWR" :title="$t('general.TWR')">
-            TWR
+      <div class="general-top-bar">
+        <div>
+          <b class="warning-timeout" v-if="train.isTimeout" :title="$t('trains.timeout')">?</b>
+          <span class="timetable-id" v-if="train.timetableData">
+            #{{ train.timetableData.timetableId }}
           </span>
-          <span class="train-badge skr" v-if="train.timetableData?.SKR" :title="$t('general.SKR')">
-            SKR
-          </span>
-        </span>
 
-        <strong>
-          <span v-if="train.timetableData" class="text--primary"
-            >{{ train.timetableData.category }}&nbsp;</span
+          <span
+            class="timetable-warnings"
+            v-if="train.timetableData?.TWR || train.timetableData?.SKR"
           >
-          <span class="train-number">{{ train.trainNo }}</span>
-        </strong>
-        <span>&bull;</span>
-        <b
-          class="level-badge driver"
-          :style="calculateExpStyle(train.driverLevel, train.isSupporter)"
-        >
-          {{ train.driverLevel < 2 ? 'L' : `${train.driverLevel}` }}
-        </b>
+            <span
+              class="train-badge twr"
+              v-if="train.timetableData?.TWR"
+              :title="$t('general.TWR')"
+            >
+              TWR
+            </span>
+            <span
+              class="train-badge skr"
+              v-if="train.timetableData?.SKR"
+              :title="$t('general.SKR')"
+            >
+              SKR
+            </span>
+          </span>
 
-        <div class="train-driver">
+          <strong>
+            <span v-if="train.timetableData" class="text--primary"
+              >{{ train.timetableData.category }}&nbsp;</span
+            >
+            <span class="train-number">{{ train.trainNo }}</span>
+          </strong>
+          <span>&bull;</span>
           <b
-            v-if="apiStore.donatorsData.includes(train.driverName)"
-            data-popup-key="DonatorPopUp"
-            :data-popup-content="$t('donations.driver-message')"
+            class="level-badge driver"
+            :style="calculateExpStyle(train.driverLevel, train.isSupporter)"
           >
-            {{ train.driverName }}
-            <img src="/images/icon-diamond.svg" alt="donator diamond icon" />
+            {{ train.driverLevel < 2 ? 'L' : `${train.driverLevel}` }}
           </b>
 
-          <span v-else>{{ train.driverName }}</span>
+          <div class="train-driver">
+            <b
+              v-if="apiStore.donatorsData.includes(train.driverName)"
+              data-popup-key="DonatorPopUp"
+              :data-popup-content="$t('donations.driver-message')"
+            >
+              {{ train.driverName }}
+              <img src="/images/icon-diamond.svg" alt="donator diamond icon" />
+            </b>
 
-          <button
-            class="btn--image btn--action btn-timetable"
-            @click="navigateToJournal"
-            v-if="extended"
-          >
-            <img src="/images/icon-train.svg" alt="" />
-            {{ $t('trains.journal-button') }}
+            <span v-else>{{ train.driverName }}</span>
+          </div>
+        </div>
+
+        <div v-if="extended">
+          <button class="btn--image btn--action btn-timetable" @click="navigateToJournal">
+            <img src="/images/icon-train.svg" alt="train icon" />
+            <span>
+              {{ $t('trains.journal-button') }}
+            </span>
+          </button>
+
+          <button class="btn--image btn--action btn-exit" @click="closeModal">
+            <img src="/images/icon-exit.svg" alt="modal exit icon" />
           </button>
         </div>
       </div>
@@ -103,12 +117,24 @@
         </div>
       </div>
 
+      <div v-if="extended">
+        <span> {{ train.length }}m</span>
+        &bull;
+        <span> {{ (train.mass / 1000).toFixed(1) }}t</span>
+        <span v-if="train.stockList.length > 1">
+          &bull;
+          {{ $t('trains.cars') }}: {{ train.stockList.length - 1 }}
+        </span>
+        |
+        <span>{{ train.speed }}km/h</span>
+      </div>
+
       <div class="driver_position text--grayed" style="margin-top: 0.25em">
         {{ displayTrainPosition(train) }}
       </div>
     </section>
 
-    <section class="train-stats">
+    <section class="train-stats" v-if="!extended">
       <StockList :trainStockList="train.stockList" :tractionOnly="true" />
 
       <div>
@@ -203,6 +229,10 @@ export default defineComponent({
   grid-template-columns: 2fr 1fr;
   grid-template-rows: 1fr;
 
+  &[data-extended='true'] {
+    grid-template-columns: 1fr;
+  }
+
   padding: 1em;
 
   background-color: #1a1a1a;
@@ -212,12 +242,6 @@ export default defineComponent({
 .train-driver img {
   max-height: 20px;
   vertical-align: text-bottom;
-}
-
-.btn-timetable {
-  display: inline-block;
-  padding: 0.25em;
-  margin-left: 0.5em;
 }
 
 .timetable-id {
@@ -243,14 +267,27 @@ export default defineComponent({
   font-size: 0.8em;
 }
 
-.general-info {
+.general-top-bar {
   display: flex;
-  align-items: center;
-  flex-wrap: wrap;
+  justify-content: space-between;
 
-  gap: 0.25em;
-  margin-right: 1.5em;
+  & > div {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: 0.25em;
+  }
 }
+
+.btn-timetable {
+  padding: 0.25em;
+}
+
+.btn-exit {
+  padding: 0.25em;
+}
+
 .general-status {
   display: flex;
   align-items: center;
