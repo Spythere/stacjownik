@@ -4,7 +4,7 @@
     "header": "Grosza daj Stacjownikowi!",
     "donator-title": "Projekt ma już ponad <b>{count}</b> wspierających, w tym:",
     "p1": "<b>Hej o7!</b> Z tej strony Spythere, twórca Stacjownika, Pojazdownika oraz kilku innych aplikacji wspomagających rozgrywkę symulatora Train Driver 2!",
-    "p2": "{b1} to narzędzie całkowicie darmowe, tworzone i rozwijane dla społeczności symulatora TD2 nieprzerwanie od 2020 roku. Jednakże, część projektu jest podtrzymywana wyłącznie dzięki mojemu prywatnemu wkładowi finansowemu. Funkcje takie jak {b2} czy też {b3} działający na moim {link} (na który serdeczne zapraszam) muszą działać na wydzielonym serwerze, gdzie będą mogły zbierać i przetwarzać dane, aby następnie pokazać je na stronie.",
+    "p2": "{b1} to narzędzie całkowicie darmowe, tworzone i rozwijane dla społeczności symulatora TD2 nieprzerwanie od 2020 roku. Jednakże, część projektu jest podtrzymywana wyłącznie dzięki mojemu prywatnemu wkładowi finansowemu. Funkcje takie jak {b2} czy też {b3} działający na moim {link} (na który serdecznie zapraszam) muszą działać na wydzielonym serwerze, gdzie będą mogły zbierać i przetwarzać dane, aby następnie pokazać je na stronie.",
     "p2-b1": "Stacjownik",
     "p2-b2": "Dziennik",
     "p2-b3": "Stacjobot",
