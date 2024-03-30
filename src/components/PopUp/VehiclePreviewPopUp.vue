@@ -7,29 +7,29 @@
     <div v-if="imageState == 'error'">{{ $t('vehicle-preview.error') }}</div>
 
     <img
-      v-if="popupStore.currentPopupContent"
+      v-if="store.popUpData.key"
       @load="onImageLoad"
       @error="onImageError"
       width="300"
       height="176"
       class="rounded-md w-full h-auto"
-      :src="`https://static.spythere.eu/images/${popupStore.currentPopupContent}--300px.jpg`"
+      :src="`https://static.spythere.eu/images/${store.popUpData.content}--300px.jpg`"
     />
 
     <div class="vehicle-name" v-if="imageState != 'error'">
-      {{ popupStore.currentPopupContent.replace(/_/g, ' ') }}
+      {{ store.popUpData.content.replace(/_/g, ' ') }}
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { usePopupStore } from '../../store/popupStore';
+import { useMainStore } from '../../store/mainStore';
 
 export default defineComponent({
   data() {
     return {
-      popupStore: usePopupStore(),
+      store: useMainStore(),
       imageState: 'loading'
     };
   },

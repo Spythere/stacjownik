@@ -163,7 +163,6 @@ import ProgressBar from '../Global/ProgressBar.vue';
 import { useMainStore } from '../../store/mainStore';
 import { useApiStore } from '../../store/apiStore';
 import StockList from '../Global/StockList.vue';
-import { usePopupStore } from '../../store/popupStore';
 import modalTrainMixin from '../../mixins/modalTrainMixin';
 
 export default defineComponent({
@@ -183,8 +182,7 @@ export default defineComponent({
   data() {
     return {
       store: useMainStore(),
-      apiStore: useApiStore(),
-      popupStore: usePopupStore()
+      apiStore: useApiStore()
     };
   },
 

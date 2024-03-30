@@ -26,8 +26,10 @@ export const useMainStore = defineStore('store', {
 
       chosenModalTrainId: undefined,
 
-      blockScroll: false,
-      modalLastClickedTarget: null
+      modalLastClickedTarget: null,
+
+      mousePos: { x: 0, y: 0 },
+      popUpData: { key: null, content: '' }
     }) as StoreState,
 
   getters: {

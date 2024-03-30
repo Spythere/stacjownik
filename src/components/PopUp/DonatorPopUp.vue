@@ -1,18 +1,18 @@
 <template>
   <div class="popup-content">
     <img src="/images/icon-diamond.svg" alt="" />
-    <span>{{ popupStore.currentPopupContent }}</span>
+    <span>{{ store.popUpData.content }}</span>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { usePopupStore } from '../../store/popupStore';
+import { useMainStore } from '../../store/mainStore';
 
 export default defineComponent({
   data() {
     return {
-      popupStore: usePopupStore()
+      store: useMainStore()
     };
   }
 });

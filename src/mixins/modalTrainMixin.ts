@@ -1,12 +1,10 @@
 import { defineComponent } from 'vue';
 import { useMainStore } from '../store/mainStore';
-import { usePopupStore } from '../store/popupStore';
 
 export default defineComponent({
   data() {
     return {
-      store: useMainStore(),
-      popupStore: usePopupStore()
+      store: useMainStore()
     };
   },
 
@@ -25,7 +23,7 @@ export default defineComponent({
 
     closeModal() {
       this.store.chosenModalTrainId = undefined;
-      this.popupStore.currentPopupComponent = null;
+      this.store.popUpData.key = null;
 
       setTimeout(() => {
         (this.store.modalLastClickedTarget as any)?.focus();
