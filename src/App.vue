@@ -4,7 +4,7 @@
 
     <transition name="modal-anim">
       <keep-alive>
-        <TrainModal v-if="store.chosenModalTrainId" />
+        <TrainModal />
       </keep-alive>
     </transition>
 

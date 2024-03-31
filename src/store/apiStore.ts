@@ -4,9 +4,6 @@ import { Status } from '../typings/common';
 import { StationJSONData } from './typings';
 import axios, { AxiosInstance } from 'axios';
 
-// Update seconds cron for active data scheduler
-const UPDATE_SECONDS = [3, 23, 43];
-
 export enum APIMode {
   PRODUCTION = 0,
   DEV = 1,

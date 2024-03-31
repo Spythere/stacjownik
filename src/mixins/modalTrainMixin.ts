@@ -8,12 +8,6 @@ export default defineComponent({
     };
   },
 
-  computed: {
-    chosenTrain() {
-      return this.store.trainList.find((train) => train.trainId == this.store.chosenModalTrainId);
-    }
-  },
-
   methods: {
     selectModalTrain(trainId: string, target?: EventTarget | null) {
       this.store.chosenModalTrainId = trainId;

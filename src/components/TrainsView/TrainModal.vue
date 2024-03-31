@@ -13,17 +13,27 @@ import { defineComponent } from 'vue';
 import modalTrainMixin from '../../mixins/modalTrainMixin';
 import TrainInfo from './TrainInfo.vue';
 import TrainSchedule from './TrainSchedule.vue';
+import Train from '../../scripts/interfaces/Train';
 
 export default defineComponent({
   components: { TrainInfo, TrainSchedule },
   mixins: [modalTrainMixin],
 
-  activated() {
-    const contentEl = this.$refs['content'] as HTMLElement;
+  computed: {
+    chosenTrain() {
+      return this.store.trainList.find((train) => train.trainId == this.store.chosenModalTrainId);
+    }
+  },
 
-    this.$nextTick(() => {
-      contentEl.focus();
-    });
+  watch: {
+    chosenTrain(train: Train | undefined) {
+      this.$nextTick(() => {
+        if (train) {
+          const contentEl = this.$refs['content'] as HTMLElement;
+          contentEl.focus();
+        }
+      });
+    }
   }
 });
 </script>

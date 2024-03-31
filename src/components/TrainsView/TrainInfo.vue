@@ -93,7 +93,7 @@
       </div>
 
       <div class="general-status">
-        <div class="timetable-progress" v-if="train.timetableData">
+        <div class="status-timetable-progress" v-if="train.timetableData">
           <ProgressBar :progressPercent="confirmedPercentage(train.timetableData.followingStops)" />
 
           <span class="progress-distance">
@@ -117,19 +117,24 @@
         </div>
       </div>
 
-      <div v-if="extended">
-        <span> {{ train.length }}m</span>
-        &bull;
-        <span> {{ (train.mass / 1000).toFixed(1) }}t</span>
-        <span v-if="train.stockList.length > 1">
-          &bull;
-          {{ $t('trains.cars') }}: {{ train.stockList.length - 1 }}
-        </span>
-        |
-        <span class="text--primary">{{ train.speed }} km/h</span>
+      <div class="general-stats" v-if="extended">
+        <div>
+          <img src="/images/icon-length.svg" alt="length icon" />
+          {{ train.length }}m
+        </div>
+
+        <div>
+          <img src="/images/icon-mass.svg" alt="mass icon" />
+          {{ (train.mass / 1000).toFixed(1) }}t
+        </div>
+
+        <div>
+          <img src="/images/icon-speed.svg" alt="speed icon" />
+          {{ train.speed }} km/h
+        </div>
       </div>
 
-      <div class="driver_position text--grayed" style="margin-top: 0.25em">
+      <div class="text--grayed" style="margin-top: 0.25em">
         {{ displayTrainPosition(train) }}
       </div>
     </section>
@@ -296,6 +301,27 @@ export default defineComponent({
   gap: 0.25em;
 }
 
+.general-stats {
+  display: flex;
+  gap: 0.5em;
+  flex-wrap: wrap;
+
+  & > div {
+    display: flex;
+    align-items: center;
+    gap: 0.25em;
+  }
+
+  img {
+    width: 1.5em;
+  }
+}
+
+.general-timetable {
+  display: flex;
+  align-items: center;
+}
+
 .status-badges {
   display: flex;
   flex-wrap: wrap;
@@ -307,17 +333,7 @@ export default defineComponent({
   }
 }
 
-.general-timetable {
-  display: flex;
-  align-items: center;
-}
-
-.timetable-warnings {
-  display: flex;
-  gap: 0.25em;
-}
-
-.timetable-progress {
+.status-timetable-progress {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -325,6 +341,11 @@ export default defineComponent({
 
 .progress-distance {
   margin-right: 0.25em;
+}
+
+.timetable-warnings {
+  display: flex;
+  gap: 0.25em;
 }
 
 @include smallScreen() {
