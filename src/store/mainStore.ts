@@ -47,7 +47,8 @@ export const useMainStore = defineStore('store', {
           const sceneryNames =
             train.timetable?.sceneries?.map(
               (sceneryHash) =>
-                this.activeSceneryList.find((st) => st.hash === sceneryHash)?.name ??
+                apiStore.activeData?.activeSceneries?.find((st) => st.stationHash === sceneryHash)
+                  ?.stationName ??
                 apiStore.sceneryData.find((sd) => sd.hash === sceneryHash)?.name ??
                 sceneryHash
             ) ?? [];
