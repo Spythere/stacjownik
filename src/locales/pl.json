@@ -4,7 +4,7 @@
     "header": "Grosza daj Stacjownikowi!",
     "donator-title": "Projekt ma już ponad <b>{count}</b> wspierających, w tym:",
     "p1": "<b>Hej o7!</b> Z tej strony Spythere, twórca Stacjownika, Pojazdownika oraz kilku innych aplikacji wspomagających rozgrywkę symulatora Train Driver 2!",
-    "p2": "{b1} to narzędzie całkowicie darmowe, tworzone i rozwijane dla społeczności symulatora TD2 nieprzerwanie od 2020 roku. Jednakże, część projektu jest podtrzymywana wyłącznie dzięki mojemu prywatnemu wkładowi finansowemu. Funkcje takie jak {b2} czy też {b3} działający na moim {link} (na który serdeczne zapraszam) muszą działać na wydzielonym serwerze, gdzie będą mogły zbierać i przetwarzać dane, aby następnie pokazać je na stronie.",
+    "p2": "{b1} to narzędzie całkowicie darmowe, tworzone i rozwijane dla społeczności symulatora TD2 nieprzerwanie od 2020 roku. Jednakże, część projektu jest podtrzymywana wyłącznie dzięki mojemu prywatnemu wkładowi finansowemu. Funkcje takie jak {b2} czy też {b3} działający na moim {link} (na który serdecznie zapraszam) muszą działać na wydzielonym serwerze, gdzie będą mogły zbierać i przetwarzać dane, aby następnie pokazać je na stronie.",
     "p2-b1": "Stacjownik",
     "p2-b2": "Dziennik",
     "p2-b3": "Stacjobot",
@@ -25,6 +25,13 @@
     "refresh": "ODŚWIEŻ",
     "TWR": "Towar niebezpieczny wysokiego ryzyka",
     "SKR": "Przekroczona skrajnia"
+  },
+  "update": {
+    "title": "Aktualizacja Stacjownika!",
+    "version": "Wersja {0}",
+    "confirm-button": "UPDATE NOW",
+    "later-button": "LATER",
+    "content": "dymki kontekstowe po najechaniu kursorem na m.in. sponsorów projektu i uwagi eksploatacyjne\npodgląd pojazdu po najechaniu kursorem na jego miniaturkę w karcie aktywnego rozkładu jazdy oraz dzienniku RJ\nodnośnik do historii RJ maszynisty w widoku karty aktywnego rozkładu jazdy\nodnośnik do karty aktywnego rozkładu jazdy maszynisty w dzienniku (dostępny tylko dla pociągów online)\nnowa karta ze zmianami w aktualizacji"
   },
   "app": {
     "sceneries": "SCENERIE",

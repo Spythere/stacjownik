@@ -312,7 +312,7 @@ import { HeadIdsTypes, headIconsIds, headIds } from '../../scripts/data/stationH
 import StationStatusBadge from '../Global/StationStatusBadge.vue';
 import { Status } from '../../typings/common';
 import { useApiStore } from '../../store/apiStore';
-import { usePopupStore } from '../../store/popupStore';
+import popupMixin from '../../mixins/popupMixin';
 
 export default defineComponent({
   props: {
@@ -324,7 +324,7 @@ export default defineComponent({
 
   emits: ['toggleDonationModal'],
   components: { Loading, StationStatusBadge },
-  mixins: [styleMixin, dateMixin, stationInfoMixin],
+  mixins: [styleMixin, dateMixin, stationInfoMixin, popupMixin],
 
   data: () => ({
     headIconsIds,
@@ -341,7 +341,6 @@ export default defineComponent({
   setup() {
     const mainStore = useMainStore();
     const apiStore = useApiStore();
-    const popupStore = usePopupStore();
 
     const stationFiltersStore = useStationFiltersStore();
 
@@ -349,8 +348,7 @@ export default defineComponent({
       Status: Status.Data,
       stationFiltersStore,
       mainStore,
-      apiStore,
-      popupStore
+      apiStore
     };
   },
 
@@ -373,7 +371,7 @@ export default defineComponent({
     openDonationModal(e: Event) {
       this.$emit('toggleDonationModal', true);
       this.mainStore.modalLastClickedTarget = e.target;
-      this.popupStore.currentPopupComponent = null;
+      this.hidePopUp();
     },
 
     openForumSite(e: Event, url: string | undefined) {

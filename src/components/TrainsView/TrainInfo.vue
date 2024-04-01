@@ -1,57 +1,71 @@
 <template>
-  <div class="train-info">
+  <div class="train-info" :data-extended="extended">
     <section class="train-general">
-      <div class="general-info">
-        <b class="warning-timeout" v-if="train.isTimeout" :title="$t('trains.timeout')">?</b>
-        <span class="timetable-id" v-if="train.timetableData">
-          #{{ train.timetableData.timetableId }}
-        </span>
-
-        <span
-          class="timetable-warnings"
-          v-if="train.timetableData?.TWR || train.timetableData?.SKR"
-        >
-          <span class="train-badge twr" v-if="train.timetableData?.TWR" :title="$t('general.TWR')">
-            TWR
+      <div class="general-top-bar">
+        <div>
+          <b class="warning-timeout" v-if="train.isTimeout" :title="$t('trains.timeout')">?</b>
+          <span class="timetable-id" v-if="train.timetableData">
+            #{{ train.timetableData.timetableId }}
           </span>
-          <span class="train-badge skr" v-if="train.timetableData?.SKR" :title="$t('general.SKR')">
-            SKR
-          </span>
-        </span>
 
-        <strong>
-          <span v-if="train.timetableData" class="text--primary"
-            >{{ train.timetableData.category }}&nbsp;</span
+          <span
+            class="timetable-warnings"
+            v-if="train.timetableData?.TWR || train.timetableData?.SKR"
           >
-          <span class="train-number">{{ train.trainNo }}</span>
-        </strong>
-        <span>&bull;</span>
-        <b
-          class="level-badge driver"
-          :style="calculateExpStyle(train.driverLevel, train.isSupporter)"
-        >
-          {{ train.driverLevel < 2 ? 'L' : `${train.driverLevel}` }}
-        </b>
+            <span
+              class="train-badge twr"
+              v-if="train.timetableData?.TWR"
+              :title="$t('general.TWR')"
+            >
+              TWR
+            </span>
+            <span
+              class="train-badge skr"
+              v-if="train.timetableData?.SKR"
+              :title="$t('general.SKR')"
+            >
+              SKR
+            </span>
+          </span>
 
-        <div class="train-driver">
+          <strong>
+            <span v-if="train.timetableData" class="text--primary"
+              >{{ train.timetableData.category }}&nbsp;</span
+            >
+            <span class="train-number">{{ train.trainNo }}</span>
+          </strong>
+          <span>&bull;</span>
           <b
-            v-if="apiStore.donatorsData.includes(train.driverName)"
-            data-popup-key="DonatorPopUp"
-            :data-popup-content="$t('donations.driver-message')"
+            class="level-badge driver"
+            :style="calculateExpStyle(train.driverLevel, train.isSupporter)"
           >
-            {{ train.driverName }}
-            <img src="/images/icon-diamond.svg" alt="donator diamond icon" />
+            {{ train.driverLevel < 2 ? 'L' : `${train.driverLevel}` }}
           </b>
 
-          <span v-else>{{ train.driverName }}</span>
+          <div class="train-driver">
+            <b
+              v-if="apiStore.donatorsData.includes(train.driverName)"
+              data-popup-key="DonatorPopUp"
+              :data-popup-content="$t('donations.driver-message')"
+            >
+              {{ train.driverName }}
+              <img src="/images/icon-diamond.svg" alt="donator diamond icon" />
+            </b>
 
-          <button
-            class="btn--image btn--action btn-timetable"
-            @click="navigateToJournal"
-            v-if="extended"
-          >
-            <img src="/images/icon-train.svg" alt="" />
-            {{ $t('trains.journal-button') }}
+            <span v-else>{{ train.driverName }}</span>
+          </div>
+        </div>
+
+        <div v-if="extended">
+          <button class="btn-timetable btn--image btn--action" @click="navigateToJournal">
+            <img src="/images/icon-train.svg" alt="train icon" />
+            <span>
+              {{ $t('trains.journal-button') }}
+            </span>
+          </button>
+
+          <button class="btn-exit btn--image btn--action" @click="closeModal">
+            <img src="/images/icon-exit.svg" alt="modal exit icon" />
           </button>
         </div>
       </div>
@@ -79,7 +93,7 @@
       </div>
 
       <div class="general-status">
-        <div class="timetable-progress" v-if="train.timetableData">
+        <div class="status-timetable-progress" v-if="train.timetableData">
           <ProgressBar :progressPercent="confirmedPercentage(train.timetableData.followingStops)" />
 
           <span class="progress-distance">
@@ -103,12 +117,29 @@
         </div>
       </div>
 
-      <div class="driver_position text--grayed" style="margin-top: 0.25em">
+      <div class="general-stats" v-if="extended">
+        <div>
+          <img src="/images/icon-length.svg" alt="length icon" />
+          {{ train.length }}m
+        </div>
+
+        <div>
+          <img src="/images/icon-mass.svg" alt="mass icon" />
+          {{ (train.mass / 1000).toFixed(1) }}t
+        </div>
+
+        <div>
+          <img src="/images/icon-speed.svg" alt="speed icon" />
+          {{ train.speed }} km/h
+        </div>
+      </div>
+
+      <div class="text--grayed" style="margin-top: 0.25em">
         {{ displayTrainPosition(train) }}
       </div>
     </section>
 
-    <section class="train-stats">
+    <section class="train-stats" v-if="!extended">
       <StockList :trainStockList="train.stockList" :tractionOnly="true" />
 
       <div>
@@ -137,7 +168,6 @@ import ProgressBar from '../Global/ProgressBar.vue';
 import { useMainStore } from '../../store/mainStore';
 import { useApiStore } from '../../store/apiStore';
 import StockList from '../Global/StockList.vue';
-import { usePopupStore } from '../../store/popupStore';
 import modalTrainMixin from '../../mixins/modalTrainMixin';
 
 export default defineComponent({
@@ -157,8 +187,7 @@ export default defineComponent({
   data() {
     return {
       store: useMainStore(),
-      apiStore: useApiStore(),
-      popupStore: usePopupStore()
+      apiStore: useApiStore()
     };
   },
 
@@ -203,6 +232,10 @@ export default defineComponent({
   grid-template-columns: 2fr 1fr;
   grid-template-rows: 1fr;
 
+  &[data-extended='true'] {
+    grid-template-columns: 1fr;
+  }
+
   padding: 1em;
 
   background-color: #1a1a1a;
@@ -212,12 +245,6 @@ export default defineComponent({
 .train-driver img {
   max-height: 20px;
   vertical-align: text-bottom;
-}
-
-.btn-timetable {
-  display: inline-block;
-  padding: 0.25em;
-  margin-left: 0.5em;
 }
 
 .timetable-id {
@@ -243,20 +270,56 @@ export default defineComponent({
   font-size: 0.8em;
 }
 
-.general-info {
+.general-top-bar {
   display: flex;
-  align-items: center;
+  justify-content: space-between;
   flex-wrap: wrap;
+  gap: 0.5em;
 
-  gap: 0.25em;
-  margin-right: 1.5em;
+  & > div {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: 0.25em;
+  }
 }
+
+.btn-timetable {
+  padding: 0.25em;
+}
+
+.btn-exit {
+  padding: 0.25em;
+}
+
 .general-status {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
 
   gap: 0.25em;
+}
+
+.general-stats {
+  display: flex;
+  gap: 0.5em;
+  flex-wrap: wrap;
+
+  & > div {
+    display: flex;
+    align-items: center;
+    gap: 0.25em;
+  }
+
+  img {
+    width: 1.5em;
+  }
+}
+
+.general-timetable {
+  display: flex;
+  align-items: center;
 }
 
 .status-badges {
@@ -270,17 +333,7 @@ export default defineComponent({
   }
 }
 
-.general-timetable {
-  display: flex;
-  align-items: center;
-}
-
-.timetable-warnings {
-  display: flex;
-  gap: 0.25em;
-}
-
-.timetable-progress {
+.status-timetable-progress {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -290,30 +343,19 @@ export default defineComponent({
   margin-right: 0.25em;
 }
 
+.timetable-warnings {
+  display: flex;
+  gap: 0.25em;
+}
+
 @include smallScreen() {
   .train-info {
     grid-template-columns: 1fr;
     gap: 1em 0;
-    text-align: center;
   }
 
-  .general-info,
-  .general-status,
-  .general-timetable {
-    justify-content: center;
-  }
-
-  .timetable-progress {
-    justify-content: center;
-  }
-
-  .comments {
-    flex-direction: column;
-    justify-content: center;
-
-    img {
-      margin: 0 0 0.5em 0;
-    }
+  .btn-timetable > span {
+    display: none;
   }
 }
 </style>

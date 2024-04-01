@@ -4,7 +4,7 @@
 
     <transition name="modal-anim">
       <keep-alive>
-        <TrainModal v-if="store.chosenModalTrainId" />
+        <TrainModal />
       </keep-alive>
     </transition>
 
@@ -34,11 +34,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, watch } from 'vue';
+import { defineComponent } from 'vue';
 import axios from 'axios';
 import { version } from '.././package.json';
 
 import { useMainStore } from './store/mainStore';
+import popupMixin from './mixins/popupMixin';
 
 import Clock from './components/App/Clock.vue';
 import StatusIndicator from './components/App/StatusIndicator.vue';
@@ -48,7 +49,6 @@ import StorageManager from './managers/storageManager';
 import PopUp from './components/PopUp/PopUp.vue';
 import { useApiStore } from './store/apiStore';
 import { Status } from './typings/common';
-import { usePopupStore } from './store/popupStore';
 
 const STORAGE_VERSION_KEY = 'app_version';
 
@@ -61,11 +61,12 @@ export default defineComponent({
     PopUp
   },
 
+  mixins: [popupMixin],
+
   data: () => ({
     VERSION: version,
     store: useMainStore(),
     apiStore: useApiStore(),
-    popupStore: usePopupStore(),
 
     currentLang: 'pl',
     releaseURL: '',
@@ -83,35 +84,7 @@ export default defineComponent({
       this.apiStore.fetchActiveData();
     });
 
-    // popup handling
-    window.addEventListener('mousemove', (e: MouseEvent) => {
-      e.stopPropagation();
-
-      const targetEl = e
-        .composedPath()
-        .find((p) => p instanceof HTMLElement && p.getAttribute('data-popup-key'));
-
-      if (!targetEl || !(targetEl instanceof HTMLElement)) {
-        if (this.popupStore.currentPopupComponent != null) this.popupStore.onPopUpHide();
-
-        return;
-      }
-
-      const popupComponentKey = targetEl.getAttribute('data-popup-key');
-      const popupContent = targetEl.getAttribute('data-popup-content');
-
-      if (popupComponentKey && popupContent)
-        this.popupStore.onPopUpShow(e, popupComponentKey, popupContent);
-      else if (this.popupStore.currentPopupComponent != null) this.popupStore.onPopUpHide();
-    });
-
-    watch(
-      () => this.store.blockScroll,
-      (value) => {
-        if (value) document.body.classList.add('no-scroll');
-        else document.body.classList.remove('no-scroll');
-      }
-    );
+    window.addEventListener('mousemove', (e: MouseEvent) => this.handlePopUpEvents(e));
   },
 
   methods: {
@@ -162,6 +135,27 @@ export default defineComponent({
       this.store.isOffline = false;
 
       this.apiStore.connectToAPI();
+    },
+
+    handlePopUpEvents(e: MouseEvent) {
+      const targetEl = e
+        .composedPath()
+        .find((p) => p instanceof HTMLElement && p.getAttribute('data-popup-key'));
+
+      if (!targetEl || !(targetEl instanceof HTMLElement)) {
+        if (this.store.popUpData.key != null) this.hidePopUp();
+
+        return;
+      }
+
+      const popupComponentKey = targetEl.getAttribute('data-popup-key');
+      const popupContent = targetEl.getAttribute('data-popup-content');
+
+      if (popupComponentKey && popupContent) this.showPopUp(e, popupComponentKey, popupContent);
+      else if (this.store.popUpData.key != null) this.hidePopUp();
+
+      this.store.mousePos.x = e.pageX;
+      this.store.mousePos.y = e.pageY;
     },
 
     changeLang(lang: string) {
@@ -243,7 +237,7 @@ export default defineComponent({
   grid-template-columns: 100%;
 
   min-height: 100vh;
-  position: relative;
+  overflow: hidden;
 }
 
 .app_main {

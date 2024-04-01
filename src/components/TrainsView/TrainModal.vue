@@ -2,10 +2,6 @@
   <div class="train-modal" v-if="chosenTrain" @keydown.esc="closeModal">
     <div class="modal_background" @click="closeModal"></div>
     <div class="modal_content" ref="content" tabindex="0">
-      <button class="btn exit" @click="closeModal">
-        <img src="/images/icon-exit.svg" alt="close card" />
-      </button>
-
       <TrainInfo :train="chosenTrain" :extended="true" ref="trainInfo" />
       <TrainSchedule :train="chosenTrain" tabindex="0" />
     </div>
@@ -17,17 +13,27 @@ import { defineComponent } from 'vue';
 import modalTrainMixin from '../../mixins/modalTrainMixin';
 import TrainInfo from './TrainInfo.vue';
 import TrainSchedule from './TrainSchedule.vue';
+import Train from '../../scripts/interfaces/Train';
 
 export default defineComponent({
   components: { TrainInfo, TrainSchedule },
   mixins: [modalTrainMixin],
 
-  activated() {
-    const contentEl = this.$refs['content'] as HTMLElement;
+  computed: {
+    chosenTrain() {
+      return this.store.trainList.find((train) => train.trainId == this.store.chosenModalTrainId);
+    }
+  },
 
-    this.$nextTick(() => {
-      contentEl.focus();
-    });
+  watch: {
+    chosenTrain(train: Train | undefined) {
+      this.$nextTick(() => {
+        if (train) {
+          const contentEl = this.$refs['content'] as HTMLElement;
+          contentEl.focus();
+        }
+      });
+    }
   }
 });
 </script>
@@ -46,23 +52,6 @@ export default defineComponent({
   &-leave-to {
     transform: translate(-50%, -50%) scale(0.8);
     opacity: 0;
-  }
-}
-
-.exit {
-  position: absolute;
-  top: 0;
-  right: 0;
-
-  margin: 0.5em 1em;
-
-  padding: 0.25em;
-
-  z-index: 201;
-
-  img {
-    width: 1.5rem;
-    vertical-align: middle;
   }
 }
 

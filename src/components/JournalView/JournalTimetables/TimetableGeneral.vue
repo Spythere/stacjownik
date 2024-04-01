@@ -34,15 +34,6 @@
       <strong v-else>
         {{ timetable.driverName }}
       </strong>
-
-      <button
-        v-if="timetable.terminated == false"
-        class="btn--image btn--action btn-timetable"
-        @click.stop="showTimetable(timetable, $event.currentTarget)"
-      >
-        <img src="/images/icon-train.svg" alt="" />
-        {{ $t('journal.timetable-online-button') }}
-      </button>
     </span>
 
     <span class="general-time">
@@ -70,6 +61,15 @@
             : `${$t('journal.timetable-abandoned')} ${localeTime(timetable.endDate, $i18n.locale)}`
         }}
       </b>
+
+      <button
+        v-if="timetable.terminated == false"
+        class="btn--image btn--action btn-timetable"
+        @click.stop="showTimetable(timetable, $event.currentTarget)"
+      >
+        <img src="/images/icon-train.svg" alt="" />
+        {{ $t('journal.timetable-online-button') }}
+      </button>
     </span>
   </div>
 </template>
@@ -144,12 +144,14 @@ export default defineComponent({
 }
 
 .general-train {
-  cursor: pointer;
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
   gap: 0.25em;
+
+  cursor: pointer;
+  line-height: 2;
 }
 
 .btn-timetable {

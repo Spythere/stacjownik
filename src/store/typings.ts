@@ -1,7 +1,9 @@
 import { API } from '../typings/api';
 import { Status } from '../typings/common';
 
+export const popupKeys = ['DonatorPopUp', 'TrainCommentsPopUp', 'VehiclePreviewPopUp'] as const;
 export type Availability = 'default' | 'unavailable' | 'nonPublic' | 'abandoned' | 'nonDefault';
+export type PopUpType = (typeof popupKeys)[number];
 
 export interface RegionCounters {
   stationCount: number;
@@ -19,8 +21,9 @@ export interface StoreState {
   driverStatsData?: API.DriverStats.Response;
   driverStatsStatus: Status.Data;
   chosenModalTrainId?: string;
-  blockScroll: boolean;
   modalLastClickedTarget: EventTarget | null;
+  mousePos: { x: number; y: number };
+  popUpData: { key: PopUpType | null; content: string };
 }
 
 export interface StationRoutesInfo {
