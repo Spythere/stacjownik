@@ -77,7 +77,20 @@
     "ręczne+SCS": "ręczne z SCS",
     "mechaniczne": "mechaniczne",
     "mechaniczne+SPK": "mechaniczne z SPK",
-    "mechaniczne+SCS": "mechaniczne z SCS"
+    "mechaniczne+SCS": "mechaniczne z SCS",
+
+    "abbrevs": {
+      "SPK": "SPK",
+      "SCS": "SCS",
+      "SCS-SPK": "S/S",
+      "SPE": "SPE",
+      "ręczne": "R",
+      "ręczne+SPK": "R",
+      "ręczne+SCS": "R",
+      "mechaniczne": "M",
+      "mechaniczne+SPK": "M",
+      "mechaniczne+SCS": "M"
+    }
   },
   "status": {
     "online": "DO ",
@@ -163,7 +176,7 @@
       "access": "DOSTĘPNOŚĆ OGÓLNA",
       "control": "TYP STEROWANIA",
       "signals": "TYP SYGNALIZACJI",
-      "addons": "DODATKOWE PROGRAMY",
+      "addons": "SZCZEGÓŁY",
       "blockades": "BLOKADY LINIOWE",
       "status": "STATUS ONLINE",
       "timetables": "AKTYWNE ROZKŁADY JAZDY"
@@ -352,7 +365,7 @@
     "timetable-abandoned": "PORZUCONY",
     "timetable-online-button": "RJ ONLINE",
 
-    "stock-info": "DODATKOWE INFORMACJE",
+    "stock-info": "SZCZEGÓŁY",
     "stock-length": "Długość",
     "stock-mass": "Masa",
     "stock-max-speed": "Prędkość maks.",

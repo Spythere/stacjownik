@@ -81,7 +81,20 @@
     "ręczne+SCS": "manual + SCS",
     "mechaniczne": "levers (mechanical)",
     "mechaniczne+SPK": "levers + SPK",
-    "mechaniczne+SCS": "levers + SCS"
+    "mechaniczne+SCS": "levers + SCS",
+
+    "abbrevs": {
+      "SPK": "SPK",
+      "SCS": "SCS",
+      "SCS-SPK": "S/S",
+      "SPE": "SPE",
+      "ręczne": "R",
+      "ręczne+SPK": "R",
+      "ręczne+SCS": "R",
+      "mechaniczne": "M",
+      "mechaniczne+SPK": "M",
+      "mechaniczne+SCS": "M"
+    }
   },
   "status": {
     "online": "UNTIL ",
@@ -367,7 +380,7 @@
     "minutes": "{value} min | {value} mins",
     "seconds": "{value} s",
 
-    "stock-info": "EXTRA INFO",
+    "stock-info": "DETAILS",
     "stock-length": "Length",
     "stock-mass": "Mass",
     "stock-max-speed": "Max. speed",

@@ -206,8 +206,8 @@
                     $t('sceneries.info.control-type') +
                     $t(`controls.${station.generalInfo?.controlType}`)
                   "
-                  v-html="getControlTypeAbbrev(station.generalInfo.controlType)"
                 >
+                  {{ $t(`controls.abbrevs.${station.generalInfo.controlType}`) }}
                 </span>
 
                 <img
@@ -302,7 +302,6 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
-import stationInfoMixin from '../../mixins/stationInfoMixin';
 import styleMixin from '../../mixins/styleMixin';
 import Station from '../../scripts/interfaces/Station';
 import { useStationFiltersStore } from '../../store/stationFiltersStore';
@@ -324,7 +323,7 @@ export default defineComponent({
 
   emits: ['toggleDonationModal'],
   components: { Loading, StationStatusBadge },
-  mixins: [styleMixin, dateMixin, stationInfoMixin, popupMixin],
+  mixins: [styleMixin, dateMixin, popupMixin],
 
   data: () => ({
     headIconsIds,

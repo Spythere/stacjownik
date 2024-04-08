@@ -21,7 +21,7 @@
           <!-- Status -->
           <TimetableStatus :timetable="timetable" />
 
-          <button class="btn--option btn--show">
+          <button class="btn--action btn--show">
             {{ $t('journal.stock-info') }}
             <img
               :src="`/images/icon-arrow-${showExtraInfo.value ? 'asc' : 'desc'}.svg`"
@@ -66,9 +66,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../../styles/variables.scss';
-@import '../../../styles/responsive.scss';
-@import '../../../styles/JournalSection.scss';
+@import '../../../styles/variables';
+@import '../../../styles/responsive';
+@import '../../../styles/JournalSection';
 
 .btn--show {
   display: flex;

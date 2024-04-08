@@ -64,11 +64,11 @@
 
       <button
         v-if="timetable.terminated == false"
-        class="btn--image btn--action btn-timetable"
+        class="btn--action btn-timetable"
         @click.stop="showTimetable(timetable, $event.currentTarget)"
       >
-        <img src="/images/icon-train.svg" alt="" />
-        {{ $t('journal.timetable-online-button') }}
+        <img src="/images/icon-train.svg" alt="train icon" />
+        <b>{{ $t('journal.timetable-online-button') }}</b>
       </button>
     </span>
   </div>
@@ -104,8 +104,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../../styles/responsive.scss';
-@import '../../../styles/badge.scss';
+@import '../../../styles/responsive';
+@import '../../../styles/badge';
 
 .item-general {
   display: flex;
@@ -117,8 +117,22 @@ export default defineComponent({
   margin-bottom: 0.5em;
 }
 
-.info-date {
-  margin-right: 0.5em;
+.general-train {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.25em;
+
+  cursor: pointer;
+  line-height: 2;
+}
+
+.general-time {
+  display: flex;
+  align-items: center;
+
+  gap: 0.5em;
 }
 
 .badges {
@@ -143,24 +157,12 @@ export default defineComponent({
   }
 }
 
-.general-train {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.25em;
-
-  cursor: pointer;
-  line-height: 2;
-}
-
 .btn-timetable {
-  display: inline-block;
-  padding: 0.1em 0.4em;
-  margin-left: 0.5em;
+  display: flex;
+  padding: 0.2em 0.5em;
 
   img {
-    vertical-align: top;
+    height: 1.25em;
   }
 }
 
