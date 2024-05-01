@@ -20,7 +20,7 @@ export default defineConfig({
         runtimeCaching: [
           {
             urlPattern: new RegExp('^https://stacjownik.spythere.eu/api/getSceneries', 'i'),
-            handler: 'NetworkFirst',
+            handler: 'CacheFirst',
             options: {
               cacheName: 'spythere-sceneries-cache',
               cacheableResponse: {
