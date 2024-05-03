@@ -70,7 +70,9 @@ export default defineComponent({
 
     currentLang: 'pl',
     releaseURL: '',
-    isOnProductionHost: location.hostname == 'stacjownik-td2.web.app'
+    isOnProductionHost: location.hostname == 'stacjownik-td2.web.app',
+
+    nextUpdateTime: 0
   }),
 
   created() {
@@ -78,11 +80,11 @@ export default defineComponent({
   },
 
   async mounted() {
-    window.addEventListener('focus', () => {
-      if (Date.now() - this.apiStore.lastFetchData.getTime() < 15000) return;
+    // window.addEventListener('focus', () => {
+    //   if (Date.now() - this.apiStore.lastFetchData.getTime() < 15000) return;
 
-      this.apiStore.fetchActiveData();
-    });
+    //   this.apiStore.fetchActiveData();
+    // });
 
     window.addEventListener('mousemove', (e: MouseEvent) => this.handlePopUpEvents(e));
   },
@@ -95,8 +97,17 @@ export default defineComponent({
       this.checkAppVersion();
 
       this.apiStore.setupAPIData();
+      window.requestAnimationFrame(this.update);
 
       if (!this.isOnProductionHost) document.title = 'Stacjownik Dev';
+    },
+
+    update(t: number) {
+      if (t >= this.nextUpdateTime) {
+        this.apiStore.fetchActiveData();
+        this.nextUpdateTime = t + 20000;
+      }
+      window.requestAnimationFrame(this.update);
     },
 
     checkAppVersion() {

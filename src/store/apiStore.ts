@@ -54,18 +54,6 @@ export const useApiStore = defineStore('apiStore', {
       // Static data
       this.fetchDonatorsData();
       this.fetchStationsGeneralInfo();
-
-      // Active data schedueler
-      this.fetchActiveData();
-      // this.setupActiveDataFetcher();
-    },
-
-    async setupActiveDataFetcher() {
-      if (this.activeDataScheduler) return;
-
-      this.activeDataScheduler = window.setInterval(() => {
-        this.fetchActiveData();
-      }, 25000);
     },
 
     async fetchActiveData() {
@@ -75,7 +63,6 @@ export const useApiStore = defineStore('apiStore', {
         console.log('Fetching active data at ' + new Date().toLocaleTimeString('pl-PL'));
 
         const response = await this.client!.get<API.ActiveData.Response>('api/getActiveData');
-        console.log(response);
 
         this.activeData = response.data;
         this.lastFetchData = new Date();
