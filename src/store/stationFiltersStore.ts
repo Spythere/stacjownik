@@ -52,6 +52,8 @@ const filterInitStates: Filter = {
   unsignedStatus: false,
   withActiveTimetables: false,
   withoutActiveTimetables: false,
+  maxVmax: 200,
+  minVmax: 0,
 
   authors: '',
 

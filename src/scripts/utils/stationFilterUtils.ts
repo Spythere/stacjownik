@@ -189,8 +189,10 @@ export const filterStations = (station: Station, filters: Filter) => {
       availability == 'nonPublic' || availability == 'unavailable' || availability == 'abandoned';
 
     if (reqLevel + (otherAvailability ? 1 : 0) < filters['minLevel']) return false;
-
     if (reqLevel + (otherAvailability ? 1 : 0) > filters['maxLevel']) return false;
+
+    if (filters['minVmax'] > station.generalInfo.routes.maxRouteSpeed) return false;
+    if (filters['maxVmax'] < station.generalInfo.routes.minRouteSpeed) return false;
 
     if (
       filters['no-1track'] &&

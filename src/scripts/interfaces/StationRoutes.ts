@@ -9,4 +9,7 @@ export interface StationRoutes {
   doubleElectrifiedNames: string[];
   doubleOtherNames: string[];
   sblNames: string[];
+
+  minRouteSpeed: number;
+  maxRouteSpeed: number;
 }

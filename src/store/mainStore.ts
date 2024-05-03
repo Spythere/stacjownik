@@ -248,6 +248,13 @@ export const useMainStore = defineStore('store', {
             if (!route.isInternal) acc[routesKey].push(route.routeName);
             if (route.isRouteSBL) acc['sblNames'].push(route.routeName);
 
+            acc.minRouteSpeed =
+              acc.minRouteSpeed == 0
+                ? route.routeSpeed
+                : Math.min(route.routeSpeed, acc.minRouteSpeed);
+
+            acc.maxRouteSpeed = Math.max(route.routeSpeed, acc.maxRouteSpeed);
+
             acc[tracksKey].push(route);
 
             return acc;
@@ -259,7 +266,9 @@ export const useMainStore = defineStore('store', {
             double: [],
             doubleElectrifiedNames: [],
             doubleOtherNames: [],
-            sblNames: []
+            sblNames: [],
+            minRouteSpeed: 0,
+            maxRouteSpeed: 0
           } as StationRoutes
         );
 

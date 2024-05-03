@@ -108,6 +108,7 @@
                 :id="slider.id"
                 :min="slider.minRange"
                 :max="slider.maxRange"
+                :step="slider.step"
                 v-model="slider.value"
                 @change="handleInput"
               />

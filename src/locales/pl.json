@@ -232,6 +232,8 @@
     "sliders": {
       "min-lvl": "MIN. WYMAGANY POZIOM DYŻURNEGO",
       "max-lvl": "MAKS. WYMAGANY POZIOM DYŻURNEGO",
+      "min-vmax": "MIN. PRĘDKOŚĆ SZLAKOWA",
+      "max-vmax": "MAKS. PRĘDKOŚĆ SZLAKOWA",
       "routes-1t-cat": "SZLAKI JEDNOTOROWE ZELEKTR. (MINIMUM)",
       "routes-1t-other": "SZLAKI JEDNOTOROWE NIEZELEKTR. (MINIMUM)",
       "routes-2t-cat": "SZLAKI DWUTOROWE ZELEKTR. (MINIMUM)",

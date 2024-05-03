@@ -235,6 +235,8 @@
     "sliders": {
       "min-lvl": "MIN. REQUIRED DISPATCHER LEVEL",
       "max-lvl": "MAX. REQUIRED DISPATCHER LEVEL",
+      "min-vmax": "MIN. SCENERY ROUTE SPEED",
+      "max-vmax": "MAX. SCENERY ROUTE SPEED",
       "routes-1t-cat": "MIN. CATENARY SINGLE TRACK ROUTES",
       "routes-1t-other": "MIN. OTHER SINGLE TRACK ROUTES",
       "routes-2t-cat": "MIN. CATENARY DOUBLE TRACK ROUTES",
