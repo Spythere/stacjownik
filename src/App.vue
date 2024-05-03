@@ -1,5 +1,5 @@
 <template>
-  <div class="app_container" v-cloak>
+  <div class="app_container">
     <PopUp />
 
     <transition name="modal-anim">

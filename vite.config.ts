@@ -17,6 +17,7 @@ export default defineConfig({
       workbox: {
         disableDevLogs: true,
         globPatterns: ['**/*.{js,css,html,png,svg,jpg}'],
+        cleanupOutdatedCaches: true,
         runtimeCaching: [
           {
             urlPattern: new RegExp('^https://stacjownik.spythere.eu/api/getSceneries', 'i'),
