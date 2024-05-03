@@ -9,7 +9,7 @@
         ref="button"
       >
         <img src="/images/icon-filter2.svg" alt="Open filters" />
-        {{ $t('options.filters') }} [F]
+        [F] {{ $t('options.filters') }}
         <span class="active-indicator" v-if="currentOptionsActive"></span>
       </button>
 
