@@ -30,7 +30,7 @@
 
 <script lang="ts">
 import { PropType, defineComponent } from 'vue';
-import { ActiveScenery } from '../../../store/typings';
+import { ActiveScenery } from '../../../typings/common';
 
 export default defineComponent({
   props: {

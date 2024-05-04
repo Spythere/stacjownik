@@ -89,7 +89,7 @@
 <script lang="ts">
 import { PropType, defineComponent } from 'vue';
 import styleMixin from '../../../mixins/styleMixin';
-import Station from '../../../scripts/interfaces/Station';
+import { Station } from '../../../typings/common';
 
 export default defineComponent({
   mixins: [styleMixin],

@@ -65,12 +65,12 @@ export default defineComponent({
       immediate: true,
       handler(regionQuery: string) {
         if (regionQuery) {
-          this.store.region.id =
+          this.store.region =
             regionsJSON.find(
               (reg) =>
                 reg.id == regionQuery.toLocaleLowerCase() ||
                 reg.value.toLocaleLowerCase() == regionQuery.toLocaleLowerCase()
-            )?.id || 'eu';
+            ) ?? regionsJSON[0];
         }
       }
     }

@@ -1,6 +1,10 @@
 <template>
   <section class="station_table">
-    <div class="table_wrapper">
+    <Loading
+      v-if="apiStore.dataStatuses.connection == Status.Loading && displayedStations.length == 0"
+    />
+
+    <div class="table_wrapper" v-else-if="displayedStations.length > 0">
       <table>
         <thead>
           <tr>
@@ -50,7 +54,7 @@
 
         <tbody>
           <tr
-            v-for="station in stations"
+            v-for="station in displayedStations"
             :class="{ 'last-selected': lastSelectedStationName == station.name }"
             :key="station.name"
             @click.left="setScenery(station.name)"
@@ -283,12 +287,11 @@
           </tr>
         </tbody>
       </table>
+    </div>
 
-      <Loading v-if="apiStore.dataStatuses.connection == Status.Loading && stations.length == 0" />
-
-      <div class="no-stations" v-else-if="stations.length == 0">
-        {{ $t('sceneries.no-stations') }}
-      </div>
+    <div class="no-stations" v-else>
+      {{ $t('sceneries.no-stations') }} (region: <b>{{ mainStore.region.name }}</b
+      >)
     </div>
   </section>
 </template>
@@ -297,24 +300,16 @@
 import { defineComponent, PropType } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
 import styleMixin from '../../mixins/styleMixin';
-import Station from '../../scripts/interfaces/Station';
 import { useStationFiltersStore } from '../../store/stationFiltersStore';
 import { useMainStore } from '../../store/mainStore';
 import Loading from '../Global/Loading.vue';
 import { HeadIdsTypes, headIconsIds, headIds } from '../../scripts/data/stationHeaderNames';
 import StationStatusBadge from '../Global/StationStatusBadge.vue';
-import { Status } from '../../typings/common';
+import { Station, Status } from '../../typings/common';
 import { useApiStore } from '../../store/apiStore';
 import popupMixin from '../../mixins/popupMixin';
 
 export default defineComponent({
-  props: {
-    stations: {
-      type: Array as PropType<Station[]>,
-      required: true
-    }
-  },
-
   emits: ['toggleDonationModal'],
   components: { Loading, StationStatusBadge },
   mixins: [styleMixin, dateMixin, popupMixin],
@@ -328,6 +323,10 @@ export default defineComponent({
   computed: {
     sorterActive() {
       return this.stationFiltersStore.sorterActive;
+    },
+
+    displayedStations() {
+      return this.stationFiltersStore.filteredStationList;
     }
   },
 
@@ -347,7 +346,8 @@ export default defineComponent({
 
   methods: {
     setScenery(name: string) {
-      const station = this.stations.find((station) => station.name === name);
+      const station = this.displayedStations.find((station) => station.name === name);
+
       if (!station) return;
 
       this.lastSelectedStationName = station.name;
@@ -389,12 +389,11 @@ export default defineComponent({
 
 $rowCol: #424242;
 
-.table_wrapper {
-  overflow: auto;
-  overflow-y: scroll;
-  font-weight: 500;
+.station_table {
   height: 90vh;
   min-height: 550px;
+  overflow: auto;
+  font-weight: 500;
 }
 
 .no-stations {
@@ -402,9 +401,8 @@ $rowCol: #424242;
   font-size: 1.5em;
 
   padding: 1em;
-  margin: 1em 0;
 
-  background: #333;
+  background: #1a1a1a;
 }
 
 table {

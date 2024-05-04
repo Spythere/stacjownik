@@ -20,7 +20,15 @@
       </div>
 
       <Donation :isModalOpen="isDonationModalOpen" @toggleModal="toggleDonationModal" />
-      <StationTable :stations="computedStationList" @toggleDonationModal="toggleDonationModal" />
+      <StationTable @toggleDonationModal="toggleDonationModal" />
+
+      <div class="stations-stats">
+        <hr style="margin: 0.5em 0" />
+        Średnia liczba rozkładów jazdy na dyżurnego: <b>{{ avgTimetableCount }}</b> | Dostępne
+        szlaki 1-torowe: <b>{{ oneWayTracks }}</b> (zelektr.) / <b>{{ 0 }}</b> (spalinowe) |
+        Dostępne szlaki 2-torowe: <b>{{ 0 }}</b> (zelektr.) / <b>{{ 0 }}</b> (spalinowe) | Otwarte
+        spawny: <b>{{ 0 }}</b> (PAS.) / <b>{{ 0 }}</b> (TOW.) / <b>{{ 0 }}</b> (LUZ.)
+      </div>
     </div>
   </section>
 </template>
@@ -56,8 +64,29 @@ export default defineComponent({
   },
 
   computed: {
-    computedStationList() {
-      return this.filterStore.filteredStationList;
+    avgTimetableCount() {
+      const scheduledTrainsTotal = this.store.activeSceneryList.reduce<number>((acc, sc) => {
+        if (sc.region != 'eu') return acc;
+
+        acc += sc.scheduledTrainCount.all;
+
+        return acc;
+      }, 0);
+
+      return (
+        this.store.activeSceneryList.length != 0
+          ? scheduledTrainsTotal / this.store.activeSceneryList.length
+          : 0
+      ).toFixed(2);
+    },
+
+    oneWayTracks() {
+      // return this.computedStationList
+      //   .filter((st) => st.onlineInfo && st.generalInfo?.routes.single)
+      //   .map((st) => st.generalInfo!.routes.single.map((r) => r.routeName))
+      //   .join(', ');
+
+      return [];
     }
   },
 
@@ -117,6 +146,11 @@ export default defineComponent({
   gap: 0.5em;
 
   margin-bottom: 0.5em;
+}
+
+.stations-stats {
+  text-align: center;
+  color: #ccc;
 }
 
 button.btn-donation {

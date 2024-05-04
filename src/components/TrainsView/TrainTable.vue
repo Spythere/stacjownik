@@ -30,11 +30,10 @@
 <script lang="ts">
 import { defineComponent, inject, PropType, Ref } from 'vue';
 import modalTrainMixin from '../../mixins/modalTrainMixin';
-import Train from '../../scripts/interfaces/Train';
 import { useMainStore } from '../../store/mainStore';
 import Loading from '../Global/Loading.vue';
 import TrainInfo from './TrainInfo.vue';
-import { Status } from '../../typings/common';
+import { Status, Train } from '../../typings/common';
 import { useApiStore } from '../../store/apiStore';
 
 export default defineComponent({

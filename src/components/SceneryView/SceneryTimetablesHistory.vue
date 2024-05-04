@@ -71,12 +71,10 @@
 import { defineComponent, PropType } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
 
-import Station from '../../scripts/interfaces/Station';
 import Loading from '../Global/Loading.vue';
 import listObserverMixin from '../../mixins/listObserverMixin';
-import { ActiveScenery } from '../../store/typings';
 import { API } from '../../typings/api';
-import { Status } from '../../typings/common';
+import { ActiveScenery, Station, Status } from '../../typings/common';
 import { useApiStore } from '../../store/apiStore';
 
 export default defineComponent({

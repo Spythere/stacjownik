@@ -49,8 +49,8 @@ import dateMixin from '../../../mixins/dateMixin';
 import routerMixin from '../../../mixins/routerMixin';
 import styleMixin from '../../../mixins/styleMixin';
 import StationStatusBadge from '../../Global/StationStatusBadge.vue';
-import { ActiveScenery } from '../../../store/typings';
 import donatorMixin from '../../../mixins/donatorMixin';
+import { ActiveScenery } from '../../../typings/common';
 
 export default defineComponent({
   mixins: [styleMixin, dateMixin, routerMixin, donatorMixin],

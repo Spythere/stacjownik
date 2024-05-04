@@ -20,11 +20,11 @@ import { computed, ComputedRef, defineComponent, provide, reactive, ref, watch }
 import TrainOptions from '../components/TrainsView/TrainOptions.vue';
 import TrainTable from '../components/TrainsView/TrainTable.vue';
 import modalTrainMixin from '../mixins/modalTrainMixin';
-import Train from '../scripts/interfaces/Train';
 import { useMainStore } from '../store/mainStore';
 import { TrainFilter, trainFilters } from '../components/TrainsView/typings';
 import { filteredTrainList } from '../managers/trainFilterManager';
 import TrainStats from '../components/TrainsView/TrainStats.vue';
+import { Train } from '../typings/common';
 
 export default defineComponent({
   components: {

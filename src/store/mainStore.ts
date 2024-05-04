@@ -1,18 +1,21 @@
 import { defineStore } from 'pinia';
-import Train from '../scripts/interfaces/Train';
 import { parseSpawns, getScheduledTrains, getStationTrains } from './utils';
 
-import { ActiveScenery, ScheduledTrain, StoreState } from './typings';
-
-import { Status } from '../typings/common';
-import Station from '../scripts/interfaces/Station';
+import {
+  ActiveScenery,
+  ScheduledTrain,
+  Station,
+  StationRoutes,
+  Status,
+  Train
+} from '../typings/common';
 import { useApiStore } from './apiStore';
-import { StationRoutes } from '../scripts/interfaces/StationRoutes';
+import { MainStoreState } from './typings';
 
-export const useMainStore = defineStore('store', {
+export const useMainStore = defineStore('mainStore', {
   state: () =>
     ({
-      region: { id: 'eu', value: 'PL1' },
+      region: { id: 'eu', value: 'PL1', name: 'PL1' },
 
       isOffline: false,
       isNewUpdate: false,
@@ -29,8 +32,11 @@ export const useMainStore = defineStore('store', {
       modalLastClickedTarget: null,
 
       mousePos: { x: 0, y: 0 },
-      popUpData: { key: null, content: '' }
-    }) as StoreState,
+      popUpData: { key: null, content: '' },
+
+      stations: [] as Station[],
+      trainsOnline: [] as Train[]
+    }) as MainStoreState,
 
   getters: {
     trainList(): Train[] {
@@ -96,6 +102,7 @@ export const useMainStore = defineStore('store', {
         });
     },
 
+    // computed active sceneries
     activeSceneryList(state): ActiveScenery[] {
       const apiStore = useApiStore();
 
@@ -156,8 +163,8 @@ export const useMainStore = defineStore('store', {
           scenery.dispatcherStatus == Status.ActiveDispatcher.NO_LIMIT
             ? Date.now() + 25500000
             : scenery.dispatcherStatus > 5
-            ? scenery.dispatcherStatus
-            : null;
+              ? scenery.dispatcherStatus
+              : null;
 
         list.push({
           name: scenery.stationName,
@@ -231,6 +238,7 @@ export const useMainStore = defineStore('store', {
       return allActiveSceneries;
     },
 
+    // computed station data
     stationList(): Station[] {
       const apiStore = useApiStore();
 
@@ -283,6 +291,30 @@ export const useMainStore = defineStore('store', {
           }
         };
       });
+    },
+
+    allStationInfo(): Station[] {
+      const onlineUnsavedStations = this.activeSceneryList
+        .filter(
+          (scenery) =>
+            this.stationList.findIndex((st) => st.name == scenery.name) == -1 &&
+            scenery.region == this.region.id
+        )
+        .map((os) => ({
+          name: os.name,
+          generalInfo: undefined,
+          onlineInfo: os
+        }));
+
+      return [
+        ...onlineUnsavedStations,
+        ...this.stationList.map((st) => ({
+          ...st,
+          onlineInfo: this.activeSceneryList.find(
+            (os) => os.name == st.name && os.region == this.region.id
+          )
+        }))
+      ];
     }
   }
 });

@@ -1,7 +1,7 @@
 import { Filter } from '../../components/StationsView/typings';
 import { Status } from '../../typings/common';
 import { HeadIdsTypes } from '../data/stationHeaderNames';
-import Station from '../interfaces/Station';
+import { Station } from '../../typings/common';
 
 const dispatcherStatusPriority = [
   Status.ActiveDispatcher.UNKNOWN,

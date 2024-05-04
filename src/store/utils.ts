@@ -1,6 +1,11 @@
-import Station from '../scripts/interfaces/Station';
-import Train from '../scripts/interfaces/Train';
-import { ScheduledTrain, StationTrain, StopStatus, TrainStop } from './typings';
+import {
+  TrainStop,
+  StopStatus,
+  Train,
+  ScheduledTrain,
+  Station,
+  StationTrain
+} from '../typings/common';
 
 export function getLocoURL(locoType: string): string {
   return `https://rj.td2.info.pl/dist/img/thumbnails/${

@@ -163,12 +163,12 @@
 import { defineComponent } from 'vue';
 import styleMixin from '../../mixins/styleMixin';
 import trainInfoMixin from '../../mixins/trainInfoMixin';
-import Train from '../../scripts/interfaces/Train';
 import ProgressBar from '../Global/ProgressBar.vue';
 import { useMainStore } from '../../store/mainStore';
 import { useApiStore } from '../../store/apiStore';
 import StockList from '../Global/StockList.vue';
 import modalTrainMixin from '../../mixins/modalTrainMixin';
+import { Train } from '../../typings/common';
 
 export default defineComponent({
   mixins: [trainInfoMixin, styleMixin, modalTrainMixin],

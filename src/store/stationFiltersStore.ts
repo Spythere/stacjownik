@@ -77,26 +77,8 @@ export const useStationFiltersStore = defineStore('stationFiltersStore', {
 
     filteredStationList: (state) => {
       const store = useMainStore();
-      const savedStationNames = store.stationList.map((s) => s.name);
 
-      const onlineUnsavedStations = store.activeSceneryList
-        .filter((os) => !savedStationNames.includes(os.name) && os.region == store.region.id)
-        .map((os) => ({
-          name: os.name,
-          generalInfo: undefined,
-          onlineInfo: os
-        }));
-
-      return [
-        ...onlineUnsavedStations,
-        ...store.stationList.map((station) => ({
-          ...station,
-          // append to 'onlineInfo' object for filtering legacy reasons - to optimize later (hopefully)
-          onlineInfo: store.activeSceneryList.find(
-            (os) => os.name == station.name && os.region == store.region.id
-          )
-        }))
-      ]
+      return store.allStationInfo
         .filter((station) => filterStations(station, state.filters))
         .sort((a, b) => sortStations(a, b, state.sorterActive));
     }

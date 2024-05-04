@@ -13,7 +13,7 @@ import { defineComponent } from 'vue';
 import modalTrainMixin from '../../mixins/modalTrainMixin';
 import TrainInfo from './TrainInfo.vue';
 import TrainSchedule from './TrainSchedule.vue';
-import Train from '../../scripts/interfaces/Train';
+import { Train } from '../../typings/common';
 
 export default defineComponent({
   components: { TrainInfo, TrainSchedule },
