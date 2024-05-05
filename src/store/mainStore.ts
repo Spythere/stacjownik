@@ -32,10 +32,7 @@ export const useMainStore = defineStore('mainStore', {
       modalLastClickedTarget: null,
 
       mousePos: { x: 0, y: 0 },
-      popUpData: { key: null, content: '' },
-
-      stations: [] as Station[],
-      trainsOnline: [] as Train[]
+      popUpData: { key: null, content: '' }
     }) as MainStoreState,
 
   getters: {

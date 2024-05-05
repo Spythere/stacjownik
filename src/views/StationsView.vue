@@ -22,13 +22,7 @@
       <Donation :isModalOpen="isDonationModalOpen" @toggleModal="toggleDonationModal" />
       <StationTable @toggleDonationModal="toggleDonationModal" />
 
-      <div class="stations-stats">
-        <hr style="margin: 0.5em 0" />
-        Średnia liczba rozkładów jazdy na dyżurnego: <b>{{ avgTimetableCount }}</b> | Dostępne
-        szlaki 1-torowe: <b>{{ oneWayTracks }}</b> (zelektr.) / <b>{{ 0 }}</b> (spalinowe) |
-        Dostępne szlaki 2-torowe: <b>{{ 0 }}</b> (zelektr.) / <b>{{ 0 }}</b> (spalinowe) | Otwarte
-        spawny: <b>{{ 0 }}</b> (PAS.) / <b>{{ 0 }}</b> (TOW.) / <b>{{ 0 }}</b> (LUZ.)
-      </div>
+      <StationsStats />
     </div>
   </section>
 </template>
@@ -40,54 +34,26 @@ import StationFilterCard from '../components/StationsView/StationFilterCard.vue'
 import { useStationFiltersStore } from '../store/stationFiltersStore';
 import { useMainStore } from '../store/mainStore';
 import Donation from '../components/Global/Donation.vue';
+import StationsStats from '../components/StationsView/StationsStats.vue';
 
 export default defineComponent({
   components: {
     StationTable,
     StationFilterCard,
+    StationsStats,
     Donation
   },
 
   data: () => ({
     filterCardOpen: false,
-    modalHidden: true,
-    STORAGE_KEY: 'options_saved',
-    focusedStationName: '',
-    filterStore: useStationFiltersStore(),
-    store: useMainStore(),
+    isDonationModalOpen: false,
 
-    isDonationModalOpen: false
+    filterStore: useStationFiltersStore(),
+    store: useMainStore()
   }),
 
   mounted() {
     this.filterStore.setupFilters();
-  },
-
-  computed: {
-    avgTimetableCount() {
-      const scheduledTrainsTotal = this.store.activeSceneryList.reduce<number>((acc, sc) => {
-        if (sc.region != 'eu') return acc;
-
-        acc += sc.scheduledTrainCount.all;
-
-        return acc;
-      }, 0);
-
-      return (
-        this.store.activeSceneryList.length != 0
-          ? scheduledTrainsTotal / this.store.activeSceneryList.length
-          : 0
-      ).toFixed(2);
-    },
-
-    oneWayTracks() {
-      // return this.computedStationList
-      //   .filter((st) => st.onlineInfo && st.generalInfo?.routes.single)
-      //   .map((st) => st.generalInfo!.routes.single.map((r) => r.routeName))
-      //   .join(', ');
-
-      return [];
-    }
   },
 
   methods: {
@@ -101,30 +67,6 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '../styles/variables.scss';
 @import '../styles/responsive.scss';
-
-@keyframes blinkAnim {
-  0%,
-  100% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0;
-  }
-}
-
-.indicator-anim {
-  &-enter-active,
-  &-leave-active {
-    transition: all 0.25s ease-in-out;
-  }
-
-  &-enter,
-  &-leave-to {
-    transform: translateY(100%);
-    opacity: 0;
-  }
-}
 
 .stations-view {
   position: relative;
@@ -146,11 +88,6 @@ export default defineComponent({
   gap: 0.5em;
 
   margin-bottom: 0.5em;
-}
-
-.stations-stats {
-  text-align: center;
-  color: #ccc;
 }
 
 button.btn-donation {

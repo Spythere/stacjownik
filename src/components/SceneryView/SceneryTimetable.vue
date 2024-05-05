@@ -405,13 +405,6 @@ export default defineComponent({
     width: 100%;
   }
 
-  .g-tooltip > .content {
-    z-index: 100;
-    color: white;
-
-    left: 110%;
-  }
-
   img {
     width: 1.1em;
   }

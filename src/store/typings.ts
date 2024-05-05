@@ -17,8 +17,6 @@ export interface MainStoreState {
   modalLastClickedTarget: EventTarget | null;
   mousePos: { x: number; y: number };
   popUpData: { key: PopUpType | null; content: string };
-  stations: Station[];
-  trainsOnline: Train[];
 }
 
 export interface StationJSONData {

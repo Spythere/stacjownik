@@ -29,11 +29,6 @@
             <img src="/images/icon-dispatcher.svg" alt="icon dispatcher" />
             <span class="text--primary">{{ onlineDispatchersCount }}</span>
 
-            <!-- <span class="g-tooltip">
-              <b class="text--primary">{{ factorU }}U</b>
-              <div class="content">Test</div>
-            </span> -->
-
             <span class="text--grayed"> / </span>
             <span class="text--primary">{{ onlineTrainsCount }}</span>
             <img src="/images/icon-train.svg" alt="icon train" />
@@ -103,12 +98,6 @@ export default defineComponent({
       return this.store.activeSceneryList.filter(
         (scenery) => scenery.region == this.store.region.id && scenery.dispatcherId != -1
       ).length;
-    },
-
-    factorU() {
-      return this.onlineDispatchersCount == 0
-        ? '-'
-        : (this.onlineTrainsCount / this.onlineDispatchersCount).toFixed(2);
     }
   },
   components: { StatusIndicator, Clock, RegionDropdown }
