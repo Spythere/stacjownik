@@ -54,9 +54,7 @@ const filterInitStates: Filter = {
   withoutActiveTimetables: false,
   maxVmax: 200,
   minVmax: 0,
-
   authors: '',
-
   onlineFromHours: 0
 };
 

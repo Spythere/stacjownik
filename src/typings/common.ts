@@ -1,4 +1,5 @@
 export type Availability = 'default' | 'unavailable' | 'nonPublic' | 'abandoned' | 'nonDefault';
+export type ScenerySpawnType = 'passenger' | 'freight' | 'loco' | 'all';
 
 export enum StopStatus {
   ARRIVING = 'arriving',
@@ -138,26 +139,29 @@ export interface ActiveScenery {
   region: string;
   maxUsers: number;
   currentUsers: number;
-  spawns: { spawnName: string; spawnLength: number; isElectrified: boolean }[];
+  spawns: ScenerySpawn[];
   dispatcherName: string;
   dispatcherRate: number;
   dispatcherId: number;
   dispatcherExp: number;
   dispatcherIsSupporter: boolean;
-
   dispatcherStatus: Status.ActiveDispatcher | number;
   dispatcherTimestamp: number | null;
-
   isOnline: boolean;
-
   stationTrains?: StationTrain[];
   scheduledTrains?: ScheduledTrain[];
-
   scheduledTrainCount: {
     all: number;
     confirmed: number;
     unconfirmed: number;
   };
+}
+
+export interface ScenerySpawn {
+  spawnName: string;
+  spawnLength: number;
+  isElectrified: boolean;
+  spawnType: ScenerySpawnType;
 }
 
 export interface StationTrain {

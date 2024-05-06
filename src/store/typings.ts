@@ -1,8 +1,5 @@
 import { API } from '../typings/api';
-import { Availability, Station, StationRoutesInfo, Status, Train } from '../typings/common';
-
-export const popupKeys = ['DonatorPopUp', 'TrainCommentsPopUp', 'VehiclePreviewPopUp'] as const;
-export type PopUpType = (typeof popupKeys)[number];
+import { Availability, StationRoutesInfo, Status } from '../typings/common';
 
 export interface MainStoreState {
   region: { id: string; value: string; name: string };
@@ -15,8 +12,6 @@ export interface MainStoreState {
   driverStatsStatus: Status.Data;
   chosenModalTrainId?: string;
   modalLastClickedTarget: EventTarget | null;
-  mousePos: { x: number; y: number };
-  popUpData: { key: PopUpType | null; content: string };
 }
 
 export interface StationJSONData {

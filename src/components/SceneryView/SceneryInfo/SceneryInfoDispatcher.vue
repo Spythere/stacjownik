@@ -14,7 +14,7 @@
       >
         <span
           class="text--donator"
-          v-if="isDonator(onlineScenery.dispatcherName)"
+          v-if="apiStore.donatorsData.includes(onlineScenery.dispatcherName)"
           :title="$t('donations.dispatcher-message')"
         >
           {{ onlineScenery.dispatcherName }}
@@ -49,11 +49,18 @@ import dateMixin from '../../../mixins/dateMixin';
 import routerMixin from '../../../mixins/routerMixin';
 import styleMixin from '../../../mixins/styleMixin';
 import StationStatusBadge from '../../Global/StationStatusBadge.vue';
-import donatorMixin from '../../../mixins/donatorMixin';
 import { ActiveScenery } from '../../../typings/common';
+import { useApiStore } from '../../../store/apiStore';
 
 export default defineComponent({
-  mixins: [styleMixin, dateMixin, routerMixin, donatorMixin],
+  mixins: [styleMixin, dateMixin, routerMixin],
+
+  data() {
+    return {
+      apiStore: useApiStore()
+    };
+  },
+
   props: {
     onlineScenery: {
       type: Object as PropType<ActiveScenery>,

@@ -123,8 +123,8 @@
                 <b
                   v-if="apiStore.donatorsData.includes(station.onlineInfo.dispatcherName)"
                   @click.stop="openDonationModal"
-                  data-popup-key="DonatorPopUp"
-                  :data-popup-content="$t('donations.dispatcher-message')"
+                  data-tooltip-type="DonatorTooltip"
+                  :data-tooltip-content="$t('donations.dispatcher-message')"
                 >
                   <img src="/images/icon-diamond.svg" alt="" />
                   {{ station.onlineInfo.dispatcherName }}
@@ -257,7 +257,12 @@
               <span>{{ station.onlineInfo?.dispatcherRate ?? '-' }}</span>
             </td>
 
-            <td class="station-spawns" :class="{ inactive: !station.onlineInfo }">
+            <td
+              class="station-spawns"
+              :class="{ inactive: !station.onlineInfo }"
+              data-tooltip-type="TestTooltip"
+              data-tooltip-content="test123"
+            >
               <span>{{ station.onlineInfo?.spawns.length ?? '-' }}</span>
             </td>
 
@@ -307,12 +312,12 @@ import { HeadIdsTypes, headIconsIds, headIds } from '../../scripts/data/stationH
 import StationStatusBadge from '../Global/StationStatusBadge.vue';
 import { Station, Status } from '../../typings/common';
 import { useApiStore } from '../../store/apiStore';
-import popupMixin from '../../mixins/popupMixin';
+import { useTooltipStore } from '../../store/tooltipStore';
 
 export default defineComponent({
   emits: ['toggleDonationModal'],
   components: { Loading, StationStatusBadge },
-  mixins: [styleMixin, dateMixin, popupMixin],
+  mixins: [styleMixin, dateMixin],
 
   data: () => ({
     headIconsIds,
@@ -333,6 +338,7 @@ export default defineComponent({
   setup() {
     const mainStore = useMainStore();
     const apiStore = useApiStore();
+    const tooltipStore = useTooltipStore();
 
     const stationFiltersStore = useStationFiltersStore();
 
@@ -340,7 +346,8 @@ export default defineComponent({
       Status: Status.Data,
       stationFiltersStore,
       mainStore,
-      apiStore
+      apiStore,
+      tooltipStore
     };
   },
 
@@ -364,7 +371,7 @@ export default defineComponent({
     openDonationModal(e: Event) {
       this.$emit('toggleDonationModal', true);
       this.mainStore.modalLastClickedTarget = e.target;
-      this.hidePopUp();
+      this.tooltipStore.hide();
     },
 
     openForumSite(e: Event, url: string | undefined) {

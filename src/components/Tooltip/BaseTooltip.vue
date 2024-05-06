@@ -1,24 +1,24 @@
 <template>
-  <div class="popup-content">
-    <span>{{ store.popUpData.content }}</span>
+  <div class="tooltip-content">
+    <span>{{ tooltipStore.content }}</span>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useMainStore } from '../../store/mainStore';
+import { useTooltipStore } from '../../store/tooltipStore';
 
 export default defineComponent({
   data() {
     return {
-      store: useMainStore()
+      tooltipStore: useTooltipStore()
     };
   }
 });
 </script>
 
 <style lang="scss" scoped>
-.popup-content {
+.tooltip-content {
   display: flex;
   justify-content: center;
   align-items: center;

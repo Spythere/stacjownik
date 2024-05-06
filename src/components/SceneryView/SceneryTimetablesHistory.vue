@@ -72,14 +72,13 @@ import { defineComponent, PropType } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
 
 import Loading from '../Global/Loading.vue';
-import listObserverMixin from '../../mixins/listObserverMixin';
 import { API } from '../../typings/api';
 import { ActiveScenery, Station, Status } from '../../typings/common';
 import { useApiStore } from '../../store/apiStore';
 
 export default defineComponent({
   name: 'SceneryTimetablesHistory',
-  mixins: [dateMixin, listObserverMixin],
+  mixins: [dateMixin],
   props: {
     station: {
       type: Object as PropType<Station>

@@ -179,7 +179,8 @@
       "addons": "SZCZEGÓŁY",
       "blockades": "BLOKADY LINIOWE",
       "status": "STATUS ONLINE",
-      "timetables": "AKTYWNE ROZKŁADY JAZDY"
+      "timetables": "AKTYWNE ROZKŁADY JAZDY",
+      "spawns": "OTWARTE SPAWNY"
     },
 
     "all-available": "WSZYSTKIE DOSTĘPNE",
@@ -222,7 +223,6 @@
     "semaphores": "KSZTAŁTOWA",
     "mixed": "MIESZANA",
     "historical": "HISTORYCZNA",
-
     "free": "WOLNA",
     "occupied": "ZAJĘTA",
 

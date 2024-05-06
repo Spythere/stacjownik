@@ -74,14 +74,13 @@ import { defineComponent, PropType } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
 import Loading from '../Global/Loading.vue';
 import styleMixin from '../../mixins/styleMixin';
-import listObserverMixin from '../../mixins/listObserverMixin';
 import { API } from '../../typings/api';
 import { ActiveScenery, Station, Status } from '../../typings/common';
 import { useApiStore } from '../../store/apiStore';
 
 export default defineComponent({
   name: 'SceneryDispatchersHistory',
-  mixins: [dateMixin, styleMixin, listObserverMixin],
+  mixins: [dateMixin, styleMixin],
   components: { Loading },
   props: {
     station: {

@@ -45,8 +45,8 @@
           <div class="train-driver">
             <b
               v-if="apiStore.donatorsData.includes(train.driverName)"
-              data-popup-key="DonatorPopUp"
-              :data-popup-content="$t('donations.driver-message')"
+              data-tooltip-type="DonatorTooltip"
+              :data-tooltip-content="$t('donations.driver-message')"
             >
               {{ train.driverName }}
               <img src="/images/icon-diamond.svg" alt="donator diamond icon" />
@@ -74,8 +74,8 @@
         <strong>{{ train.timetableData.route.replace('|', ' - ') }}</strong>
         <span
           v-if="getSceneriesWithComments(train.timetableData).length > 0"
-          data-popup-key="TrainCommentsPopUp"
-          :data-popup-content="`${$t('trains.timetable-comments')} (${getSceneriesWithComments(
+          data-tooltip-type="BaseTooltip"
+          :data-tooltip-content="`${$t('trains.timetable-comments')} (${getSceneriesWithComments(
             train.timetableData
           )})`"
         >

@@ -1,6 +1,6 @@
 <template>
   <div class="app_container">
-    <PopUp />
+    <Tooltip />
 
     <transition name="modal-anim">
       <keep-alive>
@@ -36,19 +36,20 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import axios from 'axios';
-import { version } from '.././package.json';
 
+import { version } from '.././package.json';
+import { Status } from './typings/common';
 import { useMainStore } from './store/mainStore';
-import popupMixin from './mixins/popupMixin';
+import { useApiStore } from './store/apiStore';
+import { useTooltipStore } from './store/tooltipStore';
 
 import Clock from './components/App/Clock.vue';
 import StatusIndicator from './components/App/StatusIndicator.vue';
 import AppHeader from './components/App/AppHeader.vue';
 import TrainModal from './components/TrainsView/TrainModal.vue';
+import Tooltip from './components/Tooltip/Tooltip.vue';
+
 import StorageManager from './managers/storageManager';
-import PopUp from './components/PopUp/PopUp.vue';
-import { useApiStore } from './store/apiStore';
-import { Status } from './typings/common';
 
 const STORAGE_VERSION_KEY = 'app_version';
 
@@ -58,15 +59,14 @@ export default defineComponent({
     StatusIndicator,
     AppHeader,
     TrainModal,
-    PopUp
+    Tooltip
   },
-
-  mixins: [popupMixin],
 
   data: () => ({
     VERSION: version,
     store: useMainStore(),
     apiStore: useApiStore(),
+    tooltipStore: useTooltipStore(),
 
     currentLang: 'pl',
     releaseURL: '',
@@ -80,7 +80,7 @@ export default defineComponent({
   },
 
   async mounted() {
-    window.addEventListener('mousemove', (e: MouseEvent) => this.handlePopUpEvents(e));
+    window.addEventListener('mousemove', (e: MouseEvent) => this.tooltipStore.handle(e));
   },
 
   methods: {
@@ -140,27 +140,6 @@ export default defineComponent({
       this.store.isOffline = false;
 
       this.apiStore.connectToAPI();
-    },
-
-    handlePopUpEvents(e: MouseEvent) {
-      const targetEl = e
-        .composedPath()
-        .find((p) => p instanceof HTMLElement && p.getAttribute('data-popup-key'));
-
-      if (!targetEl || !(targetEl instanceof HTMLElement)) {
-        if (this.store.popUpData.key != null) this.hidePopUp();
-
-        return;
-      }
-
-      const popupComponentKey = targetEl.getAttribute('data-popup-key');
-      const popupContent = targetEl.getAttribute('data-popup-content');
-
-      if (popupComponentKey && popupContent) this.showPopUp(e, popupComponentKey, popupContent);
-      else if (this.store.popUpData.key != null) this.hidePopUp();
-
-      this.store.mousePos.x = e.pageX;
-      this.store.mousePos.y = e.pageY;
     },
 
     changeLang(lang: string) {

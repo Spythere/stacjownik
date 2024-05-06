@@ -1,25 +1,25 @@
 <template>
-  <div class="popup-content">
+  <div class="tooltip-content">
     <img src="/images/icon-diamond.svg" alt="" />
-    <span>{{ store.popUpData.content }}</span>
+    <span>{{ tooltipStore.content }}</span>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useMainStore } from '../../store/mainStore';
+import { useTooltipStore } from '../../store/tooltipStore';
 
 export default defineComponent({
   data() {
     return {
-      store: useMainStore()
+      tooltipStore: useTooltipStore()
     };
   }
 });
 </script>
 
 <style lang="scss" scoped>
-.popup-content {
+.tooltip-content {
   gap: 0.5em;
 
   padding: 0.5em;

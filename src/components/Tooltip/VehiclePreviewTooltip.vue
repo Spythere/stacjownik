@@ -1,5 +1,5 @@
 <template>
-  <div class="popup-content">
+  <div class="tooltip-content">
     <div v-if="imageState == 'loading'" class="loading-info">
       {{ $t('vehicle-preview.loading') }}
     </div>
@@ -7,29 +7,29 @@
     <div v-if="imageState == 'error'">{{ $t('vehicle-preview.error') }}</div>
 
     <img
-      v-if="store.popUpData.key"
+      v-if="tooltipStore.type"
       @load="onImageLoad"
       @error="onImageError"
       width="300"
       height="176"
       class="rounded-md w-full h-auto"
-      :src="`https://static.spythere.eu/images/${store.popUpData.content}--300px.jpg`"
+      :src="`https://static.spythere.eu/images/${tooltipStore.content}--300px.jpg`"
     />
 
     <div class="vehicle-name" v-if="imageState != 'error'">
-      {{ store.popUpData.content.replace(/_/g, ' ') }}
+      {{ tooltipStore.content.replace(/_/g, ' ') }}
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useMainStore } from '../../store/mainStore';
+import { useTooltipStore } from '../../store/tooltipStore';
 
 export default defineComponent({
   data() {
     return {
-      store: useMainStore(),
+      tooltipStore: useTooltipStore(),
       imageState: 'loading'
     };
   },
@@ -53,9 +53,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.popup-content {
-  // min-w-[300px] min-h-[200px] p-2 bg-slate-800 rounded-md
-
+.tooltip-content {
   width: 300px;
   min-height: 200px;
   background-color: #333;

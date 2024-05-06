@@ -24,7 +24,7 @@
       </strong>
 
       <strong
-        v-if="isDonator(timetable.driverName)"
+        v-if="apiStore.donatorsData.includes(timetable.driverName)"
         class="text--donator"
         :title="$t('donations.driver-message')"
       >
@@ -57,8 +57,8 @@
           !timetable.terminated
             ? $t('journal.timetable-active')
             : timetable.fulfilled
-            ? $t('journal.timetable-fulfilled')
-            : `${$t('journal.timetable-abandoned')} ${localeTime(timetable.endDate, $i18n.locale)}`
+              ? $t('journal.timetable-fulfilled')
+              : `${$t('journal.timetable-abandoned')} ${localeTime(timetable.endDate, $i18n.locale)}`
         }}
       </b>
 
@@ -81,10 +81,16 @@ import { API } from '../../../typings/api';
 import dateMixin from '../../../mixins/dateMixin';
 import modalTrainMixin from '../../../mixins/modalTrainMixin';
 import styleMixin from '../../../mixins/styleMixin';
-import donatorMixin from '../../../mixins/donatorMixin';
+import { useApiStore } from '../../../store/apiStore';
 
 export default defineComponent({
-  mixins: [dateMixin, modalTrainMixin, styleMixin, donatorMixin],
+  mixins: [dateMixin, modalTrainMixin, styleMixin],
+
+  data() {
+    return {
+      apiStore: useApiStore()
+    };
+  },
 
   props: {
     timetable: {

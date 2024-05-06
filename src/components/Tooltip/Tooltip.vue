@@ -1,29 +1,30 @@
 <template>
-  <div class="popup" v-show="store.popUpData.key" ref="preview">
-    <component v-if="store.popUpData.key" :is="store.popUpData.key" />
+  <div class="tooltip" v-show="tooltipStore.type" ref="preview">
+    <component v-if="tooltipStore.type" :is="tooltipStore.type" />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import DonatorPopUp from './DonatorPopUp.vue';
-import TrainCommentsPopUp from './TrainCommentsPopUp.vue';
-import VehiclePreviewPopUp from './VehiclePreviewPopUp.vue';
-import { useMainStore } from '../../store/mainStore';
+import { useTooltipStore } from '../../store/tooltipStore';
+import DonatorTooltip from './DonatorTooltip.vue';
+import VehiclePreviewTooltip from './VehiclePreviewTooltip.vue';
+import BaseTooltip from './BaseTooltip.vue';
 
 export default defineComponent({
-  components: { DonatorPopUp, TrainCommentsPopUp, VehiclePreviewPopUp },
+  components: { DonatorTooltip, VehiclePreviewTooltip, BaseTooltip },
 
   data() {
     return {
-      store: useMainStore()
+      tooltipStore: useTooltipStore()
     };
   },
 
   watch: {
-    'store.mousePos': {
+    'tooltipStore.mousePos': {
       deep: true,
-      handler(val: typeof this.store.mousePos) {
+      // [x, y]
+      handler(val: [number, number]) {
         this.$nextTick(() => {
           const previewEl = this.$refs['preview'] as HTMLElement;
           const clientWidth = document.body.clientWidth;
@@ -35,21 +36,21 @@ export default defineComponent({
           if (clientWidth < 500) {
             previewEl.style.left = '50%';
             translateX = '-50%';
-          } else if (val.x <= boxWidth / 2) {
+          } else if (val[0] <= boxWidth / 2) {
             previewEl.style.left = '0';
             translateX = '0px';
-          } else if (val.x >= clientWidth - boxWidth / 2) {
+          } else if (val[0] >= clientWidth - boxWidth / 2) {
             previewEl.style.left = '100%';
             translateX = '-100%';
           } else {
-            previewEl.style.left = `${val.x}px`;
+            previewEl.style.left = `${val[0]}px`;
             translateX = '-50%';
           }
 
-          previewEl.style.top = `${val.y}px`;
+          previewEl.style.top = `${val[1]}px`;
 
           const isOutside =
-            val.y + previewEl.getBoundingClientRect().height + 30 >=
+            val[1] + previewEl.getBoundingClientRect().height + 30 >=
             window.innerHeight + window.scrollY;
 
           if (isOutside) translateY = 'calc(-100% - 30px)';
@@ -62,7 +63,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.popup {
+.tooltip {
   position: absolute;
   z-index: 250;
   max-width: 400px;
