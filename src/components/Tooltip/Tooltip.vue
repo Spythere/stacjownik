@@ -10,9 +10,10 @@ import { useTooltipStore } from '../../store/tooltipStore';
 import DonatorTooltip from './DonatorTooltip.vue';
 import VehiclePreviewTooltip from './VehiclePreviewTooltip.vue';
 import BaseTooltip from './BaseTooltip.vue';
+import SpawnsTooltip from './SpawnsTooltip.vue';
 
 export default defineComponent({
-  components: { DonatorTooltip, VehiclePreviewTooltip, BaseTooltip },
+  components: { DonatorTooltip, VehiclePreviewTooltip, BaseTooltip, SpawnsTooltip },
 
   data() {
     return {
@@ -30,7 +31,7 @@ export default defineComponent({
           const clientWidth = document.body.clientWidth;
           const boxWidth = previewEl.getBoundingClientRect().width;
 
-          let translateX = '0px',
+          let translateX = '0',
             translateY = '30px';
 
           if (clientWidth < 500) {

@@ -8,7 +8,7 @@
 
     <transition-group name="spawns-anim" tag="ul">
       <li
-        class="badge spawn badge-none"
+        class="badge badge-none"
         v-if="!onlineScenery || onlineScenery.spawns.length == 0"
         key="no-spawns"
       >
@@ -16,13 +16,13 @@
       </li>
 
       <li
-        class="badge spawn"
+        class="badge spawn-badge"
         v-for="(spawn, i) in sortedSpawns"
         :key="spawn.spawnName + onlineScenery?.dispatcherName + i"
         :data-electrified="spawn.isElectrified"
       >
-        <span class="spawn_name">{{ spawn.spawnName }}</span>
-        <span class="spawn_length">{{ spawn.spawnLength }}m</span>
+        <span class="name">{{ spawn.spawnName }}</span>
+        <span class="length">{{ spawn.spawnLength }}m</span>
       </li>
     </transition-group>
   </section>
@@ -57,19 +57,6 @@ export default defineComponent({
 
 ul {
   position: relative;
-}
-
-.spawn {
-  color: white;
-
-  &_length {
-    background-color: #404040;
-    color: #cfcfcf;
-  }
-
-  &[data-electrified='true'] > &_name {
-    background-color: #007599;
-  }
 }
 
 .spawns-anim {

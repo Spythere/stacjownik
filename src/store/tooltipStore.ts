@@ -2,7 +2,12 @@ import { defineStore } from 'pinia';
 
 const isTooltip = (v: any): v is TooltipType => tooltipKeys.includes(v);
 
-export const tooltipKeys = ['DonatorTooltip', 'BaseTooltip', 'VehiclePreviewTooltip'] as const;
+export const tooltipKeys = [
+  'DonatorTooltip',
+  'BaseTooltip',
+  'VehiclePreviewTooltip',
+  'SpawnsTooltip'
+] as const;
 
 export type TooltipType = (typeof tooltipKeys)[number];
 

@@ -260,8 +260,8 @@
             <td
               class="station-spawns"
               :class="{ inactive: !station.onlineInfo }"
-              data-tooltip-type="TestTooltip"
-              data-tooltip-content="test123"
+              data-tooltip-type="SpawnsTooltip"
+              :data-tooltip-content="JSON.stringify(station.onlineInfo?.spawns ?? [])"
             >
               <span>{{ station.onlineInfo?.spawns.length ?? '-' }}</span>
             </td>
@@ -302,7 +302,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import { defineComponent } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
 import styleMixin from '../../mixins/styleMixin';
 import { useStationFiltersStore } from '../../store/stationFiltersStore';
@@ -358,6 +358,7 @@ export default defineComponent({
       if (!station) return;
 
       this.lastSelectedStationName = station.name;
+      this.tooltipStore.hide();
 
       this.$router.push({
         name: 'SceneryView',
