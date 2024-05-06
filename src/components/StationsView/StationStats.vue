@@ -1,26 +1,27 @@
 <template>
-  <div class="stations-stats">
+  <div class="station-stats">
     <div class="separator" />
     <div>
-      Współczynnik Ugla
+      {{ $t('station-stats.u-factor') }}
       <a
         href="https://td2.info.pl/dyskusje/wspolczynnik-ugla-czy-to-ma-sens/msg81011/#msg81011"
         target="_blank"
-        data-tooltip="(?) Współczynnik ruchu na serwerze (liczba maszynistów online dzielona na liczbę dyżurnych ruchu)"
+        :data-tooltip="$t('station-stats.u-factor-tooltip')"
         >(?)</a
       >:
       <b :style="calculateFactorStyle()">
         {{ uFactor.toFixed(2) }}
       </b>
-      | Średnia liczba rozkładów jazdy na dyżurnego:
+      | {{ $t('station-stats.avg-timetable-count') }}
       <b>{{ avgTimetableCount.toFixed(2) }}</b>
     </div>
     <div>
-      Dostępne szlaki 1-torowe:
-      <b>{{ trackCount.oneWayElectric }}</b> (zelektr.) /
-      <b>{{ trackCount.oneWayOther }}</b> (niezelektr.) | Dostępne szlaki 2-torowe:
-      <b>{{ trackCount.twoWayElectric }}</b> (zelektr.) /
-      <b>{{ trackCount.twoWayOther }}</b> (niezelektr.) | Otwarte spawny:
+      {{ $t('station-stats.single-track-count') }}
+      <b>{{ trackCount.oneWayElectric }}</b> {{ $t('station-stats.electrified') }} /
+      <b>{{ trackCount.oneWayOther }}</b> {{ $t('station-stats.not-electrified') }} |
+      {{ $t('station-stats.double-track-count') }} <b>{{ trackCount.twoWayElectric }}</b>
+      {{ $t('station-stats.electrified') }} / <b>{{ trackCount.twoWayOther }}</b>
+      {{ $t('station-stats.not-electrified') }} | {{ $t('station-stats.open-spawns') }}
       <b>{{ spawnCount.passenger }}</b> - PAS / <b>{{ spawnCount.freight }}</b> - TOW /
       <b>{{ spawnCount.loco }}</b> - LUZ / <b>{{ spawnCount.all }}</b> - ALL
     </div>
@@ -127,7 +128,7 @@ export default defineComponent({
   background-color: #ddd;
 }
 
-.stations-stats {
+.station-stats {
   text-align: center;
   color: #ddd;
 }

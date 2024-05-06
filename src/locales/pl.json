@@ -289,6 +289,16 @@
     "no-stations": "Brak stacji do wyświetlenia!",
     "scenery-search": "Wyszukaj scenerię..."
   },
+  "station-stats": {
+    "u-factor": "Współczynnik Ugla: ",
+    "u-factor-tooltip": "(?) Współczynnik ruchu na serwerze (liczba maszynistów online dzielona na liczbę dyżurnych ruchu)",
+    "avg-timetable-count": "Średnia liczba rozkładów jazdy na dyżurnego: ",
+    "single-track-count": "Dostępne szlaki jednotorowe: ",
+    "double-track-count": "Dostępne szlaki dwutorowe: ",
+    "electrified": "(zelektr.)",
+    "not-electrified": "(niezelektr.)",
+    "open-spawns": "Otwarte spawny: "
+  },
   "trains": {
     "no-trains": "Brak pociągów do wyświetlenia!",
     "loading": "Pobieranie danych o pociągach...",

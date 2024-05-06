@@ -22,7 +22,7 @@
       <Donation :isModalOpen="isDonationModalOpen" @toggleModal="toggleDonationModal" />
       <StationTable @toggleDonationModal="toggleDonationModal" />
 
-      <StationsStats />
+      <StationStats />
     </div>
   </section>
 </template>
@@ -34,13 +34,13 @@ import StationFilterCard from '../components/StationsView/StationFilterCard.vue'
 import { useStationFiltersStore } from '../store/stationFiltersStore';
 import { useMainStore } from '../store/mainStore';
 import Donation from '../components/Global/Donation.vue';
-import StationsStats from '../components/StationsView/StationsStats.vue';
+import StationStats from '../components/StationsView/StationStats.vue';
 
 export default defineComponent({
   components: {
     StationTable,
     StationFilterCard,
-    StationsStats,
+    StationStats,
     Donation
   },
 

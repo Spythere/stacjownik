@@ -296,6 +296,16 @@
     "no-stations": "No stations to show here!",
     "scenery-search": "Search for scenery..."
   },
+  "station-stats": {
+    "u-factor": "U-factor: ",
+    "u-factor-tooltip": "(?) Current server traffic factor (driver count divided by dispatcher count)",
+    "avg-timetable-count": "Average timetable count for one dispatcher: ",
+    "single-track-count": "Available single track routes: ",
+    "double-track-count": "Available double track routes: ",
+    "electrified": "(electrified)",
+    "not-electrified": "(not electr.)",
+    "open-spawns": "Open spawns: "
+  },
   "trains": {
     "no-trains": "No trains to show here!",
     "loading": "Loading train data...",
