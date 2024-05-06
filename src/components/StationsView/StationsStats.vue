@@ -42,7 +42,7 @@ export default defineComponent({
     calculateFactorStyle() {
       if (this.uFactor == 0) return '';
 
-      const norm = this.uFactor == 0 ? 1 : Math.max(Math.min(1 / this.uFactor / 2, 1), 0);
+      const norm = this.uFactor == 0 ? 1 : Math.max(Math.min(this.uFactor / 2, 1), 0);
       const lerp = 120 * norm;
 
       return `color: hsl(${lerp}, 100%, 60%)`;
