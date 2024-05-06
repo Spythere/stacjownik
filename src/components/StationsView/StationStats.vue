@@ -107,7 +107,7 @@ export default defineComponent({
           scenery.spawns.forEach((spawn) => {
             if (/EZT|POS|OSOB/i.test(spawn.spawnName)) acc['passenger'] += 1;
             if (/TOW/i.test(spawn.spawnName)) acc['freight'] += 1;
-            if (/LUZ/i.test(spawn.spawnName)) acc['loco'] += 1;
+            if (/LUZ|SM/i.test(spawn.spawnName)) acc['loco'] += 1;
             if (/ALL/i.test(spawn.spawnName)) acc['all'] += 1;
           });
 
