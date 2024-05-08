@@ -77,15 +77,15 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-::v-deep h1 {
+::v-deep(h1) {
   text-align: center;
 }
 
-::v-deep h2 {
+::v-deep(h2) {
   padding: 0.25em 0;
 }
 
-::v-deep ul {
+::v-deep(ul) {
   list-style: inside;
   padding: 0.5em;
   line-height: 1.5em;
