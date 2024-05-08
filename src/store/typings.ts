@@ -4,7 +4,7 @@ import { Availability, StationRoutesInfo, Status } from '../typings/common';
 export interface MainStoreState {
   region: { id: string; value: string; name: string };
   isOffline: boolean;
-  isNewUpdate: boolean;
+  appUpdate: { version: string; changelog: string; releaseURL: string } | null;
   dispatcherStatsName: string;
   dispatcherStatsData?: API.DispatcherStats.Response;
   driverStatsName: string;

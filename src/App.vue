@@ -1,5 +1,10 @@
 <template>
   <div class="app_container">
+    <UpdateModal
+      :update-modal-open="updateModalOpen"
+      @toggle-modal="() => (updateModalOpen = false)"
+    />
+
     <Tooltip />
 
     <transition name="modal-anim">
@@ -22,7 +27,10 @@
       &copy;
       <a href="https://td2.info.pl/profile/?u=20777" target="_blank">Spythere</a>
       {{ new Date().getUTCFullYear() }} |
-      <a :href="releaseURL" target="_blank">v{{ VERSION }}{{ isOnProductionHost ? '' : 'dev' }}</a>
+      <a :href="store.appUpdate?.releaseURL" target="_blank"
+        >v{{ VERSION }}{{ isOnProductionHost ? '' : 'dev' }}</a
+      >
+
       <br />
       <a href="https://discord.gg/x2mpNN3svk">
         <img src="/images/icon-discord.png" alt="" />&nbsp;<b>{{ $t('footer.discord') }}</b>
@@ -48,6 +56,7 @@ import StatusIndicator from './components/App/StatusIndicator.vue';
 import AppHeader from './components/App/AppHeader.vue';
 import TrainModal from './components/TrainsView/TrainModal.vue';
 import Tooltip from './components/Tooltip/Tooltip.vue';
+import UpdateModal from './components/App/UpdateModal.vue';
 
 import StorageManager from './managers/storageManager';
 
@@ -59,6 +68,7 @@ export default defineComponent({
     StatusIndicator,
     AppHeader,
     TrainModal,
+    UpdateModal,
     Tooltip
   },
 
@@ -68,8 +78,9 @@ export default defineComponent({
     apiStore: useApiStore(),
     tooltipStore: useTooltipStore(),
 
+    updateModalOpen: false,
+
     currentLang: 'pl',
-    releaseURL: '',
     isOnProductionHost: location.hostname == 'stacjownik-td2.web.app',
 
     nextUpdateTime: 0
@@ -86,7 +97,6 @@ export default defineComponent({
   methods: {
     init() {
       this.loadLang();
-      this.setReleaseURL();
       this.setupOfflineHandling();
       this.checkAppVersion();
 
@@ -104,20 +114,29 @@ export default defineComponent({
       window.requestAnimationFrame(this.update);
     },
 
-    checkAppVersion() {
-      if (import.meta.env.DEV) {
-        this.store.isNewUpdate = true;
-
-        return;
-      }
-
+    async checkAppVersion() {
       const storageVersion = StorageManager.getStringValue(STORAGE_VERSION_KEY);
 
-      if (storageVersion === undefined || storageVersion != version) {
-        this.store.isNewUpdate = true;
+      try {
+        const releaseData = await (
+          await axios.get('https://api.github.com/repos/Spythere/stacjownik/releases/latest')
+        ).data;
 
-        StorageManager.setStringValue(STORAGE_VERSION_KEY, version);
+        if (!releaseData) return;
+
+        this.store.appUpdate = {
+          version,
+          changelog: releaseData.body,
+          releaseURL: releaseData.html_url
+        };
+
+        this.updateModalOpen =
+          storageVersion != version || import.meta.env.VITE_UPDATE_TEST === 'test';
+      } catch (error) {
+        console.error(`Wystąpił błąd podczas pobierania danych z API GitHuba: ${error}`);
       }
+
+      StorageManager.setStringValue(STORAGE_VERSION_KEY, version);
     },
 
     setupOfflineHandling() {
@@ -147,21 +166,6 @@ export default defineComponent({
       this.currentLang = lang;
 
       StorageManager.setStringValue('lang', lang);
-    },
-
-    async setReleaseURL() {
-      try {
-        const releaseData = await (
-          await axios.get('https://api.github.com/repos/Spythere/stacjownik/releases/latest')
-        ).data;
-
-        if (!releaseData) return;
-
-        this.releaseURL = releaseData.html_url;
-      } catch (error) {
-        console.error(`Wystąpił błąd podczas pobierania danych z API GitHuba: ${error}`);
-        return;
-      }
     },
 
     loadLang() {

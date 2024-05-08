@@ -1,21 +1,14 @@
 <template>
-  <AnimatedModal :is-open="mainStore.isNewUpdate" @toggle-modal="toggleModal">
+  <AnimatedModal :is-open="updateModalOpen" @toggle-modal="toggleModal">
     <div class="modal_content">
       <div>
         <h1 style="margin-bottom: 0.5em">{{ $t('update.title') }}</h1>
-        <h2 class="text--primary">{{ $t('update.version', [version]) }}</h2>
-        <hr class="separator" />
       </div>
 
-      <div class="features-list">
-        <h2>Nowości i zmiany:</h2>
-        <ul>
-          <li v-for="content in localeChangesArray" :key="content">{{ content }}</li>
-        </ul>
-      </div>
+      <div class="features-body" v-html="htmlChangelog"></div>
 
       <div class="modal_actions">
-        <button class="btn--action">Przyjąłem!</button>
+        <button class="btn--action" @click="toggleModal">Przyjąłem!</button>
 
         <p>Ten changelog będzie zawsze dostępny po kliknięciu numeru wersji w stopce strony!</p>
 
@@ -39,10 +32,23 @@
 import { defineComponent } from 'vue';
 import { useMainStore } from '../../store/mainStore';
 import { version } from '../../../package.json';
+import { Converter } from 'showdown';
+
 import AnimatedModal from '../Global/AnimatedModal.vue';
+
+const converter = new Converter();
 
 export default defineComponent({
   components: { AnimatedModal },
+
+  props: {
+    updateModalOpen: {
+      type: Boolean,
+      required: true
+    }
+  },
+
+  emits: ['toggleModal'],
 
   data() {
     return {
@@ -52,8 +58,13 @@ export default defineComponent({
   },
 
   computed: {
-    localeChangesArray() {
-      return this.$t('update.content').split('\n');
+    htmlChangelog() {
+      if (this.mainStore.appUpdate == null) return '';
+
+      const x = converter.makeHtml(this.mainStore.appUpdate.changelog);
+      console.log(x);
+
+      return x;
     }
   },
 
@@ -66,10 +77,22 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.modal_content {
-  font-size: 1.2em;
+::v-deep h1 {
   text-align: center;
-  padding: 1em;
+}
+
+::v-deep h2 {
+  padding: 0.25em 0;
+}
+
+::v-deep ul {
+  list-style: inside;
+  padding: 0.5em;
+  line-height: 1.5em;
+}
+
+.modal_content {
+  padding: 2em;
   height: 80vh;
   min-height: 550px;
 
@@ -85,49 +108,9 @@ hr.separator {
   background-color: #fff;
 }
 
-.features-list {
-  margin-top: 0.5em;
-  overflow: auto;
-
-  ul {
-    text-align: left;
-    list-style: '\21D2  ';
-    padding: 1em;
-  }
-
-  li {
-    margin: 0.5em 0;
-  }
-}
-
 .modal_actions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5em;
-
-  button {
-    font-weight: bold;
-    padding: 0.35em;
-  }
-
-  p {
-    font-size: 0.9em;
-  }
-}
-
-.actions-checkboxes {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-
-  gap: 1em;
-
-  label {
-    font-size: 0.9em;
-  }
-
-  label > input {
-    margin-right: 0.5em;
-  }
 }
 </style>

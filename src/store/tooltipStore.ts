@@ -22,8 +22,6 @@ export const useTooltipStore = defineStore('tooltipStore', {
     show(_e: MouseEvent, type: string, value?: string) {
       if (!isTooltip(type)) return;
 
-      console.log(type, value);
-
       this.type = type;
       this.content = value ?? '';
     },
