@@ -125,7 +125,7 @@ export default defineComponent({
   width: 100%;
   height: 2px;
   margin: 0.5em 0;
-  background-color: #ddd;
+  background-color: #aaa;
 }
 
 .station-stats {

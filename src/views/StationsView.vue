@@ -21,7 +21,6 @@
 
       <Donation :isModalOpen="isDonationModalOpen" @toggleModal="toggleDonationModal" />
       <StationTable @toggleDonationModal="toggleDonationModal" />
-
       <StationStats />
     </div>
   </section>
