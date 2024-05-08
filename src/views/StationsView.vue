@@ -19,7 +19,7 @@
         </button>
       </div>
 
-      <Donation :isModalOpen="isDonationModalOpen" @toggleModal="toggleDonationModal" />
+      <DonationModal :isModalOpen="isDonationModalOpen" @toggleModal="toggleDonationModal" />
       <StationTable @toggleDonationModal="toggleDonationModal" />
       <StationStats />
     </div>
@@ -32,7 +32,7 @@ import StationTable from '../components/StationsView/StationTable.vue';
 import StationFilterCard from '../components/StationsView/StationFilterCard.vue';
 import { useStationFiltersStore } from '../store/stationFiltersStore';
 import { useMainStore } from '../store/mainStore';
-import Donation from '../components/Global/Donation.vue';
+import DonationModal from '../components/Global/DonationModal.vue';
 import StationStats from '../components/StationsView/StationStats.vue';
 
 export default defineComponent({
@@ -40,7 +40,7 @@ export default defineComponent({
     StationTable,
     StationFilterCard,
     StationStats,
-    Donation
+    DonationModal
   },
 
   data: () => ({

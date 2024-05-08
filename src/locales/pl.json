@@ -28,10 +28,9 @@
   },
   "update": {
     "title": "Aktualizacja Stacjownika!",
-    "version": "Wersja {0}",
-    "confirm-button": "UPDATE NOW",
-    "later-button": "LATER",
-    "content": "dymki kontekstowe po najechaniu kursorem na m.in. sponsorów projektu i uwagi eksploatacyjne\npodgląd pojazdu po najechaniu kursorem na jego miniaturkę w karcie aktywnego rozkładu jazdy oraz dzienniku RJ\nodnośnik do historii RJ maszynisty w widoku karty aktywnego rozkładu jazdy\nodnośnik do karty aktywnego rozkładu jazdy maszynisty w dzienniku (dostępny tylko dla pociągów online)\nnowa karta ze zmianami w aktualizacji"
+    "confirm": "PRZYJĄŁEM!",
+    "info-1": "Ten changelog będzie zawsze dostępny po kliknięciu numeru wersji w stopce strony",
+    "info-2": "Pełny changelog dostępny na <a href='https://github.com/Spythere/stacjownik' target='_blank'>GitHubie projektu</a>"
   },
   "app": {
     "sceneries": "SCENERIE",

@@ -27,9 +27,9 @@
       &copy;
       <a href="https://td2.info.pl/profile/?u=20777" target="_blank">Spythere</a>
       {{ new Date().getUTCFullYear() }} |
-      <a :href="store.appUpdate?.releaseURL" target="_blank"
-        >v{{ VERSION }}{{ isOnProductionHost ? '' : 'dev' }}</a
-      >
+      <button class="btn--text" @click="() => (updateModalOpen = true)">
+        v{{ VERSION }}{{ isOnProductionHost ? '' : 'dev' }}
+      </button>
 
       <br />
       <a href="https://discord.gg/x2mpNN3svk">
@@ -243,9 +243,14 @@ export default defineComponent({
 }
 
 // FOOTER
-footer.app_footer {
+.app_footer {
   max-width: 100%;
   padding: 0.5em;
+
+  button {
+    display: inline-block;
+    padding: 0.1em;
+  }
 
   img {
     width: 1.1em;

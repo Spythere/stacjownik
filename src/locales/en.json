@@ -27,11 +27,10 @@
     "SKR": "Train with exceeded gauge"
   },
   "update": {
-    "title": "Stacjownik app update!",
-    "version": "Version {0}",
-    "confirm-button": "UPDATE NOW",
-    "later-button": "LATER",
-    "content": "context tooltips when hovering over project sponsors and timetable comment warnings\nvehicle image preview when hovering over its thumbnail in the active timetable card view and timetable journal\nlink to the driver's timetable history in the active timetable card view\nlink to the driver's active timetable card view in the timetable journal (available for online trains only)\nnew update card with version changelog"
+    "title": "Stacjownik update!",
+    "confirm": "ROGER THAT!",
+    "info-1": "This changelog will be available to see once again after clicking the version number in the footer",
+    "info-2": "The full app changelog available on <a href='https://github.com/Spythere/stacjownik' target='_blank'>the project's GitHub</a>"
   },
   "app": {
     "sceneries": "SCENERIES",

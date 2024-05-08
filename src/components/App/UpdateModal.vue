@@ -1,29 +1,19 @@
 <template>
   <AnimatedModal :is-open="updateModalOpen" @toggle-modal="toggleModal">
-    <div class="modal_content">
-      <div>
-        <h1 style="margin-bottom: 0.5em">{{ $t('update.title') }}</h1>
-      </div>
+    <div class="modal-content">
+      <h1 style="margin-bottom: 0.5em">🚀 {{ $t('update.title') }}</h1>
 
       <div class="features-body" v-html="htmlChangelog"></div>
 
-      <div class="modal_actions">
-        <button class="btn--action" @click="toggleModal">Przyjąłem!</button>
+      <button class="btn btn--action" ref="confirm-btn" @click="toggleModal">
+        {{ $t('update.confirm') }}
+      </button>
 
-        <p>Ten changelog będzie zawsze dostępny po kliknięciu numeru wersji w stopce strony!</p>
-
-        <!-- <div class="actions-checkboxes">
-          <label>
-            <input type="checkbox" />
-            <span>nie pokazuj dla przyszłych aktualizacji</span>
-          </label>
-
-          <label>
-            <input type="checkbox" />
-            <span>nie pokazuj dla przyszłych aktualizacji</span>
-          </label>
-        </div> -->
-      </div>
+      <p class="bottom-info">
+        {{ $t('update.info-1') }}
+        <br />
+        <span v-html="$t('update.info-2')"></span>
+      </p>
     </div>
   </AnimatedModal>
 </template>
@@ -55,6 +45,14 @@ export default defineComponent({
       mainStore: useMainStore(),
       version: version
     };
+  },
+
+  watch: {
+    updateModalOpen(val: boolean) {
+      this.$nextTick(() => {
+        if (val) (this.$refs['confirm-btn'] as HTMLElement).focus();
+      });
+    }
   },
 
   computed: {
@@ -91,14 +89,13 @@ export default defineComponent({
   line-height: 1.5em;
 }
 
-.modal_content {
-  padding: 2em;
-  height: 80vh;
-  min-height: 550px;
-
+.modal-content {
   display: grid;
   grid-template-rows: auto 1fr auto;
   gap: 0.5em;
+  padding: 1em 2em;
+  min-height: 700px;
+  overflow: auto;
 }
 
 hr.separator {
@@ -108,9 +105,18 @@ hr.separator {
   background-color: #fff;
 }
 
-.modal_actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5em;
+button {
+  margin: 0 auto;
+  padding: 0.5em 0.75em;
+  font-size: 1.1em;
+}
+
+p.bottom-info {
+  text-align: center;
+  color: #ccc;
+}
+
+a {
+  text-decoration: underline;
 }
 </style>
