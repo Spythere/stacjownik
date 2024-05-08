@@ -1,11 +1,11 @@
 <template>
-  <AnimatedModal :is-open="updateModalOpen" @toggle-modal="toggleModal">
+  <AnimatedModal :is-open="updateModalOpen" @toggle-modal="toggleModal(false)">
     <div class="modal-content">
       <h1 style="margin-bottom: 0.5em">🚀 {{ $t('update.title') }}</h1>
 
       <div class="features-body" v-html="htmlChangelog"></div>
 
-      <button class="btn btn--action" ref="confirm-btn" @click="toggleModal">
+      <button class="btn btn--action" ref="confirm-btn" @click="toggleModal(false)">
         {{ $t('update.confirm') }}
       </button>
 
