@@ -11,9 +11,10 @@ import DonatorTooltip from './DonatorTooltip.vue';
 import VehiclePreviewTooltip from './VehiclePreviewTooltip.vue';
 import BaseTooltip from './BaseTooltip.vue';
 import SpawnsTooltip from './SpawnsTooltip.vue';
+import UsersTooltip from './UsersTooltip.vue';
 
 export default defineComponent({
-  components: { DonatorTooltip, VehiclePreviewTooltip, BaseTooltip, SpawnsTooltip },
+  components: { DonatorTooltip, VehiclePreviewTooltip, BaseTooltip, SpawnsTooltip, UsersTooltip },
 
   data() {
     return {

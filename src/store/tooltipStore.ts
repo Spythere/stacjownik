@@ -6,7 +6,8 @@ export const tooltipKeys = [
   'DonatorTooltip',
   'BaseTooltip',
   'VehiclePreviewTooltip',
-  'SpawnsTooltip'
+  'SpawnsTooltip',
+  'UsersTooltip'
 ] as const;
 
 export type TooltipType = (typeof tooltipKeys)[number];

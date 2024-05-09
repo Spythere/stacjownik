@@ -68,8 +68,8 @@ export const sortStations = (
 
     case 'user':
       diff =
-        (b.onlineInfo ? b.onlineInfo.currentUsers : -1) -
-        (a.onlineInfo ? a.onlineInfo.currentUsers : -1);
+        (b.onlineInfo?.stationTrains ? b.onlineInfo.stationTrains.length : -1) -
+        (a.onlineInfo?.stationTrains ? a.onlineInfo.stationTrains.length : -1);
       break;
 
     case 'like':

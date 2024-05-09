@@ -247,8 +247,15 @@
               />
             </td>
 
-            <td class="station-users" :class="{ inactive: !station.onlineInfo }">
-              <span class="text--primary">{{ station.onlineInfo?.currentUsers ?? '-' }}</span>
+            <td
+              class="station-users"
+              :class="{ inactive: !station.onlineInfo }"
+              data-tooltip-type="UsersTooltip"
+              :data-tooltip-content="JSON.stringify(station.onlineInfo?.stationTrains ?? [])"
+            >
+              <span class="text--primary">{{
+                station.onlineInfo?.stationTrains?.length ?? '-'
+              }}</span>
               /
               <span class="text--primary">{{ station.onlineInfo?.maxUsers ?? '-' }}</span>
             </td>
