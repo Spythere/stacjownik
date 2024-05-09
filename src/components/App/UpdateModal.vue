@@ -3,7 +3,8 @@
     <div class="modal-content">
       <h1 style="margin-bottom: 0.5em">🚀 {{ $t('update.title') }}</h1>
 
-      <div class="features-body" v-html="htmlChangelog"></div>
+      <div class="features-body" v-if="htmlChangelog != ''" v-html="htmlChangelog"></div>
+      <div class="no-features" v-else>{{ $t('update.no-data') }}</div>
 
       <button class="btn btn--action" ref="confirm-btn" @click="toggleModal(false)">
         {{ $t('update.confirm') }}
@@ -93,16 +94,14 @@ export default defineComponent({
   display: grid;
   grid-template-rows: auto 1fr auto;
   gap: 0.5em;
-  padding: 1em 2em;
+  padding: 1em;
   min-height: 700px;
   overflow: auto;
+  text-align: justify;
 }
 
-hr.separator {
-  margin: 0.5em 0;
-  padding: 0;
-  height: 3px;
-  background-color: #fff;
+.no-features {
+  text-align: center;
 }
 
 button {

@@ -1,8 +1,8 @@
 <template>
   <div class="app_container">
     <UpdateModal
-      :update-modal-open="updateModalOpen"
-      @toggle-modal="() => (updateModalOpen = false)"
+      :update-modal-open="isUpdateModalOpen"
+      @toggle-modal="() => (isUpdateModalOpen = false)"
     />
 
     <Tooltip />
@@ -27,7 +27,7 @@
       &copy;
       <a href="https://td2.info.pl/profile/?u=20777" target="_blank">Spythere</a>
       {{ new Date().getUTCFullYear() }} |
-      <button class="btn--text" @click="() => (updateModalOpen = true)">
+      <button class="btn--text" @click="() => (isUpdateModalOpen = true)">
         v{{ VERSION }}{{ isOnProductionHost ? '' : 'dev' }}
       </button>
 
@@ -78,7 +78,7 @@ export default defineComponent({
     apiStore: useApiStore(),
     tooltipStore: useTooltipStore(),
 
-    updateModalOpen: false,
+    isUpdateModalOpen: false,
 
     currentLang: 'pl',
     isOnProductionHost: location.hostname == 'stacjownik-td2.web.app',
@@ -130,7 +130,7 @@ export default defineComponent({
           releaseURL: releaseData.html_url
         };
 
-        this.updateModalOpen =
+        this.isUpdateModalOpen =
           storageVersion != version || import.meta.env.VITE_UPDATE_TEST === 'test';
       } catch (error) {
         console.error(`Wystąpił błąd podczas pobierania danych z API GitHuba: ${error}`);

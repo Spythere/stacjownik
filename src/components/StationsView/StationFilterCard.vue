@@ -69,8 +69,8 @@
                 minimumHours == 0
                   ? $t('filters.now')
                   : minimumHours < 8
-                  ? minimumHours + $t('filters.hour')
-                  : $t('filters.no-limit')
+                    ? minimumHours + $t('filters.hour')
+                    : $t('filters.no-limit')
               }}</span>
               <button class="btn--action" @click="addHour">+</button>
             </span>
@@ -442,23 +442,16 @@ h3.section-header {
 }
 
 .card_actions {
-  width: 100%;
   padding: 0.5em;
-
-  .filter-option {
-    max-width: 50%;
-    margin: 0 auto;
-  }
 
   .action-buttons {
     display: flex;
     gap: 0.5em;
-    width: 100%;
 
     margin-top: 0.5em;
 
     button {
-      width: 50%;
+      width: 100%;
       margin: 0 auto;
       padding: 0.5em;
 
