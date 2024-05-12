@@ -3,7 +3,7 @@
     <div class="card_controls">
       <button class="btn--filled btn--image" @click="toggleCard">
         <img class="button_icon" src="/images/icon-filter2.svg" alt="filter icon" />
-        {{ $t('options.filters') }} [F]
+        [F] {{ $t('options.filters') }}
         <span class="active-indicator" v-if="!filterStore.areFiltersAtDefault"></span>
       </button>
 
@@ -28,8 +28,8 @@
     </div>
 
     <transition name="card-anim">
-      <div class="card" v-if="isVisible" tabindex="0" ref="cardEl">
-        <div class="card_content">
+      <div class="card" v-if="isVisible" tabindex="0" ref="cardRef" @keydown.r="resetFilters">
+        <div class="card_content" @scroll="onScroll" ref="cardContentRef">
           <div class="card_title flex">{{ $t('filters.title') }}</div>
           <p class="card_info" v-html="$t('filters.desc')"></p>
 
@@ -60,31 +60,43 @@
             </div>
           </section>
 
-          <section class="card_timestamp" style="text-align: center">
-            <div>{{ $t('filters.minimum-hours-title') }}</div>
+          <section class="card_timestamp">
+            <h3 class="section-header">{{ $t('filters.minimum-hours-title') }}</h3>
+
             <span class="clock">
               <button class="btn--action" @click="subHour">-</button>
               <span>{{
                 minimumHours == 0
                   ? $t('filters.now')
                   : minimumHours < 8
-                  ? minimumHours + $t('filters.hour')
-                  : $t('filters.no-limit')
+                    ? minimumHours + $t('filters.hour')
+                    : $t('filters.no-limit')
               }}</span>
               <button class="btn--action" @click="addHour">+</button>
             </span>
           </section>
 
+          <datalist id="authors">
+            <option v-for="(author, i) in authors" :key="i" :value="author"></option>
+          </datalist>
+
           <section class="card_authors-search">
-            <input
-              type="text"
-              :placeholder="$t('filters.authors-search')"
-              name="authors"
-              v-model="authorsInputValue"
-              @input="handleAuthorsInput"
-              @focus="preventKeyDown = true"
-              @blur="preventKeyDown = false"
-            />
+            <h3 class="section-header">{{ $t('filters.authors-search') }}</h3>
+
+            <form action="javascript:void(0);" @submit="handleAuthorsInput">
+              <input
+                type="text"
+                id="author"
+                list="authors"
+                name="authors"
+                :placeholder="$t('filters.authors-placeholder')"
+                v-model="authorsInputValue"
+                @focus="preventKeyDown = true"
+                @blur="preventKeyDown = false"
+              />
+
+              <button class="btn--action">{{ $t('filters.authors-button-title') }}</button>
+            </form>
           </section>
 
           <section class="card_sliders">
@@ -96,6 +108,7 @@
                 :id="slider.id"
                 :min="slider.minRange"
                 :max="slider.maxRange"
+                :step="slider.step"
                 v-model="slider.value"
                 @change="handleInput"
               />
@@ -124,7 +137,7 @@
               :disabled="filterStore.areFiltersAtDefault"
               :data-disabled="filterStore.areFiltersAtDefault"
             >
-              {{ $t('filters.reset') }}
+              [R] {{ $t('filters.reset') }}
             </button>
             <button class="btn--action" @click="closeCard">{{ $t('filters.close') }}</button>
           </div>
@@ -139,7 +152,7 @@ import { defineComponent, inject } from 'vue';
 import keyMixin from '../../mixins/keyMixin';
 import routerMixin from '../../mixins/routerMixin';
 import { useStationFiltersStore } from '../../store/stationFiltersStore';
-import { useStore } from '../../store/mainStore';
+import { useMainStore } from '../../store/mainStore';
 
 import FilterOption from './FilterOption.vue';
 import StorageManager from '../../managers/storageManager';
@@ -158,12 +171,15 @@ export default defineComponent({
     currentRegion: { id: '', value: '' },
 
     delayInputTimer: -1,
-    chosenSearchScenery: ''
+    chosenSearchScenery: '',
+
+    scrollTop: 0,
+    lastFocusedEl: null as HTMLElement | null
   }),
 
   setup() {
     const isVisible = inject('isFilterCardVisible');
-    const store = useStore();
+    const store = useMainStore();
     const filterStore = useStationFiltersStore();
 
     return {
@@ -196,6 +212,19 @@ export default defineComponent({
 
     currentOptionsActive() {
       return true;
+    },
+
+    authors() {
+      return this.store.stationList
+        .reduce((acc, station) => {
+          station.generalInfo?.authors?.forEach((author) => {
+            if (author.trim() != '' && !acc.includes(author.toLocaleLowerCase()))
+              acc.push(author.toLocaleLowerCase());
+          });
+
+          return acc;
+        }, [] as string[])
+        .sort((a, b) => a.localeCompare(b));
     }
   },
 
@@ -211,7 +240,10 @@ export default defineComponent({
 
     isVisible(value: boolean) {
       this.$nextTick(() => {
-        if (value) (this.$refs['cardEl'] as HTMLDivElement).focus();
+        if (value) {
+          (this.$refs['cardRef'] as HTMLDivElement).focus();
+          (this.$refs['cardContentRef'] as HTMLDivElement).scrollTop = this.scrollTop;
+        }
       });
     }
   },
@@ -222,6 +254,10 @@ export default defineComponent({
       this.isVisible = !this.isVisible;
     },
 
+    onScroll(e: Event) {
+      this.scrollTop = (e.target as HTMLElement).scrollTop;
+    },
+
     handleInput(e: Event) {
       const target = e.target as HTMLInputElement;
 
@@ -230,12 +266,10 @@ export default defineComponent({
       if (this.saveOptions) StorageManager.setStringValue(target.name, target.value);
     },
 
-    handleAuthorsInput(e: Event) {
-      clearTimeout(this.delayInputTimer);
+    handleAuthorsInput() {
+      this.filterStore.changeFilterValue('authors', this.authorsInputValue);
 
-      this.delayInputTimer = window.setTimeout(() => {
-        this.handleInput(e);
-      }, 400);
+      if (this.saveOptions) StorageManager.setStringValue('authors', this.authorsInputValue);
     },
 
     changeNumericFilterValue(name: string, value: number, saveToStorage = false) {
@@ -297,136 +331,132 @@ export default defineComponent({
 @import '../../styles/card.scss';
 @import '../../styles/animations.scss';
 
+h3.section-header {
+  text-align: center;
+  margin: 0.5em 0;
+}
+
 .card {
   display: grid;
   grid-template-rows: 1fr auto;
+}
 
-  &_info {
-    background-color: #111;
-    padding: 0.5em;
+.card_info {
+  background-color: #111;
+  padding: 0.5em;
+}
+
+.card_controls {
+  display: flex;
+  gap: 0.5em;
+
+  input {
+    border-radius: 0.5em 0.5em 0 0;
+    height: 100%;
+  }
+}
+
+.card_content {
+  padding: 1em 0.5em;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 1em;
+  overflow: auto;
+}
+
+.card_title {
+  font-size: 2em;
+  font-weight: 700;
+  color: $accentCol;
+
+  text-align: center;
+}
+
+.card_regions {
+  display: flex;
+  justify-content: center;
+
+  label > input {
+    display: none;
   }
 
-  &_controls {
+  label > span {
+    padding: 0.25em 0.5em;
+    margin: 0 0.25em;
+
+    cursor: pointer;
+
+    background-color: gray;
+
+    &.checked {
+      background-color: seagreen;
+    }
+  }
+}
+
+.card_timestamp {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  .clock {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 1.2em;
+    text-align: center;
+
+    span {
+      min-width: 120px;
+      font-weight: bold;
+      color: $accentCol;
+    }
+
+    button {
+      padding: 0.2em 0.6em;
+    }
+  }
+}
+
+.card_authors-search {
+  margin: 1em 0;
+
+  form {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5em;
+    width: 100%;
+    margin-top: 1em;
+  }
+
+  input {
+    width: 70%;
+    max-width: 400px;
+    padding: 0.5em;
+    outline: 1px solid white;
+  }
+}
+
+.card_actions {
+  padding: 0.5em;
+
+  .action-buttons {
     display: flex;
     gap: 0.5em;
 
-    input {
-      border-radius: 0.5em 0.5em 0 0;
-      height: 100%;
-    }
-  }
+    margin-top: 0.5em;
 
-  &_content {
-    padding: 1em 0.5em;
-
-    display: flex;
-    flex-direction: column;
-
-    gap: 1em;
-    overflow: auto;
-  }
-
-  &_title {
-    font-size: 2em;
-    font-weight: 700;
-    color: $accentCol;
-
-    text-align: center;
-  }
-
-  &_regions {
-    display: flex;
-    justify-content: center;
-
-    label > input {
-      display: none;
-    }
-
-    label > span {
-      padding: 0.25em 0.5em;
-      margin: 0 0.25em;
-
-      cursor: pointer;
-
-      background-color: gray;
-
-      &.checked {
-        background-color: seagreen;
-      }
-    }
-  }
-
-  &_timestamp {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-
-    .clock {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      font-size: 1.2em;
-      margin-top: 0.5em;
-
-      span {
-        min-width: 120px;
-        font-weight: bold;
-        color: $accentCol;
-      }
-
-      button {
-        padding: 0.2em 0.6em;
-      }
-    }
-  }
-
-  &_modes {
-    display: flex;
-    justify-content: center;
-
-    .option {
-      margin: 0 1em;
-    }
-  }
-
-  &_authors-search {
-    display: inline-block;
-    margin: 0 auto;
-    width: 60%;
-    min-width: 240px;
-
-    input {
+    button {
       width: 100%;
-      padding: 0.5em;
-      border: 1px solid white;
-    }
-  }
-
-  &_actions {
-    width: 100%;
-    padding: 0.5em;
-
-    .filter-option {
-      max-width: 50%;
       margin: 0 auto;
-    }
+      padding: 0.5em;
 
-    .action-buttons {
-      display: flex;
-      gap: 0.5em;
-      width: 100%;
-
-      margin-top: 0.5em;
-
-      button {
-        width: 50%;
-        margin: 0 auto;
-        padding: 0.5em;
-
-        &[data-selected='true'] {
-          background-color: forestgreen;
-        }
+      &[data-selected='true'] {
+        background-color: forestgreen;
       }
     }
   }
@@ -447,7 +477,7 @@ export default defineComponent({
 
 .section-inputs {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 0.5em;
   margin: 1em 0;
 }

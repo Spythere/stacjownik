@@ -20,11 +20,11 @@ import { computed, ComputedRef, defineComponent, provide, reactive, ref, watch }
 import TrainOptions from '../components/TrainsView/TrainOptions.vue';
 import TrainTable from '../components/TrainsView/TrainTable.vue';
 import modalTrainMixin from '../mixins/modalTrainMixin';
-import Train from '../scripts/interfaces/Train';
-import { useStore } from '../store/mainStore';
+import { useMainStore } from '../store/mainStore';
 import { TrainFilter, trainFilters } from '../components/TrainsView/typings';
 import { filteredTrainList } from '../managers/trainFilterManager';
 import TrainStats from '../components/TrainsView/TrainStats.vue';
+import { Train } from '../typings/common';
 
 export default defineComponent({
   components: {
@@ -58,7 +58,7 @@ export default defineComponent({
   }),
 
   setup() {
-    const store = useStore();
+    const store = useMainStore();
     const initTrainFilters = [...trainFilters.map((f) => ({ ...f }))];
 
     const sorterActive = reactive({ id: 'routeDistance', dir: -1 });
@@ -126,7 +126,7 @@ export default defineComponent({
 
 .trains_wrapper {
   margin: 1rem auto;
-  max-width: 1350px;
+  max-width: 1500px;
 }
 
 .trains_topbar {

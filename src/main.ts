@@ -2,26 +2,12 @@ import { createApp, Directive, ref } from 'vue';
 import App from './App.vue';
 import router from './router';
 
-import enLang from './locales/en.json';
-import plLang from './locales/pl.json';
+import i18n from './i18n';
 
-import { createI18n } from 'vue-i18n';
 import { createPinia } from 'pinia';
 import useCustomSW from './mixins/useCustomSW';
 
-const i18n = createI18n({
-  locale: 'pl',
-  legacy: false,
-  warnHtmlMessage: false,
-  fallbackLocale: 'pl',
-  messages: {
-    en: enLang,
-    pl: plLang
-  },
-  enableLegacy: false
-});
-
-// SW
+// Service worker
 useCustomSW();
 
 const clickOutsideDirective: Directive = {

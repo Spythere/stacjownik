@@ -1,41 +1,27 @@
-import axios from 'axios';
 import { defineStore } from 'pinia';
-import StationRoutes from '../scripts/interfaces/StationRoutes';
-import Train from '../scripts/interfaces/Train';
-import { URLs } from '../scripts/utils/apiURLs';
 import { parseSpawns, getScheduledTrains, getStationTrains } from './utils';
 
-import { OnlineScenery, ScheduledTrain, StationJSONData, StoreState } from './typings';
+import {
+  ActiveScenery,
+  ScheduledTrain,
+  Station,
+  StationRoutes,
+  Status,
+  Train
+} from '../typings/common';
+import { useApiStore } from './apiStore';
+import { MainStoreState } from './typings';
 
-import { API } from '../typings/api';
-import { Status } from '../typings/common';
-
-const API_INTERVAL_MS = 30000;
-
-export const useStore = defineStore('store', {
+export const useMainStore = defineStore('mainStore', {
   state: () =>
     ({
-      activeData: {} as unknown,
-      rollingStockData: undefined,
-      donatorsData: [],
-
-      stationList: [],
-      regionOnlineCounters: [],
-
-      routesList: [],
-
-      sceneryData: [],
-      lastDispatcherStatuses: [],
-
-      region: { id: 'eu', value: 'PL1' },
-
-      trainCount: 0,
-      stationCount: 0,
+      region: { id: 'eu', value: 'PL1', name: 'PL1' },
 
       isOffline: false,
+      appUpdate: null,
 
       dispatcherStatsName: '',
-      dispatcherStatsData: undefined,
+      dispatcherStatsStatus: Status.Data.Initialized,
 
       driverStatsName: '',
       driverStatsData: undefined,
@@ -43,37 +29,29 @@ export const useStore = defineStore('store', {
 
       chosenModalTrainId: undefined,
 
-      dataStatuses: {
-        connection: Status.Data.Loading,
-        sceneries: Status.Data.Loading,
-        timetables: Status.Data.Loading,
-        dispatchers: Status.Data.Loading,
-        trains: Status.Data.Loading
-      },
-
-      currentStatsTab: null,
-
-      blockScroll: false,
-      listenerLaunched: false,
-      modalLastClickedTarget: null,
-
-      tooltip: {
-        content: '',
-        visible: false,
-        x: 0,
-        y: 0
-      }
-    }) as StoreState,
+      modalLastClickedTarget: null
+    }) as MainStoreState,
 
   getters: {
     trainList(): Train[] {
-      return (this.activeData?.trains ?? [])
+      const apiStore = useApiStore();
+
+      return (apiStore.activeData?.trains ?? [])
         .filter((train) => train.timetable || train.online)
         .map((train) => {
           const stock = train.stockString.split(';');
           const locoType = stock ? stock[0] : train.stockString;
 
           const timetable = train.timetable;
+
+          const sceneryNames =
+            train.timetable?.sceneries?.map(
+              (sceneryHash) =>
+                apiStore.activeData?.activeSceneries?.find((st) => st.stationHash === sceneryHash)
+                  ?.stationName ??
+                apiStore.sceneryData.find((sd) => sd.hash === sceneryHash)?.name ??
+                sceneryHash
+            ) ?? [];
 
           return {
             trainId: train.driverName + train.trainNo.toString(),
@@ -110,47 +88,77 @@ export const useStore = defineStore('store', {
                   category: timetable.category,
                   followingStops: timetable.stopList,
                   routeDistance: timetable.stopList[timetable.stopList.length - 1].stopDistance,
-                  sceneries: timetable.sceneries
+                  sceneries: timetable.sceneries,
+                  sceneryNames: sceneryNames.reverse()
                 }
               : undefined
           } as Train;
         });
     },
 
-    onlineSceneryList(state): OnlineScenery[] {
-      if (state.isOffline) return [];
-      if (!state.activeData?.activeSceneries) return [];
+    // computed active sceneries
+    activeSceneryList(state): ActiveScenery[] {
+      const apiStore = useApiStore();
 
-      return state.activeData?.activeSceneries.reduce((list, scenery) => {
+      if (state.isOffline) return [];
+
+      if (!apiStore.activeData?.activeSceneries) return [];
+
+      const offlineActiveSceneries = this.trainList.reduce((acc, train) => {
+        if (!train.timetableData) return acc;
+
+        train.timetableData.sceneryNames.forEach((name) => {
+          if (
+            acc.findIndex((v) => v.name == name && v.region == train.region) != -1 ||
+            apiStore.activeData?.activeSceneries?.findIndex(
+              (sc) =>
+                sc.stationName === name &&
+                sc.region == train.region &&
+                Date.now() - sc.lastSeen < 1000 * 60 * 2
+            ) != -1
+          )
+            return acc;
+
+          acc.push({
+            name: name,
+            hash: '',
+            region: train.region,
+            maxUsers: 0,
+            currentUsers: 0,
+            spawns: [],
+            dispatcherName: '',
+            dispatcherRate: 0,
+            dispatcherId: -1,
+            dispatcherExp: -1,
+            dispatcherIsSupporter: false,
+            scheduledTrains: [],
+            stationTrains: [],
+            dispatcherStatus: Status.ActiveDispatcher.FREE,
+            dispatcherTimestamp: -1,
+
+            isOnline: false,
+
+            scheduledTrainCount: {
+              all: 0,
+              confirmed: 0,
+              unconfirmed: 0
+            }
+          });
+        });
+
+        return acc;
+      }, [] as ActiveScenery[]);
+
+      const onlineActiveSceneries = apiStore.activeData?.activeSceneries.reduce((list, scenery) => {
         if (scenery.isOnline !== 1 && Date.now() - scenery.lastSeen > 1000 * 60 * 2) return list;
         if (scenery.dispatcherStatus == Status.ActiveDispatcher.UNKNOWN) return list;
-
-        const station = this.stationList.find((s) => s.name === scenery.stationName);
-
-        const scheduledTrains = getScheduledTrains(this.trainList, scenery, station?.generalInfo);
-
-        const stationTrains = getStationTrains(
-          this.trainList,
-          scheduledTrains,
-          this.region.id,
-          scenery
-        );
-
-        // Remove checkpoint duplicates
-        const uniqueScheduledTrains = scheduledTrains.reduce(
-          (uniqueList, sTrain) =>
-            uniqueList.find((v) => v.trainId === sTrain.trainId)
-              ? uniqueList
-              : [...uniqueList, sTrain],
-          [] as ScheduledTrain[]
-        );
 
         const dispatcherTimestamp =
           scenery.dispatcherStatus == Status.ActiveDispatcher.NO_LIMIT
             ? Date.now() + 25500000
             : scenery.dispatcherStatus > 5
-            ? scenery.dispatcherStatus
-            : null;
+              ? scenery.dispatcherStatus
+              : null;
 
         list.push({
           name: scenery.stationName,
@@ -164,43 +172,42 @@ export const useStore = defineStore('store', {
           dispatcherId: scenery.dispatcherId,
           dispatcherExp: scenery.dispatcherExp,
           dispatcherIsSupporter: scenery.dispatcherIsSupporter,
-          scheduledTrains: scheduledTrains,
-          stationTrains: stationTrains,
           dispatcherStatus: scenery.dispatcherStatus,
           dispatcherTimestamp: dispatcherTimestamp,
 
           isOnline: scenery.isOnline == 1,
 
+          scheduledTrains: [],
+          stationTrains: [],
           scheduledTrainCount: {
-            all: uniqueScheduledTrains.length,
-            confirmed: uniqueScheduledTrains.filter((train) => train.stopInfo.confirmed).length,
-            unconfirmed: uniqueScheduledTrains.filter((train) => !train.stopInfo.confirmed).length
+            all: 0,
+            confirmed: 0,
+            unconfirmed: 0
           }
         });
 
         return list;
-      }, [] as OnlineScenery[]);
-    }
-  },
-  actions: {
-    async processStationsOnlineInfo() {
-      if (!this.activeData.activeSceneries) return;
+      }, [] as ActiveScenery[]);
 
-      const onlineSceneries = this.activeData.activeSceneries.reduce((acc, scenery) => {
-        const savedStation = this.stationList.find((st) => scenery.stationName === st.name);
+      const allActiveSceneries = [...onlineActiveSceneries, ...offlineActiveSceneries];
 
-        if (scenery.isOnline !== 1 && Date.now() - scenery.lastSeen > 1000 * 60 * 2) return acc;
-        if (scenery.dispatcherStatus == Status.ActiveDispatcher.UNKNOWN) return acc;
+      for (let i = 0, n = allActiveSceneries.length; i < n; i++) {
+        const scenery = allActiveSceneries[i];
 
-        const station = this.stationList.find((s) => s.name === scenery.stationName);
+        const station = this.stationList.find((s) => s.name === scenery.name);
 
-        const scheduledTrains = getScheduledTrains(this.trainList, scenery, station?.generalInfo);
+        const scheduledTrains = getScheduledTrains(
+          this.trainList,
+          station?.generalInfo,
+          scenery.name,
+          scenery.region
+        );
 
         const stationTrains = getStationTrains(
           this.trainList,
           scheduledTrains,
           this.region.id,
-          scenery
+          scenery.name
         );
 
         // Remove checkpoint duplicates
@@ -212,202 +219,96 @@ export const useStore = defineStore('store', {
           [] as ScheduledTrain[]
         );
 
-        const dispatcherTimestamp =
-          scenery.dispatcherStatus == Status.ActiveDispatcher.NO_LIMIT
-            ? Date.now() + 25500000
-            : scenery.dispatcherStatus > 5
-            ? scenery.dispatcherStatus
-            : null;
+        scenery.scheduledTrains = scheduledTrains;
+        scenery.stationTrains = stationTrains;
 
-        const onlineInfo = {
-          name: scenery.stationName,
-          hash: scenery.stationHash,
-          region: scenery.region,
-          maxUsers: scenery.maxUsers,
-          currentUsers: scenery.currentUsers,
-          spawns: parseSpawns(scenery.spawnString),
-          dispatcherName: scenery.dispatcherName,
-          dispatcherRate: scenery.dispatcherRate,
-          dispatcherId: scenery.dispatcherId,
-          dispatcherExp: scenery.dispatcherExp,
-          dispatcherIsSupporter: scenery.dispatcherIsSupporter,
-          scheduledTrains: scheduledTrains,
-          stationTrains: stationTrains,
-          dispatcherStatus: scenery.dispatcherStatus,
-          dispatcherTimestamp: dispatcherTimestamp,
-
-          isOnline: scenery.isOnline == 1,
-
-          scheduledTrainCount: {
-            all: uniqueScheduledTrains.length,
-            confirmed: uniqueScheduledTrains.filter((train) => train.stopInfo.confirmed).length,
-            unconfirmed: uniqueScheduledTrains.filter((train) => !train.stopInfo.confirmed).length
-          }
+        scenery.scheduledTrainCount = {
+          all: uniqueScheduledTrains.length,
+          confirmed: uniqueScheduledTrains.filter((train) => train.stopInfo.confirmed).length,
+          unconfirmed: uniqueScheduledTrains.filter((train) => !train.stopInfo.confirmed).length
         };
-
-        if (savedStation) savedStation.onlineInfo = onlineInfo;
-        else
-          this.stationList.push({
-            name: onlineInfo.name,
-            onlineInfo: onlineInfo
-          });
-
-        acc.push(onlineInfo);
-
-        return acc;
-      }, [] as OnlineScenery[]);
-
-      // Reset online info of already offline sceneries
-      this.stationList
-        .filter(
-          (station) =>
-            station.onlineInfo &&
-            onlineSceneries.findIndex(
-              (os) => os.region == station.onlineInfo!.region && station.name == os.name
-            ) != -1
-        )
-        .forEach((station) => (station.onlineInfo = undefined));
-    },
-    async fetchStationsGeneralInfo() {
-      const sceneryData: StationJSONData[] = await (
-        await axios.get(`${URLs.stacjownikAPI}/api/getSceneries`)
-      ).data;
-
-      if (!sceneryData) {
-        this.dataStatuses.sceneries = Status.Data.Error;
-        return;
       }
 
-      this.stationList = sceneryData.map((scenery) => {
+      return allActiveSceneries;
+    },
+
+    // computed station data
+    stationList(): Station[] {
+      const apiStore = useApiStore();
+
+      return apiStore.sceneryData.map((scenery) => {
+        const routes = scenery.routesInfo.reduce(
+          (acc, route) => {
+            if (route.hidden) return acc;
+
+            const tracksKey = route.routeTracks == 2 ? 'double' : 'single';
+            const isElectric = route.isElectric;
+            const routesKey: keyof StationRoutes = `${tracksKey}${
+              !isElectric ? 'Other' : 'Electrified'
+            }Names`;
+
+            if (!route.isInternal) acc[routesKey].push(route.routeName);
+            if (route.isRouteSBL) acc['sblNames'].push(route.routeName);
+
+            acc.minRouteSpeed =
+              acc.minRouteSpeed == 0
+                ? route.routeSpeed
+                : Math.min(route.routeSpeed, acc.minRouteSpeed);
+
+            acc.maxRouteSpeed = Math.max(route.routeSpeed, acc.maxRouteSpeed);
+
+            acc[tracksKey].push(route);
+
+            return acc;
+          },
+          {
+            single: [],
+            singleElectrifiedNames: [],
+            singleOtherNames: [],
+            double: [],
+            doubleElectrifiedNames: [],
+            doubleOtherNames: [],
+            sblNames: [],
+            minRouteSpeed: 0,
+            maxRouteSpeed: 0
+          } as StationRoutes
+        );
+
         return {
           name: scenery.name,
 
           generalInfo: {
             ...scenery,
             authors: scenery.authors?.split(',').map((a) => a.trim()),
-            routes:
-              scenery.routesInfo.reduce(
-                (acc, route) => {
-                  const propName: keyof StationRoutes = `${
-                    route.routeTracks == 2 ? 'twoWay' : 'oneWay'
-                  }${route.isElectric ? '' : 'No'}CatenaryRouteNames`;
-
-                  acc[route.routeTracks == 2 ? 'twoWay' : 'oneWay'].push({
-                    name: route.routeName,
-                    SBL: route.isRouteSBL,
-                    TWB: false,
-                    catenary: route.isElectric,
-                    isInternal: route.isInternal,
-                    tracks: route.routeTracks,
-                    length: route.routeLength,
-                    speed: route.routeSpeed
-                  });
-
-                  if (!route.isInternal) acc[propName].push(route.routeName);
-
-                  if (route.isRouteSBL) acc['sblRouteNames'].push(route.routeName);
-
-                  return acc;
-                },
-                {
-                  oneWay: [],
-                  twoWay: [],
-                  sblRouteNames: [],
-                  oneWayCatenaryRouteNames: [],
-                  oneWayNoCatenaryRouteNames: [],
-                  twoWayCatenaryRouteNames: [],
-                  twoWayNoCatenaryRouteNames: []
-                } as StationRoutes
-              ) || {},
-            checkpoints: scenery.checkpoints
-              ? scenery.checkpoints
-                  .split(';')
-                  .map((sub) => ({ checkpointName: sub, scheduledTrains: [] }))
-              : []
+            routes: routes,
+            checkpoints: scenery.checkpoints?.split(';') ?? []
           }
         };
       });
     },
 
-    async fetchActiveData() {
-      if (import.meta.env.VITE_APP_API_MODE === 'mock') {
-        const mockActiveData = await import('../data/mockActiveData.json');
-        this.dataStatuses.connection = Status.Data.Loaded;
-        this.activeData = mockActiveData;
-        this.setStatuses();
+    allStationInfo(): Station[] {
+      const onlineUnsavedStations = this.activeSceneryList
+        .filter(
+          (scenery) =>
+            this.stationList.findIndex((st) => st.name == scenery.name) == -1 &&
+            scenery.region == this.region.id
+        )
+        .map((os) => ({
+          name: os.name,
+          generalInfo: undefined,
+          onlineInfo: os
+        }));
 
-        console.warn('Stacjownik działa w trybie mockowania danych z WS');
-
-        return;
-      }
-
-      try {
-        const data = (
-          await axios.get<API.ActiveData.Response>(`${URLs.stacjownikAPI}/api/getActiveData`)
-        ).data;
-
-        this.activeData = data;
-        this.dataStatuses.connection = Status.Data.Loaded;
-
-        this.setStatuses();
-      } catch (error) {
-        this.dataStatuses.connection = Status.Data.Error;
-        console.error('Wystąpił błąd podczas pobierania danych online z API!');
-      }
-    },
-
-    async setupAPI() {
-      this.fetchActiveData();
-
-      setInterval(() => {
-        this.fetchActiveData();
-      }, API_INTERVAL_MS);
-
-      this.fetchStockInfoData();
-      this.fetchDonatorsData();
-      this.fetchStationsGeneralInfo();
-    },
-
-    async changeRegion(region: StoreState['region']) {
-      this.region = region;
-    },
-
-    async fetchStockInfoData() {
-      try {
-        this.rollingStockData = (
-          await axios.get<API.RollingStock.Response>(
-            'https://raw.githubusercontent.com/Spythere/api/main/td2/data/stockInfo.json'
+      return [
+        ...onlineUnsavedStations,
+        ...this.stationList.map((st) => ({
+          ...st,
+          onlineInfo: this.activeSceneryList.find(
+            (os) => os.name == st.name && os.region == this.region.id
           )
-        ).data;
-      } catch (error) {
-        console.error('Ups! Wystąpił błąd podczas pobierania informacji o taborze z API:', error);
-      }
-    },
-
-    async fetchDonatorsData() {
-      try {
-        const response = await axios.get<API.Donators.Response>(
-          `${URLs.stacjownikAPI}/api/getDonators`
-        );
-
-        if (response.data) this.donatorsData = response.data;
-      } catch (error) {
-        console.error('Ups! Wystąpił błąd podczas pobierania informacji o donatorach:', error);
-      }
-    },
-
-    async setStatuses() {
-      if (!this.activeData.activeSceneries) {
-        this.dataStatuses.sceneries = Status.Data.Error;
-        this.dataStatuses.trains = Status.Data.Error;
-        this.dataStatuses.dispatchers = Status.Data.Error;
-
-        return;
-      }
-
-      this.dataStatuses.sceneries = Status.Data.Loaded;
-      this.dataStatuses.trains = !this.activeData.trains ? Status.Data.Warning : Status.Data.Loaded;
-      this.dataStatuses.dispatchers = Status.Data.Loaded;
+        }))
+      ];
     }
   }
 });

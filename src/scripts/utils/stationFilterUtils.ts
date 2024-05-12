@@ -1,7 +1,7 @@
 import { Filter } from '../../components/StationsView/typings';
 import { Status } from '../../typings/common';
 import { HeadIdsTypes } from '../data/stationHeaderNames';
-import Station from '../interfaces/Station';
+import { Station } from '../../typings/common';
 
 const dispatcherStatusPriority = [
   Status.ActiveDispatcher.UNKNOWN,
@@ -54,10 +54,28 @@ export const sortStations = (
       diff = (a.onlineInfo?.dispatcherExp || 0) - (b.onlineInfo?.dispatcherExp || 0);
       break;
 
+    case 'routes-single':
+      diff =
+        (a.generalInfo?.routes.single.filter((r) => !r.hidden && !r.isInternal).length ?? -1) -
+        (b.generalInfo?.routes.single.filter((r) => !r.hidden && !r.isInternal).length ?? -1);
+      break;
+
+    case 'routes-double':
+      diff =
+        (a.generalInfo?.routes.double.filter((r) => !r.hidden && !r.isInternal).length ?? -1) -
+        (b.generalInfo?.routes.double.filter((r) => !r.hidden && !r.isInternal).length ?? -1);
+      break;
+
     case 'user':
       diff =
-        (b.onlineInfo ? b.onlineInfo.currentUsers : -1) -
-        (a.onlineInfo ? a.onlineInfo.currentUsers : -1);
+        (b.onlineInfo?.stationTrains ? b.onlineInfo.stationTrains.length : -1) -
+        (a.onlineInfo?.stationTrains ? a.onlineInfo.stationTrains.length : -1);
+      break;
+
+    case 'like':
+      diff =
+        (a.onlineInfo ? a.onlineInfo.dispatcherRate : -Infinity) -
+        (b.onlineInfo ? b.onlineInfo.dispatcherRate : -Infinity);
       break;
 
     case 'spawn':
@@ -93,26 +111,41 @@ export const sortStations = (
 };
 
 export const filterStations = (station: Station, filters: Filter) => {
-  if (!station.onlineInfo && filters['free']) return false;
+  if (filters['free'] && (!station.onlineInfo || station.onlineInfo.dispatcherId == -1))
+    return false;
 
   if (station.onlineInfo) {
     const { dispatcherStatus } = station.onlineInfo;
 
-    const isEnding = dispatcherStatus == Status.ActiveDispatcher.ENDING && filters['endingStatus'];
+    const excludeEnding =
+      dispatcherStatus == Status.ActiveDispatcher.ENDING && filters['endingStatus'];
 
-    const isNotSigned =
+    const excludeNotSigned =
       (dispatcherStatus == Status.ActiveDispatcher.NOT_LOGGED_IN ||
         dispatcherStatus == Status.ActiveDispatcher.UNAVAILABLE) &&
       filters['unavailableStatus'];
 
-    const isAFK = dispatcherStatus == Status.ActiveDispatcher.AFK && filters['afkStatus'];
+    const excludeAFK = dispatcherStatus == Status.ActiveDispatcher.AFK && filters['afkStatus'];
 
-    const isNoSpace =
+    const excludeNoSpace =
       dispatcherStatus == Status.ActiveDispatcher.NO_SPACE && filters['noSpaceStatus'];
 
-    const isOccupied = station.onlineInfo && filters['occupied'];
+    const excludeOccupied = filters['occupied'] && dispatcherStatus != Status.ActiveDispatcher.FREE;
 
-    if (isEnding || isNotSigned || isAFK || isNoSpace || isOccupied) return false;
+    const excludeActiveTTs =
+      (dispatcherStatus == Status.ActiveDispatcher.FREE ||
+        station.onlineInfo.scheduledTrainCount.all != 0) &&
+      filters['withActiveTimetables'];
+
+    if (
+      excludeEnding ||
+      excludeAFK ||
+      excludeNoSpace ||
+      excludeNotSigned ||
+      excludeOccupied ||
+      excludeActiveTTs
+    )
+      return false;
 
     if (
       filters['onlineFromHours'] > 0 &&
@@ -121,6 +154,12 @@ export const filterStations = (station: Station, filters: Filter) => {
       return false;
   }
 
+  const excludeNoActiveTTs =
+    filters['withoutActiveTimetables'] &&
+    (!station.onlineInfo || station.onlineInfo.scheduledTrainCount.all == 0);
+
+  if (excludeNoActiveTTs) return false;
+
   if (
     (station.generalInfo?.availability == 'nonPublic' || !station.generalInfo) &&
     filters['nonPublic']
@@ -128,7 +167,7 @@ export const filterStations = (station: Station, filters: Filter) => {
     return false;
 
   if (station.generalInfo) {
-    const { routes, availability, controlType, lines, reqLevel, signalType, SUP, authors } =
+    const { routes, availability, controlType, lines, reqLevel, signalType, SUP, ASDEK, authors } =
       station.generalInfo;
 
     if (availability == 'unavailable' && filters['unavailable'] && !station.onlineInfo)
@@ -150,26 +189,28 @@ export const filterStations = (station: Station, filters: Filter) => {
       availability == 'nonPublic' || availability == 'unavailable' || availability == 'abandoned';
 
     if (reqLevel + (otherAvailability ? 1 : 0) < filters['minLevel']) return false;
-
     if (reqLevel + (otherAvailability ? 1 : 0) > filters['maxLevel']) return false;
+
+    if (filters['minVmax'] > station.generalInfo.routes.maxRouteSpeed) return false;
+    if (filters['maxVmax'] < station.generalInfo.routes.minRouteSpeed) return false;
 
     if (
       filters['no-1track'] &&
-      (routes.oneWayCatenaryRouteNames.length != 0 || routes.oneWayNoCatenaryRouteNames.length != 0)
+      (routes.singleElectrifiedNames.length != 0 || routes.singleOtherNames.length != 0)
     )
       return false;
 
     if (
       filters['no-2track'] &&
-      (routes.twoWayCatenaryRouteNames.length != 0 || routes.twoWayNoCatenaryRouteNames.length != 0)
+      (routes.doubleElectrifiedNames.length != 0 || routes.doubleOtherNames.length != 0)
     )
       return false;
 
-    if (routes.oneWayCatenaryRouteNames.length < filters['minOneWayCatenary']) return false;
-    if (routes.oneWayNoCatenaryRouteNames.length < filters['minOneWay']) return false;
+    if (routes.singleElectrifiedNames.length < filters['minOneWayCatenary']) return false;
+    if (routes.singleOtherNames.length < filters['minOneWay']) return false;
 
-    if (routes.twoWayCatenaryRouteNames.length < filters['minTwoWayCatenary']) return false;
-    if (routes.twoWayNoCatenaryRouteNames.length < filters['minTwoWay']) return false;
+    if (routes.doubleElectrifiedNames.length < filters['minTwoWayCatenary']) return false;
+    if (routes.doubleOtherNames.length < filters['minTwoWay']) return false;
 
     if (filters[controlType]) return false;
     if (filters[signalType]) return false;
@@ -177,8 +218,11 @@ export const filterStations = (station: Station, filters: Filter) => {
     if (filters['SUP'] && SUP) return false;
     if (filters['noSUP'] && !SUP) return false;
 
-    if (filters['SBL'] && routes.sblRouteNames.length > 0) return false;
-    if (filters['PBL'] && routes.sblRouteNames.length == 0) return false;
+    if (filters['ASDEK'] && ASDEK) return false;
+    if (filters['noASDEK'] && !ASDEK) return false;
+
+    if (filters['SBL'] && routes.sblNames.length > 0) return false;
+    if (filters['PBL'] && routes.sblNames.length == 0) return false;
 
     if (
       filters['authors'].length > 3 &&

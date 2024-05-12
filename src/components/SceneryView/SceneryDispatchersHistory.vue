@@ -19,7 +19,9 @@
         <tr v-for="historyItem in historyList" :key="historyItem.id">
           <td>#{{ historyItem.stationHash }}</td>
           <td>
-            <router-link :to="`/journal/dispatchers?dispatcherName=${historyItem.dispatcherName}`">
+            <router-link
+              :to="`/journal/dispatchers?search-dispatcher=${historyItem.dispatcherName}`"
+            >
               <b>{{ historyItem.dispatcherName }}</b>
             </router-link>
           </td>
@@ -68,28 +70,24 @@
 </template>
 
 <script lang="ts">
-import axios from 'axios';
 import { defineComponent, PropType } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
-import Station from '../../scripts/interfaces/Station';
-import { URLs } from '../../scripts/utils/apiURLs';
 import Loading from '../Global/Loading.vue';
 import styleMixin from '../../mixins/styleMixin';
-import listObserverMixin from '../../mixins/listObserverMixin';
-import { OnlineScenery } from '../../store/typings';
 import { API } from '../../typings/api';
-import { Status } from '../../typings/common';
+import { ActiveScenery, Station, Status } from '../../typings/common';
+import { useApiStore } from '../../store/apiStore';
 
 export default defineComponent({
   name: 'SceneryDispatchersHistory',
-  mixins: [dateMixin, styleMixin, listObserverMixin],
+  mixins: [dateMixin, styleMixin],
   components: { Loading },
   props: {
     station: {
       type: Object as PropType<Station>
     },
     onlineScenery: {
-      type: Object as PropType<OnlineScenery>
+      type: Object as PropType<ActiveScenery>
     }
   },
 
@@ -97,7 +95,8 @@ export default defineComponent({
     return {
       historyList: [] as API.DispatcherHistory.Response,
       dataStatus: Status.Data.Loading,
-      DataStatus: Status.Data
+      DataStatus: Status.Data,
+      apiStore: useApiStore()
     };
   },
 
@@ -121,11 +120,12 @@ export default defineComponent({
       try {
         this.dataStatus = Status.Data.Loading;
 
-        const requestString = `${URLs.stacjownikAPI}/api/getDispatchers?stationName=${
+        const requestString = `api/getDispatchers?stationName=${
           this.station?.name || this.onlineScenery?.name
         }&countFrom=${countFrom}&countLimit=${countLimit}`;
+
         const historyAPIData: API.DispatcherHistory.Response = await (
-          await axios.get(requestString)
+          await this.apiStore.client!.get(requestString)
         ).data;
 
         this.dataStatus = Status.Data.Loaded;
@@ -138,7 +138,7 @@ export default defineComponent({
     },
     navigateToHistory() {
       this.$router.push(
-        `/journal/dispatchers?sceneryName=${this.station?.name || this.onlineScenery?.name}`
+        `/journal/dispatchers?search-station=${this.station?.name || this.onlineScenery?.name}`
       );
     }
   }

@@ -36,11 +36,11 @@
             <circle id="Ellipse 18" cx="15" cy="17" r="7" fill="#393838" />
           </g>
 
-          <g v-if="greenLight" filter="url(#filter0_d_843_28)">
+          <g v-if="indicator.lights.greenLight" filter="url(#filter0_d_843_28)">
             <circle cx="15" cy="17" r="7" fill="#00FF0A" />
           </g>
 
-          <g v-if="greenBlinkLight" filter="url(#filter0_d_843_28)">
+          <g v-if="indicator.lights.greenBlinkLight" filter="url(#filter0_d_843_28)">
             <circle cx="15" cy="17" r="7" fill="#00FF0A" />
 
             <animate
@@ -52,14 +52,14 @@
             />
           </g>
 
-          <g v-if="redTopLight" filter="url(#filter1_d_843_28)">
+          <g v-if="indicator.lights.redTopLight" filter="url(#filter1_d_843_28)">
             <circle cx="15" cy="36" r="7" fill="#F40000" />
           </g>
 
-          <g v-if="orangeLight" filter="url(#filter2_d_843_28)">
+          <g v-if="indicator.lights.orangeLight" filter="url(#filter2_d_843_28)">
             <circle cx="15" cy="55" r="7" fill="#FFB800" />
           </g>
-          <g v-if="redBottomLight" filter="url(#filter3_d_843_28)">
+          <g v-if="indicator.lights.redBottomLight" filter="url(#filter3_d_843_28)">
             <circle cx="15" cy="74" r="7" fill="#F40000" />
 
             <animate
@@ -186,7 +186,11 @@
       </svg>
 
       <transition name="tooltip-anim">
-        <div v-html="$t(indicator.message)" class="indicator-tooltip" v-if="tooltipActive"></div>
+        <div
+          v-html="$t('data-status.' + indicator.message)"
+          class="indicator-tooltip"
+          v-if="tooltipActive"
+        ></div>
       </transition>
     </div>
   </div>
@@ -194,124 +198,112 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { StoreState } from '../../store/typings';
-import { useStore } from '../../store/mainStore';
 import { Status } from '../../typings/common';
+import { useApiStore } from '../../store/apiStore';
+import { APIDataStatus } from '../../typings/api';
+
+interface Indicator {
+  // status: Status.Data;
+  message: string;
+
+  lights: {
+    greenLight: boolean;
+    greenBlinkLight: boolean;
+    redTopLight: boolean;
+    orangeLight: boolean;
+    redBottomLight: boolean;
+  };
+}
 
 export default defineComponent({
   data() {
     return {
       tooltipActive: false,
-      indicator: {
-        offline: false,
-        status: Status.Data.Loading,
-        message: 'data-status.S3'
-      },
-
-      greenLight: false,
-      greenBlinkLight: false,
-      redTopLight: false,
-      orangeLight: false,
-      redBottomLight: false
+      apiStore: useApiStore()
     };
-  },
-
-  mounted() {
-    this.setSignalStatus(Status.Data.Loading);
-  },
-
-  setup() {
-    const store = useStore();
-
-    return {
-      dataStatus: store.dataStatuses,
-      store
-    };
-  },
-
-  watch: {
-    dataStatus: {
-      deep: true,
-
-      handler(statuses: StoreState['dataStatuses']) {
-        const connectionStatus = statuses.connection;
-        const sceneryDataStatus = statuses.sceneries;
-        const trainsDataStatus = statuses.trains;
-        const dispatcherDataStatus = statuses.dispatchers;
-
-        if (this.store.isOffline) {
-          this.setSignalStatus(Status.Data.Initialized);
-          this.indicator.status = Status.Data.Initialized;
-          this.indicator.message = 'data-status.S1-offline';
-          return;
-        }
-
-        if (connectionStatus == Status.Data.Error) {
-          this.setSignalStatus(connectionStatus);
-          this.indicator.status = connectionStatus;
-          this.indicator.message = 'data-status.S1a-connection';
-          return;
-        }
-
-        if (sceneryDataStatus == Status.Data.Error) {
-          this.setSignalStatus(sceneryDataStatus);
-          this.indicator.status = sceneryDataStatus;
-          this.indicator.message = 'data-status.S1a-sceneries';
-          return;
-        }
-
-        if (trainsDataStatus == Status.Data.Warning) {
-          this.setSignalStatus(trainsDataStatus);
-          this.indicator.status = trainsDataStatus;
-          this.indicator.message = 'data-status.S5-trains';
-          return;
-        }
-
-        if (dispatcherDataStatus == Status.Data.Warning) {
-          this.setSignalStatus(dispatcherDataStatus);
-          this.indicator.status = dispatcherDataStatus;
-          this.indicator.message = 'data-status.S5-dispatchers';
-          return;
-        }
-
-        if (sceneryDataStatus == Status.Data.Loaded) {
-          this.setSignalStatus(Status.Data.Loaded);
-
-          this.indicator.status = Status.Data.Loaded;
-          this.indicator.message = 'data-status.S2';
-        }
-      }
-    }
   },
 
   methods: {
-    setSignalStatus(status: Status.Data) {
-      this.greenLight = false;
-      this.greenBlinkLight = false;
-      this.redTopLight = false;
-      this.orangeLight = false;
-      this.redBottomLight = false;
+    setLights(message: string) {
+      let lights = {
+        greenBlinkLight: false,
+        greenLight: false,
+        orangeLight: false,
+        redBottomLight: false,
+        redTopLight: false
+      };
 
-      if (status == Status.Data.Initialized) {
-        this.redTopLight = true;
+      switch (message) {
+        case 'S3':
+          lights.greenBlinkLight = true;
+          break;
+
+        case 'S2':
+          lights.greenLight = true;
+          break;
+
+        case 'S1-offline':
+          lights.redTopLight = true;
+          break;
+
+        case 'S1a-connection':
+        case 'S1a-sceneries':
+          lights.redTopLight = true;
+          lights.redBottomLight = true;
+          break;
+
+        case 'S5-dispatchers':
+        case 'S5-trains':
+          lights.orangeLight = true;
+          break;
+        default:
+          break;
       }
 
-      if (status == Status.Data.Loaded) {
-        this.greenLight = true;
+      return lights;
+    }
+  },
+
+  computed: {
+    indicator(): Indicator {
+      const dataStatuses = this.apiStore.dataStatuses;
+      const swdrStatuses = this.apiStore.activeData?.apiStatuses;
+
+      let message = 'S3';
+
+      switch (dataStatuses.connection) {
+        case Status.Data.Loading:
+          message = 'S3';
+          break;
+        case Status.Data.Loaded:
+          message = 'S2';
+          break;
+        case Status.Data.Offline:
+          message = 'S1-offline';
+          break;
+        case Status.Data.Error:
+          message = 'S1a-connection';
+          break;
+        default:
+          break;
       }
 
-      if (status == Status.Data.Warning) {
-        this.orangeLight = true;
+      if (swdrStatuses?.dispatchersAPI == APIDataStatus.WARNING) {
+        message = 'S5-dispatchers';
       }
 
-      if (status == Status.Data.Error) {
-        this.redTopLight = true;
-        this.redBottomLight = true;
+      if (swdrStatuses?.trainsAPI == APIDataStatus.WARNING) {
+        message = 'S5-trains';
       }
 
-      if (status == Status.Data.Loading) {
-        this.greenBlinkLight = true;
+      if (swdrStatuses?.stationsAPI == APIDataStatus.WARNING) {
+        message = 'S1a-sceneries';
       }
+
+      return {
+        lights: this.setLights(message),
+        message
+      };
     }
   }
 });

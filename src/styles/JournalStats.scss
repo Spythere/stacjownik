@@ -2,24 +2,35 @@
 @import 'responsive.scss';
 
 .stats-tab {
+  position: absolute;
+  right: 0;
+  z-index: 99;
+
+  transform: translateY(1em);
+
+  width: 100%;
+
   background-color: #1a1a1a;
   box-shadow: 0 0 5px 1px $accentCol;
 
   padding: 1em;
   display: flex;
   align-items: flex-end;
+}
 
-  margin-bottom: 0.5em;
+hr.header-separator {
+  margin-bottom: 1em;
+}
 
-  width: 100%;
+hr.section-separator {
+  margin: 1em 0;
 }
 
 .info-stats {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 0.5em;
-
-  margin-top: 1em;
 }
 
 .stat-badge {

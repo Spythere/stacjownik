@@ -1,11 +1,6 @@
 <template>
   <div class="item-general">
-    <span
-      class="general-train"
-      tabindex="0"
-      @click.stop="showTimetable(timetable, $event.currentTarget)"
-      @keydown.enter="showTimetable(timetable, $event.currentTarget)"
-    >
+    <span class="general-train">
       <span class="text--grayed">#{{ timetable.id }}</span>
 
       <span class="badges" v-if="timetable.skr || timetable.twr">
@@ -29,7 +24,7 @@
       </strong>
 
       <strong
-        v-if="isDonator(timetable.driverName)"
+        v-if="apiStore.donatorsData.includes(timetable.driverName)"
         class="text--donator"
         :title="$t('donations.driver-message')"
       >
@@ -62,10 +57,19 @@
           !timetable.terminated
             ? $t('journal.timetable-active')
             : timetable.fulfilled
-            ? $t('journal.timetable-fulfilled')
-            : `${$t('journal.timetable-abandoned')} ${localeTime(timetable.endDate, $i18n.locale)}`
+              ? $t('journal.timetable-fulfilled')
+              : `${$t('journal.timetable-abandoned')} ${localeTime(timetable.endDate, $i18n.locale)}`
         }}
       </b>
+
+      <button
+        v-if="timetable.terminated == false"
+        class="btn--action btn-timetable"
+        @click.stop="showTimetable(timetable, $event.currentTarget)"
+      >
+        <img src="/images/icon-train.svg" alt="train icon" />
+        <b>{{ $t('journal.timetable-online-button') }}</b>
+      </button>
     </span>
   </div>
 </template>
@@ -77,10 +81,16 @@ import { API } from '../../../typings/api';
 import dateMixin from '../../../mixins/dateMixin';
 import modalTrainMixin from '../../../mixins/modalTrainMixin';
 import styleMixin from '../../../mixins/styleMixin';
-import donatorMixin from '../../../mixins/donatorMixin';
+import { useApiStore } from '../../../store/apiStore';
 
 export default defineComponent({
-  mixins: [dateMixin, modalTrainMixin, styleMixin, donatorMixin],
+  mixins: [dateMixin, modalTrainMixin, styleMixin],
+
+  data() {
+    return {
+      apiStore: useApiStore()
+    };
+  },
 
   props: {
     timetable: {
@@ -100,8 +110,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../../styles/responsive.scss';
-@import '../../../styles/badge.scss';
+@import '../../../styles/responsive';
+@import '../../../styles/badge';
 
 .item-general {
   display: flex;
@@ -111,14 +121,29 @@ export default defineComponent({
 
   gap: 0.5em;
   margin-bottom: 0.5em;
-
-  @include smallScreen() {
-    justify-content: center;
-  }
 }
 
-.info-date {
-  margin-right: 0.5em;
+.general-train {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.25em;
+
+  cursor: pointer;
+  line-height: 2;
+}
+
+.general-time {
+  display: flex;
+  align-items: center;
+
+  gap: 0.5em;
+}
+
+.badges {
+  display: flex;
+  gap: 0.25em;
 }
 
 .info-badge {
@@ -138,11 +163,18 @@ export default defineComponent({
   }
 }
 
-.general-train {
-  cursor: pointer;
+.btn-timetable {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.25em;
+  padding: 0.2em 0.5em;
+
+  img {
+    height: 1.25em;
+  }
+}
+
+@include smallScreen {
+  .item-general {
+    justify-content: center;
+  }
 }
 </style>

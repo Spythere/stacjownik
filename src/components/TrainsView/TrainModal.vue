@@ -1,12 +1,8 @@
 <template>
   <div class="train-modal" v-if="chosenTrain" @keydown.esc="closeModal">
-    <div class="modal_background" @click="closeModal"></div>
-    <div class="modal_content" ref="content" tabindex="0">
-      <button class="btn exit" @click="closeModal">
-        <img src="/images/icon-exit.svg" alt="close card" />
-      </button>
-
-      <TrainInfo :train="chosenTrain" :extended="false" ref="trainInfo" />
+    <div class="modal-background" @click="closeModal"></div>
+    <div class="modal-content" ref="content" tabindex="0">
+      <TrainInfo :train="chosenTrain" :extended="true" ref="trainInfo" />
       <TrainSchedule :train="chosenTrain" tabindex="0" />
     </div>
   </div>
@@ -15,26 +11,29 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import modalTrainMixin from '../../mixins/modalTrainMixin';
-import trainInfoMixin from '../../mixins/trainInfoMixin';
-import TrainInfo from '../TrainsView/TrainInfo.vue';
-import TrainSchedule from '../TrainsView/TrainSchedule.vue';
+import TrainInfo from './TrainInfo.vue';
+import TrainSchedule from './TrainSchedule.vue';
+import { Train } from '../../typings/common';
 
 export default defineComponent({
   components: { TrainInfo, TrainSchedule },
-  mixins: [trainInfoMixin, modalTrainMixin],
+  mixins: [modalTrainMixin],
 
-  data() {
-    return {
-      isTopBarVisible: false
-    };
+  computed: {
+    chosenTrain() {
+      return this.store.trainList.find((train) => train.trainId == this.store.chosenModalTrainId);
+    }
   },
 
-  activated() {
-    const contentEl = this.$refs['content'] as HTMLElement;
-
-    this.$nextTick(() => {
-      contentEl.focus();
-    });
+  watch: {
+    chosenTrain(train: Train | undefined) {
+      this.$nextTick(() => {
+        if (train) {
+          const contentEl = this.$refs['content'] as HTMLElement;
+          contentEl.focus();
+        }
+      });
+    }
   }
 });
 </script>
@@ -56,23 +55,6 @@ export default defineComponent({
   }
 }
 
-.exit {
-  position: absolute;
-  top: 0;
-  right: 0;
-
-  margin: 0.5em 1em;
-
-  padding: 0.25em;
-
-  z-index: 201;
-
-  img {
-    width: 1.5rem;
-    vertical-align: middle;
-  }
-}
-
 .train-modal {
   position: fixed;
   top: 0;
@@ -89,7 +71,7 @@ export default defineComponent({
   text-align: left;
 }
 
-.modal_background {
+.modal-background {
   position: absolute;
   top: 0;
   left: 0;
@@ -101,14 +83,14 @@ export default defineComponent({
   background-color: rgba(0, 0, 0, 0.55);
 }
 
-.modal_content {
+.modal-content {
   position: relative;
   overflow-y: scroll;
 
   margin-top: 1em;
 
   width: 95vw;
-  max-height: 96vh;
+  max-height: 95vh;
 
   background-color: #1a1a1a;
   box-shadow: 0 0 15px 10px #0e0e0e;

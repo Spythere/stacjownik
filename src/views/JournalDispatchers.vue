@@ -3,15 +3,19 @@
     <JournalHeader />
 
     <div class="journal_wrapper">
-      <JournalOptions
-        @on-search-confirm="fetchHistoryData"
-        @on-options-reset="resetOptions"
-        @on-refresh-data="fetchHistoryData(true)"
-        :sorter-option-ids="['timestampFrom', 'duration']"
-        :data-status="dataStatus"
-        :current-options-active="currentOptionsActive"
-        optionsType="dispatchers"
-      />
+      <div class="journal_top-bar">
+        <JournalOptions
+          @on-search-confirm="fetchHistoryData"
+          @on-options-reset="resetOptions"
+          @on-refresh-data="fetchHistoryData(true)"
+          :sorter-option-ids="['timestampFrom', 'duration']"
+          :data-status="dataStatus"
+          :current-options-active="currentOptionsActive"
+          optionsType="dispatchers"
+        />
+
+        <JournalStats :statsButtons="statsButtons" />
+      </div>
 
       <div class="journal_refreshed-date" v-if="dataRefreshedAt">
         {{ $t('journal.data-refreshed-at') }}: {{ dataRefreshedAt.toLocaleString($i18n.locale) }}
@@ -32,26 +36,34 @@
 
 <script lang="ts">
 import { defineComponent, provide, reactive, Ref, ref } from 'vue';
-import axios from 'axios';
 
-import JournalOptions from '../components/JournalView/JournalOptions.vue';
-import { URLs } from '../scripts/utils/apiURLs';
-import { useStore } from '../store/mainStore';
-import JournalDispatchersList from '../components/JournalView/JournalDispatchersList.vue';
-
-import JournalHeader from '../components/JournalView/JournalHeader.vue';
+import { useMainStore } from '../store/mainStore';
 import { LocationQuery } from 'vue-router';
 import { Journal } from '../components/JournalView/typings';
 import { API } from '../typings/api';
 import { Status } from '../typings/common';
 
-const DISPATCHERS_API_URL = `${URLs.stacjownikAPI}/api/getDispatchers`;
+import JournalDispatchersList from '../components/JournalView/JournalDispatchers/JournalDispatchersList.vue';
+import JournalOptions from '../components/JournalView/JournalOptions.vue';
+import JournalHeader from '../components/JournalView/JournalHeader.vue';
+import JournalStats from '../components/JournalView/JournalStats.vue';
+import { useApiStore } from '../store/apiStore';
+
+const statsButtons: Journal.StatsButton[] = [
+  {
+    tab: Journal.StatsTab.DISPATCHER_STATS,
+    localeKey: 'journal.dispatcher-stats.button',
+    iconName: 'user',
+    disabled: true
+  }
+];
 
 export default defineComponent({
   components: {
     JournalOptions,
-    JournalDispatchersList,
-    JournalHeader
+    JournalHeader,
+    JournalStats,
+    JournalDispatchersList
   },
   name: 'JournalDispatchers',
 
@@ -68,6 +80,8 @@ export default defineComponent({
   },
 
   data: () => ({
+    statsButtons,
+
     currentQuery: '',
     currentQueryArray: [] as string[],
     dataRefreshedAt: null as Date | null,
@@ -92,7 +106,7 @@ export default defineComponent({
       'search-dispatcher': '',
       'search-station': '',
       'search-date': ''
-    } as Journal.DispatcherSearcher);
+    } as Journal.DispatcherSearchType);
 
     const countFromIndex = ref(0);
     const countLimit = 15;
@@ -105,7 +119,8 @@ export default defineComponent({
     const scrollElement: Ref<HTMLElement | null> = ref(null);
 
     return {
-      store: useStore(),
+      mainStore: useMainStore(),
+      apiStore: useApiStore(),
 
       sorterActive,
       searchersValues,
@@ -123,6 +138,15 @@ export default defineComponent({
       this.currentOptionsActive =
         q.length > 2 ||
         q.some((qv) => qv.startsWith('sortBy=') && qv.split('=')[1] != 'timestampFrom');
+    },
+
+    'mainStore.dispatcherStatsData'(stats) {
+      this.statsButtons.find((sb) => sb.tab == Journal.StatsTab.DISPATCHER_STATS)!.disabled =
+        stats === undefined;
+    },
+
+    async 'mainStore.dispatcherStatsName'() {
+      this.fetchDispatcherStats();
     }
   },
 
@@ -145,6 +169,16 @@ export default defineComponent({
   },
 
   methods: {
+    handleRouteParams() {
+      this.$router.push({
+        query: {
+          'search-date': this.searchersValues['search-date'] || undefined,
+          'search-station': this.searchersValues['search-station'] || undefined,
+          'search-dispatcher': this.searchersValues['search-dispatcher'] || undefined
+        }
+      });
+    },
+
     handleScroll(e: Event) {
       const listElement = e.target as HTMLElement;
       const scrollTop = listElement.scrollTop;
@@ -157,24 +191,44 @@ export default defineComponent({
     },
 
     handleQueries(query: LocationQuery) {
-      const queryKeys = Object.keys(query);
-
-      if (queryKeys.includes('sceneryName')) this.setSearchers('', `${query.sceneryName}`, '');
-      if (queryKeys.includes('dispatcherName'))
-        this.setSearchers('', '', `${query.dispatcherName}`);
+      this.setOptions(query as any);
     },
 
-    setSearchers(date: string, station: string, dispatcher: string) {
-      this.searchersValues['search-date'] = date;
-      this.searchersValues['search-station'] = station;
-      this.searchersValues['search-dispatcher'] = dispatcher;
+    async fetchDispatcherStats() {
+      if (!this.mainStore.dispatcherStatsName) {
+        this.mainStore.dispatcherStatsData = undefined;
+        return;
+      }
+
+      try {
+        const statsData: API.DispatcherStats.Response = await (
+          await this.apiStore.client!.get('api/getDispatcherStats', {
+            params: {
+              name: this.mainStore.dispatcherStatsName
+            }
+          })
+        ).data;
+
+        this.mainStore.dispatcherStatsData = statsData;
+      } catch (error) {
+        this.mainStore.dispatcherStatsData = undefined;
+
+        console.error('Ups! Wystąpił błąd przy próbie pobrania statystyk dyżurnego! :/');
+      }
+    },
+
+    setOptions(options: { [key: string]: string }) {
+      this.searchersValues['search-date'] = options['search-date'] ?? '';
+      this.searchersValues['search-station'] = options['search-station'] ?? '';
+      this.searchersValues['search-dispatcher'] = options['search-dispatcher'] ?? '';
+
+      this.sorterActive.id =
+        (options['sorter-active'] as Journal.DispatcherSorterKey) ?? 'timestampFrom';
     },
 
     resetOptions() {
-      this.setSearchers('', '', '');
+      this.setOptions({});
       this.sorterActive.id = 'timestampFrom';
-
-      this.fetchHistoryData();
     },
 
     async addHistoryData() {
@@ -183,8 +237,8 @@ export default defineComponent({
       this.countFromIndex = this.historyList.length;
 
       const responseData: API.DispatcherHistory.Response = await (
-        await axios.get(
-          `${DISPATCHERS_API_URL}?${this.currentQuery}&countFrom=${this.countFromIndex}`
+        await this.apiStore.client!.get(
+          `api/getDispatchers?${this.currentQuery}&countFrom=${this.countFromIndex}`
         )
       ).data;
 
@@ -232,7 +286,7 @@ export default defineComponent({
         if (reset) this.dataStatus = Status.Data.Loading;
 
         const responseData: API.DispatcherHistory.Response = await (
-          await axios.get(`${DISPATCHERS_API_URL}?${this.currentQuery}`)
+          await this.apiStore.client!.get(`api/getDispatchers?${this.currentQuery}`)
         ).data;
 
         if (!responseData) {
@@ -246,7 +300,7 @@ export default defineComponent({
         this.historyList = responseData;
 
         // Stats display
-        this.store.dispatcherStatsName =
+        this.mainStore.dispatcherStatsName =
           this.historyList.length > 0 && this.searchersValues['search-dispatcher'].trim()
             ? this.historyList[0].dispatcherName
             : '';

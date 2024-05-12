@@ -1,13 +1,14 @@
 {
   "optionSections": [
+    "status",
+    "timetables",
     "reality",
     "package-access",
     "access",
     "control",
-    "addons",
     "blockades",
     "signals",
-    "status"
+    "addons"
   ],
 
   "options": [
@@ -139,6 +140,20 @@
       "defaultValue": true
     },
     {
+      "id": "ASDEK",
+      "name": "ASDEK",
+      "section": "addons",
+      "value": true,
+      "defaultValue": true
+    },
+    {
+      "id": "noASDEK",
+      "name": "noASDEK",
+      "section": "addons",
+      "value": true,
+      "defaultValue": true
+    },
+    {
       "id": "SBL",
       "name": "SBL",
       "section": "blockades",
@@ -228,6 +243,20 @@
       "section": "status",
       "value": true,
       "defaultValue": true
+    },
+    {
+      "id": "withActiveTimetables",
+      "name": "withActiveTimetables",
+      "section": "timetables",
+      "value": true,
+      "defaultValue": true
+    },
+    {
+      "id": "withoutActiveTimetables",
+      "name": "withoutActiveTimetables",
+      "section": "timetables",
+      "value": true,
+      "defaultValue": true
     }
   ],
   "sliders": [
@@ -236,6 +265,7 @@
       "name": "minLevel",
       "minRange": 0,
       "maxRange": 20,
+      "step": 1,
       "value": 0,
       "defaultValue": 0
     },
@@ -244,14 +274,34 @@
       "name": "maxLevel",
       "minRange": 0,
       "maxRange": 20,
+      "step": 1,
       "value": 20,
       "defaultValue": 20
+    },
+    {
+      "id": "min-vmax",
+      "name": "minVmax",
+      "minRange": 0,
+      "maxRange": 200,
+      "step": 10,
+      "value": 0,
+      "defaultValue": 0
+    },
+    {
+      "id": "max-vmax",
+      "name": "maxVmax",
+      "minRange": 0,
+      "maxRange": 200,
+      "step": 10,
+      "value": 200,
+      "defaultValue": 200
     },
     {
       "id": "routes-1t-cat",
       "name": "minOneWayCatenary",
       "minRange": 0,
       "maxRange": 5,
+      "step": 1,
       "value": 0,
       "defaultValue": 0
     },
@@ -260,6 +310,7 @@
       "name": "minOneWay",
       "minRange": 0,
       "maxRange": 5,
+      "step": 1,
       "value": 0,
       "defaultValue": 0
     },
@@ -268,6 +319,7 @@
       "name": "minTwoWayCatenary",
       "minRange": 0,
       "maxRange": 5,
+      "step": 1,
       "value": 0,
       "defaultValue": 0
     },
@@ -276,6 +328,7 @@
       "name": "minTwoWay",
       "minRange": 0,
       "maxRange": 5,
+      "step": 1,
       "value": 0,
       "defaultValue": 0
     }

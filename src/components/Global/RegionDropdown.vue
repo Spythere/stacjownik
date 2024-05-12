@@ -30,7 +30,7 @@
 <script lang="ts">
 import { defineComponent, Ref, ref } from 'vue';
 import { regions as regionsJSON } from '../../data/options.json';
-import { useStore } from '../../store/mainStore';
+import { useMainStore } from '../../store/mainStore';
 
 interface Item {
   id: string;
@@ -41,7 +41,7 @@ interface Item {
 export default defineComponent({
   data() {
     return {
-      store: useStore(),
+      store: useMainStore(),
       selectedItemIndex: 0,
       listOpen: false
     };
@@ -60,6 +60,19 @@ export default defineComponent({
       handler(regionId) {
         this.selectedItemIndex = this.regionList.findIndex((reg) => reg.id == regionId);
       }
+    },
+    '$route.query.region': {
+      immediate: true,
+      handler(regionQuery: string) {
+        if (regionQuery) {
+          this.store.region =
+            regionsJSON.find(
+              (reg) =>
+                reg.id == regionQuery.toLocaleLowerCase() ||
+                reg.value.toLocaleLowerCase() == regionQuery.toLocaleLowerCase()
+            ) ?? regionsJSON[0];
+        }
+      }
     }
   },
 
@@ -70,8 +83,8 @@ export default defineComponent({
 
     regionList() {
       return regionsJSON.map((region) => {
-        const regionStationCount = this.store.onlineSceneryList.filter(
-          (scenery) => scenery.region == region.id
+        const regionStationCount = this.store.activeSceneryList.filter(
+          (scenery) => scenery.region == region.id && scenery.dispatcherId != -1
         ).length;
 
         const regionTrainCount =
@@ -126,14 +139,9 @@ button.selected-region {
   color: paleturquoise;
 
   font-weight: bold;
-  padding: 0.1em 0.5em;
 
   &:focus {
     background-color: #262626;
-  }
-
-  span {
-    margin-right: 10px;
   }
 }
 
@@ -184,6 +192,8 @@ li.option {
   }
 
   label {
+    width: 100%;
+    padding: 0.5em 0;
     position: relative;
 
     display: inline-block;
@@ -193,10 +203,6 @@ li.option {
     &:focus {
       background-color: #333333f2;
     }
-
-    padding: 0.5em 0;
-
-    width: 100%;
 
     cursor: pointer;
   }

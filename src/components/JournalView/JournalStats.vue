@@ -1,122 +1,85 @@
 <template>
-  <div class="journal-stats" v-if="!store.isOffline">
-    <div class="tabs">
+  <div
+    class="journal-stats dropdown"
+    v-if="!mainStore.isOffline"
+    @keydown.esc="currentStatsTab = null"
+  >
+    <div
+      class="dropdown_background"
+      v-if="currentStatsTab !== null"
+      @click="currentStatsTab = null"
+    ></div>
+
+    <div class="actions-bar">
       <button
-        v-for="tab in data.tabs"
-        :key="tab.name"
-        class="btn--filled"
-        :data-selected="tab.name == store.currentStatsTab && areStatsOpen"
-        :data-inactive="tab.inactive"
-        :data-disabled="tab.inactive"
-        :disabled="tab.inactive"
-        @click="onTabButtonClick(tab.name)"
+        v-for="button in statsButtons"
+        :key="button.tab"
+        class="btn--filled btn--image"
+        :data-selected="button.tab == currentStatsTab"
+        :data-disabled="button.disabled"
+        :disabled="button.disabled"
+        @click="onTabButtonClick(button.tab)"
       >
-        {{ $t(tab.titlePath) }}
+        <img
+          v-if="button.iconName"
+          :src="`/images/icon-${button.iconName}.svg`"
+          :alt="button.iconName"
+        />
+        {{ $t(button.localeKey) }}
       </button>
     </div>
 
-    <div class="stats-tab" v-show="areStatsOpen">
-      <keep-alive>
-        <JournalDailyStats
-          v-if="store.currentStatsTab == 'daily'"
-          @toggleStatsOpen="toggleStatsOpen"
-        />
-        <JournalDriverStats v-else-if="store.currentStatsTab == 'driver'" />
-      </keep-alive>
-    </div>
+    <transition name="dropdown-anim">
+      <div class="dropdown_wrapper" v-if="currentStatsTab !== null">
+        <keep-alive>
+          <component :is="currentStatsTab" :key="currentStatsTab"></component>
+        </keep-alive>
+      </div>
+    </transition>
   </div>
 </template>
 
-<script setup lang="ts">
-import { computed, onMounted, reactive, Ref, ref, watch } from 'vue';
-import { useStore } from '../../store/mainStore';
-import JournalDailyStats from './DailyStats.vue';
-import JournalDriverStats from './JournalDriverStats.vue';
+<script lang="ts">
+import { defineComponent, PropType } from 'vue';
+import { useMainStore } from '../../store/mainStore';
 import StorageManager from '../../managers/storageManager';
+import { Journal } from './typings';
+import JournalDailyStats from './JournalDailyStats.vue';
+import JournalDispatcherStats from '../JournalView/JournalDispatchers/JournalDispatcherStats.vue';
+import JournalDriverStats from '../JournalView/JournalTimetables/JournalDriverStats.vue';
 
-// Types
-type TStatTab = 'daily' | 'driver';
-
-// Variables
-const store = useStore();
-
-const lastDailyStatsOpen = ref(false);
-const areStatsOpen = ref(false);
-const lastClickedTab: Ref<'daily' | 'driver' | null> = ref(null);
-
-let data = reactive({
-  tabs: [
-    {
-      name: 'daily',
-      titlePath: 'journal.daily-stats-title'
-    },
-    {
-      name: 'driver',
-      titlePath: 'journal.driver-stats-title'
-      // inactive: true,
+export default defineComponent({
+  components: { JournalDailyStats, JournalDriverStats, JournalDispatcherStats },
+  props: {
+    statsButtons: {
+      type: Array as PropType<Journal.StatsButton[]>,
+      required: true
     }
-  ] as { name: TStatTab; titlePath: string; inactive?: boolean }[]
-});
+  },
+  data() {
+    return {
+      Journal,
+      mainStore: useMainStore(),
+      currentStatsTab: null as Journal.StatsTab | null
+    };
+  },
 
-// Methods
-function onTabButtonClick(tab: TStatTab) {
-  if (lastClickedTab.value == tab || !lastClickedTab.value || !areStatsOpen.value)
-    areStatsOpen.value = !areStatsOpen.value;
+  methods: {
+    onTabButtonClick(tab: Journal.StatsTab) {
+      this.currentStatsTab = tab == this.currentStatsTab ? null : tab;
 
-  if (tab == 'daily') {
-    StorageManager.setBooleanValue('dailyStatsOpen', areStatsOpen.value);
-    lastDailyStatsOpen.value = areStatsOpen.value;
-  }
-
-  store.currentStatsTab = tab;
-  lastClickedTab.value = tab;
-
-  if (areStatsOpen.value == false) store.currentStatsTab = null;
-}
-
-function toggleStatsOpen(open: boolean) {
-  areStatsOpen.value = open;
-}
-
-watch(
-  computed(() => store.driverStatsData),
-  (statsData) => {
-    store.currentStatsTab = statsData ? 'driver' : lastClickedTab.value;
-    areStatsOpen.value = statsData ? true : lastClickedTab.value !== null;
-  }
-);
-
-onMounted(() => {
-  if (StorageManager.getBooleanValue('dailyStatsOpen')) {
-    areStatsOpen.value = true;
-    store.currentStatsTab = 'daily';
+      StorageManager.setStringValue('journalStatsTab', this.currentStatsTab ?? '');
+    }
   }
 });
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/JournalStats.scss';
+@import '../../styles/dropdown.scss';
+@import '../../styles/dropdown_filters.scss';
 @import '../../styles/variables.scss';
 
-.tabs {
-  position: relative;
-
-  display: flex;
-  gap: 0.5em;
-
-  margin-bottom: 0.5em;
-
-  button {
-    font-weight: bold;
-    padding: 0.5em 0.75em;
-
-    &[data-inactive='true'] {
-      color: gray;
-    }
-
-    &[data-selected='true'] {
-      color: $accentCol;
-    }
-  }
+.dropdown_wrapper {
+  max-width: 100%;
 }
 </style>

@@ -1,17 +1,13 @@
 <template>
   <transition name="status-anim" mode="out-in" tag="div" class="train-table">
-    <div :key="store.dataStatuses.trains">
-      <div class="table-info" key="offline" v-if="store.isOffline">
+    <div :key="apiStore.dataStatuses.connection">
+      <div class="table-warning" key="offline" v-if="store.isOffline">
         {{ $t('app.offline') }}
       </div>
 
-      <Loading v-else-if="trains.length == 0 && store.dataStatuses.trains == 0" key="loading" />
+      <Loading v-else-if="apiStore.dataStatuses.connection == Status.Loading" key="loading" />
 
-      <div
-        class="table-info"
-        key="no-trains"
-        v-else-if="trains.length == 0 && store.dataStatuses.trains != 0"
-      >
+      <div class="table-warning" key="no-trains" v-else-if="trains.length == 0">
         {{ $t('trains.no-trains') }}
       </div>
 
@@ -24,7 +20,7 @@
           @click.stop="selectModalTrain(train.trainId, $event.currentTarget)"
           @keydown.enter="selectModalTrain(train.trainId, $event.currentTarget)"
         >
-          <TrainInfo :train="train" />
+          <TrainInfo :train="train" :extended="false" />
         </li>
       </transition-group>
     </div>
@@ -34,11 +30,11 @@
 <script lang="ts">
 import { defineComponent, inject, PropType, Ref } from 'vue';
 import modalTrainMixin from '../../mixins/modalTrainMixin';
-import Train from '../../scripts/interfaces/Train';
-import { useStore } from '../../store/mainStore';
+import { useMainStore } from '../../store/mainStore';
 import Loading from '../Global/Loading.vue';
 import TrainInfo from './TrainInfo.vue';
-import { Status } from '../../typings/common';
+import { Status, Train } from '../../typings/common';
+import { useApiStore } from '../../store/apiStore';
 
 export default defineComponent({
   components: { Loading, TrainInfo },
@@ -53,7 +49,8 @@ export default defineComponent({
   mixins: [modalTrainMixin],
 
   setup() {
-    const store = useStore();
+    const store = useMainStore();
+    const apiStore = useApiStore();
     const searchedTrain = inject('searchedTrain') as Ref<string>;
     const searchedDriver = inject('searchedDriver') as Ref<string>;
 
@@ -61,6 +58,8 @@ export default defineComponent({
       searchedTrain,
       searchedDriver,
       store,
+      apiStore,
+      Status: Status.Data,
       sorterActive: inject('sorterActive') as {
         id: string | number;
         dir: number;
@@ -72,7 +71,7 @@ export default defineComponent({
     dataStatus() {
       if (this.store.isOffline) return Status.Data.Offline;
 
-      if (this.trains.length == 0 && this.store.dataStatuses.trains == Status.Data.Loading)
+      if (this.trains.length == 0 && this.apiStore.dataStatuses.connection == Status.Data.Loading)
         return Status.Data.Loading;
 
       return Status.Data.Loaded;
@@ -105,7 +104,7 @@ export default defineComponent({
   overflow-x: hidden;
 }
 
-.table-info {
+.table-warning {
   text-align: center;
 
   padding: 1em 0;

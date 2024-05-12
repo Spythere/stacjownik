@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import inputData from '../data/options.json';
-import { useStore } from './mainStore';
-import { filterStations, sortStations } from '../scripts/utils/filterUtils';
+import { useMainStore } from './mainStore';
+import { filterStations, sortStations } from '../scripts/utils/stationFilterUtils';
 import { HeadIdsTypes } from '../scripts/data/stationHeaderNames';
 import StorageManager from '../managers/storageManager';
 import { Filter } from '../components/StationsView/typings';
@@ -16,6 +16,8 @@ const filterInitStates: Filter = {
   SPE: false,
   SUP: false,
   noSUP: false,
+  ASDEK: false,
+  noASDEK: false,
   ręczne: false,
   'ręczne+SPK': false,
   'ręczne+SCS': false,
@@ -48,9 +50,11 @@ const filterInitStates: Filter = {
   noSpaceStatus: false,
   unavailableStatus: false,
   unsignedStatus: false,
-
+  withActiveTimetables: false,
+  withoutActiveTimetables: false,
+  maxVmax: 200,
+  minVmax: 0,
   authors: '',
-
   onlineFromHours: 0
 };
 
@@ -70,26 +74,9 @@ export const useStationFiltersStore = defineStore('stationFiltersStore', {
     },
 
     filteredStationList: (state) => {
-      const store = useStore();
-      const savedStationNames = store.stationList.map((s) => s.name);
+      const store = useMainStore();
 
-      const onlineUnsavedStations = store.onlineSceneryList
-        .filter((os) => !savedStationNames.includes(os.name) && os.region == store.region.id)
-        .map((os) => ({
-          name: os.name,
-          generalInfo: undefined,
-          onlineInfo: os
-        }));
-
-      return [
-        ...onlineUnsavedStations,
-        ...store.stationList.map((station) => ({
-          ...station,
-          onlineInfo: store.onlineSceneryList.find(
-            (os) => os.name == station.name && os.region == store.region.id
-          )
-        }))
-      ]
+      return store.allStationInfo
         .filter((station) => filterStations(station, state.filters))
         .sort((a, b) => sortStations(a, b, state.sorterActive));
     }

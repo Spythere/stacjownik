@@ -6,22 +6,14 @@
         <span>{{ $t('scenery.timetables') }}</span>
 
         <span>
-          <span class="text--primary">{{ onlineScenery?.scheduledTrainCount.all || 0 }}</span>
+          <span class="text--primary">{{ onlineScenery?.scheduledTrainCount.all ?? 0 }}</span>
           <span> / </span>
           <span class="text--grayed">
-            {{ onlineScenery?.scheduledTrainCount.confirmed || '0' }}
+            {{ onlineScenery?.scheduledTrainCount.confirmed ?? 0 }}
           </span>
         </span>
 
         <span class="header_links" v-if="station">
-          <a
-            :href="`https://pragotron-td2.web.app/board?name=${station.name}`"
-            target="_blank"
-            :title="$t('scenery.pragotron-link')"
-          >
-            <img src="/images/icon-pragotron.svg" alt="icon-pragotron" />
-          </a>
-
           <a :href="tabliceZbiorczeHref" target="_blank" :title="$t('scenery.tablice-link')">
             <img src="/images/icon-tablice.ico" alt="icon-tablice" />
           </a>
@@ -33,12 +25,12 @@
           {{ (i > 0 && '&bull;') || '' }}
 
           <button
-            :key="cp.checkpointName"
+            :key="cp"
             class="checkpoint_item"
-            :class="{ current: chosenCheckpoint === cp.checkpointName }"
+            :class="{ current: chosenCheckpoint === cp }"
             @click="setCheckpoint(cp)"
           >
-            {{ cp.checkpointName }}
+            {{ cp }}
           </button>
         </span>
       </div>
@@ -48,7 +40,7 @@
       <transition-group name="list-anim">
         <div
           style="padding-bottom: 5em"
-          v-if="store.dataStatuses.trains == 0 && computedScheduledTrains.length == 0"
+          v-if="apiStore.dataStatuses.connection == 0 && computedScheduledTrains.length == 0"
           key="list-loading"
         >
           <Loading />
@@ -74,7 +66,7 @@
           class="timetable-item"
           v-else
           v-for="scheduledTrain in computedScheduledTrains"
-          :key="scheduledTrain.trainId"
+          :key="scheduledTrain.trainId + scheduledTrain.stopInfo.arrivalTimestamp"
           tabindex="0"
           @click.prevent.stop="selectModalTrain(scheduledTrain.trainId, $event.currentTarget)"
           @keydown.enter.prevent="selectModalTrain(scheduledTrain.trainId, $event.currentTarget)"
@@ -186,11 +178,11 @@ import { useRoute } from 'vue-router';
 import Loading from '../Global/Loading.vue';
 import dateMixin from '../../mixins/dateMixin';
 import routerMixin from '../../mixins/routerMixin';
-import Station from '../../scripts/interfaces/Station';
-import { useStore } from '../../store/mainStore';
+import { useMainStore } from '../../store/mainStore';
 import modalTrainMixin from '../../mixins/modalTrainMixin';
 import ScheduledTrainStatus from './ScheduledTrainStatus.vue';
-import { OnlineScenery } from '../../store/typings';
+import { useApiStore } from '../../store/apiStore';
+import { ActiveScenery, Station } from '../../typings/common';
 
 export default defineComponent({
   name: 'SceneryTimetable',
@@ -204,7 +196,7 @@ export default defineComponent({
       type: Object as PropType<Station>
     },
     onlineScenery: {
-      type: Object as PropType<OnlineScenery>
+      type: Object as PropType<ActiveScenery>
     }
   },
 
@@ -224,18 +216,20 @@ export default defineComponent({
     const route = useRoute();
     const currentURL = computed(() => `${location.origin}${route.fullPath}`);
 
-    const store = useStore();
+    const apiStore = useApiStore();
+    const mainStore = useMainStore();
 
     const chosenCheckpoint = ref(
       props.station?.generalInfo?.checkpoints?.length == 0
         ? ''
-        : props.station?.generalInfo?.checkpoints[0].checkpointName || null
+        : props.station?.generalInfo?.checkpoints[0] ?? null
     );
 
     return {
       currentURL,
       chosenCheckpoint,
-      store
+      apiStore,
+      mainStore
     };
   },
 
@@ -256,7 +250,7 @@ export default defineComponent({
             (train) =>
               train.checkpointName.toLocaleLowerCase() ==
                 (this.chosenCheckpoint || this.station!.name).toLocaleLowerCase() &&
-              train.region == this.store.region.id
+              train.region == this.mainStore.region.id
           )
           .sort((a, b) => {
             if (a.stopStatusID > b.stopStatusID) return 1;
@@ -275,12 +269,11 @@ export default defineComponent({
     loadSelectedOption() {
       if (!this.station) return;
 
-      this.chosenCheckpoint =
-        this.station.generalInfo?.checkpoints[0]?.checkpointName || this.station.name;
+      this.chosenCheckpoint = this.station.generalInfo?.checkpoints[0] ?? this.station.name;
     },
 
-    setCheckpoint(cp: { checkpointName: string }) {
-      this.chosenCheckpoint = cp.checkpointName;
+    setCheckpoint(cp: string) {
+      this.chosenCheckpoint = cp;
     }
   }
 });
@@ -410,13 +403,6 @@ export default defineComponent({
 
   .info-route {
     width: 100%;
-  }
-
-  .g-tooltip > .content {
-    z-index: 100;
-    color: white;
-
-    left: 110%;
   }
 
   img {

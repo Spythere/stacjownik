@@ -8,10 +8,20 @@
           ref="filterCardRef"
         />
 
-        <Donation :isModalOpen="isDonationModalOpen" @toggleModal="toggleDonationModal" />
+        <button
+          class="btn-donation btn--image"
+          ref="btn"
+          @click="isDonationModalOpen = true"
+          @focus="isDonationModalOpen = false"
+        >
+          <img src="/images/icon-dollar.svg" alt="dollar donation icon" />
+          <span>{{ $t('donations.button-title') }}</span>
+        </button>
       </div>
 
-      <StationTable :stations="computedStationList" @toggleDonationModal="toggleDonationModal" />
+      <DonationModal :isModalOpen="isDonationModalOpen" @toggleModal="toggleDonationModal" />
+      <StationTable @toggleDonationModal="toggleDonationModal" />
+      <StationStats />
     </div>
   </section>
 </template>
@@ -21,35 +31,28 @@ import { defineComponent } from 'vue';
 import StationTable from '../components/StationsView/StationTable.vue';
 import StationFilterCard from '../components/StationsView/StationFilterCard.vue';
 import { useStationFiltersStore } from '../store/stationFiltersStore';
-import { useStore } from '../store/mainStore';
-import Donation from '../components/Global/Donation.vue';
+import { useMainStore } from '../store/mainStore';
+import DonationModal from '../components/Global/DonationModal.vue';
+import StationStats from '../components/StationsView/StationStats.vue';
 
 export default defineComponent({
   components: {
     StationTable,
     StationFilterCard,
-    Donation
+    StationStats,
+    DonationModal
   },
 
   data: () => ({
     filterCardOpen: false,
-    modalHidden: true,
-    STORAGE_KEY: 'options_saved',
-    focusedStationName: '',
-    filterStore: useStationFiltersStore(),
-    store: useStore(),
+    isDonationModalOpen: false,
 
-    isDonationModalOpen: false
+    filterStore: useStationFiltersStore(),
+    store: useMainStore()
   }),
 
   mounted() {
     this.filterStore.setupFilters();
-  },
-
-  computed: {
-    computedStationList() {
-      return this.filterStore.filteredStationList;
-    }
   },
 
   methods: {
@@ -64,30 +67,6 @@ export default defineComponent({
 @import '../styles/variables.scss';
 @import '../styles/responsive.scss';
 
-@keyframes blinkAnim {
-  0%,
-  100% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0;
-  }
-}
-
-.indicator-anim {
-  &-enter-active,
-  &-leave-active {
-    transition: all 0.25s ease-in-out;
-  }
-
-  &-enter,
-  &-leave-to {
-    transform: translateY(100%);
-    opacity: 0;
-  }
-}
-
 .stations-view {
   position: relative;
   display: flex;
@@ -99,6 +78,7 @@ export default defineComponent({
 
 .wrapper {
   max-width: 100%;
+  width: var(--max-container-width);
 }
 
 .stations-options {
@@ -107,5 +87,21 @@ export default defineComponent({
   gap: 0.5em;
 
   margin-bottom: 0.5em;
+}
+
+button.btn-donation {
+  $btnColor: #254069;
+
+  background-color: $btnColor;
+
+  &:hover {
+    background-color: lighten($btnColor, 5%);
+  }
+
+  @include smallScreen {
+    span {
+      display: none;
+    }
+  }
 }
 </style>

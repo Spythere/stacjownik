@@ -1,10 +1,22 @@
 import { Status } from './common';
 
+export enum APIDataStatus {
+  OK = 'OK',
+  WARNING = 'WARNING'
+}
 export namespace API {
   export namespace ActiveData {
+    export interface APIStatuses {
+      stationsAPI: APIDataStatus;
+      trainsAPI: APIDataStatus;
+      dispatchersAPI: APIDataStatus;
+      sceneryRequirementsAPI: APIDataStatus;
+    }
+
     export interface Response {
       activeSceneries?: API.ActiveSceneries.Response;
       trains?: API.ActiveTrains.Response;
+      apiStatuses?: APIStatuses;
     }
   }
   export namespace DispatcherHistory {
@@ -31,7 +43,11 @@ export namespace API {
 
   export namespace DispatcherStats {
     export interface DistanceStat {
-      routeDistance: number;
+      routeDistance: number | null;
+    }
+
+    export interface DurationStat {
+      currentDuration: number | null;
     }
 
     export interface Count {
@@ -39,11 +55,18 @@ export namespace API {
     }
 
     export interface Response {
-      _sum: DistanceStat;
-      _max: DistanceStat;
-      _min: DistanceStat;
-      _avg: DistanceStat;
-      _count: Count;
+      services: {
+        count: number;
+        durationMax: number;
+        durationAvg: number;
+      } | null;
+
+      issuedTimetables: {
+        count: number;
+        distanceMax: number;
+        distanceAvg: number;
+        distanceSum: number;
+      } | null;
     }
   }
 
@@ -105,8 +128,8 @@ export namespace API {
     export type Response = Data[];
 
     export interface Data {
+      id: string;
       trainNo: number;
-
       mass: number;
       length: number;
       speed: number;
@@ -240,22 +263,6 @@ export namespace API {
     export type Response = Data[];
   }
 
-  export namespace RollingStock {
-    export interface Response {
-      usage: Record<string, string>;
-      info: Info;
-    }
-
-    export interface Info {
-      'loco-e': [string, string, string, string, boolean][];
-      'loco-s': [string, string, string, string, boolean][];
-      'loco-szt': [string, string, string, string, boolean][];
-      'loco-ezt': [string, string, string, string, boolean][];
-      'car-passenger': [string, string, boolean, boolean, string][];
-      'car-cargo': [string, string, boolean, boolean, string][];
-    }
-  }
-
   export namespace DailyStats {
     export interface Response {
       totalTimetables: number;
@@ -263,21 +270,47 @@ export namespace API {
       distanceAvg: number;
       maxTimetable: API.TimetableHistory.Data | null;
 
-      mostActiveDispatchers: {
-        name: string;
-        count: number;
-      }[];
+      globalDiff: GlobalDiff;
+      globalMax: GlobalMax;
 
-      mostActiveDrivers: {
-        name: string;
-        distance: number;
-      }[];
+      mostActiveDispatchers: MostActiveDispatcher[];
+      mostActiveDrivers: MostActiveDriver[];
 
-      longestDuties: {
-        name: string;
-        duration: number;
-        station: string;
-      }[];
+      longestDuties: LongestDuty[];
+    }
+
+    export interface MostActiveDispatcher {
+      name: string;
+      count: number;
+    }
+
+    export interface MostActiveDriver {
+      name: string;
+      distance: number;
+    }
+
+    export interface LongestDuty {
+      name: string;
+      duration: number;
+      station: string;
+    }
+
+    export interface GlobalDiff {
+      rippedSwitches: number;
+      derailments: number;
+      skippedStopSignals: number;
+      radioStops: number;
+      kills: number;
+      drivenKilometers: number;
+      routedTrains: number;
+    }
+
+    export interface GlobalMax {
+      _max: {
+        drivers: number;
+        dispatchers: number;
+        timetables: number;
+      };
     }
   }
 
@@ -329,5 +362,13 @@ export namespace GithubAPI {
       zipball_url: string;
       body: string;
     }
+  }
+}
+
+export namespace Websocket {
+  export interface Payload {
+    activeSceneries: API.ActiveSceneries.Response;
+    activeTrains: API.ActiveTrains.Response;
+    connectedSocketCount: number;
   }
 }

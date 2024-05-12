@@ -1,6 +1,5 @@
 import { TrainFilter, TrainFilterId } from '../components/TrainsView/typings';
-import Train from '../scripts/interfaces/Train';
-import { TrainStop } from '../store/typings';
+import { Train, TrainStop } from '../typings/common';
 
 function confirmedPercentage(stops: TrainStop[] | undefined) {
   if (!stops) return -1;

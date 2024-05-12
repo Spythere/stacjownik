@@ -1,12 +1,5 @@
 export namespace Journal {
-  export type DispatcherSearcher = {
-    [key in 'search-dispatcher' | 'search-station' | 'search-date']: string;
-  };
-
-  export interface DispatcherSorter {
-    id: 'timestampFrom' | 'duration';
-    dir: -1 | 1;
-  }
+  export type DispatcherSearchKey = 'search-dispatcher' | 'search-station' | 'search-date';
 
   export type TimetableSearchKey =
     | 'search-driver'
@@ -19,11 +12,29 @@ export namespace Journal {
     [key in TimetableSearchKey]: string;
   };
 
+  export type DispatcherSearchType = {
+    [key in DispatcherSearchKey]: string;
+  };
+
+  export type TimetableSorterKey = 'timetableId' | 'beginDate' | 'distance' | 'total-stops';
+  export type DispatcherSorterKey = 'timestampFrom' | 'duration';
+
+  export interface DispatcherSorter {
+    id: DispatcherSorterKey;
+    dir: -1 | 1;
+  }
+
+  export interface TimetableSorter {
+    id: TimetableSorterKey;
+    dir: 'asc' | 'desc';
+  }
+
   export const enum TimetableFilterId {
+    ALL_STATUSES = 'all-statuses',
     ACTIVE = 'active',
     FULFILLED = 'fulfilled',
     ABANDONED = 'abandoned',
-    ALL = 'all',
+    ALL_SPECIALS = 'all-specials',
     TWR = 'twr',
     SKR = 'skr',
     TWR_SKR = 'twr-skr'
@@ -31,19 +42,26 @@ export namespace Journal {
 
   export enum FilterSection {
     TIMETABLE_STATUS = 'timetable-status',
-    TWRSKR = 'twrskr'
+    SPECIAL = 'special'
   }
 
   export interface TimetableFilter {
     id: TimetableFilterId;
     filterSection: string;
     isActive: boolean;
+    default: boolean;
   }
 
-  export type TimetableSorterKey = 'timetableId' | 'beginDate' | 'distance' | 'total-stops';
+  export enum StatsTab {
+    DRIVER_STATS = 'journal-driver-stats',
+    DISPATCHER_STATS = 'journal-dispatcher-stats',
+    DAILY_STATS = 'journal-daily-stats'
+  }
 
-  export interface TimetableSorter {
-    id: TimetableSorterKey;
-    dir: 'asc' | 'desc';
+  export interface StatsButton {
+    tab: StatsTab;
+    localeKey: string;
+    iconName: string;
+    disabled: boolean;
   }
 }

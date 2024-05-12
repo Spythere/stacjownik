@@ -1,6 +1,5 @@
 import { defineComponent } from 'vue';
-import Train from '../scripts/interfaces/Train';
-import { TrainStop } from '../store/typings';
+import { Train, TrainStop } from '../typings/common';
 
 export default defineComponent({
   data: () => ({
@@ -51,8 +50,8 @@ export default defineComponent({
       return diffMins < 1
         ? this.$t('trains.last-seen-now')
         : diffMins < 2
-        ? this.$t('trains.last-seen-min')
-        : this.$t('trains.last-seen-ago', { minutes: diffMins });
+          ? this.$t('trains.last-seen-min')
+          : this.$t('trains.last-seen-ago', { minutes: diffMins });
     },
 
     displayTrainPosition(train: Train) {
@@ -148,11 +147,6 @@ export default defineComponent({
       if (distance < 1000) return `${distance}m`;
 
       return `${(distance / 1000).toPrecision(2)}km`;
-    },
-
-    onImageError(e: Event) {
-      const imageEl = e.target as HTMLImageElement;
-      imageEl.src = '/images/icon-unknown.png';
     }
   }
 });

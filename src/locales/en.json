@@ -2,6 +2,7 @@
   "donations": {
     "button-title": "TOSS A COIN",
     "header": "Toss a coin to Stacjownik!",
+    "donator-title": "Project is supported by more than <b>{count}</b> people, including:",
     "p1": "<b>Hello o7!</b> This is Spythere, the creator of Stacjownik, Pojazdownik and several other applications that enhance the gameplay of Train Driver 2!",
     "p2": "{b1} is a completely free tool, created and continuously developed for the Train Driver 2 simulator community since 2020. However, a part of the project is sustained solely through my private financial contribution.  Features such as  {b2} or {b3} (operating on my {link} - to which you are warmly invited) must function on a dedicated server where they can collect and process data, and then display it on the website.",
     "p2-b1": "Stacjownik",
@@ -12,7 +13,7 @@
     "p4": "Every person who decides to contribute at least {b1} (in case of PayPal it must be a payment including additional transaction fees) for the development of Stacjownik, will receive (upon a personal request) {img}{b2} of username in the app and on my Discord server (after verifying the payment author, preferably by providing the username directly with the payment).",
     "p4-b1": "5 PLN",
     "p4-b2": "a symbolic highlight",
-    "p5": "Thank you and enjoy the app!<br />~ Spythegre",
+    "p5": "Thank you and enjoy the app!<br />~ Spythere",
     "action-exit": "Maybe next time...",
     "action-paypal": "DONATE WITH PAYPAL",
     "action-buycoffee": "BUY ME A COFFEE!",
@@ -24,6 +25,13 @@
     "refresh": "REFRESH",
     "TWR": "High risk freight train",
     "SKR": "Train with exceeded gauge"
+  },
+  "update": {
+    "title": "Stacjownik update!",
+    "confirm": "ROGER THAT!",
+    "no-data": "No data about the latest app update has been found",
+    "info-1": "This changelog will be available to see once again after clicking the version number in the footer",
+    "info-2": "The full app changelog available on <a href='https://github.com/Spythere/stacjownik' target='_blank'>the project's GitHub</a>"
   },
   "app": {
     "sceneries": "SCENERIES",
@@ -40,12 +48,10 @@
   "footer": {
     "discord": "Stacjownik Discord server"
   },
-  "update": {
-    "title": "New version of the app is available!",
-    "paragraph1": "Enjoy the application and may the green signal be with you!",
-    "release-link": "Click here to browse version changelog (GitHub)",
-    "confirm-button": "UPDATE NOW",
-    "later-button": "LATER"
+
+  "vehicle-preview": {
+    "loading": "Loading preview...",
+    "error": "Oops! The vehicle preview seems to be missing! :/"
   },
   "data-status": {
     "S1-offline": "<b>S1 signal</b> <br> The app is working in offline mode!",
@@ -56,20 +62,6 @@
     "S5-timetables": "<b>S5 signal</b> <br> Timetables might be incorrect or missing!",
     "S5-dispatchers": "<b>S5 signal</b> <br> Cannot load dispatchers status data!",
     "S5-trains": "<b>S5 signal</b> <br> Cannot load online trains data!"
-  },
-  "desc": {
-    "control-type": "Control type: ",
-    "signals-type": "Signals type:  ",
-    "SBL": "This scenery has automatic block signalling (ABS/SBL) system on following routes: ",
-    "SUP": "Requires the SUP application (level crossing remote control simulator)",
-    "TWB-all": "This scenery has two-way route blockade on all routes",
-    "TWB-routes": "This scenery has two-way route blockade on following routes: ",
-    "default": "This scenery is available by default",
-    "non-public": "This scenery is not public",
-    "unknown": "This scenery isn't recognizable right now",
-    "unavailable": "This scenery is unavailable",
-    "abandoned": "This scenery is no longer supported by its creators",
-    "real": "Scenery with real lines: "
   },
   "signals": {
     "title": "Signal type",
@@ -89,7 +81,20 @@
     "ręczne+SCS": "manual + SCS",
     "mechaniczne": "levers (mechanical)",
     "mechaniczne+SPK": "levers + SPK",
-    "mechaniczne+SCS": "levers + SCS"
+    "mechaniczne+SCS": "levers + SCS",
+
+    "abbrevs": {
+      "SPK": "SPK",
+      "SCS": "SCS",
+      "SCS-SPK": "S/S",
+      "SPE": "SPE",
+      "ręczne": "R",
+      "ręczne+SPK": "R",
+      "ręczne+SCS": "R",
+      "mechaniczne": "M",
+      "mechaniczne+SPK": "M",
+      "mechaniczne+SCS": "M"
+    }
   },
   "status": {
     "online": "UNTIL ",
@@ -144,7 +149,8 @@
     "filter-withComments": "COMMENTS",
     "filter-twr": "HIGH RISK CARGO",
     "filter-skr": "EXCEEDED GAUGE",
-    "filter-twr-skr": "ALL TYPES",
+    "filter-twr-skr": "BOTH TYPES",
+    "filter-all-specials": "ALL",
     "filter-common": "NO WARNINGS",
     "filter-passenger": "PASSENGER",
     "filter-freight": "FREIGHT",
@@ -156,9 +162,9 @@
     "filter-clear": "CLEAR FILTERS",
 
     "filter-section-timetable-status": "TIMETABLE STATUS",
-    "filter-section-twrskr": "WARNINGS",
+    "filter-section-special": "SPECIAL TYPE",
 
-    "filter-all": "ALL ENTRIES",
+    "filter-all-statuses": "ALL",
     "filter-abandoned": "ABANDONED",
     "filter-fulfilled": "FULFILLED",
     "filter-active": "ACTIVE"
@@ -175,7 +181,9 @@
       "signals": "SIGNALLING",
       "addons": "ADDITIONAL PROGRAMS",
       "blockades": "BLOCK SIGNALLING",
-      "status": "ONLINE STATUS"
+      "status": "ONLINE STATUS",
+      "timetables": "ACTIVE TIMETABLES",
+      "spawns": "OPEN SPAWNS"
     },
 
     "all-available": "ALL AVAILABLE",
@@ -209,6 +217,9 @@
     "SUP": "SUP (RASP-UZK)",
     "noSUP": "WITHOUT SUP",
 
+    "ASDEK": "ASDEK",
+    "noASDEK": "NO ASDEK",
+
     "SBL": "AUTOMATIC (SBL)",
     "PBL": "SEMIAUTOMATIC (PBL)",
 
@@ -218,15 +229,25 @@
     "historical": "HISTORICAL",
     "free": "FREE",
     "occupied": "OCCUPIED",
+
+    "withActiveTimetables": "ACTIVE",
+    "withoutActiveTimetables": "NO ACTIVE",
+
     "sliders": {
       "min-lvl": "MIN. REQUIRED DISPATCHER LEVEL",
       "max-lvl": "MAX. REQUIRED DISPATCHER LEVEL",
+      "min-vmax": "MIN. SCENERY ROUTE SPEED",
+      "max-vmax": "MAX. SCENERY ROUTE SPEED",
       "routes-1t-cat": "MIN. CATENARY SINGLE TRACK ROUTES",
       "routes-1t-other": "MIN. OTHER SINGLE TRACK ROUTES",
       "routes-2t-cat": "MIN. CATENARY DOUBLE TRACK ROUTES",
       "routes-2t-other": "MIN. OTHER DOUBLE TRACK ROUTES"
     },
-    "authors-search": "Search by author (other filters apply)",
+
+    "authors-search": "SEARCH BY AUTHOR NAME (other filters apply):",
+    "authors-placeholder": "Enter the author nickname...",
+    "authors-button-title": "Search",
+
     "minimum-hours-title": "SHOW ONLY SCENERIES UNTIL:",
     "now": "NOW",
     "hour": "h",
@@ -237,20 +258,53 @@
     "close": "CLOSE FILTERS"
   },
   "sceneries": {
-    "station": "Station",
-    "min-lvl": "Min. dispatcher\nlevel",
-    "status": "Status",
-    "dispatcher": "Dispatcher",
-    "dispatcher-lvl": "Dispatcher\nlevel",
-    "routes": "Routes\ndouble / single",
-    "general": "General info",
-    "user": "Drivers online",
-    "spawn": "Spawns online",
-    "timetableAll": "Active timetables",
-    "timetableConfirmed": "Confirmed timetables",
-    "timetableUnconfirmed": "Unconfirmed timetables",
+    "headers": {
+      "station": "Scenery",
+      "min-lvl": "Scenery\nlevel",
+      "status": "Status",
+      "dispatcher": "Dispatcher",
+      "dispatcher-lvl": "Dispatcher\nlevel",
+      "routes-single": "1-track\nroutes",
+      "routes-double": "2-track\nroutes",
+      "general": "General info",
+      "user": "Drivers online",
+      "like": "Dispatcher rating",
+      "spawn": "Spawns online",
+      "timetableAll": "Active timetables",
+      "timetableConfirmed": "Confirmed timetables",
+      "timetableUnconfirmed": "Unconfirmed timetables"
+    },
+    "info": {
+      "control-type": "Control type: ",
+      "signals-type": "Signals type: ",
+      "SBL": "This scenery has automatic block signalling (ABS/SBL) system on following routes: ",
+      "SUP": "Requires the SUP program (level crossing remote control)",
+      "ASDEK": "Requires the ASDEK program (defect detection of moving rolling stock)",
+      "TWB-all": "This scenery has two-way route blockade on all routes",
+      "TWB-routes": "This scenery has two-way route blockade on following routes: ",
+      "default": "This scenery is available by default",
+      "non-public": "This scenery is not public",
+      "unavailable": "This scenery is unavailable",
+      "abandoned": "This scenery is no longer supported by its creators",
+      "unknown": "This scenery isn't recognizable right now",
+      "real": "Scenery with real lines: ",
+      "double-track-routes-catenary": "Electrified double-track routes count: ",
+      "single-track-routes-catenary": "Electrified single-track routes count: ",
+      "double-track-routes-other": "Not electrified double-track routes count: ",
+      "single-track-routes-other": "Not electrified single-track routes count:  "
+    },
     "no-stations": "No stations to show here!",
     "scenery-search": "Search for scenery..."
+  },
+  "station-stats": {
+    "u-factor": "U-factor",
+    "u-factor-tooltip": "(?) Current server traffic factor (driver count divided by dispatcher count)",
+    "avg-timetable-count": "Average timetable count for one dispatcher:",
+    "single-track-count": "Available single track routes:",
+    "double-track-count": "Available double track routes:",
+    "electrified": "(electrified)",
+    "not-electrified": "(not electr.)",
+    "open-spawns": "Open spawns:"
   },
   "trains": {
     "no-trains": "No trains to show here!",
@@ -293,7 +347,9 @@
     "last-seen-ago": "since {minutes} minutes",
 
     "scenery-offline": "Offline ride",
-    "timeout": "An error occured while trying to refresh SWDR timetable data!"
+    "timeout": "An error occured while trying to refresh SWDR timetable data!",
+
+    "journal-button": "DRIVER'S JOURNAL"
   },
   "train-stats": {
     "stats-button": "STATISTICS",
@@ -329,6 +385,7 @@
     "timetable-active": "ACTIVE",
     "timetable-fulfilled": "FULFILLED",
     "timetable-abandoned": "ABANDONED",
+    "timetable-online-button": "ONLINE TIMETABLE",
 
     "online-since": "ONLINE SINCE",
     "duty-lasted": "The duty lasted",
@@ -337,7 +394,7 @@
     "minutes": "{value} min | {value} mins",
     "seconds": "{value} s",
 
-    "stock-info": "EXTRA INFO",
+    "stock-info": "DETAILS",
     "stock-length": "Length",
     "stock-mass": "Mass",
     "stock-max-speed": "Max. speed",
@@ -347,29 +404,49 @@
     "last-seen-at": "Last seen at",
     "currently-at": "Currently at",
 
-    "stats-title": "DRIVING STATISTICS OF",
+    "driver-stats": {
+      "button": "DRIVER STATS",
+      "title": "{name}'s DRIVER STATS",
+      "info": "Enter a proper nickname into filters [F] to see user's driving statistics!",
+      "timetables": "TIMETABLES",
+      "longest-timetable": "LONGEST TIMETABLE",
+      "avg-timetable": "AVERAGE TIMETABLE LENGTH",
+      "distance": "DISTANCE",
+      "stations": "STATIONS"
+    },
 
-    "stats-timetables": "TIMETABLES",
-    "stats-longest-timetable": "LONGEST TIMETABLE",
-    "stats-avg-timetable": "AVERAGE TIMETABLE LENGTH",
-    "stats-distance": "DISTANCE",
-    "stats-stations": "STATIONS",
+    "daily-stats": {
+      "button": "DAILY STATS",
+      "title": "STATS OF THE DAY",
+      "info": "Today's statistics are unavailable yet!",
+      "total": "Issued timetables: {count} (total distance: {distance})",
+      "longest": "The longest timetable: #{id} (made by {author} for {driver}, distance: {distance})",
+      "most-active-dr": "The most active dispatcher: {dispatcher} (created {count})",
+      "most-active-dr-many": "The most active dispatchers: {dispatchers} (created {count} each)",
+      "most-active-driver": "The most active driver: {driver} (total driven distance: {distance})",
+      "longest-duties": "The longest service: {dispatcher} at {station} (duration: {duration})",
+      "count": "timetable | timetables",
 
-    "timetable-stats-title": "Daily stats on {date}",
-    "timetable-stats-total": "Issued timetables: {count} (total distance: {distance})",
-    "timetable-stats-longest": "The longest timetable: #{id} (made by {author} for {driver}, distance: {distance})",
-    "timetable-stats-most-active-dr": "The most active dispatcher: {dispatcher} (created {count})",
-    "timetable-stats-most-active-dr-many": "The most active dispatchers: {dispatchers} (created {count} each)",
-    "timetable-stats-most-active-driver": "The most active driver: {driver} (total driven distance: {distance})",
-    "timetable-stats-longest-duties": "The longest service: {dispatcher} at {station} (duration: {duration})",
+      "rippedSwitches": "RIPPED SWITCHES",
+      "derailments": "DERAILMENTS",
+      "skippedStopSignals": "SKIPPED STOP SIGNALS",
+      "radioStops": "RADIOSTOPS",
+      "kills": "KILLS"
+    },
 
-    "timetable-count": "timetable | timetables",
-
-    "daily-stats-title": "DAILY STATS",
-    "daily-stats-info": "Today's statistics are unavailable yet!",
-
-    "driver-stats-title": "DRIVER STATS",
-    "driver-stats-info": "Enter a proper nickname into filters [F] to see user's driving statistics!",
+    "dispatcher-stats": {
+      "button": "DISPATCHER STATS",
+      "title": "{name}'s DISPATCHER STATS",
+      "empty": "This user has no statistics saved yet!",
+      "info": "Enter a proper nickname into filters [F] to see user's dispatcher statistics!",
+      "services-count": "SERVICES",
+      "service-max": "MAX SERVICE DURATION",
+      "service-avg": "AVG SERVICE DURATION",
+      "timetables-count": "ISSUED TIMETABLES",
+      "timetables-sum": "TIMETABLES DISTANCE SUM",
+      "timetables-max": "LONGEST TIMETABLE",
+      "timetables-avg": "AVG TIMETABLE DISTANCE"
+    },
 
     "stats-loading": "Fetching statistics...",
     "stats-error": "Oops! An unexpected error occurred while trying to fetch statistics! :/",

@@ -14,8 +14,7 @@
 
 <script lang="ts">
 import { PropType, defineComponent } from 'vue';
-import Station from '../../scripts/interfaces/Station';
-import { OnlineScenery } from '../../store/typings';
+import { ActiveScenery, Station } from '../../typings/common';
 
 export default defineComponent({
   props: {
@@ -29,7 +28,7 @@ export default defineComponent({
     },
 
     onlineScenery: {
-      type: Object as PropType<OnlineScenery>
+      type: Object as PropType<ActiveScenery>
     }
   }
 });

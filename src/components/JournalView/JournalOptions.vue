@@ -9,7 +9,7 @@
         ref="button"
       >
         <img src="/images/icon-filter2.svg" alt="Open filters" />
-        {{ $t('options.filters') }} [F]
+        [F] {{ $t('options.filters') }}
         <span class="active-indicator" v-if="currentOptionsActive"></span>
       </button>
 
@@ -33,7 +33,7 @@
           <h1 class="option-title">{{ $t('options.search-title') }}</h1>
           <div class="search_content">
             <div class="search" v-for="(_, propName) in searchersValues" :key="propName">
-              <label v-if="propName == 'search-date'" for="date">{{
+              <label v-if="propName == 'search-date'" for="search-date">{{
                 $t(`options.search-${optionsType}-date`)
               }}</label>
 
@@ -41,12 +41,13 @@
                 <input
                   class="search-input"
                   v-model="searchersValues[propName]"
-                  @keydown.enter="onSearchConfirm"
+                  @keydown.enter="searchConfirm"
                   @focus="preventKeyDown = true"
                   @blur="preventKeyDown = false"
                   :placeholder="$t(`options.${propName}`)"
                   :type="propName == 'search-date' ? 'date' : 'text'"
                   :min="propName == 'search-date' ? '2022-02-01' : undefined"
+                  :id="`${propName}`"
                   :list="propName.toString()"
                 />
 
@@ -110,14 +111,12 @@
 </template>
 
 <script lang="ts">
-import axios from 'axios';
 import { defineComponent, inject, PropType } from 'vue';
 import keyMixin from '../../mixins/keyMixin';
-import { URLs } from '../../scripts/utils/apiURLs';
-import { useStore } from '../../store/mainStore';
+import { useMainStore } from '../../store/mainStore';
 import { Journal } from './typings';
-import { API } from '../../typings/api';
 import { Status } from '../../typings/common';
+import { useApiStore } from '../../store/apiStore';
 
 export default defineComponent({
   emits: ['onSearchConfirm', 'onOptionsReset', 'onRefreshData'],
@@ -158,7 +157,8 @@ export default defineComponent({
       dispatcherSuggestions: [] as string[],
 
       searchTimeout: 0,
-      store: useStore(),
+      store: useMainStore(),
+      apiStore: useApiStore(),
 
       JournalFilterSection: Journal.FilterSection
     };
@@ -182,12 +182,6 @@ export default defineComponent({
   },
 
   watch: {
-    async 'store.driverStatsName'() {
-      await this.fetchDriverStats();
-
-      // if (value) this.store.currentStatsTab = 'driver';
-    },
-
     async 'searchersValues.search-driver'(value: string | undefined) {
       clearTimeout(this.searchTimeout);
 
@@ -206,29 +200,34 @@ export default defineComponent({
   },
 
   methods: {
-    async fetchDriverStats() {
-      this.store.driverStatsData = undefined;
+    // filters & sorters from URL params
+    handleRouteParams() {
+      this.$router.push({
+        query: {
+          ...this.$route.query,
+          'sorter-active':
+            this.sorterOptionIds.indexOf(`${this.sorterActive.id}`) != 0
+              ? this.sorterActive.id
+              : undefined,
+          ...Object.keys(this.searchersValues).reduce(
+            (acc, k) => {
+              const searchVal = this.searchersValues[k as Journal.TimetableSearchKey];
 
-      if (!this.store.driverStatsName) {
-        this.store.driverStatsStatus = Status.Data.Initialized;
-        return;
-      }
+              acc[k] = searchVal || undefined;
 
-      try {
-        this.store.driverStatsStatus = Status.Data.Loading;
-
-        const statsData: API.DriverStats.Response = await (
-          await axios.get(
-            `${URLs.stacjownikAPI}/api/getDriverInfo?name=${this.store.driverStatsName}`
+              return acc;
+            },
+            {} as { [k: string]: string | undefined }
+          ),
+          ...this.filterList?.reduce(
+            (acc, f) => {
+              if (f.isActive) acc[f.filterSection] = f.default ? undefined : f.id;
+              return acc;
+            },
+            {} as { [k: string]: string | undefined }
           )
-        ).data;
-
-        this.store.driverStatsData = statsData;
-        this.store.driverStatsStatus = Status.Data.Loaded;
-      } catch (error) {
-        this.store.driverStatsStatus = Status.Data.Error;
-        console.error('Ups! Wystąpił błąd przy próbie pobrania statystyk maszynisty! :/');
-      }
+        }
+      });
     },
 
     refreshData() {
@@ -240,17 +239,17 @@ export default defineComponent({
 
       window.clearTimeout(this.searchTimeout);
 
-      this.searchTimeout = setTimeout(async () => {
+      this.searchTimeout = window.setTimeout(async () => {
         try {
           const suggestions: string[] = await (
-            await axios.get(`${URLs.stacjownikAPI}/api/get${type}Suggestions?name=${value}`)
+            await this.apiStore.client!.get(`api/get${type}Suggestions?name=${value}`)
           ).data;
 
           this[`${type}Suggestions`] = suggestions;
         } catch (error) {
           this[`${type}Suggestions`] = [];
         }
-      }, 450);
+      }, 250);
     },
 
     // Override keyMixin function
@@ -265,7 +264,7 @@ export default defineComponent({
     onSorterChange(item: { id: string | number; value: string }) {
       this.sorterActive.id = item.id;
       this.sorterActive.dir = -1;
-      this.$emit('onSearchConfirm');
+      this.searchConfirm();
     },
 
     onFilterChange(filter: Journal.TimetableFilter) {
@@ -275,25 +274,27 @@ export default defineComponent({
         .forEach((f) => (f.isActive = false));
       filter.isActive = true;
 
-      this.$emit('onSearchConfirm');
+      this.searchConfirm();
     },
 
     onInputClear(id: any) {
       this.searchersValues[id] = '';
-      this.$emit('onSearchConfirm');
+      this.searchConfirm();
     },
 
-    onSearchConfirm() {
+    searchConfirm() {
       this.$emit('onSearchConfirm');
+      this.handleRouteParams();
     },
 
     onSearchButtonConfirm() {
       this.showOptions = false;
-      this.$emit('onSearchConfirm');
+      this.searchConfirm();
     },
 
     onResetButtonClick() {
       this.$emit('onOptionsReset');
+      this.handleRouteParams();
     }
   }
 });

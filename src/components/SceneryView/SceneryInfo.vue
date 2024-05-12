@@ -89,8 +89,7 @@ import SceneryInfoIcons from './SceneryInfo/SceneryInfoIcons.vue';
 import SceneryInfoUserList from './SceneryInfo/SceneryInfoUserList.vue';
 import SceneryInfoSpawnList from './SceneryInfo/SceneryInfoSpawnList.vue';
 import SceneryInfoRoutes from './SceneryInfo/SceneryInfoRoutes.vue';
-import Station from '../../scripts/interfaces/Station';
-import { OnlineScenery } from '../../store/typings';
+import { ActiveScenery, Station } from '../../typings/common';
 
 export default defineComponent({
   components: {
@@ -106,7 +105,7 @@ export default defineComponent({
     },
 
     onlineScenery: {
-      type: Object as PropType<OnlineScenery>
+      type: Object as PropType<ActiveScenery>
     }
   }
 });

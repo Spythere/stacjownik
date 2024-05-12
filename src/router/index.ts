@@ -1,6 +1,4 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
-import JournalDispatchersVue from '../views/JournalDispatchers.vue';
-import JournalTimetablesVue from '../views/JournalTimetables.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -18,7 +16,8 @@ const routes: Array<RouteRecordRaw> = [
     props: (route) => ({
       train: route.query.train,
       driver: route.query.driver,
-      trainId: route.query.trainId
+      trainId: route.query.trainId,
+      region: route.query.region
     })
   },
   {
@@ -37,20 +36,17 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/journal/timetables',
     name: 'JournalTimetables',
-    component: JournalTimetablesVue,
+    component: () => import('../views/JournalTimetables.vue'),
     props: (route) => ({
-      trainNo: route.query.trainNo,
-      driverName: route.query.driverName,
-      timetableId: route.query.timetableId
+      region: route.query.region
     })
   },
   {
     path: '/journal/dispatchers',
     name: 'JournalDispatchers',
-    component: JournalDispatchersVue,
+    component: () => import('../views/JournalDispatchers.vue'),
     props: (route) => ({
-      sceneryName: route.query.sceneryName,
-      dispatcherName: route.query.dispatcherName
+      region: route.query.region
     })
   },
   {
@@ -61,12 +57,10 @@ const routes: Array<RouteRecordRaw> = [
 
 const router = createRouter({
   scrollBehavior(to, from, savedPosition) {
-    if (to.name == 'SceneryView' && from.name && from.query['view'] === undefined)
+    if (to.name == 'SceneryView' && from.name !== to.name && from.query['view'] === undefined)
       return { el: `.app_main` };
 
     if (savedPosition) return savedPosition;
-
-    // if (from.name == 'SceneryView' && to.name == 'StationsView') return { el: `.last-selected`, top: 20 };
   },
   history: createWebHistory(),
   routes

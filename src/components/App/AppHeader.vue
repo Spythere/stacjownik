@@ -29,11 +29,6 @@
             <img src="/images/icon-dispatcher.svg" alt="icon dispatcher" />
             <span class="text--primary">{{ onlineDispatchersCount }}</span>
 
-            <!-- <span class="g-tooltip">
-              <b class="text--primary">{{ factorU }}U</b>
-              <div class="content">Test</div>
-            </span> -->
-
             <span class="text--grayed"> / </span>
             <span class="text--primary">{{ onlineTrainsCount }}</span>
             <img src="/images/icon-train.svg" alt="icon train" />
@@ -68,7 +63,7 @@
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useStore } from '../../store/mainStore';
+import { useMainStore } from '../../store/mainStore';
 import StatusIndicator from './StatusIndicator.vue';
 import Clock from './Clock.vue';
 import RegionDropdown from '../Global/RegionDropdown.vue';
@@ -84,7 +79,7 @@ export default defineComponent({
 
   setup() {
     return {
-      store: useStore()
+      store: useMainStore()
     };
   },
 
@@ -100,15 +95,9 @@ export default defineComponent({
     },
 
     onlineDispatchersCount() {
-      return this.store.onlineSceneryList.filter(
-        (scenery) => scenery.region == this.store.region.id
+      return this.store.activeSceneryList.filter(
+        (scenery) => scenery.region == this.store.region.id && scenery.dispatcherId != -1
       ).length;
-    },
-
-    factorU() {
-      return this.onlineDispatchersCount == 0
-        ? '-'
-        : (this.onlineTrainsCount / this.onlineDispatchersCount).toFixed(2);
     }
   },
   components: { StatusIndicator, Clock, RegionDropdown }

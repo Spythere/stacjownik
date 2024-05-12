@@ -32,14 +32,14 @@
 import { PropType, defineComponent } from 'vue';
 import modalTrainMixin from '../../../mixins/modalTrainMixin';
 import routerMixin from '../../../mixins/routerMixin';
-import { OnlineScenery } from '../../../store/typings';
+import { ActiveScenery } from '../../../typings/common';
 
 export default defineComponent({
   mixins: [routerMixin, modalTrainMixin],
 
   props: {
     onlineScenery: {
-      type: Object as PropType<OnlineScenery>,
+      type: Object as PropType<ActiveScenery>,
       required: false
     }
   }

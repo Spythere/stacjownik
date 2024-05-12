@@ -28,7 +28,7 @@
       <tbody>
         <tr v-for="historyItem in historyList" :key="historyItem.id">
           <td>
-            <router-link :to="`/journal/timetables?timetableId=${historyItem.id}`">
+            <router-link :to="`/journal/timetables?search-train=%23${historyItem.id}`">
               #{{ historyItem.id }}
             </router-link>
           </td>
@@ -37,11 +37,16 @@
             {{ historyItem.trainNo }}
           </td>
           <td>{{ historyItem.route.replace('|', ' -> ') }}</td>
-          <td>{{ historyItem.driverName }}</td>
+          <td>
+            <router-link :to="`/journal/timetables?search-driver=${historyItem.driverName}`">
+              {{ historyItem.driverName }}
+            </router-link>
+          </td>
+
           <td>
             <router-link
               v-if="historyItem.authorName"
-              :to="`/journal/timetables?authorName=${historyItem.authorName}`"
+              :to="`/journal/timetables?search-dispatcher=${historyItem.authorName}`"
               >{{ historyItem.authorName }}
             </router-link>
             <i v-else>{{ $t('scenery.timetable-author-unknown') }}</i>
@@ -63,33 +68,30 @@
 </template>
 
 <script lang="ts">
-import axios from 'axios';
 import { defineComponent, PropType } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
 
-import Station from '../../scripts/interfaces/Station';
-import { URLs } from '../../scripts/utils/apiURLs';
 import Loading from '../Global/Loading.vue';
-import listObserverMixin from '../../mixins/listObserverMixin';
-import { OnlineScenery } from '../../store/typings';
 import { API } from '../../typings/api';
-import { Status } from '../../typings/common';
+import { ActiveScenery, Station, Status } from '../../typings/common';
+import { useApiStore } from '../../store/apiStore';
 
 export default defineComponent({
   name: 'SceneryTimetablesHistory',
-  mixins: [dateMixin, listObserverMixin],
+  mixins: [dateMixin],
   props: {
     station: {
       type: Object as PropType<Station>
     },
     onlineScenery: {
-      type: Object as PropType<OnlineScenery>
+      type: Object as PropType<ActiveScenery>
     }
   },
 
   data() {
     return {
       historyList: [] as API.TimetableHistory.Response,
+      apiStore: useApiStore(),
       dataStatus: Status.Data.Loading,
       DataStatus: Status.Data
     };
@@ -100,18 +102,20 @@ export default defineComponent({
   },
 
   methods: {
-    async fetchAPIData(countFrom = 0, countLimit = 15) {
+    async fetchAPIData() {
       if (!this.station && !this.onlineScenery) {
         this.dataStatus = Status.Data.Loaded;
         return;
       }
 
       try {
-        const requestString = `${URLs.stacjownikAPI}/api/getTimetables?issuedFrom=${
-          this.station?.name || this.onlineScenery?.name
-        }&countFrom=${countFrom}&countLimit=${countLimit}`;
-
-        const response: API.TimetableHistory.Response = await (await axios.get(requestString)).data;
+        const response: API.TimetableHistory.Response = await (
+          await this.apiStore.client!.get('api/getTimetables', {
+            params: {
+              issuedFrom: this.station?.name || this.onlineScenery?.name
+            }
+          })
+        ).data;
 
         this.historyList = response;
 
@@ -122,9 +126,12 @@ export default defineComponent({
     },
 
     navigateToHistory() {
-      this.$router.push(
-        `/journal/timetables?issuedFrom=${this.station?.name || this.onlineScenery?.name}`
-      );
+      this.$router.push({
+        path: '/journal/timetables',
+        query: {
+          'search-issuedFrom': this.station?.name || this.onlineScenery?.name
+        }
+      });
     }
   },
   components: { Loading }

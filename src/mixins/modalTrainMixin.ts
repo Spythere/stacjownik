@@ -1,17 +1,13 @@
 import { defineComponent } from 'vue';
-import { useStore } from '../store/mainStore';
+import { useMainStore } from '../store/mainStore';
+import { useTooltipStore } from '../store/tooltipStore';
 
 export default defineComponent({
   data() {
     return {
-      store: useStore()
+      store: useMainStore(),
+      tooltipStore: useTooltipStore()
     };
-  },
-
-  computed: {
-    chosenTrain() {
-      return this.store.trainList.find((train) => train.trainId == this.store.chosenModalTrainId);
-    }
   },
 
   methods: {
@@ -23,6 +19,7 @@ export default defineComponent({
 
     closeModal() {
       this.store.chosenModalTrainId = undefined;
+      this.tooltipStore.hide();
 
       setTimeout(() => {
         (this.store.modalLastClickedTarget as any)?.focus();

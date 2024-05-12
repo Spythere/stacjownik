@@ -61,6 +61,9 @@ export default defineComponent({
         case Status.ActiveDispatcher.UNKNOWN:
           return 'unknown';
 
+        case Status.ActiveDispatcher.FREE:
+          return 'free';
+
         default:
           if (this.dispatcherTimestamp != null && this.dispatcherStatus >= Date.now() + 25500000)
             return 'no-limit';
@@ -83,7 +86,7 @@ $online: #09a116;
 $unknown: #b93c3c;
 
 .status-badge {
-  border-radius: 1rem;
+  border-radius: 1em;
   font-weight: 500;
 
   padding: 0.2em 0.55em;

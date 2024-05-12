@@ -1,38 +1,45 @@
 <template>
   <section class="info-dispatcher">
-    <div class="dispatcher" v-if="onlineScenery">
+    <div class="info-top" v-if="onlineScenery && onlineScenery.dispatcherExp != -1">
       <span
-        class="dispatcher_level"
+        class="dispatcher-level"
         :style="calculateExpStyle(onlineScenery.dispatcherExp, onlineScenery.dispatcherIsSupporter)"
       >
         {{ onlineScenery.dispatcherExp > 1 ? onlineScenery.dispatcherExp : 'L' }}
       </span>
 
       <router-link
-        class="dispatcher_name"
-        :to="`/journal/dispatchers?dispatcherName=${onlineScenery.dispatcherName}`"
+        class="dispatcher-name"
+        :to="`/journal/dispatchers?search-dispatcher=${onlineScenery.dispatcherName}`"
       >
         <span
           class="text--donator"
-          v-if="isDonator(onlineScenery.dispatcherName)"
+          v-if="apiStore.donatorsData.includes(onlineScenery.dispatcherName)"
           :title="$t('donations.dispatcher-message')"
         >
           {{ onlineScenery.dispatcherName }}
         </span>
         <span v-else>{{ onlineScenery.dispatcherName }}</span>
       </router-link>
+    </div>
 
-      <span class="dispatcher_likes text--primary">
+    <div class="info-bottom">
+      <span
+        class="dispatcher-likes text--primary"
+        v-if="onlineScenery && onlineScenery.dispatcherExp != -1"
+      >
         <img src="/images/icon-like.svg" alt="Likes count icon" />
         <span>{{ onlineScenery?.dispatcherRate || '0' }}</span>
       </span>
-    </div>
 
-    <StationStatusBadge
-      :isOnline="onlineScenery ? true : false"
-      :dispatcherStatus="onlineScenery?.dispatcherStatus"
-      :dispatcherTimestamp="onlineScenery?.dispatcherTimestamp"
-    />
+      <span class="dispatcher-badge">
+        <StationStatusBadge
+          :isOnline="onlineScenery ? true : false"
+          :dispatcherStatus="onlineScenery?.dispatcherStatus"
+          :dispatcherTimestamp="onlineScenery?.dispatcherTimestamp"
+        />
+      </span>
+    </div>
   </section>
 </template>
 
@@ -42,14 +49,21 @@ import dateMixin from '../../../mixins/dateMixin';
 import routerMixin from '../../../mixins/routerMixin';
 import styleMixin from '../../../mixins/styleMixin';
 import StationStatusBadge from '../../Global/StationStatusBadge.vue';
-import { OnlineScenery } from '../../../store/typings';
-import donatorMixin from '../../../mixins/donatorMixin';
+import { ActiveScenery } from '../../../typings/common';
+import { useApiStore } from '../../../store/apiStore';
 
 export default defineComponent({
-  mixins: [styleMixin, dateMixin, routerMixin, donatorMixin],
+  mixins: [styleMixin, dateMixin, routerMixin],
+
+  data() {
+    return {
+      apiStore: useApiStore()
+    };
+  },
+
   props: {
     onlineScenery: {
-      type: Object as PropType<OnlineScenery>,
+      type: Object as PropType<ActiveScenery>,
       required: false
     }
   },
@@ -59,45 +73,46 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .info-dispatcher {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  font-size: 1.8em;
+}
 
-  flex-wrap: wrap;
+.info-top {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.info-bottom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   gap: 0.5em;
 
-  .dispatcher {
-    font-size: 2em;
+  margin-top: 0.5em;
+}
 
-    &_level {
-      display: inline-block;
-      margin-right: 0.3em;
-      background: firebrick;
+.dispatcher-level {
+  background: firebrick;
 
-      border-radius: 0.1em;
+  border-radius: 0.1em;
 
-      width: 1.5em;
-      height: 1.5em;
-      line-height: 1.5em;
-      font-weight: bold;
-    }
+  width: 1.5em;
+  height: 1.5em;
+  line-height: 1.5em;
+  font-weight: bold;
+}
 
-    &_name {
-      cursor: pointer;
-      margin-right: 0.25em;
-    }
+.dispatcher-likes {
+  display: flex;
+  gap: 0.25em;
 
-    &_likes {
-      img {
-        height: 0.7em;
-        margin: 0 0.25em;
-      }
-    }
+  img {
+    width: 1em;
   }
+}
 
-  .status-badge {
-    font-size: 1.25em;
-    margin: 0.5em 0.25em;
-  }
+.dispatcher-badge {
+  font-size: 0.7em;
 }
 </style>

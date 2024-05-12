@@ -16,6 +16,8 @@ export interface Filter {
   SPE: boolean;
   SUP: boolean;
   noSUP: boolean;
+  ASDEK: boolean;
+  noASDEK: boolean;
   ręczne: boolean;
   'ręczne+SPK': boolean;
   'ręczne+SCS': boolean;
@@ -34,6 +36,8 @@ export interface Filter {
   minOneWay: number;
   minTwoWayCatenary: number;
   minTwoWay: number;
+  minVmax: number;
+  maxVmax: number;
   'no-1track': boolean;
   'no-2track': boolean;
   'include-selected': boolean;
@@ -42,14 +46,13 @@ export interface Filter {
   nonPublic: boolean;
   unavailable: boolean;
   abandoned: boolean;
-
   endingStatus: boolean;
   afkStatus: boolean;
   noSpaceStatus: boolean;
   unavailableStatus: boolean;
   unsignedStatus: boolean;
-
   authors: string;
-
   onlineFromHours: number;
+  withActiveTimetables: boolean;
+  withoutActiveTimetables: boolean;
 }

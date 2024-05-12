@@ -1,16 +1,5 @@
 <template>
   <div class="scenery-view">
-    <!-- <div
-      class="scenery-offline"
-      v-if="!stationInfo && !onlineSceneryInfo && store.dataStatuses.sceneries == 2"
-    >
-      <div>{{ $t('scenery.no-scenery') }}</div>
-
-      <action-button>
-        <router-link to="/">{{ $t('scenery.return-btn') }}</router-link>
-      </action-button>
-    </div> -->
-
     <div class="scenery-wrapper" ref="card-wrapper">
       <div class="scenery-left">
         <div class="scenery-actions">
@@ -40,7 +29,14 @@
           </button>
         </div>
 
-        <keep-alive>
+        <div
+          v-if="
+            apiStore.dataStatuses.sceneries == Status.Loading ||
+            apiStore.dataStatuses.connection == Status.Loading
+          "
+        ></div>
+
+        <keep-alive v-else>
           <component
             :is="currentMode"
             :onlineScenery="onlineSceneryInfo"
@@ -57,7 +53,7 @@
 import { computed, defineComponent } from 'vue';
 import { useRoute } from 'vue-router';
 import routerMixin from '../mixins/routerMixin';
-import { useStore } from '../store/mainStore';
+import { useMainStore } from '../store/mainStore';
 
 import SceneryInfo from '../components/SceneryView/SceneryInfo.vue';
 import SceneryHeader from '../components/SceneryView/SceneryHeader.vue';
@@ -65,6 +61,8 @@ import SceneryTimetable from '../components/SceneryView/SceneryTimetable.vue';
 import SceneryTimetablesHistory from '../components/SceneryView/SceneryTimetablesHistory.vue';
 import SceneryDispatchersHistory from '../components/SceneryView/SceneryDispatchersHistory.vue';
 import ActionButton from '../components/Global/ActionButton.vue';
+import { Status } from '../typings/common';
+import { useApiStore } from '../store/apiStore';
 
 enum SceneryViewMode {
   'TIMETABLES_ACTIVE',
@@ -99,7 +97,9 @@ export default defineComponent({
   mixins: [routerMixin],
 
   data: () => ({
-    store: useStore(),
+    store: useMainStore(),
+    apiStore: useApiStore(),
+
     viewModes: [
       {
         id: 'scenery.option-active-timetables',
@@ -117,7 +117,8 @@ export default defineComponent({
     sceneryViewMode: SceneryViewMode,
     selectedCheckpoint: '',
     currentViewCompontent: 'SceneryTimetable',
-    onlineFrom: -1
+    onlineFrom: -1,
+    Status: Status.Data
   }),
 
   // activated() {
@@ -146,7 +147,7 @@ export default defineComponent({
     },
 
     onlineSceneryInfo() {
-      return this.store.onlineSceneryList.find(
+      return this.store.activeSceneryList.find(
         (scenery) =>
           scenery.name === this.station?.toString().replace(/_/g, ' ') &&
           scenery.region == this.store.region.id
@@ -168,11 +169,7 @@ export default defineComponent({
     loadSelectedCheckpoint() {
       if (!this.stationInfo?.generalInfo?.checkpoints) return;
       if (this.stationInfo.generalInfo.checkpoints.length == 0) return;
-      this.selectedCheckpoint = this.stationInfo.generalInfo.checkpoints[0].checkpointName;
-    },
-
-    selectCheckpoint(cp: { checkpointName: string }) {
-      this.selectedCheckpoint = cp.checkpointName;
+      this.selectedCheckpoint = this.stationInfo.generalInfo.checkpoints[0];
     }
   }
 });
@@ -192,8 +189,6 @@ button.back-btn {
   &-view {
     display: flex;
     justify-content: center;
-
-    min-height: 100vh;
   }
 
   &-offline {
@@ -215,13 +210,14 @@ button.back-btn {
 
 .scenery-wrapper {
   display: grid;
-  grid-template-columns: 4fr 5fr;
+  grid-template-columns: 4fr 6fr;
   gap: 0 1em;
 
   position: relative;
 
   width: 100%;
-  max-width: 1700px;
+  max-width: var(--max-container-width);
+  min-height: 100vh;
 
   margin: 1rem 0;
   text-align: center;
@@ -238,9 +234,8 @@ button.back-btn {
   padding: 1em 0.5em;
 
   height: 95vh;
-  min-height: 550px;
+  min-height: 750px;
   max-height: 1000px;
-
   overflow: auto;
 
   display: flex;
@@ -252,7 +247,7 @@ button.back-btn {
   padding: 1em 0.5em;
 
   height: 95vh;
-  min-height: 550px;
+  min-height: 750px;
   max-height: 1000px;
 
   display: grid;
