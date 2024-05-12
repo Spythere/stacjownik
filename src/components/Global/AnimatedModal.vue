@@ -74,6 +74,8 @@ export default defineComponent({
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 210;
+  overflow: auto;
+  max-height: 95vh;
 
   & > :slotted(div) {
     background-color: #1a1a1a;
@@ -81,17 +83,6 @@ export default defineComponent({
 
     width: 95vw;
     max-width: 850px;
-    max-height: 95vh;
-  }
-}
-
-@include smallScreen {
-  .modal-wrapper {
-    max-height: 90vh;
-
-    & > :slotted(div) {
-      max-height: 90vh;
-    }
   }
 }
 </style>
