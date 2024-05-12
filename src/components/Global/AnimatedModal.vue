@@ -54,10 +54,6 @@ export default defineComponent({
   width: 100%;
   height: 100vh;
   z-index: 200;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .modal-background {
@@ -73,10 +69,11 @@ export default defineComponent({
 }
 
 .modal-wrapper {
-  position: relative;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   z-index: 210;
-
-  margin-top: 1em;
 
   & > :slotted(div) {
     background-color: #1a1a1a;
