@@ -1,6 +1,13 @@
-import Station from '../scripts/interfaces/Station';
-import Train from '../scripts/interfaces/Train';
-import { ScheduledTrain, StationTrain, StopStatus, TrainStop } from './typings';
+import {
+  TrainStop,
+  StopStatus,
+  Train,
+  ScheduledTrain,
+  Station,
+  StationTrain,
+  ScenerySpawn,
+  ScenerySpawnType
+} from '../typings/common';
 
 export function getLocoURL(locoType: string): string {
   return `https://rj.td2.info.pl/dist/img/thumbnails/${
@@ -31,7 +38,7 @@ export function getStatusTimestamp(stationStatus: any): number {
   return -1;
 }
 
-export function parseSpawns(spawnString: string | null) {
+export function parseSpawns(spawnString: string | null): ScenerySpawn[] {
   if (!spawnString) return [];
   if (spawnString === 'NO_SPAWN') return [];
 
@@ -41,7 +48,15 @@ export function parseSpawns(spawnString: string | null) {
     const spawnLength = parseInt(spawnArray[2]);
     const isElectrified = spawnArray[3] == 'True';
 
-    return { spawnName, spawnLength, isElectrified };
+    let spawnType: ScenerySpawnType = /EZT|POS|OSOB|PAS/i.test(spawnName)
+      ? 'passenger'
+      : /TOW/i.test(spawnName)
+        ? 'freight'
+        : /LUZ/i.test(spawnName)
+          ? 'loco'
+          : 'all';
+
+    return { spawnName, spawnLength, isElectrified, spawnType };
   });
 }
 

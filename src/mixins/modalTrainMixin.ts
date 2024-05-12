@@ -1,10 +1,12 @@
 import { defineComponent } from 'vue';
 import { useMainStore } from '../store/mainStore';
+import { useTooltipStore } from '../store/tooltipStore';
 
 export default defineComponent({
   data() {
     return {
-      store: useMainStore()
+      store: useMainStore(),
+      tooltipStore: useTooltipStore()
     };
   },
 
@@ -17,7 +19,7 @@ export default defineComponent({
 
     closeModal() {
       this.store.chosenModalTrainId = undefined;
-      this.store.popUpData.key = null;
+      this.tooltipStore.hide();
 
       setTimeout(() => {
         (this.store.modalLastClickedTarget as any)?.focus();

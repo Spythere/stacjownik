@@ -27,8 +27,8 @@
         <span>
           <img
             :data-mouseover="stockName"
-            data-popup-key="VehiclePreviewPopUp"
-            :data-popup-content="stockName.split(':')[0]"
+            data-tooltip-type="VehiclePreviewTooltip"
+            :data-tooltip-content="stockName.split(':')[0]"
             :src="`https://rj.td2.info.pl/dist/img/thumbnails/${stockName.split(':')[0]}${
               /^EN/.test(stockName) ? 'rb' : ''
             }.png`"
@@ -41,8 +41,8 @@
           <!-- /// Manualne dodawanie miniaturek członów dla kibelków /// -->
           <img
             :data-mouseover="stockName"
-            data-popup-key="VehiclePreviewPopUp"
-            :data-popup-content="stockName.split(':')[0]"
+            data-tooltip-type="VehiclePreviewTooltip"
+            :data-tooltip-content="stockName.split(':')[0]"
             v-if="/^(EN|2EN)/.test(stockName)"
             :src="`https://rj.td2.info.pl/dist/img/thumbnails/${stockName.split(':')[0]}s.png`"
             @error="
@@ -53,8 +53,8 @@
 
           <img
             :data-mouseover="stockName"
-            data-popup-key="VehiclePreviewPopUp"
-            :data-popup-content="stockName.split(':')[0]"
+            data-tooltip-type="VehiclePreviewTooltip"
+            :data-tooltip-content="stockName.split(':')[0]"
             v-if="/^EN71/.test(stockName)"
             :src="`https://rj.td2.info.pl/dist/img/thumbnails/${stockName.split(':')[0]}s.png`"
             @error="
@@ -65,8 +65,8 @@
 
           <img
             :data-mouseover="stockName"
-            data-popup-key="VehiclePreviewPopUp"
-            :data-popup-content="stockName.split(':')[0]"
+            data-tooltip-type="VehiclePreviewTooltip"
+            :data-tooltip-content="stockName.split(':')[0]"
             v-if="/^(EN|2EN)/.test(stockName)"
             :src="`https://rj.td2.info.pl/dist/img/thumbnails/${stockName.split(':')[0]}ra.png`"
             @error="
@@ -120,10 +120,10 @@ export default defineComponent({
         fallbackName += /^\d?EN\d{2}/.test(stockName)
           ? 'ezt'
           : /^SN\d{2}/.test(stockName)
-          ? 'szt'
-          : /^\d?E/.test(stockName)
-          ? 'e'
-          : 's';
+            ? 'szt'
+            : /^\d?E/.test(stockName)
+              ? 'e'
+              : 's';
       } else {
         const isCarPassenger = /(\d{3}a|(Bau|Gor)\d{2}|304C)_/.test(stockName);
 

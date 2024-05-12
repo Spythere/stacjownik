@@ -36,6 +36,8 @@ export interface Filter {
   minOneWay: number;
   minTwoWayCatenary: number;
   minTwoWay: number;
+  minVmax: number;
+  maxVmax: number;
   'no-1track': boolean;
   'no-2track': boolean;
   'include-selected': boolean;

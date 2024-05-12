@@ -14,8 +14,7 @@
 
 <script lang="ts">
 import { PropType, defineComponent } from 'vue';
-import Station from '../../scripts/interfaces/Station';
-import { ActiveScenery } from '../../store/typings';
+import { ActiveScenery, Station } from '../../typings/common';
 
 export default defineComponent({
   props: {

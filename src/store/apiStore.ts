@@ -54,31 +54,19 @@ export const useApiStore = defineStore('apiStore', {
       // Static data
       this.fetchDonatorsData();
       this.fetchStationsGeneralInfo();
-
-      // Active data schedueler
-      this.fetchActiveData();
-      this.setupActiveDataFetcher();
-    },
-
-    async setupActiveDataFetcher() {
-      if (this.activeDataScheduler) return;
-
-      this.activeDataScheduler = window.setInterval(() => {
-        this.fetchActiveData();
-      }, 25000);
     },
 
     async fetchActiveData() {
       if (!this.activeData) this.dataStatuses.connection = Status.Data.Loading;
 
       try {
+        console.log('Fetching active data at ' + new Date().toLocaleTimeString('pl-PL'));
+
         const response = await this.client!.get<API.ActiveData.Response>('api/getActiveData');
 
         this.activeData = response.data;
         this.lastFetchData = new Date();
         this.dataStatuses.connection = Status.Data.Loaded;
-
-        console.log('Fetching active data at ' + new Date().toLocaleTimeString('pl-PL'));
       } catch (error) {
         this.dataStatuses.connection = Status.Data.Error;
         console.error('Ups! Wystąpił błąd podczas pobierania danych online:', error);

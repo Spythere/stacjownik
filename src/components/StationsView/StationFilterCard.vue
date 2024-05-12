@@ -3,7 +3,7 @@
     <div class="card_controls">
       <button class="btn--filled btn--image" @click="toggleCard">
         <img class="button_icon" src="/images/icon-filter2.svg" alt="filter icon" />
-        {{ $t('options.filters') }} [F]
+        [F] {{ $t('options.filters') }}
         <span class="active-indicator" v-if="!filterStore.areFiltersAtDefault"></span>
       </button>
 
@@ -28,8 +28,8 @@
     </div>
 
     <transition name="card-anim">
-      <div class="card" v-if="isVisible" tabindex="0" ref="cardEl">
-        <div class="card_content">
+      <div class="card" v-if="isVisible" tabindex="0" ref="cardRef" @keydown.r="resetFilters">
+        <div class="card_content" @scroll="onScroll" ref="cardContentRef">
           <div class="card_title flex">{{ $t('filters.title') }}</div>
           <p class="card_info" v-html="$t('filters.desc')"></p>
 
@@ -69,8 +69,8 @@
                 minimumHours == 0
                   ? $t('filters.now')
                   : minimumHours < 8
-                  ? minimumHours + $t('filters.hour')
-                  : $t('filters.no-limit')
+                    ? minimumHours + $t('filters.hour')
+                    : $t('filters.no-limit')
               }}</span>
               <button class="btn--action" @click="addHour">+</button>
             </span>
@@ -108,6 +108,7 @@
                 :id="slider.id"
                 :min="slider.minRange"
                 :max="slider.maxRange"
+                :step="slider.step"
                 v-model="slider.value"
                 @change="handleInput"
               />
@@ -136,7 +137,7 @@
               :disabled="filterStore.areFiltersAtDefault"
               :data-disabled="filterStore.areFiltersAtDefault"
             >
-              {{ $t('filters.reset') }}
+              [R] {{ $t('filters.reset') }}
             </button>
             <button class="btn--action" @click="closeCard">{{ $t('filters.close') }}</button>
           </div>
@@ -170,7 +171,10 @@ export default defineComponent({
     currentRegion: { id: '', value: '' },
 
     delayInputTimer: -1,
-    chosenSearchScenery: ''
+    chosenSearchScenery: '',
+
+    scrollTop: 0,
+    lastFocusedEl: null as HTMLElement | null
   }),
 
   setup() {
@@ -236,7 +240,10 @@ export default defineComponent({
 
     isVisible(value: boolean) {
       this.$nextTick(() => {
-        if (value) (this.$refs['cardEl'] as HTMLDivElement).focus();
+        if (value) {
+          (this.$refs['cardRef'] as HTMLDivElement).focus();
+          (this.$refs['cardContentRef'] as HTMLDivElement).scrollTop = this.scrollTop;
+        }
       });
     }
   },
@@ -245,6 +252,10 @@ export default defineComponent({
     // Override keyMixin function
     onKeyDownFunction() {
       this.isVisible = !this.isVisible;
+    },
+
+    onScroll(e: Event) {
+      this.scrollTop = (e.target as HTMLElement).scrollTop;
     },
 
     handleInput(e: Event) {
@@ -431,23 +442,16 @@ h3.section-header {
 }
 
 .card_actions {
-  width: 100%;
   padding: 0.5em;
-
-  .filter-option {
-    max-width: 50%;
-    margin: 0 auto;
-  }
 
   .action-buttons {
     display: flex;
     gap: 0.5em;
-    width: 100%;
 
     margin-top: 0.5em;
 
     button {
-      width: 50%;
+      width: 100%;
       margin: 0 auto;
       padding: 0.5em;
 

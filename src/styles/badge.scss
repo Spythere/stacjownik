@@ -101,3 +101,16 @@
     background-color: #be3728;
   }
 }
+
+.spawn-badge {
+  color: white;
+
+  .length {
+    background-color: #404040;
+    color: #cfcfcf;
+  }
+
+  &[data-electrified='true'] > .name {
+    background-color: #007599;
+  }
+}

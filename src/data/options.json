@@ -265,6 +265,7 @@
       "name": "minLevel",
       "minRange": 0,
       "maxRange": 20,
+      "step": 1,
       "value": 0,
       "defaultValue": 0
     },
@@ -273,14 +274,34 @@
       "name": "maxLevel",
       "minRange": 0,
       "maxRange": 20,
+      "step": 1,
       "value": 20,
       "defaultValue": 20
+    },
+    {
+      "id": "min-vmax",
+      "name": "minVmax",
+      "minRange": 0,
+      "maxRange": 200,
+      "step": 10,
+      "value": 0,
+      "defaultValue": 0
+    },
+    {
+      "id": "max-vmax",
+      "name": "maxVmax",
+      "minRange": 0,
+      "maxRange": 200,
+      "step": 10,
+      "value": 200,
+      "defaultValue": 200
     },
     {
       "id": "routes-1t-cat",
       "name": "minOneWayCatenary",
       "minRange": 0,
       "maxRange": 5,
+      "step": 1,
       "value": 0,
       "defaultValue": 0
     },
@@ -289,6 +310,7 @@
       "name": "minOneWay",
       "minRange": 0,
       "maxRange": 5,
+      "step": 1,
       "value": 0,
       "defaultValue": 0
     },
@@ -297,6 +319,7 @@
       "name": "minTwoWayCatenary",
       "minRange": 0,
       "maxRange": 5,
+      "step": 1,
       "value": 0,
       "defaultValue": 0
     },
@@ -305,6 +328,7 @@
       "name": "minTwoWay",
       "minRange": 0,
       "maxRange": 5,
+      "step": 1,
       "value": 0,
       "defaultValue": 0
     }

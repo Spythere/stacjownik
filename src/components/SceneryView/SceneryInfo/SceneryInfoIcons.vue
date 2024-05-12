@@ -24,8 +24,8 @@
       :title="
         $t('sceneries.info.control-type') + $t(`controls.${station?.generalInfo.controlType}`)
       "
-      v-html="getControlTypeAbbrev(station?.generalInfo.controlType)"
     >
+      {{ $t(`controls.abbrevs.${station.generalInfo.controlType}`) }}
     </span>
 
     <img
@@ -88,12 +88,11 @@
 
 <script lang="ts">
 import { PropType, defineComponent } from 'vue';
-import stationInfoMixin from '../../../mixins/stationInfoMixin';
 import styleMixin from '../../../mixins/styleMixin';
-import Station from '../../../scripts/interfaces/Station';
+import { Station } from '../../../typings/common';
 
 export default defineComponent({
-  mixins: [stationInfoMixin, styleMixin],
+  mixins: [styleMixin],
   props: {
     station: {
       type: Object as PropType<Station>
@@ -104,6 +103,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '../../../styles/icons.scss';
+
 .info-icons {
   display: flex;
   justify-content: center;
@@ -111,6 +111,7 @@ export default defineComponent({
 
   margin: 1em;
 }
+
 .icon-info {
   display: flex;
   justify-content: center;

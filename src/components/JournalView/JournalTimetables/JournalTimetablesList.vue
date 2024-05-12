@@ -17,7 +17,34 @@
         </div>
 
         <div v-else>
-          <TimetableHistoryList :timetableHistory="timetableHistory" />
+          <ul class="journal-list">
+            <transition-group name="list-anim">
+              <li
+                v-for="{ timetable, showExtraInfo } in computedTimetableHistory"
+                class="journal_item"
+                :key="timetable.id"
+                @click="showExtraInfo.value = !showExtraInfo.value"
+              >
+                <div class="journal_item-info">
+                  <!-- General -->
+                  <TimetableGeneral :timetable="timetable" />
+                  <!-- Route -->
+                  <span class="item-route">
+                    <b>{{ timetable.route.replace('|', ' - ') }}</b>
+                  </span>
+
+                  <hr />
+                  <!-- Stops -->
+                  <TimetableStops :timetable="timetable" :showExtraInfo="showExtraInfo.value" />
+                  <!-- Status -->
+                  <TimetableStatus :timetable="timetable" />
+
+                  <!-- Extra -->
+                  <TimetableDetails :timetable="timetable" :showExtraInfo="showExtraInfo.value" />
+                </div>
+              </li>
+            </transition-group>
+          </ul>
 
           <AddDataButton
             :list="timetableHistory"
@@ -37,17 +64,29 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, PropType, ref } from 'vue';
 
 import Loading from '../../Global/Loading.vue';
 import AddDataButton from '../../Global/AddDataButton.vue';
-import TimetableHistoryList from './TimetableHistoryList.vue';
+
 import { useMainStore } from '../../../store/mainStore';
 import { Status } from '../../../typings/common';
 import { API } from '../../../typings/api';
 
+import TimetableGeneral from './TimetableGeneral.vue';
+import TimetableStops from './TimetableStops.vue';
+import TimetableStatus from './TimetableStatus.vue';
+import TimetableDetails from './TimetableDetails.vue';
+
 export default defineComponent({
-  components: { Loading, AddDataButton, TimetableHistoryList },
+  components: {
+    Loading,
+    AddDataButton,
+    TimetableDetails,
+    TimetableGeneral,
+    TimetableStatus,
+    TimetableStops
+  },
 
   props: {
     timetableHistory: {
@@ -73,6 +112,15 @@ export default defineComponent({
       Status,
       store: useMainStore()
     };
+  },
+
+  computed: {
+    computedTimetableHistory() {
+      return this.timetableHistory.map((timetable) => ({
+        timetable,
+        showExtraInfo: ref(false)
+      }));
+    }
   }
 });
 </script>
@@ -80,4 +128,15 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '../../../styles/JournalSection.scss';
 @import '../../../styles/animations.scss';
+
+@include smallScreen {
+  .journal_item-info {
+    text-align: center;
+  }
+
+  .item-route {
+    display: flex;
+    justify-content: center;
+  }
+}
 </style>

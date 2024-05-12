@@ -66,6 +66,7 @@
           class="modal-action a-button btn--image coffee"
           href="https://buycoffee.to/spythere"
           target="_blank"
+          ref="action"
         >
           <img src="/images/icon-coffee.png" width="20" alt="buycoffee.to donation" />
           {{ $t('donations.action-buycoffee') }}
@@ -103,9 +104,13 @@ export default defineComponent({
   emits: ['toggleModal'],
 
   watch: {
-    isModalOpen(b: boolean) {
-      this.running = b;
+    isModalOpen(val: boolean) {
+      this.running = val;
       this.lastUpdate = Date.now();
+
+      this.$nextTick(() => {
+        if (val) (this.$refs['action'] as HTMLElement).focus();
+      });
     }
   },
 

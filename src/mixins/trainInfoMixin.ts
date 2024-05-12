@@ -1,6 +1,5 @@
 import { defineComponent } from 'vue';
-import Train from '../scripts/interfaces/Train';
-import { TrainStop } from '../store/typings';
+import { Train, TrainStop } from '../typings/common';
 
 export default defineComponent({
   data: () => ({
@@ -51,8 +50,8 @@ export default defineComponent({
       return diffMins < 1
         ? this.$t('trains.last-seen-now')
         : diffMins < 2
-        ? this.$t('trains.last-seen-min')
-        : this.$t('trains.last-seen-ago', { minutes: diffMins });
+          ? this.$t('trains.last-seen-min')
+          : this.$t('trains.last-seen-ago', { minutes: diffMins });
     },
 
     displayTrainPosition(train: Train) {

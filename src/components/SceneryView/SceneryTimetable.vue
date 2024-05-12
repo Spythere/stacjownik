@@ -14,14 +14,6 @@
         </span>
 
         <span class="header_links" v-if="station">
-          <!-- <a
-            :href="`https://pragotron-td2.web.app/board?name=${station.name}`"
-            target="_blank"
-            :title="$t('scenery.pragotron-link')"
-          >
-            <img src="/images/icon-pragotron.svg" alt="icon-pragotron" />
-          </a> -->
-
           <a :href="tabliceZbiorczeHref" target="_blank" :title="$t('scenery.tablice-link')">
             <img src="/images/icon-tablice.ico" alt="icon-tablice" />
           </a>
@@ -186,12 +178,11 @@ import { useRoute } from 'vue-router';
 import Loading from '../Global/Loading.vue';
 import dateMixin from '../../mixins/dateMixin';
 import routerMixin from '../../mixins/routerMixin';
-import Station from '../../scripts/interfaces/Station';
 import { useMainStore } from '../../store/mainStore';
 import modalTrainMixin from '../../mixins/modalTrainMixin';
 import ScheduledTrainStatus from './ScheduledTrainStatus.vue';
-import { ActiveScenery } from '../../store/typings';
 import { useApiStore } from '../../store/apiStore';
+import { ActiveScenery, Station } from '../../typings/common';
 
 export default defineComponent({
   name: 'SceneryTimetable',
@@ -412,13 +403,6 @@ export default defineComponent({
 
   .info-route {
     width: 100%;
-  }
-
-  .g-tooltip > .content {
-    z-index: 100;
-    color: white;
-
-    left: 110%;
   }
 
   img {

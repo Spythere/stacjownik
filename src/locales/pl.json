@@ -28,10 +28,10 @@
   },
   "update": {
     "title": "Aktualizacja Stacjownika!",
-    "version": "Wersja {0}",
-    "confirm-button": "UPDATE NOW",
-    "later-button": "LATER",
-    "content": "dymki kontekstowe po najechaniu kursorem na m.in. sponsorów projektu i uwagi eksploatacyjne\npodgląd pojazdu po najechaniu kursorem na jego miniaturkę w karcie aktywnego rozkładu jazdy oraz dzienniku RJ\nodnośnik do historii RJ maszynisty w widoku karty aktywnego rozkładu jazdy\nodnośnik do karty aktywnego rozkładu jazdy maszynisty w dzienniku (dostępny tylko dla pociągów online)\nnowa karta ze zmianami w aktualizacji"
+    "confirm": "PRZYJĄŁEM!",
+    "no-data": "Nie znaleziono informacji o ostatnich zmianach w aplikacji",
+    "info-1": "Ten changelog będzie zawsze dostępny po kliknięciu numeru wersji w stopce strony",
+    "info-2": "Pełny changelog dostępny na <a href='https://github.com/Spythere/stacjownik' target='_blank'>GitHubie projektu</a>"
   },
   "app": {
     "sceneries": "SCENERIE",
@@ -77,7 +77,20 @@
     "ręczne+SCS": "ręczne z SCS",
     "mechaniczne": "mechaniczne",
     "mechaniczne+SPK": "mechaniczne z SPK",
-    "mechaniczne+SCS": "mechaniczne z SCS"
+    "mechaniczne+SCS": "mechaniczne z SCS",
+
+    "abbrevs": {
+      "SPK": "SPK",
+      "SCS": "SCS",
+      "SCS-SPK": "S/S",
+      "SPE": "SPE",
+      "ręczne": "R",
+      "ręczne+SPK": "R",
+      "ręczne+SCS": "R",
+      "mechaniczne": "M",
+      "mechaniczne+SPK": "M",
+      "mechaniczne+SCS": "M"
+    }
   },
   "status": {
     "online": "DO ",
@@ -163,10 +176,11 @@
       "access": "DOSTĘPNOŚĆ OGÓLNA",
       "control": "TYP STEROWANIA",
       "signals": "TYP SYGNALIZACJI",
-      "addons": "DODATKOWE PROGRAMY",
+      "addons": "SZCZEGÓŁY",
       "blockades": "BLOKADY LINIOWE",
       "status": "STATUS ONLINE",
-      "timetables": "AKTYWNE ROZKŁADY JAZDY"
+      "timetables": "AKTYWNE ROZKŁADY JAZDY",
+      "spawns": "OTWARTE SPAWNY"
     },
 
     "all-available": "WSZYSTKIE DOSTĘPNE",
@@ -209,7 +223,6 @@
     "semaphores": "KSZTAŁTOWA",
     "mixed": "MIESZANA",
     "historical": "HISTORYCZNA",
-
     "free": "WOLNA",
     "occupied": "ZAJĘTA",
 
@@ -219,6 +232,8 @@
     "sliders": {
       "min-lvl": "MIN. WYMAGANY POZIOM DYŻURNEGO",
       "max-lvl": "MAKS. WYMAGANY POZIOM DYŻURNEGO",
+      "min-vmax": "MIN. PRĘDKOŚĆ SZLAKOWA",
+      "max-vmax": "MAKS. PRĘDKOŚĆ SZLAKOWA",
       "routes-1t-cat": "SZLAKI JEDNOTOROWE ZELEKTR. (MINIMUM)",
       "routes-1t-other": "SZLAKI JEDNOTOROWE NIEZELEKTR. (MINIMUM)",
       "routes-2t-cat": "SZLAKI DWUTOROWE ZELEKTR. (MINIMUM)",
@@ -273,6 +288,16 @@
     },
     "no-stations": "Brak stacji do wyświetlenia!",
     "scenery-search": "Wyszukaj scenerię..."
+  },
+  "station-stats": {
+    "u-factor": "Współczynnik Ugla",
+    "u-factor-tooltip": "(?) Współczynnik ruchu na serwerze (liczba maszynistów online dzielona na liczbę dyżurnych ruchu)",
+    "avg-timetable-count": "Średnia liczba rozkładów jazdy na dyżurnego:",
+    "single-track-count": "Dostępne szlaki jednotorowe:",
+    "double-track-count": "Dostępne szlaki dwutorowe:",
+    "electrified": "(zelektr.)",
+    "not-electrified": "(niezelektr.)",
+    "open-spawns": "Otwarte spawny:"
   },
   "trains": {
     "no-trains": "Brak pociągów do wyświetlenia!",
@@ -352,7 +377,7 @@
     "timetable-abandoned": "PORZUCONY",
     "timetable-online-button": "RJ ONLINE",
 
-    "stock-info": "DODATKOWE INFORMACJE",
+    "stock-info": "SZCZEGÓŁY",
     "stock-length": "Długość",
     "stock-mass": "Masa",
     "stock-max-speed": "Prędkość maks.",

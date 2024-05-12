@@ -1,20 +1,10 @@
 import { API } from '../typings/api';
-import { Status } from '../typings/common';
+import { Availability, StationRoutesInfo, Status } from '../typings/common';
 
-export const popupKeys = ['DonatorPopUp', 'TrainCommentsPopUp', 'VehiclePreviewPopUp'] as const;
-export type Availability = 'default' | 'unavailable' | 'nonPublic' | 'abandoned' | 'nonDefault';
-export type PopUpType = (typeof popupKeys)[number];
-
-export interface RegionCounters {
-  stationCount: number;
-  trainsCount: number;
-  timetablesCount: number;
-}
-
-export interface StoreState {
-  region: { id: string; value: string };
+export interface MainStoreState {
+  region: { id: string; value: string; name: string };
   isOffline: boolean;
-  isNewUpdate: boolean;
+  appUpdate: { version: string; changelog: string; releaseURL: string } | null;
   dispatcherStatsName: string;
   dispatcherStatsData?: API.DispatcherStats.Response;
   driverStatsName: string;
@@ -22,19 +12,6 @@ export interface StoreState {
   driverStatsStatus: Status.Data;
   chosenModalTrainId?: string;
   modalLastClickedTarget: EventTarget | null;
-  mousePos: { x: number; y: number };
-  popUpData: { key: PopUpType | null; content: string };
-}
-
-export interface StationRoutesInfo {
-  routeName: string;
-  isElectric: boolean;
-  isInternal: boolean;
-  isRouteSBL: boolean;
-  routeLength: number;
-  routeSpeed: number;
-  routeTracks: number;
-  hidden?: boolean;
 }
 
 export interface StationJSONData {
@@ -61,111 +38,4 @@ export interface StationJSONData {
   authors?: string;
 
   availability: Availability;
-}
-
-export interface ActiveScenery {
-  name: string;
-  hash: string;
-  region: string;
-  maxUsers: number;
-  currentUsers: number;
-  spawns: { spawnName: string; spawnLength: number; isElectrified: boolean }[];
-  dispatcherName: string;
-  dispatcherRate: number;
-  dispatcherId: number;
-  dispatcherExp: number;
-  dispatcherIsSupporter: boolean;
-
-  dispatcherStatus: Status.ActiveDispatcher | number;
-  dispatcherTimestamp: number | null;
-
-  isOnline: boolean;
-
-  stationTrains?: StationTrain[];
-  scheduledTrains?: ScheduledTrain[];
-
-  scheduledTrainCount: {
-    all: number;
-    confirmed: number;
-    unconfirmed: number;
-  };
-}
-
-export interface StationTrain {
-  driverName: string;
-  driverId: number;
-  trainNo: number;
-  trainId: string;
-  stopStatus: string;
-}
-
-export interface ScheduledTrain {
-  checkpointName: string;
-
-  trainId: string;
-  trainNo: number;
-
-  driverName: string;
-  driverId: number;
-  currentStationName: string;
-  currentStationHash: string;
-  category: string;
-  stopInfo: TrainStop;
-
-  terminatesAt: string;
-  beginsAt: string;
-
-  prevStationName: string;
-  nextStationName: string;
-
-  arrivingLine: string | null;
-  departureLine: string | null;
-
-  prevDepartureLine: string | null;
-  nextArrivalLine: string | null;
-
-  signal: string;
-  connectedTrack: string;
-
-  stopLabel: string;
-  stopStatus: StopStatus;
-  stopStatusID: number;
-
-  region: string;
-}
-
-export enum StopStatus {
-  ARRIVING = 'arriving',
-  DEPARTED = 'departed',
-  DEPARTED_AWAY = 'departed-away',
-  ONLINE = 'online',
-  STOPPED = 'stopped',
-  TERMINATED = 'terminated'
-}
-
-export interface TrainStop {
-  stopName: string;
-  stopNameRAW: string;
-  stopType: string;
-  stopDistance: number;
-  mainStop: boolean;
-
-  arrivalLine: string | null;
-  arrivalTimestamp: number;
-  arrivalRealTimestamp: number;
-  arrivalDelay: number;
-
-  departureLine: string | null;
-  departureTimestamp: number;
-  departureRealTimestamp: number;
-  departureDelay: number;
-  pointId: number;
-
-  comments?: string;
-
-  beginsHere: boolean;
-  terminatesHere: boolean;
-  confirmed: boolean;
-  stopped: boolean;
-  stopTime: number | null;
 }

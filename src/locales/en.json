@@ -27,11 +27,11 @@
     "SKR": "Train with exceeded gauge"
   },
   "update": {
-    "title": "Stacjownik app update!",
-    "version": "Version {0}",
-    "confirm-button": "UPDATE NOW",
-    "later-button": "LATER",
-    "content": "context tooltips when hovering over project sponsors and timetable comment warnings\nvehicle image preview when hovering over its thumbnail in the active timetable card view and timetable journal\nlink to the driver's timetable history in the active timetable card view\nlink to the driver's active timetable card view in the timetable journal (available for online trains only)\nnew update card with version changelog"
+    "title": "Stacjownik update!",
+    "confirm": "ROGER THAT!",
+    "no-data": "No data about the latest app update has been found",
+    "info-1": "This changelog will be available to see once again after clicking the version number in the footer",
+    "info-2": "The full app changelog available on <a href='https://github.com/Spythere/stacjownik' target='_blank'>the project's GitHub</a>"
   },
   "app": {
     "sceneries": "SCENERIES",
@@ -81,7 +81,20 @@
     "ręczne+SCS": "manual + SCS",
     "mechaniczne": "levers (mechanical)",
     "mechaniczne+SPK": "levers + SPK",
-    "mechaniczne+SCS": "levers + SCS"
+    "mechaniczne+SCS": "levers + SCS",
+
+    "abbrevs": {
+      "SPK": "SPK",
+      "SCS": "SCS",
+      "SCS-SPK": "S/S",
+      "SPE": "SPE",
+      "ręczne": "R",
+      "ręczne+SPK": "R",
+      "ręczne+SCS": "R",
+      "mechaniczne": "M",
+      "mechaniczne+SPK": "M",
+      "mechaniczne+SCS": "M"
+    }
   },
   "status": {
     "online": "UNTIL ",
@@ -169,7 +182,8 @@
       "addons": "ADDITIONAL PROGRAMS",
       "blockades": "BLOCK SIGNALLING",
       "status": "ONLINE STATUS",
-      "timetables": "ACTIVE TIMETABLES"
+      "timetables": "ACTIVE TIMETABLES",
+      "spawns": "OPEN SPAWNS"
     },
 
     "all-available": "ALL AVAILABLE",
@@ -222,11 +236,14 @@
     "sliders": {
       "min-lvl": "MIN. REQUIRED DISPATCHER LEVEL",
       "max-lvl": "MAX. REQUIRED DISPATCHER LEVEL",
+      "min-vmax": "MIN. SCENERY ROUTE SPEED",
+      "max-vmax": "MAX. SCENERY ROUTE SPEED",
       "routes-1t-cat": "MIN. CATENARY SINGLE TRACK ROUTES",
       "routes-1t-other": "MIN. OTHER SINGLE TRACK ROUTES",
       "routes-2t-cat": "MIN. CATENARY DOUBLE TRACK ROUTES",
       "routes-2t-other": "MIN. OTHER DOUBLE TRACK ROUTES"
     },
+
     "authors-search": "SEARCH BY AUTHOR NAME (other filters apply):",
     "authors-placeholder": "Enter the author nickname...",
     "authors-button-title": "Search",
@@ -278,6 +295,16 @@
     },
     "no-stations": "No stations to show here!",
     "scenery-search": "Search for scenery..."
+  },
+  "station-stats": {
+    "u-factor": "U-factor",
+    "u-factor-tooltip": "(?) Current server traffic factor (driver count divided by dispatcher count)",
+    "avg-timetable-count": "Average timetable count for one dispatcher:",
+    "single-track-count": "Available single track routes:",
+    "double-track-count": "Available double track routes:",
+    "electrified": "(electrified)",
+    "not-electrified": "(not electr.)",
+    "open-spawns": "Open spawns:"
   },
   "trains": {
     "no-trains": "No trains to show here!",
@@ -367,7 +394,7 @@
     "minutes": "{value} min | {value} mins",
     "seconds": "{value} s",
 
-    "stock-info": "EXTRA INFO",
+    "stock-info": "DETAILS",
     "stock-length": "Length",
     "stock-mass": "Mass",
     "stock-max-speed": "Max. speed",

@@ -11,7 +11,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import { ScheduledTrain, StopStatus } from '../../store/typings';
+import { ScheduledTrain, StopStatus } from '../../typings/common';
 
 interface ScheduledTrainComp extends ScheduledTrain {
   stopStatusIndicator: string;

@@ -128,8 +128,8 @@ export namespace API {
     export type Response = Data[];
 
     export interface Data {
+      id: string;
       trainNo: number;
-
       mass: number;
       length: number;
       speed: number;

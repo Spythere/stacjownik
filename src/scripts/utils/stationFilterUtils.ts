@@ -1,7 +1,7 @@
 import { Filter } from '../../components/StationsView/typings';
 import { Status } from '../../typings/common';
 import { HeadIdsTypes } from '../data/stationHeaderNames';
-import Station from '../interfaces/Station';
+import { Station } from '../../typings/common';
 
 const dispatcherStatusPriority = [
   Status.ActiveDispatcher.UNKNOWN,
@@ -68,8 +68,8 @@ export const sortStations = (
 
     case 'user':
       diff =
-        (b.onlineInfo ? b.onlineInfo.currentUsers : -1) -
-        (a.onlineInfo ? a.onlineInfo.currentUsers : -1);
+        (b.onlineInfo?.stationTrains ? b.onlineInfo.stationTrains.length : -1) -
+        (a.onlineInfo?.stationTrains ? a.onlineInfo.stationTrains.length : -1);
       break;
 
     case 'like':
@@ -189,8 +189,10 @@ export const filterStations = (station: Station, filters: Filter) => {
       availability == 'nonPublic' || availability == 'unavailable' || availability == 'abandoned';
 
     if (reqLevel + (otherAvailability ? 1 : 0) < filters['minLevel']) return false;
-
     if (reqLevel + (otherAvailability ? 1 : 0) > filters['maxLevel']) return false;
+
+    if (filters['minVmax'] > station.generalInfo.routes.maxRouteSpeed) return false;
+    if (filters['maxVmax'] < station.generalInfo.routes.minRouteSpeed) return false;
 
     if (
       filters['no-1track'] &&

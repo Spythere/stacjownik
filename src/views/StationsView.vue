@@ -19,8 +19,9 @@
         </button>
       </div>
 
-      <Donation :isModalOpen="isDonationModalOpen" @toggleModal="toggleDonationModal" />
-      <StationTable :stations="computedStationList" @toggleDonationModal="toggleDonationModal" />
+      <DonationModal :isModalOpen="isDonationModalOpen" @toggleModal="toggleDonationModal" />
+      <StationTable @toggleDonationModal="toggleDonationModal" />
+      <StationStats />
     </div>
   </section>
 </template>
@@ -31,34 +32,27 @@ import StationTable from '../components/StationsView/StationTable.vue';
 import StationFilterCard from '../components/StationsView/StationFilterCard.vue';
 import { useStationFiltersStore } from '../store/stationFiltersStore';
 import { useMainStore } from '../store/mainStore';
-import Donation from '../components/Global/Donation.vue';
+import DonationModal from '../components/Global/DonationModal.vue';
+import StationStats from '../components/StationsView/StationStats.vue';
 
 export default defineComponent({
   components: {
     StationTable,
     StationFilterCard,
-    Donation
+    StationStats,
+    DonationModal
   },
 
   data: () => ({
     filterCardOpen: false,
-    modalHidden: true,
-    STORAGE_KEY: 'options_saved',
-    focusedStationName: '',
-    filterStore: useStationFiltersStore(),
-    store: useMainStore(),
+    isDonationModalOpen: false,
 
-    isDonationModalOpen: false
+    filterStore: useStationFiltersStore(),
+    store: useMainStore()
   }),
 
   mounted() {
     this.filterStore.setupFilters();
-  },
-
-  computed: {
-    computedStationList() {
-      return this.filterStore.filteredStationList;
-    }
   },
 
   methods: {
@@ -72,30 +66,6 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '../styles/variables.scss';
 @import '../styles/responsive.scss';
-
-@keyframes blinkAnim {
-  0%,
-  100% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0;
-  }
-}
-
-.indicator-anim {
-  &-enter-active,
-  &-leave-active {
-    transition: all 0.25s ease-in-out;
-  }
-
-  &-enter,
-  &-leave-to {
-    transform: translateY(100%);
-    opacity: 0;
-  }
-}
 
 .stations-view {
   position: relative;

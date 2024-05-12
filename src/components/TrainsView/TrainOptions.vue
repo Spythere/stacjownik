@@ -4,7 +4,7 @@
 
     <button class="filter-button btn--filled btn--image" @click="toggleShowOptions" ref="button">
       <img src="/images/icon-filter2.svg" alt="Open filters icon" />
-      {{ $t('options.filters') }} [F]
+      [F] {{ $t('options.filters') }}
       <span class="active-indicator" v-if="currentOptionsActive"></span>
     </button>
 

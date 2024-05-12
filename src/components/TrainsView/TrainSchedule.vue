@@ -81,11 +81,11 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
-import Train from '../../scripts/interfaces/Train';
 import StopLabel from './StopLabel.vue';
 import StockList from '../Global/StockList.vue';
 import { useMainStore } from '../../store/mainStore';
 import { useApiStore } from '../../store/apiStore';
+import { Train } from '../../typings/common';
 
 export interface TrainScheduleStop {
   nameHtml: string;

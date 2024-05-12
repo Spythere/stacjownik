@@ -52,7 +52,7 @@
 
 <script lang="ts">
 import { PropType, defineComponent } from 'vue';
-import Station from '../../../scripts/interfaces/Station';
+import { Station } from '../../../typings/common';
 
 export default defineComponent({
   props: {

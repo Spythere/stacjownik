@@ -1,6 +1,11 @@
 <template>
-  <div class="app_container" v-cloak>
-    <PopUp />
+  <div class="app_container">
+    <UpdateModal
+      :update-modal-open="isUpdateModalOpen"
+      @toggle-modal="() => (isUpdateModalOpen = false)"
+    />
+
+    <Tooltip />
 
     <transition name="modal-anim">
       <keep-alive>
@@ -22,7 +27,10 @@
       &copy;
       <a href="https://td2.info.pl/profile/?u=20777" target="_blank">Spythere</a>
       {{ new Date().getUTCFullYear() }} |
-      <a :href="releaseURL" target="_blank">v{{ VERSION }}{{ isOnProductionHost ? '' : 'dev' }}</a>
+      <button class="btn--text" @click="() => (isUpdateModalOpen = true)">
+        v{{ VERSION }}{{ isOnProductionHost ? '' : 'dev' }}
+      </button>
+
       <br />
       <a href="https://discord.gg/x2mpNN3svk">
         <img src="/images/icon-discord.png" alt="" />&nbsp;<b>{{ $t('footer.discord') }}</b>
@@ -36,19 +44,21 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import axios from 'axios';
-import { version } from '.././package.json';
 
+import { version } from '.././package.json';
+import { Status } from './typings/common';
 import { useMainStore } from './store/mainStore';
-import popupMixin from './mixins/popupMixin';
+import { useApiStore } from './store/apiStore';
+import { useTooltipStore } from './store/tooltipStore';
 
 import Clock from './components/App/Clock.vue';
 import StatusIndicator from './components/App/StatusIndicator.vue';
 import AppHeader from './components/App/AppHeader.vue';
 import TrainModal from './components/TrainsView/TrainModal.vue';
+import Tooltip from './components/Tooltip/Tooltip.vue';
+import UpdateModal from './components/App/UpdateModal.vue';
+
 import StorageManager from './managers/storageManager';
-import PopUp from './components/PopUp/PopUp.vue';
-import { useApiStore } from './store/apiStore';
-import { Status } from './typings/common';
 
 const STORAGE_VERSION_KEY = 'app_version';
 
@@ -58,19 +68,22 @@ export default defineComponent({
     StatusIndicator,
     AppHeader,
     TrainModal,
-    PopUp
+    UpdateModal,
+    Tooltip
   },
-
-  mixins: [popupMixin],
 
   data: () => ({
     VERSION: version,
     store: useMainStore(),
     apiStore: useApiStore(),
+    tooltipStore: useTooltipStore(),
+
+    isUpdateModalOpen: false,
 
     currentLang: 'pl',
-    releaseURL: '',
-    isOnProductionHost: location.hostname == 'stacjownik-td2.web.app'
+    isOnProductionHost: location.hostname == 'stacjownik-td2.web.app',
+
+    nextUpdateTime: 0
   }),
 
   created() {
@@ -78,41 +91,52 @@ export default defineComponent({
   },
 
   async mounted() {
-    window.addEventListener('focus', () => {
-      if (Date.now() - this.apiStore.lastFetchData.getTime() < 15000) return;
-
-      this.apiStore.fetchActiveData();
-    });
-
-    window.addEventListener('mousemove', (e: MouseEvent) => this.handlePopUpEvents(e));
+    window.addEventListener('mousemove', (e: MouseEvent) => this.tooltipStore.handle(e));
   },
 
   methods: {
     init() {
       this.loadLang();
-      this.setReleaseURL();
       this.setupOfflineHandling();
       this.checkAppVersion();
 
       this.apiStore.setupAPIData();
+      window.requestAnimationFrame(this.update);
 
       if (!this.isOnProductionHost) document.title = 'Stacjownik Dev';
     },
 
-    checkAppVersion() {
-      if (import.meta.env.DEV) {
-        this.store.isNewUpdate = true;
-
-        return;
+    update(t: number) {
+      if (t >= this.nextUpdateTime) {
+        this.apiStore.fetchActiveData();
+        this.nextUpdateTime = t + 20000;
       }
+      window.requestAnimationFrame(this.update);
+    },
 
+    async checkAppVersion() {
       const storageVersion = StorageManager.getStringValue(STORAGE_VERSION_KEY);
 
-      if (storageVersion === undefined || storageVersion != version) {
-        this.store.isNewUpdate = true;
+      try {
+        const releaseData = await (
+          await axios.get('https://api.github.com/repos/Spythere/stacjownik/releases/latest')
+        ).data;
 
-        StorageManager.setStringValue(STORAGE_VERSION_KEY, version);
+        if (!releaseData) return;
+
+        this.store.appUpdate = {
+          version,
+          changelog: releaseData.body,
+          releaseURL: releaseData.html_url
+        };
+
+        this.isUpdateModalOpen =
+          storageVersion != version || import.meta.env.VITE_UPDATE_TEST === 'test';
+      } catch (error) {
+        console.error(`Wystąpił błąd podczas pobierania danych z API GitHuba: ${error}`);
       }
+
+      StorageManager.setStringValue(STORAGE_VERSION_KEY, version);
     },
 
     setupOfflineHandling() {
@@ -137,47 +161,11 @@ export default defineComponent({
       this.apiStore.connectToAPI();
     },
 
-    handlePopUpEvents(e: MouseEvent) {
-      const targetEl = e
-        .composedPath()
-        .find((p) => p instanceof HTMLElement && p.getAttribute('data-popup-key'));
-
-      if (!targetEl || !(targetEl instanceof HTMLElement)) {
-        if (this.store.popUpData.key != null) this.hidePopUp();
-
-        return;
-      }
-
-      const popupComponentKey = targetEl.getAttribute('data-popup-key');
-      const popupContent = targetEl.getAttribute('data-popup-content');
-
-      if (popupComponentKey && popupContent) this.showPopUp(e, popupComponentKey, popupContent);
-      else if (this.store.popUpData.key != null) this.hidePopUp();
-
-      this.store.mousePos.x = e.pageX;
-      this.store.mousePos.y = e.pageY;
-    },
-
     changeLang(lang: string) {
       this.$i18n.locale = lang;
       this.currentLang = lang;
 
       StorageManager.setStringValue('lang', lang);
-    },
-
-    async setReleaseURL() {
-      try {
-        const releaseData = await (
-          await axios.get('https://api.github.com/repos/Spythere/stacjownik/releases/latest')
-        ).data;
-
-        if (!releaseData) return;
-
-        this.releaseURL = releaseData.html_url;
-      } catch (error) {
-        console.error(`Wystąpił błąd podczas pobierania danych z API GitHuba: ${error}`);
-        return;
-      }
     },
 
     loadLang() {
@@ -255,9 +243,14 @@ export default defineComponent({
 }
 
 // FOOTER
-footer.app_footer {
+.app_footer {
   max-width: 100%;
   padding: 0.5em;
+
+  button {
+    display: inline-block;
+    padding: 0.1em;
+  }
 
   img {
     width: 1.1em;

@@ -65,12 +65,12 @@ export default defineComponent({
       immediate: true,
       handler(regionQuery: string) {
         if (regionQuery) {
-          this.store.region.id =
+          this.store.region =
             regionsJSON.find(
               (reg) =>
                 reg.id == regionQuery.toLocaleLowerCase() ||
                 reg.value.toLocaleLowerCase() == regionQuery.toLocaleLowerCase()
-            )?.id || 'eu';
+            ) ?? regionsJSON[0];
         }
       }
     }
@@ -139,14 +139,9 @@ button.selected-region {
   color: paleturquoise;
 
   font-weight: bold;
-  padding: 0.1em 0.5em;
 
   &:focus {
     background-color: #262626;
-  }
-
-  span {
-    margin-right: 10px;
   }
 }
 
@@ -197,6 +192,8 @@ li.option {
   }
 
   label {
+    width: 100%;
+    padding: 0.5em 0;
     position: relative;
 
     display: inline-block;
@@ -206,10 +203,6 @@ li.option {
     &:focus {
       background-color: #333333f2;
     }
-
-    padding: 0.5em 0;
-
-    width: 100%;
 
     cursor: pointer;
   }

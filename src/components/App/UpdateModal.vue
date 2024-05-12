@@ -1,36 +1,20 @@
 <template>
-  <AnimatedModal :is-open="mainStore.isNewUpdate" @toggle-modal="toggleModal">
-    <div class="modal_content">
-      <div>
-        <h1 style="margin-bottom: 0.5em">{{ $t('update.title') }}</h1>
-        <h2 class="text--primary">{{ $t('update.version', [version]) }}</h2>
-        <hr class="separator" />
-      </div>
+  <AnimatedModal :is-open="updateModalOpen" @toggle-modal="toggleModal(false)">
+    <div class="modal-content">
+      <h1 style="margin-bottom: 0.5em">🚀 {{ $t('update.title') }}</h1>
 
-      <div class="features-list">
-        <h2>Nowości i zmiany:</h2>
-        <ul>
-          <li v-for="content in localeChangesArray" :key="content">{{ content }}</li>
-        </ul>
-      </div>
+      <div class="features-body" v-if="htmlChangelog != ''" v-html="htmlChangelog"></div>
+      <div class="no-features" v-else>{{ $t('update.no-data') }}</div>
 
-      <div class="modal_actions">
-        <button class="btn--action">Przyjąłem!</button>
+      <button class="btn btn--action" ref="confirm-btn" @click="toggleModal(false)">
+        {{ $t('update.confirm') }}
+      </button>
 
-        <p>Ten changelog będzie zawsze dostępny po kliknięciu numeru wersji w stopce strony!</p>
-
-        <!-- <div class="actions-checkboxes">
-          <label>
-            <input type="checkbox" />
-            <span>nie pokazuj dla przyszłych aktualizacji</span>
-          </label>
-
-          <label>
-            <input type="checkbox" />
-            <span>nie pokazuj dla przyszłych aktualizacji</span>
-          </label>
-        </div> -->
-      </div>
+      <p class="bottom-info">
+        {{ $t('update.info-1') }}
+        <br />
+        <span v-html="$t('update.info-2')"></span>
+      </p>
     </div>
   </AnimatedModal>
 </template>
@@ -39,10 +23,23 @@
 import { defineComponent } from 'vue';
 import { useMainStore } from '../../store/mainStore';
 import { version } from '../../../package.json';
+import { Converter } from 'showdown';
+
 import AnimatedModal from '../Global/AnimatedModal.vue';
+
+const converter = new Converter();
 
 export default defineComponent({
   components: { AnimatedModal },
+
+  props: {
+    updateModalOpen: {
+      type: Boolean,
+      required: true
+    }
+  },
+
+  emits: ['toggleModal'],
 
   data() {
     return {
@@ -51,9 +48,22 @@ export default defineComponent({
     };
   },
 
+  watch: {
+    updateModalOpen(val: boolean) {
+      this.$nextTick(() => {
+        if (val) (this.$refs['confirm-btn'] as HTMLElement).focus();
+      });
+    }
+  },
+
   computed: {
-    localeChangesArray() {
-      return this.$t('update.content').split('\n');
+    htmlChangelog() {
+      if (this.mainStore.appUpdate == null) return '';
+
+      const x = converter.makeHtml(this.mainStore.appUpdate.changelog);
+      console.log(x);
+
+      return x;
     }
   },
 
@@ -66,68 +76,46 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.modal_content {
-  font-size: 1.2em;
+::v-deep(h1) {
   text-align: center;
-  padding: 1em;
-  height: 80vh;
-  min-height: 550px;
+}
 
+::v-deep(h2) {
+  padding: 0.25em 0;
+}
+
+::v-deep(ul) {
+  list-style: inside;
+  padding: 0.5em;
+  line-height: 1.5em;
+}
+
+.modal-content {
   display: grid;
   grid-template-rows: auto 1fr auto;
   gap: 0.5em;
-}
-
-hr.separator {
-  margin: 0.5em 0;
-  padding: 0;
-  height: 3px;
-  background-color: #fff;
-}
-
-.features-list {
-  margin-top: 0.5em;
+  padding: 1em;
+  min-height: 700px;
   overflow: auto;
-
-  ul {
-    text-align: left;
-    list-style: '\21D2  ';
-    padding: 1em;
-  }
-
-  li {
-    margin: 0.5em 0;
-  }
+  text-align: justify;
 }
 
-.modal_actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5em;
-
-  button {
-    font-weight: bold;
-    padding: 0.35em;
-  }
-
-  p {
-    font-size: 0.9em;
-  }
+.no-features {
+  text-align: center;
 }
 
-.actions-checkboxes {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+button {
+  margin: 0 auto;
+  padding: 0.5em 0.75em;
+  font-size: 1.1em;
+}
 
-  gap: 1em;
+p.bottom-info {
+  text-align: center;
+  color: #ccc;
+}
 
-  label {
-    font-size: 0.9em;
-  }
-
-  label > input {
-    margin-right: 0.5em;
-  }
+a {
+  text-decoration: underline;
 }
 </style>

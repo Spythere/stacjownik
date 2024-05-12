@@ -43,7 +43,7 @@
                     :to="`/journal/dispatchers?search-dispatcher=${historyItem.dispatcherName}`"
                   >
                     <b
-                      v-if="isDonator(historyItem.dispatcherName)"
+                      v-if="apiStore.donatorsData.includes(historyItem.dispatcherName)"
                       class="text--donator"
                       :title="$t('donations.dispatcher-message')"
                     >
@@ -128,13 +128,13 @@ import { Status } from '../../../typings/common';
 import Loading from '../../Global/Loading.vue';
 import AddDataButton from '../../Global/AddDataButton.vue';
 import dateMixin from '../../../mixins/dateMixin';
-import donatorMixin from '../../../mixins/donatorMixin';
 import styleMixin from '../../../mixins/styleMixin';
+import { useApiStore } from '../../../store/apiStore';
 
 export default defineComponent({
   components: { Loading, AddDataButton },
 
-  mixins: [dateMixin, styleMixin, donatorMixin],
+  mixins: [dateMixin, styleMixin],
 
   props: {
     dispatcherHistory: {
@@ -159,6 +159,7 @@ export default defineComponent({
     return {
       Status,
       store: useMainStore(),
+      apiStore: useApiStore(),
       regions
     };
   },
