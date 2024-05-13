@@ -116,14 +116,10 @@ export default defineComponent({
       const isLoco = /.-\d{3}/.test(stockName);
 
       if (isLoco) {
-        fallbackName += 'loco-';
-        fallbackName += /^\d?EN\d{2}/.test(stockName)
-          ? 'ezt'
-          : /^SN\d{2}/.test(stockName)
-            ? 'szt'
-            : /^\d?E/.test(stockName)
-              ? 'e'
-              : 's';
+        if (/^\d?EN\d{2}/.test(stockName)) fallbackName = 'loco-ezt';
+        else if (/^SN\d{2}/.test(stockName)) fallbackName = 'loco-szt';
+        else if (/^\d{0,}?E/.test(stockName)) fallbackName = 'loco-e';
+        else fallbackName = 'loco-s';
       } else {
         const isCarPassenger = /(\d{3}a|(Bau|Gor)\d{2}|304C)_/.test(stockName);
 

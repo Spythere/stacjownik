@@ -16,7 +16,9 @@
       :src="`https://static.spythere.eu/images/${tooltipStore.content}--300px.jpg`"
     />
 
-    <div class="vehicle-name" v-if="imageState != 'error'">
+    <div v-if="imageState == 'error'" class="error-placeholder"></div>
+
+    <div class="vehicle-name">
       {{ tooltipStore.content.replace(/_/g, ' ') }}
     </div>
   </div>
@@ -36,6 +38,12 @@ export default defineComponent({
 
   mounted() {
     this.imageState = 'loading';
+  },
+
+  watch: {
+    'tooltipStore.type'(prev, val) {
+      if (prev != val) this.imageState = 'loading';
+    }
   },
 
   methods: {
@@ -79,5 +87,9 @@ img {
   margin-top: 0.5em;
   color: #ccc;
   text-wrap: wrap;
+}
+
+.error-placeholder {
+  height: 176px;
 }
 </style>
