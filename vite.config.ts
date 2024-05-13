@@ -34,10 +34,6 @@ export default defineConfig({
             handler: 'CacheFirst',
             options: {
               cacheName: 'swdr-images-cache',
-              expiration: {
-                maxEntries: 100,
-                maxAgeSeconds: 60 * 60 * 24 * 7 // <== 7 days
-              },
               cacheableResponse: {
                 statuses: [0, 200, 404]
               }
@@ -48,10 +44,6 @@ export default defineConfig({
             handler: 'CacheFirst',
             options: {
               cacheName: 'spythere-images-cache',
-              expiration: {
-                maxEntries: 100,
-                maxAgeSeconds: 60 * 60 * 24 * 7 // <== 7 days
-              },
               cacheableResponse: {
                 statuses: [0, 200]
               }
