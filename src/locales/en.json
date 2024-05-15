@@ -299,9 +299,10 @@
   "station-stats": {
     "u-factor": "U-factor",
     "u-factor-tooltip": "(?) Current server traffic factor (driver count divided by dispatcher count)",
-    "avg-timetable-count": "Average timetable count for one dispatcher:",
-    "single-track-count": "Available single track routes:",
-    "double-track-count": "Available double track routes:",
+    "med-timetable-count": "Median of scenery timetables:",
+    "single-track-count": "Single track routes:",
+    "double-track-count": "Double track routes:",
+    "cross-sceneries": "Cross-track sceneries (1-track <-> 2-track)",
     "electrified": "(electrified)",
     "not-electrified": "(not electr.)",
     "open-spawns": "Open spawns:"

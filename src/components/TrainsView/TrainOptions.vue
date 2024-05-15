@@ -81,7 +81,6 @@
           </div>
 
           <div class="filter-actions">
-            <div></div>
             <button class="btn--action" @click="resetAllFilters">
               {{ $t('options.filter-reset') }}
             </button>
@@ -223,9 +222,6 @@ export default defineComponent({
 
 .filter-actions {
   display: flex;
-  gap: 0.5em;
-  width: 100%;
-
   margin-top: 1em;
 
   > * {

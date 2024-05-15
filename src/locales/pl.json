@@ -108,8 +108,8 @@
     "filters": "FILTRY",
     "donate": "WESPRZYJ",
 
-    "search-button": "Szukaj",
-    "reset-button": "Zresetuj",
+    "search-button": "SZUKAJ",
+    "reset-button": "ZRESETUJ",
 
     "sort-title": "SORTUJ WG:",
     "filter-title": "FILTRUJ WG:",
@@ -292,9 +292,10 @@
   "station-stats": {
     "u-factor": "Współczynnik Ugla",
     "u-factor-tooltip": "(?) Współczynnik ruchu na serwerze (liczba maszynistów online dzielona na liczbę dyżurnych ruchu)",
-    "avg-timetable-count": "Średnia liczba rozkładów jazdy na dyżurnego:",
-    "single-track-count": "Dostępne szlaki jednotorowe:",
-    "double-track-count": "Dostępne szlaki dwutorowe:",
+    "med-timetable-count": "Mediana rozkładów jazdy na sceneriach:",
+    "single-track-count": "Szlaki jednotorowe:",
+    "double-track-count": "Szlaki dwutorowe:",
+    "cross-sceneries": "Scenerie przejściowe (1-tor <-> 2-tor):",
     "electrified": "(zelektr.)",
     "not-electrified": "(niezelektr.)",
     "open-spawns": "Otwarte spawny:"
