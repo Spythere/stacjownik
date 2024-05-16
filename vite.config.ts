@@ -20,8 +20,8 @@ export default defineConfig({
         cleanupOutdatedCaches: true,
         runtimeCaching: [
           {
-            urlPattern: new RegExp('^https://stacjownik.spythere.eu/api/getSceneries', 'i'),
-            handler: 'CacheFirst',
+            urlPattern: /^https:\/\/stacjownik.spythere.eu\/api\/getSceneries/i,
+            handler: 'StaleWhileRevalidate',
             options: {
               cacheName: 'spythere-sceneries-cache',
               cacheableResponse: {
@@ -30,10 +30,10 @@ export default defineConfig({
             }
           },
           {
-            urlPattern: new RegExp('^https://static.spythere.eu/*', 'i'),
+            urlPattern: /^https:\/\/static.spythere.eu\/.*/i,
             handler: 'CacheFirst',
             options: {
-              cacheName: 'spythere-cache',
+              cacheName: 'spythere-static-cache',
               cacheableResponse: {
                 statuses: [0, 200]
               }
