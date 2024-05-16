@@ -160,6 +160,8 @@ export default defineComponent({
     spawnCount() {
       return this.mainStore.activeSceneryList.reduce(
         (acc, scenery) => {
+          if (scenery.region != this.mainStore.region.id) return acc;
+
           scenery.spawns.forEach((spawn) => {
             if (/EZT|POS|OSOB/i.test(spawn.spawnName)) acc['passenger'] += 1;
             if (/TOW/i.test(spawn.spawnName)) acc['freight'] += 1;
