@@ -4,6 +4,7 @@
     "timetables",
     "reality",
     "package-access",
+    "station-type",
     "access",
     "control",
     "blockades",
@@ -60,6 +61,20 @@
       "section": "access",
       "value": false,
       "defaultValue": false
+    },
+    {
+      "id": "junction",
+      "name": "junction",
+      "section": "station-type",
+      "value": true,
+      "defaultValue": true
+    },
+    {
+      "id": "nonJunction",
+      "name": "nonJunction",
+      "section": "station-type",
+      "value": true,
+      "defaultValue": true
     },
     {
       "id": "SPK",

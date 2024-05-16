@@ -8,9 +8,12 @@
 
       <img
         class="traction-only"
-        :src="`https://rj.td2.info.pl/dist/img/thumbnails/${computedStockList[0].split(':')[0]}${
-          /^EN/.test(computedStockList[0]) ? 'rb' : ''
-        }.png`"
+        :src="
+          getVehicleThumbnailURL(
+            computedStockList[0].split(':')[0],
+            /^EN/.test(computedStockList[0]) ? 'rb' : ''
+          )
+        "
         @error="onImageError($event, computedStockList[0])"
         width="300"
         height="60"
@@ -29,9 +32,9 @@
             :data-mouseover="stockName"
             data-tooltip-type="VehiclePreviewTooltip"
             :data-tooltip-content="stockName.split(':')[0]"
-            :src="`https://rj.td2.info.pl/dist/img/thumbnails/${stockName.split(':')[0]}${
-              /^EN/.test(stockName) ? 'rb' : ''
-            }.png`"
+            :src="
+              getVehicleThumbnailURL(stockName.split(':')[0], /^EN/.test(stockName) ? 'rb' : '')
+            "
             @error="onImageError($event, stockName)"
             @click.stop="() => {}"
             width="400"
@@ -44,7 +47,7 @@
             data-tooltip-type="VehiclePreviewTooltip"
             :data-tooltip-content="stockName.split(':')[0]"
             v-if="/^(EN|2EN)/.test(stockName)"
-            :src="`https://rj.td2.info.pl/dist/img/thumbnails/${stockName.split(':')[0]}s.png`"
+            :src="getVehicleThumbnailURL(stockName, 's')"
             @error="
               (event) => ((event.target as HTMLImageElement).src = '/images/icon-loco-ezt-s.png')
             "
@@ -56,7 +59,7 @@
             data-tooltip-type="VehiclePreviewTooltip"
             :data-tooltip-content="stockName.split(':')[0]"
             v-if="/^EN71/.test(stockName)"
-            :src="`https://rj.td2.info.pl/dist/img/thumbnails/${stockName.split(':')[0]}s.png`"
+            :src="getVehicleThumbnailURL(stockName, 's')"
             @error="
               (event) => ((event.target as HTMLImageElement).src = '/images/icon-loco-ezt-s.png')
             "
@@ -68,7 +71,7 @@
             data-tooltip-type="VehiclePreviewTooltip"
             :data-tooltip-content="stockName.split(':')[0]"
             v-if="/^(EN|2EN)/.test(stockName)"
-            :src="`https://rj.td2.info.pl/dist/img/thumbnails/${stockName.split(':')[0]}ra.png`"
+            :src="getVehicleThumbnailURL(stockName, 'ra')"
             @error="
               (event) => ((event.target as HTMLImageElement).src = '/images/icon-loco-ezt-ra.png')
             "
@@ -110,6 +113,10 @@ export default defineComponent({
   },
 
   methods: {
+    getVehicleThumbnailURL(locoType: string, suffix?: string) {
+      return `https://static.spythere.eu/thumbnails/${locoType}${suffix}.png`;
+    },
+
     onImageError(event: Event, stockName: string) {
       let fallbackName = '';
 

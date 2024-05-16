@@ -30,20 +30,10 @@ export default defineConfig({
             }
           },
           {
-            urlPattern: new RegExp('^https://rj.td2.info.pl/dist/img/thumbnails/*', 'i'),
+            urlPattern: new RegExp('^https://static.spythere.eu/*', 'i'),
             handler: 'CacheFirst',
             options: {
-              cacheName: 'swdr-images-cache',
-              cacheableResponse: {
-                statuses: [0, 200, 404]
-              }
-            }
-          },
-          {
-            urlPattern: new RegExp('^https://static.spythere.eu/images/*', 'i'),
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'spythere-images-cache',
+              cacheName: 'spythere-cache',
               cacheableResponse: {
                 statuses: [0, 200]
               }

@@ -171,6 +171,7 @@
 
     "sections": {
       "quick": "SZYBKIE FILTRY",
+      "station-type": "RODZAJ STACJI",
       "reality": "FIKCYJNOŚĆ SCENERII",
       "package-access": "DOSTĘPNOŚĆ W PACZCE",
       "access": "DOSTĘPNOŚĆ OGÓLNA",
@@ -228,6 +229,9 @@
 
     "withActiveTimetables": "AKTYWNE",
     "withoutActiveTimetables": "BEZ AKTYWNYCH",
+
+    "junction": "WĘZŁOWE",
+    "nonJunction": "INNE",
 
     "sliders": {
       "min-lvl": "MIN. WYMAGANY POZIOM DYŻURNEGO",
@@ -296,8 +300,6 @@
     "single-track-count": "Szlaki jednotorowe:",
     "double-track-count": "Szlaki dwutorowe:",
     "cross-sceneries": "Scenerie przejściowe (1-tor <-> 2-tor):",
-    "electrified": "(zelektr.)",
-    "not-electrified": "(niezelektr.)",
     "open-spawns": "Otwarte spawny:"
   },
   "trains": {

@@ -55,4 +55,6 @@ export interface Filter {
   onlineFromHours: number;
   withActiveTimetables: boolean;
   withoutActiveTimetables: boolean;
+  junction: boolean;
+  nonJunction: boolean;
 }

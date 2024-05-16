@@ -4,7 +4,6 @@
 
     <div class="stats-row">
       <div>
-        &bull;
         <span
           >{{ $t('station-stats.u-factor') }}
           <a
@@ -29,19 +28,21 @@
       <div>
         &bull;
         {{ $t('station-stats.single-track-count') }}
-        <b>{{ trackCount.oneWayElectric }}</b> {{ $t('station-stats.electrified') }} /
-        <b>{{ trackCount.oneWayOther }}</b> {{ $t('station-stats.not-electrified') }}
+        <b>{{ trackCount.oneWay }}</b> (<b>{{ trackCount.oneWayElectric }} ⚡</b>)
       </div>
 
       <div>
         &bull;
         {{ $t('station-stats.double-track-count') }}
-        <b>{{ trackCount.twoWayElectric }}</b> {{ $t('station-stats.electrified') }} /
-        <b>{{ trackCount.twoWayOther }}</b>
-        {{ $t('station-stats.not-electrified') }}
+        <b>{{ trackCount.twoWay }}</b>
+        (<b>{{ trackCount.twoWayElectric }} ⚡</b>)
       </div>
 
-      <div>&bull; {{ $t('station-stats.cross-sceneries') }} <b>test</b></div>
+      <div>
+        &bull; {{ $t('station-stats.cross-sceneries') }} <b>{{ trackCount.crossTrack }}</b> (<b
+          >{{ trackCount.crossTrackElectric }} ⚡</b
+        >)
+      </div>
 
       <div>
         &bull;
@@ -101,15 +102,14 @@ export default defineComponent({
 
       if (scheduledTrainsArr.length == 0) return 0;
 
-      let v1 = scheduledTrainsArr[scheduledTrainsArr.length / 2];
-
       if (scheduledTrainsArr.length % 2 == 0) {
+        let v1 = scheduledTrainsArr[scheduledTrainsArr.length / 2];
         let v2 = scheduledTrainsArr[scheduledTrainsArr.length / 2 - 1];
 
         return (v1 + v2) / 2;
       }
 
-      return v1;
+      return scheduledTrainsArr[~~(scheduledTrainsArr.length / 2)];
     },
 
     trackCount() {
@@ -122,17 +122,38 @@ export default defineComponent({
         )
         .reduce(
           (acc, st) => {
-            [...st.generalInfo!.routes.single, ...st.generalInfo!.routes.double].forEach((r) => {
+            const { routes } = st.generalInfo!;
+
+            if (
+              routes.single.filter((r) => !r.isInternal).length > 0 &&
+              routes.double.filter((r) => !r.isInternal).length > 0
+            ) {
+              acc.crossTrack++;
+
+              if (
+                routes.single.some((r) => r.isElectric) &&
+                routes.double.some((r) => r.isElectric)
+              )
+                acc.crossTrackElectric++;
+            }
+
+            [...routes.single, ...routes.double].forEach((r) => {
               if (r.isInternal) return;
 
-              const keyName: keyof typeof acc = `${r.routeTracks == 2 ? 'twoWay' : 'oneWay'}${r.isElectric ? 'Electric' : 'Other'}`;
-
-              acc[keyName] += 1;
+              acc[r.routeTracks == 2 ? 'twoWay' : 'oneWay'] += 1;
+              if (r.isElectric) acc[r.routeTracks == 2 ? 'twoWayElectric' : 'oneWayElectric'] += 1;
             });
 
             return acc;
           },
-          { oneWayElectric: 0, oneWayOther: 0, twoWayElectric: 0, twoWayOther: 0 }
+          {
+            oneWay: 0,
+            oneWayElectric: 0,
+            twoWay: 0,
+            twoWayElectric: 0,
+            crossTrack: 0,
+            crossTrackElectric: 0
+          }
         );
     },
 
