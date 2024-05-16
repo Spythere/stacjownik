@@ -1,29 +1,55 @@
 <template>
   <div class="station-stats">
     <div class="separator" />
-    <div>
-      {{ $t('station-stats.u-factor') }}
-      <a
-        href="https://td2.info.pl/dyskusje/wspolczynnik-ugla-czy-to-ma-sens/msg81011/#msg81011"
-        target="_blank"
-        :data-tooltip="$t('station-stats.u-factor-tooltip')"
-        >(?)</a
-      >:
-      <b :style="calculateFactorStyle()">
-        {{ uFactor.toFixed(2) }}
-      </b>
-      | {{ $t('station-stats.avg-timetable-count') }}
-      <b>{{ avgTimetableCount.toFixed(2) }}</b>
-    </div>
-    <div>
-      {{ $t('station-stats.single-track-count') }}
-      <b>{{ trackCount.oneWayElectric }}</b> {{ $t('station-stats.electrified') }} /
-      <b>{{ trackCount.oneWayOther }}</b> {{ $t('station-stats.not-electrified') }} |
-      {{ $t('station-stats.double-track-count') }} <b>{{ trackCount.twoWayElectric }}</b>
-      {{ $t('station-stats.electrified') }} / <b>{{ trackCount.twoWayOther }}</b>
-      {{ $t('station-stats.not-electrified') }} | {{ $t('station-stats.open-spawns') }}
-      <b>{{ spawnCount.passenger }}</b> - PAS / <b>{{ spawnCount.freight }}</b> - TOW /
-      <b>{{ spawnCount.loco }}</b> - LUZ / <b>{{ spawnCount.all }}</b> - ALL
+
+    <div class="stats-row">
+      <div>
+        <span
+          >{{ $t('station-stats.u-factor') }}
+          <a
+            href="https://td2.info.pl/dyskusje/wspolczynnik-ugla-czy-to-ma-sens/msg81011/#msg81011"
+            target="_blank"
+            :data-tooltip="$t('station-stats.u-factor-tooltip')"
+            >(?)</a
+          >:
+        </span>
+
+        <b class="u-factor" :style="calculateFactorStyle()">
+          {{ uFactor.toFixed(2) }}
+        </b>
+      </div>
+
+      <div>
+        &bull;
+        {{ $t('station-stats.med-timetable-count') }}
+        <b>{{ medTimetableCount }}</b>
+      </div>
+
+      <div>
+        &bull;
+        {{ $t('station-stats.single-track-count') }}
+        <b>{{ trackCount.oneWay }}</b> (<b>{{ trackCount.oneWayElectric }} ⚡</b>)
+      </div>
+
+      <div>
+        &bull;
+        {{ $t('station-stats.double-track-count') }}
+        <b>{{ trackCount.twoWay }}</b>
+        (<b>{{ trackCount.twoWayElectric }} ⚡</b>)
+      </div>
+
+      <div>
+        &bull; {{ $t('station-stats.cross-sceneries') }} <b>{{ trackCount.crossTrack }}</b> (<b
+          >{{ trackCount.crossTrackElectric }} ⚡</b
+        >)
+      </div>
+
+      <div>
+        &bull;
+        {{ $t('station-stats.open-spawns') }} <b>{{ spawnCount.passenger }}</b> - PAS /
+        <b>{{ spawnCount.freight }}</b> - TOW / <b>{{ spawnCount.loco }}</b> - LUZ /
+        <b>{{ spawnCount.all }}</b> - ALL
+      </div>
     </div>
   </div>
 </template>
@@ -63,18 +89,27 @@ export default defineComponent({
       return activeDispatchers.length != 0 ? activeTrains.length / activeDispatchers.length : 0;
     },
 
-    avgTimetableCount() {
-      const scheduledTrainsTotal = this.mainStore.activeSceneryList.reduce<number>((acc, sc) => {
-        if (sc.region != this.mainStore.region.id) return acc;
+    medTimetableCount() {
+      const scheduledTrainsArr = this.mainStore.activeSceneryList
+        .reduce<number[]>((acc, sc) => {
+          if (sc.region != this.mainStore.region.id) return acc;
 
-        acc += sc.scheduledTrainCount.all;
+          acc.push(sc.scheduledTrainCount.all);
 
-        return acc;
-      }, 0);
+          return acc;
+        }, [])
+        .sort((a, b) => Math.sign(a - b));
 
-      return this.mainStore.activeSceneryList.length != 0
-        ? scheduledTrainsTotal / this.mainStore.activeSceneryList.length
-        : 0;
+      if (scheduledTrainsArr.length == 0) return 0;
+
+      if (scheduledTrainsArr.length % 2 == 0) {
+        let v1 = scheduledTrainsArr[scheduledTrainsArr.length / 2];
+        let v2 = scheduledTrainsArr[scheduledTrainsArr.length / 2 - 1];
+
+        return (v1 + v2) / 2;
+      }
+
+      return scheduledTrainsArr[~~(scheduledTrainsArr.length / 2)];
     },
 
     trackCount() {
@@ -87,23 +122,46 @@ export default defineComponent({
         )
         .reduce(
           (acc, st) => {
-            [...st.generalInfo!.routes.single, ...st.generalInfo!.routes.double].forEach((r) => {
+            const { routes } = st.generalInfo!;
+
+            if (
+              routes.single.filter((r) => !r.isInternal).length > 0 &&
+              routes.double.filter((r) => !r.isInternal).length > 0
+            ) {
+              acc.crossTrack++;
+
+              if (
+                routes.single.some((r) => r.isElectric) &&
+                routes.double.some((r) => r.isElectric)
+              )
+                acc.crossTrackElectric++;
+            }
+
+            [...routes.single, ...routes.double].forEach((r) => {
               if (r.isInternal) return;
 
-              const keyName: keyof typeof acc = `${r.routeTracks == 2 ? 'twoWay' : 'oneWay'}${r.isElectric ? 'Electric' : 'Other'}`;
-
-              acc[keyName] += 1;
+              acc[r.routeTracks == 2 ? 'twoWay' : 'oneWay'] += 1;
+              if (r.isElectric) acc[r.routeTracks == 2 ? 'twoWayElectric' : 'oneWayElectric'] += 1;
             });
 
             return acc;
           },
-          { oneWayElectric: 0, oneWayOther: 0, twoWayElectric: 0, twoWayOther: 0 }
+          {
+            oneWay: 0,
+            oneWayElectric: 0,
+            twoWay: 0,
+            twoWayElectric: 0,
+            crossTrack: 0,
+            crossTrackElectric: 0
+          }
         );
     },
 
     spawnCount() {
       return this.mainStore.activeSceneryList.reduce(
         (acc, scenery) => {
+          if (scenery.region != this.mainStore.region.id) return acc;
+
           scenery.spawns.forEach((spawn) => {
             if (/EZT|POS|OSOB/i.test(spawn.spawnName)) acc['passenger'] += 1;
             if (/TOW/i.test(spawn.spawnName)) acc['freight'] += 1;
@@ -133,19 +191,30 @@ export default defineComponent({
   color: #ddd;
 }
 
-[data-factor-low='true'] {
-  color: #ddd;
+.stats-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  text-wrap: pretty;
+  gap: 0.25em;
+  margin-top: 0.25em;
 }
 
-[data-factor-mediocre='true'] {
-  color: lightgreen;
-}
+.u-factor {
+  [data-factor-low='true'] {
+    color: #ddd;
+  }
 
-[data-factor-high='true'] {
-  color: greenyellow;
-}
+  [data-factor-mediocre='true'] {
+    color: lightgreen;
+  }
 
-[data-factor-highest='true'] {
-  color: rgb(22, 245, 22);
+  [data-factor-high='true'] {
+    color: greenyellow;
+  }
+
+  [data-factor-highest='true'] {
+    color: rgb(22, 245, 22);
+  }
 }
 </style>

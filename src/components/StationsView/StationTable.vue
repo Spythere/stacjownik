@@ -406,7 +406,7 @@ $rowCol: #424242;
 
 .station_table {
   height: 80vh;
-  min-height: 550px;
+  min-height: 700px;
   overflow: auto;
   font-weight: 500;
 }

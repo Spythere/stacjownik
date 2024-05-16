@@ -5,10 +5,15 @@ import router from './router';
 import i18n from './i18n';
 
 import { createPinia } from 'pinia';
-import useCustomSW from './mixins/useCustomSW';
+import { registerSW } from 'virtual:pwa-register';
 
 // Service worker
-useCustomSW();
+registerSW({
+  immediate: true,
+  onNeedRefresh() {
+    console.log('Needs refresh!');
+  }
+});
 
 const clickOutsideDirective: Directive = {
   mounted(el, binding) {

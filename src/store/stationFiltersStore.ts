@@ -30,12 +30,6 @@ const filterInitStates: Filter = {
   mieszana: false,
   SBL: false,
   PBL: false,
-  minLevel: 0,
-  maxLevel: 20,
-  minOneWayCatenary: 0,
-  minOneWay: 0,
-  minTwoWayCatenary: 0,
-  minTwoWay: 0,
   'include-selected': false,
   'no-1track': false,
   'no-2track': false,
@@ -52,10 +46,20 @@ const filterInitStates: Filter = {
   unsignedStatus: false,
   withActiveTimetables: false,
   withoutActiveTimetables: false,
+
+  junction: false,
+  nonJunction: false,
+
   maxVmax: 200,
   minVmax: 0,
   authors: '',
-  onlineFromHours: 0
+  onlineFromHours: 0,
+  minLevel: 0,
+  maxLevel: 20,
+  minOneWayCatenary: 0,
+  minOneWay: 0,
+  minTwoWayCatenary: 0,
+  minTwoWay: 0
 };
 
 export const useStationFiltersStore = defineStore('stationFiltersStore', {

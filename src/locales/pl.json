@@ -108,8 +108,8 @@
     "filters": "FILTRY",
     "donate": "WESPRZYJ",
 
-    "search-button": "Szukaj",
-    "reset-button": "Zresetuj",
+    "search-button": "SZUKAJ",
+    "reset-button": "ZRESETUJ",
 
     "sort-title": "SORTUJ WG:",
     "filter-title": "FILTRUJ WG:",
@@ -171,6 +171,7 @@
 
     "sections": {
       "quick": "SZYBKIE FILTRY",
+      "station-type": "RODZAJ STACJI",
       "reality": "FIKCYJNOŚĆ SCENERII",
       "package-access": "DOSTĘPNOŚĆ W PACZCE",
       "access": "DOSTĘPNOŚĆ OGÓLNA",
@@ -228,6 +229,9 @@
 
     "withActiveTimetables": "AKTYWNE",
     "withoutActiveTimetables": "BEZ AKTYWNYCH",
+
+    "junction": "WĘZŁOWE",
+    "nonJunction": "INNE",
 
     "sliders": {
       "min-lvl": "MIN. WYMAGANY POZIOM DYŻURNEGO",
@@ -292,11 +296,10 @@
   "station-stats": {
     "u-factor": "Współczynnik Ugla",
     "u-factor-tooltip": "(?) Współczynnik ruchu na serwerze (liczba maszynistów online dzielona na liczbę dyżurnych ruchu)",
-    "avg-timetable-count": "Średnia liczba rozkładów jazdy na dyżurnego:",
-    "single-track-count": "Dostępne szlaki jednotorowe:",
-    "double-track-count": "Dostępne szlaki dwutorowe:",
-    "electrified": "(zelektr.)",
-    "not-electrified": "(niezelektr.)",
+    "med-timetable-count": "Mediana rozkładów jazdy na sceneriach:",
+    "single-track-count": "Szlaki jednotorowe:",
+    "double-track-count": "Szlaki dwutorowe:",
+    "cross-sceneries": "Scenerie przejściowe (1-tor <-> 2-tor):",
     "open-spawns": "Otwarte spawny:"
   },
   "trains": {

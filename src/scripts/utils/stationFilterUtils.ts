@@ -229,6 +229,13 @@ export const filterStations = (station: Station, filters: Filter) => {
       !authors?.map((a) => a.toLocaleLowerCase()).includes(filters['authors'].toLocaleLowerCase())
     )
       return false;
+
+    const singleTracks = routes.single.filter((r) => !r.isInternal);
+    const doubleTracks = routes.double.filter((r) => !r.isInternal);
+
+    let isJunction = singleTracks.length > 0 && doubleTracks.length > 0;
+    if (filters['junction'] && isJunction) return false;
+    if (filters['nonJunction'] && !isJunction) return false;
   }
 
   return true;

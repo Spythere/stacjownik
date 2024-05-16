@@ -20,8 +20,8 @@ export default defineConfig({
         cleanupOutdatedCaches: true,
         runtimeCaching: [
           {
-            urlPattern: new RegExp('^https://stacjownik.spythere.eu/api/getSceneries', 'i'),
-            handler: 'CacheFirst',
+            urlPattern: /^https:\/\/stacjownik.spythere.eu\/api\/getSceneries/i,
+            handler: 'StaleWhileRevalidate',
             options: {
               cacheName: 'spythere-sceneries-cache',
               cacheableResponse: {
@@ -30,20 +30,10 @@ export default defineConfig({
             }
           },
           {
-            urlPattern: new RegExp('^https://rj.td2.info.pl/dist/img/thumbnails/*', 'i'),
+            urlPattern: /^https:\/\/static.spythere.eu\/.*/i,
             handler: 'CacheFirst',
             options: {
-              cacheName: 'swdr-images-cache',
-              cacheableResponse: {
-                statuses: [0, 200, 404]
-              }
-            }
-          },
-          {
-            urlPattern: new RegExp('^https://static.spythere.eu/images/*', 'i'),
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'spythere-images-cache',
+              cacheName: 'spythere-static-cache',
               cacheableResponse: {
                 statuses: [0, 200]
               }

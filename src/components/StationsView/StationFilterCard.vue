@@ -1,9 +1,9 @@
 <template>
   <section class="filter-card" v-click-outside="closeCard" @keydown.esc="closeCard">
     <div class="card_controls">
-      <button class="btn--filled btn--image" @click="toggleCard">
+      <button class="card-button btn--filled btn--image" @click="toggleCard">
         <img class="button_icon" src="/images/icon-filter2.svg" alt="filter icon" />
-        [F] {{ $t('options.filters') }}
+        <p>[F] {{ $t('options.filters') }}</p>
         <span class="active-indicator" v-if="!filterStore.areFiltersAtDefault"></span>
       </button>
 
@@ -327,9 +327,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/responsive.scss';
-@import '../../styles/card.scss';
-@import '../../styles/animations.scss';
+@import '../../styles/responsive';
+@import '../../styles/card';
+@import '../../styles/animations';
 
 h3.section-header {
   text-align: center;
@@ -580,6 +580,12 @@ h3.section-header {
       background: #ffffff;
       border-radius: 1em;
     }
+  }
+}
+
+@include smallScreen {
+  .card_controls > button.card-button > p {
+    display: none;
   }
 }
 </style>

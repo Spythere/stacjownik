@@ -9,12 +9,6 @@ import {
   ScenerySpawnType
 } from '../typings/common';
 
-export function getLocoURL(locoType: string): string {
-  return `https://rj.td2.info.pl/dist/img/thumbnails/${
-    locoType.includes('EN') ? locoType + 'rb' : locoType
-  }.png`;
-}
-
 export function getStatusTimestamp(stationStatus: any): number {
   if (!stationStatus) return -2;
 

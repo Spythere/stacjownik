@@ -84,6 +84,7 @@ export default defineComponent({
 .stations-options {
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 0.5em;
 
   margin-bottom: 0.5em;
