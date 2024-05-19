@@ -251,10 +251,11 @@ export const useMainStore = defineStore('mainStore', {
           if (!scheduledTrains) return;
 
           scheduledTrains.forEach(({ train, checkpointStop }) => {
+            scenery.scheduledTrains.push({ train, checkpointStop });
+
             if (uniqueTrainIds.includes(train.id) || train.region != this.region.id) return;
 
             scenery.scheduledTrainCount.all += 1;
-            scenery.scheduledTrains.push({ train, checkpointStop });
 
             if (checkpointStop.confirmed) scenery.scheduledTrainCount.confirmed++;
             else scenery.scheduledTrainCount.unconfirmed++;
