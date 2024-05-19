@@ -161,7 +161,6 @@ export namespace API {
       stopNameRAW: string;
       stopType: string;
       stopDistance: number;
-      pointId: string;
 
       mainStop: boolean;
 

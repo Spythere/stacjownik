@@ -60,10 +60,7 @@ export default defineComponent({
     htmlChangelog() {
       if (this.mainStore.appUpdate == null) return '';
 
-      const x = converter.makeHtml(this.mainStore.appUpdate.changelog);
-      console.log(x);
-
-      return x;
+      return converter.makeHtml(this.mainStore.appUpdate.changelog);
     }
   },
 

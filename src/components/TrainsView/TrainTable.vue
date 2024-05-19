@@ -15,10 +15,10 @@
         <li
           class="train-row"
           v-for="train in trains"
-          :key="train.trainId"
+          :key="train.id"
           tabindex="0"
-          @click.stop="selectModalTrain(train.trainId, $event.currentTarget)"
-          @keydown.enter="selectModalTrain(train.trainId, $event.currentTarget)"
+          @click.stop="selectModalTrain(train.id, $event.currentTarget)"
+          @keydown.enter="selectModalTrain(train.id, $event.currentTarget)"
         >
           <TrainInfo :train="train" :extended="false" />
         </li>
