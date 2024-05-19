@@ -239,7 +239,8 @@ export const useMainStore = defineStore('mainStore', {
         const station = this.stationList.find((s) => s.name === scenery.name);
 
         const checkpoints = [scenery.name];
-        if (station?.generalInfo?.checkpoints) checkpoints.push(...station.generalInfo.checkpoints);
+        if (station?.generalInfo?.checkpoints)
+          checkpoints.push(...station.generalInfo.checkpoints.filter((cp) => cp != scenery.name));
 
         scenery.stationTrains =
           sceneriesTrains.get(scenery.name)?.filter((sc) => sc.region == this.region.id) ?? [];
