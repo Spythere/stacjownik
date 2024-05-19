@@ -213,9 +213,7 @@ export default defineComponent({
     const mainStore = useMainStore();
 
     const chosenCheckpoint = ref(
-      props.station?.generalInfo?.checkpoints?.length == 0
-        ? ''
-        : props.station?.generalInfo?.checkpoints[0] ?? null
+      props.station?.generalInfo?.checkpoints[0] ?? props.station?.name ?? ''
     );
 
     return {
@@ -237,6 +235,8 @@ export default defineComponent({
     sceneryTimetables(): SceneryTimetableRow[] {
       if (!this.station) return [];
       if (!this.onlineScenery) return [];
+
+      console.log(this.onlineScenery.scheduledTrains, this.chosenCheckpoint);
 
       return this.onlineScenery.scheduledTrains
         .filter(
