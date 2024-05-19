@@ -1,12 +1,4 @@
-import {
-  TrainStop,
-  StopStatus,
-  Train,
-  Station,
-  StationTrain,
-  ScenerySpawn,
-  ScenerySpawnType
-} from '../typings/common';
+import { ScenerySpawn, ScenerySpawnType } from '../typings/common';
 
 export function getStatusTimestamp(stationStatus: any): number {
   if (!stationStatus) return -2;
