@@ -2,72 +2,15 @@ import { defineStore } from 'pinia';
 import inputData from '../data/options.json';
 import { useMainStore } from './mainStore';
 import { filterStations, sortStations } from '../scripts/utils/stationFilterUtils';
-import { HeadIdsTypes } from '../scripts/data/stationHeaderNames';
 import StorageManager from '../managers/storageManager';
-import { Filter } from '../components/StationsView/typings';
-
-const filterInitStates: Filter = {
-  default: false,
-  notDefault: false,
-  real: false,
-  fictional: false,
-  SPK: false,
-  SCS: false,
-  SPE: false,
-  SUP: false,
-  noSUP: false,
-  ASDEK: false,
-  noASDEK: false,
-  ręczne: false,
-  'ręczne+SPK': false,
-  'ręczne+SCS': false,
-  mechaniczne: false,
-  'mechaniczne+SPK': false,
-  'mechaniczne+SCS': false,
-  współczesna: false,
-  kształtowa: false,
-  historyczna: false,
-  mieszana: false,
-  SBL: false,
-  PBL: false,
-  'include-selected': false,
-  'no-1track': false,
-  'no-2track': false,
-  free: true,
-  occupied: false,
-  ending: false,
-  nonPublic: false,
-  unavailable: true,
-  abandoned: true,
-  afkStatus: false,
-  endingStatus: false,
-  noSpaceStatus: false,
-  unavailableStatus: false,
-  unsignedStatus: false,
-  withActiveTimetables: false,
-  withoutActiveTimetables: false,
-
-  junction: false,
-  nonJunction: false,
-
-  maxVmax: 200,
-  minVmax: 0,
-  authors: '',
-  onlineFromHours: 0,
-  minLevel: 0,
-  maxLevel: 20,
-  minOneWayCatenary: 0,
-  minOneWay: 0,
-  minTwoWayCatenary: 0,
-  minTwoWay: 0
-};
+import { HeadIdsType } from '../components/StationsView/typings';
 
 export const useStationFiltersStore = defineStore('stationFiltersStore', {
   state() {
     return {
       inputs: inputData,
-      filters: { ...filterInitStates },
-      sorterActive: { headerName: 'station' as HeadIdsTypes, dir: 1 },
+      // filters: { ...filterInitStates },
+      sorterActive: { headerName: 'station' as HeadIdsType, dir: 1 },
       lastClickedFilterId: ''
     };
   },
@@ -112,19 +55,19 @@ export const useStationFiltersStore = defineStore('stationFiltersStore', {
       if (StorageManager.isRegistered('options_saved')) StorageManager.setValue(name, value);
     },
 
-    resetFilters() {
-      this.filters = { ...filterInitStates };
+    // resetFilters() {
+    //   // this.filters = { ...filterInitStates };
 
-      this.inputs.options.forEach((option) => {
-        option.value = option.defaultValue;
-        StorageManager.setBooleanValue(option.name, !option.defaultValue);
-      });
+    //   this.inputs.options.forEach((option) => {
+    //     option.value = option.defaultValue;
+    //     StorageManager.setBooleanValue(option.name, !option.defaultValue);
+    //   });
 
-      this.inputs.sliders.forEach((slider) => {
-        slider.value = slider.defaultValue;
-        StorageManager.setNumericValue(slider.name, slider.defaultValue);
-      });
-    },
+    //   this.inputs.sliders.forEach((slider) => {
+    //     slider.value = slider.defaultValue;
+    //     StorageManager.setNumericValue(slider.name, slider.defaultValue);
+    //   });
+    // },
 
     resetSectionOptions(section: string) {
       this.inputs.options
@@ -135,7 +78,7 @@ export const useStationFiltersStore = defineStore('stationFiltersStore', {
         });
     },
 
-    changeSorter(headerName: HeadIdsTypes) {
+    changeSorter(headerName: HeadIdsType) {
       if (headerName == this.sorterActive.headerName)
         this.sorterActive.dir = -1 * this.sorterActive.dir;
       else this.sorterActive.dir = 1;

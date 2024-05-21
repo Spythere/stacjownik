@@ -34,6 +34,10 @@ export default class StorageManager {
     window.localStorage.removeItem(key);
   }
 
+  static getValue(key: string) {
+    return window.localStorage.getItem(key);
+  }
+
   static getBooleanValue(key: string): boolean {
     return window.localStorage.getItem(key) === 'true' ? true : false;
   }

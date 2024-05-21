@@ -30,10 +30,17 @@
 import { defineComponent } from 'vue';
 import StationTable from '../components/StationsView/StationTable.vue';
 import StationFilterCard from '../components/StationsView/StationFilterCard.vue';
-import { useStationFiltersStore } from '../store/stationFiltersStore';
 import { useMainStore } from '../store/mainStore';
 import DonationModal from '../components/Global/DonationModal.vue';
 import StationStats from '../components/StationsView/StationStats.vue';
+import { initFilters, setupFilters } from '../managers/stationFilterManager';
+import { filterStations, sortStations } from '../scripts/utils/stationFilterUtils';
+import { reactive } from 'vue';
+import { provide } from 'vue';
+import { ActiveSorter } from '../components/StationsView/typings';
+import { onMounted } from 'vue';
+
+const filterInitStates = { ...initFilters };
 
 export default defineComponent({
   components: {
@@ -47,12 +54,19 @@ export default defineComponent({
     filterCardOpen: false,
     isDonationModalOpen: false,
 
-    filterStore: useStationFiltersStore(),
-    store: useMainStore()
+    mainStore: useMainStore()
   }),
 
-  mounted() {
-    this.filterStore.setupFilters();
+  setup() {
+    const filters = reactive(filterInitStates);
+    const activeSorter = reactive({ headerName: 'station', dir: 1 }) as ActiveSorter;
+
+    provide('StationsView_filters', filters);
+    provide('StationsView_activeSorter', activeSorter);
+
+    onMounted(() => {
+      setupFilters(filters);
+    });
   },
 
   methods: {

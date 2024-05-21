@@ -78,33 +78,28 @@ export interface Train {
 export interface Station {
   name: string;
 
-  generalInfo?: {
-    name: string;
-    url: string;
-    abbr: string;
-    hash?: string;
-
-    reqLevel: number;
-    // supportersOnly: boolean;
-
-    lines: string;
-    project: string;
-    projectUrl?: string;
-
-    signalType: string;
-    controlType: string;
-
-    SUP: boolean;
-    ASDEK: boolean;
-    authors?: string[];
-
-    availability: Availability;
-    routes: StationRoutes;
-
-    checkpoints: string[];
-  };
+  generalInfo?: StationGeneralInfo;
 
   onlineInfo?: ActiveScenery;
+}
+
+export interface StationGeneralInfo {
+  name: string;
+  url: string;
+  abbr: string;
+  hash?: string;
+  reqLevel: number;
+  lines: string;
+  project: string;
+  projectUrl?: string;
+  signalType: string;
+  controlType: string;
+  SUP: boolean;
+  ASDEK: boolean;
+  authors?: string[];
+  availability: Availability;
+  routes: StationRoutes;
+  checkpoints: string[];
 }
 
 export interface StationRoutes {

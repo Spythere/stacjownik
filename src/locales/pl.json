@@ -171,9 +171,9 @@
 
     "sections": {
       "quick": "SZYBKIE FILTRY",
-      "station-type": "RODZAJ STACJI",
+      "stationType": "RODZAJ STACJI",
       "reality": "FIKCYJNOŚĆ SCENERII",
-      "package-access": "DOSTĘPNOŚĆ W PACZCE",
+      "packageAccess": "DOSTĘPNOŚĆ W PACZCE",
       "access": "DOSTĘPNOŚĆ OGÓLNA",
       "control": "TYP STEROWANIA",
       "signals": "TYP SYGNALIZACJI",
@@ -194,11 +194,11 @@
 
     "title": "FILTRUJ STACJE",
     "default": "DOMYŚLNA",
-    "not-default": "POZA PACZKĄ",
+    "notDefault": "POZA PACZKĄ",
     "real": "REALNA",
     "fictional": "FIKCYJNA",
     "unavailable": "NIEDOSTĘPNA",
-    "non-public": "NIEPUBLICZNA",
+    "nonPublic": "NIEPUBLICZNA",
     "abandoned": "WYCOFANA",
 
     "SPK": "SPK",
@@ -234,14 +234,14 @@
     "nonJunction": "INNE",
 
     "sliders": {
-      "min-lvl": "MIN. WYMAGANY POZIOM DYŻURNEGO",
-      "max-lvl": "MAKS. WYMAGANY POZIOM DYŻURNEGO",
-      "min-vmax": "MIN. PRĘDKOŚĆ SZLAKOWA",
-      "max-vmax": "MAKS. PRĘDKOŚĆ SZLAKOWA",
-      "routes-1t-cat": "SZLAKI JEDNOTOROWE ZELEKTR. (MINIMUM)",
-      "routes-1t-other": "SZLAKI JEDNOTOROWE NIEZELEKTR. (MINIMUM)",
-      "routes-2t-cat": "SZLAKI DWUTOROWE ZELEKTR. (MINIMUM)",
-      "routes-2t-other": "SZLAKI DWUTOROWE NIEZELEKTR. (MINIMUM)"
+      "minLevel": "MIN. WYMAGANY POZIOM DYŻURNEGO",
+      "maxLevel": "MAKS. WYMAGANY POZIOM DYŻURNEGO",
+      "minVmax": "MIN. PRĘDKOŚĆ SZLAKOWA",
+      "maxVmax": "MAKS. PRĘDKOŚĆ SZLAKOWA",
+      "minOneWayCatenary": "SZLAKI JEDNOTOROWE ZELEKTR. (MINIMUM)",
+      "minOneWay": "SZLAKI JEDNOTOROWE NIEZELEKTR. (MINIMUM)",
+      "minTwoWayCatenary": "SZLAKI DWUTOROWE ZELEKTR. (MINIMUM)",
+      "minTwoWay": "SZLAKI DWUTOROWE NIEZELEKTR. (MINIMUM)"
     },
 
     "authors-search": "SZUKAJ AUTORA (uwzględnia inne filtry):",

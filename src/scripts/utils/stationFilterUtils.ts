@@ -1,6 +1,5 @@
-import { Filter } from '../../components/StationsView/typings';
-import { Status } from '../../typings/common';
-import { HeadIdsTypes } from '../data/stationHeaderNames';
+import { ActiveSorter } from '../../components/StationsView/typings';
+import { ActiveScenery, StationGeneralInfo, Status } from '../../typings/common';
 import { Station } from '../../typings/common';
 
 const dispatcherStatusPriority = [
@@ -14,11 +13,137 @@ const dispatcherStatusPriority = [
   undefined
 ];
 
-export const sortStations = (
-  a: Station,
-  b: Station,
-  sorter: { headerName: HeadIdsTypes; dir: number }
-) => {
+const filtersAssociations: Record<string, string> = {
+  mechaniczne: 'mechanical',
+  ręczne: 'manual',
+  'mechaniczne+SPK': 'SPK-M',
+  'ręczne+SPK': 'SPK-R',
+  'mechaniczne+SCS': 'SCS-M',
+  'ręczne+SCS': 'SCS-R',
+  współczesna: 'modern',
+  historyczna: 'historical',
+  kształtowa: 'semaphores',
+  mieszana: 'mixed'
+};
+
+function filterStatusSection(
+  filters: Record<string, any>,
+  { dispatcherStatus, dispatcherTimestamp }: ActiveScenery
+) {
+  return (
+    (filters['endingStatus'] && dispatcherStatus == Status.ActiveDispatcher.ENDING) ||
+    (filters['unavailableStatus'] &&
+      (dispatcherStatus == Status.ActiveDispatcher.UNAVAILABLE ||
+        dispatcherStatus == Status.ActiveDispatcher.NOT_LOGGED_IN)) ||
+    (filters['afkStatus'] && dispatcherStatus == Status.ActiveDispatcher.AFK) ||
+    (filters['noSpaceStatus'] && dispatcherStatus == Status.ActiveDispatcher.NO_SPACE) ||
+    (filters['occupied'] && dispatcherStatus != Status.ActiveDispatcher.FREE) ||
+    (filters['onlineFromHours'] > 0 &&
+      (dispatcherTimestamp ?? 0) <= Date.now() + filters['onlineFromHours'] * 3600000)
+  );
+}
+
+function filterTimetablesSection(filters: Record<string, any>, station: Station) {
+  return (
+    (filters['withoutActiveTimetables'] &&
+      (!station.onlineInfo || station.onlineInfo.scheduledTrainCount.all == 0)) ||
+    (filters['withActiveTimetables'] &&
+      station.onlineInfo &&
+      (station.onlineInfo.scheduledTrainCount.all != 0 ||
+        station.onlineInfo.dispatcherStatus == Status.ActiveDispatcher.FREE))
+  );
+}
+
+function filterAccessibilitySection(filters: Record<string, any>, station: Station) {
+  if (
+    filters['nonPublic'] &&
+    (!station.generalInfo || station.generalInfo.availability == 'nonPublic')
+  )
+    return true;
+
+  if (!station.generalInfo) return false;
+
+  const { availability } = station.generalInfo;
+
+  return (
+    (filters['unavailable'] && availability == 'unavailable' && !station.onlineInfo) ||
+    (filters['abandoned'] && availability == 'abandoned' && !station.onlineInfo) ||
+    (filters['default'] && availability == 'default') ||
+    (filters['notDefault'] &&
+      availability != 'default' &&
+      availability != 'abandoned' &&
+      availability != 'unavailable')
+  );
+}
+
+function filterRealitySection(filters: Record<string, any>, generalInfo: StationGeneralInfo) {
+  return (filters['real'] && generalInfo.lines) || (filters['fictional'] && !generalInfo.lines);
+}
+
+function filterProgramsSection(filters: Record<string, any>, generalInfo: StationGeneralInfo) {
+  return (
+    (filters['SUP'] && generalInfo.SUP) ||
+    (filters['noSUP'] && !generalInfo.SUP) ||
+    (filters['ASDEK'] && generalInfo.ASDEK) ||
+    (filters['noASDEK'] && !generalInfo.ASDEK)
+  );
+}
+
+function filterControlsSection(filters: Record<string, any>, generalInfo: StationGeneralInfo) {
+  return (
+    filters[generalInfo.controlType] == true ||
+    filters[filtersAssociations[generalInfo.controlType]] == true
+  );
+}
+
+function filterSignalsSection(filters: Record<string, any>, generalInfo: StationGeneralInfo) {
+  return (
+    filters[generalInfo.signalType] == true ||
+    filters[filtersAssociations[generalInfo.signalType]] == true ||
+    (filters['SBL'] && generalInfo.routes.sblNames.length > 0) ||
+    (filters['PBL'] && generalInfo.routes.sblNames.length == 0)
+  );
+}
+
+function filterStationType(filters: Record<string, any>, generalInfo: StationGeneralInfo) {
+  const singleTracks = generalInfo.routes.single.filter((r) => !r.isInternal);
+  const doubleTracks = generalInfo.routes.double.filter((r) => !r.isInternal);
+
+  let isJunction = singleTracks.length > 0 && doubleTracks.length > 0;
+
+  return (filters['junction'] && isJunction) || (filters['nonJunction'] && !isJunction);
+}
+
+function filterSliderValues(filters: Record<string, any>, generalInfo: StationGeneralInfo) {
+  const { availability, reqLevel, routes } = generalInfo;
+
+  const otherAvailability =
+    availability == 'nonPublic' || availability == 'unavailable' || availability == 'abandoned';
+
+  return (
+    filters['minLevel'] > reqLevel + (otherAvailability ? 1 : 0) ||
+    filters['maxLevel'] < reqLevel + (otherAvailability ? 1 : 0) ||
+    filters['minVmax'] > routes.maxRouteSpeed ||
+    filters['maxVmax'] < routes.minRouteSpeed ||
+    (filters['no-1track'] && routes.single.length != 0) ||
+    (filters['no-2track'] && routes.double.length != 0) ||
+    filters['minOneWayCatenary'] > routes.singleElectrifiedNames.length ||
+    filters['minOneWay'] > routes.singleOtherNames.length ||
+    filters['minTwoWayCatenary'] > routes.doubleElectrifiedNames.length ||
+    filters['minTwoWay'] > routes.doubleOtherNames.length
+  );
+}
+
+function filterInputValues(filters: Record<string, any>, generalInfo: StationGeneralInfo) {
+  return (
+    filters['authors'].length > 3 &&
+    !generalInfo.authors
+      ?.map((a) => a.toLocaleLowerCase())
+      .includes(filters['authors'].toLocaleLowerCase())
+  );
+}
+
+export const sortStations = (a: Station, b: Station, sorter: ActiveSorter) => {
   let diff = 0;
 
   switch (sorter.headerName) {
@@ -110,132 +235,40 @@ export const sortStations = (
   return a.name.localeCompare(b.name);
 };
 
-export const filterStations = (station: Station, filters: Filter) => {
+export const filterStations = (station: Station, filters: Record<string, any>) => {
   if (filters['free'] && (!station.onlineInfo || station.onlineInfo.dispatcherId == -1))
     return false;
 
-  if (station.onlineInfo) {
-    const { dispatcherStatus } = station.onlineInfo;
+  // Scenery Timetables section
+  if (filterTimetablesSection(filters, station)) return false;
 
-    const excludeEnding =
-      dispatcherStatus == Status.ActiveDispatcher.ENDING && filters['endingStatus'];
+  // Scenery Accessibility section
+  if (filterAccessibilitySection(filters, station)) return false;
 
-    const excludeNotSigned =
-      (dispatcherStatus == Status.ActiveDispatcher.NOT_LOGGED_IN ||
-        dispatcherStatus == Status.ActiveDispatcher.UNAVAILABLE) &&
-      filters['unavailableStatus'];
-
-    const excludeAFK = dispatcherStatus == Status.ActiveDispatcher.AFK && filters['afkStatus'];
-
-    const excludeNoSpace =
-      dispatcherStatus == Status.ActiveDispatcher.NO_SPACE && filters['noSpaceStatus'];
-
-    const excludeOccupied = filters['occupied'] && dispatcherStatus != Status.ActiveDispatcher.FREE;
-
-    const excludeActiveTTs =
-      (dispatcherStatus == Status.ActiveDispatcher.FREE ||
-        station.onlineInfo.scheduledTrainCount.all != 0) &&
-      filters['withActiveTimetables'];
-
-    if (
-      excludeEnding ||
-      excludeAFK ||
-      excludeNoSpace ||
-      excludeNotSigned ||
-      excludeOccupied ||
-      excludeActiveTTs
-    )
-      return false;
-
-    if (
-      filters['onlineFromHours'] > 0 &&
-      dispatcherStatus <= Date.now() + filters['onlineFromHours'] * 3600000
-    )
-      return false;
-  }
-
-  const excludeNoActiveTTs =
-    filters['withoutActiveTimetables'] &&
-    (!station.onlineInfo || station.onlineInfo.scheduledTrainCount.all == 0);
-
-  if (excludeNoActiveTTs) return false;
-
-  if (
-    (station.generalInfo?.availability == 'nonPublic' || !station.generalInfo) &&
-    filters['nonPublic']
-  )
-    return false;
+  // Scenery Status section
+  if (station.onlineInfo && filterStatusSection(filters, station.onlineInfo)) return false;
 
   if (station.generalInfo) {
-    const { routes, availability, controlType, lines, reqLevel, signalType, SUP, ASDEK, authors } =
-      station.generalInfo;
+    // Scenery Reality section
+    if (filterRealitySection(filters, station.generalInfo)) return false;
 
-    if (availability == 'unavailable' && filters['unavailable'] && !station.onlineInfo)
-      return false;
-    if (availability == 'abandoned' && filters['abandoned'] && !station.onlineInfo) return false;
-    if (availability == 'default' && filters['default']) return false;
+    // Scenery Additional Programs section
+    if (filterProgramsSection(filters, station.generalInfo)) return false;
 
-    if (
-      availability != 'default' &&
-      filters['notDefault'] &&
-      !(availability == 'abandoned' || availability == 'unavailable')
-    )
-      return false;
+    // Scenery Controls section
+    if (filterControlsSection(filters, station.generalInfo)) return false;
 
-    if (filters['real'] && lines) return false;
-    if (filters['fictional'] && !lines) return false;
+    // Scenery Signalling section(s)
+    if (filterSignalsSection(filters, station.generalInfo)) return false;
 
-    const otherAvailability =
-      availability == 'nonPublic' || availability == 'unavailable' || availability == 'abandoned';
+    // Scenery Station Type section
+    if (filterStationType(filters, station.generalInfo)) return false;
 
-    if (reqLevel + (otherAvailability ? 1 : 0) < filters['minLevel']) return false;
-    if (reqLevel + (otherAvailability ? 1 : 0) > filters['maxLevel']) return false;
+    // Scenery sliders
+    if (filterSliderValues(filters, station.generalInfo)) return false;
 
-    if (filters['minVmax'] > station.generalInfo.routes.maxRouteSpeed) return false;
-    if (filters['maxVmax'] < station.generalInfo.routes.minRouteSpeed) return false;
-
-    if (
-      filters['no-1track'] &&
-      (routes.singleElectrifiedNames.length != 0 || routes.singleOtherNames.length != 0)
-    )
-      return false;
-
-    if (
-      filters['no-2track'] &&
-      (routes.doubleElectrifiedNames.length != 0 || routes.doubleOtherNames.length != 0)
-    )
-      return false;
-
-    if (routes.singleElectrifiedNames.length < filters['minOneWayCatenary']) return false;
-    if (routes.singleOtherNames.length < filters['minOneWay']) return false;
-
-    if (routes.doubleElectrifiedNames.length < filters['minTwoWayCatenary']) return false;
-    if (routes.doubleOtherNames.length < filters['minTwoWay']) return false;
-
-    if (filters[controlType]) return false;
-    if (filters[signalType]) return false;
-
-    if (filters['SUP'] && SUP) return false;
-    if (filters['noSUP'] && !SUP) return false;
-
-    if (filters['ASDEK'] && ASDEK) return false;
-    if (filters['noASDEK'] && !ASDEK) return false;
-
-    if (filters['SBL'] && routes.sblNames.length > 0) return false;
-    if (filters['PBL'] && routes.sblNames.length == 0) return false;
-
-    if (
-      filters['authors'].length > 3 &&
-      !authors?.map((a) => a.toLocaleLowerCase()).includes(filters['authors'].toLocaleLowerCase())
-    )
-      return false;
-
-    const singleTracks = routes.single.filter((r) => !r.isInternal);
-    const doubleTracks = routes.double.filter((r) => !r.isInternal);
-
-    let isJunction = singleTracks.length > 0 && doubleTracks.length > 0;
-    if (filters['junction'] && isJunction) return false;
-    if (filters['nonJunction'] && !isJunction) return false;
+    // Scenery Authors section
+    if (filterInputValues(filters, station.generalInfo)) return false;
   }
 
   return true;

@@ -1,10 +1,10 @@
 <template>
   <section class="station_table">
     <Loading
-      v-if="apiStore.dataStatuses.connection == Status.Loading && displayedStations.length == 0"
+      v-if="apiStore.dataStatuses.connection == Status.Loading && filteredStationList.length == 0"
     />
 
-    <div class="table_wrapper" v-else-if="displayedStations.length > 0">
+    <div class="table_wrapper" v-else-if="filteredStationList.length > 0">
       <table>
         <thead>
           <tr>
@@ -20,8 +20,8 @@
 
                 <img
                   class="sort-icon"
-                  v-if="sorterActive.headerName == headerName"
-                  :src="`/images/icon-arrow-${sorterActive.dir == 1 ? 'asc' : 'desc'}.svg`"
+                  v-if="activeSorter.headerName == headerName"
+                  :src="`/images/icon-arrow-${activeSorter.dir == 1 ? 'asc' : 'desc'}.svg`"
                   alt="sort icon"
                 />
               </span>
@@ -43,8 +43,8 @@
 
                 <img
                   class="sort-icon"
-                  v-if="sorterActive.headerName == headerName"
-                  :src="`/images/icon-arrow-${sorterActive.dir == 1 ? 'asc' : 'desc'}.svg`"
+                  v-if="activeSorter.headerName == headerName"
+                  :src="`/images/icon-arrow-${activeSorter.dir == 1 ? 'asc' : 'desc'}.svg`"
                   alt="sort icon"
                 />
               </span>
@@ -54,7 +54,7 @@
 
         <tbody>
           <tr
-            v-for="station in displayedStations"
+            v-for="station in filteredStationList"
             :class="{ 'last-selected': lastSelectedStationName == station.name }"
             :key="station.name"
             @click.left="setScenery(station.name)"
@@ -309,20 +309,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, inject, computed } from 'vue';
+import StationStatusBadge from '../Global/StationStatusBadge.vue';
 import dateMixin from '../../mixins/dateMixin';
 import styleMixin from '../../mixins/styleMixin';
-import { useStationFiltersStore } from '../../store/stationFiltersStore';
 import { useMainStore } from '../../store/mainStore';
 import Loading from '../Global/Loading.vue';
-import { HeadIdsTypes, headIconsIds, headIds } from '../../scripts/data/stationHeaderNames';
-import StationStatusBadge from '../Global/StationStatusBadge.vue';
-import { Station, Status } from '../../typings/common';
+import { Status } from '../../typings/common';
 import { useApiStore } from '../../store/apiStore';
 import { useTooltipStore } from '../../store/tooltipStore';
+import { filterStations, sortStations } from '../../scripts/utils/stationFilterUtils';
+import { ActiveSorter, HeadIdsType, headIconsIds, headIds } from './typings';
 
 export default defineComponent({
   emits: ['toggleDonationModal'],
+
   components: { Loading, StationStatusBadge },
   mixins: [styleMixin, dateMixin],
 
@@ -332,35 +333,36 @@ export default defineComponent({
     lastSelectedStationName: ''
   }),
 
-  computed: {
-    sorterActive() {
-      return this.stationFiltersStore.sorterActive;
-    },
-
-    displayedStations() {
-      return this.stationFiltersStore.filteredStationList;
-    }
-  },
-
   setup() {
     const mainStore = useMainStore();
     const apiStore = useApiStore();
     const tooltipStore = useTooltipStore();
 
-    const stationFiltersStore = useStationFiltersStore();
+    const filters = inject('StationsView_filters') as Record<string, any>;
+    const activeSorter = inject('StationsView_activeSorter') as ActiveSorter;
+
+    const filteredStationList = computed(() =>
+      mainStore.allStationInfo
+        .filter((station) => filterStations(station, filters))
+        .sort((a, b) => sortStations(a, b, activeSorter))
+    );
+    // const areFiltersAtDefault = computed(() => {
+
+    // })
 
     return {
       Status: Status.Data,
-      stationFiltersStore,
       mainStore,
       apiStore,
-      tooltipStore
+      tooltipStore,
+      filteredStationList,
+      activeSorter
     };
   },
 
   methods: {
     setScenery(name: string) {
-      const station = this.displayedStations.find((station) => station.name === name);
+      const station = this.filteredStationList.find((station) => station.name === name);
 
       if (!station) return;
 
@@ -388,10 +390,14 @@ export default defineComponent({
       window.open(url, '_blank');
     },
 
-    changeSorter(headerName: HeadIdsTypes) {
+    changeSorter(headerName: HeadIdsType) {
       if (headerName == 'general') return;
 
-      this.stationFiltersStore.changeSorter(headerName);
+      if (headerName == this.activeSorter.headerName)
+        this.activeSorter.dir = -1 * this.activeSorter.dir;
+      else this.activeSorter.dir = 1;
+
+      this.activeSorter.headerName = headerName;
     }
   }
 });
