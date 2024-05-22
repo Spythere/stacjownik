@@ -302,8 +302,13 @@
     </div>
 
     <div class="no-stations" v-else>
-      {{ $t('sceneries.no-stations') }} (region: <b>{{ mainStore.region.name }}</b
-      >)
+      <div>
+        {{ $t('sceneries.no-stations') }} (region: <b>{{ mainStore.region.name }}</b
+        >)
+      </div>
+      <div class="text--primary" v-if="getChangedFilters(filters).length != 0">
+        {{ $t('sceneries.active-filters') }}
+      </div>
     </div>
   </section>
 </template>
@@ -311,15 +316,16 @@
 <script lang="ts">
 import { defineComponent, inject, computed } from 'vue';
 import StationStatusBadge from '../Global/StationStatusBadge.vue';
+import Loading from '../Global/Loading.vue';
 import dateMixin from '../../mixins/dateMixin';
 import styleMixin from '../../mixins/styleMixin';
-import { useMainStore } from '../../store/mainStore';
-import Loading from '../Global/Loading.vue';
-import { Status } from '../../typings/common';
 import { useApiStore } from '../../store/apiStore';
+import { useMainStore } from '../../store/mainStore';
+import { Status } from '../../typings/common';
 import { useTooltipStore } from '../../store/tooltipStore';
-import { filterStations, sortStations } from '../../scripts/utils/stationFilterUtils';
+import { getChangedFilters } from '../../managers/stationFilterManager';
 import { ActiveSorter, HeadIdsType, headIconsIds, headIds } from './typings';
+import { filterStations, sortStations } from './utils';
 
 export default defineComponent({
   emits: ['toggleDonationModal'],
@@ -330,7 +336,8 @@ export default defineComponent({
   data: () => ({
     headIconsIds,
     headIds,
-    lastSelectedStationName: ''
+    lastSelectedStationName: '',
+    getChangedFilters
   }),
 
   setup() {
@@ -346,15 +353,13 @@ export default defineComponent({
         .filter((station) => filterStations(station, filters))
         .sort((a, b) => sortStations(a, b, activeSorter))
     );
-    // const areFiltersAtDefault = computed(() => {
-
-    // })
 
     return {
       Status: Status.Data,
       mainStore,
       apiStore,
       tooltipStore,
+      filters,
       filteredStationList,
       activeSorter
     };
@@ -419,7 +424,7 @@ $rowCol: #424242;
 
 .no-stations {
   text-align: center;
-  font-size: 1.5em;
+  font-size: 1.25em;
 
   padding: 1em;
 

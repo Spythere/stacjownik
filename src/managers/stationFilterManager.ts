@@ -109,8 +109,11 @@ export function setupFilters(currentFilters: Record<string, any>) {
   });
 }
 
-export function areFiltersAtDefault(currentFilters: Record<string, any>) {
-  return Object.keys(currentFilters).every(
-    (filterKey) => currentFilters[filterKey] === initFilters[filterKey as keyof typeof initFilters]
+export function getChangedFilters(currentFilters: Record<string, any>): string[] {
+  return (
+    Object.keys(currentFilters).filter(
+      (filterKey) =>
+        currentFilters[filterKey] !== initFilters[filterKey as keyof typeof initFilters]
+    ) ?? []
   );
 }

@@ -187,6 +187,9 @@
       "spawns": "OPEN SPAWNS"
     },
 
+    "changed-filters-count": "Changed filters:",
+    "no-changed-filters": "No changed filters",
+
     "all-available": "ALL AVAILABLE",
     "all-free": "CURRENTLY FREE",
 
@@ -297,7 +300,8 @@
       "single-track-routes-other": "Not electrified single-track routes count:  "
     },
     "no-stations": "No stations to show here!",
-    "scenery-search": "Search for scenery..."
+    "scenery-search": "Search for scenery...",
+    "active-filters": "Attention! You got active filters!"
   },
   "station-stats": {
     "u-factor": "U-factor",

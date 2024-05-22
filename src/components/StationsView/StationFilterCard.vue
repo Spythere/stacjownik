@@ -4,7 +4,7 @@
       <button class="card-button btn--filled btn--image" @click="toggleCard">
         <img class="button_icon" src="/images/icon-filter2.svg" alt="filter icon" />
         <p>[F] {{ $t('options.filters') }}</p>
-        <span class="active-indicator" v-if="!areFiltersAtDefaultComp"></span>
+        <span class="active-indicator" v-if="changedFilters.length != 0"></span>
       </button>
 
       <label for="scenery-search">
@@ -33,6 +33,12 @@
           <div class="card_title flex">{{ $t('filters.title') }}</div>
           <p class="card_info" v-html="$t('filters.desc')"></p>
 
+          <div class="changed-filters" v-if="changedFilters.length > 0">
+            {{ $t('filters.changed-filters-count') }} <b>{{ changedFilters.length }}</b>
+          </div>
+
+          <div class="changed-filters" v-else>{{ $t('filters.no-changed-filters') }}</div>
+
           <section class="card_options">
             <div
               class="option-section"
@@ -40,33 +46,31 @@
               :key="sectionKey"
             >
               <h3 class="text--primary">
+                <span class="active-indicator" v-if="!areSectionFiltersDefault(sectionKey)"></span>
                 {{ $t(`filters.sections.${sectionKey}`) }}
-
-                <button @click="resetSectionOptions(sectionKey)">RESET</button>
+                <button @click="resetSectionFilters(sectionKey)">RESET</button>
               </h3>
 
               <hr />
 
-              <!-- 
-                  @dblclick="handleDbClick"
-
-               -->
               <div class="section-filters">
-                <div
-                  v-for="filter in sectionFilters"
-                  @click="() => (filters[filter] = !filters[filter])"
+                <label
+                  v-for="filterKey in sectionFilters"
+                  @click="() => (filters[filterKey] = !filters[filterKey])"
+                  @dblclick="setSingleSectionFilter(sectionKey, filterKey)"
+                  :for="filterKey"
                 >
                   <input
-                    :checked="filters[filter]"
-                    v-model="filters[filter]"
+                    :checked="filters[filterKey]"
+                    v-model="filters[filterKey]"
                     type="checkbox"
                     :class="sectionKey"
-                    :name="filter"
+                    :name="filterKey"
                   />
                   <span>
-                    {{ $t(`filters.${filter}`) }}
+                    {{ $t(`filters.${filterKey}`) }}
                   </span>
-                </div>
+                </label>
               </div>
             </div>
           </section>
@@ -143,8 +147,8 @@
 
             <button
               class="btn--action"
-              :disabled="areFiltersAtDefaultComp"
-              :data-disabled="areFiltersAtDefaultComp"
+              :disabled="changedFilters.length == 0"
+              :data-disabled="changedFilters.length == 0"
               @click="resetFilters"
             >
               [R] {{ $t('filters.reset') }}
@@ -170,11 +174,14 @@ import {
   filtersSections,
   initSliders,
   initFilters,
-  areFiltersAtDefault
+  getChangedFilters
 } from '../../managers/stationFilterManager';
 
 import { StationFilterSection } from '../../managers/stationFilterManager';
 import { computed } from 'vue';
+import { watch } from 'vue';
+
+const STORAGE_KEY = 'options_saved';
 
 export default defineComponent({
   components: { FilterOption },
@@ -182,7 +189,6 @@ export default defineComponent({
 
   data: () => ({
     saveOptions: false,
-    STORAGE_KEY: 'options_saved',
 
     filtersSections,
     initSliders,
@@ -205,18 +211,27 @@ export default defineComponent({
 
     const filters = inject('StationsView_filters') as Record<string, any>;
 
-    const areFiltersAtDefaultComp = computed(() => areFiltersAtDefault(filters));
+    const changedFilters = computed(() => getChangedFilters(filters));
+
+    // Save filters to persistent storage
+    watch(filters, (value) => {
+      if (!StorageManager.isRegistered(STORAGE_KEY)) return;
+
+      Object.keys(value).forEach((filterKey) => {
+        StorageManager.setValue(filterKey, filters[filterKey]);
+      });
+    });
 
     return {
       isVisible,
       store,
       filters,
-      areFiltersAtDefaultComp
+      changedFilters
     };
   },
 
   mounted() {
-    this.saveOptions = StorageManager.isRegistered(this.STORAGE_KEY);
+    this.saveOptions = StorageManager.isRegistered(STORAGE_KEY);
 
     if (StorageManager.isRegistered('onlineFromHours') && this.saveOptions) {
       this.minimumHours = StorageManager.getNumericValue('onlineFromHours');
@@ -301,11 +316,11 @@ export default defineComponent({
       this.saveOptions = !this.saveOptions;
 
       if (!this.saveOptions) {
-        StorageManager.unregisterStorage(this.STORAGE_KEY);
+        StorageManager.unregisterStorage(STORAGE_KEY);
         return;
       }
 
-      StorageManager.registerStorage(this.STORAGE_KEY);
+      StorageManager.registerStorage(STORAGE_KEY);
 
       Object.keys(this.filters).forEach((filterKey) => {
         StorageManager.setValue(filterKey, this.filters[filterKey]);
@@ -323,9 +338,21 @@ export default defineComponent({
       });
     },
 
-    resetSectionOptions(key: string) {
-      filtersSections[key as StationFilterSection].forEach((filter) => {
-        this.filters[filter] = (initFilters as any)[filter];
+    areSectionFiltersDefault(sectionKey: StationFilterSection) {
+      return filtersSections[sectionKey].every((filterKey) => {
+        return this.filters[filterKey] == initFilters[filterKey];
+      });
+    },
+
+    resetSectionFilters(sectionKey: StationFilterSection) {
+      filtersSections[sectionKey].forEach((filterKey) => {
+        this.filters[filterKey] = initFilters[filterKey];
+      });
+    },
+
+    setSingleSectionFilter(sectionKey: StationFilterSection, chosenKey: string) {
+      filtersSections[sectionKey].forEach((filterKey) => {
+        if (filterKey != chosenKey) this.filters[filterKey] = initFilters[filterKey];
       });
     },
 
@@ -356,6 +383,11 @@ h3.section-header {
 }
 
 .card_info {
+  background-color: #111;
+  padding: 0.5em;
+}
+
+.changed-filters {
   background-color: #111;
   padding: 0.5em;
 }
@@ -440,7 +472,7 @@ h3.section-header {
   margin: 1em 0;
 }
 
-.section-filters > div {
+.section-filters > label {
   position: relative;
   user-select: none;
   -webkit-user-select: none;
@@ -516,17 +548,13 @@ h3.section-header {
 .slider {
   display: flex;
   align-items: center;
+  gap: 0.25em;
 
   margin-bottom: 1em;
 
   &-value {
     color: $accentCol;
-    margin-right: 0.5em;
     padding: 0.1em 0.2em;
-  }
-
-  &-content {
-    flex-grow: 2;
   }
 
   &-input {
@@ -537,7 +565,6 @@ h3.section-header {
     outline: none;
 
     min-width: 25%;
-    max-width: 120px;
 
     &:focus-visible ~ * {
       color: gold;
@@ -611,6 +638,15 @@ h3.section-header {
 @include smallScreen {
   .card_controls > button.card-button > p {
     display: none;
+  }
+
+  .slider {
+    flex-wrap: wrap;
+    justify-content: center;
+
+    &-input {
+      width: 90%;
+    }
   }
 }
 </style>

@@ -8,7 +8,8 @@
       <Loading v-else-if="apiStore.dataStatuses.connection == Status.Loading" key="loading" />
 
       <div class="table-warning" key="no-trains" v-else-if="trains.length == 0">
-        {{ $t('trains.no-trains') }}
+        {{ $t('trains.no-trains') }} (region: <b>{{ store.region.name }}</b
+        >)
       </div>
 
       <transition-group name="list-anim" tag="ul">
@@ -108,8 +109,7 @@ export default defineComponent({
   text-align: center;
 
   padding: 1em 0;
-
-  font-size: 1.5em;
+  font-size: 1.25em;
 
   background: #1a1a1a;
 }

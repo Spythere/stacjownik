@@ -184,6 +184,9 @@
       "spawns": "OTWARTE SPAWNY"
     },
 
+    "changed-filters-count": "Zmienione filtry:",
+    "no-changed-filters": "Brak zmienionych filtrów",
+
     "all-available": "WSZYSTKIE DOSTĘPNE",
     "all-free": "WSZYSTKIE WOLNE",
 
@@ -291,7 +294,8 @@
       "single-track-routes-other": "Liczba niezelektryfikowanych szlaków jednotorowych: "
     },
     "no-stations": "Brak stacji do wyświetlenia!",
-    "scenery-search": "Wyszukaj scenerię..."
+    "scenery-search": "Wyszukaj scenerię...",
+    "active-filters": "Uwaga! Masz obecnie aktywne filtry!"
   },
   "station-stats": {
     "u-factor": "Współczynnik Ugla",

@@ -34,7 +34,6 @@ import { useMainStore } from '../store/mainStore';
 import DonationModal from '../components/Global/DonationModal.vue';
 import StationStats from '../components/StationsView/StationStats.vue';
 import { initFilters, setupFilters } from '../managers/stationFilterManager';
-import { filterStations, sortStations } from '../scripts/utils/stationFilterUtils';
 import { reactive } from 'vue';
 import { provide } from 'vue';
 import { ActiveSorter } from '../components/StationsView/typings';

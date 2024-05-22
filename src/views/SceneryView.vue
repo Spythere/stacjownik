@@ -200,7 +200,7 @@ button.back-btn {
 
     display: inline-block;
 
-    font-size: 1.5em;
+    font-size: 1.25em;
 
     button {
       margin: 1em auto;
