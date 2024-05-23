@@ -306,8 +306,9 @@
         {{ $t('sceneries.no-stations') }} (region: <b>{{ mainStore.region.name }}</b
         >)
       </div>
+
       <div class="text--primary" v-if="getChangedFilters(filters).length != 0">
-        {{ $t('sceneries.active-filters') }}
+        ⚠ {{ $t('sceneries.active-filters') }}
       </div>
     </div>
   </section>
@@ -425,10 +426,9 @@ $rowCol: #424242;
 .no-stations {
   text-align: center;
   font-size: 1.25em;
-
   padding: 1em;
-
   background: #1a1a1a;
+  line-height: 1.5em;
 }
 
 table {
