@@ -1,12 +1,12 @@
 <template>
-  <AnimatedModal :is-open="updateModalOpen" @toggle-modal="toggleModal(false)">
-    <div class="modal-content">
+  <Card :is-open="isUpdateCardOpen" @toggle-card="toggleCard(false)">
+    <div class="content">
       <h1 style="margin-bottom: 0.5em">🚀 {{ $t('update.title') }}</h1>
 
       <div class="features-body" v-if="htmlChangelog != ''" v-html="htmlChangelog"></div>
       <div class="no-features" v-else>{{ $t('update.no-data') }}</div>
 
-      <button class="btn btn--action" ref="confirm-btn" @click="toggleModal(false)">
+      <button class="btn btn--action" ref="confirm-btn" @click="toggleCard(false)">
         {{ $t('update.confirm') }}
       </button>
 
@@ -16,7 +16,7 @@
         <span v-html="$t('update.info-2')"></span>
       </p>
     </div>
-  </AnimatedModal>
+  </Card>
 </template>
 
 <script lang="ts">
@@ -25,21 +25,21 @@ import { useMainStore } from '../../store/mainStore';
 import { version } from '../../../package.json';
 import { Converter } from 'showdown';
 
-import AnimatedModal from '../Global/AnimatedModal.vue';
+import Card from '../Global/Card.vue';
 
 const converter = new Converter();
 
 export default defineComponent({
-  components: { AnimatedModal },
+  components: { Card },
 
   props: {
-    updateModalOpen: {
+    isUpdateCardOpen: {
       type: Boolean,
       required: true
     }
   },
 
-  emits: ['toggleModal'],
+  emits: ['toggleCard'],
 
   data() {
     return {
@@ -49,7 +49,7 @@ export default defineComponent({
   },
 
   watch: {
-    updateModalOpen(val: boolean) {
+    isUpdateCardOpen(val: boolean) {
       this.$nextTick(() => {
         if (val) (this.$refs['confirm-btn'] as HTMLElement).focus();
       });
@@ -65,29 +65,33 @@ export default defineComponent({
   },
 
   methods: {
-    toggleModal(value: boolean) {
-      this.$emit('toggleModal', value);
+    toggleCard(value: boolean) {
+      this.$emit('toggleCard', value);
     }
   }
 });
 </script>
 
 <style lang="scss" scoped>
+@import '../../styles/variables';
+
 ::v-deep(h1) {
   text-align: center;
+  color: $accentCol;
 }
 
 ::v-deep(h2) {
   padding: 0.25em 0;
+  border-bottom: 1px solid #aaa;
 }
 
 ::v-deep(ul) {
-  list-style: inside;
-  padding: 0.5em;
+  list-style: initial;
+  padding: 1em;
   line-height: 1.5em;
 }
 
-.modal-content {
+.content {
   display: grid;
   grid-template-rows: auto 1fr auto;
   gap: 0.5em;
@@ -95,6 +99,7 @@ export default defineComponent({
   min-height: 700px;
   overflow: auto;
   text-align: justify;
+  max-width: 700px;
 }
 
 .no-features {

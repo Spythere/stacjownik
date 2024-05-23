@@ -122,7 +122,7 @@
               <span v-if="station.onlineInfo?.dispatcherName">
                 <b
                   v-if="apiStore.donatorsData.includes(station.onlineInfo.dispatcherName)"
-                  @click.stop="openDonationModal"
+                  @click.stop="openDonationCard"
                   data-tooltip-type="DonatorTooltip"
                   :data-tooltip-content="$t('donations.dispatcher-message')"
                 >
@@ -329,7 +329,7 @@ import { ActiveSorter, HeadIdsType, headIconsIds, headIds } from './typings';
 import { filterStations, sortStations } from './utils';
 
 export default defineComponent({
-  emits: ['toggleDonationModal'],
+  emits: ['toggleDonationCard'],
 
   components: { Loading, StationStatusBadge },
   mixins: [styleMixin, dateMixin],
@@ -384,8 +384,8 @@ export default defineComponent({
       });
     },
 
-    openDonationModal(e: Event) {
-      this.$emit('toggleDonationModal', true);
+    openDonationCard(e: Event) {
+      this.$emit('toggleDonationCard', true);
       this.mainStore.modalLastClickedTarget = e.target;
       this.tooltipStore.hide();
     },

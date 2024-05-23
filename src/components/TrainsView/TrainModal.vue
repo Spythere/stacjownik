@@ -40,20 +40,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '../../styles/responsive.scss';
-@import '../../styles/card.scss';
-
-.top-info-bar-anim {
-  &-enter-active,
-  &-leave-active {
-    transition: all 150ms ease-in-out;
-  }
-
-  &-enter-from,
-  &-leave-to {
-    transform: translate(-50%, -50%) scale(0.8);
-    opacity: 0;
-  }
-}
 
 .train-modal {
   position: fixed;

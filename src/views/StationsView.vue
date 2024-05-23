@@ -11,16 +11,16 @@
         <button
           class="btn-donation btn--image"
           ref="btn"
-          @click="isDonationModalOpen = true"
-          @focus="isDonationModalOpen = false"
+          @click="isDonationCardOpen = true"
+          @focus="isDonationCardOpen = false"
         >
           <img src="/images/icon-dollar.svg" alt="dollar donation icon" />
           <span>{{ $t('donations.button-title') }}</span>
         </button>
       </div>
 
-      <DonationModal :isModalOpen="isDonationModalOpen" @toggleModal="toggleDonationModal" />
-      <StationTable @toggleDonationModal="toggleDonationModal" />
+      <DonationCard :is-card-open="isDonationCardOpen" @toggle-card="toggleDonationCard" />
+      <StationTable @toggle-donation-card="toggleDonationCard" />
       <StationStats />
     </div>
   </section>
@@ -31,7 +31,7 @@ import { defineComponent } from 'vue';
 import StationTable from '../components/StationsView/StationTable.vue';
 import StationFilterCard from '../components/StationsView/StationFilterCard.vue';
 import { useMainStore } from '../store/mainStore';
-import DonationModal from '../components/Global/DonationModal.vue';
+import DonationCard from '../components/Global/DonationCard.vue';
 import StationStats from '../components/StationsView/StationStats.vue';
 import { initFilters, setupFilters } from '../managers/stationFilterManager';
 import { reactive } from 'vue';
@@ -46,12 +46,12 @@ export default defineComponent({
     StationTable,
     StationFilterCard,
     StationStats,
-    DonationModal
+    DonationCard
   },
 
   data: () => ({
     filterCardOpen: false,
-    isDonationModalOpen: false,
+    isDonationCardOpen: false,
 
     mainStore: useMainStore()
   }),
@@ -69,8 +69,8 @@ export default defineComponent({
   },
 
   methods: {
-    toggleDonationModal(value: boolean) {
-      this.isDonationModalOpen = value;
+    toggleDonationCard(value: boolean) {
+      this.isDonationCardOpen = value;
     }
   }
 });
