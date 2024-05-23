@@ -300,7 +300,7 @@
   "station-stats": {
     "u-factor": "Współczynnik Ugla",
     "u-factor-tooltip": "(?) Współczynnik ruchu na serwerze (liczba maszynistów online dzielona na liczbę dyżurnych ruchu)",
-    "med-timetable-count": "Mediana rozkładów jazdy na sceneriach:",
+    "avg-timetable-count": "Średnia liczba rozkładów jazdy na sceneriach:",
     "single-track-count": "Szlaki jednotorowe:",
     "double-track-count": "Szlaki dwutorowe:",
     "cross-sceneries": "Scenerie przejściowe (1-tor <-> 2-tor):",

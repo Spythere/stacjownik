@@ -21,8 +21,8 @@
 
       <div>
         &bull;
-        {{ $t('station-stats.med-timetable-count') }}
-        <b>{{ medTimetableCount }}</b>
+        {{ $t('station-stats.avg-timetable-count') }}
+        <b>{{ avgTimetableCount.toFixed(2) }}</b>
       </div>
 
       <div>
@@ -89,27 +89,19 @@ export default defineComponent({
       return activeDispatchers.length != 0 ? activeTrains.length / activeDispatchers.length : 0;
     },
 
-    medTimetableCount() {
-      const scheduledTrainsArr = this.mainStore.activeSceneryList
-        .reduce<number[]>((acc, sc) => {
-          if (sc.region != this.mainStore.region.id) return acc;
+    avgTimetableCount() {
+      const regionSceneries = this.mainStore.activeSceneryList.filter((sc) => {
+        return sc.region == this.mainStore.region.id;
+      });
 
-          acc.push(sc.scheduledTrainCount.all);
+      const timetableCountSum = regionSceneries.reduce((acc, sc) => {
+        acc += sc.scheduledTrainCount.all;
+        return acc;
+      }, 0);
 
-          return acc;
-        }, [])
-        .sort((a, b) => Math.sign(a - b));
+      if (regionSceneries.length == 0) return 0;
 
-      if (scheduledTrainsArr.length == 0) return 0;
-
-      if (scheduledTrainsArr.length % 2 == 0) {
-        let v1 = scheduledTrainsArr[scheduledTrainsArr.length / 2];
-        let v2 = scheduledTrainsArr[scheduledTrainsArr.length / 2 - 1];
-
-        return (v1 + v2) / 2;
-      }
-
-      return scheduledTrainsArr[~~(scheduledTrainsArr.length / 2)];
+      return timetableCountSum / regionSceneries.length;
     },
 
     trackCount() {
