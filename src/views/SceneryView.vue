@@ -233,7 +233,7 @@ button.back-btn {
   background-color: #181818;
   padding: 1em 0.5em;
 
-  height: 95vh;
+  height: 100vh;
   min-height: 750px;
   max-height: 1000px;
   overflow: auto;
@@ -246,7 +246,7 @@ button.back-btn {
   background: #181818;
   padding: 1em 0.5em;
 
-  height: 95vh;
+  height: 100vh;
   min-height: 750px;
   max-height: 1000px;
 
