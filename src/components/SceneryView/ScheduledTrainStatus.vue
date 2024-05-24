@@ -1,7 +1,7 @@
 <template>
   <div class="general-status">
     <span
-      :class="computedScheduledTrain.stopStatus"
+      :class="computedScheduledTrain.status"
       :title="computedScheduledTrain.stopStatusDescription"
     >
       {{ computedScheduledTrain.stopStatusIndicator }}
@@ -11,25 +11,21 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import { ScheduledTrain, StopStatus } from '../../typings/common';
-
-interface ScheduledTrainComp extends ScheduledTrain {
-  stopStatusIndicator: string;
-  stopStatusDescription: string;
-}
+import { StopStatus } from '../../typings/common';
+import { SceneryTimetableRow } from './typings';
 
 export default defineComponent({
   props: {
-    scheduledTrain: {
-      type: Object as PropType<ScheduledTrain>,
+    sceneryTimetableRow: {
+      type: Object as PropType<SceneryTimetableRow>,
       required: true
     }
   },
 
   computed: {
-    computedScheduledTrain(): ScheduledTrainComp {
-      const { prevDepartureLine, prevStationName, stopStatus, nextArrivalLine, nextStationName } =
-        this.scheduledTrain;
+    computedScheduledTrain() {
+      const { prevDepartureLine, prevStationName, nextArrivalLine, nextStationName, status } =
+        this.sceneryTimetableRow;
 
       const prevDepartureIndicator = prevDepartureLine
         ? `(${prevDepartureLine}) ${prevStationName}`
@@ -41,7 +37,7 @@ export default defineComponent({
       let stopStatusDescription = '',
         stopStatusIndicator = '';
 
-      switch (stopStatus) {
+      switch (status) {
         case StopStatus.ARRIVING:
           stopStatusIndicator = `${this.$t('timetables.from')}: ${prevDepartureIndicator}`;
           stopStatusDescription = this.$t('timetables.desc-arriving', {
@@ -56,7 +52,7 @@ export default defineComponent({
             ? `${this.$t('timetables.to')}: ${nextArrivalIndicator}`
             : `${this.$t('timetables.desc-end')}`;
           stopStatusDescription = nextArrivalLine
-            ? this.$t(`timetables.desc-${stopStatus}`, { nextStationName, nextArrivalLine })
+            ? this.$t(`timetables.desc-${status}`, { nextStationName, nextArrivalLine })
             : '';
           break;
 
@@ -85,7 +81,7 @@ export default defineComponent({
           break;
       }
       return {
-        ...this.scheduledTrain,
+        ...this.sceneryTimetableRow,
         stopStatusDescription,
         stopStatusIndicator
       };

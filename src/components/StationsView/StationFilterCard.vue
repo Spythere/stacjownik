@@ -4,7 +4,7 @@
       <button class="card-button btn--filled btn--image" @click="toggleCard">
         <img class="button_icon" src="/images/icon-filter2.svg" alt="filter icon" />
         <p>[F] {{ $t('options.filters') }}</p>
-        <span class="active-indicator" v-if="!filterStore.areFiltersAtDefault"></span>
+        <span class="active-indicator" v-if="changedFilters.length != 0"></span>
       </button>
 
       <label for="scenery-search">
@@ -33,29 +33,44 @@
           <div class="card_title flex">{{ $t('filters.title') }}</div>
           <p class="card_info" v-html="$t('filters.desc')"></p>
 
+          <div class="changed-filters" v-if="changedFilters.length > 0">
+            {{ $t('filters.changed-filters-count') }} <b>{{ changedFilters.length }}</b>
+          </div>
+
+          <div class="changed-filters" v-else>{{ $t('filters.no-changed-filters') }}</div>
+
           <section class="card_options">
             <div
               class="option-section"
-              v-for="section in filterStore.inputs.optionSections"
-              :key="section"
+              v-for="(sectionFilters, sectionKey) in filtersSections"
+              :key="sectionKey"
             >
               <h3 class="text--primary">
-                {{ $t(`filters.sections.${section}`) }}
-
-                <button @click="filterStore.resetSectionOptions(section)">RESET</button>
+                <span class="active-indicator" v-if="!areSectionFiltersDefault(sectionKey)"></span>
+                {{ $t(`filters.sections.${sectionKey}`) }}
+                <button @click="resetSectionFilters(sectionKey)">RESET</button>
               </h3>
 
               <hr />
 
-              <div class="section-inputs">
-                <FilterOption
-                  v-for="(option, i) in filterStore.inputs.options.filter(
-                    (o) => o.section == section
-                  )"
-                  v-model:optionValue="option.value"
-                  :option="option"
-                  :key="i"
-                />
+              <div class="section-filters">
+                <label
+                  v-for="filterKey in sectionFilters"
+                  @click="() => (filters[filterKey] = !filters[filterKey])"
+                  @dblclick="setSingleSectionFilter(sectionKey, filterKey)"
+                  :for="filterKey"
+                >
+                  <input
+                    :checked="filters[filterKey]"
+                    v-model="filters[filterKey]"
+                    type="checkbox"
+                    :class="sectionKey"
+                    :name="filterKey"
+                  />
+                  <span>
+                    {{ $t(`filters.${filterKey}`) }}
+                  </span>
+                </label>
               </div>
             </div>
           </section>
@@ -68,7 +83,7 @@
               <span>{{
                 minimumHours == 0
                   ? $t('filters.now')
-                  : minimumHours < 8
+                  : minimumHours < 7
                     ? minimumHours + $t('filters.hour')
                     : $t('filters.no-limit')
               }}</span>
@@ -76,12 +91,12 @@
             </span>
           </section>
 
-          <datalist id="authors">
-            <option v-for="(author, i) in authors" :key="i" :value="author"></option>
-          </datalist>
-
           <section class="card_authors-search">
             <h3 class="section-header">{{ $t('filters.authors-search') }}</h3>
+
+            <datalist id="authors" name="authors">
+              <option v-for="(author, i) in authorsHint" :key="i" :value="author"></option>
+            </datalist>
 
             <form action="javascript:void(0);" @submit="handleAuthorsInput">
               <input
@@ -89,8 +104,8 @@
                 id="author"
                 list="authors"
                 name="authors"
+                v-model="authors"
                 :placeholder="$t('filters.authors-placeholder')"
-                v-model="authorsInputValue"
                 @focus="preventKeyDown = true"
                 @blur="preventKeyDown = false"
               />
@@ -100,19 +115,18 @@
           </section>
 
           <section class="card_sliders">
-            <div class="slider" v-for="(slider, i) in filterStore.inputs.sliders" :key="i">
+            <div class="slider" v-for="(slider, i) in initSliders" :key="i">
               <input
                 class="slider-input"
                 type="range"
-                :name="slider.name"
+                :name="slider.id"
                 :id="slider.id"
                 :min="slider.minRange"
                 :max="slider.maxRange"
                 :step="slider.step"
-                v-model="slider.value"
-                @change="handleInput"
+                v-model="filters[slider.id]"
               />
-              <span class="slider-value">{{ slider.value }}</span>
+              <span class="slider-value">{{ filters[slider.id] }}</span>
               <div class="slider-content">
                 {{ $t(`filters.sliders.${slider.id}`) }}
               </div>
@@ -133,9 +147,9 @@
 
             <button
               class="btn--action"
+              :disabled="changedFilters.length == 0"
+              :data-disabled="changedFilters.length == 0"
               @click="resetFilters"
-              :disabled="filterStore.areFiltersAtDefault"
-              :data-disabled="filterStore.areFiltersAtDefault"
             >
               [R] {{ $t('filters.reset') }}
             </button>
@@ -151,11 +165,23 @@
 import { defineComponent, inject } from 'vue';
 import keyMixin from '../../mixins/keyMixin';
 import routerMixin from '../../mixins/routerMixin';
-import { useStationFiltersStore } from '../../store/stationFiltersStore';
 import { useMainStore } from '../../store/mainStore';
 
 import FilterOption from './FilterOption.vue';
 import StorageManager from '../../managers/storageManager';
+
+import {
+  filtersSections,
+  initSliders,
+  initFilters,
+  getChangedFilters
+} from '../../managers/stationFilterManager';
+
+import { StationFilterSection } from '../../managers/stationFilterManager';
+import { computed } from 'vue';
+import { watch } from 'vue';
+
+const STORAGE_KEY = 'options_saved';
 
 export default defineComponent({
   components: { FilterOption },
@@ -163,10 +189,12 @@ export default defineComponent({
 
   data: () => ({
     saveOptions: false,
-    STORAGE_KEY: 'options_saved',
 
-    authorsInputValue: '',
+    filtersSections,
+    initSliders,
+
     minimumHours: 0,
+    authors: '',
 
     currentRegion: { id: '', value: '' },
 
@@ -180,22 +208,33 @@ export default defineComponent({
   setup() {
     const isVisible = inject('isFilterCardVisible');
     const store = useMainStore();
-    const filterStore = useStationFiltersStore();
+
+    const filters = inject('StationsView_filters') as Record<string, any>;
+
+    const changedFilters = computed(() => getChangedFilters(filters));
+
+    // Save filters to persistent storage
+    watch(filters, (value) => {
+      if (!StorageManager.isRegistered(STORAGE_KEY)) return;
+
+      Object.keys(value).forEach((filterKey) => {
+        StorageManager.setValue(filterKey, filters[filterKey]);
+      });
+    });
 
     return {
       isVisible,
       store,
-      filterStore
+      filters,
+      changedFilters
     };
   },
 
   mounted() {
-    this.saveOptions = StorageManager.isRegistered(this.STORAGE_KEY);
+    this.saveOptions = StorageManager.isRegistered(STORAGE_KEY);
 
     if (StorageManager.isRegistered('onlineFromHours') && this.saveOptions) {
       this.minimumHours = StorageManager.getNumericValue('onlineFromHours');
-
-      this.changeNumericFilterValue('onlineFromHours', this.minimumHours);
     }
 
     this.currentRegion = this.store.region;
@@ -214,7 +253,7 @@ export default defineComponent({
       return true;
     },
 
-    authors() {
+    authorsHint() {
       return this.store.stationList
         .reduce((acc, station) => {
           station.generalInfo?.authors?.forEach((author) => {
@@ -258,61 +297,63 @@ export default defineComponent({
       this.scrollTop = (e.target as HTMLElement).scrollTop;
     },
 
-    handleInput(e: Event) {
-      const target = e.target as HTMLInputElement;
-
-      this.filterStore.changeFilterValue(target.name, target.value);
-
-      if (this.saveOptions) StorageManager.setStringValue(target.name, target.value);
-    },
-
     handleAuthorsInput() {
-      this.filterStore.changeFilterValue('authors', this.authorsInputValue);
-
-      if (this.saveOptions) StorageManager.setStringValue('authors', this.authorsInputValue);
-    },
-
-    changeNumericFilterValue(name: string, value: number, saveToStorage = false) {
-      this.filterStore.changeFilterValue(name, value);
-      if (this.saveOptions && saveToStorage) StorageManager.setNumericValue(name, value);
+      this.filters['authors'] = this.authors;
+      // if (this.saveOptions) StorageManager.setStringValue('authors', target.value);
     },
 
     subHour() {
-      this.minimumHours = this.minimumHours < 1 ? 8 : this.minimumHours - 1;
-
-      this.changeNumericFilterValue('onlineFromHours', this.minimumHours, true);
+      this.minimumHours = this.minimumHours < 1 ? 7 : this.minimumHours - 1;
+      this.filters['onlineFromHours'] = this.minimumHours;
     },
 
     addHour() {
-      this.minimumHours = this.minimumHours > 7 ? 0 : this.minimumHours + 1;
-
-      this.changeNumericFilterValue('onlineFromHours', this.minimumHours, true);
+      this.minimumHours = this.minimumHours > 6 ? 0 : this.minimumHours + 1;
+      this.filters['onlineFromHours'] = this.minimumHours;
     },
 
     saveFilters() {
       this.saveOptions = !this.saveOptions;
 
       if (!this.saveOptions) {
-        StorageManager.unregisterStorage(this.STORAGE_KEY);
+        StorageManager.unregisterStorage(STORAGE_KEY);
         return;
       }
 
-      StorageManager.registerStorage(this.STORAGE_KEY);
+      StorageManager.registerStorage(STORAGE_KEY);
 
-      this.filterStore.inputs.options.forEach((option) =>
-        StorageManager.setBooleanValue(option.name, !option.value)
-      );
-      this.filterStore.inputs.sliders.forEach((slider) =>
-        StorageManager.setNumericValue(slider.name, slider.value)
-      );
+      Object.keys(this.filters).forEach((filterKey) => {
+        StorageManager.setValue(filterKey, this.filters[filterKey]);
+      });
     },
 
     resetFilters() {
-      this.authorsInputValue = '';
-
+      // Reset local model values
       this.minimumHours = 0;
-      this.changeNumericFilterValue('onlineFromHours', this.minimumHours, true);
-      this.filterStore.resetFilters();
+      this.authors = '';
+
+      // Reset global filters
+      Object.keys(this.filters).forEach((filterKey) => {
+        this.filters[filterKey] = (initFilters as any)[filterKey];
+      });
+    },
+
+    areSectionFiltersDefault(sectionKey: StationFilterSection) {
+      return filtersSections[sectionKey].every((filterKey) => {
+        return this.filters[filterKey] == initFilters[filterKey];
+      });
+    },
+
+    resetSectionFilters(sectionKey: StationFilterSection) {
+      filtersSections[sectionKey].forEach((filterKey) => {
+        this.filters[filterKey] = initFilters[filterKey];
+      });
+    },
+
+    setSingleSectionFilter(sectionKey: StationFilterSection, chosenKey: string) {
+      filtersSections[sectionKey].forEach((filterKey) => {
+        if (filterKey != chosenKey) this.filters[filterKey] = initFilters[filterKey];
+      });
     },
 
     closeCard() {
@@ -346,6 +387,11 @@ h3.section-header {
   padding: 0.5em;
 }
 
+.changed-filters {
+  background-color: #111;
+  padding: 0.5em;
+}
+
 .card_controls {
   display: flex;
   gap: 0.5em;
@@ -372,28 +418,6 @@ h3.section-header {
   color: $accentCol;
 
   text-align: center;
-}
-
-.card_regions {
-  display: flex;
-  justify-content: center;
-
-  label > input {
-    display: none;
-  }
-
-  label > span {
-    padding: 0.25em 0.5em;
-    margin: 0 0.25em;
-
-    cursor: pointer;
-
-    background-color: gray;
-
-    &.checked {
-      background-color: seagreen;
-    }
-  }
 }
 
 .card_timestamp {
@@ -441,6 +465,52 @@ h3.section-header {
   }
 }
 
+.section-filters {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5em;
+  margin: 1em 0;
+}
+
+.section-filters > label {
+  position: relative;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+
+  span {
+    cursor: pointer;
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    padding: 0.25em;
+    font-weight: bold;
+    background-color: forestgreen;
+  }
+
+  span:hover {
+    background-color: #22aa22;
+  }
+
+  input[type='checkbox'] {
+    cursor: pointer;
+    position: absolute;
+    opacity: 0;
+
+    &:checked + span {
+      background-color: #444;
+
+      &:hover {
+        background-color: #555;
+      }
+    }
+
+    &:focus-visible + span {
+      outline: 1px solid $accentCol;
+    }
+  }
+}
+
 .card_actions {
   padding: 0.5em;
 
@@ -475,33 +545,16 @@ h3.section-header {
   }
 }
 
-.section-inputs {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.5em;
-  margin: 1em 0;
-}
-
-.quick-actions div {
-  display: flex;
-  margin: 1em 0;
-  gap: 1em;
-}
-
 .slider {
   display: flex;
   align-items: center;
+  gap: 0.25em;
 
   margin-bottom: 1em;
 
   &-value {
     color: $accentCol;
-    margin-right: 0.5em;
     padding: 0.1em 0.2em;
-  }
-
-  &-content {
-    flex-grow: 2;
   }
 
   &-input {
@@ -512,7 +565,6 @@ h3.section-header {
     outline: none;
 
     min-width: 25%;
-    max-width: 120px;
 
     &:focus-visible ~ * {
       color: gold;
@@ -586,6 +638,15 @@ h3.section-header {
 @include smallScreen {
   .card_controls > button.card-button > p {
     display: none;
+  }
+
+  .slider {
+    flex-wrap: wrap;
+    justify-content: center;
+
+    &-input {
+      width: 90%;
+    }
   }
 }
 </style>

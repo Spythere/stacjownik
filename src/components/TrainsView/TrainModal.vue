@@ -21,7 +21,7 @@ export default defineComponent({
 
   computed: {
     chosenTrain() {
-      return this.store.trainList.find((train) => train.trainId == this.store.chosenModalTrainId);
+      return this.store.trainList.find((train) => train.id == this.store.chosenModalTrainId);
     }
   },
 
@@ -40,20 +40,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '../../styles/responsive.scss';
-@import '../../styles/card.scss';
-
-.top-info-bar-anim {
-  &-enter-active,
-  &-leave-active {
-    transition: all 150ms ease-in-out;
-  }
-
-  &-enter-from,
-  &-leave-to {
-    transform: translate(-50%, -50%) scale(0.8);
-    opacity: 0;
-  }
-}
 
 .train-modal {
   position: fixed;

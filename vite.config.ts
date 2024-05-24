@@ -7,6 +7,10 @@ export default defineConfig({
     port: 5001,
     open: true
   },
+  preview: {
+    port: 4001,
+    open: true
+  },
   publicDir: 'public',
   plugins: [
     vue(),
@@ -36,6 +40,10 @@ export default defineConfig({
               cacheName: 'spythere-static-cache',
               cacheableResponse: {
                 statuses: [0, 200]
+              },
+              expiration: {
+                maxEntries: 100,
+                maxAgeSeconds: 60 * 60 * 8
               }
             }
           }

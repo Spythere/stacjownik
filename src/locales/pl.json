@@ -171,9 +171,9 @@
 
     "sections": {
       "quick": "SZYBKIE FILTRY",
-      "station-type": "RODZAJ STACJI",
+      "stationType": "RODZAJ STACJI",
       "reality": "FIKCYJNOŚĆ SCENERII",
-      "package-access": "DOSTĘPNOŚĆ W PACZCE",
+      "packageAccess": "DOSTĘPNOŚĆ W PACZCE",
       "access": "DOSTĘPNOŚĆ OGÓLNA",
       "control": "TYP STEROWANIA",
       "signals": "TYP SYGNALIZACJI",
@@ -183,6 +183,9 @@
       "timetables": "AKTYWNE ROZKŁADY JAZDY",
       "spawns": "OTWARTE SPAWNY"
     },
+
+    "changed-filters-count": "Zmienione filtry:",
+    "no-changed-filters": "Brak zmienionych filtrów",
 
     "all-available": "WSZYSTKIE DOSTĘPNE",
     "all-free": "WSZYSTKIE WOLNE",
@@ -194,11 +197,11 @@
 
     "title": "FILTRUJ STACJE",
     "default": "DOMYŚLNA",
-    "not-default": "POZA PACZKĄ",
+    "notDefault": "POZA PACZKĄ",
     "real": "REALNA",
     "fictional": "FIKCYJNA",
     "unavailable": "NIEDOSTĘPNA",
-    "non-public": "NIEPUBLICZNA",
+    "nonPublic": "NIEPUBLICZNA",
     "abandoned": "WYCOFANA",
 
     "SPK": "SPK",
@@ -234,14 +237,14 @@
     "nonJunction": "INNE",
 
     "sliders": {
-      "min-lvl": "MIN. WYMAGANY POZIOM DYŻURNEGO",
-      "max-lvl": "MAKS. WYMAGANY POZIOM DYŻURNEGO",
-      "min-vmax": "MIN. PRĘDKOŚĆ SZLAKOWA",
-      "max-vmax": "MAKS. PRĘDKOŚĆ SZLAKOWA",
-      "routes-1t-cat": "SZLAKI JEDNOTOROWE ZELEKTR. (MINIMUM)",
-      "routes-1t-other": "SZLAKI JEDNOTOROWE NIEZELEKTR. (MINIMUM)",
-      "routes-2t-cat": "SZLAKI DWUTOROWE ZELEKTR. (MINIMUM)",
-      "routes-2t-other": "SZLAKI DWUTOROWE NIEZELEKTR. (MINIMUM)"
+      "minLevel": "MIN. WYMAGANY POZIOM DYŻURNEGO",
+      "maxLevel": "MAKS. WYMAGANY POZIOM DYŻURNEGO",
+      "minVmax": "MIN. PRĘDKOŚĆ SZLAKOWA",
+      "maxVmax": "MAKS. PRĘDKOŚĆ SZLAKOWA",
+      "minOneWayCatenary": "SZLAKI JEDNOTOROWE ZELEKTR. (MINIMUM)",
+      "minOneWay": "SZLAKI JEDNOTOROWE NIEZELEKTR. (MINIMUM)",
+      "minTwoWayCatenary": "SZLAKI DWUTOROWE ZELEKTR. (MINIMUM)",
+      "minTwoWay": "SZLAKI DWUTOROWE NIEZELEKTR. (MINIMUM)"
     },
 
     "authors-search": "SZUKAJ AUTORA (uwzględnia inne filtry):",
@@ -291,12 +294,13 @@
       "single-track-routes-other": "Liczba niezelektryfikowanych szlaków jednotorowych: "
     },
     "no-stations": "Brak stacji do wyświetlenia!",
-    "scenery-search": "Wyszukaj scenerię..."
+    "scenery-search": "Wyszukaj scenerię...",
+    "active-filters": "Uwaga! Masz obecnie aktywne filtry!"
   },
   "station-stats": {
     "u-factor": "Współczynnik Ugla",
     "u-factor-tooltip": "(?) Współczynnik ruchu na serwerze (liczba maszynistów online dzielona na liczbę dyżurnych ruchu)",
-    "med-timetable-count": "Mediana rozkładów jazdy na sceneriach:",
+    "avg-timetable-count": "Średnia liczba rozkładów jazdy na sceneriach:",
     "single-track-count": "Szlaki jednotorowe:",
     "double-track-count": "Szlaki dwutorowe:",
     "cross-sceneries": "Scenerie przejściowe (1-tor <-> 2-tor):",

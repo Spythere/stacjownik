@@ -41,7 +41,6 @@ export interface RegionCounters {
 
 export interface Train {
   id: string;
-  trainId: string;
   mass: number;
   length: number;
   speed: number;
@@ -79,33 +78,28 @@ export interface Train {
 export interface Station {
   name: string;
 
-  generalInfo?: {
-    name: string;
-    url: string;
-    abbr: string;
-    hash?: string;
-
-    reqLevel: number;
-    // supportersOnly: boolean;
-
-    lines: string;
-    project: string;
-    projectUrl?: string;
-
-    signalType: string;
-    controlType: string;
-
-    SUP: boolean;
-    ASDEK: boolean;
-    authors?: string[];
-
-    availability: Availability;
-    routes: StationRoutes;
-
-    checkpoints: string[];
-  };
+  generalInfo?: StationGeneralInfo;
 
   onlineInfo?: ActiveScenery;
+}
+
+export interface StationGeneralInfo {
+  name: string;
+  url: string;
+  abbr: string;
+  hash?: string;
+  reqLevel: number;
+  lines: string;
+  project: string;
+  projectUrl?: string;
+  signalType: string;
+  controlType: string;
+  SUP: boolean;
+  ASDEK: boolean;
+  authors?: string[];
+  availability: Availability;
+  routes: StationRoutes;
+  checkpoints: string[];
 }
 
 export interface StationRoutes {
@@ -148,8 +142,8 @@ export interface ActiveScenery {
   dispatcherStatus: Status.ActiveDispatcher | number;
   dispatcherTimestamp: number | null;
   isOnline: boolean;
-  stationTrains?: StationTrain[];
-  scheduledTrains?: ScheduledTrain[];
+  stationTrains: Train[];
+  scheduledTrains: CheckpointTrain[];
   scheduledTrainCount: {
     all: number;
     confirmed: number;
@@ -162,49 +156,6 @@ export interface ScenerySpawn {
   spawnLength: number;
   isElectrified: boolean;
   spawnType: ScenerySpawnType;
-}
-
-export interface StationTrain {
-  driverName: string;
-  driverId: number;
-  trainNo: number;
-  trainId: string;
-  stopStatus: string;
-}
-
-export interface ScheduledTrain {
-  checkpointName: string;
-
-  trainId: string;
-  trainNo: number;
-
-  driverName: string;
-  driverId: number;
-  currentStationName: string;
-  currentStationHash: string;
-  category: string;
-  stopInfo: TrainStop;
-
-  terminatesAt: string;
-  beginsAt: string;
-
-  prevStationName: string;
-  nextStationName: string;
-
-  arrivingLine: string | null;
-  departureLine: string | null;
-
-  prevDepartureLine: string | null;
-  nextArrivalLine: string | null;
-
-  signal: string;
-  connectedTrack: string;
-
-  stopLabel: string;
-  stopStatus: StopStatus;
-  stopStatusID: number;
-
-  region: string;
 }
 
 export interface TrainStop {
@@ -223,13 +174,17 @@ export interface TrainStop {
   departureTimestamp: number;
   departureRealTimestamp: number;
   departureDelay: number;
-  pointId: number;
 
   comments?: string;
 
   beginsHere: boolean;
   terminatesHere: boolean;
-  confirmed: boolean;
-  stopped: boolean;
+  confirmed: number;
+  stopped: number;
   stopTime: number | null;
+}
+
+export interface CheckpointTrain {
+  checkpointStop: TrainStop;
+  train: Train;
 }

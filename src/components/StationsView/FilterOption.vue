@@ -15,7 +15,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useStationFiltersStore } from '../../store/stationFiltersStore';
 
 interface FilterOption {
   id: string;
@@ -40,15 +39,9 @@ export default defineComponent({
 
   emits: ['update:optionValue'],
 
-  setup() {
-    return {
-      filterStore: useStationFiltersStore()
-    };
-  },
-
   watch: {
     'option.value'() {
-      this.filterStore.changeFilterValue(this.option.name, !this.option.value);
+      // this.filterStore.changeFilterValue(this.option.name, !this.option.value);
     }
   },
 
@@ -56,17 +49,17 @@ export default defineComponent({
     handleDbClick(e: Event) {
       e.preventDefault();
 
-      this.filterStore.lastClickedFilterId = this.option.id;
+      // this.filterStore.lastClickedFilterId = this.option.id;
       // this.option.value = true;
       this.$emit('update:optionValue', true);
 
-      this.filterStore.inputs.options
-        .filter((option) => {
-          return option.section == this.option.section && option.id != this.option.id;
-        })
-        .forEach((option) => {
-          option.value = !this.option.value;
-        });
+      // this.filterStore.inputs.options
+      //   .filter((option) => {
+      //     return option.section == this.option.section && option.id != this.option.id;
+      //   })
+      //   .forEach((option) => {
+      //     option.value = !this.option.value;
+      //   });
     }
   }
 });

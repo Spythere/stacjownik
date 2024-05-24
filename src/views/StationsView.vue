@@ -11,16 +11,16 @@
         <button
           class="btn-donation btn--image"
           ref="btn"
-          @click="isDonationModalOpen = true"
-          @focus="isDonationModalOpen = false"
+          @click="isDonationCardOpen = true"
+          @focus="isDonationCardOpen = false"
         >
           <img src="/images/icon-dollar.svg" alt="dollar donation icon" />
           <span>{{ $t('donations.button-title') }}</span>
         </button>
       </div>
 
-      <DonationModal :isModalOpen="isDonationModalOpen" @toggleModal="toggleDonationModal" />
-      <StationTable @toggleDonationModal="toggleDonationModal" />
+      <DonationCard :is-card-open="isDonationCardOpen" @toggle-card="toggleDonationCard" />
+      <StationTable @toggle-donation-card="toggleDonationCard" />
       <StationStats />
     </div>
   </section>
@@ -30,34 +30,47 @@
 import { defineComponent } from 'vue';
 import StationTable from '../components/StationsView/StationTable.vue';
 import StationFilterCard from '../components/StationsView/StationFilterCard.vue';
-import { useStationFiltersStore } from '../store/stationFiltersStore';
 import { useMainStore } from '../store/mainStore';
-import DonationModal from '../components/Global/DonationModal.vue';
+import DonationCard from '../components/Global/DonationCard.vue';
 import StationStats from '../components/StationsView/StationStats.vue';
+import { initFilters, setupFilters } from '../managers/stationFilterManager';
+import { reactive } from 'vue';
+import { provide } from 'vue';
+import { ActiveSorter } from '../components/StationsView/typings';
+import { onMounted } from 'vue';
+
+const filterInitStates = { ...initFilters };
 
 export default defineComponent({
   components: {
     StationTable,
     StationFilterCard,
     StationStats,
-    DonationModal
+    DonationCard
   },
 
   data: () => ({
     filterCardOpen: false,
-    isDonationModalOpen: false,
+    isDonationCardOpen: false,
 
-    filterStore: useStationFiltersStore(),
-    store: useMainStore()
+    mainStore: useMainStore()
   }),
 
-  mounted() {
-    this.filterStore.setupFilters();
+  setup() {
+    const filters = reactive(filterInitStates);
+    const activeSorter = reactive({ headerName: 'station', dir: 1 }) as ActiveSorter;
+
+    provide('StationsView_filters', filters);
+    provide('StationsView_activeSorter', activeSorter);
+
+    onMounted(() => {
+      setupFilters(filters);
+    });
   },
 
   methods: {
-    toggleDonationModal(value: boolean) {
-      this.isDonationModalOpen = value;
+    toggleDonationCard(value: boolean) {
+      this.isDonationCardOpen = value;
     }
   }
 });

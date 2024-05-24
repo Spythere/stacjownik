@@ -72,7 +72,7 @@
 
       <div class="info-lists">
         <!-- user list -->
-        <SceneryInfoUserList :onlineScenery="onlineScenery" />
+        <SceneryInfoUserList :onlineScenery="onlineScenery" :station="station" />
 
         <!-- spawn list -->
         <SceneryInfoSpawnList :onlineScenery="onlineScenery" />
