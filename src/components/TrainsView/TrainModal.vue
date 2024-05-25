@@ -29,8 +29,15 @@ export default defineComponent({
     chosenTrain(train: Train | undefined) {
       this.$nextTick(() => {
         if (train) {
+          document.body.classList.add('no-scroll');
           const contentEl = this.$refs['content'] as HTMLElement;
           contentEl.focus();
+        } else {
+          (this.store.modalLastClickedTarget as any)?.focus();
+
+          setTimeout(() => {
+            document.body.classList.remove('no-scroll');
+          }, 90);
         }
       });
     }
