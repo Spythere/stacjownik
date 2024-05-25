@@ -112,8 +112,8 @@
     "filters": "FILTERS",
     "donate": "DONATE",
 
-    "search-button": "Search",
-    "reset-button": "Reset",
+    "search-button": "SEARCH",
+    "reset-button": "RESET",
 
     "sort-title": "SORT BY:",
     "filter-title": "FILTER BY:",
