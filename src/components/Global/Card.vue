@@ -76,12 +76,18 @@ export default defineComponent({
 
   margin: 1em;
 
+  max-height: 90vh;
+  max-height: 95dvh;
+
   background-color: #1a1a1a;
   box-shadow: 0 0 15px 10px #0e0e0e;
 
-  max-height: 95vh;
-  max-height: 95dvh;
-
   overflow: auto;
+}
+
+@include smallScreen {
+  .card {
+    align-items: flex-start;
+  }
 }
 </style>
