@@ -76,6 +76,7 @@ export default defineComponent({
   z-index: 210;
   overflow: auto;
   max-height: 95vh;
+  max-height: 95dvh;
 
   box-shadow: 0 0 15px 10px #0e0e0e;
 
