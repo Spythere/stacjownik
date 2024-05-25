@@ -210,7 +210,7 @@ export default defineComponent({
   overflow-x: hidden;
 
   @include smallScreen() {
-    font-size: calc(0.65rem + 0.8vw);
+    font-size: calc(0.65rem + 0.85vw);
   }
 
   @include screenLandscape() {

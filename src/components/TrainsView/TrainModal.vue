@@ -54,12 +54,14 @@ export default defineComponent({
   left: 0;
 
   width: 100%;
+  height: 100%;
 
   color: white;
   z-index: 200;
 
   display: flex;
   justify-content: center;
+  align-items: flex-start;
 
   text-align: left;
 }
@@ -80,10 +82,10 @@ export default defineComponent({
   position: relative;
   overflow-y: scroll;
 
-  margin-top: 1em;
-
   width: 95vw;
   max-height: 95vh;
+  max-height: 95dvh;
+  margin-top: 1em;
 
   background-color: #1a1a1a;
   box-shadow: 0 0 15px 10px #0e0e0e;
@@ -96,12 +98,6 @@ export default defineComponent({
     img {
       width: 1.75rem;
     }
-  }
-}
-
-@include smallScreen {
-  .modal_content {
-    max-height: 85vh;
   }
 }
 </style>

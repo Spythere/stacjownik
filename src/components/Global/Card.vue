@@ -76,7 +76,7 @@ export default defineComponent({
 
   margin: 1em;
 
-  max-height: 90vh;
+  max-height: 95vh;
   max-height: 95dvh;
 
   background-color: #1a1a1a;
