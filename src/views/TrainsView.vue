@@ -109,7 +109,7 @@ export default defineComponent({
 
     this.$nextTick(() => {
       if (this.trainId) {
-        this.selectModalTrain(this.trainId);
+        this.selectModalTrainById(this.trainId);
       }
     });
   }

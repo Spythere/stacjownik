@@ -41,6 +41,7 @@ export interface RegionCounters {
 
 export interface Train {
   id: string;
+  modalId: string;
   mass: number;
   length: number;
   speed: number;

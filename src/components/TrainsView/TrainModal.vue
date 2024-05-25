@@ -21,7 +21,7 @@ export default defineComponent({
 
   computed: {
     chosenTrain() {
-      return this.store.trainList.find((train) => train.id == this.store.chosenModalTrainId);
+      return this.store.trainList.find((train) => train.modalId == this.store.chosenModalTrainId);
     }
   },
 

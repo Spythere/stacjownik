@@ -1,6 +1,7 @@
 import { defineComponent } from 'vue';
 import { useMainStore } from '../store/mainStore';
 import { useTooltipStore } from '../store/tooltipStore';
+import { Train } from '../typings/common';
 
 export default defineComponent({
   data() {
@@ -11,8 +12,14 @@ export default defineComponent({
   },
 
   methods: {
-    selectModalTrain(trainId: string, target?: EventTarget | null) {
-      this.store.chosenModalTrainId = trainId;
+    selectModalTrain(train: Train, target?: EventTarget | null) {
+      this.store.chosenModalTrainId = train.modalId;
+      document.body.classList.add('no-scroll');
+      if (target) this.store.modalLastClickedTarget = target;
+    },
+
+    selectModalTrainById(modalId: string, target?: EventTarget | null) {
+      this.store.chosenModalTrainId = modalId;
       document.body.classList.add('no-scroll');
       if (target) this.store.modalLastClickedTarget = target;
     },
