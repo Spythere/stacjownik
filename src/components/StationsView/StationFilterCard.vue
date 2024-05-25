@@ -33,11 +33,12 @@
           <div class="card_title flex">{{ $t('filters.title') }}</div>
           <p class="card_info" v-html="$t('filters.desc')"></p>
 
-          <div class="changed-filters" v-if="changedFilters.length > 0">
-            {{ $t('filters.changed-filters-count') }} <b>{{ changedFilters.length }}</b>
+          <div class="changed-filters" :data-active="changedFilters.length > 0">
+            <template v-if="changedFilters.length > 0">
+              {{ $t('filters.changed-filters-count') }} <b>{{ changedFilters.length }}</b>
+            </template>
+            <template v-else>{{ $t('filters.no-changed-filters') }}</template>
           </div>
-
-          <div class="changed-filters" v-else>{{ $t('filters.no-changed-filters') }}</div>
 
           <section class="card_options">
             <div
@@ -371,6 +372,7 @@ export default defineComponent({
 @import '../../styles/responsive';
 @import '../../styles/card';
 @import '../../styles/animations';
+@import '../../styles/variables';
 
 h3.section-header {
   text-align: center;
@@ -390,6 +392,10 @@ h3.section-header {
 .changed-filters {
   background-color: #111;
   padding: 0.5em;
+
+  &[data-active='true'] {
+    color: lightgreen;
+  }
 }
 
 .card_controls {

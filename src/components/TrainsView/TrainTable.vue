@@ -18,8 +18,8 @@
           v-for="train in trains"
           :key="train.id"
           tabindex="0"
-          @click.stop="selectModalTrain(train.id, $event.currentTarget)"
-          @keydown.enter="selectModalTrain(train.id, $event.currentTarget)"
+          @click.stop="selectModalTrain(train, $event.currentTarget)"
+          @keydown.enter="selectModalTrain(train, $event.currentTarget)"
         >
           <TrainInfo :train="train" :extended="false" />
         </li>
@@ -76,17 +76,6 @@ export default defineComponent({
         return Status.Data.Loading;
 
       return Status.Data.Loaded;
-    }
-  },
-
-  activated() {
-    const query = this.$route.query;
-    if (query.trainNo && query.driverName) {
-      this.searchedDriver = query.driverName.toString();
-      this.searchedTrain = query.trainNo.toString();
-      setTimeout(() => {
-        this.selectModalTrain(query.driverName! + query.trainNo!.toString());
-      }, 20);
     }
   }
 });

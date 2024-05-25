@@ -60,8 +60,6 @@ export const useApiStore = defineStore('apiStore', {
       if (!this.activeData) this.dataStatuses.connection = Status.Data.Loading;
 
       try {
-        console.log('Fetching active data at ' + new Date().toLocaleTimeString('pl-PL'));
-
         const response = await this.client!.get<API.ActiveData.Response>('api/getActiveData');
 
         this.activeData = response.data;

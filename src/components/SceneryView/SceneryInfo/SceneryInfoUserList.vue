@@ -18,8 +18,8 @@
         tabindex="0"
         :key="train.id"
         :data-status="status"
-        @click.prevent="selectModalTrain(train.id, $event.currentTarget)"
-        @keydown.enter="selectModalTrain(train.id, $event.currentTarget)"
+        @click.prevent="selectModalTrain(train, $event.currentTarget)"
+        @keydown.enter="selectModalTrain(train, $event.currentTarget)"
       >
         <span class="user_train">{{ train.trainNo }}</span>
         <span class="user_name">{{ train.driverName }}</span>

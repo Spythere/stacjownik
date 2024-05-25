@@ -103,7 +103,7 @@ export default defineComponent({
     showTimetable(timetable: API.TimetableHistory.Data, target: EventTarget | null) {
       if (timetable?.terminated) return;
 
-      this.selectModalTrain(timetable.driverName + timetable.trainNo.toString(), target);
+      this.selectModalTrainById(`${timetable.driverName}${timetable.trainNo}`, target);
     }
   }
 });

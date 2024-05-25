@@ -39,8 +39,8 @@
     <div class="timetable-list">
       <transition-group name="list-anim">
         <div
-          style="padding-bottom: 5em"
           v-if="apiStore.dataStatuses.connection == 0 && sceneryTimetables.length == 0"
+          style="padding-bottom: 5em"
           key="list-loading"
         >
           <Loading />
@@ -65,11 +65,11 @@
         <div
           class="timetable-item"
           v-else
-          v-for="row in sceneryTimetables"
-          :key="row.train.id + row.checkpointStop.arrivalTimestamp"
+          v-for="(row, i) in sceneryTimetables"
+          :key="row.train.id"
           tabindex="0"
-          @click.prevent.stop="selectModalTrain(row.train.id, $event.currentTarget)"
-          @keydown.enter.prevent="selectModalTrain(row.train.id, $event.currentTarget)"
+          @click.prevent.stop="selectModalTrain(row.train, $event.currentTarget)"
+          @keydown.enter.prevent="selectModalTrain(row.train, $event.currentTarget)"
         >
           <span class="timetable-general">
             <span class="general-info">
@@ -235,8 +235,6 @@ export default defineComponent({
     sceneryTimetables(): SceneryTimetableRow[] {
       if (!this.station) return [];
       if (!this.onlineScenery) return [];
-
-      console.log(this.onlineScenery.scheduledTrains, this.chosenCheckpoint);
 
       return this.onlineScenery.scheduledTrains
         .filter(

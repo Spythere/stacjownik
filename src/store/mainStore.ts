@@ -36,17 +36,13 @@ export const useMainStore = defineStore('mainStore', {
     }) as MainStoreState,
 
   getters: {
-    checkpointsTrains() {
-      return checkpointsTrains;
-    },
-
     trainList(): Train[] {
       const apiStore = useApiStore();
 
       checkpointsTrains.clear();
       sceneriesTrains.clear();
 
-      const x = (apiStore.activeData?.trains ?? [])
+      return (apiStore.activeData?.trains ?? [])
         .filter((train) => train.timetable || train.online)
         .map((train) => {
           const stock = train.stockString.split(';');
@@ -65,6 +61,7 @@ export const useMainStore = defineStore('mainStore', {
 
           const trainObj = {
             id: train.id,
+            modalId: `${train.driverName}${train.trainNo}`, // simplified id for train modal
 
             trainNo: train.trainNo,
             mass: train.mass,
@@ -131,8 +128,6 @@ export const useMainStore = defineStore('mainStore', {
 
           return trainObj;
         });
-
-      return x;
     },
 
     // computed active sceneries
@@ -143,7 +138,6 @@ export const useMainStore = defineStore('mainStore', {
 
       if (!apiStore.activeData?.activeSceneries) return [];
 
-      console.time('activeSceneryList');
       const offlineActiveSceneries = this.trainList.reduce((acc, train) => {
         if (!train.timetableData) return acc;
 
@@ -238,9 +232,16 @@ export const useMainStore = defineStore('mainStore', {
 
         const station = this.stationList.find((s) => s.name === scenery.name);
 
-        const checkpoints = [scenery.name];
-        if (station?.generalInfo?.checkpoints && station.generalInfo.checkpoints.length > 0)
-          checkpoints.push(...station.generalInfo.checkpoints.filter((cp) => cp !== station.name));
+        let checkpointsSet: Set<string> = new Set();
+
+        // Add checkpoints to active scenery data
+        checkpointsSet.add(scenery.name.toLowerCase());
+
+        station?.generalInfo?.checkpoints.forEach((cpName) => {
+          checkpointsSet.add(cpName.toLowerCase());
+        });
+
+        const checkpoints = Array.from(checkpointsSet);
 
         scenery.stationTrains =
           sceneriesTrains.get(scenery.name)?.filter((sc) => sc.region == this.region.id) ?? [];
@@ -265,8 +266,6 @@ export const useMainStore = defineStore('mainStore', {
           });
         });
       }
-
-      console.timeEnd('activeSceneryList');
 
       return allActiveSceneries;
     },
