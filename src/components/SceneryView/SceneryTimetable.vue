@@ -66,7 +66,7 @@
           class="timetable-item"
           v-else
           v-for="(row, i) in sceneryTimetables"
-          :key="row.train.id"
+          :key="row.train.id + i"
           tabindex="0"
           @click.prevent.stop="selectModalTrain(row.train, $event.currentTarget)"
           @keydown.enter.prevent="selectModalTrain(row.train, $event.currentTarget)"
