@@ -63,7 +63,9 @@ export default defineComponent({
 
       return this.onlineScenery.stationTrains.map((train) => {
         const stop = train.timetableData?.followingStops.find(
-          (stop) => stop.stopNameRAW.toLowerCase() == name.toLowerCase()
+          (stop) =>
+            stop.stopNameRAW.toLowerCase() == name.toLowerCase() ||
+            this.station?.generalInfo?.checkpoints.includes(stop.stopNameRAW)
         );
 
         const status = stop
