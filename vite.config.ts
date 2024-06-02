@@ -34,6 +34,13 @@ export default defineConfig({
             }
           },
           {
+            urlPattern: /^https:\/\/stacjownik.spythere.eu\/vehicles/i,
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'spythere-vehicles-cache'
+            }
+          },
+          {
             urlPattern: /^https:\/\/static.spythere.eu\/.*/i,
             handler: 'CacheFirst',
             options: {

@@ -189,3 +189,27 @@ export interface CheckpointTrain {
   checkpointStop: TrainStop;
   train: Train;
 }
+
+// Vehicles Data
+export interface VehiclesData {
+  simulatorVersion: string;
+
+  vehicleList: any[][];
+
+  vehicleProps: VehicleProps[];
+}
+
+export interface VehicleProps {
+  type: string;
+  speed: number;
+  length: number;
+  weight: number;
+  cargoTypes?: VehicleCargo[];
+  coldStart?: boolean;
+  doubleManned?: boolean;
+}
+
+export interface VehicleCargo {
+  id: string;
+  weight: number;
+}

@@ -1,4 +1,4 @@
-import { Status } from './common';
+import { Status, VehiclesData } from './common';
 
 export enum APIDataStatus {
   OK = 'OK',
@@ -19,6 +19,7 @@ export namespace API {
       apiStatuses?: APIStatuses;
     }
   }
+
   export namespace DispatcherHistory {
     export type Response = Data[];
 
@@ -315,6 +316,10 @@ export namespace API {
 
   export namespace Donators {
     export type Response = string[];
+  }
+
+  export namespace Vehicles {
+    export type Response = VehiclesData;
   }
 }
 

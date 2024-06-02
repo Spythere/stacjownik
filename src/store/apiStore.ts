@@ -4,20 +4,17 @@ import { Status } from '../typings/common';
 import { StationJSONData } from './typings';
 import axios, { AxiosInstance } from 'axios';
 
-export enum APIMode {
-  PRODUCTION = 0,
-  DEV = 1,
-  MOCK = 2
-}
-
 export const useApiStore = defineStore('apiStore', {
   state: () => ({
     dataStatuses: {
       connection: Status.Data.Loading,
-      sceneries: Status.Data.Loading
+      sceneries: Status.Data.Loading,
+      vehicles: Status.Data.Loading
     },
 
     activeData: undefined as API.ActiveData.Response | undefined,
+    vehiclesData: undefined as API.Vehicles.Response | undefined,
+
     donatorsData: [] as API.Donators.Response,
     sceneryData: [] as StationJSONData[],
 
@@ -54,6 +51,7 @@ export const useApiStore = defineStore('apiStore', {
       // Static data
       this.fetchDonatorsData();
       this.fetchStationsGeneralInfo();
+      this.fetchVehiclesInfo();
     },
 
     async fetchActiveData() {
@@ -82,17 +80,29 @@ export const useApiStore = defineStore('apiStore', {
     },
 
     async fetchStationsGeneralInfo() {
-      const sceneryData: StationJSONData[] = (
-        await this.client!.get<StationJSONData[]>('api/getSceneries')
-      ).data;
+      try {
+        const sceneryData: StationJSONData[] = (
+          await this.client!.get<StationJSONData[]>('api/getSceneries')
+        ).data;
 
-      if (!sceneryData) {
+        this.dataStatuses.sceneries = Status.Data.Loaded;
+        this.sceneryData = sceneryData;
+      } catch (error) {
         this.dataStatuses.sceneries = Status.Data.Error;
-        return;
+        console.error('Ups! Wystąpił błąd podczas pobierania informacji o sceneriach:', error);
       }
+    },
 
-      this.dataStatuses.sceneries = Status.Data.Loaded;
-      this.sceneryData = sceneryData;
+    async fetchVehiclesInfo() {
+      try {
+        const response = await this.client!.get<API.Vehicles.Response>('vehicles');
+
+        this.vehiclesData = response.data;
+        this.dataStatuses.vehicles = response.data ? Status.Data.Loaded : Status.Data.Warning;
+      } catch (error) {
+        this.dataStatuses.vehicles = Status.Data.Error;
+        console.error('Ups! Wystąpił błąd podczas pobierania informacji o pojazdach:', error);
+      }
     }
   }
 });
