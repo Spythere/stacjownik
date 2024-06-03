@@ -315,6 +315,8 @@
     "current-signal": "przy semaforze",
     "current-track": "na szlaku",
 
+    "vmax-tooltip": "Maksymalna prędkość na podstawie pojazdów w składzie - nie bierze pod uwagę masy hamowania",
+
     "delayed": "Opóźniony: ",
     "preponed": "Przed czasem: ",
     "on-time": "Planowo",

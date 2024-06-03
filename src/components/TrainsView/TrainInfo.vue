@@ -138,7 +138,7 @@
               class="text--grayed"
               style="text-decoration: underline dotted"
               tabindex="0"
-              data-tooltip="Maksymalna prędkość na podstawie pojazdów w składzie - nie bierze pod uwagę masy hamowania"
+              :data-tooltip="$t('trains.vmax-tooltip')"
             >
               {{ maxSpeed }} km/h
             </em>

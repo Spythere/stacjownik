@@ -329,6 +329,8 @@
     "current-signal": "at signal",
     "current-track": "on track",
 
+    "vmax-tooltip": "Maximum train speed based on rolling stock vehicles - braked weight is not included",
+
     "delayed": "Delayed: ",
     "preponed": "Ahead of schedule: ",
     "on-time": "On time",
