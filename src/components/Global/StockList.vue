@@ -23,15 +23,15 @@
     <ul v-else>
       <li v-for="(stockName, i) in computedStockList" :key="i">
         <p>
-          {{ stockName.split(':')[0].split('_').splice(0, 2).join(' ') }}
-          {{ stockName.split(':')[1] }}
+          {{ stockName.split(':')[0].split('_').splice(0, 3).join(' ') }}
+          <div v-if="stockName.split(':')[1]">({{ stockName.split(':')[1] }})</div>
         </p>
 
         <span>
           <img
             :data-mouseover="stockName"
             data-tooltip-type="VehiclePreviewTooltip"
-            :data-tooltip-content="stockName.split(':')[0]"
+            :data-tooltip-content="stockName"
             :src="
               getVehicleThumbnailURL(stockName.split(':')[0], /^EN/.test(stockName) ? 'rb' : '')
             "
