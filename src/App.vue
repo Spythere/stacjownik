@@ -226,6 +226,7 @@ export default defineComponent({
 
   min-height: 100vh;
   overflow: hidden;
+  position: relative;
 }
 
 .app_main {

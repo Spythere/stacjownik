@@ -131,6 +131,18 @@
         <div>
           <img src="/images/icon-speed.svg" alt="speed icon" />
           {{ train.speed }} km/h
+
+          <span v-if="maxSpeed != Infinity">
+            &bull;
+            <em
+              class="text--grayed"
+              style="text-decoration: underline dotted"
+              tabindex="0"
+              data-tooltip="Maksymalna prędkość na podstawie pojazdów w składzie - nie bierze pod uwagę masy hamowania"
+            >
+              {{ maxSpeed }} km/h
+            </em>
+          </span>
         </div>
       </div>
 
@@ -189,6 +201,28 @@ export default defineComponent({
       store: useMainStore(),
       apiStore: useApiStore()
     };
+  },
+
+  computed: {
+    maxSpeed() {
+      return this.train.stockList.reduce((acc, stockName) => {
+        const stockVehicleInfo = this.apiStore.vehiclesData?.vehicleList.find(
+          (v) => v[0] == stockName.split(':')[0]
+        );
+
+        if (!stockVehicleInfo) return acc;
+
+        const stockVehicleProps = this.apiStore.vehiclesData?.vehicleProps.find(
+          (v) => v.type == stockVehicleInfo[1]
+        );
+
+        if (!stockVehicleProps) return acc;
+
+        if (stockVehicleProps.speed < acc) return stockVehicleProps.speed;
+
+        return acc;
+      }, Infinity);
+    }
   },
 
   methods: {
