@@ -56,7 +56,19 @@
               </span>
 
               <span v-else-if="stop.departureLine && !/sbl/gi.test(stop.departureLine)">
-                <div>{{ stop.departureLine }}</div>
+                <div class="scenery-route">
+                  <span> {{ stop.departureLine }} | {{ stop.departureLineSpeed }}</span>
+
+                  <img
+                    v-if="stop.departureLineElectrified == false"
+                    src="/images/icon-w4a.png"
+                    title="szlak spalinowy"
+                    width="15"
+                  />
+
+                  <span v-if="stop.departureLineElectrified == true">⚡</span>
+                </div>
+
                 <div
                   class="scenery-change-name"
                   v-if="
@@ -66,8 +78,21 @@
                 >
                   {{ scheduleStops[i + 1].sceneryName }}
                 </div>
-                <div>
-                  {{ scheduleStops[i + 1].arrivalLine }}
+
+                <div class="scenery-route">
+                  <span>
+                    {{ scheduleStops[i + 1].arrivalLine }} |
+                    {{ scheduleStops[i + 1].arrivalLineSpeed }}
+                  </span>
+
+                  <img
+                    v-if="scheduleStops[i + 1].arrivalLineElectrified == false"
+                    src="/images/icon-w4a.png"
+                    title="szlak spalinowy"
+                    width="15"
+                  />
+
+                  <span v-if="scheduleStops[i + 1].arrivalLineElectrified == true">⚡</span>
                 </div>
               </span>
             </div>
@@ -117,6 +142,12 @@ export interface TrainScheduleStop {
   arrivalLine: string | null;
   departureLine: string | null;
 
+  arrivalLineSpeed: number;
+  arrivalLineElectrified: boolean | null;
+
+  departureLineSpeed: number;
+  departureLineElectrified: boolean | null;
+
   comments: string | null;
 }
 
@@ -154,6 +185,17 @@ export default defineComponent({
           )
             currentSceneryIndex++;
 
+          const sceneryName = this.train.timetableData!.sceneryNames[currentSceneryIndex];
+          const sceneryInfo = this.apiStore.sceneryData.find((st) => st.name == sceneryName);
+
+          const arrivalLineInfo = sceneryInfo?.routesInfo.find(
+            (r) => r.routeName == stop.arrivalLine
+          );
+
+          const departureLineInfo = sceneryInfo?.routesInfo.find(
+            (r) => r.routeName == stop.departureLine
+          );
+
           return {
             nameHtml: stop.stopName,
             nameRaw: stop.stopNameRAW,
@@ -172,7 +214,12 @@ export default defineComponent({
             comments: stop.comments ?? null,
 
             arrivalLine: stop.arrivalLine,
+            arrivalLineSpeed: arrivalLineInfo?.routeSpeed ?? 0,
+            arrivalLineElectrified: arrivalLineInfo?.isElectric ?? null,
+
             departureLine: stop.departureLine,
+            departureLineSpeed: departureLineInfo?.routeSpeed ?? 0,
+            departureLineElectrified: departureLineInfo?.isElectric ?? null,
 
             type: stop.stopType,
             distance: stop.stopDistance,
@@ -181,7 +228,7 @@ export default defineComponent({
             isSBL: /sbl/gi.test(stop.stopName),
             position: stop.beginsHere ? 'begin' : stop.terminatesHere ? 'end' : 'en-route',
             sceneryHash: '',
-            sceneryName: this.train.timetableData!.sceneryNames[currentSceneryIndex],
+            sceneryName,
             status: stop.confirmed ? 'confirmed' : stop.stopped ? 'stopped' : 'unconfirmed'
           };
         }) ?? []
@@ -483,22 +530,26 @@ $blinkAnim: 0.5s ease-in-out alternate infinite blink;
   }
 }
 
-.bottom-line-info {
-  .scenery-change-name {
-    position: relative;
-    margin: 0.25em 0;
+.scenery-route {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
 
-    &::before {
-      content: '';
-      position: absolute;
-      height: 2px;
-      width: 30px;
-      background-color: #aaa;
+.scenery-change-name {
+  position: relative;
+  margin: 0.25em 0;
 
-      top: 50%;
-      right: calc(100% + 5px);
-      transform: translate(0, -50%);
-    }
+  &::before {
+    content: '';
+    position: absolute;
+    height: 2px;
+    width: 30px;
+    background-color: #aaa;
+
+    top: 50%;
+    right: calc(100% + 5px);
+    transform: translate(0, -50%);
   }
 }
 </style>
