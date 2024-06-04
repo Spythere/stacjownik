@@ -121,10 +121,6 @@ export default defineComponent({
     Status: Status.Data
   }),
 
-  // activated() {
-  //   this.loadSelectedCheckpoint();
-  // },
-
   setup() {
     const route = useRoute();
 
@@ -215,11 +211,10 @@ button.back-btn {
 
   position: relative;
 
-  width: 100%;
   max-width: var(--max-container-width);
-  min-height: 100vh;
+  width: 100%;
 
-  margin: 1rem 0;
+  padding: 1rem 0;
   text-align: center;
 
   &[data-timetable-only='true'] {
@@ -233,9 +228,7 @@ button.back-btn {
   background-color: #181818;
   padding: 1em 0.5em;
 
-  height: 100vh;
-  min-height: 750px;
-  max-height: 1000px;
+  height: calc(100vh - 0.5em);
   overflow: auto;
 
   display: flex;
@@ -246,9 +239,7 @@ button.back-btn {
   background: #181818;
   padding: 1em 0.5em;
 
-  height: 100vh;
-  min-height: 750px;
-  max-height: 1000px;
+  height: calc(100vh - 0.5em);
 
   display: grid;
   grid-template-rows: auto 1fr auto;
