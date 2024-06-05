@@ -229,6 +229,7 @@ button.back-btn {
   padding: 1em 0.5em;
 
   height: calc(100vh - 0.5em);
+  min-height: 800px;
   overflow: auto;
 
   display: flex;
@@ -240,9 +241,10 @@ button.back-btn {
   padding: 1em 0.5em;
 
   height: calc(100vh - 0.5em);
+  min-height: 800px;
 
   display: grid;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: auto 1fr;
   gap: 1em;
 }
 

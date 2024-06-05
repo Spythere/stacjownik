@@ -228,6 +228,10 @@ a.a-button {
 
       background-color: #3c3c3c;
     }
+
+    &:hover {
+      background-color: #555;
+    }
   }
 
   &.btn--image {
@@ -283,22 +287,11 @@ a.a-button {
   }
 }
 
-@include smallScreen {
-  ::-webkit-scrollbar {
-    width: 0.5em;
-    height: 0.5em;
-
-    &-track {
-      background-color: #222;
-    }
-
-    &-thumb {
-      background-color: #777;
-    }
-  }
+// Basic tooltip
+[data-tooltip] {
+  cursor: help;
 }
 
-// Basic tooltip
 [data-tooltip]:hover::after,
 [data-tooltip]:focus::after {
   position: absolute;
@@ -315,11 +308,20 @@ a.a-button {
   z-index: 100;
 }
 
-[data-tooltip] {
-  cursor: help;
-}
-
 @include smallScreen {
+  ::-webkit-scrollbar {
+    width: 0.5em;
+    height: 0.5em;
+
+    &-track {
+      background-color: #222;
+    }
+
+    &-thumb {
+      background-color: #777;
+    }
+  }
+
   [data-tooltip]:hover::after,
   [data-tooltip]:focus::after {
     transform: translate(-50%, 2em);

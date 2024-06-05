@@ -1,71 +1,73 @@
 <template>
-  <section class="scenery-table-section">
-    <Loading v-if="dataStatus != DataStatus.Loaded && historyList.length == 0" />
+  <div class="scenery-dispatchers-history">
+    <div class="history-wrapper">
+      <Loading v-if="dataStatus != DataStatus.Loaded && historyList.length == 0" />
 
-    <div class="no-history" v-else-if="historyList.length == 0">
-      {{ $t('scenery.history-list-empty') }}
+      <div class="no-history" v-else-if="historyList.length == 0">
+        {{ $t('scenery.history-list-empty') }}
+      </div>
+
+      <table class="scenery-history-table" v-else>
+        <thead>
+          <th>{{ $t('scenery.dispatchers-history-hash') }}</th>
+          <th>{{ $t('scenery.dispatchers-history-dispatcher') }}</th>
+          <th>{{ $t('scenery.dispatchers-history-level') }}</th>
+          <th>{{ $t('scenery.dispatchers-history-rate') }}</th>
+          <th>{{ $t('scenery.dispatchers-history-date') }}</th>
+        </thead>
+
+        <tbody>
+          <tr v-for="historyItem in historyList" :key="historyItem.id">
+            <td>#{{ historyItem.stationHash }}</td>
+            <td>
+              <router-link
+                :to="`/journal/dispatchers?search-dispatcher=${historyItem.dispatcherName}`"
+              >
+                <b>{{ historyItem.dispatcherName }}</b>
+              </router-link>
+            </td>
+            <td>
+              <b
+                v-if="historyItem.dispatcherLevel !== null"
+                class="level-badge dispatcher"
+                :style="
+                  calculateExpStyle(historyItem.dispatcherLevel, historyItem.dispatcherIsSupporter)
+                "
+              >
+                {{ historyItem.dispatcherLevel >= 2 ? historyItem.dispatcherLevel : 'L' }}
+              </b>
+
+              <b v-else>?</b>
+            </td>
+            <td class="text--primary">
+              <b>{{ historyItem.dispatcherRate }}</b>
+            </td>
+            <td style="min-width: 300px">
+              <div v-if="historyItem.timestampTo">
+                <b>{{ $d(historyItem.timestampFrom) }}</b>
+
+                {{ timestampToString(historyItem.timestampFrom) }}
+                - {{ timestampToString(historyItem.timestampTo) }} ({{
+                  calculateDuration(historyItem.currentDuration)
+                }})
+              </div>
+
+              <div class="dispatcher-online" v-else>
+                {{ $t('journal.online-since') }}
+                <b>{{ timestampToString(historyItem.timestampFrom) }}</b>
+                ({{ calculateDuration(historyItem.currentDuration) }})
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
-    <table class="scenery-history-table" v-else>
-      <thead>
-        <th>{{ $t('scenery.dispatchers-history-hash') }}</th>
-        <th>{{ $t('scenery.dispatchers-history-dispatcher') }}</th>
-        <th>{{ $t('scenery.dispatchers-history-level') }}</th>
-        <th>{{ $t('scenery.dispatchers-history-rate') }}</th>
-        <th>{{ $t('scenery.dispatchers-history-date') }}</th>
-      </thead>
-
-      <tbody>
-        <tr v-for="historyItem in historyList" :key="historyItem.id">
-          <td>#{{ historyItem.stationHash }}</td>
-          <td>
-            <router-link
-              :to="`/journal/dispatchers?search-dispatcher=${historyItem.dispatcherName}`"
-            >
-              <b>{{ historyItem.dispatcherName }}</b>
-            </router-link>
-          </td>
-          <td>
-            <b
-              v-if="historyItem.dispatcherLevel !== null"
-              class="level-badge dispatcher"
-              :style="
-                calculateExpStyle(historyItem.dispatcherLevel, historyItem.dispatcherIsSupporter)
-              "
-            >
-              {{ historyItem.dispatcherLevel >= 2 ? historyItem.dispatcherLevel : 'L' }}
-            </b>
-
-            <b v-else>?</b>
-          </td>
-          <td class="text--primary">
-            <b>{{ historyItem.dispatcherRate }}</b>
-          </td>
-          <td style="min-width: 300px">
-            <div v-if="historyItem.timestampTo">
-              <b>{{ $d(historyItem.timestampFrom) }}</b>
-
-              {{ timestampToString(historyItem.timestampFrom) }}
-              - {{ timestampToString(historyItem.timestampTo) }} ({{
-                calculateDuration(historyItem.currentDuration)
-              }})
-            </div>
-
-            <div class="dispatcher-online" v-else>
-              {{ $t('journal.online-since') }}
-              <b>{{ timestampToString(historyItem.timestampFrom) }}</b>
-              ({{ calculateDuration(historyItem.currentDuration) }})
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </section>
-
-  <div class="bottom-info">
-    <button class="btn btn--option" v-if="historyList.length > 0" @click="navigateToHistory">
-      {{ $t('scenery.bottom-info') }}
-    </button>
+    <div class="bottom-info">
+      <button class="btn btn--option" v-if="historyList.length > 0" @click="navigateToHistory">
+        {{ $t('scenery.bottom-info') }}
+      </button>
+    </div>
   </div>
 </template>
 
@@ -148,6 +150,20 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '../../styles/responsive.scss';
 @import '../../styles/sceneryViewTables.scss';
+
+.scenery-dispatchers-history {
+  height: 100%;
+  overflow: auto;
+
+  display: grid;
+  gap: 0.5em;
+  grid-template-rows: auto 40px;
+}
+
+.history-wrapper {
+  position: relative;
+  overflow: auto;
+}
 
 .level-badge {
   margin: 0 auto;
