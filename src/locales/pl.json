@@ -122,6 +122,8 @@
     "search-station": "Nazwa scenerii",
     "search-author": "Nick autora rozkładu jazdy",
     "search-issuedFrom": "Sceneria początkowa",
+    "search-via": "Przez scenerię",
+    "search-terminatingAt": "Sceneria końcowa",
     "search-timetables-date": "Data rozkładu jazdy (UTC+2 / CEST)",
     "search-dispatchers-date": "Data służby (UTC+2 / CEST)",
     "search-date": "Data (UTC+2 / CEST)",
@@ -475,6 +477,10 @@
     "option-active-timetables": "Aktywne rozkłady jazdy",
     "option-timetables-history": "Historia rozkładów PL1",
     "option-dispatchers-history": "Historia dyżurów PL1",
+
+    "timetable-via": "WSZYSTKIE RJ",
+    "timetable-issuedFrom": "ROZPOCZYNA BIEG",
+    "timetable-terminatingAt": "KOŃCZY BIEG",
 
     "timetable-author-title": "Wydany przez",
     "timetable-author-unknown": "Autor nieznany",

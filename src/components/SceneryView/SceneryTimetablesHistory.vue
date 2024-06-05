@@ -1,11 +1,19 @@
 <template>
   <div class="scenery-timetables-history">
     <div class="top-filters">
-      <button class="btn btn--option checked">ROZPOCZYNA BIEG</button>
+      <button
+        class="btn btn--option"
+        v-for="mode in historyModeList"
+        :key="mode"
+        :class="{ checked: checkedHistoryMode == mode }"
+        @click="checkHistoryMode(mode)"
+      >
+        {{ $t(`scenery.timetable-${mode}`) }}
+      </button>
 
-      <button class="btn btn--option checked">PRZEZ</button>
+      <!-- <button class="btn btn--option checked">PRZEZ</button> -->
 
-      <button class="btn btn--option checked">KOŃCZY BIEG</button>
+      <!-- <button class="btn btn--option checked">KOŃCZY BIEG</button> -->
     </div>
 
     <div class="history-wrapper">
@@ -18,11 +26,11 @@
       <table class="scenery-history-table" v-else>
         <thead>
           <th>{{ $t('scenery.timetables-history-id') }}</th>
-          <th>{{ $t('scenery.timetables-history-number') }}</th>
-          <th>{{ $t('scenery.timetables-history-route') }}</th>
+          <th style="width: 15%">{{ $t('scenery.timetables-history-number') }}</th>
+          <th style="width: 25%">{{ $t('scenery.timetables-history-route') }}</th>
           <th>{{ $t('scenery.timetables-history-driver') }}</th>
           <th>{{ $t('scenery.timetables-history-author') }}</th>
-          <th>{{ $t('scenery.timetables-history-date') }}</th>
+          <th style="width: 20%">{{ $t('scenery.timetables-history-date') }}</th>
         </thead>
 
         <tbody>
@@ -33,7 +41,7 @@
               </router-link>
             </td>
             <td>
-              <b class="text--primary">{{ historyItem.trainCategoryCode }}</b> <br />
+              <b class="text--primary">{{ historyItem.trainCategoryCode }}</b>
               {{ historyItem.trainNo }}
             </td>
             <td>{{ historyItem.route.replace('|', ' -> ') }}</td>
@@ -52,8 +60,14 @@
               <i v-else>{{ $t('scenery.timetable-author-unknown') }}</i>
             </td>
             <td>
-              <b>{{ localeDay(historyItem.beginDate, $i18n.locale) }}</b>
-              {{ localeTime(historyItem.beginDate, $i18n.locale) }}
+              <b>{{
+                localeDateTime(
+                  historyItem.createdAt > historyItem.beginDate
+                    ? historyItem.beginDate
+                    : historyItem.createdAt,
+                  $i18n.locale
+                )
+              }}</b>
             </td>
           </tr>
         </tbody>
@@ -77,6 +91,9 @@ import { API } from '../../typings/api';
 import { ActiveScenery, Station, Status } from '../../typings/common';
 import { useApiStore } from '../../store/apiStore';
 
+const historyModeList = ['issuedFrom', 'terminatingAt', 'via'] as const;
+type HistoryMode = (typeof historyModeList)[number];
+
 export default defineComponent({
   name: 'SceneryTimetablesHistory',
   mixins: [dateMixin],
@@ -92,9 +109,13 @@ export default defineComponent({
   data() {
     return {
       historyList: [] as API.TimetableHistory.Response,
+      historyModeList,
+
       apiStore: useApiStore(),
       dataStatus: Status.Data.Loading,
-      DataStatus: Status.Data
+      DataStatus: Status.Data,
+
+      checkedHistoryMode: 'issuedFrom' as HistoryMode
     };
   },
 
@@ -104,17 +125,22 @@ export default defineComponent({
 
   methods: {
     async fetchAPIData() {
-      if (!this.station && !this.onlineScenery) {
+      const stationName = this.$route.query['station'];
+
+      if (!stationName) {
+        this.historyList = [];
         this.dataStatus = Status.Data.Loaded;
         return;
       }
 
+      const requestFilters: Record<string, any> = {};
+      requestFilters[this.checkedHistoryMode] = stationName.toString();
+      requestFilters.countLimit = 30;
+
       try {
         const response: API.TimetableHistory.Response = await (
           await this.apiStore.client!.get('api/getTimetables', {
-            params: {
-              issuedFrom: this.station?.name || this.onlineScenery?.name
-            }
+            params: requestFilters
           })
         ).data;
 
@@ -126,11 +152,17 @@ export default defineComponent({
       }
     },
 
+    checkHistoryMode(mode: HistoryMode) {
+      this.checkedHistoryMode = mode;
+      this.dataStatus = Status.Data.Loading;
+      this.fetchAPIData();
+    },
+
     navigateToHistory() {
       this.$router.push({
         path: '/journal/timetables',
         query: {
-          'search-issuedFrom': this.station?.name || this.onlineScenery?.name
+          [`search-${this.checkedHistoryMode}`]: this.station?.name || this.onlineScenery?.name
         }
       });
     }
@@ -149,7 +181,7 @@ export default defineComponent({
 
   display: grid;
   gap: 1em;
-  grid-template-rows: 40px auto 40px;
+  grid-template-rows: auto 1fr 40px;
 }
 
 .history-wrapper {
@@ -160,7 +192,14 @@ export default defineComponent({
 .top-filters {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
+
   gap: 0.5em;
   padding: 0.25em;
+
+  button {
+    padding: 0.35em;
+    min-width: 120px;
+  }
 }
 </style>

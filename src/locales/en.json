@@ -125,7 +125,9 @@
     "search-dispatcher": "Dispatcher name",
     "search-station": "Scenery name",
     "search-author": "Timetable author name",
-    "search-issuedFrom": "Origin scenery name",
+    "search-issuedFrom": "Issuing scenery name",
+    "search-via": "Via scenery name",
+    "search-terminatingAt": "Terminating scenery name",
     "search-timetables-date": "Timetable date (UTC+2 / CEST)",
     "search-dispatchers-date": "Service date (UTC+2 / CEST)",
     "search-date": "Date (UTC+2 / CEST)",
@@ -492,6 +494,10 @@
     "option-active-timetables": "Active timetables",
     "option-timetables-history": "Timetables history PL1",
     "option-dispatchers-history": "Dispatchers history PL1",
+
+    "timetable-via": "ALL TIMETABLES",
+    "timetable-issuedFrom": "BEGINS HERE",
+    "timetable-terminatingAt": "TERMINATES HERE",
 
     "timetable-author-title": "Issued by",
     "timetable-author-unknown": "Author unknown",

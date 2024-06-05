@@ -37,7 +37,7 @@
                 {{ historyItem.dispatcherLevel >= 2 ? historyItem.dispatcherLevel : 'L' }}
               </b>
 
-              <b v-else>?</b>
+              <b v-else>-</b>
             </td>
             <td class="text--primary">
               <b>{{ historyItem.dispatcherRate }}</b>

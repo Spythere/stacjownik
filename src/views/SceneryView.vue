@@ -22,8 +22,8 @@
             v-for="(viewMode, i) in viewModes"
             :key="i"
             class="btn btn--option"
+            :class="{ checked: currentMode == viewMode.component }"
             @click="setViewMode(viewMode.component)"
-            :data-checked="currentMode == viewMode.component"
           >
             {{ $t(viewMode.id) }}
           </button>
@@ -223,26 +223,25 @@ button.back-btn {
   }
 }
 
-.scenery-left {
+.scenery-left,
+.scenery-right {
   position: relative;
+  overflow: auto;
+
   background-color: #181818;
   padding: 1em 0.5em;
 
   height: calc(100vh - 0.5em);
   min-height: 800px;
-  overflow: auto;
+  max-height: 2000px;
+}
 
+.scenery-left {
   display: flex;
   flex-direction: column;
 }
 
 .scenery-right {
-  background: #181818;
-  padding: 1em 0.5em;
-
-  height: calc(100vh - 0.5em);
-  min-height: 800px;
-
   display: grid;
   grid-template-rows: auto 1fr;
   gap: 1em;
@@ -254,18 +253,12 @@ button.back-btn {
 
 .info-actions {
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 0.75em;
 
-  .btn {
+  button {
     padding: 0.5em;
-    box-shadow: 0 0 10px 4px #242424;
-
-    &[data-checked='true'] {
-      color: var(--clr-primary);
-    }
   }
 }
 
