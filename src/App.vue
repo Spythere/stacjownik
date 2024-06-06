@@ -180,7 +180,7 @@ export default defineComponent({
 
       const naviLanguage = window.navigator.language.toString();
 
-      if (naviLanguage.includes('en')) {
+      if (naviLanguage.startsWith('en')) {
         this.changeLang('en');
         return;
       }

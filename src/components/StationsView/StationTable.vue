@@ -412,15 +412,13 @@ export default defineComponent({
 @import '../../styles/icons.scss';
 
 $rowCol: #424242;
-$tableBgCol: #555555;
 
 .station_table {
   height: 80vh;
+  max-height: 2000px;
   min-height: 700px;
-  overflow-y: scroll;
-  overflow-x: auto;
+  overflow: auto;
   font-weight: 500;
-  background-color: $tableBgCol;
 }
 
 .no-stations {
