@@ -14,7 +14,6 @@
           :data-stop-type="stop.type"
           :data-minor-stop-active="stop.isActive"
           :data-last-confirmed="stop.isLastConfirmed"
-          x
         >
           <span class="stop_info">
             <span class="distance">
@@ -48,51 +47,46 @@
               <span
                 v-if="
                   stop.departureLine &&
-                  stop.departureLine == scheduleStops[i + 1]?.arrivalLine &&
-                  !/sbl/gi.test(stop.departureLine)
+                  scheduleStops[i + 1] != undefined &&
+                  !/-|_|(^it\d+)|(^sbl)/gi.test(stop.departureLine)
                 "
               >
-                {{ stop.departureLine }}
-              </span>
-
-              <span v-else-if="stop.departureLine && !/sbl/gi.test(stop.departureLine)">
                 <div class="scenery-route">
-                  <span> {{ stop.departureLine }} | {{ stop.departureLineSpeed }}</span>
-
-                  <img
-                    v-if="stop.departureLineElectrified == false"
-                    src="/images/icon-w4a.png"
-                    title="szlak spalinowy"
-                    width="15"
-                  />
-
-                  <span v-if="stop.departureLineElectrified == true">⚡</span>
+                  <span>{{ stop.departureLine }}</span>
+                  <span v-if="stop.departureLineInfo">
+                    | {{ stop.departureLineInfo.routeSpeed }}
+                    <span v-if="stop.departureLineInfo.isElectric">⚡</span>
+                    <img
+                      v-else
+                      src="/images/icon-we4a.png"
+                      :title="$t('trains.we4a-tooltip')"
+                      width="12"
+                    />
+                  </span>
                 </div>
 
                 <div
+                  v-if="stop.sceneryName != scheduleStops[i + 1]?.sceneryName"
                   class="scenery-change-name"
-                  v-if="
-                    i < scheduleStops.length - 1 &&
-                    stop.sceneryName != scheduleStops[i + 1].sceneryName
-                  "
                 >
-                  {{ scheduleStops[i + 1].sceneryName }}
+                  <span>{{ scheduleStops[i + 1].sceneryName }}</span>
+                  <span v-if="stop.departureLineInfo?.routeTracks == 1"> &UpDownArrow;</span>
+                  <span v-else> &UpArrowDownArrow;</span>
                 </div>
 
                 <div class="scenery-route">
-                  <span>
-                    {{ scheduleStops[i + 1].arrivalLine }} |
-                    {{ scheduleStops[i + 1].arrivalLineSpeed }}
+                  <span> {{ scheduleStops[i + 1].arrivalLine }}</span>
+
+                  <span v-if="scheduleStops[i + 1].arrivalLineInfo">
+                    | {{ scheduleStops[i + 1].arrivalLineInfo!.routeSpeed }}
+                    <span v-if="scheduleStops[i + 1].arrivalLineInfo!.isElectric">⚡</span>
+                    <img
+                      v-else
+                      src="/images/icon-we4a.png"
+                      :title="$t('trains.we4a-tooltip')"
+                      width="12"
+                    />
                   </span>
-
-                  <img
-                    v-if="scheduleStops[i + 1].arrivalLineElectrified == false"
-                    src="/images/icon-w4a.png"
-                    title="szlak spalinowy"
-                    width="15"
-                  />
-
-                  <span v-if="scheduleStops[i + 1].arrivalLineElectrified == true">⚡</span>
                 </div>
               </span>
             </div>
@@ -110,7 +104,7 @@ import StopLabel from './StopLabel.vue';
 import StockList from '../Global/StockList.vue';
 import { useMainStore } from '../../store/mainStore';
 import { useApiStore } from '../../store/apiStore';
-import { Train } from '../../typings/common';
+import { StationRoutesInfo, Train } from '../../typings/common';
 
 export interface TrainScheduleStop {
   nameHtml: string;
@@ -136,17 +130,15 @@ export interface TrainScheduleStop {
   isSBL: boolean;
 
   sceneryName: string | null;
-  sceneryHash: string;
   distance: number;
 
   arrivalLine: string | null;
   departureLine: string | null;
 
-  arrivalLineSpeed: number;
-  arrivalLineElectrified: boolean | null;
+  arrivalLineInfo?: StationRoutesInfo;
+  departureLineInfo?: StationRoutesInfo;
 
-  departureLineSpeed: number;
-  departureLineElectrified: boolean | null;
+  isExternal: boolean;
 
   comments: string | null;
 }
@@ -177,13 +169,14 @@ export default defineComponent({
 
       return (
         this.train.timetableData?.followingStops.map((stop, i, arr) => {
-          if (
+          const isExternal =
             i > 0 &&
-            stop.arrivalLine &&
-            stop.arrivalLine != arr[i - 1].departureLine &&
-            !/sbl/gi.test(stop.arrivalLine)
-          )
-            currentSceneryIndex++;
+            stop.arrivalLine != null &&
+            (stop.arrivalLine != arr[i - 1].departureLine ||
+              (stop.arrivalLine == arr[i - 1].departureLine &&
+                !/-|_|(^it\d+)|(^sbl)/gi.test(stop.arrivalLine)));
+
+          if (isExternal) currentSceneryIndex++;
 
           const sceneryName = this.train.timetableData!.sceneryNames[currentSceneryIndex];
           const sceneryInfo = this.apiStore.sceneryData.find((st) => st.name == sceneryName);
@@ -214,12 +207,12 @@ export default defineComponent({
             comments: stop.comments ?? null,
 
             arrivalLine: stop.arrivalLine,
-            arrivalLineSpeed: arrivalLineInfo?.routeSpeed ?? 0,
-            arrivalLineElectrified: arrivalLineInfo?.isElectric ?? null,
-
             departureLine: stop.departureLine,
-            departureLineSpeed: departureLineInfo?.routeSpeed ?? 0,
-            departureLineElectrified: departureLineInfo?.isElectric ?? null,
+
+            arrivalLineInfo: arrivalLineInfo,
+            departureLineInfo: departureLineInfo,
+
+            isExternal,
 
             type: stop.stopType,
             distance: stop.stopDistance,
@@ -227,7 +220,6 @@ export default defineComponent({
             isLastConfirmed: this.lastConfirmed === i && !stop.terminatesHere,
             isSBL: /sbl/gi.test(stop.stopName),
             position: stop.beginsHere ? 'begin' : stop.terminatesHere ? 'end' : 'en-route',
-            sceneryHash: '',
             sceneryName,
             status: stop.confirmed ? 'confirmed' : stop.stopped ? 'stopped' : 'unconfirmed'
           };
@@ -531,9 +523,9 @@ $blinkAnim: 0.5s ease-in-out alternate infinite blink;
 }
 
 .scenery-route {
-  display: flex;
-  align-items: center;
-  gap: 5px;
+  img {
+    vertical-align: middle;
+  }
 }
 
 .scenery-change-name {
