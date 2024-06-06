@@ -1,6 +1,6 @@
 <template>
   <div class="scenery-timetables-history">
-    <div class="top-filters">
+    <div class="history-modes">
       <button
         class="btn btn--option"
         v-for="mode in historyModeList"
@@ -189,7 +189,7 @@ export default defineComponent({
   overflow: auto;
 }
 
-.top-filters {
+.history-modes {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
@@ -201,5 +201,12 @@ export default defineComponent({
     padding: 0.35em;
     min-width: 120px;
   }
+}
+
+table td a {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>

@@ -507,7 +507,7 @@
     "timetables-history-route": "Route",
     "timetables-history-driver": "Driver",
     "timetables-history-author": "TT author",
-    "timetables-history-date": "Date",
+    "timetables-history-date": "Created at",
 
     "dispatchers-history-hash": "Hash",
     "dispatchers-history-dispatcher": "Dispatcher",
