@@ -39,6 +39,7 @@ export namespace API {
       stationName: string;
       timestampFrom: number;
       timestampTo?: number;
+      statusHistory: string[];
     }
   }
 

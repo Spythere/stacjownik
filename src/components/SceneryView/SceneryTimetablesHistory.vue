@@ -10,68 +10,80 @@
       >
         {{ $t(`scenery.timetable-${mode}`) }}
       </button>
-
-      <!-- <button class="btn btn--option checked">PRZEZ</button> -->
-
-      <!-- <button class="btn btn--option checked">KOŃCZY BIEG</button> -->
     </div>
 
     <div class="history-wrapper">
       <Loading v-if="dataStatus != DataStatus.Loaded" />
 
-      <div class="no-history" v-else-if="historyList.length == 0">
+      <div v-else-if="historyList.length == 0" class="no-history">
         {{ $t('scenery.history-list-empty') }}
       </div>
 
-      <table class="scenery-history-table" v-else>
-        <thead>
-          <th>{{ $t('scenery.timetables-history-id') }}</th>
-          <th style="width: 15%">{{ $t('scenery.timetables-history-number') }}</th>
-          <th style="width: 25%">{{ $t('scenery.timetables-history-route') }}</th>
-          <th>{{ $t('scenery.timetables-history-driver') }}</th>
-          <th>{{ $t('scenery.timetables-history-author') }}</th>
-          <th style="width: 20%">{{ $t('scenery.timetables-history-date') }}</th>
-        </thead>
+      <div v-else class="history-list">
+        <div v-for="timetableHistory in historyList" :key="timetableHistory.id">
+          <span>
+            <div>
+              <span
+                class="timetable-status-indicator"
+                :data-terminated="timetableHistory.terminated"
+                :data-fulfilled="timetableHistory.fulfilled"
+              >
+                {{
+                  timetableHistory.terminated
+                    ? timetableHistory.fulfilled
+                      ? '&ofcir;'
+                      : '&olcross;'
+                    : '&bigcirc;'
+                }}
+              </span>
+              #{{ timetableHistory.id }} |
+              <b class="text--primary">{{ timetableHistory.trainCategoryCode }}</b>
+              {{ timetableHistory.trainNo }}
+              {{ timetableHistory.route.replace('|', ' &Rightarrow; ') }}
+            </div>
 
-        <tbody>
-          <tr v-for="historyItem in historyList" :key="historyItem.id">
-            <td>
-              <router-link :to="`/journal/timetables?search-train=%23${historyItem.id}`">
-                #{{ historyItem.id }}
-              </router-link>
-            </td>
-            <td>
-              <b class="text--primary">{{ historyItem.trainCategoryCode }}</b>
-              {{ historyItem.trainNo }}
-            </td>
-            <td>{{ historyItem.route.replace('|', ' -> ') }}</td>
-            <td>
-              <router-link :to="`/journal/timetables?search-driver=${historyItem.driverName}`">
-                {{ historyItem.driverName }}
-              </router-link>
-            </td>
-
-            <td>
-              <router-link
-                v-if="historyItem.authorName"
-                :to="`/journal/timetables?search-dispatcher=${historyItem.authorName}`"
-                >{{ historyItem.authorName }}
-              </router-link>
-              <i v-else>{{ $t('scenery.timetable-author-unknown') }}</i>
-            </td>
-            <td>
+            <div class="text--grayed">
+              Wystawiony
               <b>{{
                 localeDateTime(
-                  historyItem.createdAt > historyItem.beginDate
-                    ? historyItem.beginDate
-                    : historyItem.createdAt,
+                  timetableHistory.createdAt > timetableHistory.beginDate
+                    ? timetableHistory.beginDate
+                    : timetableHistory.createdAt,
                   $i18n.locale
                 )
               }}</b>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+              <span v-if="timetableHistory.authorName">
+                przez:
+                <b>
+                  <router-link
+                    :to="`/journal/timetables?search-dispatcher=${timetableHistory.authorName}`"
+                  >
+                    {{ timetableHistory.authorName }}
+                  </router-link>
+                </b>
+              </span>
+              dla maszynisty:
+              <b>
+                <router-link
+                  :to="`/journal/timetables?search-driver=${timetableHistory.driverName}`"
+                >
+                  {{ timetableHistory.driverName }}
+                </router-link>
+              </b>
+            </div>
+          </span>
+
+          <button
+            @click="
+              navigateTo(`/journal/timetables`, {
+                'search-train': `#${timetableHistory.id}`
+              })
+            "
+          >
+            <img src="/public/images/icon-back.svg" alt="icon navigate to timetable" />
+          </button>
+        </div>
+      </div>
     </div>
 
     <div class="bottom-info">
@@ -90,13 +102,15 @@ import Loading from '../Global/Loading.vue';
 import { API } from '../../typings/api';
 import { ActiveScenery, Station, Status } from '../../typings/common';
 import { useApiStore } from '../../store/apiStore';
+import routerMixin from '../../mixins/routerMixin';
+import { useMainStore } from '../../store/mainStore';
 
 const historyModeList = ['issuedFrom', 'terminatingAt', 'via'] as const;
 type HistoryMode = (typeof historyModeList)[number];
 
 export default defineComponent({
   name: 'SceneryTimetablesHistory',
-  mixins: [dateMixin],
+  mixins: [dateMixin, routerMixin],
   props: {
     station: {
       type: Object as PropType<Station>
@@ -112,6 +126,7 @@ export default defineComponent({
       historyModeList,
 
       apiStore: useApiStore(),
+      mainStore: useMainStore(),
       dataStatus: Status.Data.Loading,
       DataStatus: Status.Data,
 
@@ -203,10 +218,37 @@ export default defineComponent({
   }
 }
 
-table td a {
-  max-width: 200px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  text-align: left;
 }
+
+.history-list > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5em;
+  background-color: #2b2b2b;
+  line-height: 1.5em;
+}
+
+.history-list > div > button > img {
+  width: 2em;
+  transform: rotate(180deg);
+}
+
+.timetable-status-indicator {
+  &[data-fulfilled='true'] {
+    color: limegreen;
+  }
+}
+
+// table td a {
+//   max-width: 100%;
+//   overflow: hidden;
+//   text-overflow: ellipsis;
+//   white-space: nowrap;
+// }
 </style>
