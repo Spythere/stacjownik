@@ -28,13 +28,7 @@
                 :data-terminated="timetableHistory.terminated"
                 :data-fulfilled="timetableHistory.fulfilled"
               >
-                {{
-                  timetableHistory.terminated
-                    ? timetableHistory.fulfilled
-                      ? '&ofcir;'
-                      : '&olcross;'
-                    : '&bigcirc;'
-                }}
+                &ofcir;
               </span>
               #{{ timetableHistory.id }} |
               <b class="text--primary">{{ timetableHistory.trainCategoryCode }}</b>
@@ -80,7 +74,7 @@
               })
             "
           >
-            <img src="/public/images/icon-back.svg" alt="icon navigate to timetable" />
+            <img src="/images/icon-back.svg" alt="icon navigate to timetable" />
           </button>
         </div>
       </div>
@@ -241,7 +235,15 @@ export default defineComponent({
 
 .timetable-status-indicator {
   &[data-fulfilled='true'] {
-    color: limegreen;
+    color: lightgreen;
+  }
+
+  &[data-terminated='false'] {
+    color: lightblue;
+  }
+
+  &[data-terminated='true'][data-fulfilled='false'] {
+    color: lightcoral;
   }
 }
 
