@@ -1,5 +1,8 @@
 <template>
-  <span class="stop-label" :data-sbl="stop.isSBL">
+  <span
+    class="stop-label"
+    :data-minor="stop.isSBL || (stop.nameRaw.endsWith(', po.') && !stop.duration)"
+  >
     <span class="name" v-html="stop.nameHtml"></span>
 
     <span
@@ -30,15 +33,11 @@
     <span
       v-if="
         stop.duration ||
-        (stop.status == 'stopped' &&
-          stop.position != 'begin' &&
-          stop.departureDelay != stop.arrivalDelay)
+        (stop.status == 'stopped' && stop.position != 'begin' && stop.departureDelay > 0)
       "
       class="date stop"
       :data-stop-types="stop.type.replace(', ', '-')"
-      :data-stop-status="
-        stop.departureDelay - stop.arrivalDelay > 0 && !stop.duration ? 'delayed' : ''
-      "
+      :data-stop-status="stop.departureDelay > 0 && !stop.duration ? 'delayed' : ''"
     >
       {{
         stop.duration == 0 && stop.departureDelay > 0
@@ -65,7 +64,9 @@
       "
     >
       o.
-      <span v-if="stop.departureDelay != 0 && stop.status == 'confirmed'">
+      <span
+        v-if="stop.departureDelay != 0 && (stop.status == 'confirmed' || stop.status == 'stopped')"
+      >
         <s>{{ timestampToString(stop.departureScheduled) }}</s>
         {{ timestampToString(stop.departureReal) }}
 
@@ -109,7 +110,7 @@ $stopNameClr: #303030;
   flex-wrap: wrap;
   align-items: center;
 
-  &[data-sbl='true'] {
+  &[data-minor='true'] {
     .date {
       display: none;
     }
