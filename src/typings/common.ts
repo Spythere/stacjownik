@@ -191,22 +191,28 @@ export interface CheckpointTrain {
 }
 
 // Vehicles Data
-export interface VehiclesData {
-  simulatorVersion: string;
 
-  vehicleList: any[][];
-
-  vehicleProps: VehicleProps[];
+export interface VehicleData {
+  id: number;
+  name: string;
+  type: string;
+  cabinName: string | null;
+  restrictions: Record<string, any> | null;
+  vehicleGroupsId: number;
+  group: VehiclesGroup;
 }
 
-export interface VehicleProps {
-  type: string;
+export interface VehiclesGroup {
+  id: number;
+  name: string;
   speed: number;
   length: number;
   weight: number;
-  cargoTypes?: VehicleCargo[];
-  coldStart?: boolean;
-  doubleManned?: boolean;
+  cargoTypes: VehicleCargo[] | null;
+  locoProps: {
+    coldStart: boolean;
+    doubleManned: boolean;
+  } | null;
 }
 
 export interface VehicleCargo {

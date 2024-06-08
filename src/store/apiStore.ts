@@ -106,18 +106,18 @@ export const useApiStore = defineStore('apiStore', {
     },
 
     async fetchVehiclesInfo() {
-      if (import.meta.env.VITE_API_VEHICLES_MODE == 'mocking') {
-        import('../../tests/data/vehicles.json').then((data) => {
-          console.warn('vehicles.json: mocking mode');
-          this.vehiclesData = data.default;
-          this.dataStatuses.vehicles = Status.Data.Loaded;
-        });
+      // if (import.meta.env.VITE_API_VEHICLES_MODE == 'mocking') {
+      //   import('../../tests/data/vehicles.json').then((data) => {
+      //     console.warn('vehicles.json: mocking mode');
+      //     this.vehiclesData = data.default;
+      //     this.dataStatuses.vehicles = Status.Data.Loaded;
+      //   });
 
-        return;
-      }
+      //   return;
+      // }
 
       try {
-        const response = await this.client!.get<API.Vehicles.Response>('vehicles');
+        const response = await this.client!.get<API.Vehicles.Response>('api/getVehicles');
 
         this.vehiclesData = response.data;
         this.dataStatuses.vehicles = response.data ? Status.Data.Loaded : Status.Data.Warning;
