@@ -37,17 +37,21 @@
             </div>
 
             <div class="text--grayed">
-              Wystawiony
-              <b>{{
-                localeDateTime(
-                  timetableHistory.createdAt > timetableHistory.beginDate
-                    ? timetableHistory.beginDate
-                    : timetableHistory.createdAt,
-                  $i18n.locale
-                )
-              }}</b>
+              <span>
+                {{ $t('scenery.timetable-issued-date') }}
+                <b>
+                  {{
+                    localeDateTime(
+                      timetableHistory.createdAt > timetableHistory.beginDate
+                        ? timetableHistory.beginDate
+                        : timetableHistory.createdAt,
+                      $i18n.locale
+                    )
+                  }}
+                </b></span
+              >
               <span v-if="timetableHistory.authorName">
-                przez:
+                {{ $t('scenery.timetable-issued-by') }}
                 <b>
                   <router-link
                     :to="`/journal/timetables?search-dispatcher=${timetableHistory.authorName}`"
@@ -56,14 +60,17 @@
                   </router-link>
                 </b>
               </span>
-              dla maszynisty:
-              <b>
-                <router-link
-                  :to="`/journal/timetables?search-driver=${timetableHistory.driverName}`"
-                >
-                  {{ timetableHistory.driverName }}
-                </router-link>
-              </b>
+
+              <span>
+                {{ $t('scenery.timetable-issued-for') }}
+                <b>
+                  <router-link
+                    :to="`/journal/timetables?search-driver=${timetableHistory.driverName}`"
+                  >
+                    {{ timetableHistory.driverName }}
+                  </router-link>
+                </b>
+              </span>
             </div>
           </span>
 
@@ -246,11 +253,4 @@ export default defineComponent({
     color: lightcoral;
   }
 }
-
-// table td a {
-//   max-width: 100%;
-//   overflow: hidden;
-//   text-overflow: ellipsis;
-//   white-space: nowrap;
-// }
 </style>

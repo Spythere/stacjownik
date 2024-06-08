@@ -500,21 +500,12 @@
     "timetable-issuedFrom": "BEGINS HERE",
     "timetable-terminatingAt": "TERMINATES HERE",
 
-    "timetable-author-title": "Issued by",
-    "timetable-author-unknown": "Author unknown",
+    "timetable-issued-date": "Issued",
+    "timetable-issued-by": " by:",
+    "timetable-issued-for": " for driver:",
 
-    "timetables-history-id": "ID",
-    "timetables-history-number": "Number",
-    "timetables-history-route": "Route",
-    "timetables-history-driver": "Driver",
-    "timetables-history-author": "TT author",
-    "timetables-history-date": "Created at",
-
-    "dispatchers-history-hash": "Hash",
-    "dispatchers-history-dispatcher": "Dispatcher",
-    "dispatchers-history-level": "Level",
-    "dispatchers-history-rate": "Rate",
-    "dispatchers-history-date": "Service date",
+    "dispatcher-rate": "Rate:",
+    "dispatcher-status-changes": "Status changes:",
 
     "req-level": "all dispatcher levels | dispatcher level {lvl} required | dispatcher level {lvl} required",
     "history-list-empty": "No recorded scenery history!",

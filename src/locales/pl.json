@@ -483,21 +483,12 @@
     "timetable-issuedFrom": "ROZPOCZYNA BIEG",
     "timetable-terminatingAt": "KOŃCZY BIEG",
 
-    "timetable-author-title": "Wydany przez",
-    "timetable-author-unknown": "Autor nieznany",
+    "timetable-issued-date": "Wystawiony",
+    "timetable-issued-by": " przez:",
+    "timetable-issued-for": " dla maszynisty:",
 
-    "timetables-history-id": "ID",
-    "timetables-history-number": "Numer",
-    "timetables-history-route": "Trasa",
-    "timetables-history-driver": "Maszynista",
-    "timetables-history-author": "Autor RJ",
-    "timetables-history-date": "Data stworzenia",
-
-    "dispatchers-history-hash": "Hash",
-    "dispatchers-history-dispatcher": "Dyżurny",
-    "dispatchers-history-level": "Poziom",
-    "dispatchers-history-rate": "Ocena",
-    "dispatchers-history-date": "Data służby",
+    "dispatcher-rate": "Ocena:",
+    "dispatcher-status-changes": "Zmiany statusów:",
 
     "req-level": "ogólnodostępna | minimum {lvl} poziom dyżurnego | minimum {lvl} poziom dyżurnego",
     "history-list-empty": "Brak historii dla tej scenerii!",

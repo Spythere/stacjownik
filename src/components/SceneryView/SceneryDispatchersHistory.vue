@@ -32,12 +32,13 @@
 
             <div>
               <span>
-                Ocena:
+                {{ $t('scenery.dispatcher-rate') }}
                 <b class="text--primary"> {{ historyItem.dispatcherRate }}</b>
               </span>
               |
               <span>
-                Zmiany statusów: <b>{{ historyItem.statusHistory.length }}</b>
+                {{ $t('scenery.dispatcher-status-changes') }}
+                <b class="text--primary">{{ historyItem.statusHistory.length }}</b>
               </span>
             </div>
           </span>
