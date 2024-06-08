@@ -106,7 +106,7 @@ import { useApiStore } from '../../store/apiStore';
 import routerMixin from '../../mixins/routerMixin';
 import { useMainStore } from '../../store/mainStore';
 
-const historyModeList = ['issuedFrom', 'terminatingAt', 'via'] as const;
+const historyModeList = ['via', 'issuedFrom', 'terminatingAt'] as const;
 type HistoryMode = (typeof historyModeList)[number];
 
 export default defineComponent({
@@ -131,7 +131,7 @@ export default defineComponent({
       dataStatus: Status.Data.Loading,
       DataStatus: Status.Data,
 
-      checkedHistoryMode: 'issuedFrom' as HistoryMode
+      checkedHistoryMode: 'via' as HistoryMode
     };
   },
 
