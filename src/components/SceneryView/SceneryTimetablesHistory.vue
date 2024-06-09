@@ -1,69 +1,97 @@
 <template>
-  <!-- WIP -->
-  <!-- <div class="top-filters">
-    <button class="btn btn--option">ROZPOCZYNA BIEG</button>
-
-    <button class="btn btn--option">PRZEZ</button>
-
-    <button class="btn btn--option">KOŃCZY BIEG</button>
-  </div> -->
-
-  <section class="scenery-table-section">
-    <Loading v-if="dataStatus != DataStatus.Loaded" />
-
-    <div class="no-history" v-else-if="historyList.length == 0">
-      {{ $t('scenery.history-list-empty') }}
+  <div class="scenery-timetables-history">
+    <div class="history-modes">
+      <button
+        class="btn btn--option"
+        v-for="mode in historyModeList"
+        :key="mode"
+        :class="{ checked: checkedHistoryMode == mode }"
+        @click="checkHistoryMode(mode)"
+      >
+        {{ $t(`scenery.timetable-${mode}`) }}
+      </button>
     </div>
 
-    <table class="scenery-history-table" v-else>
-      <thead>
-        <th>{{ $t('scenery.timetables-history-id') }}</th>
-        <th>{{ $t('scenery.timetables-history-number') }}</th>
-        <th>{{ $t('scenery.timetables-history-route') }}</th>
-        <th>{{ $t('scenery.timetables-history-driver') }}</th>
-        <th>{{ $t('scenery.timetables-history-author') }}</th>
-        <th>{{ $t('scenery.timetables-history-date') }}</th>
-      </thead>
+    <div class="history-wrapper">
+      <Loading v-if="dataStatus != DataStatus.Loaded" />
 
-      <tbody>
-        <tr v-for="historyItem in historyList" :key="historyItem.id">
-          <td>
-            <router-link :to="`/journal/timetables?search-train=%23${historyItem.id}`">
-              #{{ historyItem.id }}
-            </router-link>
-          </td>
-          <td>
-            <b class="text--primary">{{ historyItem.trainCategoryCode }}</b> <br />
-            {{ historyItem.trainNo }}
-          </td>
-          <td>{{ historyItem.route.replace('|', ' -> ') }}</td>
-          <td>
-            <router-link :to="`/journal/timetables?search-driver=${historyItem.driverName}`">
-              {{ historyItem.driverName }}
-            </router-link>
-          </td>
+      <div v-else-if="historyList.length == 0" class="no-history">
+        {{ $t('scenery.history-list-empty') }}
+      </div>
 
-          <td>
-            <router-link
-              v-if="historyItem.authorName"
-              :to="`/journal/timetables?search-dispatcher=${historyItem.authorName}`"
-              >{{ historyItem.authorName }}
-            </router-link>
-            <i v-else>{{ $t('scenery.timetable-author-unknown') }}</i>
-          </td>
-          <td>
-            <b>{{ localeDay(historyItem.beginDate, $i18n.locale) }}</b>
-            {{ localeTime(historyItem.beginDate, $i18n.locale) }}
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </section>
+      <div v-else class="history-list">
+        <div v-for="timetableHistory in historyList" :key="timetableHistory.id">
+          <span>
+            <div>
+              <span
+                class="timetable-status-indicator"
+                :data-terminated="timetableHistory.terminated"
+                :data-fulfilled="timetableHistory.fulfilled"
+              >
+                &ofcir;
+              </span>
+              #{{ timetableHistory.id }} |
+              <b class="text--primary">{{ timetableHistory.trainCategoryCode }}</b>
+              {{ timetableHistory.trainNo }}
+              {{ timetableHistory.route.replace('|', ' &Rightarrow; ') }}
+            </div>
 
-  <div class="bottom-info">
-    <button class="btn btn--option" v-if="historyList.length > 0" @click="navigateToHistory()">
-      {{ $t('scenery.bottom-info') }}
-    </button>
+            <div class="text--grayed">
+              <span>
+                {{ $t('scenery.timetable-issued-date') }}
+                <b>
+                  {{
+                    localeDateTime(
+                      timetableHistory.createdAt > timetableHistory.beginDate
+                        ? timetableHistory.beginDate
+                        : timetableHistory.createdAt,
+                      $i18n.locale
+                    )
+                  }}
+                </b></span
+              >
+              <span v-if="timetableHistory.authorName">
+                {{ $t('scenery.timetable-issued-by') }}
+                <b>
+                  <router-link
+                    :to="`/journal/timetables?search-dispatcher=${timetableHistory.authorName}`"
+                  >
+                    {{ timetableHistory.authorName }}
+                  </router-link>
+                </b>
+              </span>
+
+              <span>
+                {{ $t('scenery.timetable-issued-for') }}
+                <b>
+                  <router-link
+                    :to="`/journal/timetables?search-driver=${timetableHistory.driverName}`"
+                  >
+                    {{ timetableHistory.driverName }}
+                  </router-link>
+                </b>
+              </span>
+            </div>
+          </span>
+
+          <button
+            @click="
+              navigateTo(`/journal/timetables`, {
+                'search-train': `#${timetableHistory.id}`
+              })
+            "
+          >
+            <img src="/images/icon-back.svg" alt="icon navigate to timetable" />
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-info">
+      <button class="btn btn--option" v-if="historyList.length > 0" @click="navigateToHistory()">
+        {{ $t('scenery.bottom-info') }}
+      </button>
+    </div>
   </div>
 </template>
 
@@ -75,10 +103,15 @@ import Loading from '../Global/Loading.vue';
 import { API } from '../../typings/api';
 import { ActiveScenery, Station, Status } from '../../typings/common';
 import { useApiStore } from '../../store/apiStore';
+import routerMixin from '../../mixins/routerMixin';
+import { useMainStore } from '../../store/mainStore';
+
+const historyModeList = ['via', 'issuedFrom', 'terminatingAt'] as const;
+type HistoryMode = (typeof historyModeList)[number];
 
 export default defineComponent({
   name: 'SceneryTimetablesHistory',
-  mixins: [dateMixin],
+  mixins: [dateMixin, routerMixin],
   props: {
     station: {
       type: Object as PropType<Station>
@@ -91,9 +124,14 @@ export default defineComponent({
   data() {
     return {
       historyList: [] as API.TimetableHistory.Response,
+      historyModeList,
+
       apiStore: useApiStore(),
+      mainStore: useMainStore(),
       dataStatus: Status.Data.Loading,
-      DataStatus: Status.Data
+      DataStatus: Status.Data,
+
+      checkedHistoryMode: 'via' as HistoryMode
     };
   },
 
@@ -103,17 +141,22 @@ export default defineComponent({
 
   methods: {
     async fetchAPIData() {
-      if (!this.station && !this.onlineScenery) {
+      const stationName = this.$route.query['station'];
+
+      if (!stationName) {
+        this.historyList = [];
         this.dataStatus = Status.Data.Loaded;
         return;
       }
 
+      const requestFilters: Record<string, any> = {};
+      requestFilters[this.checkedHistoryMode] = stationName.toString();
+      requestFilters.countLimit = 30;
+
       try {
         const response: API.TimetableHistory.Response = await (
           await this.apiStore.client!.get('api/getTimetables', {
-            params: {
-              issuedFrom: this.station?.name || this.onlineScenery?.name
-            }
+            params: requestFilters
           })
         ).data;
 
@@ -125,11 +168,17 @@ export default defineComponent({
       }
     },
 
+    checkHistoryMode(mode: HistoryMode) {
+      this.checkedHistoryMode = mode;
+      this.dataStatus = Status.Data.Loading;
+      this.fetchAPIData();
+    },
+
     navigateToHistory() {
       this.$router.push({
         path: '/journal/timetables',
         query: {
-          'search-issuedFrom': this.station?.name || this.onlineScenery?.name
+          [`search-${this.checkedHistoryMode}`]: this.station?.name || this.onlineScenery?.name
         }
       });
     }
@@ -142,13 +191,66 @@ export default defineComponent({
 @import '../../styles/responsive.scss';
 @import '../../styles/sceneryViewTables.scss';
 
-.top-filters {
+.scenery-timetables-history {
+  height: 100%;
+  overflow: auto;
+
+  display: grid;
+  gap: 1em;
+  grid-template-rows: auto 1fr 40px;
+}
+
+.history-wrapper {
+  position: relative;
+  overflow: auto;
+}
+
+.history-modes {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
+
   gap: 0.5em;
+  padding: 0.25em;
 
   button {
-    padding: 0.5em;
+    padding: 0.35em;
+    min-width: 120px;
+  }
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  text-align: left;
+}
+
+.history-list > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5em;
+  background-color: #2b2b2b;
+  line-height: 1.5em;
+}
+
+.history-list > div > button > img {
+  width: 2em;
+  transform: rotate(180deg);
+}
+
+.timetable-status-indicator {
+  &[data-fulfilled='true'] {
+    color: lightgreen;
+  }
+
+  &[data-terminated='false'] {
+    color: lightblue;
+  }
+
+  &[data-terminated='true'][data-fulfilled='false'] {
+    color: lightcoral;
   }
 }
 </style>

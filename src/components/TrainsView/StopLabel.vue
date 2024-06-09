@@ -1,5 +1,8 @@
 <template>
-  <span class="stop-label" :data-sbl="stop.isSBL">
+  <span
+    class="stop-label"
+    :data-minor="stop.isSBL || (stop.nameRaw.endsWith(', po.') && !stop.duration)"
+  >
     <span class="name" v-html="stop.nameHtml"></span>
 
     <span
@@ -9,12 +12,13 @@
         stop.arrivalDelay > 0 && stop.status != 'unconfirmed'
           ? 'delayed'
           : stop.arrivalDelay < 0 && stop.status != 'unconfirmed'
-          ? 'preponed'
-          : stop.arrivalDelay == 0 && stop.status == 'confirmed'
-          ? 'on-time'
-          : ''
+            ? 'preponed'
+            : stop.arrivalDelay == 0 && stop.status == 'confirmed'
+              ? 'on-time'
+              : ''
       "
     >
+      p.
       <span v-if="stop.arrivalDelay != 0 && stop.status != 'unconfirmed'">
         <s>{{ timestampToString(stop.arrivalScheduled) }}</s>
         {{ timestampToString(stop.arrivalReal) }}
@@ -29,17 +33,17 @@
     <span
       v-if="
         stop.duration ||
-        (stop.status == 'stopped' &&
-          stop.position != 'begin' &&
-          stop.departureDelay != stop.arrivalDelay)
+        (stop.status == 'stopped' && stop.position != 'begin' && stop.departureDelay > 0)
       "
       class="date stop"
       :data-stop-types="stop.type.replace(', ', '-')"
-      :data-stop-status="
-        stop.departureDelay - stop.arrivalDelay > 0 && !stop.duration ? 'delayed' : ''
-      "
+      :data-stop-status="stop.departureDelay > 0 && !stop.duration ? 'delayed' : ''"
     >
-      {{ stop.duration || stop.departureDelay - stop.arrivalDelay }}
+      {{
+        stop.duration == 0 && stop.departureDelay > 0
+          ? stop.departureDelay - stop.arrivalDelay
+          : stop.duration
+      }}
       {{ stop.type == '' ? 'pt' : stop.type }}
     </span>
 
@@ -53,13 +57,16 @@
         stop.departureDelay > 0 && stop.status == 'confirmed'
           ? 'delayed'
           : stop.departureDelay < 0 && stop.status == 'confirmed'
-          ? 'preponed'
-          : stop.departureDelay == 0 && stop.status == 'confirmed'
-          ? 'on-time'
-          : ''
+            ? 'preponed'
+            : stop.departureDelay == 0 && stop.status == 'confirmed'
+              ? 'on-time'
+              : ''
       "
     >
-      <span v-if="stop.departureDelay != 0 && stop.status == 'confirmed'">
+      o.
+      <span
+        v-if="stop.departureDelay != 0 && (stop.status == 'confirmed' || stop.status == 'stopped')"
+      >
         <s>{{ timestampToString(stop.departureScheduled) }}</s>
         {{ timestampToString(stop.departureReal) }}
 
@@ -96,14 +103,14 @@ $delayedClr: salmon;
 $dateClr: #525151;
 $stopExchangeClr: #db8e29;
 $stopDefaultClr: #252525;
-$stopNameClr: #22a8d1;
+$stopNameClr: #303030;
 
 .stop-label {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
 
-  &[data-sbl='true'] {
+  &[data-minor='true'] {
     .date {
       display: none;
     }
@@ -117,6 +124,7 @@ $stopNameClr: #22a8d1;
 
   .name {
     background: $stopNameClr;
+    border-radius: 0.5em 0 0 0.5em;
     padding: 0.3em 0.5em;
 
     display: flex;
@@ -130,6 +138,10 @@ $stopNameClr: #22a8d1;
   .date {
     background: $dateClr;
     padding: 0.3em 0.5em;
+
+    &:last-child {
+      border-radius: 0 0.5em 0.5em 0;
+    }
   }
 
   .stop {
@@ -150,7 +162,7 @@ $stopNameClr: #22a8d1;
   .departure {
     &[data-status='delayed'] {
       s {
-        color: #999;
+        color: #ccc;
       }
 
       span {
@@ -160,7 +172,7 @@ $stopNameClr: #22a8d1;
 
     &[data-status='preponed'] {
       s {
-        color: #999;
+        color: #ccc;
       }
 
       span {

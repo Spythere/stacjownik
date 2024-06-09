@@ -122,6 +122,8 @@
     "search-station": "Nazwa scenerii",
     "search-author": "Nick autora rozkładu jazdy",
     "search-issuedFrom": "Sceneria początkowa",
+    "search-via": "Przez scenerię",
+    "search-terminatingAt": "Sceneria końcowa",
     "search-timetables-date": "Data rozkładu jazdy (UTC+2 / CEST)",
     "search-dispatchers-date": "Data służby (UTC+2 / CEST)",
     "search-date": "Data (UTC+2 / CEST)",
@@ -315,6 +317,9 @@
     "current-signal": "przy semaforze",
     "current-track": "na szlaku",
 
+    "vmax-tooltip": "Maksymalna prędkość na podstawie pojazdów w składzie - nie bierze pod uwagę masy hamowania",
+    "we4a-tooltip": "Szlak niezelektryfikowany",
+
     "delayed": "Opóźniony: ",
     "preponed": "Przed czasem: ",
     "on-time": "Planowo",
@@ -474,21 +479,16 @@
     "option-timetables-history": "Historia rozkładów PL1",
     "option-dispatchers-history": "Historia dyżurów PL1",
 
-    "timetable-author-title": "Wydany przez",
-    "timetable-author-unknown": "Autor nieznany",
+    "timetable-via": "WSZYSTKIE RJ",
+    "timetable-issuedFrom": "ROZPOCZYNA BIEG",
+    "timetable-terminatingAt": "KOŃCZY BIEG",
 
-    "timetables-history-id": "ID",
-    "timetables-history-number": "Numer",
-    "timetables-history-route": "Trasa",
-    "timetables-history-driver": "Maszynista",
-    "timetables-history-author": "Autor RJ",
-    "timetables-history-date": "Data",
+    "timetable-issued-date": "Wystawiony",
+    "timetable-issued-by": " przez:",
+    "timetable-issued-for": " dla maszynisty:",
 
-    "dispatchers-history-hash": "Hash",
-    "dispatchers-history-dispatcher": "Dyżurny",
-    "dispatchers-history-level": "Poziom",
-    "dispatchers-history-rate": "Ocena",
-    "dispatchers-history-date": "Data służby",
+    "dispatcher-rate": "Ocena:",
+    "dispatcher-status-changes": "Zmiany statusów:",
 
     "req-level": "ogólnodostępna | minimum {lvl} poziom dyżurnego | minimum {lvl} poziom dyżurnego",
     "history-list-empty": "Brak historii dla tej scenerii!",

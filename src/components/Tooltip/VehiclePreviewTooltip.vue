@@ -13,13 +13,20 @@
       width="300"
       height="176"
       class="rounded-md w-full h-auto"
-      :src="`https://static.spythere.eu/images/${tooltipStore.content}--300px.jpg`"
+      :src="`https://static.spythere.eu/images/${vehicleName}--300px.jpg`"
     />
 
     <div v-if="imageState == 'error'" class="error-placeholder"></div>
 
     <div class="vehicle-name">
-      {{ tooltipStore.content.replace(/_/g, ' ') }}
+      {{ vehicleName.replace(/_/g, ' ') }}
+      <span v-if="vehicleCargo">({{ vehicleCargo.id }})</span>
+    </div>
+
+    <div class="vehicle-props" v-if="vehicleData">
+      {{ vehicleData.group.speed }}km/h &bull; {{ vehicleData.group.length }}m &bull;
+      {{ (vehicleData.group.weight / 1000).toFixed(1) }}t
+      <span v-if="vehicleCargo">(+{{ (vehicleCargo.weight / 1000).toFixed(1) }}t)</span>
     </div>
   </div>
 </template>
@@ -27,11 +34,13 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { useTooltipStore } from '../../store/tooltipStore';
+import { useApiStore } from '../../store/apiStore';
 
 export default defineComponent({
   data() {
     return {
       tooltipStore: useTooltipStore(),
+      apiStore: useApiStore(),
       imageState: 'loading'
     };
   },
@@ -56,6 +65,34 @@ export default defineComponent({
 
       (e.target as HTMLElement).style.display = 'none';
     }
+  },
+
+  computed: {
+    vehicleName() {
+      return this.tooltipStore.content.split(':')[0];
+    },
+
+    vehicleData() {
+      return this.apiStore.vehiclesData?.find((v) => v.name == this.vehicleName);
+    },
+
+    vehicleCargo() {
+      return this.vehicleData?.group.cargoTypes?.find(
+        (c) => c.id == this.tooltipStore.content.split(':')[1]
+      );
+    }
+
+    // vehicleProps() {
+    //   const vehicleDataArray = this.apiStore.vehiclesData?.vehicleList.find(
+    //     ([name]) => name === this.vehicleName
+    //   );
+
+    //   if (!vehicleDataArray) return null;
+
+    //   return (
+    //     this.apiStore.vehiclesData!.vehicleProps.find((v) => v.type == vehicleDataArray[1]) ?? null
+    //   );
+    // }
   }
 });
 </script>
@@ -85,8 +122,11 @@ img {
 .vehicle-name {
   text-align: center;
   margin-top: 0.5em;
-  color: #ccc;
   text-wrap: wrap;
+}
+
+.vehicle-props {
+  color: #ccc;
 }
 
 .error-placeholder {

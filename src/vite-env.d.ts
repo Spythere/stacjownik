@@ -6,8 +6,10 @@ declare module '*.vue' {
   export default component;
 }
 interface ImportMetaEnv {
-  readonly VITE_APP_API_DEV: string;
-  readonly VITE_APP_WS_DEV: string;
+  readonly VITE_API_MODE: 'production' | 'mocking' | 'development';
+  readonly VITE_API_VEHICLES_MODE: 'production' | 'mocking' | 'development';
+  readonly VITE_API_ACTIVE_DATA_MODE: 'production' | 'mocking' | 'development';
+  readonly VITE_UPDATE_TEST: 'test' | 'production';
 }
 
 interface ImportMeta {

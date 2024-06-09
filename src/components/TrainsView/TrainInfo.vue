@@ -131,6 +131,18 @@
         <div>
           <img src="/images/icon-speed.svg" alt="speed icon" />
           {{ train.speed }} km/h
+
+          <span v-if="stockSpeedLimit != Infinity">
+            &bull;
+            <em
+              class="text--grayed"
+              style="text-decoration: underline dotted"
+              tabindex="0"
+              :data-tooltip="$t('trains.vmax-tooltip')"
+            >
+              {{ stockSpeedLimit }} km/h
+            </em>
+          </span>
         </div>
       </div>
 
@@ -189,6 +201,18 @@ export default defineComponent({
       store: useMainStore(),
       apiStore: useApiStore()
     };
+  },
+
+  computed: {
+    stockSpeedLimit() {
+      return this.train.stockList.reduce((acc, stockName) => {
+        const vehicleSpeed =
+          this.apiStore.vehiclesData?.find((v) => v.name == stockName.split(':')[0])?.group.speed ??
+          300;
+
+        return Math.min(vehicleSpeed, acc);
+      }, 300);
+    }
   },
 
   methods: {

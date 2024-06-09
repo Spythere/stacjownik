@@ -1,11 +1,7 @@
-.scenery-table-section {
-  position: relative;
-  height: 100%;
-  overflow-y: scroll;
-}
-
 table.scenery-history-table {
   width: 100%;
+  table-layout: fixed;
+  min-width: 900px;
   border-collapse: collapse;
 
   thead {
@@ -25,7 +21,7 @@ table.scenery-history-table {
 
   td {
     padding: 0.75em;
-    border-bottom: solid 5px #111;
+    border-bottom: solid 5px #181818;
   }
 }
 
