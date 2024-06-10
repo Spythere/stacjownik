@@ -213,7 +213,10 @@ export default defineComponent({
     const mainStore = useMainStore();
 
     const chosenCheckpoint = ref(
-      props.station?.generalInfo?.checkpoints[0] ?? props.station?.name ?? ''
+      props.station?.generalInfo?.checkpoints[0] ??
+        props.station?.name ??
+        route.query['station']?.toString() ??
+        ''
     );
 
     return {
@@ -233,8 +236,9 @@ export default defineComponent({
     },
 
     sceneryTimetables(): SceneryTimetableRow[] {
-      if (!this.station) return [];
       if (!this.onlineScenery) return [];
+
+      const sceneryName = this.$route.query['station']?.toString() ?? '';
 
       return this.onlineScenery.scheduledTrains
         .filter(
@@ -247,7 +251,7 @@ export default defineComponent({
           const trainStopStatus = getTrainStopStatus(
             ct.checkpointStop,
             ct.train.currentStationName,
-            this.station!.name
+            sceneryName
           );
 
           const trainStopIndex =
