@@ -251,7 +251,7 @@ export default defineComponent({
           const trainStopStatus = getTrainStopStatus(
             ct.checkpointStop,
             ct.train.currentStationName,
-            sceneryName
+            sceneryName.replace(/_/g, ' ')
           );
 
           const trainStopIndex =
