@@ -1,83 +1,26 @@
 <template>
   <div class="stock-list">
-    <div v-if="tractionOnly">
-      <p>
-        {{ computedStockList[0].split(':')[0].split('_').splice(0, 2).join(' ') }}
-        {{ computedStockList[0].split(':')[1] }}
-      </p>
-
-      <img
-        class="traction-only"
-        :src="
-          getVehicleThumbnailURL(
-            computedStockList[0].split(':')[0],
-            /^EN/.test(computedStockList[0]) ? 'rb' : ''
-          )
-        "
-        @error="onImageError($event, computedStockList[0])"
-        width="300"
-        height="60"
-      />
-    </div>
-
-    <ul v-else>
-      <li v-for="(stockName, i) in computedStockList" :key="i">
-        <p>
-          {{ stockName.split(':')[0].split('_').splice(0, 3).join(' ') }}
-          <div v-if="stockName.split(':')[1]">({{ stockName.split(':')[1] }})</div>
-        </p>
+    <ul>
+      <li
+        v-for="({ vehicleName, vehicleCargo, images, imagesFallbacks }, i) in thumbnailNames"
+        :key="i"
+      >
+        <div class="stock-text">
+          <p>{{ vehicleName.replace(/_/g, ' ') }}</p>
+          <small v-if="vehicleCargo">({{ vehicleCargo }})</small>
+        </div>
 
         <span>
           <img
-            :data-mouseover="stockName"
+            v-for="(thumbnailImage, imageIndex) in images"
+            :data-mouseover="vehicleName"
             data-tooltip-type="VehiclePreviewTooltip"
-            :data-tooltip-content="stockName"
-            :src="
-              getVehicleThumbnailURL(stockName.split(':')[0], /^EN/.test(stockName) ? 'rb' : '')
-            "
-            @error="onImageError($event, stockName)"
+            :data-tooltip-content="vehicleName"
+            :src="`https://static.spythere.eu/thumbnails/${thumbnailImage}.png`"
+            @error="onImageError($event, imagesFallbacks[imageIndex])"
             @click.stop="() => {}"
-            width="400"
             height="60"
           />
-
-          <!-- /// Manualne dodawanie miniaturek członów dla kibelków /// -->
-          <img
-            :data-mouseover="stockName"
-            data-tooltip-type="VehiclePreviewTooltip"
-            :data-tooltip-content="stockName.split(':')[0]"
-            v-if="/^(EN|2EN)/.test(stockName)"
-            :src="getVehicleThumbnailURL(stockName, 's')"
-            @error="
-              (event) => ((event.target as HTMLImageElement).src = '/images/icon-loco-ezt-s.png')
-            "
-            @click.stop="() => {}"
-          />
-
-          <img
-            :data-mouseover="stockName"
-            data-tooltip-type="VehiclePreviewTooltip"
-            :data-tooltip-content="stockName.split(':')[0]"
-            v-if="/^EN71/.test(stockName)"
-            :src="getVehicleThumbnailURL(stockName, 's')"
-            @error="
-              (event) => ((event.target as HTMLImageElement).src = '/images/icon-loco-ezt-s.png')
-            "
-            @click.stop="() => {}"
-          />
-
-          <img
-            :data-mouseover="stockName"
-            data-tooltip-type="VehiclePreviewTooltip"
-            :data-tooltip-content="stockName.split(':')[0]"
-            v-if="/^(EN|2EN)/.test(stockName)"
-            :src="getVehicleThumbnailURL(stockName, 'ra')"
-            @error="
-              (event) => ((event.target as HTMLImageElement).src = '/images/icon-loco-ezt-ra.png')
-            "
-            @click.stop="() => {}"
-          />
-          <!-- ///  -->
         </span>
       </li>
     </ul>
@@ -109,32 +52,116 @@ export default defineComponent({
   computed: {
     computedStockList() {
       return this.tractionOnly ? this.trainStockList.slice(0, 1) : this.trainStockList;
+    },
+
+    thumbnailNames() {
+      return (this.tractionOnly ? this.trainStockList.slice(0, 1) : this.trainStockList)
+        .filter((v) => v.length != 0)
+        .map((vehicleString) => {
+          const [vehicleName, vehicleCargo] = vehicleString.split(':');
+
+          const vehicleThumbnailData = {
+            images: [] as string[],
+            imagesFallbacks: [] as string[],
+            vehicleName,
+            vehicleCargo
+          };
+
+          // Generowanie członów EN57
+          if (vehicleName.startsWith('EN57')) {
+            vehicleThumbnailData['images'] = [
+              vehicleName + 'ra',
+              vehicleName + 's',
+              vehicleName + 'rb'
+            ];
+            vehicleThumbnailData['imagesFallbacks'] = [
+              'unknown_ezt-ra',
+              'unknown_ezt-s',
+              'unknown_ezt-rb'
+            ];
+          }
+          // Generowanie członów EN71
+          else if (vehicleName.startsWith('EN71')) {
+            vehicleThumbnailData['images'] = [
+              vehicleName + 'ra',
+              vehicleName + 'sa',
+              vehicleName + 'sb',
+              vehicleName + 'rb'
+            ];
+            vehicleThumbnailData['imagesFallbacks'] = [
+              'unknown_ezt-ra',
+              'unknown_ezt-sa',
+              'unknown_ezt-sb',
+              'unknown_ezt-rb'
+            ];
+          }
+          // Generowanie pojazdów i członów 2EN57
+          else if (vehicleString.startsWith('2EN57')) {
+            const [firstVehicleNumber, secondVehicleNumber] = vehicleString
+              .replace('2EN57-', '')
+              .split('+');
+
+            vehicleThumbnailData['images'] = [
+              `EN57-${firstVehicleNumber}ra`,
+              `EN57-${firstVehicleNumber}s`,
+              `EN57-${firstVehicleNumber}rb`,
+              `EN57-${secondVehicleNumber}ra`,
+              `EN57-${secondVehicleNumber}s`,
+              `EN57-${secondVehicleNumber}rb`
+            ];
+
+            vehicleThumbnailData['imagesFallbacks'] = [
+              'unknown_ezt-ra',
+              'unknown_ezt-s',
+              'unknown_ezt-rb',
+              'unknown_ezt-ra',
+              'unknown_ezt-s',
+              'unknown_ezt-rb'
+            ];
+          }
+          // Generowanie członów Gor77
+          else if (vehicleString.startsWith('Gor77')) {
+            vehicleThumbnailData['images'] = [
+              vehicleName + '-A',
+              vehicleName + '-B',
+              vehicleName + '-C',
+              vehicleName + '-D'
+            ];
+            vehicleThumbnailData['imagesFallbacks'] = [
+              'unknown_Gor77-A',
+              'unknown_Gor77-B',
+              'unknown_Gor77-C',
+              'unknown_Gor77-D'
+            ];
+          }
+          // Generowanie członów ET41
+          else if (vehicleString.startsWith('ET41')) {
+            vehicleThumbnailData['images'] = [vehicleName + '-A', vehicleName + '-B'];
+            vehicleThumbnailData['imagesFallbacks'] = ['unknown_ET41-A', 'unknown_ET41-B'];
+          }
+          // Generowanie pozostałych pojazdów
+          else {
+            let fallbackVehicleImage = 'unknown_cargo';
+
+            if (/^(EP|EU)/.test(vehicleName)) fallbackVehicleImage = 'unknown_train';
+            else if (/^(SM42)/.test(vehicleName)) fallbackVehicleImage = 'unknown_SM42';
+            else if (/(\d{3}a|(Bau|Gor)\d{2}|304C)_/.test(vehicleName))
+              fallbackVehicleImage = 'unknown_passenger';
+
+            vehicleThumbnailData['images'] = [vehicleName];
+            vehicleThumbnailData['imagesFallbacks'] = [fallbackVehicleImage];
+          }
+
+          if (this.tractionOnly) vehicleThumbnailData['images'].length = 1;
+
+          return vehicleThumbnailData;
+        });
     }
   },
 
   methods: {
-    getVehicleThumbnailURL(locoType: string, suffix?: string) {
-      return `https://static.spythere.eu/thumbnails/${locoType}${suffix}.png`;
-    },
-
-    onImageError(event: Event, stockName: string) {
-      let fallbackName = '';
-
-      const isLoco = /.-\d{3}/.test(stockName);
-
-      if (isLoco) {
-        if (/^\d?EN\d{2}/.test(stockName)) fallbackName = 'loco-ezt';
-        else if (/^SN\d{2}/.test(stockName)) fallbackName = 'loco-szt';
-        else if (/^\d{0,}?E/.test(stockName)) fallbackName = 'loco-e';
-        else fallbackName = 'loco-s';
-      } else {
-        const isCarPassenger = /(\d{3}a|(Bau|Gor)\d{2}|304C)_/.test(stockName);
-
-        fallbackName += 'car-';
-        fallbackName += isCarPassenger ? 'passenger' : 'cargo';
-      }
-
-      (event.target as HTMLImageElement).src = `/images/icon-${fallbackName}.png`;
+    onImageError(event: Event, fallbackImage: string) {      
+      (event.target as HTMLImageElement).src = `/images/${fallbackImage}.png`;
     }
   }
 });
@@ -170,10 +197,10 @@ img.traction-only {
   max-width: 100%;
 }
 
-p {
+.stock-text {
   text-align: center;
   color: #aaa;
-  font-size: 0.95em;
-  margin-bottom: 1em;
+  font-size: 0.9em;
+  margin-bottom: 0.25em;
 }
 </style>

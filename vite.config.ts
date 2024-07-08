@@ -34,19 +34,6 @@ export default defineConfig({
               }
             }
           },
-          {
-            urlPattern: /^https:\/\/static.spythere.eu\/.*/i,
-            handler: 'StaleWhileRevalidate',
-            options: {
-              cacheName: 'spythere-static-cache',
-              cacheableResponse: {
-                statuses: [0, 200]
-              },
-              expiration: {
-                maxEntries: 100
-              }
-            }
-          }
         ]
       },
       devOptions: {
