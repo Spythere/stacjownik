@@ -16,7 +16,7 @@
             :data-mouseover="vehicleName"
             data-tooltip-type="VehiclePreviewTooltip"
             :data-tooltip-content="vehicleName"
-            :src="`https://static.spythere.eu/thumbnails/${thumbnailImage}.png`"
+            :src="`https://static.spythere.eu/thumbnails/v2/${thumbnailImage}.png`"
             @error="onImageError($event, imagesFallbacks[imageIndex])"
             @click.stop="() => {}"
             height="60"
