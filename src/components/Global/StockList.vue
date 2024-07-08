@@ -6,7 +6,7 @@
         :key="i"
       >
         <div class="stock-text">
-          <p>{{ vehicleName }}</p>
+          <p>{{ vehicleName.replace(/_/g, ' ') }}</p>
           <small v-if="vehicleCargo">({{ vehicleCargo }})</small>
         </div>
 
