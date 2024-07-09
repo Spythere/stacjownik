@@ -96,7 +96,17 @@ export const useMainStore = defineStore('mainStore', {
                   followingStops: timetable.stopList,
                   routeDistance: timetable.stopList[timetable.stopList.length - 1].stopDistance,
                   sceneries: timetable.sceneries,
-                  sceneryNames: sceneryNames.reverse()
+                  sceneryNames: sceneryNames.reverse(),
+                  timetablePath: timetable.path.split(';').map((pathElementString) => {
+                    const [arrival, station, departure] = pathElementString.split(',');
+
+                    return {
+                      arrivalRouteExt: arrival,
+                      departureRouteExt: departure,
+                      stationName: station.split(' ').slice(0, -1).join(' '),
+                      stationHash: station.split(' ').slice(-1).join(' ')
+                    };
+                  })
                 }
               : undefined
           } as Train;
@@ -110,21 +120,39 @@ export const useMainStore = defineStore('mainStore', {
           } else sceneriesTrains.set(train.currentStationName, [trainObj]);
 
           // Checkpoints trains map
-          timetable?.stopList.forEach((stop, i) => {
-            if (/strong|podg\.|pe\./.test(stop.stopName)) {
-              const checkpointTrain: CheckpointTrain = {
-                train: trainObj,
-                checkpointStop: stop
-              };
+          if (trainObj.timetableData) {
+            let currentSceneryIndex = 0;
+            const timetablePath = trainObj.timetableData.timetablePath;
 
-              if (checkpointsTrains.has(stop.stopNameRAW.toLowerCase())) {
-                checkpointsTrains.set(stop.stopNameRAW.toLowerCase(), [
-                  ...checkpointsTrains.get(stop.stopNameRAW.toLowerCase())!,
-                  checkpointTrain
-                ]);
-              } else checkpointsTrains.set(stop.stopNameRAW.toLowerCase(), [checkpointTrain]);
-            }
-          });
+            trainObj.timetableData.followingStops.forEach((stop, i) => {
+              if (/strong|podg\.|pe\./.test(stop.stopName)) {
+                const checkpointTrain: CheckpointTrain = {
+                  train: trainObj,
+                  checkpointStop: stop,
+
+                  previousSceneryElement:
+                    currentSceneryIndex > 0 ? timetablePath[currentSceneryIndex - 1] : null,
+
+                  nextSceneryElement:
+                    currentSceneryIndex < timetablePath.length - 1
+                      ? timetablePath[currentSceneryIndex + 1]
+                      : null,
+
+                  timetablePathElement: timetablePath[currentSceneryIndex]
+                };
+
+                if (checkpointsTrains.has(stop.stopNameRAW.toLowerCase())) {
+                  checkpointsTrains.set(stop.stopNameRAW.toLowerCase(), [
+                    ...checkpointsTrains.get(stop.stopNameRAW.toLowerCase())!,
+                    checkpointTrain
+                  ]);
+                } else checkpointsTrains.set(stop.stopNameRAW.toLowerCase(), [checkpointTrain]);
+              }
+
+              if (timetablePath[currentSceneryIndex].departureRouteExt == stop.departureLine)
+                currentSceneryIndex++;
+            });
+          }
 
           return trainObj;
         });
@@ -252,8 +280,10 @@ export const useMainStore = defineStore('mainStore', {
 
           if (!scheduledTrains) return;
 
-          scheduledTrains.forEach(({ train, checkpointStop }) => {
-            scenery.scheduledTrains.push({ train, checkpointStop });
+          scheduledTrains.forEach(({ train, checkpointStop, timetablePathElement, ...v }) => {
+            if (scenery.name != timetablePathElement.stationName) return;
+
+            scenery.scheduledTrains.push({ train, checkpointStop, timetablePathElement, ...v });
 
             if (uniqueTrainIds.includes(train.id) || train.region != this.region.id) return;
 

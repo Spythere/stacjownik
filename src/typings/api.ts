@@ -195,6 +195,8 @@ export namespace API {
       TWR: boolean;
       SKR: boolean;
       sceneries: string[];
+      
+      path: string;
     }
   }
 

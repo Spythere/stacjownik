@@ -39,6 +39,13 @@ export interface RegionCounters {
   timetablesCount: number;
 }
 
+export interface TimetablePathElement {
+  arrivalRouteExt?: string;
+  departureRouteExt?: string;
+  stationName: string;
+  stationHash: string;
+}
+
 export interface Train {
   id: string;
   modalId: string;
@@ -73,6 +80,7 @@ export interface Train {
     routeDistance: number;
     sceneries: string[];
     sceneryNames: string[];
+    timetablePath: TimetablePathElement[];
   };
 }
 
@@ -188,6 +196,9 @@ export interface TrainStop {
 export interface CheckpointTrain {
   checkpointStop: TrainStop;
   train: Train;
+  timetablePathElement: TimetablePathElement;
+  previousSceneryElement: TimetablePathElement | null;
+  nextSceneryElement: TimetablePathElement | null;
 }
 
 // Vehicles Data
