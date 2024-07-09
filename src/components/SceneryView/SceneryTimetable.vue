@@ -238,11 +238,12 @@ export default defineComponent({
     sceneryTimetables(): SceneryTimetableRow[] {
       if (!this.onlineScenery) return [];
 
-      const sceneryName = this.$route.query['station']?.toString() ?? '';
+      const sceneryName = this.$route.query['station']?.toString().replace(/_/g, ' ') ?? '';
 
       return this.onlineScenery.scheduledTrains
         .filter(
           (ct) =>
+            ct.timetablePathElement.stationName == sceneryName &&
             ct.train.region == this.mainStore.region.id &&
             this.chosenCheckpoint &&
             ct.checkpointStop.stopNameRAW.toLowerCase() == this.chosenCheckpoint.toLowerCase()
@@ -251,75 +252,18 @@ export default defineComponent({
           const trainStopStatus = getTrainStopStatus(
             ct.checkpointStop,
             ct.train.currentStationName,
-            sceneryName.replace(/_/g, ' ')
+            sceneryName
           );
-
-          const trainStopIndex =
-            ct.train.timetableData?.followingStops.findIndex(
-              (stop) => stop.stopName == ct.checkpointStop.stopName
-            ) ?? -1;
-
-          let prevStationName = '',
-            nextStationName = '';
-
-          let departureLine: string | null = null;
-          let arrivingLine: string | null = null;
-
-          let prevDepartureLine: string | null = null,
-            nextArrivalLine: string | null = null;
-
-          if (trainStopIndex > -1 && ct.train.timetableData?.followingStops !== undefined) {
-            for (let i = trainStopIndex; i >= 0; i--) {
-              const stop = ct.train.timetableData.followingStops[i];
-
-              if (
-                /strong|podg\.|pe\./g.test(stop.stopName) &&
-                !prevStationName &&
-                i <= trainStopIndex - 1
-              )
-                prevStationName = stop.stopNameRAW.replace(/,.*/g, '');
-
-              if (
-                stop.arrivalLine != null &&
-                !arrivingLine &&
-                !/-|_|it|sbl/gi.test(stop.arrivalLine)
-              ) {
-                arrivingLine = stop.arrivalLine;
-                prevDepartureLine =
-                  ct.train.timetableData.followingStops[i - 1]?.departureLine || null;
-              }
-            }
-
-            for (let i = trainStopIndex; i < ct.train.timetableData.followingStops.length; i++) {
-              const stop = ct.train.timetableData.followingStops[i];
-
-              if (
-                /strong|podg\.|pe\./g.test(stop.stopName) &&
-                !nextStationName &&
-                i > trainStopIndex
-              )
-                nextStationName = stop.stopNameRAW.replace(/,.*/g, '');
-
-              if (
-                stop.departureLine &&
-                !departureLine &&
-                !/-|_|it|sbl/gi.test(stop.departureLine)
-              ) {
-                departureLine = stop.departureLine;
-                nextArrivalLine = ct.train.timetableData.followingStops[i + 1]?.arrivalLine || null;
-              }
-            }
-          }
 
           return {
             checkpointStop: ct.checkpointStop,
             train: ct.train,
-            prevDepartureLine,
-            nextArrivalLine,
-            departureLine,
-            arrivingLine,
-            prevStationName,
-            nextStationName,
+            prevDepartureLine: ct.previousSceneryElement?.departureRouteExt ?? null,
+            nextArrivalLine: ct.nextSceneryElement?.arrivalRouteExt ?? null,
+            departureLine: ct.timetablePathElement.departureRouteExt ?? null,
+            arrivingLine: ct.timetablePathElement.arrivalRouteExt ?? null,
+            prevStationName: ct.previousSceneryElement?.stationName ?? null,
+            nextStationName: ct.nextSceneryElement?.stationName ?? null,
             status: trainStopStatus
           };
         })
