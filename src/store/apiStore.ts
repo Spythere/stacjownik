@@ -51,6 +51,12 @@ export const useApiStore = defineStore('apiStore', {
       // Static data
       this.fetchDonatorsData();
       this.fetchStationsGeneralInfo();
+
+      // Ponowne pobieranie danych po ServiceWorkerze
+      setTimeout(() => {
+        this.fetchStationsGeneralInfo();
+      }, Math.floor(Math.random() * 500) + 1000);
+
       this.fetchVehiclesInfo();
     },
 
