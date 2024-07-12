@@ -125,7 +125,7 @@ export const useMainStore = defineStore('mainStore', {
             const timetablePath = trainObj.timetableData.timetablePath;
 
             trainObj.timetableData.followingStops.forEach((stop, i) => {
-              if (/strong|podg\.|pe\./.test(stop.stopName)) {
+              if (/strong|podg|pe/.test(stop.stopName)) {
                 const checkpointTrain: CheckpointTrain = {
                   train: trainObj,
                   checkpointStop: stop,
