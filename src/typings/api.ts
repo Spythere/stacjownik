@@ -195,7 +195,7 @@ export namespace API {
       TWR: boolean;
       SKR: boolean;
       sceneries: string[];
-      
+
       path: string;
     }
   }
@@ -251,16 +251,14 @@ export namespace API {
       hashesString?: string;
       currentSceneryName?: string;
       currentSceneryHash?: string;
-
       routeSceneries?: string;
-
       checkpointArrivals?: string[];
       checkpointDepartures?: string[];
-
       checkpointArrivalsScheduled?: string[];
       checkpointDeparturesScheduled?: string[];
-
       checkpointStopTypes?: string[];
+      visitedSceneries?: string[];
+      path: string;
     }
 
     export type Response = Data[];

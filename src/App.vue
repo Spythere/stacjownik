@@ -131,7 +131,8 @@ export default defineComponent({
         };
 
         this.isUpdateCardOpen =
-          storageVersion != version || import.meta.env.VITE_UPDATE_TEST === 'test';
+          (storageVersion != '' && storageVersion != version) ||
+          import.meta.env.VITE_UPDATE_TEST === 'test';
       } catch (error) {
         console.error(`Wystąpił błąd podczas pobierania danych z API GitHuba: ${error}`);
       }

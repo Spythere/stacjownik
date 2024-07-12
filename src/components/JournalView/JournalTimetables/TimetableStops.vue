@@ -1,23 +1,41 @@
 <template>
-  <div class="stop-list" v-if="showExtraInfo == true">
-    <span
-      v-for="(stop, i) in timetableStops.filter((_, i) =>
-        !showExtraInfo ? i == 0 || i == timetableStops.length - 1 : true
-      )"
-      class="stop-list-item"
-      :key="stop.stopName"
-      :data-confirmed="stop.confirmed"
-    >
-      <span v-if="i > 0">
-        &gt;
-        <span v-if="!showExtraInfo && i == 1 && timetableStops.length > 2">
-          ... (+{{ timetableStops.length - 2 }}) &gt;
+  <div class="timetable-stops">
+    <div class="stop-list">
+      <span
+        v-for="(stop, i) in timetableStops.filter((_, i) =>
+          !showExtraInfo ? i == 0 || i == timetableStops.length - 1 : true
+        )"
+        class="stop-list-item"
+        :key="stop.stopName"
+        :data-confirmed="stop.confirmed"
+      >
+        <span v-if="i > 0">
+          &gt;
+          <span v-if="!showExtraInfo && i == 1 && timetableStops.length > 2">
+            ... (+{{ timetableStops.length - 2 }}) &gt;
+          </span>
+        </span>
+
+        <span class="stop-name">{{ stop.stopName }}</span>
+        <span v-html="stop.html"></span>
+      </span>
+    </div>
+
+    <div class="path-details" v-if="showExtraInfo && timetablePathDetails">
+      <span
+        v-for="(pathData, i) in timetablePathDetails"
+        :data-visited="pathData.isVisited"
+        :data-next-visited="
+          i < timetablePathDetails.length - 1 && timetablePathDetails[i + 1].isVisited
+        "
+      >
+        <span class="path-arrival" v-if="pathData.arrival">/ {{ pathData.arrival }} &RightArrow; </span>
+        <b class="path-scenery">{{ pathData.sceneryName }}</b>
+        <span class="path-departure" v-if="pathData.departure">
+          &RightArrow; {{ pathData.departure }}&nbsp;
         </span>
       </span>
-
-      <span class="stop-name">{{ stop.stopName }}</span>
-      <span v-html="stop.html"></span>
-    </span>
+    </div>
   </div>
 </template>
 
@@ -42,6 +60,24 @@ export default defineComponent({
   },
 
   computed: {
+    timetablePathDetails() {
+      if (!this.timetable.path || this.timetable.path == '') return null;
+
+      return this.timetable.path.split(';').map((pathEl, i) => {
+        const [arrival, name, departure] = pathEl.split(',');
+        const sceneryName = name.split(' ').slice(0, -1).join(' ');
+        const sceneryHash = name.split(' ').pop()?.replace('.sc', '') ?? '';
+
+        return {
+          arrival,
+          sceneryName,
+          sceneryHash,
+          departure,
+          isVisited: this.timetable.visitedSceneries?.includes(sceneryHash) ?? false
+        };
+      });
+    },
+
     timetableStops() {
       const timetable = this.timetable;
 
@@ -94,19 +130,35 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.stop-list {
+.timetable-stops {
   word-wrap: break-word;
   gap: 0.25em;
   font-size: 0.95em;
-
   color: #adadad;
+}
 
+.stop-list {
   &-item[data-confirmed='true'] {
     color: lightgreen;
 
     .stop-name {
       font-weight: bold;
     }
+  }
+}
+
+.path-details {
+  margin-top: 0.5em;
+}
+
+.path-details > span[data-visited='true'] {
+  .path-arrival,
+  .path-scenery {
+    color: lightgreen;
+  }
+
+  &[data-next-visited='true'] .path-departure {
+    color: lightgreen;
   }
 }
 </style>
