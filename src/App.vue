@@ -81,9 +81,7 @@ export default defineComponent({
     isUpdateCardOpen: false,
 
     currentLang: 'pl',
-    isOnProductionHost: location.hostname == 'stacjownik-td2.web.app',
-
-    nextUpdateTime: 0
+    isOnProductionHost: location.hostname == 'stacjownik-td2.web.app'
   }),
 
   created() {
@@ -96,22 +94,13 @@ export default defineComponent({
 
   methods: {
     init() {
+      if (!this.isOnProductionHost) document.title = 'Stacjownik Dev';
+
       this.loadLang();
       this.setupOfflineHandling();
       this.checkAppVersion();
 
       this.apiStore.setupAPIData();
-      window.requestAnimationFrame(this.update);
-
-      if (!this.isOnProductionHost) document.title = 'Stacjownik Dev';
-    },
-
-    update(t: number) {
-      if (t >= this.nextUpdateTime) {
-        this.apiStore.fetchActiveData();
-        this.nextUpdateTime = t + 20000;
-      }
-      window.requestAnimationFrame(this.update);
     },
 
     async checkAppVersion() {
@@ -131,7 +120,7 @@ export default defineComponent({
         };
 
         this.isUpdateCardOpen =
-          (storageVersion != '' && storageVersion != version) ||
+          (storageVersion != '' && storageVersion != version && this.isOnProductionHost) ||
           import.meta.env.VITE_UPDATE_TEST === 'test';
       } catch (error) {
         console.error(`Wystąpił błąd podczas pobierania danych z API GitHuba: ${error}`);
@@ -158,6 +147,7 @@ export default defineComponent({
 
     handleOnlineMode() {
       this.store.isOffline = false;
+      this.apiStore.dataStatuses.connection = Status.Data.Loading;
 
       this.apiStore.connectToAPI();
     },
