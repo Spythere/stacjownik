@@ -11,15 +11,11 @@
         </div>
 
         <span>
-          <img
+          <VehicleThumbnail
             v-for="(thumbnailImage, imageIndex) in images"
-            :data-mouseover="vehicleName"
-            data-tooltip-type="VehiclePreviewTooltip"
-            :data-tooltip-content="vehicleName"
-            :src="`https://static.spythere.eu/thumbnails/v2/${thumbnailImage}.png`"
-            @error="onImageError($event, imagesFallbacks[imageIndex])"
-            @click.stop="() => {}"
-            height="60"
+            :vehicle-name="vehicleName"
+            :img-name="thumbnailImage"
+            :fallback-name="imagesFallbacks[imageIndex]"
           />
         </span>
       </li>
@@ -30,8 +26,11 @@
 <script lang="ts">
 import { PropType, defineComponent } from 'vue';
 import { useApiStore } from '../../store/apiStore';
+import VehicleThumbnail from './VehicleThumbnail.vue';
 
 export default defineComponent({
+  components: { VehicleThumbnail },
+
   props: {
     trainStockList: {
       type: Array as PropType<string[]>,
@@ -143,7 +142,7 @@ export default defineComponent({
           else {
             let fallbackVehicleImage = 'unknown_cargo';
 
-            if (/^(EP|EU)/.test(vehicleName)) fallbackVehicleImage = 'unknown_train';
+            if (/^(EP|EU|ET|201E)/.test(vehicleName)) fallbackVehicleImage = 'unknown_train';
             else if (/^(SM42)/.test(vehicleName)) fallbackVehicleImage = 'unknown_SM42';
             else if (/(\d{3}a|(Bau|Gor)\d{2}|304C)_/.test(vehicleName))
               fallbackVehicleImage = 'unknown_passenger';
@@ -160,7 +159,7 @@ export default defineComponent({
   },
 
   methods: {
-    onImageError(event: Event, fallbackImage: string) {      
+    onImageError(event: Event, fallbackImage: string) {
       (event.target as HTMLImageElement).src = `/images/${fallbackImage}.png`;
     }
   }
