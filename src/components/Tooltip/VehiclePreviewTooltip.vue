@@ -50,7 +50,7 @@ export default defineComponent({
   },
 
   watch: {
-    'tooltipStore.type'(prev, val) {
+    vehicleName(prev, val) {
       if (prev != val) this.imageState = 'loading';
     }
   },
@@ -81,18 +81,6 @@ export default defineComponent({
         (c) => c.id == this.tooltipStore.content.split(':')[1]
       );
     }
-
-    // vehicleProps() {
-    //   const vehicleDataArray = this.apiStore.vehiclesData?.vehicleList.find(
-    //     ([name]) => name === this.vehicleName
-    //   );
-
-    //   if (!vehicleDataArray) return null;
-
-    //   return (
-    //     this.apiStore.vehiclesData!.vehicleProps.find((v) => v.type == vehicleDataArray[1]) ?? null
-    //   );
-    // }
   }
 });
 </script>
