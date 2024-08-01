@@ -27,7 +27,6 @@ const props = defineProps({
 
 const imgRef = ref(null) as Ref<HTMLElement | null>;
 
-// const imgState = ref('loading') as Ref<'loading' | 'loaded' | 'error'>;
 const imgStatus = ref('loading');
 
 function onImageError(event: Event) {
@@ -35,7 +34,6 @@ function onImageError(event: Event) {
 
   (event.target as HTMLImageElement).src = `/images/${props.fallbackName}.png`;
   imgStatus.value = 'error';
-  // imgState.value = 'error';
 }
 
 function onImageLoad() {
