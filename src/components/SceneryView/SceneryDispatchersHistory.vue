@@ -7,7 +7,7 @@
         {{ $t('scenery.history-list-empty') }}
       </div>
 
-      <div v-else class="history-list">
+      <div v-else class="journal-list">
         <div v-for="historyItem in historyList" :key="historyItem.id">
           <span>
             <span class="text--grayed" style="margin-right: 10px">
@@ -165,14 +165,14 @@ export default defineComponent({
   overflow: auto;
 }
 
-.history-list {
+.journal-list {
   display: flex;
   flex-direction: column;
   gap: 0.5em;
   text-align: left;
 }
 
-.history-list > div {
+.journal-list > div {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -195,7 +195,7 @@ export default defineComponent({
 }
 
 @include smallScreen {
-  .history-list > div {
+  .journal-list > div {
     flex-direction: column;
     justify-content: center;
     text-align: center;
