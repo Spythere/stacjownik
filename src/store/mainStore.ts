@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia';
-import { parseSpawns, getScheduledTrains, getStationTrains } from './utils';
+import { parseSpawns } from './utils';
 
 import {
   ActiveScenery,
-  ScheduledTrain,
+  CheckpointTrain,
   Station,
   StationRoutes,
   Status,
@@ -11,6 +11,9 @@ import {
 } from '../typings/common';
 import { useApiStore } from './apiStore';
 import { MainStoreState } from './typings';
+
+const checkpointsTrains: Map<string, CheckpointTrain[]> = new Map();
+const sceneriesTrains: Map<string, Train[]> = new Map();
 
 export const useMainStore = defineStore('mainStore', {
   state: () =>
@@ -36,6 +39,9 @@ export const useMainStore = defineStore('mainStore', {
     trainList(): Train[] {
       const apiStore = useApiStore();
 
+      checkpointsTrains.clear();
+      sceneriesTrains.clear();
+
       return (apiStore.activeData?.trains ?? [])
         .filter((train) => train.timetable || train.online)
         .map((train) => {
@@ -53,8 +59,9 @@ export const useMainStore = defineStore('mainStore', {
                 sceneryHash
             ) ?? [];
 
-          return {
-            trainId: train.driverName + train.trainNo.toString(),
+          const trainObj = {
+            id: train.id,
+            modalId: `${train.driverName}${train.trainNo}`, // simplified id for train modal
 
             trainNo: train.trainNo,
             mass: train.mass,
@@ -89,10 +96,65 @@ export const useMainStore = defineStore('mainStore', {
                   followingStops: timetable.stopList,
                   routeDistance: timetable.stopList[timetable.stopList.length - 1].stopDistance,
                   sceneries: timetable.sceneries,
-                  sceneryNames: sceneryNames.reverse()
+                  sceneryNames: sceneryNames.reverse(),
+                  timetablePath: timetable.path.split(';').map((pathElementString) => {
+                    const [arrival, station, departure] = pathElementString.split(',');
+
+                    return {
+                      arrivalRouteExt: arrival,
+                      departureRouteExt: departure,
+                      stationName: station.split(' ').slice(0, -1).join(' '),
+                      stationHash: station.split(' ').slice(-1).join(' ')
+                    };
+                  })
                 }
               : undefined
           } as Train;
+
+          // Sceneries trains map
+          if (sceneriesTrains.has(train.currentStationName)) {
+            sceneriesTrains.set(train.currentStationName, [
+              ...sceneriesTrains.get(train.currentStationName)!,
+              trainObj
+            ]);
+          } else sceneriesTrains.set(train.currentStationName, [trainObj]);
+
+          // Checkpoints trains map
+          if (trainObj.timetableData) {
+            let currentSceneryIndex = 0;
+            const timetablePath = trainObj.timetableData.timetablePath;
+
+            trainObj.timetableData.followingStops.forEach((stop, i) => {
+              if (/strong|podg|pe/.test(stop.stopName)) {
+                const checkpointTrain: CheckpointTrain = {
+                  train: trainObj,
+                  checkpointStop: stop,
+
+                  previousSceneryElement:
+                    currentSceneryIndex > 0 ? timetablePath[currentSceneryIndex - 1] : null,
+
+                  nextSceneryElement:
+                    currentSceneryIndex < timetablePath.length - 1
+                      ? timetablePath[currentSceneryIndex + 1]
+                      : null,
+
+                  timetablePathElement: timetablePath[currentSceneryIndex]
+                };
+
+                if (checkpointsTrains.has(stop.stopNameRAW.toLowerCase())) {
+                  checkpointsTrains.set(stop.stopNameRAW.toLowerCase(), [
+                    ...checkpointsTrains.get(stop.stopNameRAW.toLowerCase())!,
+                    checkpointTrain
+                  ]);
+                } else checkpointsTrains.set(stop.stopNameRAW.toLowerCase(), [checkpointTrain]);
+              }
+
+              if (timetablePath[currentSceneryIndex].departureRouteExt == stop.departureLine)
+                currentSceneryIndex++;
+            });
+          }
+
+          return trainObj;
         });
     },
 
@@ -131,12 +193,13 @@ export const useMainStore = defineStore('mainStore', {
             dispatcherId: -1,
             dispatcherExp: -1,
             dispatcherIsSupporter: false,
-            scheduledTrains: [],
-            stationTrains: [],
             dispatcherStatus: Status.ActiveDispatcher.FREE,
             dispatcherTimestamp: -1,
 
             isOnline: false,
+
+            stationTrains: [],
+            scheduledTrains: [],
 
             scheduledTrainCount: {
               all: 0,
@@ -177,8 +240,9 @@ export const useMainStore = defineStore('mainStore', {
 
           isOnline: scenery.isOnline == 1,
 
-          scheduledTrains: [],
           stationTrains: [],
+          scheduledTrains: [],
+
           scheduledTrainCount: {
             all: 0,
             confirmed: 0,
@@ -196,37 +260,41 @@ export const useMainStore = defineStore('mainStore', {
 
         const station = this.stationList.find((s) => s.name === scenery.name);
 
-        const scheduledTrains = getScheduledTrains(
-          this.trainList,
-          station?.generalInfo,
-          scenery.name,
-          scenery.region
-        );
+        let checkpointsSet: Set<string> = new Set();
 
-        const stationTrains = getStationTrains(
-          this.trainList,
-          scheduledTrains,
-          this.region.id,
-          scenery.name
-        );
+        // Add checkpoints to active scenery data
+        checkpointsSet.add(scenery.name.toLowerCase());
 
-        // Remove checkpoint duplicates
-        const uniqueScheduledTrains = scheduledTrains.reduce(
-          (uniqueList, sTrain) =>
-            uniqueList.find((v) => v.trainId === sTrain.trainId)
-              ? uniqueList
-              : [...uniqueList, sTrain],
-          [] as ScheduledTrain[]
-        );
+        station?.generalInfo?.checkpoints.forEach((cpName) => {
+          checkpointsSet.add(cpName.toLowerCase());
+        });
 
-        scenery.scheduledTrains = scheduledTrains;
-        scenery.stationTrains = stationTrains;
+        const checkpoints = Array.from(checkpointsSet);
 
-        scenery.scheduledTrainCount = {
-          all: uniqueScheduledTrains.length,
-          confirmed: uniqueScheduledTrains.filter((train) => train.stopInfo.confirmed).length,
-          unconfirmed: uniqueScheduledTrains.filter((train) => !train.stopInfo.confirmed).length
-        };
+        scenery.stationTrains =
+          sceneriesTrains.get(scenery.name)?.filter((sc) => sc.region == this.region.id) ?? [];
+
+        const uniqueTrainIds: string[] = [];
+        checkpoints.forEach((cp) => {
+          const scheduledTrains = checkpointsTrains.get(cp.toLowerCase());
+
+          if (!scheduledTrains) return;
+
+          scheduledTrains.forEach(({ train, checkpointStop, timetablePathElement, ...v }) => {
+            if (scenery.name != timetablePathElement.stationName) return;
+
+            scenery.scheduledTrains.push({ train, checkpointStop, timetablePathElement, ...v });
+
+            if (uniqueTrainIds.includes(train.id) || train.region != this.region.id) return;
+
+            scenery.scheduledTrainCount.all += 1;
+
+            if (checkpointStop.confirmed) scenery.scheduledTrainCount.confirmed++;
+            else scenery.scheduledTrainCount.unconfirmed++;
+
+            uniqueTrainIds.push(train.id);
+          });
+        });
       }
 
       return allActiveSceneries;
@@ -281,7 +349,10 @@ export const useMainStore = defineStore('mainStore', {
             ...scenery,
             authors: scenery.authors?.split(',').map((a) => a.trim()),
             routes: routes,
-            checkpoints: scenery.checkpoints?.split(';') ?? []
+            checkpoints:
+              scenery.checkpoints && scenery.checkpoints.trim().length > 0
+                ? scenery.checkpoints.split(';')
+                : []
           }
         };
       });

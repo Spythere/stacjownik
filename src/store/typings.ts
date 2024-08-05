@@ -1,5 +1,5 @@
 import { API } from '../typings/api';
-import { Availability, StationRoutesInfo, Status } from '../typings/common';
+import { Availability, CheckpointTrain, StationRoutesInfo, Status } from '../typings/common';
 
 export interface MainStoreState {
   region: { id: string; value: string; name: string };

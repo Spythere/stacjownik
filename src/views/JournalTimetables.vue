@@ -17,8 +17,9 @@
         <JournalStats :statsButtons="statsButtons" />
       </div>
 
-      <div class="journal_refreshed-date" v-if="dataRefreshedAt">
-        {{ $t('journal.data-refreshed-at') }}: {{ dataRefreshedAt.toLocaleString($i18n.locale) }}
+      <div class="journal_refreshed-date">
+        {{ $t('journal.data-refreshed-at') }}:
+        {{ dataRefreshedAt?.toLocaleString($i18n.locale) ?? '---' }}
       </div>
 
       <div class="list_wrapper" @scroll="handleScroll">
@@ -125,6 +126,8 @@ interface TimetablesQueryParams {
   dateTo?: string;
 
   issuedFrom?: string;
+  terminatingAt?: string;
+  via?: string;
 
   countFrom?: number;
   countLimit?: number;
@@ -205,6 +208,8 @@ export default defineComponent({
       'search-driver': '',
       'search-dispatcher': '',
       'search-issuedFrom': '',
+      'search-via': '',
+      'search-terminatingAt': '',
       'search-date': ''
     } as Journal.TimetableSearchType);
 
@@ -298,11 +303,17 @@ export default defineComponent({
     },
 
     setOptions(options: { [key: string]: string }) {
-      this.searchersValues['search-date'] = options['search-date'] ?? '';
-      this.searchersValues['search-driver'] = options['search-driver'] ?? '';
-      this.searchersValues['search-train'] = options['search-train'] ?? '';
-      this.searchersValues['search-dispatcher'] = options['search-dispatcher'] ?? '';
-      this.searchersValues['search-issuedFrom'] = options['search-issuedFrom'] ?? '';
+      Object.keys(this.searchersValues).forEach((v) => {
+        this.searchersValues[v as Journal.TimetableSearchKey] = options[v] ?? '';
+      });
+
+      // this.searchersValues['search-date'] = options['search-date'] ?? '';
+      // this.searchersValues['search-driver'] = options['search-driver'] ?? '';
+      // this.searchersValues['search-train'] = options['search-train'] ?? '';
+      // this.searchersValues['search-dispatcher'] = options['search-dispatcher'] ?? '';
+      // this.searchersValues['search-issuedFrom'] = options['search-issuedFrom'] ?? '';
+      // this.searchersValues['search-via'] = options['search-via'] ?? '';
+      // this.searchersValues['search-terminatingAt'] = options['search-terminatingAt'] ?? '';
 
       this.sorterActive.id =
         (options['sorter-active'] as Journal.TimetableSorterKey) ?? 'timetableId';
@@ -346,6 +357,8 @@ export default defineComponent({
       const authorName = this.searchersValues['search-dispatcher'].trim() || undefined;
       const dateFrom = this.searchersValues['search-date'].trim() || undefined;
       const issuedFrom = this.searchersValues['search-issuedFrom'].trim() || undefined;
+      const via = this.searchersValues['search-via'].trim() || undefined;
+      const terminatingAt = this.searchersValues['search-terminatingAt'].trim() || undefined;
 
       let dateTo: string | undefined = undefined;
 
@@ -417,6 +430,10 @@ export default defineComponent({
       queryParams['authorName'] = authorName;
       queryParams['dateFrom'] = dateFrom;
       queryParams['dateTo'] = dateTo;
+      queryParams['issuedFrom'] = issuedFrom;
+      queryParams['terminatingAt'] = terminatingAt;
+      queryParams['via'] = via;
+
       queryParams['issuedFrom'] = issuedFrom;
       queryParams['sortBy'] =
         this.sorterActive.id != 'timetableId' ? this.sorterActive.id : undefined;

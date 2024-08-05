@@ -72,7 +72,7 @@
 
       <div class="info-lists">
         <!-- user list -->
-        <SceneryInfoUserList :onlineScenery="onlineScenery" />
+        <SceneryInfoUserList :onlineScenery="onlineScenery" :station="station" />
 
         <!-- spawn list -->
         <SceneryInfoSpawnList :onlineScenery="onlineScenery" />
@@ -124,11 +124,6 @@ h3.section-header {
   align-items: center;
 
   font-size: 1.2em;
-
-  img {
-    width: 1.1em;
-    margin-left: 0.5em;
-  }
 }
 
 .info-lists {

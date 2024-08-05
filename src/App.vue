@@ -1,8 +1,8 @@
 <template>
   <div class="app_container">
-    <UpdateModal
-      :update-modal-open="isUpdateModalOpen"
-      @toggle-modal="() => (isUpdateModalOpen = false)"
+    <UpdateCard
+      :is-update-card-open="isUpdateCardOpen"
+      @toggle-card="() => (isUpdateCardOpen = false)"
     />
 
     <Tooltip />
@@ -27,7 +27,7 @@
       &copy;
       <a href="https://td2.info.pl/profile/?u=20777" target="_blank">Spythere</a>
       {{ new Date().getUTCFullYear() }} |
-      <button class="btn--text" @click="() => (isUpdateModalOpen = true)">
+      <button class="btn--text" @click="() => (isUpdateCardOpen = true)">
         v{{ VERSION }}{{ isOnProductionHost ? '' : 'dev' }}
       </button>
 
@@ -56,7 +56,7 @@ import StatusIndicator from './components/App/StatusIndicator.vue';
 import AppHeader from './components/App/AppHeader.vue';
 import TrainModal from './components/TrainsView/TrainModal.vue';
 import Tooltip from './components/Tooltip/Tooltip.vue';
-import UpdateModal from './components/App/UpdateModal.vue';
+import UpdateCard from './components/App/UpdateCard.vue';
 
 import StorageManager from './managers/storageManager';
 
@@ -68,7 +68,7 @@ export default defineComponent({
     StatusIndicator,
     AppHeader,
     TrainModal,
-    UpdateModal,
+    UpdateCard,
     Tooltip
   },
 
@@ -78,12 +78,10 @@ export default defineComponent({
     apiStore: useApiStore(),
     tooltipStore: useTooltipStore(),
 
-    isUpdateModalOpen: false,
+    isUpdateCardOpen: false,
 
     currentLang: 'pl',
-    isOnProductionHost: location.hostname == 'stacjownik-td2.web.app',
-
-    nextUpdateTime: 0
+    isOnProductionHost: location.hostname == 'stacjownik-td2.web.app'
   }),
 
   created() {
@@ -96,22 +94,13 @@ export default defineComponent({
 
   methods: {
     init() {
+      if (!this.isOnProductionHost) document.title = 'Stacjownik Dev';
+
       this.loadLang();
       this.setupOfflineHandling();
       this.checkAppVersion();
 
       this.apiStore.setupAPIData();
-      window.requestAnimationFrame(this.update);
-
-      if (!this.isOnProductionHost) document.title = 'Stacjownik Dev';
-    },
-
-    update(t: number) {
-      if (t >= this.nextUpdateTime) {
-        this.apiStore.fetchActiveData();
-        this.nextUpdateTime = t + 20000;
-      }
-      window.requestAnimationFrame(this.update);
     },
 
     async checkAppVersion() {
@@ -130,8 +119,9 @@ export default defineComponent({
           releaseURL: releaseData.html_url
         };
 
-        this.isUpdateModalOpen =
-          storageVersion != version || import.meta.env.VITE_UPDATE_TEST === 'test';
+        this.isUpdateCardOpen =
+          (storageVersion != '' && storageVersion != version && this.isOnProductionHost) ||
+          import.meta.env.VITE_UPDATE_TEST === 'test';
       } catch (error) {
         console.error(`Wystąpił błąd podczas pobierania danych z API GitHuba: ${error}`);
       }
@@ -157,6 +147,7 @@ export default defineComponent({
 
     handleOnlineMode() {
       this.store.isOffline = false;
+      this.apiStore.dataStatuses.connection = Status.Data.Loading;
 
       this.apiStore.connectToAPI();
     },
@@ -180,7 +171,7 @@ export default defineComponent({
 
       const naviLanguage = window.navigator.language.toString();
 
-      if (naviLanguage.includes('en')) {
+      if (naviLanguage.startsWith('en')) {
         this.changeLang('en');
         return;
       }
@@ -210,7 +201,7 @@ export default defineComponent({
   overflow-x: hidden;
 
   @include smallScreen() {
-    font-size: calc(0.65rem + 0.8vw);
+    font-size: calc(0.65rem + 0.85vw);
   }
 
   @include screenLandscape() {
@@ -226,6 +217,7 @@ export default defineComponent({
 
   min-height: 100vh;
   overflow: hidden;
+  position: relative;
 }
 
 .app_main {

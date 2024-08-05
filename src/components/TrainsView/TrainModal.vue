@@ -21,7 +21,7 @@ export default defineComponent({
 
   computed: {
     chosenTrain() {
-      return this.store.trainList.find((train) => train.trainId == this.store.chosenModalTrainId);
+      return this.store.trainList.find((train) => train.modalId == this.store.chosenModalTrainId);
     }
   },
 
@@ -29,8 +29,15 @@ export default defineComponent({
     chosenTrain(train: Train | undefined) {
       this.$nextTick(() => {
         if (train) {
+          document.body.classList.add('no-scroll');
           const contentEl = this.$refs['content'] as HTMLElement;
           contentEl.focus();
+        } else {
+          (this.store.modalLastClickedTarget as any)?.focus();
+
+          setTimeout(() => {
+            document.body.classList.remove('no-scroll');
+          }, 90);
         }
       });
     }
@@ -40,20 +47,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '../../styles/responsive.scss';
-@import '../../styles/card.scss';
-
-.top-info-bar-anim {
-  &-enter-active,
-  &-leave-active {
-    transition: all 150ms ease-in-out;
-  }
-
-  &-enter-from,
-  &-leave-to {
-    transform: translate(-50%, -50%) scale(0.8);
-    opacity: 0;
-  }
-}
 
 .train-modal {
   position: fixed;
@@ -61,12 +54,14 @@ export default defineComponent({
   left: 0;
 
   width: 100%;
+  height: 100%;
 
   color: white;
   z-index: 200;
 
   display: flex;
   justify-content: center;
+  align-items: flex-start;
 
   text-align: left;
 }
@@ -87,10 +82,10 @@ export default defineComponent({
   position: relative;
   overflow-y: scroll;
 
-  margin-top: 1em;
-
   width: 95vw;
   max-height: 95vh;
+  max-height: 95dvh;
+  margin-top: 1em;
 
   background-color: #1a1a1a;
   box-shadow: 0 0 15px 10px #0e0e0e;
@@ -103,12 +98,6 @@ export default defineComponent({
     img {
       width: 1.75rem;
     }
-  }
-}
-
-@include smallScreen {
-  .modal_content {
-    max-height: 85vh;
   }
 }
 </style>

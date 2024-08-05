@@ -7,6 +7,10 @@ export default defineConfig({
     port: 5001,
     open: true
   },
+  preview: {
+    port: 4001,
+    open: true
+  },
   publicDir: 'public',
   plugins: [
     vue(),
@@ -20,43 +24,16 @@ export default defineConfig({
         cleanupOutdatedCaches: true,
         runtimeCaching: [
           {
-            urlPattern: new RegExp('^https://stacjownik.spythere.eu/api/getSceneries', 'i'),
-            handler: 'CacheFirst',
+            urlPattern:
+              /^https:\/\/stacjownik.spythere.eu\/api\/(getVehicles|getDonators|getSceneries)/i,
+            handler: 'StaleWhileRevalidate',
             options: {
-              cacheName: 'spythere-sceneries-cache',
+              cacheName: 'stacjownik-api-cache',
               cacheableResponse: {
                 statuses: [0, 200]
               }
             }
           },
-          {
-            urlPattern: new RegExp('^https://rj.td2.info.pl/dist/img/thumbnails/*', 'i'),
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'swdr-images-cache',
-              expiration: {
-                maxEntries: 100,
-                maxAgeSeconds: 60 * 60 * 24 * 7 // <== 7 days
-              },
-              cacheableResponse: {
-                statuses: [0, 200, 404]
-              }
-            }
-          },
-          {
-            urlPattern: new RegExp('^https://static.spythere.eu/images/*', 'i'),
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'spythere-images-cache',
-              expiration: {
-                maxEntries: 100,
-                maxAgeSeconds: 60 * 60 * 24 * 7 // <== 7 days
-              },
-              cacheableResponse: {
-                statuses: [0, 200]
-              }
-            }
-          }
         ]
       },
       devOptions: {

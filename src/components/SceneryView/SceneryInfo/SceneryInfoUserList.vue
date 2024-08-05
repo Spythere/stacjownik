@@ -13,13 +13,13 @@
       </li>
 
       <li
-        v-for="train in onlineScenery?.stationTrains"
+        v-for="{ train, status } in stationTrains"
         class="badge user"
-        :class="train.stopStatus"
-        :key="train.trainId"
         tabindex="0"
-        @click.prevent="selectModalTrain(train.trainId, $event.currentTarget)"
-        @keydown.enter="selectModalTrain(train.trainId, $event.currentTarget)"
+        :key="train.id"
+        :data-status="status"
+        @click.prevent="selectModalTrain(train, $event.currentTarget)"
+        @keydown.enter="selectModalTrain(train, $event.currentTarget)"
       >
         <span class="user_train">{{ train.trainNo }}</span>
         <span class="user_name">{{ train.driverName }}</span>
@@ -32,7 +32,9 @@
 import { PropType, defineComponent } from 'vue';
 import modalTrainMixin from '../../../mixins/modalTrainMixin';
 import routerMixin from '../../../mixins/routerMixin';
-import { ActiveScenery } from '../../../typings/common';
+import { ActiveScenery, Station, StopStatus } from '../../../typings/common';
+import { getTrainStopStatus } from '../utils';
+import { useMainStore } from '../../../store/mainStore';
 
 export default defineComponent({
   mixins: [routerMixin, modalTrainMixin],
@@ -41,6 +43,40 @@ export default defineComponent({
     onlineScenery: {
       type: Object as PropType<ActiveScenery>,
       required: false
+    },
+    station: {
+      type: Object as PropType<Station>
+    }
+  },
+
+  data() {
+    return {
+      mainStore: useMainStore()
+    };
+  },
+
+  computed: {
+    stationTrains() {
+      if (!this.onlineScenery) return;
+
+      const name = this.station?.generalInfo?.checkpoints[0] ?? this.onlineScenery.name;
+
+      return this.onlineScenery.stationTrains.map((train) => {
+        const stop = train.timetableData?.followingStops.find(
+          (stop) =>
+            stop.stopNameRAW.toLowerCase() == name.toLowerCase() ||
+            this.station?.generalInfo?.checkpoints.includes(stop.stopNameRAW)
+        );
+
+        const status = stop
+          ? getTrainStopStatus(stop, train.currentStationName, this.onlineScenery!.name)
+          : 'no-timetable';
+
+        return {
+          train,
+          status
+        };
+      });
     }
   }
 });
@@ -74,31 +110,31 @@ ul {
     -webkit-transition: background-color 200ms;
   }
 
-  &.no-timetable .user_train {
+  &[data-status='no-timetable'] .user_train {
     background-color: $no-timetable;
   }
 
-  &.departed > &_train {
+  &[data-status='departed'] > &_train {
     background-color: $departed;
   }
 
-  &.stopped > &_train {
+  &[data-status='stopped'] > &_train {
     background-color: $stopped;
   }
 
-  &.online > &_train {
+  &[data-status='online'] > &_train {
     background-color: $online;
   }
 
-  &.terminated > &_train {
+  &[data-status='terminated'] > &_train {
     background-color: $terminated;
   }
 
-  &.disconnected > &_train {
+  &[data-status='disconnected'] > &_train {
     background-color: $disconnected;
   }
 
-  &.offline {
+  &[data-status='offline'] {
     background: firebrick;
     pointer-events: none;
   }

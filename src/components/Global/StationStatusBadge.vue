@@ -88,8 +88,9 @@ $unknown: #b93c3c;
 .status-badge {
   border-radius: 1em;
   font-weight: 500;
+  text-wrap: nowrap;
 
-  padding: 0.2em 0.55em;
+  padding: 0.2rem 0.55rem;
 
   background-color: $online;
 
@@ -106,13 +107,13 @@ $unknown: #b93c3c;
 
   &.no-limit {
     background-color: $no-limit;
-    font-size: 0.85em;
+    font-size: 0.9em;
   }
 
   &.not-signed,
   &.unavailable {
     background-color: $unav;
-    font-size: 0.85em;
+    font-size: 0.9em;
   }
 
   &.afk {
@@ -125,7 +126,7 @@ $unknown: #b93c3c;
     background-color: $no-space;
     border: 1px solid white;
     color: white;
-    font-size: 0.85em;
+    font-size: 0.9em;
   }
 
   &.unknown,

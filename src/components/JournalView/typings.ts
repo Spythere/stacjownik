@@ -6,7 +6,9 @@ export namespace Journal {
     | 'search-train'
     | 'search-date'
     | 'search-dispatcher'
-    | 'search-issuedFrom';
+    | 'search-issuedFrom'
+    | 'search-terminatingAt'
+    | 'search-via';
 
   export type TimetableSearchType = {
     [key in TimetableSearchKey]: string;

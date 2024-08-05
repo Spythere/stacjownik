@@ -1,5 +1,5 @@
 <template>
-  <div class="tooltip" v-show="tooltipStore.type" ref="preview">
+  <div class="tooltip" ref="preview">
     <component v-if="tooltipStore.type" :is="tooltipStore.type" />
   </div>
 </template>
@@ -35,10 +35,7 @@ export default defineComponent({
           let translateX = '0',
             translateY = '30px';
 
-          if (clientWidth < 500) {
-            previewEl.style.left = '50%';
-            translateX = '-50%';
-          } else if (val[0] <= boxWidth / 2) {
+          if (val[0] <= boxWidth / 2) {
             previewEl.style.left = '0';
             translateX = '0px';
           } else if (val[0] >= clientWidth - boxWidth / 2) {

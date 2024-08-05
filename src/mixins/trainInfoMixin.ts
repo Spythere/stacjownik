@@ -108,16 +108,19 @@ export default defineComponent({
     },
 
     currentDelay(stops: TrainStop[]) {
-      const delay =
-        stops.find(
-          (stop, i) =>
-            (i == 0 && !stop.confirmed) || (i > 0 && stops[i - 1].confirmed && !stop.confirmed)
-        )?.departureDelay || 0;
+      const lastConfirmedStop = stops.find(
+        (stop, i) =>
+          (i == 0 && !stop.confirmed) ||
+          (i > 0 && stops[i - 1].confirmed && !stop.confirmed) ||
+          (stops[i + 1] == undefined && stop.confirmed)
+      );
 
-      if (delay > 0)
-        return `<span style='color: salmon'>${this.$t('trains.delayed')} ${delay} min</span>`;
-      else if (delay < 0)
-        return `<span style='color: lightgreen'>${this.$t('trains.preponed')} ${delay} min</span>`;
+      const lastDelay = lastConfirmedStop?.departureDelay ?? lastConfirmedStop?.arrivalDelay ?? 0;
+
+      if (lastDelay > 0)
+        return `<span style='color: salmon'>${this.$t('trains.delayed')} ${lastDelay} min</span>`;
+      else if (lastDelay < 0)
+        return `<span style='color: lightgreen'>${this.$t('trains.preponed')} ${lastDelay} min</span>`;
       else return this.$t('trains.on-time');
     },
 

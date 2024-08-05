@@ -39,8 +39,8 @@
     <div class="timetable-list">
       <transition-group name="list-anim">
         <div
+          v-if="apiStore.dataStatuses.connection == 0 && sceneryTimetables.length == 0"
           style="padding-bottom: 5em"
-          v-if="apiStore.dataStatuses.connection == 0 && computedScheduledTrains.length == 0"
           key="list-loading"
         >
           <Loading />
@@ -48,7 +48,7 @@
 
         <span
           class="timetable-item empty"
-          v-else-if="computedScheduledTrains.length == 0 && !onlineScenery"
+          v-else-if="sceneryTimetables.length == 0 && !onlineScenery"
           key="list-offline"
         >
           {{ $t('scenery.offline') }}
@@ -56,7 +56,7 @@
 
         <div
           class="timetable-item empty"
-          v-else-if="computedScheduledTrains.length == 0"
+          v-else-if="sceneryTimetables.length == 0"
           key="list-no-timetables"
         >
           {{ $t('scenery.no-timetables') }}
@@ -65,59 +65,56 @@
         <div
           class="timetable-item"
           v-else
-          v-for="scheduledTrain in computedScheduledTrains"
-          :key="scheduledTrain.trainId + scheduledTrain.stopInfo.arrivalTimestamp"
+          v-for="(row, i) in sceneryTimetables"
+          :key="row.train.id + i"
           tabindex="0"
-          @click.prevent.stop="selectModalTrain(scheduledTrain.trainId, $event.currentTarget)"
-          @keydown.enter.prevent="selectModalTrain(scheduledTrain.trainId, $event.currentTarget)"
+          @click.prevent.stop="selectModalTrain(row.train, $event.currentTarget)"
+          @keydown.enter.prevent="selectModalTrain(row.train, $event.currentTarget)"
         >
           <span class="timetable-general">
             <span class="general-info">
               <span class="info-number">
-                <strong>{{ scheduledTrain.category }}</strong>
-                {{ scheduledTrain.trainNo }}
+                <strong>{{ row.train.timetableData!.category }}</strong>
+                {{ row.train.trainNo }}
 
-                <span
-                  v-if="scheduledTrain.stopInfo.comments"
-                  :title="scheduledTrain.stopInfo.comments"
-                >
+                <span v-if="row.checkpointStop.comments" :title="row.checkpointStop.comments">
                   <img src="/images/icon-warning.svg" />
                 </span>
               </span>
               &nbsp;|&nbsp;
               <span>
-                {{ scheduledTrain.driverName }}
+                {{ row.train.driverName }}
               </span>
 
               <div class="info-route">
-                <strong>{{ scheduledTrain.beginsAt }} - {{ scheduledTrain.terminatesAt }}</strong>
+                <strong>{{ row.train.timetableData!.route.replace('|', ' - ') }}</strong>
               </div>
 
-              <ScheduledTrainStatus :scheduledTrain="scheduledTrain" />
+              <ScheduledTrainStatus :sceneryTimetableRow="row" />
             </span>
           </span>
 
           <span class="timetable-schedule">
             <span class="schedule-arrival">
-              <span class="arrival-time begins" v-if="scheduledTrain.stopInfo.beginsHere">
+              <span class="arrival-time begins" v-if="row.checkpointStop.beginsHere">
                 {{ $t('timetables.begins') }}
               </span>
 
               <span class="arrival-time" v-else>
-                <div v-if="scheduledTrain.stopInfo.arrivalDelay == 0">
-                  <span>{{ timestampToString(scheduledTrain.stopInfo.arrivalTimestamp) }}</span>
+                <div v-if="row.checkpointStop.arrivalDelay == 0">
+                  <span>{{ timestampToString(row.checkpointStop.arrivalTimestamp) }}</span>
                 </div>
                 <div v-else>
                   <div>
                     <s style="margin-right: 0.2em" class="text--grayed">{{
-                      timestampToString(scheduledTrain.stopInfo.arrivalTimestamp)
+                      timestampToString(row.checkpointStop.arrivalTimestamp)
                     }}</s>
                   </div>
 
                   <span>
-                    {{ timestampToString(scheduledTrain.stopInfo.arrivalRealTimestamp) }}
-                    ({{ scheduledTrain.stopInfo.arrivalDelay > 0 ? '+' : ''
-                    }}{{ scheduledTrain.stopInfo.arrivalDelay }})
+                    {{ timestampToString(row.checkpointStop.arrivalRealTimestamp) }}
+                    ({{ row.checkpointStop.arrivalDelay > 0 ? '+' : ''
+                    }}{{ row.checkpointStop.arrivalDelay }})
                   </span>
                 </div>
               </span>
@@ -125,41 +122,39 @@
 
             <span class="schedule-stop">
               <span class="stop-connection">
-                {{ scheduledTrain.arrivingLine }}
+                {{ row.arrivingLine }}
               </span>
 
               <span class="stop-time">
-                {{ scheduledTrain.stopInfo.stopTime || '' }}
-                {{
-                  scheduledTrain.stopInfo.stopTime ? scheduledTrain.stopInfo.stopType || 'pt' : ''
-                }}
+                {{ row.checkpointStop.stopTime || '' }}
+                {{ row.checkpointStop.stopTime ? row.checkpointStop.stopType || 'pt' : '' }}
               </span>
 
               <span class="stop-connection">
-                {{ scheduledTrain.departureLine }}
+                {{ row.departureLine }}
               </span>
             </span>
 
             <span class="schedule-departure">
-              <span class="departure-time terminates" v-if="scheduledTrain.stopInfo.terminatesHere">
+              <span class="departure-time terminates" v-if="row.checkpointStop.terminatesHere">
                 {{ $t('timetables.terminates') }}
               </span>
 
               <span class="departure-time" v-else>
-                <div v-if="scheduledTrain.stopInfo.departureDelay == 0">
-                  <span>{{ timestampToString(scheduledTrain.stopInfo.departureTimestamp) }}</span>
+                <div v-if="row.checkpointStop.departureDelay == 0">
+                  <span>{{ timestampToString(row.checkpointStop.departureTimestamp) }}</span>
                 </div>
                 <div v-else>
                   <div>
                     <s style="margin-right: 0.2em" class="text--grayed">{{
-                      timestampToString(scheduledTrain.stopInfo.departureTimestamp)
+                      timestampToString(row.checkpointStop.departureTimestamp)
                     }}</s>
                   </div>
 
                   <span>
-                    {{ timestampToString(scheduledTrain.stopInfo.departureRealTimestamp) }}
-                    ({{ scheduledTrain.stopInfo.departureDelay > 0 ? '+' : ''
-                    }}{{ scheduledTrain.stopInfo.departureDelay }})
+                    {{ timestampToString(row.checkpointStop.departureRealTimestamp) }}
+                    ({{ row.checkpointStop.departureDelay > 0 ? '+' : ''
+                    }}{{ row.checkpointStop.departureDelay }})
                   </span>
                 </div>
               </span>
@@ -183,6 +178,8 @@ import modalTrainMixin from '../../mixins/modalTrainMixin';
 import ScheduledTrainStatus from './ScheduledTrainStatus.vue';
 import { useApiStore } from '../../store/apiStore';
 import { ActiveScenery, Station } from '../../typings/common';
+import { SceneryTimetableRow } from './typings';
+import { getTrainStopStatus, stopStatusPriority } from './utils';
 
 export default defineComponent({
   name: 'SceneryTimetable',
@@ -204,10 +201,6 @@ export default defineComponent({
     listOpen: false
   }),
 
-  mounted() {
-    this.loadSelectedOption();
-  },
-
   activated() {
     this.loadSelectedOption();
   },
@@ -220,9 +213,10 @@ export default defineComponent({
     const mainStore = useMainStore();
 
     const chosenCheckpoint = ref(
-      props.station?.generalInfo?.checkpoints?.length == 0
-        ? ''
-        : props.station?.generalInfo?.checkpoints[0] ?? null
+      props.station?.generalInfo?.checkpoints[0] ??
+        props.station?.name ??
+        route.query['station']?.toString() ??
+        ''
     );
 
     return {
@@ -241,27 +235,50 @@ export default defineComponent({
       return url;
     },
 
-    computedScheduledTrains() {
-      if (!this.station) return [];
+    sceneryTimetables(): SceneryTimetableRow[] {
+      if (!this.onlineScenery) return [];
 
-      return (
-        this.onlineScenery?.scheduledTrains
-          ?.filter(
-            (train) =>
-              train.checkpointName.toLocaleLowerCase() ==
-                (this.chosenCheckpoint || this.station!.name).toLocaleLowerCase() &&
-              train.region == this.mainStore.region.id
-          )
-          .sort((a, b) => {
-            if (a.stopStatusID > b.stopStatusID) return 1;
-            if (a.stopStatusID < b.stopStatusID) return -1;
+      const sceneryName = this.$route.query['station']?.toString().replace(/_/g, ' ') ?? '';
 
-            if (a.stopInfo.arrivalTimestamp > b.stopInfo.arrivalTimestamp) return 1;
-            if (a.stopInfo.arrivalTimestamp < b.stopInfo.arrivalTimestamp) return -1;
+      return this.onlineScenery.scheduledTrains
+        .filter(
+          (ct) =>
+            ct.timetablePathElement.stationName == sceneryName &&
+            ct.train.region == this.mainStore.region.id &&
+            this.chosenCheckpoint &&
+            ct.checkpointStop.stopNameRAW.toLowerCase() == this.chosenCheckpoint.toLowerCase()
+        )
+        .map((ct) => {
+          const trainStopStatus = getTrainStopStatus(
+            ct.checkpointStop,
+            ct.train.currentStationName,
+            sceneryName
+          );
 
-            return a.stopInfo.departureTimestamp > b.stopInfo.departureTimestamp ? 1 : -1;
-          }) || []
-      );
+          return {
+            checkpointStop: ct.checkpointStop,
+            train: ct.train,
+            prevDepartureLine: ct.previousSceneryElement?.departureRouteExt ?? null,
+            nextArrivalLine: ct.nextSceneryElement?.arrivalRouteExt ?? null,
+            departureLine: ct.timetablePathElement.departureRouteExt ?? null,
+            arrivingLine: ct.timetablePathElement.arrivalRouteExt ?? null,
+            prevStationName: ct.previousSceneryElement?.stationName ?? null,
+            nextStationName: ct.nextSceneryElement?.stationName ?? null,
+            status: trainStopStatus
+          };
+        })
+        .sort((a, b) => {
+          if (stopStatusPriority.indexOf(a.status) - stopStatusPriority.indexOf(b.status) < 0)
+            return -1;
+
+          if (stopStatusPriority.indexOf(a.status) - stopStatusPriority.indexOf(b.status) > 0)
+            return 1;
+
+          if (a.checkpointStop.arrivalTimestamp > b.checkpointStop.arrivalTimestamp) return 1;
+          if (a.checkpointStop.arrivalTimestamp < b.checkpointStop.arrivalTimestamp) return -1;
+
+          return a.checkpointStop.departureTimestamp > b.checkpointStop.departureTimestamp ? 1 : -1;
+        });
     }
   },
 

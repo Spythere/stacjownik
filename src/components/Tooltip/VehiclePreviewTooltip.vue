@@ -13,11 +13,20 @@
       width="300"
       height="176"
       class="rounded-md w-full h-auto"
-      :src="`https://static.spythere.eu/images/${tooltipStore.content}--300px.jpg`"
+      :src="`https://static.spythere.eu/images/${vehicleName}--300px.jpg`"
     />
 
-    <div class="vehicle-name" v-if="imageState != 'error'">
-      {{ tooltipStore.content.replace(/_/g, ' ') }}
+    <div v-if="imageState == 'error'" class="error-placeholder"></div>
+
+    <div class="vehicle-name">
+      {{ vehicleName.replace(/_/g, ' ') }}
+      <span v-if="vehicleCargo">({{ vehicleCargo.id }})</span>
+    </div>
+
+    <div class="vehicle-props" v-if="vehicleData">
+      {{ vehicleData.group.speed }}km/h &bull; {{ vehicleData.group.length }}m &bull;
+      {{ (vehicleData.group.weight / 1000).toFixed(1) }}t
+      <span v-if="vehicleCargo">(+{{ (vehicleCargo.weight / 1000).toFixed(1) }}t)</span>
     </div>
   </div>
 </template>
@@ -25,17 +34,25 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { useTooltipStore } from '../../store/tooltipStore';
+import { useApiStore } from '../../store/apiStore';
 
 export default defineComponent({
   data() {
     return {
       tooltipStore: useTooltipStore(),
+      apiStore: useApiStore(),
       imageState: 'loading'
     };
   },
 
   mounted() {
     this.imageState = 'loading';
+  },
+
+  watch: {
+    vehicleName(prev, val) {
+      if (prev != val) this.imageState = 'loading';
+    }
   },
 
   methods: {
@@ -47,6 +64,22 @@ export default defineComponent({
       this.imageState = 'error';
 
       (e.target as HTMLElement).style.display = 'none';
+    }
+  },
+
+  computed: {
+    vehicleName() {
+      return this.tooltipStore.content.split(':')[0];
+    },
+
+    vehicleData() {
+      return this.apiStore.vehiclesData?.find((v) => v.name == this.vehicleName);
+    },
+
+    vehicleCargo() {
+      return this.vehicleData?.group.cargoTypes?.find(
+        (c) => c.id == this.tooltipStore.content.split(':')[1]
+      );
     }
   }
 });
@@ -77,7 +110,14 @@ img {
 .vehicle-name {
   text-align: center;
   margin-top: 0.5em;
-  color: #ccc;
   text-wrap: wrap;
+}
+
+.vehicle-props {
+  color: #ccc;
+}
+
+.error-placeholder {
+  height: 176px;
 }
 </style>

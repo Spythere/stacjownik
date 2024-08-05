@@ -4,24 +4,21 @@ import { Status } from '../typings/common';
 import { StationJSONData } from './typings';
 import axios, { AxiosInstance } from 'axios';
 
-export enum APIMode {
-  PRODUCTION = 0,
-  DEV = 1,
-  MOCK = 2
-}
-
 export const useApiStore = defineStore('apiStore', {
   state: () => ({
     dataStatuses: {
       connection: Status.Data.Loading,
-      sceneries: Status.Data.Loading
+      sceneries: Status.Data.Loading,
+      vehicles: Status.Data.Loading
     },
 
     activeData: undefined as API.ActiveData.Response | undefined,
+    vehiclesData: undefined as API.Vehicles.Response | undefined,
+
     donatorsData: [] as API.Donators.Response,
     sceneryData: [] as StationJSONData[],
 
-    lastFetchData: new Date(),
+    nextUpdateTime: 0,
 
     client: undefined as AxiosInstance | undefined,
 
@@ -54,18 +51,40 @@ export const useApiStore = defineStore('apiStore', {
       // Static data
       this.fetchDonatorsData();
       this.fetchStationsGeneralInfo();
+      this.fetchVehiclesInfo();
+
+      window.requestAnimationFrame(this.updateTick);
+    },
+
+    updateTick(t: number) {
+      if (this.dataStatuses.connection == Status.Data.Offline) return;
+
+      if (t >= this.nextUpdateTime) {
+        this.fetchActiveData();
+        this.nextUpdateTime = t + 20000;
+      }
+
+      window.requestAnimationFrame(this.updateTick);
     },
 
     async fetchActiveData() {
+      // if (import.meta.env.VITE_API_ACTIVE_DATA_MODE == 'mocking') {
+      //   import('../../tests/data/getActiveData.json').then((data) => {
+      //     console.warn('activeData: mocking mode');
+      //     this.activeData = data.default as API.ActiveData.Response;
+
+      //     this.dataStatuses.connection = Status.Data.Loaded;
+      //   });
+
+      //   return;
+      // }
+
       if (!this.activeData) this.dataStatuses.connection = Status.Data.Loading;
 
       try {
-        console.log('Fetching active data at ' + new Date().toLocaleTimeString('pl-PL'));
-
         const response = await this.client!.get<API.ActiveData.Response>('api/getActiveData');
 
         this.activeData = response.data;
-        this.lastFetchData = new Date();
         this.dataStatuses.connection = Status.Data.Loaded;
       } catch (error) {
         this.dataStatuses.connection = Status.Data.Error;
@@ -84,17 +103,39 @@ export const useApiStore = defineStore('apiStore', {
     },
 
     async fetchStationsGeneralInfo() {
-      const sceneryData: StationJSONData[] = (
-        await this.client!.get<StationJSONData[]>('api/getSceneries')
-      ).data;
+      try {
+        const sceneryData: StationJSONData[] = (
+          await this.client!.get<StationJSONData[]>('api/getSceneries')
+        ).data;
 
-      if (!sceneryData) {
+        this.dataStatuses.sceneries = Status.Data.Loaded;
+        this.sceneryData = sceneryData;
+      } catch (error) {
         this.dataStatuses.sceneries = Status.Data.Error;
-        return;
+        console.error('Ups! Wystąpił błąd podczas pobierania informacji o sceneriach:', error);
       }
+    },
 
-      this.dataStatuses.sceneries = Status.Data.Loaded;
-      this.sceneryData = sceneryData;
+    async fetchVehiclesInfo() {
+      // if (import.meta.env.VITE_API_VEHICLES_MODE == 'mocking') {
+      //   import('../../tests/data/vehicles.json').then((data) => {
+      //     console.warn('vehicles.json: mocking mode');
+      //     this.vehiclesData = data.default;
+      //     this.dataStatuses.vehicles = Status.Data.Loaded;
+      //   });
+
+      //   return;
+      // }
+
+      try {
+        const response = await this.client!.get<API.Vehicles.Response>('api/getVehicles');
+
+        this.vehiclesData = response.data;
+        this.dataStatuses.vehicles = response.data ? Status.Data.Loaded : Status.Data.Warning;
+      } catch (error) {
+        this.dataStatuses.vehicles = Status.Data.Error;
+        console.error('Ups! Wystąpił błąd podczas pobierania informacji o pojazdach:', error);
+      }
     }
   }
 });

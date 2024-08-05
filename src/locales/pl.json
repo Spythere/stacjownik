@@ -108,8 +108,8 @@
     "filters": "FILTRY",
     "donate": "WESPRZYJ",
 
-    "search-button": "Szukaj",
-    "reset-button": "Zresetuj",
+    "search-button": "SZUKAJ",
+    "reset-button": "ZRESETUJ",
 
     "sort-title": "SORTUJ WG:",
     "filter-title": "FILTRUJ WG:",
@@ -122,6 +122,8 @@
     "search-station": "Nazwa scenerii",
     "search-author": "Nick autora rozkładu jazdy",
     "search-issuedFrom": "Sceneria początkowa",
+    "search-via": "Przez scenerię",
+    "search-terminatingAt": "Sceneria końcowa",
     "search-timetables-date": "Data rozkładu jazdy (UTC+2 / CEST)",
     "search-dispatchers-date": "Data służby (UTC+2 / CEST)",
     "search-date": "Data (UTC+2 / CEST)",
@@ -171,8 +173,9 @@
 
     "sections": {
       "quick": "SZYBKIE FILTRY",
+      "stationType": "RODZAJ STACJI",
       "reality": "FIKCYJNOŚĆ SCENERII",
-      "package-access": "DOSTĘPNOŚĆ W PACZCE",
+      "packageAccess": "DOSTĘPNOŚĆ W PACZCE",
       "access": "DOSTĘPNOŚĆ OGÓLNA",
       "control": "TYP STEROWANIA",
       "signals": "TYP SYGNALIZACJI",
@@ -182,6 +185,9 @@
       "timetables": "AKTYWNE ROZKŁADY JAZDY",
       "spawns": "OTWARTE SPAWNY"
     },
+
+    "changed-filters-count": "Zmienione filtry:",
+    "no-changed-filters": "Brak zmienionych filtrów",
 
     "all-available": "WSZYSTKIE DOSTĘPNE",
     "all-free": "WSZYSTKIE WOLNE",
@@ -193,11 +199,11 @@
 
     "title": "FILTRUJ STACJE",
     "default": "DOMYŚLNA",
-    "not-default": "POZA PACZKĄ",
+    "notDefault": "POZA PACZKĄ",
     "real": "REALNA",
     "fictional": "FIKCYJNA",
     "unavailable": "NIEDOSTĘPNA",
-    "non-public": "NIEPUBLICZNA",
+    "nonPublic": "NIEPUBLICZNA",
     "abandoned": "WYCOFANA",
 
     "SPK": "SPK",
@@ -229,15 +235,18 @@
     "withActiveTimetables": "AKTYWNE",
     "withoutActiveTimetables": "BEZ AKTYWNYCH",
 
+    "junction": "WĘZŁOWE",
+    "nonJunction": "INNE",
+
     "sliders": {
-      "min-lvl": "MIN. WYMAGANY POZIOM DYŻURNEGO",
-      "max-lvl": "MAKS. WYMAGANY POZIOM DYŻURNEGO",
-      "min-vmax": "MIN. PRĘDKOŚĆ SZLAKOWA",
-      "max-vmax": "MAKS. PRĘDKOŚĆ SZLAKOWA",
-      "routes-1t-cat": "SZLAKI JEDNOTOROWE ZELEKTR. (MINIMUM)",
-      "routes-1t-other": "SZLAKI JEDNOTOROWE NIEZELEKTR. (MINIMUM)",
-      "routes-2t-cat": "SZLAKI DWUTOROWE ZELEKTR. (MINIMUM)",
-      "routes-2t-other": "SZLAKI DWUTOROWE NIEZELEKTR. (MINIMUM)"
+      "minLevel": "MIN. WYMAGANY POZIOM DYŻURNEGO",
+      "maxLevel": "MAKS. WYMAGANY POZIOM DYŻURNEGO",
+      "minVmax": "MIN. PRĘDKOŚĆ SZLAKOWA",
+      "maxVmax": "MAKS. PRĘDKOŚĆ SZLAKOWA",
+      "minOneWayCatenary": "SZLAKI JEDNOTOROWE ZELEKTR. (MINIMUM)",
+      "minOneWay": "SZLAKI JEDNOTOROWE NIEZELEKTR. (MINIMUM)",
+      "minTwoWayCatenary": "SZLAKI DWUTOROWE ZELEKTR. (MINIMUM)",
+      "minTwoWay": "SZLAKI DWUTOROWE NIEZELEKTR. (MINIMUM)"
     },
 
     "authors-search": "SZUKAJ AUTORA (uwzględnia inne filtry):",
@@ -287,16 +296,16 @@
       "single-track-routes-other": "Liczba niezelektryfikowanych szlaków jednotorowych: "
     },
     "no-stations": "Brak stacji do wyświetlenia!",
-    "scenery-search": "Wyszukaj scenerię..."
+    "scenery-search": "Wyszukaj scenerię...",
+    "active-filters": "Uwaga! Masz obecnie aktywne filtry!"
   },
   "station-stats": {
     "u-factor": "Współczynnik Ugla",
     "u-factor-tooltip": "(?) Współczynnik ruchu na serwerze (liczba maszynistów online dzielona na liczbę dyżurnych ruchu)",
-    "avg-timetable-count": "Średnia liczba rozkładów jazdy na dyżurnego:",
-    "single-track-count": "Dostępne szlaki jednotorowe:",
-    "double-track-count": "Dostępne szlaki dwutorowe:",
-    "electrified": "(zelektr.)",
-    "not-electrified": "(niezelektr.)",
+    "avg-timetable-count": "Średnia liczba rozkładów jazdy na sceneriach:",
+    "single-track-count": "Szlaki jednotorowe:",
+    "double-track-count": "Szlaki dwutorowe:",
+    "cross-sceneries": "Scenerie przejściowe (1-tor <-> 2-tor):",
     "open-spawns": "Otwarte spawny:"
   },
   "trains": {
@@ -307,6 +316,9 @@
     "current-scenery": "na scenerii",
     "current-signal": "przy semaforze",
     "current-track": "na szlaku",
+
+    "vmax-tooltip": "Maksymalna prędkość na podstawie pojazdów w składzie - nie bierze pod uwagę masy hamowania",
+    "we4a-tooltip": "Szlak niezelektryfikowany",
 
     "delayed": "Opóźniony: ",
     "preponed": "Przed czasem: ",
@@ -467,21 +479,16 @@
     "option-timetables-history": "Historia rozkładów PL1",
     "option-dispatchers-history": "Historia dyżurów PL1",
 
-    "timetable-author-title": "Wydany przez",
-    "timetable-author-unknown": "Autor nieznany",
+    "timetable-via": "WSZYSTKIE RJ",
+    "timetable-issuedFrom": "ROZPOCZYNA BIEG",
+    "timetable-terminatingAt": "KOŃCZY BIEG",
 
-    "timetables-history-id": "ID",
-    "timetables-history-number": "Numer",
-    "timetables-history-route": "Trasa",
-    "timetables-history-driver": "Maszynista",
-    "timetables-history-author": "Autor RJ",
-    "timetables-history-date": "Data",
+    "timetable-issued-date": "Wystawiony",
+    "timetable-issued-by": " przez:",
+    "timetable-issued-for": " dla maszynisty:",
 
-    "dispatchers-history-hash": "Hash",
-    "dispatchers-history-dispatcher": "Dyżurny",
-    "dispatchers-history-level": "Poziom",
-    "dispatchers-history-rate": "Ocena",
-    "dispatchers-history-date": "Data służby",
+    "dispatcher-rate": "Ocena:",
+    "dispatcher-status-changes": "Zmiany statusów:",
 
     "req-level": "ogólnodostępna | minimum {lvl} poziom dyżurnego | minimum {lvl} poziom dyżurnego",
     "history-list-empty": "Brak historii dla tej scenerii!",

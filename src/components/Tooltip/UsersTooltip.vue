@@ -10,7 +10,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { useTooltipStore } from '../../store/tooltipStore';
-import { StationTrain } from '../../typings/common';
+import { Train } from '../../typings/common';
 
 export default defineComponent({
   data() {
@@ -23,7 +23,7 @@ export default defineComponent({
     trains() {
       if (this.tooltipStore.content == '') return [];
 
-      const parsedTrains = JSON.parse(this.tooltipStore.content) as StationTrain[];
+      const parsedTrains = JSON.parse(this.tooltipStore.content) as Train[];
       return (parsedTrains ?? []).sort((a, b) => a.trainNo - b.trainNo);
     }
   }

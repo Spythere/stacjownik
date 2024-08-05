@@ -112,8 +112,8 @@
     "filters": "FILTERS",
     "donate": "DONATE",
 
-    "search-button": "Search",
-    "reset-button": "Reset",
+    "search-button": "SEARCH",
+    "reset-button": "RESET",
 
     "sort-title": "SORT BY:",
     "filter-title": "FILTER BY:",
@@ -125,7 +125,9 @@
     "search-dispatcher": "Dispatcher name",
     "search-station": "Scenery name",
     "search-author": "Timetable author name",
-    "search-issuedFrom": "Origin scenery name",
+    "search-issuedFrom": "Issuing scenery name",
+    "search-via": "Via scenery name",
+    "search-terminatingAt": "Terminating scenery name",
     "search-timetables-date": "Timetable date (UTC+2 / CEST)",
     "search-dispatchers-date": "Service date (UTC+2 / CEST)",
     "search-date": "Date (UTC+2 / CEST)",
@@ -174,8 +176,9 @@
 
     "sections": {
       "quick": "QUICK FILTERS",
+      "stationType": "STATION TYPE",
       "reality": "SCENERY REALITY",
-      "package-access": "IN-GAME AVAILABILITY",
+      "packageAccess": "IN-GAME AVAILABILITY",
       "access": "GENERAL AVAILABILITY",
       "control": "CONTROLS",
       "signals": "SIGNALLING",
@@ -185,6 +188,9 @@
       "timetables": "ACTIVE TIMETABLES",
       "spawns": "OPEN SPAWNS"
     },
+
+    "changed-filters-count": "Changed filters:",
+    "no-changed-filters": "No changed filters",
 
     "all-available": "ALL AVAILABLE",
     "all-free": "CURRENTLY FREE",
@@ -196,11 +202,11 @@
 
     "title": "STATION FILTERS",
     "default": "IN-GAME",
-    "not-default": "ADDITIONAL",
+    "notDefault": "ADDITIONAL",
     "real": "REAL",
     "fictional": "FICTIONAL",
     "unavailable": "UNSUPPORTED",
-    "non-public": "NON-PUBLIC",
+    "nonPublic": "NON-PUBLIC",
     "abandoned": "ABANDONED",
 
     "SPK": "SPK",
@@ -210,7 +216,6 @@
     "SCS-R": "SCS + MANUAL",
     "SCS-M": "SCS + MECH.",
     "SPE": "SPE",
-
     "manual": "MANUAL",
     "mechanical": "MECHANICAL",
 
@@ -233,15 +238,18 @@
     "withActiveTimetables": "ACTIVE",
     "withoutActiveTimetables": "NO ACTIVE",
 
+    "junction": "JUNCTIONS",
+    "nonJunction": "OTHER",
+
     "sliders": {
-      "min-lvl": "MIN. REQUIRED DISPATCHER LEVEL",
-      "max-lvl": "MAX. REQUIRED DISPATCHER LEVEL",
-      "min-vmax": "MIN. SCENERY ROUTE SPEED",
-      "max-vmax": "MAX. SCENERY ROUTE SPEED",
-      "routes-1t-cat": "MIN. CATENARY SINGLE TRACK ROUTES",
-      "routes-1t-other": "MIN. OTHER SINGLE TRACK ROUTES",
-      "routes-2t-cat": "MIN. CATENARY DOUBLE TRACK ROUTES",
-      "routes-2t-other": "MIN. OTHER DOUBLE TRACK ROUTES"
+      "minLevel": "MIN. REQUIRED DISPATCHER LEVEL",
+      "maxLevel": "MAX. REQUIRED DISPATCHER LEVEL",
+      "minVmax": "MIN. SCENERY ROUTE SPEED",
+      "maxVmax": "MAX. SCENERY ROUTE SPEED",
+      "minOneWayCatenary": "MIN. CATENARY SINGLE TRACK ROUTES",
+      "minOneWay": "MIN. OTHER SINGLE TRACK ROUTES",
+      "minTwoWayCatenary": "MIN. CATENARY DOUBLE TRACK ROUTES",
+      "minTwoWay": "MIN. OTHER DOUBLE TRACK ROUTES"
     },
 
     "authors-search": "SEARCH BY AUTHOR NAME (other filters apply):",
@@ -294,16 +302,16 @@
       "single-track-routes-other": "Not electrified single-track routes count:  "
     },
     "no-stations": "No stations to show here!",
-    "scenery-search": "Search for scenery..."
+    "scenery-search": "Search for scenery...",
+    "active-filters": "Attention! You got active filters!"
   },
   "station-stats": {
     "u-factor": "U-factor",
     "u-factor-tooltip": "(?) Current server traffic factor (driver count divided by dispatcher count)",
-    "avg-timetable-count": "Average timetable count for one dispatcher:",
-    "single-track-count": "Available single track routes:",
-    "double-track-count": "Available double track routes:",
-    "electrified": "(electrified)",
-    "not-electrified": "(not electr.)",
+    "avg-timetable-count": "Average count of scenery timetables:",
+    "single-track-count": "Single track routes:",
+    "double-track-count": "Double track routes:",
+    "cross-sceneries": "Cross-track sceneries (1-track <-> 2-track)",
     "open-spawns": "Open spawns:"
   },
   "trains": {
@@ -322,6 +330,9 @@
     "current-scenery": "on scenery",
     "current-signal": "at signal",
     "current-track": "on track",
+
+    "vmax-tooltip": "Maximum train speed based on rolling stock vehicles - braked weight is not included",
+    "we4a-tooltip": "Non-electrified track",
 
     "delayed": "Delayed: ",
     "preponed": "Ahead of schedule: ",
@@ -485,21 +496,16 @@
     "option-timetables-history": "Timetables history PL1",
     "option-dispatchers-history": "Dispatchers history PL1",
 
-    "timetable-author-title": "Issued by",
-    "timetable-author-unknown": "Author unknown",
+    "timetable-via": "ALL TIMETABLES",
+    "timetable-issuedFrom": "BEGINS HERE",
+    "timetable-terminatingAt": "TERMINATES HERE",
 
-    "timetables-history-id": "ID",
-    "timetables-history-number": "Number",
-    "timetables-history-route": "Route",
-    "timetables-history-driver": "Driver",
-    "timetables-history-author": "TT author",
-    "timetables-history-date": "Date",
+    "timetable-issued-date": "Issued",
+    "timetable-issued-by": " by:",
+    "timetable-issued-for": " for driver:",
 
-    "dispatchers-history-hash": "Hash",
-    "dispatchers-history-dispatcher": "Dispatcher",
-    "dispatchers-history-level": "Level",
-    "dispatchers-history-rate": "Rate",
-    "dispatchers-history-date": "Service date",
+    "dispatcher-rate": "Rate:",
+    "dispatcher-status-changes": "Status changes:",
 
     "req-level": "all dispatcher levels | dispatcher level {lvl} required | dispatcher level {lvl} required",
     "history-list-empty": "No recorded scenery history!",

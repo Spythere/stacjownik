@@ -1,4 +1,4 @@
-import { Status } from './common';
+import { Status, VehicleData } from './common';
 
 export enum APIDataStatus {
   OK = 'OK',
@@ -19,11 +19,12 @@ export namespace API {
       apiStatuses?: APIStatuses;
     }
   }
+
   export namespace DispatcherHistory {
     export type Response = Data[];
 
     export interface Data {
-      id: string;
+      id: number;
       currentDuration: number;
       dispatcherId: number;
       dispatcherName: string;
@@ -38,6 +39,7 @@ export namespace API {
       stationName: string;
       timestampFrom: number;
       timestampTo?: number;
+      statusHistory: string[];
     }
   }
 
@@ -161,7 +163,6 @@ export namespace API {
       stopNameRAW: string;
       stopType: string;
       stopDistance: number;
-      pointId: string;
 
       mainStop: boolean;
 
@@ -194,6 +195,8 @@ export namespace API {
       TWR: boolean;
       SKR: boolean;
       sceneries: string[];
+
+      path: string;
     }
   }
 
@@ -248,16 +251,14 @@ export namespace API {
       hashesString?: string;
       currentSceneryName?: string;
       currentSceneryHash?: string;
-
       routeSceneries?: string;
-
       checkpointArrivals?: string[];
       checkpointDepartures?: string[];
-
       checkpointArrivalsScheduled?: string[];
       checkpointDeparturesScheduled?: string[];
-
       checkpointStopTypes?: string[];
+      visitedSceneries?: string[];
+      path: string;
     }
 
     export type Response = Data[];
@@ -316,6 +317,10 @@ export namespace API {
 
   export namespace Donators {
     export type Response = string[];
+  }
+
+  export namespace Vehicles {
+    export type Response = VehicleData[];
   }
 }
 

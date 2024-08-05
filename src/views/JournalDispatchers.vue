@@ -17,8 +17,9 @@
         <JournalStats :statsButtons="statsButtons" />
       </div>
 
-      <div class="journal_refreshed-date" v-if="dataRefreshedAt">
-        {{ $t('journal.data-refreshed-at') }}: {{ dataRefreshedAt.toLocaleString($i18n.locale) }}
+      <div class="journal_refreshed-date">
+        {{ $t('journal.data-refreshed-at') }}:
+        {{ dataRefreshedAt?.toLocaleString($i18n.locale) ?? '---' }}
       </div>
 
       <div class="list_wrapper" @scroll="handleScroll">

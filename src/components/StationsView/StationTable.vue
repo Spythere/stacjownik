@@ -1,366 +1,371 @@
 <template>
   <section class="station_table">
     <Loading
-      v-if="apiStore.dataStatuses.connection == Status.Loading && displayedStations.length == 0"
+      v-if="apiStore.dataStatuses.connection == Status.Loading && filteredStationList.length == 0"
     />
 
-    <div class="table_wrapper" v-else-if="displayedStations.length > 0">
-      <table>
-        <thead>
-          <tr>
-            <th
-              v-for="headerName in headIds"
-              :key="headerName"
-              @click="changeSorter(headerName)"
-              class="header-text"
-              :class="headerName"
-            >
-              <span class="header_wrapper">
-                <div v-html="$t(`sceneries.headers.${headerName}`)"></div>
-
-                <img
-                  class="sort-icon"
-                  v-if="sorterActive.headerName == headerName"
-                  :src="`/images/icon-arrow-${sorterActive.dir == 1 ? 'asc' : 'desc'}.svg`"
-                  alt="sort icon"
-                />
-              </span>
-            </th>
-
-            <th
-              v-for="headerName in headIconsIds"
-              :key="headerName"
-              @click="changeSorter(headerName)"
-              class="header-image"
-              :class="headerName"
-            >
-              <span class="header_wrapper">
-                <img
-                  :src="`/images/icon-${headerName}.svg`"
-                  :alt="headerName"
-                  :title="$t(`sceneries.headers.${headerName}`)"
-                />
-
-                <img
-                  class="sort-icon"
-                  v-if="sorterActive.headerName == headerName"
-                  :src="`/images/icon-arrow-${sorterActive.dir == 1 ? 'asc' : 'desc'}.svg`"
-                  alt="sort icon"
-                />
-              </span>
-            </th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <tr
-            v-for="station in displayedStations"
-            :class="{ 'last-selected': lastSelectedStationName == station.name }"
-            :key="station.name"
-            @click.left="setScenery(station.name)"
-            @click.right="openForumSite($event, station.generalInfo?.url)"
-            @keydown.enter="setScenery(station.name)"
-            @keydown.space="openForumSite($event, station.generalInfo?.url)"
-            tabindex="0"
+    <table v-else-if="filteredStationList.length > 0">
+      <thead>
+        <tr>
+          <th
+            v-for="headerName in headIds"
+            :key="headerName"
+            @click="changeSorter(headerName)"
+            class="header-text"
+            :class="headerName"
           >
-            <td class="station-name" :class="station.generalInfo?.availability">
-              <b v-if="station.generalInfo?.project" style="color: salmon">{{
-                station.generalInfo.project
-              }}</b>
-              {{ station.name }}
-            </td>
+            <span class="header_wrapper">
+              <div v-html="$t(`sceneries.headers.${headerName}`)"></div>
 
-            <td class="station-level">
-              <span v-if="station.generalInfo">
-                <span
-                  v-if="
-                    station.generalInfo.reqLevel > -1 &&
-                    station.generalInfo.availability != 'nonPublic' &&
-                    station.generalInfo.availability != 'unavailable'
-                  "
-                  :style="calculateExpStyle(station.generalInfo.reqLevel)"
-                >
-                  {{ station.generalInfo.reqLevel >= 2 ? station.generalInfo.reqLevel : 'L' }}
-                </span>
-
-                <span v-else-if="station.generalInfo.availability == 'abandoned'">
-                  <img
-                    src="/images/icon-abandoned.svg"
-                    alt="non-public"
-                    :title="$t('sceneries.info.abandoned')"
-                  />
-                </span>
-
-                <span v-else-if="station.generalInfo.availability == 'nonPublic'">
-                  <img
-                    src="/images/icon-lock.svg"
-                    alt="non-public"
-                    :title="$t('sceneries.info.non-public')"
-                  />
-                </span>
-
-                <span v-else>
-                  <img
-                    src="/images/icon-unavailable.svg"
-                    alt="unavailable"
-                    :title="$t('sceneries.info.unavailable')"
-                  />
-                </span>
-              </span>
-
-              <span v-else> ? </span>
-            </td>
-
-            <td class="station-status">
-              <StationStatusBadge
-                :isOnline="station.onlineInfo ? true : false"
-                :dispatcherStatus="station.onlineInfo?.dispatcherStatus"
+              <img
+                class="sort-icon"
+                v-if="activeSorter.headerName == headerName"
+                :src="`/images/icon-arrow-${activeSorter.dir == 1 ? 'asc' : 'desc'}.svg`"
+                alt="sort icon"
               />
-            </td>
+            </span>
+          </th>
 
-            <td class="station-dispatcher-name">
-              <span v-if="station.onlineInfo?.dispatcherName">
-                <b
-                  v-if="apiStore.donatorsData.includes(station.onlineInfo.dispatcherName)"
-                  @click.stop="openDonationModal"
-                  data-tooltip-type="DonatorTooltip"
-                  :data-tooltip-content="$t('donations.dispatcher-message')"
-                >
-                  <img src="/images/icon-diamond.svg" alt="" />
-                  {{ station.onlineInfo.dispatcherName }}
-                </b>
+          <th
+            v-for="headerName in headIconsIds"
+            :key="headerName"
+            @click="changeSorter(headerName)"
+            class="header-image"
+            :class="headerName"
+          >
+            <span class="header_wrapper">
+              <img
+                :src="`/images/icon-${headerName}.svg`"
+                :alt="headerName"
+                :title="$t(`sceneries.headers.${headerName}`)"
+              />
 
-                <div v-else>
-                  {{ station.onlineInfo.dispatcherName }}
-                </div>
-              </span>
-            </td>
+              <img
+                class="sort-icon"
+                v-if="activeSorter.headerName == headerName"
+                :src="`/images/icon-arrow-${activeSorter.dir == 1 ? 'asc' : 'desc'}.svg`"
+                alt="sort icon"
+              />
+            </span>
+          </th>
+        </tr>
+      </thead>
 
-            <td class="station-dispatcher-exp">
+      <tbody>
+        <tr
+          v-for="station in filteredStationList"
+          :class="{ 'last-selected': lastSelectedStationName == station.name }"
+          :key="station.name"
+          @click.left="setScenery(station.name)"
+          @click.right="openForumSite($event, station.generalInfo?.url)"
+          @keydown.enter="setScenery(station.name)"
+          @keydown.space="openForumSite($event, station.generalInfo?.url)"
+          tabindex="0"
+        >
+          <td class="station-name" :class="station.generalInfo?.availability">
+            <b v-if="station.generalInfo?.project" style="color: salmon">{{
+              station.generalInfo.project
+            }}</b>
+            {{ station.name }}
+          </td>
+
+          <td class="station-level">
+            <span v-if="station.generalInfo">
               <span
-                v-if="station.onlineInfo && station.onlineInfo?.dispatcherExp != -1"
-                :style="
-                  calculateExpStyle(
-                    station.onlineInfo.dispatcherExp,
-                    station.onlineInfo.dispatcherIsSupporter
-                  )
+                v-if="
+                  station.generalInfo.reqLevel > -1 &&
+                  station.generalInfo.availability != 'nonPublic' &&
+                  station.generalInfo.availability != 'unavailable'
                 "
+                :style="calculateExpStyle(station.generalInfo.reqLevel)"
               >
-                {{ station.onlineInfo.dispatcherExp < 2 ? 'L' : station.onlineInfo.dispatcherExp }}
+                {{ station.generalInfo.reqLevel >= 2 ? station.generalInfo.reqLevel : 'L' }}
               </span>
-            </td>
 
-            <td class="station-tracks">
-              <div v-if="station.generalInfo">
-                <span
-                  v-if="station.generalInfo.routes.singleElectrifiedNames.length != 0"
-                  class="track catenary"
-                  :title="`${$t('sceneries.info.single-track-routes-catenary')}${
-                    station.generalInfo.routes.singleElectrifiedNames.length
-                  }`"
-                >
-                  {{ station.generalInfo.routes.singleElectrifiedNames.length }}
-                </span>
+              <span v-else-if="station.generalInfo.availability == 'abandoned'">
+                <img
+                  src="/images/icon-abandoned.svg"
+                  alt="non-public"
+                  :title="$t('sceneries.info.abandoned')"
+                />
+              </span>
 
-                <span
-                  v-if="station.generalInfo.routes.singleOtherNames.length != 0"
-                  class="track no-catenary"
-                  :title="`${$t('sceneries.info.single-track-routes-other')}${
-                    station.generalInfo.routes.singleOtherNames.length
-                  }`"
-                >
-                  {{ station.generalInfo.routes.singleOtherNames.length }}
-                </span>
+              <span v-else-if="station.generalInfo.availability == 'nonPublic'">
+                <img
+                  src="/images/icon-lock.svg"
+                  alt="non-public"
+                  :title="$t('sceneries.info.non-public')"
+                />
+              </span>
+
+              <span v-else>
+                <img
+                  src="/images/icon-unavailable.svg"
+                  alt="unavailable"
+                  :title="$t('sceneries.info.unavailable')"
+                />
+              </span>
+            </span>
+
+            <span v-else> ? </span>
+          </td>
+
+          <td class="station-status">
+            <StationStatusBadge
+              :isOnline="station.onlineInfo ? true : false"
+              :dispatcherStatus="station.onlineInfo?.dispatcherStatus"
+            />
+          </td>
+
+          <td class="station-dispatcher-name">
+            <span v-if="station.onlineInfo?.dispatcherName">
+              <b
+                v-if="apiStore.donatorsData.includes(station.onlineInfo.dispatcherName)"
+                @click.stop="openDonationCard"
+                data-tooltip-type="DonatorTooltip"
+                :data-tooltip-content="$t('donations.dispatcher-message')"
+              >
+                <img src="/images/icon-diamond.svg" alt="" />
+                {{ station.onlineInfo.dispatcherName }}
+              </b>
+
+              <div v-else>
+                {{ station.onlineInfo.dispatcherName }}
               </div>
-            </td>
+            </span>
+          </td>
 
-            <td class="station-tracks">
-              <div v-if="station.generalInfo">
-                <span
-                  v-if="station.generalInfo.routes.doubleElectrifiedNames.length != 0"
-                  class="track catenary"
-                  :title="`${$t('sceneries.info.double-track-routes-catenary')}${
-                    station.generalInfo.routes.doubleElectrifiedNames.length
-                  }`"
-                >
-                  {{ station.generalInfo.routes.doubleElectrifiedNames.length }}
-                </span>
+          <td class="station-dispatcher-exp">
+            <span
+              v-if="station.onlineInfo && station.onlineInfo?.dispatcherExp != -1"
+              :style="
+                calculateExpStyle(
+                  station.onlineInfo.dispatcherExp,
+                  station.onlineInfo.dispatcherIsSupporter
+                )
+              "
+            >
+              {{ station.onlineInfo.dispatcherExp < 2 ? 'L' : station.onlineInfo.dispatcherExp }}
+            </span>
+          </td>
 
-                <span
-                  v-if="station.generalInfo.routes.doubleOtherNames.length != 0"
-                  class="track no-catenary"
-                  :title="`${$t('sceneries.info.double-track-routes-other')}${
-                    station.generalInfo.routes.doubleOtherNames.length
-                  }`"
-                >
-                  {{ station.generalInfo.routes.doubleOtherNames.length }}
-                </span>
-              </div>
-            </td>
-
-            <td class="station-info">
+          <td class="station-tracks">
+            <div v-if="station.generalInfo">
               <span
-                v-if="station.generalInfo?.signalType"
-                class="scenery-icon icon-info"
-                :class="station.generalInfo?.controlType.replace('+', '-')"
-                :title="
-                  $t('sceneries.info.control-type') +
-                  $t(`controls.${station.generalInfo?.controlType}`)
-                "
+                v-if="station.generalInfo.routes.singleElectrifiedNames.length != 0"
+                class="track catenary"
+                :title="`${$t('sceneries.info.single-track-routes-catenary')}${
+                  station.generalInfo.routes.singleElectrifiedNames.length
+                }`"
               >
-                {{ $t(`controls.abbrevs.${station.generalInfo.controlType}`) }}
+                {{ station.generalInfo.routes.singleElectrifiedNames.length }}
               </span>
 
-              <img
-                v-if="station.generalInfo?.signalType"
-                class="icon-info"
-                :src="`/images/icon-${station.generalInfo.signalType}.svg`"
-                :alt="station.generalInfo.signalType"
-                :title="
-                  $t('sceneries.info.signals-type') +
-                  $t(`signals.${station.generalInfo.signalType}`)
-                "
-              />
+              <span
+                v-if="station.generalInfo.routes.singleOtherNames.length != 0"
+                class="track no-catenary"
+                :title="`${$t('sceneries.info.single-track-routes-other')}${
+                  station.generalInfo.routes.singleOtherNames.length
+                }`"
+              >
+                {{ station.generalInfo.routes.singleOtherNames.length }}
+              </span>
+            </div>
+          </td>
 
-              <img
-                v-if="station.generalInfo?.SUP"
-                class="icon-info"
-                src="/images/icon-SUP.svg"
-                alt="SUP (RASP-UZK)"
-                :title="$t('sceneries.info.SUP')"
-              />
+          <td class="station-tracks">
+            <div v-if="station.generalInfo">
+              <span
+                v-if="station.generalInfo.routes.doubleElectrifiedNames.length != 0"
+                class="track catenary"
+                :title="`${$t('sceneries.info.double-track-routes-catenary')}${
+                  station.generalInfo.routes.doubleElectrifiedNames.length
+                }`"
+              >
+                {{ station.generalInfo.routes.doubleElectrifiedNames.length }}
+              </span>
 
-              <img
-                v-if="station.generalInfo?.ASDEK"
-                class="icon-info"
-                src="/images/icon-ASDEK.svg"
-                alt="dSAT ASDEK"
-                :title="$t('sceneries.info.ASDEK')"
-              />
+              <span
+                v-if="station.generalInfo.routes.doubleOtherNames.length != 0"
+                class="track no-catenary"
+                :title="`${$t('sceneries.info.double-track-routes-other')}${
+                  station.generalInfo.routes.doubleOtherNames.length
+                }`"
+              >
+                {{ station.generalInfo.routes.doubleOtherNames.length }}
+              </span>
+            </div>
+          </td>
 
-              <img
-                v-if="!station.generalInfo"
-                class="icon-info"
-                src="/images/icon-unknown.svg"
-                alt="icon-unknown"
-                :title="$t('sceneries.info.unknown')"
-              />
-            </td>
-
-            <td
-              class="station-users"
-              :class="{ inactive: !station.onlineInfo }"
-              data-tooltip-type="UsersTooltip"
-              :data-tooltip-content="JSON.stringify(station.onlineInfo?.stationTrains ?? [])"
+          <td class="station-info">
+            <span
+              v-if="station.generalInfo?.signalType"
+              class="scenery-icon icon-info"
+              :class="station.generalInfo?.controlType.replace('+', '-')"
+              :title="
+                $t('sceneries.info.control-type') +
+                $t(`controls.${station.generalInfo?.controlType}`)
+              "
             >
-              <span class="text--primary">{{
-                station.onlineInfo?.stationTrains?.length ?? '-'
-              }}</span>
-              /
-              <span class="text--primary">{{ station.onlineInfo?.maxUsers ?? '-' }}</span>
-            </td>
+              {{ $t(`controls.abbrevs.${station.generalInfo.controlType}`) }}
+            </span>
 
-            <td class="station-likes" :class="{ inactive: !station.onlineInfo }">
-              <span>{{ station.onlineInfo?.dispatcherRate ?? '-' }}</span>
-            </td>
+            <img
+              v-if="station.generalInfo?.signalType"
+              class="icon-info"
+              :src="`/images/icon-${station.generalInfo.signalType}.svg`"
+              :alt="station.generalInfo.signalType"
+              :title="
+                $t('sceneries.info.signals-type') + $t(`signals.${station.generalInfo.signalType}`)
+              "
+            />
 
-            <td
-              class="station-spawns"
-              :class="{ inactive: !station.onlineInfo }"
-              data-tooltip-type="SpawnsTooltip"
-              :data-tooltip-content="JSON.stringify(station.onlineInfo?.spawns ?? [])"
-            >
-              <span>{{ station.onlineInfo?.spawns.length ?? '-' }}</span>
-            </td>
+            <img
+              v-if="station.generalInfo?.SUP"
+              class="icon-info"
+              src="/images/icon-SUP.svg"
+              alt="SUP (RASP-UZK)"
+              :title="$t('sceneries.info.SUP')"
+            />
 
-            <td
-              class="station-schedules all"
-              style="width: 30px"
-              :class="{ inactive: !station.onlineInfo }"
-            >
-              {{ station.onlineInfo?.scheduledTrainCount.all ?? '-' }}
-            </td>
+            <img
+              v-if="station.generalInfo?.ASDEK"
+              class="icon-info"
+              src="/images/icon-ASDEK.svg"
+              alt="dSAT ASDEK"
+              :title="$t('sceneries.info.ASDEK')"
+            />
 
-            <td
-              class="station-schedules unconfirmed"
-              style="width: 30px"
-              :class="{ inactive: !station.onlineInfo }"
-            >
-              {{ station.onlineInfo?.scheduledTrainCount.unconfirmed ?? '-' }}
-            </td>
+            <img
+              v-if="!station.generalInfo"
+              class="icon-info"
+              src="/images/icon-unknown.svg"
+              alt="icon-unknown"
+              :title="$t('sceneries.info.unknown')"
+            />
+          </td>
 
-            <td
-              class="station-schedules confirmed"
-              style="width: 30px"
-              :class="{ inactive: !station.onlineInfo }"
-            >
-              {{ station.onlineInfo?.scheduledTrainCount.confirmed ?? '-' }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+          <td
+            class="station-users"
+            :class="{ inactive: !station.onlineInfo }"
+            data-tooltip-type="UsersTooltip"
+            :data-tooltip-content="JSON.stringify(station.onlineInfo?.stationTrains ?? [])"
+          >
+            <span class="text--primary">{{
+              station.onlineInfo?.stationTrains?.length ?? '-'
+            }}</span>
+            /
+            <span class="text--primary">{{ station.onlineInfo?.maxUsers ?? '-' }}</span>
+          </td>
+
+          <td class="station-likes" :class="{ inactive: !station.onlineInfo }">
+            <span>{{ station.onlineInfo?.dispatcherRate ?? '-' }}</span>
+          </td>
+
+          <td
+            class="station-spawns"
+            :class="{ inactive: !station.onlineInfo }"
+            data-tooltip-type="SpawnsTooltip"
+            :data-tooltip-content="JSON.stringify(station.onlineInfo?.spawns ?? [])"
+          >
+            <span>{{ station.onlineInfo?.spawns.length ?? '-' }}</span>
+          </td>
+
+          <td
+            class="station-schedules all"
+            style="width: 30px"
+            :class="{ inactive: !station.onlineInfo }"
+          >
+            {{ station.onlineInfo?.scheduledTrainCount.all ?? '-' }}
+          </td>
+
+          <td
+            class="station-schedules unconfirmed"
+            style="width: 30px"
+            :class="{ inactive: !station.onlineInfo }"
+          >
+            {{ station.onlineInfo?.scheduledTrainCount.unconfirmed ?? '-' }}
+          </td>
+
+          <td
+            class="station-schedules confirmed"
+            style="width: 30px"
+            :class="{ inactive: !station.onlineInfo }"
+          >
+            {{ station.onlineInfo?.scheduledTrainCount.confirmed ?? '-' }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
     <div class="no-stations" v-else>
-      {{ $t('sceneries.no-stations') }} (region: <b>{{ mainStore.region.name }}</b
-      >)
+      <div>
+        {{ $t('sceneries.no-stations') }} (region: <b>{{ mainStore.region.name }}</b
+        >)
+      </div>
+
+      <div class="text--primary" v-if="getChangedFilters(filters).length != 0">
+        ⚠ {{ $t('sceneries.active-filters') }}
+      </div>
     </div>
   </section>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, inject, computed } from 'vue';
+import StationStatusBadge from '../Global/StationStatusBadge.vue';
+import Loading from '../Global/Loading.vue';
 import dateMixin from '../../mixins/dateMixin';
 import styleMixin from '../../mixins/styleMixin';
-import { useStationFiltersStore } from '../../store/stationFiltersStore';
-import { useMainStore } from '../../store/mainStore';
-import Loading from '../Global/Loading.vue';
-import { HeadIdsTypes, headIconsIds, headIds } from '../../scripts/data/stationHeaderNames';
-import StationStatusBadge from '../Global/StationStatusBadge.vue';
-import { Station, Status } from '../../typings/common';
 import { useApiStore } from '../../store/apiStore';
+import { useMainStore } from '../../store/mainStore';
+import { Status } from '../../typings/common';
 import { useTooltipStore } from '../../store/tooltipStore';
+import { getChangedFilters } from '../../managers/stationFilterManager';
+import { ActiveSorter, HeadIdsType, headIconsIds, headIds } from './typings';
+import { filterStations, sortStations } from './utils';
 
 export default defineComponent({
-  emits: ['toggleDonationModal'],
+  emits: ['toggleDonationCard'],
+
   components: { Loading, StationStatusBadge },
   mixins: [styleMixin, dateMixin],
 
   data: () => ({
     headIconsIds,
     headIds,
-    lastSelectedStationName: ''
+    lastSelectedStationName: '',
+    getChangedFilters
   }),
-
-  computed: {
-    sorterActive() {
-      return this.stationFiltersStore.sorterActive;
-    },
-
-    displayedStations() {
-      return this.stationFiltersStore.filteredStationList;
-    }
-  },
 
   setup() {
     const mainStore = useMainStore();
     const apiStore = useApiStore();
     const tooltipStore = useTooltipStore();
 
-    const stationFiltersStore = useStationFiltersStore();
+    const filters = inject('StationsView_filters') as Record<string, any>;
+    const activeSorter = inject('StationsView_activeSorter') as ActiveSorter;
+
+    const filteredStationList = computed(() =>
+      mainStore.allStationInfo
+        .filter((station) => filterStations(station, filters))
+        .sort((a, b) => sortStations(a, b, activeSorter))
+    );
 
     return {
       Status: Status.Data,
-      stationFiltersStore,
       mainStore,
       apiStore,
-      tooltipStore
+      tooltipStore,
+      filters,
+      filteredStationList,
+      activeSorter
     };
   },
 
   methods: {
     setScenery(name: string) {
-      const station = this.displayedStations.find((station) => station.name === name);
+      const station = this.filteredStationList.find((station) => station.name === name);
 
       if (!station) return;
 
@@ -376,8 +381,8 @@ export default defineComponent({
       });
     },
 
-    openDonationModal(e: Event) {
-      this.$emit('toggleDonationModal', true);
+    openDonationCard(e: Event) {
+      this.$emit('toggleDonationCard', true);
       this.mainStore.modalLastClickedTarget = e.target;
       this.tooltipStore.hide();
     },
@@ -388,10 +393,14 @@ export default defineComponent({
       window.open(url, '_blank');
     },
 
-    changeSorter(headerName: HeadIdsTypes) {
+    changeSorter(headerName: HeadIdsType) {
       if (headerName == 'general') return;
 
-      this.stationFiltersStore.changeSorter(headerName);
+      if (headerName == this.activeSorter.headerName)
+        this.activeSorter.dir = -1 * this.activeSorter.dir;
+      else this.activeSorter.dir = 1;
+
+      this.activeSorter.headerName = headerName;
     }
   }
 });
@@ -406,18 +415,18 @@ $rowCol: #424242;
 
 .station_table {
   height: 80vh;
-  min-height: 550px;
+  max-height: 2000px;
+  min-height: 700px;
   overflow: auto;
   font-weight: 500;
 }
 
 .no-stations {
   text-align: center;
-  font-size: 1.5em;
-
+  font-size: 1.25em;
   padding: 1em;
-
   background: #1a1a1a;
+  line-height: 1.5em;
 }
 
 table {

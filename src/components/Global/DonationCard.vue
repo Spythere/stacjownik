@@ -1,12 +1,7 @@
 <template>
-  <AnimatedModal
-    class="donation-modal"
-    :isOpen="isModalOpen"
-    @toggleModal="toggleModal"
-    @keydown.esc="toggleModal(false)"
-  >
-    <div class="modal_content">
-      <div class="modal_main">
+  <Card :isOpen="isCardOpen" @toggleCard="toggleCard" @keydown.esc="toggleCard(false)">
+    <div class="body">
+      <div class="content">
         <h1 v-html="$t('donations.header')"></h1>
         <div class="donators-slider" v-if="donatorList.length != 0">
           <span v-html="$t('donations.donator-title', { count: donatorList.length })"></span>
@@ -61,9 +56,9 @@
         </i>
       </div>
 
-      <div class="modal_actions">
+      <div class="actions">
         <a
-          class="modal-action a-button btn--image coffee"
+          class="action a-button btn--image coffee"
           href="https://buycoffee.to/spythere"
           target="_blank"
           ref="action"
@@ -73,7 +68,7 @@
         </a>
 
         <a
-          class="modal-action a-button btn--image paypal"
+          class="action a-button btn--image paypal"
           href="https://www.paypal.com/donate/?hosted_button_id=EDB3SKFAHXFTW"
           target="_blank"
         >
@@ -81,30 +76,30 @@
           {{ $t('donations.action-paypal') }}
         </a>
 
-        <button class="modal-action btn--image exit" @click="toggleModal(false)">
+        <button class="action btn--image exit" @click="toggleCard(false)">
           <img src="/images/icon-exit.svg" alt="dollar donation icon" />
           {{ $t('donations.action-exit') }}
         </button>
       </div>
     </div>
-  </AnimatedModal>
+  </Card>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import AnimatedModal from './AnimatedModal.vue';
 import { useApiStore } from '../../store/apiStore';
+import Card from './Card.vue';
 
 export default defineComponent({
-  components: { AnimatedModal },
+  components: { Card },
   props: {
-    isModalOpen: Boolean
+    isCardOpen: Boolean
   },
 
-  emits: ['toggleModal'],
+  emits: ['toggleCard'],
 
   watch: {
-    isModalOpen(val: boolean) {
+    isCardOpen(val: boolean) {
       this.running = val;
       this.lastUpdate = Date.now();
 
@@ -138,8 +133,8 @@ export default defineComponent({
   },
 
   methods: {
-    toggleModal(value: boolean) {
-      this.$emit('toggleModal', value);
+    toggleCard(value: boolean) {
+      this.$emit('toggleCard', value);
     },
 
     runUpdate() {
@@ -157,53 +152,53 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '../../styles/responsive.scss';
 
-.modal_content {
+.body {
   display: grid;
   grid-template-rows: 1fr auto;
   gap: 1em;
 
   font-size: 1.1em;
 
-  & > div {
-    padding: 1em;
-  }
-
-  h1 {
-    font-size: 1.95em;
-    text-align: center;
-  }
-
-  p {
-    text-align: justify;
-  }
-
-  a.discord {
-    text-decoration: underline;
-  }
+  max-width: 820px;
 }
 
-.modal_main {
+.content {
   overflow: auto;
   overflow-x: hidden;
-
-  img {
-    max-height: 20px;
-    margin-right: 5px;
-    vertical-align: text-bottom;
-  }
+  padding: 1em;
 }
 
-.modal_actions {
+img {
+  max-height: 20px;
+  margin-right: 5px;
+  vertical-align: text-bottom;
+}
+
+h1 {
+  font-size: 1.95em;
+  text-align: center;
+}
+
+p {
+  text-align: justify;
+}
+
+a.discord {
+  text-decoration: underline;
+}
+
+.actions {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 0.5em;
+  padding: 1em;
 
   form button {
     width: 100%;
   }
 }
 
-.modal_actions > .modal-action {
+.actions > .action {
   &.paypal {
     $btnColor: #254069;
 

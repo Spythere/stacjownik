@@ -8,17 +8,18 @@
       <Loading v-else-if="apiStore.dataStatuses.connection == Status.Loading" key="loading" />
 
       <div class="table-warning" key="no-trains" v-else-if="trains.length == 0">
-        {{ $t('trains.no-trains') }}
+        {{ $t('trains.no-trains') }} (region: <b>{{ store.region.name }}</b
+        >)
       </div>
 
       <transition-group name="list-anim" tag="ul">
         <li
           class="train-row"
           v-for="train in trains"
-          :key="train.trainId"
+          :key="train.id"
           tabindex="0"
-          @click.stop="selectModalTrain(train.trainId, $event.currentTarget)"
-          @keydown.enter="selectModalTrain(train.trainId, $event.currentTarget)"
+          @click.stop="selectModalTrain(train, $event.currentTarget)"
+          @keydown.enter="selectModalTrain(train, $event.currentTarget)"
         >
           <TrainInfo :train="train" :extended="false" />
         </li>
@@ -76,17 +77,6 @@ export default defineComponent({
 
       return Status.Data.Loaded;
     }
-  },
-
-  activated() {
-    const query = this.$route.query;
-    if (query.trainNo && query.driverName) {
-      this.searchedDriver = query.driverName.toString();
-      this.searchedTrain = query.trainNo.toString();
-      setTimeout(() => {
-        this.selectModalTrain(query.driverName! + query.trainNo!.toString());
-      }, 20);
-    }
   }
 });
 </script>
@@ -108,8 +98,7 @@ export default defineComponent({
   text-align: center;
 
   padding: 1em 0;
-
-  font-size: 1.5em;
+  font-size: 1.25em;
 
   background: #1a1a1a;
 }

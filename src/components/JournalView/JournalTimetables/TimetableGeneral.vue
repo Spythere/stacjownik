@@ -26,7 +26,8 @@
       <strong
         v-if="apiStore.donatorsData.includes(timetable.driverName)"
         class="text--donator"
-        :title="$t('donations.driver-message')"
+        data-tooltip-type="DonatorTooltip"
+        :data-tooltip-content="$t('donations.driver-message')"
       >
         {{ timetable.driverName }}
       </strong>
@@ -103,7 +104,7 @@ export default defineComponent({
     showTimetable(timetable: API.TimetableHistory.Data, target: EventTarget | null) {
       if (timetable?.terminated) return;
 
-      this.selectModalTrain(timetable.driverName + timetable.trainNo.toString(), target);
+      this.selectModalTrainById(`${timetable.driverName}${timetable.trainNo}`, target);
     }
   }
 });
