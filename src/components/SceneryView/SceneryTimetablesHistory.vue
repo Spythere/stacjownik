@@ -19,7 +19,7 @@
         {{ $t('scenery.history-list-empty') }}
       </div>
 
-      <div v-else class="history-list">
+      <div v-else class="journal-list">
         <div v-for="timetableHistory in historyList" :key="timetableHistory.id">
           <span>
             <div>
@@ -219,14 +219,14 @@ export default defineComponent({
   }
 }
 
-.history-list {
+.journal-list {
   display: flex;
   flex-direction: column;
   gap: 0.5em;
   text-align: left;
 }
 
-.history-list > div {
+.journal-list > div {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -235,7 +235,7 @@ export default defineComponent({
   line-height: 1.5em;
 }
 
-.history-list > div > button > img {
+.journal-list > div > button > img {
   width: 2em;
   transform: rotate(180deg);
 }

@@ -18,7 +18,7 @@ export const useApiStore = defineStore('apiStore', {
     donatorsData: [] as API.Donators.Response,
     sceneryData: [] as StationJSONData[],
 
-    lastFetchData: new Date(),
+    nextUpdateTime: 0,
 
     client: undefined as AxiosInstance | undefined,
 
@@ -51,27 +51,33 @@ export const useApiStore = defineStore('apiStore', {
       // Static data
       this.fetchDonatorsData();
       this.fetchStationsGeneralInfo();
-
-      // Ponowne pobieranie danych po ServiceWorkerze
-      setTimeout(() => {
-        this.fetchStationsGeneralInfo();
-      }, Math.floor(Math.random() * 500) + 1000);
-
       this.fetchVehiclesInfo();
+
+      window.requestAnimationFrame(this.updateTick);
+    },
+
+    updateTick(t: number) {
+      if (this.dataStatuses.connection == Status.Data.Offline) return;
+
+      if (t >= this.nextUpdateTime) {
+        this.fetchActiveData();
+        this.nextUpdateTime = t + 20000;
+      }
+
+      window.requestAnimationFrame(this.updateTick);
     },
 
     async fetchActiveData() {
-      if (import.meta.env.VITE_API_ACTIVE_DATA_MODE == 'mocking') {
-        import('../../tests/data/getActiveData.json').then((data) => {
-          console.warn('activeData: mocking mode');
-          this.activeData = data.default as API.ActiveData.Response;
-          this.lastFetchData = new Date();
+      // if (import.meta.env.VITE_API_ACTIVE_DATA_MODE == 'mocking') {
+      //   import('../../tests/data/getActiveData.json').then((data) => {
+      //     console.warn('activeData: mocking mode');
+      //     this.activeData = data.default as API.ActiveData.Response;
 
-          this.dataStatuses.connection = Status.Data.Loaded;
-        });
+      //     this.dataStatuses.connection = Status.Data.Loaded;
+      //   });
 
-        return;
-      }
+      //   return;
+      // }
 
       if (!this.activeData) this.dataStatuses.connection = Status.Data.Loading;
 
@@ -79,7 +85,6 @@ export const useApiStore = defineStore('apiStore', {
         const response = await this.client!.get<API.ActiveData.Response>('api/getActiveData');
 
         this.activeData = response.data;
-        this.lastFetchData = new Date();
         this.dataStatuses.connection = Status.Data.Loaded;
       } catch (error) {
         this.dataStatuses.connection = Status.Data.Error;

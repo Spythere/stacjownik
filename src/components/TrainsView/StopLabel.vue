@@ -8,15 +8,9 @@
     <span
       v-if="stop.position != 'begin'"
       class="date arrival"
-      :data-status="
-        stop.arrivalDelay > 0 && stop.status != 'unconfirmed'
-          ? 'delayed'
-          : stop.arrivalDelay < 0 && stop.status != 'unconfirmed'
-            ? 'preponed'
-            : stop.arrivalDelay == 0 && stop.status == 'confirmed'
-              ? 'on-time'
-              : ''
-      "
+      :data-status-delayed="stop.arrivalDelay > 0"
+      :data-status-preponed="stop.arrivalDelay < 0"
+      :data-status="stop.status"
     >
       p.
       <span v-if="stop.arrivalDelay != 0 && stop.status != 'unconfirmed'">
@@ -31,10 +25,7 @@
     </span>
 
     <span
-      v-if="
-        stop.duration ||
-        (stop.status == 'stopped' && stop.position != 'begin' && stop.departureDelay > 0)
-      "
+      v-if="stop.duration"
       class="date stop"
       :data-stop-types="stop.type.replace(', ', '-')"
       :data-stop-status="stop.departureDelay > 0 && !stop.duration ? 'delayed' : ''"
@@ -53,20 +44,12 @@
         (stop.duration != 0 || stop.status == 'stopped' || stop.departureDelay != stop.arrivalDelay)
       "
       class="date departure"
-      :data-status="
-        stop.departureDelay > 0 && stop.status == 'confirmed'
-          ? 'delayed'
-          : stop.departureDelay < 0 && stop.status == 'confirmed'
-            ? 'preponed'
-            : stop.departureDelay == 0 && stop.status == 'confirmed'
-              ? 'on-time'
-              : ''
-      "
+      :data-status-delayed="stop.departureDelay > 0"
+      :data-status-preponed="stop.departureDelay < 0"
+      :data-status-confirmed="stop.status == 'confirmed'"
     >
       o.
-      <span
-        v-if="stop.departureDelay != 0 && (stop.status == 'confirmed' || stop.status == 'stopped')"
-      >
+      <span v-if="stop.departureDelay != 0 && stop.status == 'confirmed'">
         <s>{{ timestampToString(stop.departureScheduled) }}</s>
         {{ timestampToString(stop.departureReal) }}
 
@@ -104,6 +87,10 @@ $dateClr: #525151;
 $stopExchangeClr: #db8e29;
 $stopDefaultClr: #252525;
 $stopNameClr: #303030;
+
+s {
+  color: #ccc;
+}
 
 .stop-label {
   display: flex;
@@ -157,27 +144,44 @@ $stopNameClr: #303030;
       color: $delayedClr;
     }
   }
+}
 
-  .arrival,
-  .departure {
-    &[data-status='delayed'] {
-      s {
-        color: #ccc;
-      }
-
-      span {
-        color: $delayedClr;
-      }
+.stop .arrival {
+  &[data-status='confirmed'][data-status-delayed='true'] {
+    span {
+      color: $delayedClr;
     }
+  }
 
-    &[data-status='preponed'] {
-      s {
-        color: #ccc;
-      }
+  &[data-status='confirmed'][data-status-preponed='true'] {
+    span {
+      color: $preponedClr;
+    }
+  }
 
-      span {
-        color: $preponedClr;
-      }
+  &[data-status='stopped'][data-status-preponed='true'] {
+    span {
+      color: $preponedClr;
+    }
+  }
+
+  &[data-status='stopped'][data-status-delayed='true'] {
+    span {
+      color: $delayedClr;
+    }
+  }
+}
+
+.stop .departure[data-status-confirmed='true'] {
+  &[data-status-delayed='true'] {
+    span {
+      color: $delayedClr;
+    }
+  }
+
+  &[data-status-preponed='true'] {
+    span {
+      color: $preponedClr;
     }
   }
 }

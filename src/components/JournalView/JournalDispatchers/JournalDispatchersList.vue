@@ -15,90 +15,16 @@
         {{ $t('app.no-result') }}
       </div>
 
-      <div v-else>
-        <table class="dispatchers-table">
-          <thead>
-            <th>{{ $t('journal.history-name') }}</th>
-            <th>{{ $t('journal.history-hash') }}</th>
-            <th>{{ $t('journal.history-dispatcher') }}</th>
-            <th>{{ $t('journal.history-level') }}</th>
-            <th>{{ $t('journal.history-rate') }}</th>
-            <th>{{ $t('journal.history-region') }}</th>
-            <th>{{ $t('journal.history-date') }}</th>
-          </thead>
-
-          <tbody>
-            <transition-group name="list-anim">
-              <tr v-for="historyItem in dispatcherHistory" :key="historyItem.id">
-                <td>
-                  <router-link
-                    :to="`/journal/dispatchers?search-station=${historyItem.stationName}`"
-                  >
-                    <b>{{ historyItem.stationName }}</b>
-                  </router-link>
-                </td>
-                <td>#{{ historyItem.stationHash }}</td>
-                <td>
-                  <router-link
-                    :to="`/journal/dispatchers?search-dispatcher=${historyItem.dispatcherName}`"
-                  >
-                    <b
-                      v-if="apiStore.donatorsData.includes(historyItem.dispatcherName)"
-                      class="text--donator"
-                      :title="$t('donations.dispatcher-message')"
-                    >
-                      {{ historyItem.dispatcherName }}
-                    </b>
-
-                    <b v-else>
-                      {{ historyItem.dispatcherName }}
-                    </b>
-                  </router-link>
-                </td>
-                <td>
-                  <b
-                    v-if="historyItem.dispatcherLevel !== null"
-                    class="level-badge dispatcher"
-                    :style="
-                      calculateExpStyle(
-                        historyItem.dispatcherLevel,
-                        historyItem.dispatcherIsSupporter
-                      )
-                    "
-                  >
-                    {{ historyItem.dispatcherLevel >= 2 ? historyItem.dispatcherLevel : 'L' }}
-                  </b>
-                </td>
-                <td class="text--primary">
-                  <b>{{ historyItem.dispatcherRate }}</b>
-                </td>
-                <td>
-                  <b class="region-badge" :aria-describedby="historyItem.region">{{
-                    regions.find((r) => r.id == historyItem.region)?.value || '???'
-                  }}</b>
-                </td>
-                <td style="min-width: 200px" class="time">
-                  <span v-if="historyItem.timestampTo" class="text--offline">
-                    <b>{{ $d(historyItem.timestampFrom) }}</b>
-                    {{ timestampToString(historyItem.timestampFrom) }}
-                    - {{ timestampToString(historyItem.timestampTo) }} ({{
-                      calculateDuration(historyItem.currentDuration)
-                    }})
-                  </span>
-                  <span class="dispatcher-online" v-else>
-                    <b class="text--online">
-                      <router-link :to="`/scenery?station=${historyItem.stationName}`">{{
-                        $t('journal.online-since')
-                      }}</router-link>
-                      {{ timestampToString(historyItem.timestampFrom) }}
-                    </b>
-                    ({{ calculateDuration(historyItem.currentDuration) }})
-                  </span>
-                </td>
-              </tr>
-            </transition-group>
-          </tbody>
-        </table>
+      <ul v-else class="journal-list">
+        <transition-group name="list-anim">
+          <JournalDispatcherEntry
+            v-for="entry in dispatcherHistory"
+            :key="entry.id"
+            :entry="entry"
+            :onToggleShowExtraInfo="toggleExtraInfo"
+            :showExtraInfo="extraInfoIndexes.includes(entry.id)"
+          />
+        </transition-group>
 
         <AddDataButton
           :list="dispatcherHistory"
@@ -106,7 +32,7 @@
           :scrollNoMoreData="scrollNoMoreData"
           @addHistoryData="addHistoryData"
         />
-      </div>
+      </ul>
 
       <div class="journal_warning" v-if="scrollNoMoreData">
         {{ $t('journal.no-further-data') }}
@@ -121,20 +47,15 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import { regions } from '../../../data/options.json';
 import { useMainStore } from '../../../store/mainStore';
 import { API } from '../../../typings/api';
 import { Status } from '../../../typings/common';
 import Loading from '../../Global/Loading.vue';
 import AddDataButton from '../../Global/AddDataButton.vue';
-import dateMixin from '../../../mixins/dateMixin';
-import styleMixin from '../../../mixins/styleMixin';
-import { useApiStore } from '../../../store/apiStore';
+import JournalDispatcherEntry from './JournalDispatcherEntry.vue';
 
 export default defineComponent({
-  components: { Loading, AddDataButton },
-
-  mixins: [dateMixin, styleMixin],
+  components: { Loading, AddDataButton, JournalDispatcherEntry },
 
   props: {
     dispatcherHistory: {
@@ -159,99 +80,30 @@ export default defineComponent({
     return {
       Status,
       store: useMainStore(),
-      apiStore: useApiStore(),
-      regions
+
+      extraInfoIndexes: [] as number[]
     };
   },
 
-  computed: {
-    computedDispatcherHistory() {
-      return this.dispatcherHistory.reduce(
-        (acc, historyItem, i) => {
-          if (this.isAnotherDay(i - 1, i))
-            acc.push(new Date(historyItem.timestampFrom).toLocaleDateString('pl-PL'));
-          acc.push(historyItem);
-
-          return acc;
-        },
-        [] as (API.DispatcherHistory.Data | string)[]
-      );
-    }
-  },
-
   methods: {
-    navigateToScenery(name: string, isOnline: boolean) {
-      if (!isOnline) return;
+    toggleExtraInfo(id: number) {
+      const existingIdx = this.extraInfoIndexes.indexOf(id);
 
-      this.$router.push(`/scenery?station=${name.trim().replace(/ /g, '_')}`);
-    },
-
-    isAnotherDay(prevIndex: number, currIndex: number) {
-      if (currIndex == 0) return true;
-
-      return (
-        new Date(this.dispatcherHistory[prevIndex].timestampFrom).getDate() !=
-        new Date(this.dispatcherHistory[currIndex].timestampFrom).getDate()
-      );
+      if (existingIdx != -1) this.extraInfoIndexes.splice(existingIdx, 1);
+      else this.extraInfoIndexes.push(id);
     }
   }
 });
 </script>
 
 <style lang="scss" scoped>
-@import '../../../styles/animations.scss';
-@import '../../../styles/responsive.scss';
-@import '../../../styles/badge.scss';
 @import '../../../styles/variables.scss';
 @import '../../../styles/JournalSection.scss';
 
-table.dispatchers-table {
-  --_bg-table: #111;
-  --_bg-head: #101010;
-  --_bg-row: #2f2f2f;
-
-  width: 100%;
-  border-collapse: collapse;
-  position: relative;
-  text-align: center;
-
-  margin-bottom: 1em;
-
-  thead {
-    position: sticky;
-    top: 0;
-    background-color: var(--_bg-head);
-  }
-
-  th {
-    padding: 0.5em;
-  }
-
-  tr {
-    background-color: var(--_bg-row);
-    border-bottom: 2px solid black;
-
-    &:last-child {
-      border: none;
-    }
-  }
-
-  td {
-    padding: 0.75em;
-
-    .level-badge {
-      margin: 0 auto;
-    }
-  }
-}
-
-.text {
-  &--online {
-    color: springgreen;
-  }
-
-  &--offline {
-    color: #ddd;
-  }
+.journal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  text-align: left;
 }
 </style>

@@ -26,7 +26,8 @@
       <strong
         v-if="apiStore.donatorsData.includes(timetable.driverName)"
         class="text--donator"
-        :title="$t('donations.driver-message')"
+        data-tooltip-type="DonatorTooltip"
+        :data-tooltip-content="$t('donations.driver-message')"
       >
         {{ timetable.driverName }}
       </strong>
