@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
-    "deploy": "yarn build && firebase deploy --only hosting",
+    "deploy:prod": "yarn build && firebase deploy --only hosting",
+    "deploy:dev": "yarn build && firebase hosting:channel:deploy dev --expires 7d",
     "preview": "yarn build && vite preview",
     "type-check": "vue-tsc --noEmit -p tsconfig.app.json --composite false",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
