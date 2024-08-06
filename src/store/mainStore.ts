@@ -104,7 +104,7 @@ export const useMainStore = defineStore('mainStore', {
                       arrivalRouteExt: arrival,
                       departureRouteExt: departure,
                       stationName: station.split(' ').slice(0, -1).join(' '),
-                      stationHash: station.split(' ').slice(-1).join(' ')
+                      stationHash: station.split(' ').slice(-1).join(' ').replace('.sc', '')
                     };
                   })
                 }
@@ -281,7 +281,11 @@ export const useMainStore = defineStore('mainStore', {
           if (!scheduledTrains) return;
 
           scheduledTrains.forEach(({ train, checkpointStop, timetablePathElement, ...v }) => {
-            if (scenery.name != timetablePathElement.stationName) return;
+            if (
+              scenery.name != timetablePathElement.stationName &&
+              scenery.hash != timetablePathElement.stationHash
+            )
+              return;
 
             scenery.scheduledTrains.push({ train, checkpointStop, timetablePathElement, ...v });
 
