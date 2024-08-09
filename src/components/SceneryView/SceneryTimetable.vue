@@ -73,15 +73,20 @@
         >
           <span class="timetable-general">
             <span class="general-info">
-              <span class="info-number">
-                <strong>{{ row.train.timetableData!.category }}</strong>
-                {{ row.train.trainNo }}
-
+              <span>
+                <b
+                  data-tooltip-type="BaseTooltip"
+                  :data-tooltip-content="getCategoryExplanation(row.train.timetableData!.category)"
+                  class="text--primary tooltip-help"
+                >
+                  {{ row.train.timetableData!.category }}
+                </b>
+                <b>&nbsp;{{ row.train.trainNo }}</b>
                 <span v-if="row.checkpointStop.comments" :title="row.checkpointStop.comments">
                   <img src="/images/icon-warning.svg" />
                 </span>
               </span>
-              &nbsp;|&nbsp;
+              &nbsp;&bull;&nbsp;
               <span>
                 {{ row.train.driverName }}
               </span>
@@ -180,13 +185,14 @@ import { useApiStore } from '../../store/apiStore';
 import { ActiveScenery, Station } from '../../typings/common';
 import { SceneryTimetableRow } from './typings';
 import { getTrainStopStatus, stopStatusPriority } from './utils';
+import trainCategoryMixin from '../../mixins/trainCategoryMixin';
 
 export default defineComponent({
   name: 'SceneryTimetable',
 
   components: { Loading, ScheduledTrainStatus },
 
-  mixins: [dateMixin, routerMixin, modalTrainMixin],
+  mixins: [dateMixin, routerMixin, modalTrainMixin, trainCategoryMixin],
 
   props: {
     station: {
