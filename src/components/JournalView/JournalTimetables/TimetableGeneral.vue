@@ -9,7 +9,11 @@
       </span>
 
       <span>
-        <strong class="text--primary">
+        <strong
+          data-tooltip-type="BaseTooltip"
+          :data-tooltip-content="getCategoryExplanation(timetable.trainCategoryCode)"
+          class="text--primary tooltip-help"
+        >
           {{ timetable.trainCategoryCode }}
         </strong>
         <strong>&nbsp;{{ timetable.trainNo }}</strong>
@@ -83,9 +87,10 @@ import dateMixin from '../../../mixins/dateMixin';
 import modalTrainMixin from '../../../mixins/modalTrainMixin';
 import styleMixin from '../../../mixins/styleMixin';
 import { useApiStore } from '../../../store/apiStore';
+import trainCategoryMixin from '../../../mixins/trainCategoryMixin';
 
 export default defineComponent({
-  mixins: [dateMixin, modalTrainMixin, styleMixin],
+  mixins: [dateMixin, modalTrainMixin, styleMixin, trainCategoryMixin],
 
   data() {
     return {
