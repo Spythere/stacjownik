@@ -243,7 +243,7 @@ export default defineComponent({
       return this.onlineScenery.scheduledTrains
         .filter(
           (ct) =>
-            ct.timetablePathElement.stationName == sceneryName &&
+            // ct.timetablePathElement.stationName == sceneryName &&
             ct.train.region == this.mainStore.region.id &&
             this.chosenCheckpoint &&
             ct.checkpointStop.stopNameRAW.toLowerCase() == this.chosenCheckpoint.toLowerCase()
