@@ -73,7 +73,7 @@
         >
           <span class="timetable-general">
             <span class="general-info">
-              <span>
+              <div class="info-train">
                 <b
                   data-tooltip-type="BaseTooltip"
                   :data-tooltip-content="getCategoryExplanation(row.train.timetableData!.category)"
@@ -81,15 +81,18 @@
                 >
                   {{ row.train.timetableData!.category }}
                 </b>
-                <b>&nbsp;{{ row.train.trainNo }}</b>
-                <span v-if="row.checkpointStop.comments" :title="row.checkpointStop.comments">
+                <span>&nbsp;</span>
+                <b>{{ row.train.trainNo }}</b>
+                <span>&nbsp;&bull;&nbsp;</span>
+                <span>{{ row.train.driverName }}</span>
+                <span
+                  v-if="row.checkpointStop.comments"
+                  data-tooltip-type="BaseTooltip"
+                  :data-tooltip-content="row.checkpointStop.comments"
+                >
                   <img src="/images/icon-warning.svg" />
                 </span>
-              </span>
-              &nbsp;&bull;&nbsp;
-              <span>
-                {{ row.train.driverName }}
-              </span>
+              </div>
 
               <div class="info-route">
                 <strong>{{ row.train.timetableData!.route.replace('|', ' - ') }}</strong>
@@ -429,7 +432,9 @@ export default defineComponent({
   }
 
   img {
-    width: 1.1em;
+    height: 0.9em;
+    vertical-align: middle;
+    margin: 0 0.25em;
   }
 }
 
