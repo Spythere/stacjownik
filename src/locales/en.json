@@ -48,7 +48,47 @@
   "footer": {
     "discord": "Stacjownik Discord server"
   },
+  "categories": {
+    "EI": "domestic express",
+    "EC": "international express",
+    "EN": "domestic night express",
 
+    "MP": "intervoivodeship bullet",
+    "MO": "intervoivodeship regio",
+    "MM": "international bullet",
+    "MH": "intervoivodeship night bullet",
+    
+    "RP": "voivodeship bullet",
+    "RM": "international voivodeship regio",
+    "RO": "voivodeship regio",
+    "RA": "voivodeship regio (urban)",
+
+    "PW": "empty passenger",
+    "PX": "empty passenger test drive",
+
+    "TC": "international freight (intermodal)",
+    "TG": "international freight (organized cargo)",
+    "TR": "international freight (unorganized cargo)",
+    "TD": "domestic freight (intermodal)",
+    "TM": "domestic freight (organized cargo)",
+    "TN": "domestic freight (unorganized cargo)",
+    "TK": "freight (for stations & sidings)",
+    "TS": "empty freight test drive",
+    "TH": "locomotive rolling stock (over 3 vehicles)",
+
+    "LT": "freight locomotive only",
+    "LP": "passenger locomotive only",
+    "LS": "shunting locomotive only",
+    "LZ": "shunting locomotive only",
+
+    "ZN": "inspection / diagnostic type",
+    "ZU": "other maintenance type",
+
+    "E": "electric loco",
+    "J": "EMU",
+    "S": "diesel loco",
+    "M": "DMU"
+  },
   "vehicle-preview": {
     "loading": "Loading preview...",
     "error": "Oops! The vehicle preview seems to be missing! :/"
@@ -123,7 +163,7 @@
     "search-train": "Train no.",
     "search-driver": "Driver name",
     "search-dispatcher": "Dispatcher name",
-    "search-station": "Scenery name",
+    "search-station": "Scenery name / #",
     "search-author": "Timetable author name",
     "search-issuedFrom": "Issuing scenery name",
     "search-via": "Via scenery name",

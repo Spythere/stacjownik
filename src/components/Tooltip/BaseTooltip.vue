@@ -23,6 +23,7 @@ export default defineComponent({
   justify-content: center;
   align-items: center;
   gap: 0.5em;
+  white-space: pre-line;
 
   padding: 0.25em 0.5em;
   border-radius: 0.25em;

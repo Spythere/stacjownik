@@ -308,6 +308,10 @@ a.a-button {
   z-index: 100;
 }
 
+.tooltip-help {
+  cursor: help;
+}
+
 @include smallScreen {
   ::-webkit-scrollbar {
     width: 0.5em;

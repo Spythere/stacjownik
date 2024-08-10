@@ -45,6 +45,47 @@
   "footer": {
     "discord": "Serwer Discord Stacjownika"
   },
+  "categories": {
+    "EI": "ekspres krajowy",
+    "EC": "ekspres międzynarodowy",
+    "EN": "ekspres krajowy nocny",
+
+    "MP": "międzywojewódzki pospieszny",
+    "MO": "międzywojewódzki osobowy",
+    "MM": "międzynarodowy pospieszny",
+    "MH": "międzywojewódzki pospieszny (nocny)",
+    
+    "RP": "wojewódzki pospieszny",
+    "RO": "wojewódzki osobowy",
+    "RM": "wojewódzki osobowy międzynarodowy",
+    "RA": "wojewódzki osobowy algomeracyjny",
+
+    "PW": "pasażerski próżny - służbowy",
+    "PX": "pasażerski próżny próbny",
+
+    "TC": "towarowy międzynarodowy intermodalny",
+    "TG": "towarowy międzynarodowy masowy",
+    "TR": "towarowy międzynarodowy niemasowy",
+    "TD": "towarowy krajowy intermodalny",
+    "TM": "towarowy krajowy masowy",
+    "TN": "towarowy krajowy niemasowy",
+    "TK": "towarowy zdawczy",
+    "TS": "towarowy próżny próbny",
+    "TH": "skład lokomotyw (powyżej 3 pojazdów)",
+
+    "LT": "lokomotywa towarowa luzem",
+    "LP": "lokomotywa pasażerska luzem",
+    "LS": "lokomotywa manewrowa luzem",
+    "LZ": "lokomotywa dla poc. utrzymaniowo-naprawczych",
+
+    "ZN": "inspekcyjny / diagnostyczny",
+    "ZU": "inny utrzymaniowy",
+
+    "E": "elektrowóz",
+    "J": "EZT",
+    "S": "spalinowóz",
+    "M": "SZT"
+  },
   "vehicle-preview": {
     "loading": "Ładowanie podglądu...",
     "error": "Ups! Nie znaleziono podglądu pojazdu! :/"
@@ -119,7 +160,7 @@
     "search-train": "Nr pociągu / #",
     "search-driver": "Nick maszynisty",
     "search-dispatcher": "Nick dyżurnego",
-    "search-station": "Nazwa scenerii",
+    "search-station": "Nazwa scenerii / #",
     "search-author": "Nick autora rozkładu jazdy",
     "search-issuedFrom": "Sceneria początkowa",
     "search-via": "Przez scenerię",

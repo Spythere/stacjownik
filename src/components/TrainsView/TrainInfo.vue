@@ -28,12 +28,15 @@
             </span>
           </span>
 
-          <strong>
-            <span v-if="train.timetableData" class="text--primary"
-              >{{ train.timetableData.category }}&nbsp;</span
-            >
-            <span class="train-number">{{ train.trainNo }}</span>
-          </strong>
+          <b
+            v-if="train.timetableData"
+            data-tooltip-type="BaseTooltip"
+            :data-tooltip-content="getCategoryExplanation(train.timetableData.category)"
+            class="text--primary tooltip-help"
+          >
+            {{ train.timetableData.category }}
+          </b>
+          <b class="train-number">{{ train.trainNo }}</b>
           <span>&bull;</span>
           <b
             class="level-badge driver"
@@ -181,9 +184,10 @@ import { useApiStore } from '../../store/apiStore';
 import StockList from '../Global/StockList.vue';
 import modalTrainMixin from '../../mixins/modalTrainMixin';
 import { Train } from '../../typings/common';
+import trainCategoryMixin from '../../mixins/trainCategoryMixin';
 
 export default defineComponent({
-  mixins: [trainInfoMixin, styleMixin, modalTrainMixin],
+  mixins: [trainInfoMixin, styleMixin, modalTrainMixin, trainCategoryMixin],
   components: { ProgressBar, StockList },
 
   props: {
