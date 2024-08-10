@@ -5,10 +5,9 @@
       :src="`https://static.spythere.eu/thumbnails/v2/${imgName}.png`"
       height="60"
       loading="lazy"
-      :data-mouseover="vehicleName"
+      data-tooltip-type="VehiclePreviewTooltip"
       :data-tooltip-content="vehicleName"
       :data-load-status="imgStatus"
-      data-tooltip-type="VehiclePreviewTooltip"
       @error="onImageError"
       @load="onImageLoad"
     />

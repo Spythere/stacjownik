@@ -2,7 +2,9 @@
   <div class="stock-list">
     <ul>
       <li
-        v-for="({ vehicleName, vehicleCargo, images, imagesFallbacks }, i) in thumbnailNames"
+        v-for="(
+          { vehicleName, vehicleCargo, images, imagesFallbacks, vehicleString }, i
+        ) in thumbnailNames"
         :key="i"
       >
         <div class="stock-text">
@@ -13,7 +15,7 @@
         <span>
           <VehicleThumbnail
             v-for="(thumbnailImage, imageIndex) in images"
-            :vehicle-name="vehicleName"
+            :vehicle-name="vehicleString"
             :img-name="thumbnailImage"
             :fallback-name="imagesFallbacks[imageIndex]"
           />
@@ -63,7 +65,8 @@ export default defineComponent({
             images: [] as string[],
             imagesFallbacks: [] as string[],
             vehicleName,
-            vehicleCargo
+            vehicleCargo,
+            vehicleString
           };
 
           // Generowanie członów EN57
