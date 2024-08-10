@@ -163,7 +163,7 @@
     "search-train": "Train no.",
     "search-driver": "Driver name",
     "search-dispatcher": "Dispatcher name",
-    "search-station": "Scenery name",
+    "search-station": "Scenery name / #",
     "search-author": "Timetable author name",
     "search-issuedFrom": "Issuing scenery name",
     "search-via": "Via scenery name",

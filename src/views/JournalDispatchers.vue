@@ -267,7 +267,10 @@ export default defineComponent({
       const timestampTo = timestampFrom ? timestampFrom + 86400000 : undefined;
 
       if (dispatcher) queries.push(`dispatcherName=${dispatcher}`);
-      if (station) queries.push(`stationName=${station}`);
+      
+      if (station.startsWith("#")) queries.push(`stationHash=${station.slice(1)}`);
+      else if (station.length > 0) queries.push(`stationName=${station}`);
+
       if (timestampFrom && timestampTo)
         queries.push(`timestampFrom=${timestampFrom}`, `timestampTo=${timestampTo}`);
 
