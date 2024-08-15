@@ -5,6 +5,15 @@
         <b>{{ $t('journal.stock-info') }}</b>
         <img :src="`/images/icon-arrow-${showExtraInfo ? 'asc' : 'desc'}.svg`" alt="Arrow icon" />
       </button>
+
+      <button
+        v-if="timetable.terminated == false"
+        class="btn--action btn-timetable"
+        @click.stop="showTimetable(timetable, $event.currentTarget)"
+      >
+        <img src="/images/icon-train.svg" alt="train icon" />
+        <b>{{ $t('journal.timetable-online-button') }}</b>
+      </button>
     </div>
 
     <div class="details-body" v-if="timetable.stockString && timetable.stockMass && showExtraInfo">
@@ -77,9 +86,13 @@
 import { PropType, defineComponent } from 'vue';
 import StockList from '../../Global/StockList.vue';
 import { API } from '../../../typings/api';
+import modalTrainMixin from '../../../mixins/modalTrainMixin';
 
 export default defineComponent({
   components: { StockList },
+  
+  mixins: [modalTrainMixin],
+
   props: {
     showExtraInfo: {
       type: Boolean,
@@ -118,6 +131,12 @@ export default defineComponent({
     onImageError(e: Event) {
       const imageEl = e.target as HTMLImageElement;
       imageEl.src = '/images/icon-unknown.png';
+    },
+
+    showTimetable(timetable: API.TimetableHistory.Data, target: EventTarget | null) {
+      if (timetable?.terminated) return;
+
+      this.selectModalTrainById(`${timetable.driverName}${timetable.trainNo}`, target);
     }
   }
 });
@@ -134,6 +153,7 @@ export default defineComponent({
 
 .details-actions {
   display: flex;
+  gap: 0.5em;
 
   button img {
     height: 1.25em;

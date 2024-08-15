@@ -66,15 +66,6 @@
               : `${$t('journal.timetable-abandoned')} ${localeTime(timetable.endDate, $i18n.locale)}`
         }}
       </b>
-
-      <button
-        v-if="timetable.terminated == false"
-        class="btn--action btn-timetable"
-        @click.stop="showTimetable(timetable, $event.currentTarget)"
-      >
-        <img src="/images/icon-train.svg" alt="train icon" />
-        <b>{{ $t('journal.timetable-online-button') }}</b>
-      </button>
     </span>
   </div>
 </template>
@@ -104,14 +95,6 @@ export default defineComponent({
       required: true
     }
   },
-
-  methods: {
-    showTimetable(timetable: API.TimetableHistory.Data, target: EventTarget | null) {
-      if (timetable?.terminated) return;
-
-      this.selectModalTrainById(`${timetable.driverName}${timetable.trainNo}`, target);
-    }
-  }
 });
 </script>
 
@@ -180,6 +163,7 @@ export default defineComponent({
 
 @include smallScreen {
   .item-general {
+    flex-direction: column;
     justify-content: center;
   }
 }
