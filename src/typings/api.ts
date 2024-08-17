@@ -4,6 +4,12 @@ export enum APIDataStatus {
   OK = 'OK',
   WARNING = 'WARNING'
 }
+
+export interface APICache {
+  lastModified: string;
+  name: string;
+}
+
 export namespace API {
   export namespace ActiveData {
     export interface APIStatuses {
@@ -11,6 +17,7 @@ export namespace API {
       trainsAPI: APIDataStatus;
       dispatchersAPI: APIDataStatus;
       sceneryRequirementsAPI: APIDataStatus;
+      caches: APICache[];
     }
 
     export interface Response {
