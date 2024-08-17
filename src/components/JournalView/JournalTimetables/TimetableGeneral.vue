@@ -3,10 +3,8 @@
     <span class="general-train">
       <span class="text--grayed">#{{ timetable.id }}</span>
 
-      <span class="badges" v-if="timetable.skr || timetable.twr">
-        <span class="train-badge twr" v-if="timetable.twr" :title="$t('general.TWR')">TWR</span>
-        <span class="train-badge skr" v-if="timetable.skr" :title="$t('general.SKR')">SKR</span>
-      </span>
+      <span class="train-badge twr" v-if="timetable.twr" :title="$t('general.TWR')">TWR</span>
+      <span class="train-badge skr" v-if="timetable.skr" :title="$t('general.SKR')">SKR</span>
 
       <span>
         <strong
@@ -94,7 +92,7 @@ export default defineComponent({
       type: Object as PropType<API.TimetableHistory.Data>,
       required: true
     }
-  },
+  }
 });
 </script>
 
@@ -120,7 +118,6 @@ export default defineComponent({
   gap: 0.25em;
 
   cursor: pointer;
-  line-height: 2;
 }
 
 .general-time {

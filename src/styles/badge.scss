@@ -76,15 +76,9 @@
 }
 
 .train-badge {
-  display: flex;
-  align-items: center;
-  gap: 0.5em;
-
   padding: 0.1em 0.3em;
   border-radius: 0.2em;
   font-weight: bold;
-
-  font-size: 0.9em;
 
   &.twr {
     background-color: var(--clr-twr);

@@ -8,24 +8,12 @@
             #{{ train.timetableData.timetableId }}
           </span>
 
-          <span
-            class="timetable-warnings"
-            v-if="train.timetableData?.TWR || train.timetableData?.SKR"
-          >
-            <span
-              class="train-badge twr"
-              v-if="train.timetableData?.TWR"
-              :title="$t('general.TWR')"
-            >
-              TWR
-            </span>
-            <span
-              class="train-badge skr"
-              v-if="train.timetableData?.SKR"
-              :title="$t('general.SKR')"
-            >
-              SKR
-            </span>
+          <span class="train-badge twr" v-if="train.timetableData?.TWR" :title="$t('general.TWR')">
+            TWR
+          </span>
+
+          <span class="train-badge skr" v-if="train.timetableData?.SKR" :title="$t('general.SKR')">
+            SKR
           </span>
 
           <b
