@@ -1,5 +1,9 @@
 <template>
-  <div class="dropdown" @keydown.esc="showOptions = false" @focusout="showOptions = false">
+  <div
+    class="dropdown"
+    @keydown.esc="showOptions = false"
+    v-click-outside="() => (showOptions = false)"
+  >
     <div class="bg" v-if="showOptions" @click="showOptions = false"></div>
 
     <button class="filter-button btn--filled btn--image" @click="toggleShowOptions" ref="button">
@@ -95,6 +99,8 @@
         <div class="no-data" v-else>
           {{ $t('train-stats.no-stats') }}
         </div>
+
+        <div tabindex="0" @focus="() => (showOptions = false)"></div>
       </div>
     </transition>
   </div>
@@ -236,10 +242,6 @@ h3 {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5em;
-
-  // @include smallScreen {
-  //   justify-content: center;
-  // }
 }
 
 .badge {
@@ -253,24 +255,6 @@ h3 {
 
 .dropdown_wrapper {
   max-width: 600px;
-}
-
-.stats-anim {
-  &-move,
-  &-enter-active,
-  &-leave-active {
-    transition: all 250ms ease;
-  }
-
-  &-enter-from,
-  &-leave-to {
-    opacity: 0;
-    transform: translateX(5px);
-  }
-
-  &-leave-active {
-    position: absolute;
-  }
 }
 
 @include smallScreen {

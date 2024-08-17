@@ -290,9 +290,11 @@
       "minTwoWay": "SZLAKI DWUTOROWE NIEZELEKTR. (MINIMUM)"
     },
 
-    "authors-search": "SZUKAJ AUTORA (uwzględnia inne filtry):",
+    "sceneries-search": "WYSZUKAJ SCENERIĘ:",
+    "sceneries-placeholder": "Wpisz nazwę scenerii...",
+    "authors-search": "WYSZUKAJ AUTORA (uwzględnia inne filtry):",
     "authors-placeholder": "Wpisz nick autora...",
-    "authors-button-title": "Szukaj",
+    "search-button-title": "SZUKAJ",
     "minimum-hours-title": "POKAŻ TYLKO SCENERIE DOSTĘPNE MINIMUM DO:",
     "now": "TERAZ",
     "hour": " godz.",

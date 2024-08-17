@@ -1,56 +1,70 @@
 <template>
-  <div class="station-stats">
-    <div class="separator" />
+  <div
+    class="dropdown"
+    @keydown.esc="showDropdown = false"
+    v-click-outside="() => (showDropdown = false)"
+  >
+    <div class="bg" v-if="showDropdown" @click="showDropdown = false"></div>
 
-    <div class="stats-row">
-      <div>
-        <span
-          >{{ $t('station-stats.u-factor') }}
-          <a
-            href="https://td2.info.pl/dyskusje/wspolczynnik-ugla-czy-to-ma-sens/msg81011/#msg81011"
-            target="_blank"
-            :data-tooltip="$t('station-stats.u-factor-tooltip')"
-            >(?)</a
-          >:
-        </span>
+    <button class="filter-button btn--filled btn--image" @click="toggleDropdown" ref="button">
+      <img src="/images/icon-stats.svg" alt="Open filters icon" />
+      <!-- {{ $t('train-stats.stats-button') }} -->
+      STATYSTYKI
+    </button>
 
-        <b class="u-factor" :style="calculateFactorStyle()">
-          {{ uFactor.toFixed(2) }}
-        </b>
+    <transition name="dropdown-anim">
+      <div class="dropdown_wrapper" v-if="showDropdown">
+        <div>
+          <h1 class="text--primary">
+            <img src="/images/icon-stats.svg" alt="Open filters icon" />
+            {{ $t('train-stats.title') }}
+          </h1>
+
+          <hr style="margin: 0.5em 0" />
+
+          <div>
+            <div>
+              <span
+                >{{ $t('station-stats.u-factor') }}
+                <a
+                  href="https://td2.info.pl/dyskusje/wspolczynnik-ugla-czy-to-ma-sens/msg81011/#msg81011"
+                  target="_blank"
+                  :data-tooltip="$t('station-stats.u-factor-tooltip')"
+                  >(?)</a
+                >:
+              </span>
+              <b class="u-factor" :style="calculateFactorStyle()">
+                {{ uFactor.toFixed(2) }}
+              </b>
+            </div>
+            <div>
+              {{ $t('station-stats.avg-timetable-count') }}
+              <b>{{ avgTimetableCount.toFixed(2) }}</b>
+            </div>
+            <div>
+              {{ $t('station-stats.single-track-count') }}
+              <b>{{ trackCount.oneWay }}</b> (<b>{{ trackCount.oneWayElectric }} ⚡</b>)
+            </div>
+            <div>
+              {{ $t('station-stats.double-track-count') }}
+              <b>{{ trackCount.twoWay }}</b>
+              (<b>{{ trackCount.twoWayElectric }} ⚡</b>)
+            </div>
+            <div>
+              {{ $t('station-stats.cross-sceneries') }}
+              <b>{{ trackCount.crossTrack }}</b> (<b>{{ trackCount.crossTrackElectric }} ⚡</b>)
+            </div>
+            <div>
+              {{ $t('station-stats.open-spawns') }} <b>{{ spawnCount.passenger }}</b> - PAS /
+              <b>{{ spawnCount.freight }}</b> - TOW / <b>{{ spawnCount.loco }}</b> - LUZ /
+              <b>{{ spawnCount.all }}</b> - ALL
+            </div>
+          </div>
+        </div>
+
+        <div tabindex="0" @focus="() => (showDropdown = false)"></div>
       </div>
-
-      <div>
-        &bull;
-        {{ $t('station-stats.avg-timetable-count') }}
-        <b>{{ avgTimetableCount.toFixed(2) }}</b>
-      </div>
-
-      <div>
-        &bull;
-        {{ $t('station-stats.single-track-count') }}
-        <b>{{ trackCount.oneWay }}</b> (<b>{{ trackCount.oneWayElectric }} ⚡</b>)
-      </div>
-
-      <div>
-        &bull;
-        {{ $t('station-stats.double-track-count') }}
-        <b>{{ trackCount.twoWay }}</b>
-        (<b>{{ trackCount.twoWayElectric }} ⚡</b>)
-      </div>
-
-      <div>
-        &bull; {{ $t('station-stats.cross-sceneries') }} <b>{{ trackCount.crossTrack }}</b> (<b
-          >{{ trackCount.crossTrackElectric }} ⚡</b
-        >)
-      </div>
-
-      <div>
-        &bull;
-        {{ $t('station-stats.open-spawns') }} <b>{{ spawnCount.passenger }}</b> - PAS /
-        <b>{{ spawnCount.freight }}</b> - TOW / <b>{{ spawnCount.loco }}</b> - LUZ /
-        <b>{{ spawnCount.all }}</b> - ALL
-      </div>
-    </div>
+    </transition>
   </div>
 </template>
 
@@ -61,11 +75,16 @@ import { useMainStore } from '../../store/mainStore';
 export default defineComponent({
   data() {
     return {
-      mainStore: useMainStore()
+      mainStore: useMainStore(),
+      showDropdown: false
     };
   },
 
   methods: {
+    toggleDropdown() {
+      this.showDropdown = !this.showDropdown;
+    },
+
     calculateFactorStyle() {
       if (this.uFactor == 0) return '';
 
@@ -171,26 +190,24 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.separator {
-  width: 100%;
-  height: 2px;
+@import '../../styles/dropdown.scss';
+
+h1 img {
+  vertical-align: text-bottom;
+}
+
+h3 {
   margin: 0.5em 0;
-  background-color: #aaa;
 }
 
-.station-stats {
-  text-align: center;
-  color: #ddd;
-}
-
-.stats-row {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  text-wrap: pretty;
-  gap: 0.25em;
-  margin-top: 0.25em;
-}
+// .stats-row {
+//   display: flex;
+//   justify-content: center;
+//   flex-wrap: wrap;
+//   text-wrap: pretty;
+//   gap: 0.25em;
+//   margin-top: 0.25em;
+// }
 
 .u-factor {
   [data-factor-low='true'] {

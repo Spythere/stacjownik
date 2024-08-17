@@ -57,7 +57,7 @@
     "MO": "intervoivodeship regio",
     "MM": "international bullet",
     "MH": "intervoivodeship night bullet",
-    
+
     "RP": "voivodeship bullet",
     "RM": "international voivodeship regio",
     "RO": "voivodeship regio",
@@ -292,9 +292,11 @@
       "minTwoWay": "MIN. OTHER DOUBLE TRACK ROUTES"
     },
 
+    "sceneries-search": "SCENERY SEARCH:",
+    "sceneries-placeholder": "Enter scenery name...",
     "authors-search": "SEARCH BY AUTHOR NAME (other filters apply):",
     "authors-placeholder": "Enter the author nickname...",
-    "authors-button-title": "Search",
+    "search-button-title": "SEARCH",
 
     "minimum-hours-title": "SHOW ONLY SCENERIES UNTIL:",
     "now": "NOW",
