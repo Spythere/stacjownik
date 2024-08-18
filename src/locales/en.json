@@ -83,6 +83,7 @@
 
     "ZN": "inspection / diagnostic type",
     "ZU": "other maintenance type",
+    "ZG": "emergency (deprecated category)",
 
     "E": "electric loco",
     "J": "EMU",
