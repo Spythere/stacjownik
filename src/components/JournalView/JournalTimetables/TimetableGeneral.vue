@@ -25,18 +25,19 @@
         {{ timetable.driverLevel < 2 ? 'L' : `${timetable.driverLevel}` }}
       </strong>
 
-      <strong
+      <router-link
         v-if="apiStore.donatorsData.includes(timetable.driverName)"
         class="text--donator"
         data-tooltip-type="DonatorTooltip"
         :data-tooltip-content="$t('donations.driver-message')"
+        :to="`/journal/timetables?search-driver=${timetable.driverName}`"
       >
-        {{ timetable.driverName }}
-      </strong>
+        <strong>{{ timetable.driverName }}</strong>
+      </router-link>
 
-      <strong v-else>
-        {{ timetable.driverName }}
-      </strong>
+      <router-link v-else :to="`/journal/timetables?search-driver=${timetable.driverName}`">
+        <strong>{{ timetable.driverName }}</strong>
+      </router-link>
     </span>
 
     <span class="general-time">

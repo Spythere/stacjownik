@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="details-actions">
-      <button class="btn--action">
+      <button class="btn--action" @click="toggleExtraInfo">
         <b>{{ $t('journal.stock-info') }}</b>
         <img :src="`/images/icon-arrow-${showExtraInfo ? 'asc' : 'desc'}.svg`" alt="Arrow icon" />
       </button>
@@ -90,8 +90,10 @@ import modalTrainMixin from '../../../mixins/modalTrainMixin';
 
 export default defineComponent({
   components: { StockList },
-  
+
   mixins: [modalTrainMixin],
+
+  emits: ['toggleExtraInfo'],
 
   props: {
     showExtraInfo: {
@@ -137,6 +139,10 @@ export default defineComponent({
       if (timetable?.terminated) return;
 
       this.selectModalTrainById(`${timetable.driverName}${timetable.trainNo}`, target);
+    },
+
+    toggleExtraInfo() {
+      this.$emit('toggleExtraInfo', this.timetable.id);
     }
   }
 });

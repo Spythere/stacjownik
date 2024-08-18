@@ -17,17 +17,13 @@
         </div>
 
         <div v-else>
-          <ul class="journal-list">
-            <transition-group name="list-anim">
-              <li
-                v-for="{ timetable, showExtraInfo } in computedTimetableHistory"
-                class="journal_item"
-                :key="timetable.id"
-                @click="showExtraInfo.value = !showExtraInfo.value"
-              >
-                <div class="journal_item-info">
-                  <!-- General -->
-                  <TimetableGeneral :timetable="timetable" />
+          <transition-group name="list-anim" tag="ul" class="journal-list">
+            <li v-for="timetable in timetableHistory" class="journal_item" :key="timetable.id">
+              <div class="journal_item-info">
+                <!-- General -->
+                <TimetableGeneral :timetable="timetable" />
+
+                <div @click="toggleExtraInfo(timetable.id)" style="cursor: pointer">
                   <!-- Route -->
                   <span class="item-route">
                     <b>{{ timetable.route.replace('|', ' - ') }}</b>
@@ -35,16 +31,23 @@
 
                   <hr />
                   <!-- Stops -->
-                  <TimetableStops :timetable="timetable" :showExtraInfo="showExtraInfo.value" />
+                  <TimetableStops
+                    :timetable="timetable"
+                    :showExtraInfo="extraInfoIndexes.includes(timetable.id)"
+                  />
                   <!-- Status -->
                   <TimetableStatus :timetable="timetable" />
-
-                  <!-- Extra -->
-                  <TimetableDetails :timetable="timetable" :showExtraInfo="showExtraInfo.value" />
                 </div>
-              </li>
-            </transition-group>
-          </ul>
+
+                <!-- Extra -->
+                <TimetableDetails
+                  :timetable="timetable"
+                  :showExtraInfo="extraInfoIndexes.includes(timetable.id)"
+                  @toggle-extra-info="toggleExtraInfo"
+                />
+              </div>
+            </li>
+          </transition-group>
 
           <AddDataButton
             :list="timetableHistory"
@@ -57,6 +60,7 @@
     </transition>
 
     <div class="journal_warning" v-if="scrollNoMoreData">{{ $t('journal.no-further-data') }}</div>
+
     <div class="journal_warning" v-else-if="!scrollDataLoaded">
       {{ $t('journal.loading-further-data') }}
     </div>
@@ -64,7 +68,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from 'vue';
+import { defineComponent, Prop, PropType, ref } from 'vue';
 
 import Loading from '../../Global/Loading.vue';
 import AddDataButton from '../../Global/AddDataButton.vue';
@@ -110,16 +114,30 @@ export default defineComponent({
   data() {
     return {
       Status,
-      store: useMainStore()
+      store: useMainStore(),
+      extraInfoIndexes: [] as number[]
     };
   },
 
-  computed: {
-    computedTimetableHistory() {
-      return this.timetableHistory.map((timetable) => ({
-        timetable,
-        showExtraInfo: ref(false)
-      }));
+  watch: {
+    timetableHistory: {
+      deep: true,
+      handler() {
+        console.log(this.$refs['list']);
+
+        // ?.scrollTo({ behavior: 'smooth', top: 0 });
+
+        // (this.$refs['list'] as HTMLUListElement).scrollTo({})
+      }
+    }
+  },
+
+  methods: {
+    toggleExtraInfo(id: number) {
+      const existingIdx = this.extraInfoIndexes.indexOf(id);
+
+      if (existingIdx != -1) this.extraInfoIndexes.splice(existingIdx, 1);
+      else this.extraInfoIndexes.push(id);
     }
   }
 });
