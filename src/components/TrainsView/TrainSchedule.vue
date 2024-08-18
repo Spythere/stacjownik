@@ -165,20 +165,18 @@ export default defineComponent({
 
   computed: {
     scheduleStops(): TrainScheduleStop[] {
-      let currentSceneryIndex = 0;
+      if (!this.train.timetableData) return [];
+
+      const { timetablePath } = this.train.timetableData;
+      let currentPathIndex = 0;
 
       return (
         this.train.timetableData?.followingStops.map((stop, i, arr) => {
           const isExternal =
-            i > 0 &&
-            stop.arrivalLine != null &&
-            (stop.arrivalLine != arr[i - 1].departureLine ||
-              (stop.arrivalLine == arr[i - 1].departureLine &&
-                !/-|_|(^it\d+)|(^sbl)/gi.test(stop.arrivalLine)));
+            i < arr.length - 1 &&
+            stop.departureLine === timetablePath[currentPathIndex].departureRouteExt;
 
-          if (isExternal) currentSceneryIndex++;
-
-          const sceneryName = this.train.timetableData!.sceneryNames[currentSceneryIndex];
+          const sceneryName = timetablePath[currentPathIndex].stationName;
           const sceneryInfo = this.apiStore.sceneryData.find((st) => st.name == sceneryName);
 
           const arrivalLineInfo = sceneryInfo?.routesInfo.find(
@@ -188,6 +186,8 @@ export default defineComponent({
           const departureLineInfo = sceneryInfo?.routesInfo.find(
             (r) => r.routeName == stop.departureLine
           );
+
+          if (isExternal) currentPathIndex++;
 
           return {
             nameHtml: stop.stopName,

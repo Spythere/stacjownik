@@ -3,7 +3,9 @@
     class="stop-label"
     :data-minor="stop.isSBL || (stop.nameRaw.endsWith(', po.') && !stop.duration)"
   >
-    <span class="name" v-html="stop.nameHtml"></span>
+    <router-link :to="`/scenery?station=${stop.sceneryName}`" @click="closeModal">
+      <span class="name" v-html="stop.nameHtml"></span>
+    </router-link>
 
     <span
       v-if="stop.position != 'begin'"
@@ -67,9 +69,10 @@
 import { PropType, defineComponent } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
 import { TrainScheduleStop } from './TrainSchedule.vue';
+import modalTrainMixin from '../../mixins/modalTrainMixin';
 
 export default defineComponent({
-  mixins: [dateMixin],
+  mixins: [dateMixin, modalTrainMixin],
 
   props: {
     stop: {

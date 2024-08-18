@@ -13,6 +13,7 @@
           :station="stationInfo"
           :onlineScenery="onlineSceneryInfo"
         />
+        
         <SceneryInfo :station="stationInfo" :onlineScenery="onlineSceneryInfo" />
       </div>
 

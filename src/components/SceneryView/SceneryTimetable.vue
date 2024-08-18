@@ -214,6 +214,12 @@ export default defineComponent({
     this.loadSelectedOption();
   },
 
+  watch: {
+    station() {
+      this.loadSelectedOption();
+    }
+  },
+
   setup(props) {
     const route = useRoute();
     const currentURL = computed(() => `${location.origin}${route.fullPath}`);
