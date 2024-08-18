@@ -9,7 +9,7 @@
     <button class="filter-button btn--filled btn--image" @click="toggleDropdown" ref="button">
       <img src="/images/icon-stats.svg" alt="Open filters icon" />
       <!-- {{ $t('train-stats.stats-button') }} -->
-      STATYSTYKI
+      <span>STATYSTYKI</span>
     </button>
 
     <transition name="dropdown-anim">
@@ -200,15 +200,6 @@ h3 {
   margin: 0.5em 0;
 }
 
-// .stats-row {
-//   display: flex;
-//   justify-content: center;
-//   flex-wrap: wrap;
-//   text-wrap: pretty;
-//   gap: 0.25em;
-//   margin-top: 0.25em;
-// }
-
 .u-factor {
   [data-factor-low='true'] {
     color: #ddd;
@@ -224,6 +215,12 @@ h3 {
 
   [data-factor-highest='true'] {
     color: rgb(22, 245, 22);
+  }
+}
+
+@include smallScreen {
+  .filter-button span {
+    display: none;
   }
 }
 </style>
