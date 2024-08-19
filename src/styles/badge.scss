@@ -1,3 +1,5 @@
+@import 'variables.scss';
+
 .badge {
   font-weight: 600;
 
@@ -106,5 +108,14 @@
 
   &[data-electrified='true'] > .name {
     background-color: #007599;
+  }
+}
+
+.stat-badge {
+  margin: 0;
+
+  & > span:first-child {
+    background-color: $accentCol;
+    color: black;
   }
 }

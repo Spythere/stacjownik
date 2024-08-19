@@ -22,10 +22,10 @@
 
           <hr style="margin: 0.5em 0" />
 
-          <div>
-            <div>
-              <span
-                >{{ $t('station-stats.u-factor') }}
+          <ul class="stats-list">
+            <li>
+              <span>
+                {{ $t('station-stats.u-factor') }}
                 <a
                   href="https://td2.info.pl/dyskusje/wspolczynnik-ugla-czy-to-ma-sens/msg81011/#msg81011"
                   target="_blank"
@@ -36,30 +36,30 @@
               <b class="u-factor" :style="calculateFactorStyle()">
                 {{ uFactor.toFixed(2) }}
               </b>
-            </div>
-            <div>
+            </li>
+            <li>
               {{ $t('station-stats.avg-timetable-count') }}
               <b>{{ avgTimetableCount.toFixed(2) }}</b>
-            </div>
-            <div>
+            </li>
+            <li>
               {{ $t('station-stats.single-track-count') }}
               <b>{{ trackCount.oneWay }}</b> (<b>{{ trackCount.oneWayElectric }} ⚡</b>)
-            </div>
-            <div>
+            </li>
+            <li>
               {{ $t('station-stats.double-track-count') }}
               <b>{{ trackCount.twoWay }}</b>
               (<b>{{ trackCount.twoWayElectric }} ⚡</b>)
-            </div>
-            <div>
+            </li>
+            <li>
               {{ $t('station-stats.cross-sceneries') }}
               <b>{{ trackCount.crossTrack }}</b> (<b>{{ trackCount.crossTrackElectric }} ⚡</b>)
-            </div>
-            <div>
+            </li>
+            <li>
               {{ $t('station-stats.open-spawns') }} <b>{{ spawnCount.passenger }}</b> - PAS /
               <b>{{ spawnCount.freight }}</b> - TOW / <b>{{ spawnCount.loco }}</b> - LUZ /
               <b>{{ spawnCount.all }}</b> - ALL
-            </div>
-          </div>
+            </li>
+          </ul>
         </div>
 
         <div tabindex="0" @focus="() => (showDropdown = false)"></div>
@@ -191,6 +191,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '../../styles/dropdown.scss';
+@import '../../styles/badge.scss';
 
 h1 img {
   vertical-align: text-bottom;
@@ -215,6 +216,16 @@ h3 {
 
   [data-factor-highest='true'] {
     color: rgb(22, 245, 22);
+  }
+}
+
+ul.stats-list {
+  list-style: disc;
+  padding-left: 1em;
+  margin-top: 1em;
+
+  & > li {
+    margin: 0.25em 0;
   }
 }
 

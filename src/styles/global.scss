@@ -290,6 +290,7 @@ a.a-button {
 // Basic tooltip
 [data-tooltip] {
   cursor: help;
+  line-height: initial;
 }
 
 [data-tooltip]:hover::after,

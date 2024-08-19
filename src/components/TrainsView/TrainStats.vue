@@ -23,21 +23,21 @@
         <div v-if="apiStore.dataStatuses.connection == Status.Loaded && regionTrains.length > 0">
           <div class="top-list general">
             <transition-group tag="ul" name="stats-anim">
-              <li class="badge" key="timetable-count">
+              <li class="badge stat-badge" key="timetable-count">
                 <span>{{ $t('train-stats.timetable-count') }}</span>
                 <span>
                   <b>{{ regionTrainsWithTT.length }}</b>
                 </span>
               </li>
 
-              <li class="badge" key="avg-speed">
+              <li class="badge stat-badge" key="avg-speed">
                 <span>{{ $t('train-stats.avg-speed') }}</span>
                 <span>
                   <b>{{ stats.avgSpeed.toFixed(1) }} km/h</b>
                 </span>
               </li>
 
-              <li class="badge" key="avg-distance">
+              <li class="badge stat-badge" key="avg-distance">
                 <span>{{ $t('train-stats.avg-timetable') }}</span>
                 <span>
                   <b>{{ stats.avgDistance.toFixed(1) }} km</b>
@@ -50,7 +50,7 @@
             <h3>{{ $t('train-stats.top-categories') }}</h3>
 
             <transition-group tag="ul" name="stats-anim">
-              <li class="badge" v-for="top in stats.topCategories" :key="top.name">
+              <li class="badge stat-badge" v-for="top in stats.topCategories" :key="top.name">
                 <span>{{ top.name }}</span>
                 <span>{{ top.count }}</span>
               </li>
@@ -65,7 +65,7 @@
             <h3>{{ $t('train-stats.top-vehicles') }}</h3>
 
             <transition-group tag="ul" name="stats-anim">
-              <li class="badge" v-for="top in stats.topVehicles" :key="top.name">
+              <li class="badge stat-badge" v-for="top in stats.topVehicles" :key="top.name">
                 <span>{{ top.name }}</span>
                 <span>{{ top.count }}</span>
               </li>
@@ -80,7 +80,7 @@
             <h3>{{ $t('train-stats.top-units') }}</h3>
 
             <transition-group tag="ul" name="stats-anim">
-              <li class="badge" v-for="top in stats.topUnits.slice(0, 7)" :key="top.name">
+              <li class="badge stat-badge" v-for="top in stats.topUnits.slice(0, 7)" :key="top.name">
                 <span>{{ top.name }}</span>
                 <span>{{ top.count }}</span>
               </li>
@@ -242,15 +242,6 @@ h3 {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5em;
-}
-
-.badge {
-  margin: 0;
-
-  & > span:first-child {
-    background-color: $accentCol;
-    color: black;
-  }
 }
 
 .dropdown_wrapper {
