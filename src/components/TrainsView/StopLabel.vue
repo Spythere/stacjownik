@@ -1,7 +1,7 @@
 <template>
   <span
     class="stop-label"
-    :data-minor="stop.isSBL || (stop.nameRaw.endsWith(', po.') && !stop.duration)"
+    :data-minor="stop.isSBL || (stop.nameRaw.endsWith(', po') && !stop.duration)"
   >
     <router-link :to="`/scenery?station=${stop.sceneryName}`" @click="closeModal">
       <span class="name" v-html="stop.nameHtml"></span>
