@@ -14,6 +14,10 @@
         </span>
 
         <span class="header_links" v-if="station">
+          <a :href="pragotronHref" target="_blank" :title="$t('scenery.pragotron-link')">
+            <img src="/images/icon-pragotron.svg" alt="icon-pragotron" />
+          </a>
+
           <a :href="tabliceZbiorczeHref" target="_blank" :title="$t('scenery.tablice-link')">
             <img src="/images/icon-tablice.ico" alt="icon-tablice" />
           </a>
@@ -245,6 +249,13 @@ export default defineComponent({
   computed: {
     tabliceZbiorczeHref() {
       let url = `https://tablice-td2.web.app/?station=${this.station!.name}`;
+      if (this.chosenCheckpoint) url += `&checkpoint=${this.chosenCheckpoint}`;
+
+      return url;
+    },
+
+    pragotronHref() {
+      let url = `https://pragotron-td2.web.app/board?name=${this.station!.name}&region=${this.store.region.id}`;
       if (this.chosenCheckpoint) url += `&checkpoint=${this.chosenCheckpoint}`;
 
       return url;
