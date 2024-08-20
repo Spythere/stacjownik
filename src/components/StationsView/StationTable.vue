@@ -375,7 +375,7 @@ export default defineComponent({
       this.$router.push({
         name: 'SceneryView',
         query: {
-          station: station.name.replaceAll(' ', '_'),
+          station: station.name,
           region: this.$route.query.region || undefined
         }
       });

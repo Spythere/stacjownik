@@ -25,18 +25,15 @@
       </h3>
 
       <div class="timetable-checkpoints" v-if="station?.generalInfo?.checkpoints">
-        <span v-for="(cp, i) in station.generalInfo.checkpoints" :key="i">
-          {{ (i > 0 && '&bull;') || '' }}
-
-          <button
-            :key="cp"
-            class="checkpoint_item"
-            :class="{ current: chosenCheckpoint === cp }"
-            @click="setCheckpoint(cp)"
+        <template v-for="(ch, i) in station.generalInfo.checkpoints" :key="i">
+          <template v-if="i > 0">&bull;</template>
+          <router-link
+            class="checkpoint-item"
+            :class="{ current: chosenCheckpoint === ch }"
+            :to="`/scenery?station=${station.name}&checkpoint=${ch}`"
+            >{{ ch }}</router-link
           >
-            {{ cp }}
-          </button>
-        </span>
+        </template>
       </div>
     </div>
 
@@ -179,7 +176,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref } from 'vue';
+import { computed, defineComponent, PropType, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 import Loading from '../Global/Loading.vue';
@@ -219,7 +216,7 @@ export default defineComponent({
   },
 
   watch: {
-    station() {
+    currentURL() {
       this.loadSelectedOption();
     }
   },
@@ -312,7 +309,19 @@ export default defineComponent({
     loadSelectedOption() {
       if (!this.station) return;
 
-      this.chosenCheckpoint = this.station.generalInfo?.checkpoints[0] ?? this.station.name;
+      if (!this.station.generalInfo) {
+        this.chosenCheckpoint = this.station.name;
+        return;
+      }
+
+      const queryCheckpoint = this.$route.query['checkpoint']?.toString();
+
+      this.chosenCheckpoint =
+        this.station.generalInfo.checkpoints.find(
+          (ch) => ch.toLocaleLowerCase() === queryCheckpoint?.toLocaleLowerCase()
+        ) ??
+        this.station.generalInfo.checkpoints[0] ??
+        this.station.name;
     },
 
     setCheckpoint(cp: string) {
@@ -412,28 +421,33 @@ export default defineComponent({
   }
 }
 
-.timetable-list {
-  position: relative;
-}
-
 .timetable-checkpoints {
   display: flex;
   justify-content: center;
+  gap: 0.5em;
 
   flex-wrap: wrap;
   font-size: 1.1em;
 
   margin-top: 0.5em;
+}
 
-  button.checkpoint_item {
-    color: #aaa;
-    display: inline;
+.checkpoint-item {
+  color: #aaa;
+  display: inline;
+
+  &:hover {
+    color: white;
   }
 
-  .checkpoint_item.current {
+  &.current {
     font-weight: bold;
     color: $accentCol;
   }
+}
+
+.timetable-list {
+  position: relative;
 }
 
 .general-info {

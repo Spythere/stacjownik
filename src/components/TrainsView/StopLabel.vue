@@ -3,9 +3,15 @@
     class="stop-label"
     :data-minor="stop.isSBL || (stop.nameRaw.endsWith(', po') && !stop.duration)"
   >
-    <router-link :to="`/scenery?station=${stop.sceneryName}`" @click="closeModal">
+    <router-link
+      v-if="/(, podg|<strong>)/.test(stop.nameHtml)"
+      :to="sceneryHref"
+      @click="closeModal"
+    >
       <span class="name" v-html="stop.nameHtml"></span>
     </router-link>
+
+    <span v-else class="name" v-html="stop.nameHtml"></span>
 
     <span
       v-if="stop.position != 'begin'"
@@ -78,6 +84,12 @@ export default defineComponent({
     stop: {
       type: Object as PropType<TrainScheduleStop>,
       required: true
+    }
+  },
+
+  computed: {
+    sceneryHref() {
+      return `/scenery?station=${this.stop.sceneryName}&checkpoint=${this.stop.nameRaw}`;
     }
   }
 });
