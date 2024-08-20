@@ -2,7 +2,7 @@
   <div class="train-info" :data-extended="extended">
     <section class="train-general">
       <div class="general-top-bar">
-        <div>
+        <div class="top-bar-header">
           <b class="warning-timeout" v-if="train.isTimeout" :title="$t('trains.timeout')">?</b>
           <span class="timetable-id" v-if="train.timetableData">
             #{{ train.timetableData.timetableId }}
@@ -26,14 +26,15 @@
           </b>
           <b class="train-number">{{ train.trainNo }}</b>
           <span>&bull;</span>
-          <b
-            class="level-badge driver"
-            :style="calculateExpStyle(train.driverLevel, train.isSupporter)"
-          >
-            {{ train.driverLevel < 2 ? 'L' : `${train.driverLevel}` }}
-          </b>
 
           <div class="train-driver">
+            <b
+              class="level-badge driver"
+              :style="calculateExpStyle(train.driverLevel, train.isSupporter)"
+            >
+              {{ train.driverLevel < 2 ? 'L' : `${train.driverLevel}` }}
+            </b>
+
             <b
               v-if="apiStore.donatorsData.includes(train.driverName)"
               data-tooltip-type="DonatorTooltip"
@@ -47,7 +48,7 @@
           </div>
         </div>
 
-        <div v-if="extended">
+        <div class="top-bar-controls" v-if="extended">
           <button class="btn-timetable btn--image btn--action" @click="navigateToJournal">
             <img src="/images/icon-train.svg" alt="train icon" />
             <span>
@@ -258,6 +259,12 @@ export default defineComponent({
   gap: 0.5em;
 }
 
+.train-driver {
+  display: flex;
+  align-items: center;
+  gap: 0.25em;
+}
+
 .train-driver img {
   max-height: 20px;
   vertical-align: text-bottom;
@@ -289,16 +296,22 @@ export default defineComponent({
 .general-top-bar {
   display: flex;
   justify-content: space-between;
-  flex-wrap: wrap;
   gap: 0.5em;
+}
 
-  & > div {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
+.top-bar-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
 
-    gap: 0.25em;
-  }
+  gap: 0.25em;
+}
+
+.top-bar-controls {
+  display: flex;
+  align-items: center;
+
+  gap: 0.25em;
 }
 
 .btn-timetable {

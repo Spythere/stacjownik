@@ -60,7 +60,7 @@
                       v-else
                       src="/images/icon-we4a.png"
                       :title="$t('trains.we4a-tooltip')"
-                      width="12"
+                      width="10"
                     />
                   </span>
                 </div>
@@ -84,7 +84,7 @@
                       v-else
                       src="/images/icon-we4a.png"
                       :title="$t('trains.we4a-tooltip')"
-                      width="12"
+                      width="10"
                     />
                   </span>
                 </div>
@@ -523,8 +523,17 @@ $blinkAnim: 0.5s ease-in-out alternate infinite blink;
 }
 
 .scenery-route {
+  display: flex;
+  gap: 0.25em;
+
+  span:nth-child(2) {
+    display: flex;
+    gap: 0.25em;
+    align-items: center;
+  }
+
   img {
-    vertical-align: middle;
+    width: 1em;
   }
 }
 
