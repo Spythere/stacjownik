@@ -1,29 +1,28 @@
 <template>
   <section class="daily-stats">
     <span :data-active="statsStatus">
-      <span class="stats-list">
-        <h3>
-          {{ $t('journal.daily-stats.title') }}
-          <b class="text--primary">{{ new Date().toLocaleDateString($i18n.locale) }}</b>
-        </h3>
+      <h3>
+        {{ $t('journal.daily-stats.title') }}
+        <b class="text--primary">{{ new Date().toLocaleDateString($i18n.locale) }}</b>
+      </h3>
 
-        <hr class="header-separator" />
+      <hr class="header-separator" />
 
-        <b v-if="statsStatus == Status.Data.Loading">
-          {{ $t('app.loading') }}
-        </b>
+      <b v-if="statsStatus == Status.Data.Loading">
+        {{ $t('app.loading') }}
+      </b>
 
-        <b class="text--error" v-else-if="statsStatus == Status.Data.Error">
-          {{ $t('journal.stats-error') }}
-        </b>
+      <b class="text--error" v-else-if="statsStatus == Status.Data.Error">
+        {{ $t('journal.stats-error') }}
+      </b>
 
-        <b v-else-if="topDispatchers.length == 0">
-          {{ $t('journal.daily-stats.info') }}
-        </b>
+      <b v-else-if="topDispatchers.length == 0">
+        {{ $t('journal.daily-stats.info') }}
+      </b>
 
-        <div v-else>
-          <div v-if="stats.totalTimetables">
-            &bull;
+      <div v-else>
+        <ul class="stats-list">
+          <li v-if="stats.totalTimetables">
             <i18n-t keypath="journal.daily-stats.total">
               <template #count>
                 <b class="text--primary">
@@ -36,10 +35,9 @@
                 <b class="text--primary"> {{ stats.distanceSum?.toFixed(2) }} km</b>
               </template>
             </i18n-t>
-          </div>
+          </li>
 
-          <div v-if="stats.maxTimetable">
-            &bull;
+          <li v-if="stats.maxTimetable">
             <i18n-t keypath="journal.daily-stats.longest">
               <template #id>
                 <router-link :to="`/journal/timetables?search-train=%23${stats.maxTimetable.id}`">
@@ -60,10 +58,9 @@
                 <b class="text--primary">{{ stats.maxTimetable.routeDistance }} km</b>
               </template>
             </i18n-t>
-          </div>
+          </li>
 
-          <div v-if="topDispatchers.length == 1">
-            &bull;
+          <li v-if="topDispatchers.length == 1">
             <i18n-t keypath="journal.daily-stats.most-active-dr">
               <template #dispatcher>
                 <router-link
@@ -79,10 +76,9 @@
                 </b>
               </template>
             </i18n-t>
-          </div>
+          </li>
 
-          <div v-if="topDispatchers.length > 1">
-            &bull;
+          <li v-if="topDispatchers.length > 1">
             <i18n-t keypath="journal.daily-stats.most-active-dr-many">
               <template #dispatchers>
                 <span v-for="(disp, i) in topDispatchers" :key="i">
@@ -103,10 +99,9 @@
                 </b>
               </template>
             </i18n-t>
-          </div>
+          </li>
 
-          <div v-if="stats.longestDuties.length > 0">
-            &bull;
+          <li v-if="stats.longestDuties.length > 0">
             <i18n-t keypath="journal.daily-stats.longest-duties">
               <template #dispatcher>
                 <router-link
@@ -122,10 +117,9 @@
                 {{ calculateDuration(stats.longestDuties[0].duration) }}
               </template>
             </i18n-t>
-          </div>
+          </li>
 
-          <div v-if="stats.mostActiveDrivers.length > 0">
-            &bull;
+          <li v-if="stats.mostActiveDrivers.length > 0">
             <i18n-t keypath="journal.daily-stats.most-active-driver">
               <template #driver>
                 <router-link
@@ -138,30 +132,30 @@
                 <b class="text--primary">{{ stats.mostActiveDrivers[0].distance.toFixed(2) }} km</b>
               </template>
             </i18n-t>
-          </div>
+          </li>
+        </ul>
 
-          <hr class="section-separator" />
+        <hr class="section-separator" />
 
-          <div class="stats-badges">
-            <span
-              class="stat-badge"
-              v-for="key in [
-                'rippedSwitches',
-                'derailments',
-                'skippedStopSignals',
-                'radioStops',
-                'kills'
-              ]"
-              :key="key"
-            >
-              <span>{{ $t(`journal.daily-stats.${key}`) }}</span>
-              <span>{{
-                Object.entries(stats.globalDiff).find(([k, v]) => k == key)?.[1] || '--'
-              }}</span>
+        <div class="stats-badges">
+          <span
+            class="badge stat-badge"
+            v-for="key in [
+              'rippedSwitches',
+              'derailments',
+              'skippedStopSignals',
+              'radioStops',
+              'kills'
+            ]"
+            :key="key"
+          >
+            <span>{{ $t(`journal.daily-stats.${key}`) }}</span>
+            <span>
+              {{ Object.entries(stats.globalDiff).find(([k, v]) => k == key)?.[1] || '--' }}
             </span>
-          </div>
+          </span>
         </div>
-      </span>
+      </div>
     </span>
   </section>
 </template>
@@ -178,7 +172,6 @@ export default defineComponent({
   name: 'journal-daily-stats',
 
   mixins: [dateMixin],
-  // emits: ['toggleStatsOpen'],
 
   data() {
     return {
@@ -193,7 +186,6 @@ export default defineComponent({
 
   activated() {
     this.startFetchingDailyStats();
-    // this.$emit('toggleStatsOpen', true);
   },
 
   deactivated() {
@@ -249,12 +241,22 @@ export default defineComponent({
 .daily-stats {
   text-align: left;
 }
+
 .daily-stats > span[data-active='0'] {
   opacity: 0.75;
 }
 
+ul.stats-list {
+  list-style: disc;
+  padding: 0 1em;
+}
+
 .stats-list a {
   text-decoration: underline;
+}
+
+.stats-list > li {
+  margin: 0.25em 0;
 }
 
 .stats-badges {

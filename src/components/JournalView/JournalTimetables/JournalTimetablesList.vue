@@ -119,19 +119,6 @@ export default defineComponent({
     };
   },
 
-  watch: {
-    timetableHistory: {
-      deep: true,
-      handler() {
-        console.log(this.$refs['list']);
-
-        // ?.scrollTo({ behavior: 'smooth', top: 0 });
-
-        // (this.$refs['list'] as HTMLUListElement).scrollTo({})
-      }
-    }
-  },
-
   methods: {
     toggleExtraInfo(id: number) {
       const existingIdx = this.extraInfoIndexes.indexOf(id);
