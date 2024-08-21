@@ -86,6 +86,13 @@ export const useMainStore = defineStore('mainStore', {
             isSupporter: train.driverIsSupporter,
             driverLevel: train.driverLevel,
 
+            driverRouteLocation: {
+              name: 'DriverView',
+              query: {
+                trainId: train.id
+              }
+            },
+
             timetableData: timetable
               ? {
                   timetableId: timetable.timetableId,

@@ -63,14 +63,13 @@
           {{ $t('scenery.no-timetables') }}
         </div>
 
-        <div
-          class="timetable-item"
+        <router-link
+          class="timetable-item block-link"
           v-else
           v-for="(row, i) in sceneryTimetables"
           :key="row.train.id + i"
           tabindex="0"
-          @click.prevent.stop="driverMixin_showDriverView(row.train.id)"
-          @keydown.enter.prevent="driverMixin_showDriverView(row.train.id)"
+          :to="row.train.driverRouteLocation"
         >
           <span class="timetable-general">
             <span class="general-info">
@@ -169,7 +168,7 @@
               </span>
             </span>
           </span>
-        </div>
+        </router-link>
       </transition-group>
     </div>
   </section>
@@ -196,7 +195,7 @@ export default defineComponent({
 
   components: { Loading, ScheduledTrainStatus },
 
-  mixins: [dateMixin, routerMixin, trainCategoryMixin, driverViewMixin],
+  mixins: [dateMixin, routerMixin, trainCategoryMixin],
 
   props: {
     station: {
@@ -391,7 +390,6 @@ export default defineComponent({
 
     background: #353535;
 
-    cursor: pointer;
     z-index: 10;
 
     &.empty {

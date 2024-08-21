@@ -18,7 +18,7 @@
           v-for="train in trains"
           :key="train.id"
         >
-          <router-link class="block-link" :to="getTrainRoute(train.id)">
+          <router-link class="block-link" :to="train.driverRouteLocation">
             <TrainInfo :train="train" :extended="false" />
           </router-link>
         </li>
@@ -62,17 +62,6 @@ export default defineComponent({
         dir: number;
       }
     };
-  },
-
-  methods: {
-    getTrainRoute(trainId: string) {
-      return {
-        name: 'DriverView',
-        query: {
-          trainId,
-        }
-      }
-    }
   },
 
   computed: {
