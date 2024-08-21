@@ -12,7 +12,7 @@
       <hr class="header-separator" />
 
       <div class="info-stats">
-        <span class="stat-badge">
+        <span class="badge stat-badge">
           <span>{{ $t('journal.driver-stats.timetables') }}</span>
           <span
             >{{ store.driverStatsData._count.fulfilled }} /
@@ -20,17 +20,17 @@
           >
         </span>
 
-        <span class="stat-badge">
+        <span class="badge stat-badge">
           <span>{{ $t('journal.driver-stats.longest-timetable') }}</span>
           <span> {{ store.driverStatsData._max.routeDistance.toFixed(2) }}km </span>
         </span>
 
-        <span class="stat-badge">
+        <span class="badge stat-badge">
           <span>{{ $t('journal.driver-stats.avg-timetable') }}</span>
           <span> {{ store.driverStatsData._avg.routeDistance.toFixed(2) }}km </span>
         </span>
 
-        <span class="stat-badge">
+        <span class="badge stat-badge">
           <span>{{ $t('journal.driver-stats.distance') }}</span>
           <span>
             {{ store.driverStatsData._sum.currentDistance.toFixed(2) }} /
@@ -38,7 +38,7 @@
           </span>
         </span>
 
-        <span class="stat-badge">
+        <span class="badge stat-badge">
           <span>{{ $t('journal.driver-stats.stations') }}</span>
           <span>
             {{ store.driverStatsData._sum.confirmedStopsCount }} /
