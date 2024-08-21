@@ -182,7 +182,6 @@ import Loading from '../Global/Loading.vue';
 import dateMixin from '../../mixins/dateMixin';
 import routerMixin from '../../mixins/routerMixin';
 import trainCategoryMixin from '../../mixins/trainCategoryMixin';
-import driverViewMixin from '../../mixins/driverViewMixin';
 import { useMainStore } from '../../store/mainStore';
 import { useApiStore } from '../../store/apiStore';
 import ScheduledTrainStatus from './ScheduledTrainStatus.vue';
