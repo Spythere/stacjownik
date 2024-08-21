@@ -76,21 +76,22 @@
           <ProgressBar :progressPercent="confirmedPercentage(train.timetableData.followingStops)" />
 
           <span class="progress-distance">
-            &nbsp; {{ currentDistance(train.timetableData.followingStops) }} km /
-            <span class="text--primary"> {{ train.timetableData.routeDistance }} km </span>
-            |
+            <span>{{ currentDistance(train.timetableData.followingStops) }} km</span>
+            <span>/</span>
+            <span class="text--primary">{{ train.timetableData.routeDistance }} km </span>
+            <span>|</span>
             <span v-html="currentDelay(train.timetableData.followingStops)"></span>
           </span>
         </div>
 
         <div class="status-badges">
           <div v-if="!train.currentStationHash" class="train-badge offline">
-            <img src="/images/icon-offline.svg" alt="" />
+            <img src="/images/icon-offline.svg" alt="offline train icon" />
             {{ $t('trains.scenery-offline') }}
           </div>
 
           <div v-if="!train.online" class="train-badge offline">
-            <img src="/images/icon-offline.svg" alt="" />
+            <img src="/images/icon-offline.svg" alt="offline train icon" />
             Offline {{ lastSeenMessage(train.lastSeen) }}
           </div>
         </div>
@@ -335,10 +336,14 @@ export default defineComponent({
   display: flex;
   align-items: center;
   flex-wrap: wrap;
+  gap: 0.5em;
+  padding: 0.5em 0;
 }
 
 .progress-distance {
-  margin-right: 0.25em;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25em;
 }
 
 .timetable-warnings {

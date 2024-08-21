@@ -78,6 +78,10 @@
 }
 
 .train-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.3em;
+
   padding: 0.1em 0.3em;
   border-radius: 0.2em;
   font-weight: bold;

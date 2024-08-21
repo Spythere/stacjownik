@@ -107,18 +107,6 @@ s {
   flex-wrap: wrap;
   align-items: center;
 
-  &[data-minor='true'] {
-    .date {
-      display: none;
-    }
-
-    .name {
-      background: none;
-      color: #aaa;
-      padding: 0;
-    }
-  }
-
   .name {
     background: $stopNameClr;
     border-radius: 0.5em 0 0 0.5em;
@@ -141,6 +129,18 @@ s {
     }
   }
 
+  &[data-minor='true'] {
+    .date {
+      display: none;
+    }
+
+    .name {
+      background: none;
+      color: #aaa;
+      padding: 0;
+    }
+  }
+
   .stop {
     &[data-stop-types='ph'],
     &[data-stop-types='ph-pm'],
@@ -154,6 +154,10 @@ s {
       color: $delayedClr;
     }
   }
+}
+
+.stop-label > a {
+  z-index: 0;
 }
 
 .stop .arrival {

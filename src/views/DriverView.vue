@@ -5,11 +5,11 @@
         <div class="actions">
           <router-link to="/" class="a-button btn--image">
             <img src="/images/icon-back.svg" alt="train icon" />
-            {{ $t('trains.driver-return-link') }}
+            <span>{{ $t('trains.driver-return-link') }}</span>
           </router-link>
           <router-link :to="`/journal/timetables?search-driver=`" class="a-button btn--image">
             <img src="/images/icon-train.svg" alt="train icon" />
-            <span>
+            <span class="hidable">
               {{ $t('trains.driver-journal-link') }}
             </span>
           </router-link>
@@ -17,7 +17,7 @@
 
         <div class="train-card">
           <TrainInfo :train="chosenTrain" :extended="true" ref="trainInfo" />
-          <TrainSchedule :train="chosenTrain" tabindex="0" />
+          <TrainSchedule :train="chosenTrain" />
         </div>
       </div>
 
@@ -60,6 +60,8 @@ const chosenTrain = computed(() => mainStore.trainList.find((train) => train.id 
 </script>
 
 <style lang="scss" scoped>
+@import '../styles/responsive';
+
 $viewBgCol: #1a1a1a;
 
 .driver-view {
@@ -72,6 +74,7 @@ $viewBgCol: #1a1a1a;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
+  gap: 0.5em;
 }
 
 .actions > a {
@@ -100,6 +103,12 @@ $viewBgCol: #1a1a1a;
 
   a {
     text-decoration: underline;
+  }
+}
+
+@include smallScreen {
+  .actions > a > span.hidable {
+    display: none;
   }
 }
 </style>

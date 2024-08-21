@@ -657,10 +657,6 @@ h3.section-header {
 }
 
 @include smallScreen {
-  .card_controls > button.card-button > p {
-    display: none;
-  }
-
   .slider {
     flex-wrap: wrap;
     justify-content: center;

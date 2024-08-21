@@ -43,7 +43,6 @@ export default defineComponent({
 
   width: 6em;
   height: 1em;
-  margin: 0.5em 0;
 
   .bar-fg,
   .bar-bg {
