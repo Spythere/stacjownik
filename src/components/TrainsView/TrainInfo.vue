@@ -55,10 +55,6 @@
               {{ $t('trains.journal-button') }}
             </span>
           </button>
-
-          <button class="btn-exit btn--image btn--action" @click="closeModal">
-            <img src="/images/icon-exit.svg" alt="modal exit icon" />
-          </button>
         </div>
       </div>
 
@@ -171,12 +167,11 @@ import ProgressBar from '../Global/ProgressBar.vue';
 import { useMainStore } from '../../store/mainStore';
 import { useApiStore } from '../../store/apiStore';
 import StockList from '../Global/StockList.vue';
-import modalTrainMixin from '../../mixins/modalTrainMixin';
 import { Train } from '../../typings/common';
 import trainCategoryMixin from '../../mixins/trainCategoryMixin';
 
 export default defineComponent({
-  mixins: [trainInfoMixin, styleMixin, modalTrainMixin, trainCategoryMixin],
+  mixins: [trainInfoMixin, styleMixin, trainCategoryMixin],
   components: { ProgressBar, StockList },
 
   props: {
@@ -216,8 +211,6 @@ export default defineComponent({
           'search-driver': this.train.driverName
         }
       });
-
-      this.closeModal();
     }
   }
 });

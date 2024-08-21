@@ -18,8 +18,8 @@
         tabindex="0"
         :key="train.id"
         :data-status="status"
-        @click.prevent="selectModalTrain(train, $event.currentTarget)"
-        @keydown.enter="selectModalTrain(train, $event.currentTarget)"
+        @click.prevent="driverMixin_showDriverView(train.id)"
+        @keydown.enter="driverMixin_showDriverView(train.id)"
       >
         <span class="user_train">{{ train.trainNo }}</span>
         <span class="user_name">{{ train.driverName }}</span>
@@ -30,14 +30,14 @@
 
 <script lang="ts">
 import { PropType, defineComponent } from 'vue';
-import modalTrainMixin from '../../../mixins/modalTrainMixin';
 import routerMixin from '../../../mixins/routerMixin';
 import { ActiveScenery, Station, StopStatus } from '../../../typings/common';
 import { getTrainStopStatus } from '../utils';
 import { useMainStore } from '../../../store/mainStore';
+import driverViewMixin from '../../../mixins/driverViewMixin';
 
 export default defineComponent({
-  mixins: [routerMixin, modalTrainMixin],
+  mixins: [routerMixin, driverViewMixin],
 
   props: {
     onlineScenery: {

@@ -74,13 +74,12 @@ import { PropType, defineComponent } from 'vue';
 
 import { API } from '../../../typings/api';
 import dateMixin from '../../../mixins/dateMixin';
-import modalTrainMixin from '../../../mixins/modalTrainMixin';
 import styleMixin from '../../../mixins/styleMixin';
 import { useApiStore } from '../../../store/apiStore';
 import trainCategoryMixin from '../../../mixins/trainCategoryMixin';
 
 export default defineComponent({
-  mixins: [dateMixin, modalTrainMixin, styleMixin, trainCategoryMixin],
+  mixins: [dateMixin, styleMixin, trainCategoryMixin],
 
   data() {
     return {

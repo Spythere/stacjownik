@@ -40,7 +40,6 @@ import { defineComponent, provide, reactive, Ref, ref } from 'vue';
 
 import dateMixin from '../mixins/dateMixin';
 import routerMixin from '../mixins/routerMixin';
-import modalTrainMixin from '../mixins/modalTrainMixin';
 
 import JournalOptions from '../components/JournalView/JournalOptions.vue';
 import JournalStats from '../components/JournalView/JournalStats.vue';
@@ -148,7 +147,7 @@ export default defineComponent({
     JournalHeader,
     JournalTimetablesList
   },
-  mixins: [dateMixin, routerMixin, modalTrainMixin],
+  mixins: [dateMixin, routerMixin],
 
   name: 'JournalTimetables',
 
@@ -462,7 +461,7 @@ export default defineComponent({
         this.timetableHistory = responseData;
 
         // Stats display
-        this.store.driverStatsName =
+        this.mainStore.driverStatsName =
           this.timetableHistory.length > 0 && this.searchersValues['search-driver'].trim()
             ? this.timetableHistory[0].driverName
             : '';

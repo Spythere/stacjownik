@@ -86,12 +86,12 @@
 import { PropType, defineComponent } from 'vue';
 import StockList from '../../Global/StockList.vue';
 import { API } from '../../../typings/api';
-import modalTrainMixin from '../../../mixins/modalTrainMixin';
+import driverViewMixin from '../../../mixins/driverViewMixin';
 
 export default defineComponent({
   components: { StockList },
 
-  mixins: [modalTrainMixin],
+  mixins: [driverViewMixin],
 
   emits: ['toggleExtraInfo'],
 
@@ -138,7 +138,7 @@ export default defineComponent({
     showTimetable(timetable: API.TimetableHistory.Data, target: EventTarget | null) {
       if (timetable?.terminated) return;
 
-      this.selectModalTrainById(`${timetable.driverName}${timetable.trainNo}`, target);
+      this.driverMixin_showDriverView(`${timetable.driverId}|${timetable.trainNo}|eu`);
     },
 
     toggleExtraInfo() {

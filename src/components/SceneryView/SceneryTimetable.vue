@@ -69,8 +69,8 @@
           v-for="(row, i) in sceneryTimetables"
           :key="row.train.id + i"
           tabindex="0"
-          @click.prevent.stop="selectModalTrain(row.train, $event.currentTarget)"
-          @keydown.enter.prevent="selectModalTrain(row.train, $event.currentTarget)"
+          @click.prevent.stop="driverMixin_showDriverView(row.train.id)"
+          @keydown.enter.prevent="driverMixin_showDriverView(row.train.id)"
         >
           <span class="timetable-general">
             <span class="general-info">
@@ -182,21 +182,21 @@ import { useRoute } from 'vue-router';
 import Loading from '../Global/Loading.vue';
 import dateMixin from '../../mixins/dateMixin';
 import routerMixin from '../../mixins/routerMixin';
-import { useMainStore } from '../../store/mainStore';
-import modalTrainMixin from '../../mixins/modalTrainMixin';
-import ScheduledTrainStatus from './ScheduledTrainStatus.vue';
-import { useApiStore } from '../../store/apiStore';
-import { ActiveScenery, Station } from '../../typings/common';
-import { SceneryTimetableRow } from './typings';
-import { getTrainStopStatus, stopStatusPriority } from './utils';
 import trainCategoryMixin from '../../mixins/trainCategoryMixin';
+import driverViewMixin from '../../mixins/driverViewMixin';
+import { useMainStore } from '../../store/mainStore';
+import { useApiStore } from '../../store/apiStore';
+import ScheduledTrainStatus from './ScheduledTrainStatus.vue';
+import { SceneryTimetableRow } from './typings';
+import { ActiveScenery, Station } from '../../typings/common';
+import { getTrainStopStatus, stopStatusPriority } from './utils';
 
 export default defineComponent({
   name: 'SceneryTimetable',
 
   components: { Loading, ScheduledTrainStatus },
 
-  mixins: [dateMixin, routerMixin, modalTrainMixin, trainCategoryMixin],
+  mixins: [dateMixin, routerMixin, trainCategoryMixin, driverViewMixin],
 
   props: {
     station: {
@@ -252,7 +252,7 @@ export default defineComponent({
     },
 
     pragotronHref() {
-      let url = `https://pragotron-td2.web.app/board?name=${this.station!.name}&region=${this.store.region.id}`;
+      let url = `https://pragotron-td2.web.app/board?name=${this.station!.name}&region=${this.mainStore.region.id}`;
       if (this.chosenCheckpoint) url += `&checkpoint=${this.chosenCheckpoint}`;
 
       return url;

@@ -18,8 +18,8 @@
           v-for="train in trains"
           :key="train.id"
           tabindex="0"
-          @click.stop="selectModalTrain(train, $event.currentTarget)"
-          @keydown.enter="selectModalTrain(train, $event.currentTarget)"
+          @click.stop="driverMixin_showDriverView(train.id)"
+          @keydown.enter="driverMixin_showDriverView(train.id)"
         >
           <TrainInfo :train="train" :extended="false" />
         </li>
@@ -30,15 +30,17 @@
 
 <script lang="ts">
 import { defineComponent, inject, PropType, Ref } from 'vue';
-import modalTrainMixin from '../../mixins/modalTrainMixin';
 import { useMainStore } from '../../store/mainStore';
 import Loading from '../Global/Loading.vue';
 import TrainInfo from './TrainInfo.vue';
 import { Status, Train } from '../../typings/common';
 import { useApiStore } from '../../store/apiStore';
+import driverViewMixin from '../../mixins/driverViewMixin';
 
 export default defineComponent({
   components: { Loading, TrainInfo },
+
+  mixins: [driverViewMixin],
 
   props: {
     trains: {
@@ -46,8 +48,6 @@ export default defineComponent({
       required: true
     }
   },
-
-  mixins: [modalTrainMixin],
 
   setup() {
     const store = useMainStore();
