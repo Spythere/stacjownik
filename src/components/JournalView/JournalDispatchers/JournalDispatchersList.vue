@@ -99,11 +99,4 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '../../../styles/variables.scss';
 @import '../../../styles/JournalSection.scss';
-
-.journal-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5em;
-  text-align: left;
-}
 </style>

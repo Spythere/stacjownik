@@ -1,6 +1,14 @@
 @import 'responsive.scss';
 @import 'animations.scss';
 
+.journal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  text-align: left;
+  margin-bottom: 0.5em;
+}
+
 .list_wrapper {
   overflow-y: auto;
   height: 90vh;
@@ -42,7 +50,6 @@
 .journal_warning {
   background-color: #1a1a1a;
   padding: 1em;
-  margin-bottom: 1em;
 }
 
 .journal_top-bar {
