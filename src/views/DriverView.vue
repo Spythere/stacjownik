@@ -5,12 +5,12 @@
         <div class="actions">
           <router-link to="/" class="a-button btn--image">
             <img src="/images/icon-back.svg" alt="train icon" />
-            STRONA GŁÓWNA
+            {{ $t('trains.driver-return-link') }}
           </router-link>
           <router-link :to="`/journal/timetables?search-driver=`" class="a-button btn--image">
             <img src="/images/icon-train.svg" alt="train icon" />
             <span>
-              {{ $t('trains.journal-button') }}
+              {{ $t('trains.driver-journal-link') }}
             </span>
           </router-link>
         </div>
@@ -24,16 +24,16 @@
       <Loading v-else-if="apiStore.dataStatuses.connection == Status.Data.Loading" />
 
       <div v-else class="driver-not-found">
-        <h2>&olcross; Nie znaleziono pociągu! :/</h2>
+        <h2>&olcross; {{ $t('trains.driver-not-found-header') }}</h2>
         <p>
-          Ten pociąg prawdopodobnie zakończył już swój bieg lub jest offline. <br />
-          Historię rozkładów jazdy możesz przejrzeć w
-          <router-link to="/journal/timetables">DZIENNIKU RJ</router-link>!
+          {{ $t('trains.driver-not-found-desc-1') }} <br />
+          {{ $t('trains.driver-not-found-desc-2') }}
+          <router-link to="/journal/timetables"
+            >{{ $t('trains.driver-not-found-journal') }} </router-link
+          >!
         </p>
 
-        <div>
-          <router-link to="/">&lt; WRÓĆ NA STRONĘ GŁÓWNĄ</router-link>
-        </div>
+        <router-link to="/">&lt;&lt; {{ $t('trains.driver-not-found-return') }}</router-link>
       </div>
     </div>
   </section>

@@ -54,7 +54,7 @@
     "MO": "międzywojewódzki osobowy",
     "MM": "międzynarodowy pospieszny",
     "MH": "międzywojewódzki pospieszny (nocny)",
-    
+
     "RP": "wojewódzki pospieszny",
     "RO": "wojewódzki osobowy",
     "RM": "wojewódzki osobowy międzynarodowy",
@@ -389,7 +389,14 @@
 
     "timeout": "Wystąpił problem z aktualizacją rozkładów jazdy z SWDR",
 
-    "journal-button": "DZIENNIK MASZYNISTY"
+    "driver-journal-link": "DZIENNIK MASZYNISTY",
+    "driver-return-link": "STRONA GŁÓWNA",
+
+    "driver-not-found-header": "Nie znaleziono pociągu! :/",
+    "driver-not-found-desc-1": "Ten pociąg prawdopodobnie zakończył już swój bieg lub jest offline.",
+    "driver-not-found-desc-2": "Historię rozkładów jazdy możesz przejrzeć w",
+    "driver-not-found-journal": "DZIENNIKU RJ",
+    "driver-not-found-return": "< WRÓĆ NA STRONĘ GŁÓWNĄ"
   },
   "train-stats": {
     "stats-button": "STATYSTYKI",

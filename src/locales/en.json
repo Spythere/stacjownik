@@ -403,7 +403,14 @@
     "scenery-offline": "Offline ride",
     "timeout": "An error occured while trying to refresh SWDR timetable data!",
 
-    "journal-button": "DRIVER'S JOURNAL"
+    "driver-journal-link": "DRIVER JOURNAL",
+    "driver-return-link": "MAIN SITE",
+
+    "driver-not-found-header": "Train not found! :/",
+    "driver-not-found-desc-1": "This train has already been terminated or it's offline.",
+    "driver-not-found-desc-2": "You can browse timetable history in the",
+    "driver-not-found-journal": "TIMETABLES JOURNAL",
+    "driver-not-found-return": "GO BACK TO THE MAIN SITE"
   },
   "train-stats": {
     "stats-button": "STATISTICS",
