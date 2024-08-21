@@ -18,7 +18,7 @@
           v-for="train in trains"
           :key="train.id"
         >
-          <router-link class="block-link" :to="train.driverRouteLocation">
+          <router-link class="a-block" :to="train.driverRouteLocation">
             <TrainInfo :train="train" :extended="false" />
           </router-link>
         </li>

@@ -64,7 +64,7 @@
         </div>
 
         <router-link
-          class="timetable-item block-link"
+          class="timetable-item a-block"
           v-else
           v-for="(row, i) in sceneryTimetables"
           :key="row.train.id + i"
@@ -175,7 +175,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, watch } from 'vue';
+import { computed, defineComponent, PropType, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import Loading from '../Global/Loading.vue';

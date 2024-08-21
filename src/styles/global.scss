@@ -123,11 +123,13 @@ input {
   border-radius: 50%;
 }
 
-a:not(.block-link):not(.a-button) {
-  display: inline-block;
-
-  color: white;
+a {
   text-decoration: none;
+  color: inherit;
+}
+
+a:not(.a-block):not(.a-button):not(.a-row) {
+  display: inline-block;
 
   transition: color 0.3s;
 
@@ -138,11 +140,12 @@ a:not(.block-link):not(.a-button) {
   }
 }
 
-a.block-link {
+a.a-block {
   display: block;
+}
 
-  color: inherit;
-  text-decoration: none;
+a.a-row {
+  display: table-row;
 }
 
 ul {
