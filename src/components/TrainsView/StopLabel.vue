@@ -3,7 +3,7 @@
     class="stop-label"
     :data-minor="stop.isSBL || (stop.nameRaw.endsWith(', po') && !stop.duration)"
   >
-    <router-link v-if="/(, podg|<strong>)/.test(stop.nameHtml)" :to="sceneryHref">
+    <router-link v-if="/(, podg$|<strong>)/.test(stop.nameHtml)" :to="sceneryHref">
       <span class="name" v-html="stop.nameHtml"></span>
     </router-link>
 

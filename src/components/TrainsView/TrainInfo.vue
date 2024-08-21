@@ -76,7 +76,7 @@
       <div class="general-stops" v-if="train.timetableData">
         <span v-if="train.timetableData.followingStops.length > 2">
           {{ $t('trains.via-title') }}
-          <span v-html="displayStopList(train.timetableData.followingStops)"></span>
+          <span v-html="getTrainStopsHtml(train.timetableData.followingStops)"></span>
         </span>
       </div>
 

@@ -249,7 +249,7 @@ export default defineComponent({
         i < this.train.timetableData!.followingStops.length;
         i++
       ) {
-        if (/(, po|sbl|, pe)/gi.test(this.train.timetableData!.followingStops[i].stopNameRAW))
+        if (/(, po$|sbl|, pe$)/gi.test(this.train.timetableData!.followingStops[i].stopNameRAW))
           activeMinorStopList.push(i);
         else break;
       }
