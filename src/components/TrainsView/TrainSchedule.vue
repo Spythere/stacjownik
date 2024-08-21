@@ -286,7 +286,7 @@ $blinkAnim: 0.5s ease-in-out alternate infinite blink;
 }
 
 .train-schedule {
-  padding: 0 1em;
+  padding: 1em;
 }
 
 .schedule-wrapper {

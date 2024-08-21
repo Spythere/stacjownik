@@ -1,14 +1,40 @@
 <template>
   <section class="driver-view">
-    <div class="content">
+    <div class="view-wrapper">
       <div v-if="chosenTrain">
-        <TrainInfo :train="chosenTrain" :extended="true" ref="trainInfo" />
-        <TrainSchedule :train="chosenTrain" tabindex="0" />
+        <div class="actions">
+          <router-link to="/" class="a-button btn--image">
+            <img src="/images/icon-back.svg" alt="train icon" />
+            STRONA GŁÓWNA
+          </router-link>
+          <router-link :to="`/journal/timetables?search-driver=`" class="a-button btn--image">
+            <img src="/images/icon-train.svg" alt="train icon" />
+            <span>
+              {{ $t('trains.journal-button') }}
+            </span>
+          </router-link>
+        </div>
+
+        <div class="train-card">
+          <TrainInfo :train="chosenTrain" :extended="true" ref="trainInfo" />
+          <TrainSchedule :train="chosenTrain" tabindex="0" />
+        </div>
       </div>
 
       <Loading v-else-if="apiStore.dataStatuses.connection == Status.Data.Loading" />
 
-      <div v-else>Ups! Nie ma takiego pociągu</div>
+      <div v-else class="driver-not-found">
+        <h2>&olcross; Nie znaleziono pociągu! :/</h2>
+        <p>
+          Ten pociąg prawdopodobnie zakończył już swój bieg lub jest offline. <br />
+          Historię rozkładów jazdy możesz przejrzeć w
+          <router-link to="/journal/timetables">DZIENNIKU RJ</router-link>!
+        </p>
+
+        <div>
+          <router-link to="/">&lt; WRÓĆ NA STRONĘ GŁÓWNĄ</router-link>
+        </div>
+      </div>
     </div>
   </section>
 </template>
@@ -34,13 +60,46 @@ const chosenTrain = computed(() => mainStore.trainList.find((train) => train.id 
 </script>
 
 <style lang="scss" scoped>
-@import '../styles/variables.scss';
+$viewBgCol: #1a1a1a;
 
 .driver-view {
   padding: 1em 0;
+  max-width: 2000px;
+  margin: 0 auto;
 }
 
-.content {
-  background-color: #1a1a1a;
+.actions {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.actions > a {
+  background-color: $viewBgCol;
+  padding: 0.5em;
+  border-radius: 0.5em 0.5em 0 0;
+
+  &:hover {
+    background-color: lighten($viewBgCol, 10);
+  }
+}
+
+.train-card {
+  background-color: $viewBgCol;
+}
+
+.driver-not-found {
+  background-color: $viewBgCol;
+  text-align: center;
+  padding: 1em;
+
+  p {
+    padding: 1em 0;
+    color: #aaa;
+  }
+
+  a {
+    text-decoration: underline;
+  }
 }
 </style>
