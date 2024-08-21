@@ -17,11 +17,10 @@
           class="train-row"
           v-for="train in trains"
           :key="train.id"
-          tabindex="0"
-          @click.stop="driverMixin_showDriverView(train.id)"
-          @keydown.enter="driverMixin_showDriverView(train.id)"
         >
-          <TrainInfo :train="train" :extended="false" />
+          <router-link class="block-link" :to="getTrainRoute(train.id)">
+            <TrainInfo :train="train" :extended="false" />
+          </router-link>
         </li>
       </transition-group>
     </div>
@@ -35,12 +34,9 @@ import Loading from '../Global/Loading.vue';
 import TrainInfo from './TrainInfo.vue';
 import { Status, Train } from '../../typings/common';
 import { useApiStore } from '../../store/apiStore';
-import driverViewMixin from '../../mixins/driverViewMixin';
 
 export default defineComponent({
   components: { Loading, TrainInfo },
-
-  mixins: [driverViewMixin],
 
   props: {
     trains: {
@@ -66,6 +62,17 @@ export default defineComponent({
         dir: number;
       }
     };
+  },
+
+  methods: {
+    getTrainRoute(trainId: string) {
+      return {
+        name: 'DriverView',
+        query: {
+          trainId,
+        }
+      }
+    }
   },
 
   computed: {
@@ -107,7 +114,5 @@ li.train-row {
   background-color: var(--clr-secondary);
   margin-bottom: 1em;
   width: 100%;
-
-  cursor: pointer;
 }
 </style>

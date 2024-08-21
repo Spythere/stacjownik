@@ -123,7 +123,7 @@ input {
   border-radius: 50%;
 }
 
-a {
+a:not(.block-link) {
   display: inline-block;
 
   color: white;
@@ -136,6 +136,13 @@ a {
     color: $accentCol;
     border: none;
   }
+}
+
+a.block-link {
+  display: block;
+
+  color: inherit;
+  text-decoration: none;
 }
 
 ul {
