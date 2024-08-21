@@ -7,12 +7,6 @@
 
     <Tooltip />
 
-    <transition name="modal-anim">
-      <keep-alive>
-        <TrainModal />
-      </keep-alive>
-    </transition>
-
     <AppHeader :current-lang="currentLang" @change-lang="changeLang" />
 
     <main class="app_main">
@@ -54,7 +48,6 @@ import { useTooltipStore } from './store/tooltipStore';
 import Clock from './components/App/Clock.vue';
 import StatusIndicator from './components/App/StatusIndicator.vue';
 import AppHeader from './components/App/AppHeader.vue';
-import TrainModal from './components/TrainsView/TrainModal.vue';
 import Tooltip from './components/Tooltip/Tooltip.vue';
 import UpdateCard from './components/App/UpdateCard.vue';
 
@@ -67,7 +60,6 @@ export default defineComponent({
     Clock,
     StatusIndicator,
     AppHeader,
-    TrainModal,
     UpdateCard,
     Tooltip
   },
