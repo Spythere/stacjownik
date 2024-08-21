@@ -49,12 +49,12 @@
         </div>
 
         <div class="top-bar-controls" v-if="extended">
-          <button class="btn-timetable btn--image btn--action" @click="navigateToJournal">
+          <router-link class="a-button btn-timetable btn--image btn--action" :to="journalRouteLocation">
             <img src="/images/icon-train.svg" alt="train icon" />
             <span>
               {{ $t('trains.journal-button') }}
             </span>
-          </button>
+          </router-link>
         </div>
       </div>
 
@@ -200,17 +200,14 @@ export default defineComponent({
 
         return Math.min(vehicleSpeed, acc);
       }, 300);
-    }
-  },
-
-  methods: {
-    navigateToJournal() {
-      this.$router.push({
+    },
+    journalRouteLocation() {
+      return {
         path: '/journal/timetables',
         query: {
           'search-driver': this.train.driverName
         }
-      });
+      }
     }
   }
 });
