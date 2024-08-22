@@ -499,6 +499,7 @@ table {
 tr,
 .a-row {
   background-color: $rowCol;
+  vertical-align: middle;
 
   &:nth-child(even) {
     background-color: lighten($rowCol, 5);

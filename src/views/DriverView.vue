@@ -65,9 +65,10 @@ const chosenTrain = computed(() => mainStore.trainList.find((train) => train.id 
 $viewBgCol: #1a1a1a;
 
 .driver-view {
+  margin: 0 auto;
   padding: 1em 0;
   max-width: 2000px;
-  margin: 0 auto;
+  min-height: 95vh;
 }
 
 .actions {
