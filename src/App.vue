@@ -6,7 +6,6 @@
     />
 
     <Tooltip />
-
     <AppHeader :current-lang="currentLang" @change-lang="changeLang" />
 
     <main class="app_main">

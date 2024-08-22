@@ -50,15 +50,6 @@ export const useMainStore = defineStore('mainStore', {
 
           const timetable = train.timetable;
 
-          // const sceneryNames =
-          //   train.timetable?.sceneries?.map(
-          //     (sceneryHash) =>
-          //       apiStore.activeData?.activeSceneries?.find((st) => st.stationHash === sceneryHash)
-          //         ?.stationName ??
-          //       apiStore.sceneryData.find((sd) => sd.hash === sceneryHash)?.name ??
-          //       sceneryHash
-          //   ) ?? [];
-
           const trainObj = {
             id: train.id,
             modalId: `${train.driverName}${train.trainNo}`, // simplified id for train modal
@@ -218,46 +209,6 @@ export const useMainStore = defineStore('mainStore', {
             }
           });
         });
-
-        // train.timetableData.sceneryNames.forEach((name) => {
-        //   if (
-        //     acc.findIndex((v) => v.name == name && v.region == train.region) != -1 ||
-        //     apiStore.activeData?.activeSceneries?.findIndex(
-        //       (sc) =>
-        //         sc.stationName === name &&
-        //         sc.region == train.region &&
-        //         Date.now() - sc.lastSeen < 1000 * 60 * 2
-        //     ) != -1
-        //   )
-        //     return acc;
-
-        //   acc.push({
-        //     name: name,
-        //     hash: '',
-        //     region: train.region,
-        //     maxUsers: 0,
-        //     currentUsers: 0,
-        //     spawns: [],
-        //     dispatcherName: '',
-        //     dispatcherRate: 0,
-        //     dispatcherId: -1,
-        //     dispatcherExp: -1,
-        //     dispatcherIsSupporter: false,
-        //     dispatcherStatus: Status.ActiveDispatcher.FREE,
-        //     dispatcherTimestamp: -1,
-
-        //     isOnline: false,
-
-        //     stationTrains: [],
-        //     scheduledTrains: [],
-
-        //     scheduledTrainCount: {
-        //       all: 0,
-        //       confirmed: 0,
-        //       unconfirmed: 0
-        //     }
-        //   });
-        // });
 
         return acc;
       }, [] as ActiveScenery[]);
