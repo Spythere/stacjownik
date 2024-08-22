@@ -63,16 +63,15 @@
               <div class="section-filters">
                 <label
                   v-for="filterKey in sectionFilters"
-                  @click="() => (filters[filterKey] = !filters[filterKey])"
                   @dblclick="setSingleSectionFilter(sectionKey, filterKey)"
-                  :for="filterKey"
                 >
                   <input
+                    type="checkbox"
                     :checked="filters[filterKey]"
                     v-model="filters[filterKey]"
-                    type="checkbox"
                     :class="sectionKey"
                     :name="filterKey"
+                    :id="filterKey"
                   />
                   <span>
                     {{ $t(`filters.${filterKey}`) }}
@@ -363,7 +362,8 @@ export default defineComponent({
 
     setSingleSectionFilter(sectionKey: StationFilterSection, chosenKey: string) {
       filtersSections[sectionKey].forEach((filterKey) => {
-        if (filterKey != chosenKey) this.filters[filterKey] = initFilters[filterKey];
+        if (typeof this.filters[filterKey] === 'boolean')
+          this.filters[filterKey] = filterKey != chosenKey;
       });
     },
 
