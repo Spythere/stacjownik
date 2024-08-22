@@ -115,6 +115,7 @@ $viewBgCol: #1a1a1a;
 
   a {
     text-decoration: underline;
+    color: white;
   }
 }
 
