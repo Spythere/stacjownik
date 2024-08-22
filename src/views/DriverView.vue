@@ -7,7 +7,10 @@
             <img src="/images/icon-back.svg" alt="train icon" />
             <span>{{ $t('trains.driver-return-link') }}</span>
           </router-link>
-          <router-link :to="`/journal/timetables?search-driver=${chosenTrain.driverName}`" class="a-button btn--image">
+          <router-link
+            :to="`/journal/timetables?search-driver=${chosenTrain.driverName}`"
+            class="a-button btn--image"
+          >
             <img src="/images/icon-train.svg" alt="train icon" />
             <span class="hidable">
               {{ $t('trains.driver-journal-link') }}
@@ -50,13 +53,21 @@ import { Status } from '../typings/common';
 
 const props = defineProps({
   trainId: {
+    type: String,
     required: true
+  },
+
+  modalId: {
+    type: String
   }
 });
 
 const mainStore = useMainStore();
 const apiStore = useApiStore();
-const chosenTrain = computed(() => mainStore.trainList.find((train) => train.id == props.trainId));
+
+const chosenTrain = computed(() =>
+  mainStore.trainList.find((train) => train.id == props.trainId || train.modalId == props.modalId)
+);
 </script>
 
 <style lang="scss" scoped>

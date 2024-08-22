@@ -25,7 +25,8 @@ const routes: Array<RouteRecordRaw> = [
     name: 'DriverView',
     component: () => import('../views/DriverView.vue'),
     props: (route) => ({
-      trainId: route.query.trainId
+      trainId: route.query.trainId,
+      modalId: route.query.modalId
     })
   },
   {

@@ -24,7 +24,6 @@ import { TrainFilter, trainFilters } from '../components/TrainsView/typings';
 import { filteredTrainList } from '../managers/trainFilterManager';
 import TrainStats from '../components/TrainsView/TrainStats.vue';
 import { Train } from '../typings/common';
-import { useRoute, useRouter } from 'vue-router';
 
 export default defineComponent({
   components: {
@@ -56,8 +55,6 @@ export default defineComponent({
   }),
 
   setup() {
-    const router = useRouter();
-
     const store = useMainStore();
     const initTrainFilters = [...trainFilters.map((f) => ({ ...f }))];
 
@@ -91,20 +88,6 @@ export default defineComponent({
         sT.length > 0 || sD.length > 0 || sA.id != 'routeDistance' || areFiltersActive;
     });
 
-    // Backwards compatibility with external links leading to train modal
-    watch(
-      () => store.trainList,
-      (v) => {
-        if (v.length > 0 && router.currentRoute.value.query['trainId']) {
-          const queryTrainId = router.currentRoute.value.query['trainId'];
-          const train = store.trainList.find((t) => t.modalId == queryTrainId.toString());
-
-          if (!train) router.replace('/trains');
-          else router.replace(`/driver?trainId=${train.id}`);
-        }
-      }
-    );
-
     return {
       computedTrains,
       searchedTrain,
@@ -116,6 +99,12 @@ export default defineComponent({
   },
 
   activated() {
+    // Backwards compatibility with external links leading to train modal
+    if (this.trainId) {
+      this.$router.replace(`/driver?modalId=${this.trainId}`);
+      return;
+    }
+
     if (this.train) {
       this.searchedTrain = this.train;
       this.searchedDriver = this.driver || '';
