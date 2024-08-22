@@ -59,8 +59,7 @@
           :key="station.name"
           @click.right.prevent="openForumSite($event, station.generalInfo?.url)"
           @keydown.space.prevent="openForumSite($event, station.generalInfo?.url)"
-          tabindex="0"
-          :to="getSceneryRoute(station.name)"
+          :to="getSceneryRoute(station)"
         >
           <td class="station-name" :class="station.generalInfo?.availability">
             <b v-if="station.generalInfo?.project" style="color: salmon">{{
@@ -121,7 +120,7 @@
             <span v-if="station.onlineInfo?.dispatcherName">
               <b
                 v-if="apiStore.donatorsData.includes(station.onlineInfo.dispatcherName)"
-                @click.stop="openDonationCard"
+                @click.prevent="openDonationCard"
                 data-tooltip-type="DonatorTooltip"
                 :data-tooltip-content="$t('donations.dispatcher-message')"
               >
@@ -319,7 +318,7 @@ import dateMixin from '../../mixins/dateMixin';
 import styleMixin from '../../mixins/styleMixin';
 import { useApiStore } from '../../store/apiStore';
 import { useMainStore } from '../../store/mainStore';
-import { Status } from '../../typings/common';
+import { Station, Status } from '../../typings/common';
 import { useTooltipStore } from '../../store/tooltipStore';
 import { getChangedFilters } from '../../managers/stationFilterManager';
 import { ActiveSorter, HeadIdsType, headIconsIds, headIds } from './typings';
@@ -363,9 +362,7 @@ export default defineComponent({
   },
 
   methods: {
-    getSceneryRoute(name: string) {
-      const station = this.filteredStationList.find((station) => station.name === name);
-
+    getSceneryRoute(station: Station) {
       // TODO: Hide tooltips when navigating away
 
       return {
@@ -499,7 +496,8 @@ table {
   }
 }
 
-tr, .a-row {
+tr,
+.a-row {
   background-color: $rowCol;
 
   &:nth-child(even) {

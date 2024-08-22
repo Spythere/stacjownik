@@ -15,7 +15,6 @@
       <li
         v-for="{ train, status } in stationTrains"
         class="badge user"
-        tabindex="0"
         :key="train.id"
         :data-status="status"
       >
@@ -98,38 +97,27 @@ ul {
 }
 
 .user {
-  cursor: pointer;
-
-  &_train {
-    color: black;
-    background-color: $no-timetable;
-
-    transition: background-color 200ms;
-    -ms-transition: background-color 200ms;
-    -webkit-transition: background-color 200ms;
-  }
-
   &[data-status='no-timetable'] .user_train {
     background-color: $no-timetable;
   }
 
-  &[data-status='departed'] > &_train {
+  &[data-status='departed'] .user_train {
     background-color: $departed;
   }
 
-  &[data-status='stopped'] > &_train {
+  &[data-status='stopped'] .user_train {
     background-color: $stopped;
   }
 
-  &[data-status='online'] > &_train {
+  &[data-status='online'] .user_train {
     background-color: $online;
   }
 
-  &[data-status='terminated'] > &_train {
+  &[data-status='terminated'] .user_train {
     background-color: $terminated;
   }
 
-  &[data-status='disconnected'] > &_train {
+  &[data-status='disconnected'] .user_train {
     background-color: $disconnected;
   }
 
@@ -138,6 +126,16 @@ ul {
     pointer-events: none;
   }
 }
+
+.user_train {
+  color: black;
+  background-color: $no-timetable;
+
+  transition: background-color 200ms;
+  -ms-transition: background-color 200ms;
+  -webkit-transition: background-color 200ms;
+}
+
 .users-anim {
   &-move,
   &-enter-active,

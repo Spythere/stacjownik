@@ -7,7 +7,7 @@
             <img src="/images/icon-back.svg" alt="train icon" />
             <span>{{ $t('trains.driver-return-link') }}</span>
           </router-link>
-          <router-link :to="`/journal/timetables?search-driver=`" class="a-button btn--image">
+          <router-link :to="`/journal/timetables?search-driver=${chosenTrain.driverName}`" class="a-button btn--image">
             <img src="/images/icon-train.svg" alt="train icon" />
             <span class="hidable">
               {{ $t('trains.driver-journal-link') }}
