@@ -124,10 +124,12 @@ input {
 }
 
 a {
-  display: inline-block;
-
-  color: white;
   text-decoration: none;
+  color: inherit;
+}
+
+a:not(.a-block):not(.a-button):not(.a-row) {
+  display: inline-block;
 
   transition: color 0.3s;
 
@@ -136,6 +138,14 @@ a {
     color: $accentCol;
     border: none;
   }
+}
+
+a.a-block {
+  display: block;
+}
+
+a.a-row {
+  display: table-row;
 }
 
 ul {
@@ -184,6 +194,7 @@ a.a-button {
   color: white;
   background: none;
   border-radius: 0.25em;
+  text-decoration: none;
 
   display: flex;
   align-items: center;

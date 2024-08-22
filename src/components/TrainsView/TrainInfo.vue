@@ -192,17 +192,14 @@ export default defineComponent({
 
         return Math.min(vehicleSpeed, acc);
       }, 300);
-    }
-  },
-
-  methods: {
-    navigateToJournal() {
-      this.$router.push({
+    },
+    journalRouteLocation() {
+      return {
         path: '/journal/timetables',
         query: {
           'search-driver': this.train.driverName
         }
-      });
+      }
     }
   }
 });

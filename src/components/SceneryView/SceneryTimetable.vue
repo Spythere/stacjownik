@@ -63,14 +63,13 @@
           {{ $t('scenery.no-timetables') }}
         </div>
 
-        <div
-          class="timetable-item"
+        <router-link
+          class="timetable-item a-block"
           v-else
           v-for="(row, i) in sceneryTimetables"
           :key="row.train.id + i"
           tabindex="0"
-          @click.prevent.stop="driverMixin_showDriverView(row.train.id)"
-          @keydown.enter.prevent="driverMixin_showDriverView(row.train.id)"
+          :to="row.train.driverRouteLocation"
         >
           <span class="timetable-general">
             <span class="general-info">
@@ -169,21 +168,20 @@
               </span>
             </span>
           </span>
-        </div>
+        </router-link>
       </transition-group>
     </div>
   </section>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, watch } from 'vue';
+import { computed, defineComponent, PropType, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import Loading from '../Global/Loading.vue';
 import dateMixin from '../../mixins/dateMixin';
 import routerMixin from '../../mixins/routerMixin';
 import trainCategoryMixin from '../../mixins/trainCategoryMixin';
-import driverViewMixin from '../../mixins/driverViewMixin';
 import { useMainStore } from '../../store/mainStore';
 import { useApiStore } from '../../store/apiStore';
 import ScheduledTrainStatus from './ScheduledTrainStatus.vue';
@@ -196,7 +194,7 @@ export default defineComponent({
 
   components: { Loading, ScheduledTrainStatus },
 
-  mixins: [dateMixin, routerMixin, trainCategoryMixin, driverViewMixin],
+  mixins: [dateMixin, routerMixin, trainCategoryMixin],
 
   props: {
     station: {
@@ -391,7 +389,6 @@ export default defineComponent({
 
     background: #353535;
 
-    cursor: pointer;
     z-index: 10;
 
     &.empty {

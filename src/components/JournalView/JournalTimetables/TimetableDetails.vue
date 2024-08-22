@@ -6,14 +6,14 @@
         <img :src="`/images/icon-arrow-${showExtraInfo ? 'asc' : 'desc'}.svg`" alt="Arrow icon" />
       </button>
 
-      <button
-        v-if="timetable.terminated == false"
-        class="btn--action btn-timetable"
-        @click.stop="showTimetable(timetable, $event.currentTarget)"
+      <router-link
+        v-if="driverRouteLocation !== null"
+        class="a-button btn--action btn-timetable"
+        :to="driverRouteLocation"
       >
         <img src="/images/icon-train.svg" alt="train icon" />
         <b>{{ $t('journal.timetable-online-button') }}</b>
-      </button>
+      </router-link>
     </div>
 
     <div class="details-body" v-if="timetable.stockString && timetable.stockMass && showExtraInfo">
@@ -86,12 +86,10 @@
 import { PropType, defineComponent } from 'vue';
 import StockList from '../../Global/StockList.vue';
 import { API } from '../../../typings/api';
-import driverViewMixin from '../../../mixins/driverViewMixin';
+import { RouteLocationRaw } from 'vue-router';
 
 export default defineComponent({
   components: { StockList },
-
-  mixins: [driverViewMixin],
 
   emits: ['toggleExtraInfo'],
 
@@ -127,18 +125,21 @@ export default defineComponent({
             stockLength: Number(historyData[3]) || undefined
           };
         });
+    },
+    driverRouteLocation(): RouteLocationRaw | null {
+      if (this.timetable.terminated) return null;
+      return {
+        name: 'DriverView',
+        query: {
+          trainId: `${this.timetable.driverId}|${this.timetable.trainNo}|eu`
+        }
+      }
     }
   },
   methods: {
     onImageError(e: Event) {
       const imageEl = e.target as HTMLImageElement;
       imageEl.src = '/images/icon-unknown.png';
-    },
-
-    showTimetable(timetable: API.TimetableHistory.Data, target: EventTarget | null) {
-      if (timetable?.terminated) return;
-
-      this.driverMixin_showDriverView(`${timetable.driverId}|${timetable.trainNo}|eu`);
     },
 
     toggleExtraInfo() {

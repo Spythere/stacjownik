@@ -18,11 +18,11 @@
         tabindex="0"
         :key="train.id"
         :data-status="status"
-        @click.prevent="driverMixin_showDriverView(train.id)"
-        @keydown.enter="driverMixin_showDriverView(train.id)"
       >
-        <span class="user_train">{{ train.trainNo }}</span>
-        <span class="user_name">{{ train.driverName }}</span>
+        <router-link :to="train.driverRouteLocation" class="a-block">
+          <span class="user_train">{{ train.trainNo }}</span>
+          <span class="user_name">{{ train.driverName }}</span>
+        </router-link>
       </li>
     </transition-group>
   </section>
@@ -31,13 +31,12 @@
 <script lang="ts">
 import { PropType, defineComponent } from 'vue';
 import routerMixin from '../../../mixins/routerMixin';
-import { ActiveScenery, Station, StopStatus } from '../../../typings/common';
+import { ActiveScenery, Station } from '../../../typings/common';
 import { getTrainStopStatus } from '../utils';
 import { useMainStore } from '../../../store/mainStore';
-import driverViewMixin from '../../../mixins/driverViewMixin';
 
 export default defineComponent({
-  mixins: [routerMixin, driverViewMixin],
+  mixins: [routerMixin],
 
   props: {
     onlineScenery: {

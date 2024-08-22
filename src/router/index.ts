@@ -7,7 +7,7 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/StationsView.vue'),
     props: (route) => ({
       region: route.query.region
-    })
+    }),
   },
   {
     path: '/trains',
@@ -55,7 +55,7 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/JournalDispatchers.vue'),
     props: (route) => ({
       region: route.query.region
-    })
+    }),
   },
   {
     path: '/:catchAll(.*)',

@@ -52,15 +52,15 @@
       </thead>
 
       <tbody>
-        <tr
+        <router-link
           v-for="station in filteredStationList"
-          :class="{ 'last-selected': lastSelectedStationName == station.name }"
+          class="a-row"
+          role="row"
           :key="station.name"
-          @click.left="setScenery(station.name)"
-          @click.right="openForumSite($event, station.generalInfo?.url)"
-          @keydown.enter="setScenery(station.name)"
-          @keydown.space="openForumSite($event, station.generalInfo?.url)"
+          @click.right.prevent="openForumSite($event, station.generalInfo?.url)"
+          @keydown.space.prevent="openForumSite($event, station.generalInfo?.url)"
           tabindex="0"
+          :to="getSceneryRoute(station.name)"
         >
           <td class="station-name" :class="station.generalInfo?.availability">
             <b v-if="station.generalInfo?.project" style="color: salmon">{{
@@ -294,7 +294,7 @@
           >
             {{ station.onlineInfo?.scheduledTrainCount.confirmed ?? '-' }}
           </td>
-        </tr>
+        </router-link>
       </tbody>
     </table>
 
@@ -334,7 +334,6 @@ export default defineComponent({
   data: () => ({
     headIconsIds,
     headIds,
-    lastSelectedStationName: '',
     getChangedFilters
   }),
 
@@ -364,21 +363,18 @@ export default defineComponent({
   },
 
   methods: {
-    setScenery(name: string) {
+    getSceneryRoute(name: string) {
       const station = this.filteredStationList.find((station) => station.name === name);
 
-      if (!station) return;
+      // TODO: Hide tooltips when navigating away
 
-      this.lastSelectedStationName = station.name;
-      this.tooltipStore.hide();
-
-      this.$router.push({
+      return {
         name: 'SceneryView',
         query: {
           station: station.name,
           region: this.$route.query.region || undefined
         }
-      });
+      };
     },
 
     openDonationCard(e: Event) {
@@ -503,7 +499,7 @@ table {
   }
 }
 
-tr {
+tr, .a-row {
   background-color: $rowCol;
 
   &:nth-child(even) {
