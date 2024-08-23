@@ -404,7 +404,7 @@
     "timeout": "An error occured while trying to refresh SWDR timetable data!",
 
     "driver-journal-link": "DRIVER JOURNAL",
-    "driver-return-link": "MAIN SITE",
+    "driver-return-link": "GO BACK",
 
     "driver-not-found-header": "Train not found! :/",
     "driver-not-found-desc-1": "This train has already been terminated or it's offline.",

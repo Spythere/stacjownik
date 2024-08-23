@@ -390,7 +390,7 @@
     "timeout": "Wystąpił problem z aktualizacją rozkładów jazdy z SWDR",
 
     "driver-journal-link": "DZIENNIK MASZYNISTY",
-    "driver-return-link": "STRONA GŁÓWNA",
+    "driver-return-link": "POWRÓT",
 
     "driver-not-found-header": "Nie znaleziono pociągu! :/",
     "driver-not-found-desc-1": "Ten pociąg prawdopodobnie zakończył już swój bieg lub jest offline.",

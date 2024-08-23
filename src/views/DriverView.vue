@@ -3,18 +3,14 @@
     <div class="view-wrapper">
       <div v-if="chosenTrain">
         <div class="actions">
-          <router-link to="/" class="a-button btn--image">
-            <img src="/images/icon-back.svg" alt="train icon" />
-            <span>{{ $t('trains.driver-return-link') }}</span>
-          </router-link>
           <router-link
             :to="`/journal/timetables?search-driver=${chosenTrain.driverName}`"
             class="a-button btn--image"
           >
-            <img src="/images/icon-train.svg" alt="train icon" />
             <span class="hidable">
               {{ $t('trains.driver-journal-link') }}
             </span>
+            <img src="/images/icon-train.svg" alt="train icon" />
           </router-link>
         </div>
 
@@ -43,7 +39,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, onActivated, onMounted, useAttrs } from 'vue';
 import TrainInfo from '../components/TrainsView/TrainInfo.vue';
 import TrainSchedule from '../components/TrainsView/TrainSchedule.vue';
 import Loading from '../components/Global/Loading.vue';
@@ -68,6 +64,10 @@ const apiStore = useApiStore();
 const chosenTrain = computed(() =>
   mainStore.trainList.find((train) => train.id == props.trainId || train.modalId == props.modalId)
 );
+
+onActivated(() => {
+  console.log();
+});
 </script>
 
 <style lang="scss" scoped>
@@ -85,7 +85,7 @@ $viewBgCol: #1a1a1a;
 .actions {
   display: flex;
   align-items: flex-end;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 0.5em;
 }
 
@@ -101,6 +101,7 @@ $viewBgCol: #1a1a1a;
 
 .train-card {
   background-color: $viewBgCol;
+  border-radius: 0 0 0.5em 0.5em;
 }
 
 .driver-not-found {
