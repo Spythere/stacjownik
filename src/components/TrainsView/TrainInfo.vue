@@ -2,30 +2,18 @@
   <div class="train-info" :data-extended="extended">
     <section class="train-general">
       <div class="general-top-bar">
-        <div>
+        <div class="top-bar-header">
           <b class="warning-timeout" v-if="train.isTimeout" :title="$t('trains.timeout')">?</b>
           <span class="timetable-id" v-if="train.timetableData">
             #{{ train.timetableData.timetableId }}
           </span>
 
-          <span
-            class="timetable-warnings"
-            v-if="train.timetableData?.TWR || train.timetableData?.SKR"
-          >
-            <span
-              class="train-badge twr"
-              v-if="train.timetableData?.TWR"
-              :title="$t('general.TWR')"
-            >
-              TWR
-            </span>
-            <span
-              class="train-badge skr"
-              v-if="train.timetableData?.SKR"
-              :title="$t('general.SKR')"
-            >
-              SKR
-            </span>
+          <span class="train-badge twr" v-if="train.timetableData?.TWR" :title="$t('general.TWR')">
+            TWR
+          </span>
+
+          <span class="train-badge skr" v-if="train.timetableData?.SKR" :title="$t('general.SKR')">
+            SKR
           </span>
 
           <b
@@ -38,14 +26,15 @@
           </b>
           <b class="train-number">{{ train.trainNo }}</b>
           <span>&bull;</span>
-          <b
-            class="level-badge driver"
-            :style="calculateExpStyle(train.driverLevel, train.isSupporter)"
-          >
-            {{ train.driverLevel < 2 ? 'L' : `${train.driverLevel}` }}
-          </b>
 
           <div class="train-driver">
+            <b
+              class="level-badge driver"
+              :style="calculateExpStyle(train.driverLevel, train.isSupporter)"
+            >
+              {{ train.driverLevel < 2 ? 'L' : `${train.driverLevel}` }}
+            </b>
+
             <b
               v-if="apiStore.donatorsData.includes(train.driverName)"
               data-tooltip-type="DonatorTooltip"
@@ -57,19 +46,6 @@
 
             <span v-else>{{ train.driverName }}</span>
           </div>
-        </div>
-
-        <div v-if="extended">
-          <button class="btn-timetable btn--image btn--action" @click="navigateToJournal">
-            <img src="/images/icon-train.svg" alt="train icon" />
-            <span>
-              {{ $t('trains.journal-button') }}
-            </span>
-          </button>
-
-          <button class="btn-exit btn--image btn--action" @click="closeModal">
-            <img src="/images/icon-exit.svg" alt="modal exit icon" />
-          </button>
         </div>
       </div>
 
@@ -91,7 +67,7 @@
       <div class="general-stops" v-if="train.timetableData">
         <span v-if="train.timetableData.followingStops.length > 2">
           {{ $t('trains.via-title') }}
-          <span v-html="displayStopList(train.timetableData.followingStops)"></span>
+          <span v-html="getTrainStopsHtml(train.timetableData.followingStops)"></span>
         </span>
       </div>
 
@@ -100,21 +76,22 @@
           <ProgressBar :progressPercent="confirmedPercentage(train.timetableData.followingStops)" />
 
           <span class="progress-distance">
-            &nbsp; {{ currentDistance(train.timetableData.followingStops) }} km /
-            <span class="text--primary"> {{ train.timetableData.routeDistance }} km </span>
-            |
+            <span>{{ currentDistance(train.timetableData.followingStops) }} km</span>
+            <span>/</span>
+            <span class="text--primary">{{ train.timetableData.routeDistance }} km </span>
+            <span>|</span>
             <span v-html="currentDelay(train.timetableData.followingStops)"></span>
           </span>
         </div>
 
         <div class="status-badges">
           <div v-if="!train.currentStationHash" class="train-badge offline">
-            <img src="/images/icon-offline.svg" alt="" />
+            <img src="/images/icon-offline.svg" alt="offline train icon" />
             {{ $t('trains.scenery-offline') }}
           </div>
 
           <div v-if="!train.online" class="train-badge offline">
-            <img src="/images/icon-offline.svg" alt="" />
+            <img src="/images/icon-offline.svg" alt="offline train icon" />
             Offline {{ lastSeenMessage(train.lastSeen) }}
           </div>
         </div>
@@ -182,12 +159,11 @@ import ProgressBar from '../Global/ProgressBar.vue';
 import { useMainStore } from '../../store/mainStore';
 import { useApiStore } from '../../store/apiStore';
 import StockList from '../Global/StockList.vue';
-import modalTrainMixin from '../../mixins/modalTrainMixin';
 import { Train } from '../../typings/common';
 import trainCategoryMixin from '../../mixins/trainCategoryMixin';
 
 export default defineComponent({
-  mixins: [trainInfoMixin, styleMixin, modalTrainMixin, trainCategoryMixin],
+  mixins: [trainInfoMixin, styleMixin, trainCategoryMixin],
   components: { ProgressBar, StockList },
 
   props: {
@@ -216,19 +192,14 @@ export default defineComponent({
 
         return Math.min(vehicleSpeed, acc);
       }, 300);
-    }
-  },
-
-  methods: {
-    navigateToJournal() {
-      this.$router.push({
+    },
+    journalRouteLocation() {
+      return {
         path: '/journal/timetables',
         query: {
           'search-driver': this.train.driverName
         }
-      });
-
-      this.closeModal();
+      }
     }
   }
 });
@@ -270,6 +241,12 @@ export default defineComponent({
   gap: 0.5em;
 }
 
+.train-driver {
+  display: flex;
+  align-items: center;
+  gap: 0.25em;
+}
+
 .train-driver img {
   max-height: 20px;
   vertical-align: text-bottom;
@@ -301,24 +278,15 @@ export default defineComponent({
 .general-top-bar {
   display: flex;
   justify-content: space-between;
-  flex-wrap: wrap;
   gap: 0.5em;
-
-  & > div {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-
-    gap: 0.25em;
-  }
 }
 
-.btn-timetable {
-  padding: 0.25em;
-}
+.top-bar-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
 
-.btn-exit {
-  padding: 0.25em;
+  gap: 0.25em;
 }
 
 .general-status {
@@ -365,10 +333,14 @@ export default defineComponent({
   display: flex;
   align-items: center;
   flex-wrap: wrap;
+  gap: 0.5em;
+  padding: 0.5em 0;
 }
 
 .progress-distance {
-  margin-right: 0.25em;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25em;
 }
 
 .timetable-warnings {
@@ -380,10 +352,6 @@ export default defineComponent({
   .train-info {
     grid-template-columns: 1fr;
     gap: 1em 0;
-  }
-
-  .btn-timetable > span {
-    display: none;
   }
 }
 </style>

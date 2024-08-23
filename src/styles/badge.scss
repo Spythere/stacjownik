@@ -1,3 +1,5 @@
+@import 'variables.scss';
+
 .badge {
   font-weight: 600;
 
@@ -78,13 +80,11 @@
 .train-badge {
   display: flex;
   align-items: center;
-  gap: 0.5em;
+  gap: 0.3em;
 
   padding: 0.1em 0.3em;
   border-radius: 0.2em;
   font-weight: bold;
-
-  font-size: 0.9em;
 
   &.twr {
     background-color: var(--clr-twr);
@@ -112,5 +112,15 @@
 
   &[data-electrified='true'] > .name {
     background-color: #007599;
+  }
+}
+
+.stat-badge {
+  margin: 0;
+  color: white;
+
+  & > span:first-child {
+    background-color: $accentCol;
+    color: black;
   }
 }

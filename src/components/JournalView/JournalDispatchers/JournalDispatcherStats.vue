@@ -16,17 +16,17 @@
       <hr class="header-separator" />
 
       <div class="info-stats">
-        <span class="stat-badge" v-if="stats.services">
+        <span class="badge stat-badge" v-if="stats.services">
           <span>{{ $t('journal.dispatcher-stats.services-count') }}</span>
           <span>{{ stats.services.count }}</span>
         </span>
 
-        <span class="stat-badge" v-if="stats.services">
+        <span class="badge stat-badge" v-if="stats.services">
           <span>{{ $t('journal.dispatcher-stats.service-max') }}</span>
           <span>{{ calculateDuration(stats.services.durationMax) }}</span>
         </span>
 
-        <span class="stat-badge" v-if="stats.services">
+        <span class="badge stat-badge" v-if="stats.services">
           <span>{{ $t('journal.dispatcher-stats.service-avg') }}</span>
           <span>{{ calculateDuration(stats.services.durationAvg) }}</span>
         </span>
@@ -35,22 +35,22 @@
       <hr class="section-separator" />
 
       <div class="info-stats">
-        <span class="stat-badge" v-if="stats.issuedTimetables">
+        <span class="badge stat-badge" v-if="stats.issuedTimetables">
           <span>{{ $t('journal.dispatcher-stats.timetables-count') }}</span>
           <span>{{ stats.issuedTimetables.count }}</span>
         </span>
 
-        <span class="stat-badge" v-if="stats.issuedTimetables">
+        <span class="badge stat-badge" v-if="stats.issuedTimetables">
           <span>{{ $t('journal.dispatcher-stats.timetables-sum') }}</span>
           <span>{{ stats.issuedTimetables.distanceSum.toFixed(2) }}km</span>
         </span>
 
-        <span class="stat-badge" v-if="stats.issuedTimetables">
+        <span class="badge stat-badge" v-if="stats.issuedTimetables">
           <span>{{ $t('journal.dispatcher-stats.timetables-max') }}</span>
           <span>{{ stats.issuedTimetables.distanceMax.toFixed(2) }}km</span>
         </span>
 
-        <span class="stat-badge" v-if="stats.issuedTimetables">
+        <span class="badge stat-badge" v-if="stats.issuedTimetables">
           <span>{{ $t('journal.dispatcher-stats.timetables-avg') }}</span>
           <span>{{ stats.issuedTimetables.distanceAvg.toFixed(2) }}km</span>
         </span>

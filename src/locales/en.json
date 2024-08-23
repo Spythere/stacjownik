@@ -57,7 +57,7 @@
     "MO": "intervoivodeship regio",
     "MM": "international bullet",
     "MH": "intervoivodeship night bullet",
-    
+
     "RP": "voivodeship bullet",
     "RM": "international voivodeship regio",
     "RO": "voivodeship regio",
@@ -83,6 +83,7 @@
 
     "ZN": "inspection / diagnostic type",
     "ZU": "other maintenance type",
+    "ZG": "emergency (deprecated category)",
 
     "E": "electric loco",
     "J": "EMU",
@@ -292,9 +293,11 @@
       "minTwoWay": "MIN. OTHER DOUBLE TRACK ROUTES"
     },
 
+    "sceneries-search": "SCENERY SEARCH:",
+    "sceneries-placeholder": "Enter scenery name...",
     "authors-search": "SEARCH BY AUTHOR NAME (other filters apply):",
     "authors-placeholder": "Enter the author nickname...",
-    "authors-button-title": "Search",
+    "search-button-title": "SEARCH",
 
     "minimum-hours-title": "SHOW ONLY SCENERIES UNTIL:",
     "now": "NOW",
@@ -400,7 +403,14 @@
     "scenery-offline": "Offline ride",
     "timeout": "An error occured while trying to refresh SWDR timetable data!",
 
-    "journal-button": "DRIVER'S JOURNAL"
+    "driver-journal-link": "DRIVER JOURNAL",
+    "driver-return-link": "GO BACK",
+
+    "driver-not-found-header": "Train not found! :/",
+    "driver-not-found-desc-1": "This train has already been terminated or it's offline.",
+    "driver-not-found-desc-2": "You can browse timetable history in the",
+    "driver-not-found-journal": "TIMETABLES JOURNAL",
+    "driver-not-found-return": "GO BACK TO THE MAIN SITE"
   },
   "train-stats": {
     "stats-button": "STATISTICS",
@@ -552,7 +562,7 @@
 
     "forum-topic": "Official {name} forum topic",
 
-    "pragotron-link": "Timetable pallet board (beta)",
+    "pragotron-link": "Timetable pallet board",
     "tablice-link": "Timetable summary board (by Thundo)",
 
     "bottom-info": "Show full history in the Journal tab"

@@ -1,10 +1,19 @@
 <template>
   <div>
     <div class="details-actions">
-      <button class="btn--action">
+      <button class="btn--action" @click="toggleExtraInfo">
         <b>{{ $t('journal.stock-info') }}</b>
         <img :src="`/images/icon-arrow-${showExtraInfo ? 'asc' : 'desc'}.svg`" alt="Arrow icon" />
       </button>
+
+      <router-link
+        v-if="driverRouteLocation !== null"
+        class="a-button btn--action btn-timetable"
+        :to="driverRouteLocation"
+      >
+        <img src="/images/icon-train.svg" alt="train icon" />
+        <b>{{ $t('journal.timetable-online-button') }}</b>
+      </router-link>
     </div>
 
     <div class="details-body" v-if="timetable.stockString && timetable.stockMass && showExtraInfo">
@@ -77,9 +86,13 @@
 import { PropType, defineComponent } from 'vue';
 import StockList from '../../Global/StockList.vue';
 import { API } from '../../../typings/api';
+import { RouteLocationRaw } from 'vue-router';
 
 export default defineComponent({
   components: { StockList },
+
+  emits: ['toggleExtraInfo'],
+
   props: {
     showExtraInfo: {
       type: Boolean,
@@ -112,12 +125,25 @@ export default defineComponent({
             stockLength: Number(historyData[3]) || undefined
           };
         });
+    },
+    driverRouteLocation(): RouteLocationRaw | null {
+      if (this.timetable.terminated) return null;
+      return {
+        name: 'DriverView',
+        query: {
+          trainId: `${this.timetable.driverId}|${this.timetable.trainNo}|eu`
+        }
+      }
     }
   },
   methods: {
     onImageError(e: Event) {
       const imageEl = e.target as HTMLImageElement;
       imageEl.src = '/images/icon-unknown.png';
+    },
+
+    toggleExtraInfo() {
+      this.$emit('toggleExtraInfo', this.timetable.id);
     }
   }
 });
@@ -134,6 +160,7 @@ export default defineComponent({
 
 .details-actions {
   display: flex;
+  gap: 0.5em;
 
   button img {
     height: 1.25em;

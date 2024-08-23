@@ -17,11 +17,10 @@
           class="train-row"
           v-for="train in trains"
           :key="train.id"
-          tabindex="0"
-          @click.stop="selectModalTrain(train, $event.currentTarget)"
-          @keydown.enter="selectModalTrain(train, $event.currentTarget)"
         >
-          <TrainInfo :train="train" :extended="false" />
+          <router-link class="a-block" :to="train.driverRouteLocation">
+            <TrainInfo :train="train" :extended="false" />
+          </router-link>
         </li>
       </transition-group>
     </div>
@@ -30,7 +29,6 @@
 
 <script lang="ts">
 import { defineComponent, inject, PropType, Ref } from 'vue';
-import modalTrainMixin from '../../mixins/modalTrainMixin';
 import { useMainStore } from '../../store/mainStore';
 import Loading from '../Global/Loading.vue';
 import TrainInfo from './TrainInfo.vue';
@@ -46,8 +44,6 @@ export default defineComponent({
       required: true
     }
   },
-
-  mixins: [modalTrainMixin],
 
   setup() {
     const store = useMainStore();
@@ -107,7 +103,5 @@ li.train-row {
   background-color: var(--clr-secondary);
   margin-bottom: 1em;
   width: 100%;
-
-  cursor: pointer;
 }
 </style>

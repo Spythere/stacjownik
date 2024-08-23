@@ -52,15 +52,14 @@
       </thead>
 
       <tbody>
-        <tr
+        <router-link
           v-for="station in filteredStationList"
-          :class="{ 'last-selected': lastSelectedStationName == station.name }"
+          class="a-row"
+          role="row"
           :key="station.name"
-          @click.left="setScenery(station.name)"
-          @click.right="openForumSite($event, station.generalInfo?.url)"
-          @keydown.enter="setScenery(station.name)"
-          @keydown.space="openForumSite($event, station.generalInfo?.url)"
-          tabindex="0"
+          @click.right.prevent="openForumSite($event, station.generalInfo?.url)"
+          @keydown.space.prevent="openForumSite($event, station.generalInfo?.url)"
+          :to="getSceneryRoute(station)"
         >
           <td class="station-name" :class="station.generalInfo?.availability">
             <b v-if="station.generalInfo?.project" style="color: salmon">{{
@@ -121,7 +120,7 @@
             <span v-if="station.onlineInfo?.dispatcherName">
               <b
                 v-if="apiStore.donatorsData.includes(station.onlineInfo.dispatcherName)"
-                @click.stop="openDonationCard"
+                @click.prevent="openDonationCard"
                 data-tooltip-type="DonatorTooltip"
                 :data-tooltip-content="$t('donations.dispatcher-message')"
               >
@@ -294,7 +293,7 @@
           >
             {{ station.onlineInfo?.scheduledTrainCount.confirmed ?? '-' }}
           </td>
-        </tr>
+        </router-link>
       </tbody>
     </table>
 
@@ -319,7 +318,7 @@ import dateMixin from '../../mixins/dateMixin';
 import styleMixin from '../../mixins/styleMixin';
 import { useApiStore } from '../../store/apiStore';
 import { useMainStore } from '../../store/mainStore';
-import { Status } from '../../typings/common';
+import { Station, Status } from '../../typings/common';
 import { useTooltipStore } from '../../store/tooltipStore';
 import { getChangedFilters } from '../../managers/stationFilterManager';
 import { ActiveSorter, HeadIdsType, headIconsIds, headIds } from './typings';
@@ -334,7 +333,6 @@ export default defineComponent({
   data: () => ({
     headIconsIds,
     headIds,
-    lastSelectedStationName: '',
     getChangedFilters
   }),
 
@@ -364,21 +362,16 @@ export default defineComponent({
   },
 
   methods: {
-    setScenery(name: string) {
-      const station = this.filteredStationList.find((station) => station.name === name);
+    getSceneryRoute(station: Station) {
+      // TODO: Hide tooltips when navigating away
 
-      if (!station) return;
-
-      this.lastSelectedStationName = station.name;
-      this.tooltipStore.hide();
-
-      this.$router.push({
+      return {
         name: 'SceneryView',
         query: {
-          station: station.name.replaceAll(' ', '_'),
+          station: station.name,
           region: this.$route.query.region || undefined
         }
-      });
+      };
     },
 
     openDonationCard(e: Event) {
@@ -414,7 +407,7 @@ export default defineComponent({
 $rowCol: #424242;
 
 .station_table {
-  height: 80vh;
+  height: 90vh;
   max-height: 2000px;
   min-height: 700px;
   overflow: auto;
@@ -503,8 +496,10 @@ table {
   }
 }
 
-tr {
+tr,
+.a-row {
   background-color: $rowCol;
+  vertical-align: middle;
 
   &:nth-child(even) {
     background-color: lighten($rowCol, 5);

@@ -1,3 +1,5 @@
+import { RouteLocationRaw } from 'vue-router';
+
 export type Availability = 'default' | 'unavailable' | 'nonPublic' | 'abandoned' | 'nonDefault';
 export type ScenerySpawnType = 'passenger' | 'freight' | 'loco' | 'all';
 
@@ -70,6 +72,8 @@ export interface Train {
   isTimeout: boolean;
   isSupporter: boolean;
 
+  driverRouteLocation: RouteLocationRaw,
+
   timetableData?: {
     timetableId: number;
     category: string;
@@ -79,7 +83,6 @@ export interface Train {
     SKR: boolean;
     routeDistance: number;
     sceneries: string[];
-    sceneryNames: string[];
     timetablePath: TimetablePathElement[];
   };
 }

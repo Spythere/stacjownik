@@ -1,9 +1,13 @@
 <template>
   <span
     class="stop-label"
-    :data-minor="stop.isSBL || (stop.nameRaw.endsWith(', po.') && !stop.duration)"
+    :data-minor="stop.isSBL || (stop.nameRaw.endsWith(', po') && !stop.duration)"
   >
-    <span class="name" v-html="stop.nameHtml"></span>
+    <router-link v-if="/(, podg$|<strong>)/.test(stop.nameHtml)" :to="sceneryHref">
+      <span class="name" v-html="stop.nameHtml"></span>
+    </router-link>
+
+    <span v-else class="name" v-html="stop.nameHtml"></span>
 
     <span
       v-if="stop.position != 'begin'"
@@ -76,6 +80,12 @@ export default defineComponent({
       type: Object as PropType<TrainScheduleStop>,
       required: true
     }
+  },
+
+  computed: {
+    sceneryHref() {
+      return `/scenery?station=${this.stop.sceneryName}&checkpoint=${this.stop.nameRaw}`;
+    }
   }
 });
 </script>
@@ -96,18 +106,6 @@ s {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-
-  &[data-minor='true'] {
-    .date {
-      display: none;
-    }
-
-    .name {
-      background: none;
-      color: #aaa;
-      padding: 0;
-    }
-  }
 
   .name {
     background: $stopNameClr;
@@ -131,6 +129,18 @@ s {
     }
   }
 
+  &[data-minor='true'] {
+    .date {
+      display: none;
+    }
+
+    .name {
+      background: none;
+      color: #aaa;
+      padding: 0;
+    }
+  }
+
   .stop {
     &[data-stop-types='ph'],
     &[data-stop-types='ph-pm'],
@@ -144,6 +154,10 @@ s {
       color: $delayedClr;
     }
   }
+}
+
+.stop-label > a {
+  z-index: 0;
 }
 
 .stop .arrival {

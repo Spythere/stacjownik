@@ -19,7 +19,6 @@
 import { computed, ComputedRef, defineComponent, provide, reactive, ref, watch } from 'vue';
 import TrainOptions from '../components/TrainsView/TrainOptions.vue';
 import TrainTable from '../components/TrainsView/TrainTable.vue';
-import modalTrainMixin from '../mixins/modalTrainMixin';
 import { useMainStore } from '../store/mainStore';
 import { TrainFilter, trainFilters } from '../components/TrainsView/typings';
 import { filteredTrainList } from '../managers/trainFilterManager';
@@ -32,8 +31,6 @@ export default defineComponent({
     TrainOptions,
     TrainStats
   },
-
-  mixins: [modalTrainMixin],
 
   props: {
     train: {
@@ -102,16 +99,16 @@ export default defineComponent({
   },
 
   activated() {
+    // Backwards compatibility with external links leading to train modal
+    if (this.trainId) {
+      this.$router.replace(`/driver?modalId=${this.trainId}`);
+      return;
+    }
+
     if (this.train) {
       this.searchedTrain = this.train;
       this.searchedDriver = this.driver || '';
     }
-
-    this.$nextTick(() => {
-      if (this.trainId) {
-        this.selectModalTrainById(this.trainId);
-      }
-    });
   }
 });
 </script>

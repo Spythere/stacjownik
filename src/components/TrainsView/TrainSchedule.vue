@@ -60,7 +60,7 @@
                       v-else
                       src="/images/icon-we4a.png"
                       :title="$t('trains.we4a-tooltip')"
-                      width="12"
+                      width="10"
                     />
                   </span>
                 </div>
@@ -84,7 +84,7 @@
                       v-else
                       src="/images/icon-we4a.png"
                       :title="$t('trains.we4a-tooltip')"
-                      width="12"
+                      width="10"
                     />
                   </span>
                 </div>
@@ -165,20 +165,18 @@ export default defineComponent({
 
   computed: {
     scheduleStops(): TrainScheduleStop[] {
-      let currentSceneryIndex = 0;
+      if (!this.train.timetableData) return [];
+
+      const { timetablePath } = this.train.timetableData;
+      let currentPathIndex = 0;
 
       return (
         this.train.timetableData?.followingStops.map((stop, i, arr) => {
           const isExternal =
-            i > 0 &&
-            stop.arrivalLine != null &&
-            (stop.arrivalLine != arr[i - 1].departureLine ||
-              (stop.arrivalLine == arr[i - 1].departureLine &&
-                !/-|_|(^it\d+)|(^sbl)/gi.test(stop.arrivalLine)));
+            i < arr.length - 1 &&
+            stop.departureLine === timetablePath[currentPathIndex].departureRouteExt;
 
-          if (isExternal) currentSceneryIndex++;
-
-          const sceneryName = this.train.timetableData!.sceneryNames[currentSceneryIndex];
+          const sceneryName = timetablePath[currentPathIndex].stationName;
           const sceneryInfo = this.apiStore.sceneryData.find((st) => st.name == sceneryName);
 
           const arrivalLineInfo = sceneryInfo?.routesInfo.find(
@@ -188,6 +186,8 @@ export default defineComponent({
           const departureLineInfo = sceneryInfo?.routesInfo.find(
             (r) => r.routeName == stop.departureLine
           );
+
+          if (isExternal) currentPathIndex++;
 
           return {
             nameHtml: stop.stopName,
@@ -249,7 +249,7 @@ export default defineComponent({
         i < this.train.timetableData!.followingStops.length;
         i++
       ) {
-        if (/po\.|sbl/gi.test(this.train.timetableData!.followingStops[i].stopNameRAW))
+        if (/(, po$|sbl|, pe$)/gi.test(this.train.timetableData!.followingStops[i].stopNameRAW))
           activeMinorStopList.push(i);
         else break;
       }
@@ -286,7 +286,7 @@ $blinkAnim: 0.5s ease-in-out alternate infinite blink;
 }
 
 .train-schedule {
-  padding: 0 1em;
+  padding: 1em;
 }
 
 .schedule-wrapper {
@@ -523,8 +523,17 @@ $blinkAnim: 0.5s ease-in-out alternate infinite blink;
 }
 
 .scenery-route {
+  display: flex;
+  gap: 0.25em;
+
+  span:nth-child(2) {
+    display: flex;
+    gap: 0.25em;
+    align-items: center;
+  }
+
   img {
-    vertical-align: middle;
+    width: 1em;
   }
 }
 

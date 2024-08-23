@@ -15,12 +15,14 @@
           <div class="search_content">
             <div class="search-box">
               <input
+                v-model="searchedTrain"
                 class="search-input"
                 ref="initFocusedElement"
+                id="train-search"
+                name="train-search"
                 @focus="preventKeyDown = true"
                 @blur="preventKeyDown = false"
                 :placeholder="$t(`options.search-train`)"
-                v-model="searchedTrain"
               />
               <button class="search-exit">
                 <img
@@ -33,11 +35,13 @@
 
             <div class="search-box">
               <input
+                v-model="searchedDriver"
                 class="search-input"
+                id="driver-search"
+                name="driver-search"
                 @focus="preventKeyDown = true"
                 @blur="preventKeyDown = false"
                 :placeholder="$t(`options.search-driver`)"
-                v-model="searchedDriver"
               />
               <button class="search-exit">
                 <img

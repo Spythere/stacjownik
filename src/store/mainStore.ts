@@ -50,15 +50,6 @@ export const useMainStore = defineStore('mainStore', {
 
           const timetable = train.timetable;
 
-          const sceneryNames =
-            train.timetable?.sceneries?.map(
-              (sceneryHash) =>
-                apiStore.activeData?.activeSceneries?.find((st) => st.stationHash === sceneryHash)
-                  ?.stationName ??
-                apiStore.sceneryData.find((sd) => sd.hash === sceneryHash)?.name ??
-                sceneryHash
-            ) ?? [];
-
           const trainObj = {
             id: train.id,
             modalId: `${train.driverName}${train.trainNo}`, // simplified id for train modal
@@ -86,6 +77,13 @@ export const useMainStore = defineStore('mainStore', {
             isSupporter: train.driverIsSupporter,
             driverLevel: train.driverLevel,
 
+            driverRouteLocation: {
+              name: 'DriverView',
+              query: {
+                trainId: train.id
+              }
+            },
+
             timetableData: timetable
               ? {
                   timetableId: timetable.timetableId,
@@ -96,7 +94,7 @@ export const useMainStore = defineStore('mainStore', {
                   followingStops: timetable.stopList,
                   routeDistance: timetable.stopList[timetable.stopList.length - 1].stopDistance,
                   sceneries: timetable.sceneries,
-                  sceneryNames: sceneryNames.reverse(),
+                  // sceneryNames: sceneryNames.reverse(),
                   timetablePath: timetable.path.split(';').map((pathElementString) => {
                     const [arrival, station, departure] = pathElementString.split(',');
 
@@ -169,12 +167,15 @@ export const useMainStore = defineStore('mainStore', {
       const offlineActiveSceneries = this.trainList.reduce((acc, train) => {
         if (!train.timetableData) return acc;
 
-        train.timetableData.sceneryNames.forEach((name) => {
+        train.timetableData.timetablePath.forEach((p) => {
           if (
-            acc.findIndex((v) => v.name == name && v.region == train.region) != -1 ||
+            acc.findIndex(
+              (v) =>
+                (v.name == p.stationName || v.hash == p.stationHash) && v.region == train.region
+            ) != -1 ||
             apiStore.activeData?.activeSceneries?.findIndex(
               (sc) =>
-                sc.stationName === name &&
+                (sc.stationName == p.stationName || sc.stationHash == p.stationHash) &&
                 sc.region == train.region &&
                 Date.now() - sc.lastSeen < 1000 * 60 * 2
             ) != -1
@@ -182,7 +183,7 @@ export const useMainStore = defineStore('mainStore', {
             return acc;
 
           acc.push({
-            name: name,
+            name: p.stationName,
             hash: '',
             region: train.region,
             maxUsers: 0,

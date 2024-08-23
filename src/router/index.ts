@@ -21,6 +21,15 @@ const routes: Array<RouteRecordRaw> = [
     })
   },
   {
+    path: '/driver',
+    name: 'DriverView',
+    component: () => import('../views/DriverView.vue'),
+    props: (route) => ({
+      trainId: route.query.trainId,
+      modalId: route.query.modalId
+    })
+  },
+  {
     path: '/scenery',
     name: 'SceneryView',
     component: () => import('../views/SceneryView.vue'),
@@ -57,13 +66,23 @@ const routes: Array<RouteRecordRaw> = [
 
 const router = createRouter({
   scrollBehavior(to, from, savedPosition) {
-    if (to.name == 'SceneryView' && from.name !== to.name && from.query['view'] === undefined)
+    if (
+      (to.name == 'SceneryView' || to.name == 'DriverView') &&
+      from.name !== to.name &&
+      from.query['view'] === undefined
+    )
       return { el: `.app_main`, top: -15 };
 
     if (savedPosition) return savedPosition;
   },
   history: createWebHistory(),
   routes
+});
+
+router.beforeEach((to, from, next) => {
+  next((vm) => {
+    (vm as any)['xd'] = 'xd';
+  });
 });
 
 export default router;

@@ -6,30 +6,11 @@
         <p>[F] {{ $t('options.filters') }}</p>
         <span class="active-indicator" v-if="changedFilters.length != 0"></span>
       </button>
-
-      <label for="scenery-search">
-        <input
-          id="scenery-search"
-          list="sceneries"
-          :placeholder="$t('sceneries.scenery-search')"
-          @focus="preventKeyDown = true"
-          @blur="preventKeyDown = false"
-          v-model="chosenSearchScenery"
-        />
-
-        <datalist id="sceneries">
-          <option
-            v-for="scenery in sortedStationList"
-            :key="scenery.name"
-            :value="scenery.name"
-          ></option>
-        </datalist>
-      </label>
     </div>
 
     <transition name="card-anim">
-      <div class="card" v-if="isVisible" tabindex="0" ref="cardRef" @keydown.r="resetFilters">
-        <div class="card_content" @scroll="onScroll" ref="cardContentRef">
+      <div class="card" v-if="isVisible" ref="cardRef" @keydown.r="resetFilters">
+        <div class="card_content" tabindex="0" @scroll="onScroll" ref="cardContentRef">
           <div class="card_title flex">{{ $t('filters.title') }}</div>
           <p class="card_info" v-html="$t('filters.desc')"></p>
 
@@ -39,6 +20,31 @@
             </template>
             <template v-else>{{ $t('filters.no-changed-filters') }}</template>
           </div>
+
+          <section class="card_sceneries-search">
+            <h3 class="section-header">{{ $t('filters.sceneries-search') }}</h3>
+
+            <datalist id="sceneries">
+              <option
+                v-for="scenery in sortedStationList"
+                :key="scenery.name"
+                :value="scenery.name"
+              ></option>
+            </datalist>
+
+            <form action="javascript:void(0);" @submit="handleSceneriesInput">
+              <input
+                v-model="chosenSearchScenery"
+                id="scenery-search"
+                list="sceneries"
+                :placeholder="$t('filters.sceneries-placeholder')"
+                @focus="preventKeyDown = true"
+                @blur="preventKeyDown = false"
+              />
+
+              <button class="btn--action">{{ $t('filters.search-button-title') }}</button>
+            </form>
+          </section>
 
           <section class="card_options">
             <div
@@ -57,16 +63,15 @@
               <div class="section-filters">
                 <label
                   v-for="filterKey in sectionFilters"
-                  @click="() => (filters[filterKey] = !filters[filterKey])"
                   @dblclick="setSingleSectionFilter(sectionKey, filterKey)"
-                  :for="filterKey"
                 >
                   <input
+                    type="checkbox"
                     :checked="filters[filterKey]"
                     v-model="filters[filterKey]"
-                    type="checkbox"
                     :class="sectionKey"
                     :name="filterKey"
+                    :id="filterKey"
                   />
                   <span>
                     {{ $t(`filters.${filterKey}`) }}
@@ -111,7 +116,7 @@
                 @blur="preventKeyDown = false"
               />
 
-              <button class="btn--action">{{ $t('filters.authors-button-title') }}</button>
+              <button class="btn--action">{{ $t('filters.search-button-title') }}</button>
             </form>
           </section>
 
@@ -269,20 +274,11 @@ export default defineComponent({
   },
 
   watch: {
-    chosenSearchScenery(value: string) {
-      const chosenStation = this.store.stationList.find(({ name }) => name == value);
-
-      if (chosenStation) {
-        this.$router.push(`/scenery?station=${chosenStation.name.replace(/ /g, '_')}`);
-        this.chosenSearchScenery = '';
-      }
-    },
-
     isVisible(value: boolean) {
       this.$nextTick(() => {
         if (value) {
-          (this.$refs['cardRef'] as HTMLDivElement).focus();
           (this.$refs['cardContentRef'] as HTMLDivElement).scrollTop = this.scrollTop;
+          (this.$refs['cardContentRef'] as HTMLDivElement).focus();
         }
       });
     }
@@ -300,7 +296,18 @@ export default defineComponent({
 
     handleAuthorsInput() {
       this.filters['authors'] = this.authors;
-      // if (this.saveOptions) StorageManager.setStringValue('authors', target.value);
+    },
+
+    handleSceneriesInput() {
+      const chosenStation = this.store.stationList.find(
+        ({ name }) => name == this.chosenSearchScenery
+      );
+
+      if (chosenStation) {
+        this.$router.push(`/scenery?station=${chosenStation.name.replace(/ /g, '_')}`);
+        this.chosenSearchScenery = '';
+        this.isVisible = false;
+      }
     },
 
     subHour() {
@@ -329,6 +336,8 @@ export default defineComponent({
     },
 
     resetFilters() {
+      if (this.preventKeyDown) return;
+
       // Reset local model values
       this.minimumHours = 0;
       this.authors = '';
@@ -353,7 +362,8 @@ export default defineComponent({
 
     setSingleSectionFilter(sectionKey: StationFilterSection, chosenKey: string) {
       filtersSections[sectionKey].forEach((filterKey) => {
-        if (filterKey != chosenKey) this.filters[filterKey] = initFilters[filterKey];
+        if (typeof this.filters[filterKey] === 'boolean')
+          this.filters[filterKey] = filterKey != chosenKey;
       });
     },
 
@@ -382,6 +392,7 @@ h3.section-header {
 .card {
   display: grid;
   grid-template-rows: 1fr auto;
+  padding: 1px;
 }
 
 .card_info {
@@ -451,8 +462,12 @@ h3.section-header {
   }
 }
 
-.card_authors-search {
+.card_authors-search,
+.card_sceneries-search {
   margin: 1em 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
   form {
     display: flex;
@@ -642,10 +657,6 @@ h3.section-header {
 }
 
 @include smallScreen {
-  .card_controls > button.card-button > p {
-    display: none;
-  }
-
   .slider {
     flex-wrap: wrap;
     justify-content: center;

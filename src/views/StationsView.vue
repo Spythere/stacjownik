@@ -8,6 +8,8 @@
           ref="filterCardRef"
         />
 
+        <StationStats />
+
         <button
           class="btn-donation btn--image"
           ref="btn"
@@ -21,7 +23,6 @@
 
       <DonationCard :is-card-open="isDonationCardOpen" @toggle-card="toggleDonationCard" />
       <StationTable @toggle-donation-card="toggleDonationCard" />
-      <StationStats />
     </div>
   </section>
 </template>
@@ -96,14 +97,17 @@ export default defineComponent({
 
 .stations-options {
   display: flex;
-  justify-content: space-between;
   flex-wrap: wrap;
   gap: 0.5em;
+
+  position: relative;
 
   margin-bottom: 0.5em;
 }
 
 button.btn-donation {
+  margin-left: auto;
+
   $btnColor: #254069;
 
   background-color: $btnColor;

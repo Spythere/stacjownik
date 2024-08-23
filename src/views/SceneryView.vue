@@ -13,6 +13,7 @@
           :station="stationInfo"
           :onlineScenery="onlineSceneryInfo"
         />
+        
         <SceneryInfo :station="stationInfo" :onlineScenery="onlineSceneryInfo" />
       </div>
 
@@ -229,6 +230,7 @@ button.back-btn {
   overflow: auto;
 
   background-color: #181818;
+  border-radius: 0.5em;
   padding: 1em 0.5em;
 
   height: calc(100vh - 0.5em);

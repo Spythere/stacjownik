@@ -3,10 +3,8 @@
     <span class="general-train">
       <span class="text--grayed">#{{ timetable.id }}</span>
 
-      <span class="badges" v-if="timetable.skr || timetable.twr">
-        <span class="train-badge twr" v-if="timetable.twr" :title="$t('general.TWR')">TWR</span>
-        <span class="train-badge skr" v-if="timetable.skr" :title="$t('general.SKR')">SKR</span>
-      </span>
+      <span class="train-badge twr" v-if="timetable.twr" :title="$t('general.TWR')">TWR</span>
+      <span class="train-badge skr" v-if="timetable.skr" :title="$t('general.SKR')">SKR</span>
 
       <span>
         <strong
@@ -27,18 +25,19 @@
         {{ timetable.driverLevel < 2 ? 'L' : `${timetable.driverLevel}` }}
       </strong>
 
-      <strong
+      <router-link
         v-if="apiStore.donatorsData.includes(timetable.driverName)"
         class="text--donator"
         data-tooltip-type="DonatorTooltip"
         :data-tooltip-content="$t('donations.driver-message')"
+        :to="`/journal/timetables?search-driver=${timetable.driverName}`"
       >
-        {{ timetable.driverName }}
-      </strong>
+        <strong>{{ timetable.driverName }}</strong>
+      </router-link>
 
-      <strong v-else>
-        {{ timetable.driverName }}
-      </strong>
+      <router-link v-else :to="`/journal/timetables?search-driver=${timetable.driverName}`">
+        <strong>{{ timetable.driverName }}</strong>
+      </router-link>
     </span>
 
     <span class="general-time">
@@ -66,15 +65,6 @@
               : `${$t('journal.timetable-abandoned')} ${localeTime(timetable.endDate, $i18n.locale)}`
         }}
       </b>
-
-      <button
-        v-if="timetable.terminated == false"
-        class="btn--action btn-timetable"
-        @click.stop="showTimetable(timetable, $event.currentTarget)"
-      >
-        <img src="/images/icon-train.svg" alt="train icon" />
-        <b>{{ $t('journal.timetable-online-button') }}</b>
-      </button>
     </span>
   </div>
 </template>
@@ -84,13 +74,12 @@ import { PropType, defineComponent } from 'vue';
 
 import { API } from '../../../typings/api';
 import dateMixin from '../../../mixins/dateMixin';
-import modalTrainMixin from '../../../mixins/modalTrainMixin';
 import styleMixin from '../../../mixins/styleMixin';
 import { useApiStore } from '../../../store/apiStore';
 import trainCategoryMixin from '../../../mixins/trainCategoryMixin';
 
 export default defineComponent({
-  mixins: [dateMixin, modalTrainMixin, styleMixin, trainCategoryMixin],
+  mixins: [dateMixin, styleMixin, trainCategoryMixin],
 
   data() {
     return {
@@ -102,14 +91,6 @@ export default defineComponent({
     timetable: {
       type: Object as PropType<API.TimetableHistory.Data>,
       required: true
-    }
-  },
-
-  methods: {
-    showTimetable(timetable: API.TimetableHistory.Data, target: EventTarget | null) {
-      if (timetable?.terminated) return;
-
-      this.selectModalTrainById(`${timetable.driverName}${timetable.trainNo}`, target);
     }
   }
 });
@@ -137,7 +118,6 @@ export default defineComponent({
   gap: 0.25em;
 
   cursor: pointer;
-  line-height: 2;
 }
 
 .general-time {
@@ -180,6 +160,7 @@ export default defineComponent({
 
 @include smallScreen {
   .item-general {
+    flex-direction: column;
     justify-content: center;
   }
 }

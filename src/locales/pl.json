@@ -54,7 +54,7 @@
     "MO": "międzywojewódzki osobowy",
     "MM": "międzynarodowy pospieszny",
     "MH": "międzywojewódzki pospieszny (nocny)",
-    
+
     "RP": "wojewódzki pospieszny",
     "RO": "wojewódzki osobowy",
     "RM": "wojewódzki osobowy międzynarodowy",
@@ -80,6 +80,7 @@
 
     "ZN": "inspekcyjny / diagnostyczny",
     "ZU": "inny utrzymaniowy",
+    "ZG": "ratunkowy (kat. wycofana)",
 
     "E": "elektrowóz",
     "J": "EZT",
@@ -290,9 +291,11 @@
       "minTwoWay": "SZLAKI DWUTOROWE NIEZELEKTR. (MINIMUM)"
     },
 
-    "authors-search": "SZUKAJ AUTORA (uwzględnia inne filtry):",
+    "sceneries-search": "WYSZUKAJ SCENERIĘ:",
+    "sceneries-placeholder": "Wpisz nazwę scenerii...",
+    "authors-search": "WYSZUKAJ AUTORA (uwzględnia inne filtry):",
     "authors-placeholder": "Wpisz nick autora...",
-    "authors-button-title": "Szukaj",
+    "search-button-title": "SZUKAJ",
     "minimum-hours-title": "POKAŻ TYLKO SCENERIE DOSTĘPNE MINIMUM DO:",
     "now": "TERAZ",
     "hour": " godz.",
@@ -386,7 +389,14 @@
 
     "timeout": "Wystąpił problem z aktualizacją rozkładów jazdy z SWDR",
 
-    "journal-button": "DZIENNIK MASZYNISTY"
+    "driver-journal-link": "DZIENNIK MASZYNISTY",
+    "driver-return-link": "POWRÓT",
+
+    "driver-not-found-header": "Nie znaleziono pociągu! :/",
+    "driver-not-found-desc-1": "Ten pociąg prawdopodobnie zakończył już swój bieg lub jest offline.",
+    "driver-not-found-desc-2": "Historię rozkładów jazdy możesz przejrzeć w",
+    "driver-not-found-journal": "DZIENNIKU RJ",
+    "driver-not-found-return": "WRÓĆ NA STRONĘ GŁÓWNĄ"
   },
   "train-stats": {
     "stats-button": "STATYSTYKI",
@@ -536,7 +546,7 @@
 
     "forum-topic": "Oficjalny wątek scenerii {name}",
 
-    "pragotron-link": "Paletowa tablica informacyjna (beta)",
+    "pragotron-link": "Paletowa tablica informacyjna",
     "tablice-link": "Tablica informacyjna zbiorcza (autorstwa Thundo)",
 
     "bottom-info": "Pokaż pełną historię w zakładce Dziennika"
