@@ -376,6 +376,9 @@
 
     "vmax-tooltip": "Maximum train speed based on rolling stock vehicles - braked weight is not included",
     "we4a-tooltip": "Non-electrified track",
+    "electrified-tooltip": "Electrified track",
+    "scenery-change-1-track": "Change of scenery on a single-track route",
+    "scenery-change-2-track": "Change of scenery on a double-track route",
 
     "delayed": "Delayed: ",
     "preponed": "Ahead of schedule: ",

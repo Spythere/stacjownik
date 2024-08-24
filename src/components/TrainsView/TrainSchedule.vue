@@ -55,11 +55,15 @@
                   <span>{{ stop.departureLine }}</span>
                   <span v-if="stop.departureLineInfo">
                     | {{ stop.departureLineInfo.routeSpeed }}
-                    <span v-if="stop.departureLineInfo.isElectric">⚡</span>
+                    <span
+                      v-if="stop.departureLineInfo.isElectric"
+                      :title="$t('trains.electrified-tooltip')"
+                    >⚡</span>
                     <img
                       v-else
                       src="/images/icon-we4a.png"
                       :title="$t('trains.we4a-tooltip')"
+                      :alt="$t('trains.we4a-tooltip')"
                       width="10"
                     />
                   </span>
@@ -68,6 +72,9 @@
                 <div
                   v-if="stop.sceneryName != scheduleStops[i + 1]?.sceneryName"
                   class="scenery-change-name"
+                  :title="stop.departureLineInfo?.routeTracks == 1
+                    ? $t('trains.scenery-change-1-track')
+                    : $t('trains.scenery-change-2-track')"
                 >
                   <span>{{ scheduleStops[i + 1].sceneryName }}</span>
                   <span v-if="stop.departureLineInfo?.routeTracks == 1"> &UpDownArrow;</span>

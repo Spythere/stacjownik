@@ -363,6 +363,9 @@
 
     "vmax-tooltip": "Maksymalna prędkość na podstawie pojazdów w składzie - nie bierze pod uwagę masy hamowania",
     "we4a-tooltip": "Szlak niezelektryfikowany",
+    "electrified-tooltip": "Szlak zelektryfikowany",
+    "scenery-change-1-track": "Zmiana scenerii na szlaku jednotorowym",
+    "scenery-change-2-track": "Zmiana scenerii na szlaku dwutorowym",
 
     "delayed": "Opóźniony: ",
     "preponed": "Przed czasem: ",
