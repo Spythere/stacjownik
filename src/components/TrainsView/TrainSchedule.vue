@@ -275,6 +275,7 @@ $stoppedClr: #f55f31;
 $haltClr: #f8bb36;
 
 $blinkAnim: 0.5s ease-in-out alternate infinite blink;
+$blinkStoppedAnim: 0.5s ease-in-out alternate infinite blinkStopped;
 
 @keyframes blink {
   from {
@@ -282,6 +283,15 @@ $blinkAnim: 0.5s ease-in-out alternate infinite blink;
   }
   to {
     border-color: $confirmedClr;
+  }
+}
+
+@keyframes blinkStopped {
+  from {
+    border-color: $barClr;
+  }
+  to {
+    border-color: $stoppedClr;
   }
 }
 
@@ -382,10 +392,15 @@ $blinkAnim: 0.5s ease-in-out alternate infinite blink;
   &[data-status='stopped'] {
     .progress > .node {
       border-color: $stoppedClr;
+      animation: $blinkStoppedAnim;
     }
 
-    .progress > .line_node {
-      border-color: $stoppedClr;
+    .progress > .line_node-top {
+      border-color: $confirmedClr;
+    }
+
+    .progress > .line_node-bottom {
+      border-color: $barClr;
     }
   }
 
