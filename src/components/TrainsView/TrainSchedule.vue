@@ -44,7 +44,8 @@
               </div>
 
               <!-- Routes  -->
-              <span
+              <div
+                class="info-scenery-change"
                 v-if="
                   stop.departureLine &&
                   scheduleStops[i + 1] != undefined &&
@@ -95,7 +96,7 @@
                     />
                   </span>
                 </div>
-              </span>
+              </div>
             </div>
           </div>
         </div>
@@ -542,6 +543,11 @@ $blinkStoppedAnim: 0.5s ease-in-out alternate infinite blinkStopped;
   img {
     height: 1.2em;
   }
+}
+
+.info-scenery-change {
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .scenery-route {
