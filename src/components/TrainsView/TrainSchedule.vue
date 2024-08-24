@@ -71,7 +71,7 @@
                 >
                   <span>{{ scheduleStops[i + 1].sceneryName }}</span>
                   <span v-if="stop.departureLineInfo?.routeTracks == 1"> &UpDownArrow;</span>
-                  <span v-else> &UpArrowDownArrow;</span>
+                  <span v-else> &DownArrowUpArrow;</span>
                 </div>
 
                 <div class="scenery-route">
