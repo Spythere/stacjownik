@@ -8,7 +8,6 @@
   z-index: 99;
 
   transform: translateY(1em);
-
   width: 100%;
 
   background-color: #1a1a1a;
@@ -30,7 +29,7 @@ hr.section-separator {
 .info-stats {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+
   gap: 0.5em;
 }
 

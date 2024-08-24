@@ -123,7 +123,7 @@ export default defineComponent({
 
 .trains_wrapper {
   margin: 1rem auto;
-  max-width: 1500px;
+  max-width: var(--max-container-width);
 }
 
 .trains_topbar {

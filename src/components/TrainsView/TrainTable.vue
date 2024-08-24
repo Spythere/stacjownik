@@ -83,9 +83,6 @@ export default defineComponent({
 
 .train-table {
   position: relative;
-
-  height: 90vh;
-  min-height: 550px;
   overflow-y: auto;
   overflow-x: hidden;
 }

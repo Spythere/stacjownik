@@ -30,7 +30,11 @@
     </div>
 
     <transition name="dropdown-anim">
-      <div class="dropdown_wrapper" v-if="currentStatsTab !== null">
+      <div
+        class="dropdown_wrapper"
+        :class="{ 'dropdown-align-right': true }"
+        v-if="currentStatsTab !== null"
+      >
         <keep-alive>
           <component :is="currentStatsTab" :key="currentStatsTab"></component>
         </keep-alive>
@@ -79,7 +83,10 @@ export default defineComponent({
 @import '../../styles/dropdown_filters.scss';
 @import '../../styles/variables.scss';
 
-.dropdown_wrapper {
-  max-width: 100%;
+.dropdown_wrapper.dropdown-align-right {
+  left: auto;
+  right: 0;
+  max-width: 700px;
+  // max-width: 100%;
 }
 </style>
