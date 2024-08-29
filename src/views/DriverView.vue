@@ -3,6 +3,13 @@
     <div class="view-wrapper">
       <div v-if="chosenTrain">
         <div class="actions">
+          <a class="a-button btn--image" @click="$router.back()">
+            <img src="/images/icon-back.svg" alt="train icon" />
+            <span>
+              {{ $t('trains.driver-return-link') }}
+            </span>
+          </a>
+
           <router-link
             :to="`/journal/timetables?search-driver=${chosenTrain.driverName}`"
             class="a-button btn--image"
@@ -85,7 +92,7 @@ $viewBgCol: #1a1a1a;
 .actions {
   display: flex;
   align-items: flex-end;
-  justify-content: flex-end;
+  justify-content: space-between;
   gap: 0.5em;
 }
 
