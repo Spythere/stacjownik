@@ -69,7 +69,8 @@ const router = createRouter({
     if (
       (to.name == 'SceneryView' || to.name == 'DriverView') &&
       from.name !== to.name &&
-      from.query['view'] === undefined
+      from.query['view'] === undefined &&
+      !savedPosition
     )
       return { el: `.app_main`, top: -15 };
 
@@ -77,12 +78,6 @@ const router = createRouter({
   },
   history: createWebHistory(),
   routes
-});
-
-router.beforeEach((to, from, next) => {
-  next((vm) => {
-    (vm as any)['xd'] = 'xd';
-  });
 });
 
 export default router;

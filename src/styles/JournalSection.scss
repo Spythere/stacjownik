@@ -11,7 +11,7 @@
 
 .list_wrapper {
   overflow-y: auto;
-  height: 90vh;
+  height: calc(100vh - 10em);
   min-height: 650px;
   margin-top: 0.5em;
   position: relative;
