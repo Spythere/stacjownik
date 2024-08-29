@@ -82,8 +82,8 @@ export default defineComponent({
 @import '../../styles/animations.scss';
 
 .train-table {
-  height: calc(100vh - 8em);
-  min-height: 550px;
+  height: calc(100vh - 11em);
+  min-height: 500px;
 
   position: relative;
   overflow-y: auto;

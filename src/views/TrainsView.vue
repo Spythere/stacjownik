@@ -117,7 +117,6 @@ export default defineComponent({
 @import '../styles/responsive.scss';
 
 .trains-view {
-  min-height: 600px;
   position: relative;
 }
 
