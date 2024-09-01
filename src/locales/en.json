@@ -407,9 +407,10 @@
     "driver-return-link": "GO BACK",
 
     "driver-not-found-header": "Train not found! :/",
-    "driver-not-found-desc-1": "This train has already been terminated or it's offline.",
+    "driver-not-found-desc-1": "This train has already been terminated, changed its number or is offline.",
     "driver-not-found-desc-2": "You can browse timetable history in the",
     "driver-not-found-journal": "TIMETABLES JOURNAL",
+    "driver-not-found-others": "Player {driver} is online as:",
     "driver-not-found-return": "GO BACK TO THE MAIN SITE"
   },
   "train-stats": {
