@@ -394,6 +394,7 @@
 
     "driver-not-found-header": "Nie znaleziono pociągu! :/",
     "driver-not-found-desc-1": "Ten pociąg prawdopodobnie zakończył już swój bieg, zmienił numer lub jest offline.",
+    "driver-not-found-desc-1": "Ten pociąg prawdopodobnie zakończył już swój bieg, zmienił numer lub jest offline.",
     "driver-not-found-desc-2": "Historię rozkładów jazdy możesz przejrzeć w",
     "driver-not-found-journal": "DZIENNIKU RJ",
     "driver-not-found-others": "Gracz {driver} jest online jako:",
