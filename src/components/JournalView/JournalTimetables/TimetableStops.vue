@@ -5,10 +5,11 @@
         v-for="(stop, i) in timetableStops.filter((_, i) =>
           !showExtraInfo ? i == 0 || i == timetableStops.length - 1 : true
         )"
-        class=""
         :key="stop.stopName"
       >
         <span class="stop-label" :data-confirmed="stop.isConfirmed">
+          <span v-if="i > 0">&gt;</span>
+
           <span class="stop-name">{{ stop.stopName }}</span>
 
           <span
@@ -40,7 +41,8 @@
             :data-stop-pt="stop.stopType.includes('pt')"
             :data-stop-pm="stop.stopType.includes('pm')"
           >
-            {{ stop.stopTime }} {{ stop.stopType }}
+            /<span>{{ stop.stopTime }} {{ stop.stopType }}</span
+            >/
           </span>
 
           <span
@@ -210,6 +212,7 @@ export default defineComponent({
 .stop-label {
   display: flex;
   flex-wrap: wrap;
+  gap: 0.5em;
   align-items: center;
   color: white;
 
@@ -218,27 +221,12 @@ export default defineComponent({
   }
 }
 
-.stop-label > span {
-  display: flex;
-  align-items: center;
-  padding: 0.3em 0.5em;
-}
-
 .stop-name {
-  background-color: #2b2b2b;
-  border-radius: 0.5em 0 0 0.5em;
   font-weight: bold;
   color: #ccc;
 }
 
 .stop-date {
-  background-color: #444;
-  padding: 0.3em 0.5em;
-
-  &:last-child {
-    border-radius: 0 0.5em 0.5em 0;
-  }
-
   s {
     color: #aaa;
   }
@@ -253,11 +241,13 @@ export default defineComponent({
 }
 
 .stop-time {
-  background-color: #252525;
+  &[data-stop-pt='true'] span {
+    color: #999;
+  }
 
-  &[data-stop-ph='true'],
-  &[data-stop-pm='true'] {
-    background-color: #db8e29;
+  &[data-stop-ph='true'] span,
+  &[data-stop-pm='true'] span {
+    color: gold;
   }
 }
 
