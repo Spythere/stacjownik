@@ -246,8 +246,6 @@ export namespace API {
       authorName?: string;
       authorId?: number;
 
-      stopsString?: string;
-
       stockString?: string;
       stockHistory: string[];
 
@@ -255,16 +253,16 @@ export namespace API {
       stockLength?: number;
       maxSpeed?: number;
 
-      hashesString?: string;
       currentSceneryName?: string;
       currentSceneryHash?: string;
-      routeSceneries?: string;
-      checkpointArrivals?: string[];
-      checkpointDepartures?: string[];
-      checkpointArrivalsScheduled?: string[];
-      checkpointDeparturesScheduled?: string[];
-      checkpointStopTypes?: string[];
-      visitedSceneries?: string[];
+      routeSceneries: string;
+      checkpointArrivals: string[];
+      checkpointDepartures: string[];
+      checkpointArrivalsScheduled: string[];
+      checkpointDeparturesScheduled: string[];
+      checkpointStopTypes: string[];
+      visitedSceneries: string[];
+      sceneryNames: string[];
       path: string;
     }
 

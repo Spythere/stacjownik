@@ -1,25 +1,77 @@
 <template>
   <div class="timetable-stops">
-    <div class="stop-list">
-      <span
+    <ul class="stop-list">
+      <li
         v-for="(stop, i) in timetableStops.filter((_, i) =>
           !showExtraInfo ? i == 0 || i == timetableStops.length - 1 : true
         )"
-        class="stop-list-item"
+        class=""
         :key="stop.stopName"
-        :data-confirmed="stop.confirmed"
       >
-        <span v-if="i > 0">
-          &gt;
-          <span v-if="!showExtraInfo && i == 1 && timetableStops.length > 2">
-            ... (+{{ timetableStops.length - 2 }}) &gt;
+        <span class="stop-label" :data-confirmed="stop.isConfirmed">
+          <span class="stop-name">{{ stop.stopName }}</span>
+
+          <span
+            class="stop-date"
+            v-if="stop.scheduledArrivalTimestamp != 0"
+            :data-delayed="
+              stop.isConfirmed && stop.arrivalTimestamp - stop.scheduledArrivalTimestamp > 0
+            "
+            :data-preponed="
+              stop.isConfirmed &&
+              stop.arrivalTimestamp != 0 &&
+              stop.arrivalTimestamp - stop.scheduledArrivalTimestamp < 0
+            "
+          >
+            <span
+              v-if="stop.isConfirmed && stop.arrivalTimestamp - stop.scheduledArrivalTimestamp != 0"
+            >
+              p. <s>{{ timestampToString(stop.scheduledArrivalTimestamp) }}</s>
+              {{ timestampToString(stop.arrivalTimestamp) }}
+            </span>
+
+            <span v-else>p. {{ timestampToString(stop.scheduledArrivalTimestamp) }}</span>
+          </span>
+
+          <span
+            class="stop-time"
+            v-if="stop.stopTime > 0"
+            :data-stop-ph="stop.stopType.includes('ph')"
+            :data-stop-pt="stop.stopType.includes('pt')"
+            :data-stop-pm="stop.stopType.includes('pm')"
+          >
+            {{ stop.stopTime }} {{ stop.stopType }}
+          </span>
+
+          <span
+            class="stop-date"
+            v-if="
+              stop.scheduledDepartureTimestamp != 0 &&
+              stop.scheduledArrivalTimestamp != stop.scheduledDepartureTimestamp
+            "
+            :data-delayed="
+              stop.isConfirmed && stop.departureTimestamp - stop.scheduledDepartureTimestamp > 0
+            "
+            :data-preponed="
+              stop.isConfirmed &&
+              stop.departureTimestamp != 0 &&
+              stop.departureTimestamp - stop.scheduledDepartureTimestamp < 0
+            "
+          >
+            <span
+              v-if="
+                stop.isConfirmed && stop.departureTimestamp - stop.scheduledDepartureTimestamp != 0
+              "
+            >
+              o. <s>{{ timestampToString(stop.scheduledDepartureTimestamp) }}</s>
+              {{ timestampToString(stop.departureTimestamp) }}
+            </span>
+
+            <span v-else>o. {{ timestampToString(stop.scheduledDepartureTimestamp) }}</span>
           </span>
         </span>
-
-        <span class="stop-name">{{ stop.stopName }}</span>
-        <span v-html="stop.html"></span>
-      </span>
-    </div>
+      </li>
+    </ul>
 
     <div class="path-details" v-if="showExtraInfo && timetablePathDetails">
       <span
@@ -29,7 +81,9 @@
           i < timetablePathDetails.length - 1 && timetablePathDetails[i + 1].isVisited
         "
       >
-        <span class="path-arrival" v-if="pathData.arrival">/ {{ pathData.arrival }} &RightArrow; </span>
+        <span class="path-arrival" v-if="pathData.arrival">
+          / {{ pathData.arrival }} &RightArrow;
+        </span>
         <b class="path-scenery">{{ pathData.sceneryName }}</b>
         <span class="path-departure" v-if="pathData.departure">
           &RightArrow; {{ pathData.departure }}&nbsp;
@@ -43,6 +97,17 @@
 import { PropType, defineComponent } from 'vue';
 import dateMixin from '../../../mixins/dateMixin';
 import { API } from '../../../typings/api';
+
+interface ITimetableStopDetails {
+  stopName: string;
+  arrivalTimestamp: number;
+  scheduledArrivalTimestamp: number;
+  departureTimestamp: number;
+  scheduledDepartureTimestamp: number;
+  stopTime: number;
+  stopType: string;
+  isConfirmed: boolean;
+}
 
 export default defineComponent({
   mixins: [dateMixin],
@@ -78,58 +143,56 @@ export default defineComponent({
       });
     },
 
-    timetableStops() {
+    timetableStops(): ITimetableStopDetails[] {
       const timetable = this.timetable;
 
       const stopNames = timetable.sceneriesString.split('%');
 
-      const beginDateHTML = ` (o. ${
-        timetable.beginDate != timetable.scheduledBeginDate
-          ? `<s class="text--grayed">${this.localeTime(timetable.beginDate, this.$i18n.locale)}</s>`
-          : ''
-      } <span>${this.localeTime(timetable.scheduledBeginDate, this.$i18n.locale)}</span>)`;
+      return stopNames.reduce<ITimetableStopDetails[]>((acc, stopName, i, arr) => {
+        const arrivalDate =
+          i == arr.length - 1
+            ? (timetable.checkpointArrivals.at(i) ?? timetable.endDate)
+            : timetable.checkpointArrivals.at(i);
 
-      const endDateHTML = ` (p. ${
-        timetable.endDate != timetable.scheduledEndDate && timetable.fulfilled
-          ? `<s class="text--grayed">${this.localeTime(timetable.endDate, this.$i18n.locale)}</s>`
-          : ''
-      } <span>${this.localeTime(timetable.scheduledEndDate, this.$i18n.locale)}</span>)`;
+        const scheduledArrivalDate =
+          i == arr.length - 1
+            ? (timetable.checkpointArrivalsScheduled.at(i) ?? timetable.scheduledEndDate)
+            : timetable.checkpointArrivalsScheduled.at(i);
 
-      return stopNames.map((stopName, i) => {
-        const confirmed = i < timetable.confirmedStopsCount;
-        if (i == 0) return { stopName, html: beginDateHTML, confirmed };
-        if (i == stopNames.length - 1) return { stopName, html: endDateHTML, confirmed };
+        const departureDate =
+          i == 0
+            ? (timetable.checkpointDepartures.at(i) ?? timetable.beginDate)
+            : timetable.checkpointDepartures.at(i);
 
-        const departureDateScheduled = this.stringToDate(
-          timetable.checkpointDeparturesScheduled?.at(i)
-        );
-        const departureDateReal = this.stringToDate(timetable.checkpointDepartures?.at(i));
-        const arrivalDateScheduled = this.stringToDate(
-          timetable.checkpointArrivalsScheduled?.at(i)
-        );
-        const arrivalDateReal = this.stringToDate(timetable.checkpointArrivals?.at(i));
-        const arrivalHTML =
-          (arrivalDateReal &&
-          arrivalDateScheduled &&
-          arrivalDateReal?.getTime() != arrivalDateScheduled?.getTime()
-            ? `<s class="text--grayed">${this.parseDateToTimeString(arrivalDateScheduled)}</s> `
-            : '') + this.parseDateToTimeString(arrivalDateReal || arrivalDateScheduled);
-        const departureHTML =
-          (departureDateReal &&
-          departureDateScheduled &&
-          departureDateReal?.getTime() != departureDateScheduled?.getTime()
-            ? `<s class="text--grayed">${this.parseDateToTimeString(departureDateScheduled)}</s> `
-            : '') + this.parseDateToTimeString(departureDateReal || departureDateScheduled);
-        let html = `${arrivalHTML}${departureHTML ? ` / ${departureHTML}` : ''}`;
-        if (html) html = ` (${html})`;
-        return { stopName, html, confirmed };
-      });
+        const scheduledDepartureDate =
+          i == 0
+            ? (timetable.checkpointDeparturesScheduled.at(i) ?? timetable.scheduledBeginDate)
+            : timetable.checkpointDeparturesScheduled.at(i);
+
+        const stopTime = Number(timetable.checkpointStopTypes.at(i)?.split(',')[0]) || 0;
+        const stopType = timetable.checkpointStopTypes.at(i)?.split(',')[1] || '';
+
+        acc.push({
+          stopName,
+          arrivalTimestamp: this.dateStringToTimestamp(arrivalDate),
+          scheduledArrivalTimestamp: this.dateStringToTimestamp(scheduledArrivalDate),
+          departureTimestamp: this.dateStringToTimestamp(departureDate),
+          scheduledDepartureTimestamp: this.dateStringToTimestamp(scheduledDepartureDate),
+          stopTime,
+          stopType,
+          isConfirmed: i < timetable.confirmedStopsCount
+        });
+
+        return acc;
+      }, []);
     }
   }
 });
 </script>
 
 <style lang="scss" scoped>
+@import '../../../styles/badge.scss';
+
 .timetable-stops {
   word-wrap: break-word;
   gap: 0.25em;
@@ -138,12 +201,63 @@ export default defineComponent({
 }
 
 .stop-list {
-  &-item[data-confirmed='true'] {
-    color: lightgreen;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+  padding: 0.5em 0;
+}
 
-    .stop-name {
-      font-weight: bold;
-    }
+.stop-label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  color: white;
+
+  &[data-confirmed='true'] > .stop-name {
+    color: lightgreen;
+  }
+}
+
+.stop-label > span {
+  display: flex;
+  align-items: center;
+  padding: 0.3em 0.5em;
+}
+
+.stop-name {
+  background-color: #2b2b2b;
+  border-radius: 0.5em 0 0 0.5em;
+  font-weight: bold;
+  color: #ccc;
+}
+
+.stop-date {
+  background-color: #444;
+  padding: 0.3em 0.5em;
+
+  &:last-child {
+    border-radius: 0 0.5em 0.5em 0;
+  }
+
+  s {
+    color: #aaa;
+  }
+
+  &[data-delayed='true'] {
+    color: salmon;
+  }
+
+  &[data-preponed='true'] {
+    color: lightgreen;
+  }
+}
+
+.stop-time {
+  background-color: #252525;
+
+  &[data-stop-ph='true'],
+  &[data-stop-pm='true'] {
+    background-color: #db8e29;
   }
 }
 

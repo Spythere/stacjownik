@@ -57,6 +57,10 @@ export default defineComponent({
         : '';
     },
 
+    dateStringToTimestamp(dateString?: string) {
+      return dateString ? new Date(dateString).getTime() : 0;
+    },
+
     calculateDuration(timestampMs: number, showSeconds = false) {
       const secondsTotal = Math.floor(timestampMs / 1000);
       const minsTotal = Math.round(timestampMs / 60000);
@@ -70,8 +74,8 @@ export default defineComponent({
             minsInHour
           )}`
         : showSeconds && secondsTotal <= 60
-        ? this.$t('journal.seconds', { value: secondsTotal }, secondsTotal)
-        : this.$t('journal.minutes', { value: minsTotal }, minsTotal);
+          ? this.$t('journal.seconds', { value: secondsTotal }, secondsTotal)
+          : this.$t('journal.minutes', { value: minsTotal }, minsTotal);
     }
   }
 });

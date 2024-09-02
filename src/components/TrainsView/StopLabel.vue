@@ -4,10 +4,10 @@
     :data-minor="stop.isSBL || (stop.nameRaw.endsWith(', po') && !stop.duration)"
   >
     <router-link v-if="/(, podg$|<strong>)/.test(stop.nameHtml)" :to="sceneryHref">
-      <span class="name" v-html="stop.nameHtml"></span>
+      <span class="stop-name" v-html="stop.nameHtml"></span>
     </router-link>
 
-    <span v-else class="name" v-html="stop.nameHtml"></span>
+    <span v-else class="stop-name" v-html="stop.nameHtml"></span>
 
     <span
       v-if="stop.position != 'begin'"
@@ -107,7 +107,7 @@ s {
   flex-wrap: wrap;
   align-items: center;
 
-  .name {
+  .stop-name {
     background: $stopNameClr;
     border-radius: 0.5em 0 0 0.5em;
     padding: 0.3em 0.5em;
@@ -134,7 +134,7 @@ s {
       display: none;
     }
 
-    .name {
+    .stop-name {
       background: none;
       color: #aaa;
       padding: 0;
