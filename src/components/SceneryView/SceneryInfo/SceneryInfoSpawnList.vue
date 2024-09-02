@@ -21,7 +21,7 @@
         :key="spawn.spawnName + onlineScenery?.dispatcherName + i"
         :data-electrified="spawn.isElectrified"
       >
-        <span class="stop-name">{{ spawn.spawnName }}</span>
+        <span class="name">{{ spawn.spawnName }}</span>
         <span class="length">{{ spawn.spawnLength }}m</span>
       </li>
     </transition-group>
