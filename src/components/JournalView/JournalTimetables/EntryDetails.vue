@@ -165,6 +165,7 @@ export default defineComponent({
 .details-actions {
   display: flex;
   gap: 0.5em;
+  margin-top: 1em;
 
   button img {
     height: 1.25em;

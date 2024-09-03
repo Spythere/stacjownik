@@ -19,10 +19,10 @@
         <ul v-else class="journal-list">
           <transition-group name="list-anim">
             <JournalTimetableEntry
-              v-for="timetableEntry in timetableHistory"
+              v-for="(timetableEntry, i) in timetableHistory"
               :key="timetableEntry.id"
               :timetableEntry="timetableEntry"
-              :onToggleShowExtraInfo="toggleExtraInfo"
+              :onToggleShowExtraInfo="() => toggleExtraInfo(timetableEntry.id)"
               :showExtraInfo="extraInfoIndexes.includes(timetableEntry.id)"
             />
           </transition-group>
@@ -90,6 +90,14 @@ export default defineComponent({
     };
   },
 
+  watch: {
+    timetableHistory: {
+      deep: true,
+      handler() {
+        this.extraInfoIndexes.length = 0;
+      }
+    }
+  },
   methods: {
     toggleExtraInfo(id: number) {
       const existingIdx = this.extraInfoIndexes.indexOf(id);

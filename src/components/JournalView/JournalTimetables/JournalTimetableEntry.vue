@@ -27,12 +27,13 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 import { API } from '../../../typings/api';
-import trainCategoryMixin from '../../../mixins/trainCategoryMixin';
-import dateMixin from '../../../mixins/dateMixin';
 import { useApiStore } from '../../../store/apiStore';
 import { Journal } from '../typings';
 
+import trainCategoryMixin from '../../../mixins/trainCategoryMixin';
+import dateMixin from '../../../mixins/dateMixin';
 import styleMixin from '../../../mixins/styleMixin';
+
 import EntryGeneral from './EntryGeneral.vue';
 import EntryStatus from './EntryStatus.vue';
 import EntryDetails from './EntryDetails.vue';
@@ -126,7 +127,7 @@ export default defineComponent({
 
   methods: {
     toggleExtraInfo() {
-      this.$emit('toggleShowExtraInfo', this.timetableEntry.id);
+      this.$emit('toggleShowExtraInfo');
     }
   }
 });
