@@ -83,7 +83,9 @@
 
     "ZN": "inspection / diagnostic type",
     "ZU": "other maintenance type",
-    "ZG": "emergency (deprecated category)",
+    "ZG": "emergency (deprecated)",
+
+    "AP": "voivodeship regio (deprecated)",
 
     "E": "electric loco",
     "J": "EMU",
