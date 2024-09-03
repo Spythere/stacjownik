@@ -264,6 +264,7 @@ export namespace API {
       visitedSceneries: string[];
       sceneryNames: string[];
       path: string;
+      warningNotes: string | null;
     }
 
     export type Response = Data[];

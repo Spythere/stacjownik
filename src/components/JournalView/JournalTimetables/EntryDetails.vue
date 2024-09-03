@@ -18,6 +18,7 @@
 
     <div class="details-body" v-if="timetable.stockString && timetable.stockMass && showExtraInfo">
       <hr />
+      <EntryStops :timetable="timetable" />
 
       <div class="stock-specs">
         <span class="badge">
@@ -79,6 +80,8 @@
         "
       />
     </div>
+
+    <div v-if="timetable.twr">TWR: {{ timetable.warningNotes }}</div>
   </div>
 </template>
 
@@ -87,9 +90,10 @@ import { PropType, defineComponent } from 'vue';
 import StockList from '../../Global/StockList.vue';
 import { API } from '../../../typings/api';
 import { RouteLocationRaw } from 'vue-router';
+import EntryStops from './EntryStops.vue';
 
 export default defineComponent({
-  components: { StockList },
+  components: { StockList, EntryStops },
 
   emits: ['toggleExtraInfo'],
 
@@ -133,7 +137,7 @@ export default defineComponent({
         query: {
           trainId: `${this.timetable.driverId}|${this.timetable.trainNo}|eu`
         }
-      }
+      };
     }
   },
   methods: {

@@ -16,37 +16,15 @@
           {{ $t('app.no-result') }}
         </div>
 
-        <div v-else>
-          <transition-group name="list-anim" tag="ul" class="journal-list">
-            <li v-for="timetable in timetableHistory" class="journal_item" :key="timetable.id">
-              <div class="journal_item-info">
-                <!-- General -->
-                <TimetableGeneral :timetable="timetable" />
-
-                <div @click="toggleExtraInfo(timetable.id)" style="cursor: pointer">
-                  <!-- Route -->
-                  <span class="item-route">
-                    <b>{{ timetable.route.replace('|', ' - ') }}</b>
-                  </span>
-
-                  <hr />
-                  <!-- Stops -->
-                  <TimetableStops
-                    :timetable="timetable"
-                    :showExtraInfo="extraInfoIndexes.includes(timetable.id)"
-                  />
-                  <!-- Status -->
-                  <TimetableStatus :timetable="timetable" />
-                </div>
-
-                <!-- Extra -->
-                <TimetableDetails
-                  :timetable="timetable"
-                  :showExtraInfo="extraInfoIndexes.includes(timetable.id)"
-                  @toggle-extra-info="toggleExtraInfo"
-                />
-              </div>
-            </li>
+        <ul v-else class="journal-list">
+          <transition-group name="list-anim">
+            <JournalTimetableEntry
+              v-for="timetableEntry in timetableHistory"
+              :key="timetableEntry.id"
+              :timetableEntry="timetableEntry"
+              :onToggleShowExtraInfo="toggleExtraInfo"
+              :showExtraInfo="extraInfoIndexes.includes(timetableEntry.id)"
+            />
           </transition-group>
 
           <AddDataButton
@@ -55,7 +33,7 @@
             :scrollNoMoreData="scrollNoMoreData"
             @addHistoryData="addHistoryData"
           />
-        </div>
+        </ul>
       </div>
     </transition>
 
@@ -68,28 +46,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Prop, PropType, ref } from 'vue';
+import { defineComponent, PropType } from 'vue';
 
 import Loading from '../../Global/Loading.vue';
 import AddDataButton from '../../Global/AddDataButton.vue';
+import JournalTimetableEntry from './JournalTimetableEntry.vue';
 
 import { useMainStore } from '../../../store/mainStore';
 import { Status } from '../../../typings/common';
 import { API } from '../../../typings/api';
 
-import TimetableGeneral from './TimetableGeneral.vue';
-import TimetableStops from './TimetableStops.vue';
-import TimetableStatus from './TimetableStatus.vue';
-import TimetableDetails from './TimetableDetails.vue';
-
 export default defineComponent({
   components: {
     Loading,
     AddDataButton,
-    TimetableDetails,
-    TimetableGeneral,
-    TimetableStatus,
-    TimetableStops
+    JournalTimetableEntry
   },
 
   props: {

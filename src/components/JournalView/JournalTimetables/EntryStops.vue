@@ -1,12 +1,7 @@
 <template>
-  <div class="timetable-stops">
+  <div class="entry-stops">
     <ul class="stop-list">
-      <li
-        v-for="(stop, i) in timetableStops.filter((_, i) =>
-          !showExtraInfo ? i == 0 || i == timetableStops.length - 1 : true
-        )"
-        :key="stop.stopName"
-      >
+      <li v-for="(stop, i) in timetableStops" :key="stop.stopName">
         <span class="stop-label" :data-confirmed="stop.isConfirmed">
           <span v-if="i > 0">&gt;</span>
 
@@ -75,7 +70,9 @@
       </li>
     </ul>
 
-    <div class="path-details" v-if="showExtraInfo && timetablePathDetails">
+    <div class="g-separator" />
+
+    <div class="entry-path-details" v-if="timetablePathDetails">
       <span
         v-for="(pathData, i) in timetablePathDetails"
         :data-visited="pathData.isVisited"
@@ -83,12 +80,10 @@
           i < timetablePathDetails.length - 1 && timetablePathDetails[i + 1].isVisited
         "
       >
-        <span class="path-arrival" v-if="pathData.arrival">
-          / {{ pathData.arrival }} &RightArrow;
-        </span>
+        <span class="path-arrival" v-if="pathData.arrival"> / {{ pathData.arrival }} &gt; </span>
         <b class="path-scenery">{{ pathData.sceneryName }}</b>
         <span class="path-departure" v-if="pathData.departure">
-          &RightArrow; {{ pathData.departure }}&nbsp;
+          &gt; {{ pathData.departure }}&nbsp;
         </span>
       </span>
     </div>
@@ -115,11 +110,6 @@ export default defineComponent({
   mixins: [dateMixin],
 
   props: {
-    showExtraInfo: {
-      type: Boolean,
-      required: true
-    },
-
     timetable: {
       type: Object as PropType<API.TimetableHistory.Data>,
       required: true
@@ -195,7 +185,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '../../../styles/badge.scss';
 
-.timetable-stops {
+.entry-stops {
   word-wrap: break-word;
   gap: 0.25em;
   font-size: 0.95em;
@@ -251,11 +241,11 @@ export default defineComponent({
   }
 }
 
-.path-details {
-  margin-top: 0.5em;
+.entry-path-details {
+  padding: 0.5em 0;
 }
 
-.path-details > span[data-visited='true'] {
+.entry-path-details > span[data-visited='true'] {
   .path-arrival,
   .path-scenery {
     color: lightgreen;
