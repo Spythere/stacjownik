@@ -124,13 +124,17 @@ export default defineComponent({
         const [arrival, name, departure] = pathEl.split(',');
         const sceneryName = name.split(' ').slice(0, -1).join(' ');
         const sceneryHash = name.split(' ').pop()?.replace('.sc', '') ?? '';
+        const isVisited = this.timetable.visitedSceneries.includes(sceneryHash);
 
         return {
           arrival,
           sceneryName,
           sceneryHash,
           departure,
-          isVisited: this.timetable.visitedSceneries?.includes(sceneryHash) ?? false
+          isVisited,
+          isVisitedOffline:
+            !isVisited &&
+            this.timetable.visitedSceneries.includes(`${sceneryName} ${sceneryHash}.sc`)
         };
       });
     },
@@ -162,7 +166,7 @@ export default defineComponent({
             : timetable.checkpointDeparturesScheduled.at(i);
 
         const stopTime = Number(timetable.checkpointStopTypes.at(i)?.split(',')[0]) || 0;
-        const stopType = timetable.checkpointStopTypes.at(i)?.split(',')[1] || '';
+        const stopType = timetable.checkpointStopTypes.at(i)?.split(',').slice(1).join(',') || 'pt';
 
         acc.push({
           stopName,
@@ -209,6 +213,10 @@ export default defineComponent({
   &[data-confirmed='true'] > .stop-name {
     color: lightgreen;
   }
+
+  &[data-confirmed='true'] > .stop-date:not([data-preponed='true']):not([data-delayed='true']) {
+    color: lightgreen;
+  }
 }
 
 .stop-name {
@@ -217,6 +225,8 @@ export default defineComponent({
 }
 
 .stop-date {
+  color: #ccc;
+
   s {
     color: #aaa;
   }
@@ -226,7 +236,7 @@ export default defineComponent({
   }
 
   &[data-preponed='true'] {
-    color: lightgreen;
+    color: mediumspringgreen;
   }
 }
 

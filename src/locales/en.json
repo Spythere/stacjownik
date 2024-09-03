@@ -456,7 +456,8 @@
     "minutes": "{value} min | {value} mins",
     "seconds": "{value} s",
 
-    "stock-info": "DETAILS",
+    "entry-details": "DETAILS",
+    "no-entry-details": "NO DETAILS AVAILABLE",
     "stock-length": "Length",
     "stock-mass": "Mass",
     "stock-max-speed": "Max. speed",

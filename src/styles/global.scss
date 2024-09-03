@@ -227,6 +227,10 @@ a.a-button {
     &:hover {
       background-color: #424242;
     }
+
+    &:disabled {
+      opacity: 0.75;
+    }
   }
 
   &.btn--option {

@@ -2,7 +2,7 @@
   <div>
     <div class="details-actions">
       <button class="btn--action" @click="toggleExtraInfo">
-        <b>{{ $t('journal.stock-info') }}</b>
+        <b>{{ $t('journal.entry-details') }}</b>
         <img :src="`/images/icon-arrow-${showExtraInfo ? 'asc' : 'desc'}.svg`" alt="Arrow icon" />
       </button>
 
@@ -16,18 +16,18 @@
       </router-link>
     </div>
 
-    <div class="details-body" v-if="timetable.stockString && timetable.stockMass && showExtraInfo">
+    <div class="details-body" v-if="showExtraInfo">
       <hr />
       <EntryStops :timetable="timetable" />
 
-      <div class="stock-specs">
+      <div class="stock-specs" v-if="timetable.authorName">
         <span class="badge">
           <span>{{ $t('journal.dispatcher-name') }}</span>
           <span>{{ timetable.authorName }}</span>
         </span>
       </div>
 
-      <div class="stock-specs">
+      <div class="stock-specs" v-if="timetable.stockMass && timetable.stockHistory.length > 0">
         <span class="badge">
           <span>{{ $t('journal.stock-max-speed') }}</span>
           <span>{{ timetable.maxSpeed }}km/h</span>
@@ -71,14 +71,16 @@
         </button>
       </div>
 
-      <StockList
-        :trainStockList="
-          (currentHistoryIndex == 0
-            ? timetable.stockString
-            : stockHistory[currentHistoryIndex].stockString
-          ).split(';')
-        "
-      />
+      <div v-if="timetable.stockString">
+        <StockList
+          :trainStockList="
+            (currentHistoryIndex == 0
+              ? timetable.stockString
+              : stockHistory[currentHistoryIndex].stockString
+            ).split(';')
+          "
+        />
+      </div>
     </div>
 
     <div v-if="timetable.twr">TWR: {{ timetable.warningNotes }}</div>
