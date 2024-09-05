@@ -17,13 +17,13 @@ export namespace API {
       trainsAPI: APIDataStatus;
       dispatchersAPI: APIDataStatus;
       sceneryRequirementsAPI: APIDataStatus;
-      caches: APICache[];
     }
 
     export interface Response {
       activeSceneries?: API.ActiveSceneries.Response;
       trains?: API.ActiveTrains.Response;
       apiStatuses?: APIStatuses;
+      caches: APICache[];
     }
   }
 
