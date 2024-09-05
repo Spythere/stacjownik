@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { API, APICache } from '../typings/api';
+import { API } from '../typings/api';
 import { Status } from '../typings/common';
 import { StationJSONData } from './typings';
 import axios, { AxiosInstance } from 'axios';
@@ -19,6 +19,7 @@ export const useApiStore = defineStore('apiStore', {
     sceneryData: [] as StationJSONData[],
 
     nextUpdateTime: 0,
+    nextDataCheckTime: 0,
 
     client: undefined as AxiosInstance | undefined,
 
@@ -48,17 +49,26 @@ export const useApiStore = defineStore('apiStore', {
     },
 
     async connectToAPI() {
-      // Static data
-      this.fetchDonatorsData();
-      this.fetchStationsGeneralInfo();
-      this.fetchVehiclesInfo();
-
       window.requestAnimationFrame(this.updateTick);
     },
 
     updateTick(t: number) {
       if (this.dataStatuses.connection == Status.Data.Offline) return;
 
+      // Static data refresh
+      if (t >= this.nextDataCheckTime) {
+        this.fetchDonatorsData();
+        this.fetchVehiclesInfo();
+
+        // Revalidation after staling
+        this.fetchStationsGeneralInfo().then(() => {
+          this.fetchStationsGeneralInfo();
+        });
+
+        this.nextDataCheckTime = t + 3600000;
+      }
+
+      // Active data fefresh
       if (t >= this.nextUpdateTime) {
         this.fetchActiveData();
         this.nextUpdateTime = t + 20000;
@@ -115,6 +125,6 @@ export const useApiStore = defineStore('apiStore', {
         this.dataStatuses.vehicles = Status.Data.Error;
         console.error('Ups! Wystąpił błąd podczas pobierania informacji o pojazdach:', error);
       }
-    },
+    }
   }
 });
