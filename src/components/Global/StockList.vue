@@ -8,7 +8,7 @@
         :key="i"
       >
         <div class="stock-text">
-          <p>{{ vehicleName.replace(/_/g, ' ') }}</p>
+          <div>{{ vehicleName.replace(/_/g, ' ') }}</div>
           <small v-if="vehicleCargo">({{ vehicleCargo }})</small>
         </div>
 
@@ -189,20 +189,11 @@ ul > li > span {
   cursor: crosshair;
 }
 
-img {
-  max-height: 60px;
-  width: auto;
-  height: auto;
-}
-
-img.traction-only {
-  max-width: 100%;
-}
-
 .stock-text {
   text-align: center;
   color: #aaa;
   font-size: 0.9em;
   margin-bottom: 0.25em;
+  padding: 0.25em 0;
 }
 </style>
