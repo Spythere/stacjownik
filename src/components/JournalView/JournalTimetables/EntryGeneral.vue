@@ -3,8 +3,24 @@
     <span class="general-train">
       <span class="text--grayed">#{{ timetable.id }}</span>
 
-      <span class="train-badge twr" v-if="timetable.twr" :title="$t('general.TWR')">TWR</span>
-      <span class="train-badge skr" v-if="timetable.skr" :title="$t('general.SKR')">SKR</span>
+      <span
+        class="train-badge twr"
+        v-if="timetable.twr"
+        data-tooltip-type="BaseTooltip"
+        :data-tooltip-content="
+          $t('general.TWR') + `${timetable.warningNotes ? ':\n' + timetable.warningNotes : ''}`
+        "
+      >
+        TWR
+      </span>
+      <span
+        class="train-badge skr"
+        v-if="timetable.skr"
+        data-tooltip-type="BaseTooltip"
+        :data-tooltip-content="$t('general.SKR')"
+      >
+        SKR
+      </span>
 
       <span>
         <strong

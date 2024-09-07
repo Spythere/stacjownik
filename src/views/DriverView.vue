@@ -109,7 +109,7 @@ $viewBgCol: #1a1a1a;
 .driver-view {
   margin: 0 auto;
   padding: 1em 0;
-  max-width: 2000px;
+  max-width: var(--max-container-width);
   min-height: calc(100vh - 7em);
 }
 
