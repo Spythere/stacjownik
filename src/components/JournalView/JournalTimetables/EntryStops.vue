@@ -70,23 +70,20 @@
       </li>
     </ul>
 
-    <div class="g-separator" />
-
-    <div class="entry-path-details" v-if="timetablePathDetails">
-      <span
+    <ul class="timetable-path-list" v-if="timetablePathDetails">
+      <li
         v-for="(pathData, i) in timetablePathDetails"
         :data-visited="pathData.isVisited"
         :data-next-visited="
           i < timetablePathDetails.length - 1 && timetablePathDetails[i + 1].isVisited
         "
       >
-        <span class="path-arrival" v-if="pathData.arrival"> / {{ pathData.arrival }} &gt; </span>
+        <span v-if="i > 0" class="path-arrow">&gt;</span>
+        <span class="path-arrival" v-if="pathData.arrival">{{ pathData.arrival }}</span>
         <b class="path-scenery">{{ pathData.sceneryName }}</b>
-        <span class="path-departure" v-if="pathData.departure">
-          &gt; {{ pathData.departure }}&nbsp;
-        </span>
-      </span>
-    </div>
+        <span class="path-departure" v-if="pathData.departure">{{ pathData.departure }}</span>
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -193,7 +190,6 @@ export default defineComponent({
   word-wrap: break-word;
   gap: 0.25em;
   font-size: 0.95em;
-  color: #adadad;
 }
 
 .stop-list {
@@ -251,13 +247,45 @@ export default defineComponent({
   }
 }
 
-.entry-path-details {
+.timetable-path-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em 0;
   padding: 0.5em 0;
+  color: #ccc;
+
+  li > .path-scenery:first-child,
+  li > .path-arrival:nth-child(2) {
+    border-radius: 0.5em 0 0 0.5em;
+  }
+
+  li > :last-child {
+    border-radius: 0 0.5em 0.5em 0;
+  }
 }
 
-.entry-path-details > span[data-visited='true'] {
+.path-scenery {
+  padding: 0.25em 0.5em;
+  background-color: #303030;
+}
+
+.path-arrival,
+.path-departure {
+  padding: 0.25em;
+  display: inline-block;
+  background-color: #4e4e4e;
+  min-width: 25px;
+  text-align: center;
+}
+
+.path-arrow {
+  padding: 0 0.5em;
+}
+
+.timetable-path-list > li[data-visited='true'] {
   .path-arrival,
-  .path-scenery {
+  .path-scenery,
+  .path-arrow {
     color: lightgreen;
   }
 

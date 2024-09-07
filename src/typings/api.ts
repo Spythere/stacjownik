@@ -204,6 +204,7 @@ export namespace API {
       sceneries: string[];
 
       path: string;
+      warningNotes: string | null;
     }
   }
 

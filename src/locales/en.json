@@ -441,6 +441,7 @@
 
     "no-further-data": "No further data for current parameters",
     "loading-further-data": "Loading...",
+    
 
     "route-length": "Route length:",
     "station-count": "Stations:",
@@ -460,9 +461,13 @@
 
     "entry-details": "DETAILS",
     "no-entry-details": "NO DETAILS AVAILABLE",
+
     "stock-length": "Length",
     "stock-mass": "Mass",
     "stock-max-speed": "Max. speed",
+
+    "stock-dangers": "ADDITIONAL NOTES",
+    "stock-preview": "STOCK PREVIEW",
 
     "load-data": "Load further data...",
 

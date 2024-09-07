@@ -180,7 +180,6 @@ export default defineComponent({
   align-items: flex-end;
   overflow: auto;
   margin: 0 auto;
-  padding: 1em 0;
 }
 
 ul > li > span {

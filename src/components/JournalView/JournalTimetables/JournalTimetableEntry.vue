@@ -5,9 +5,9 @@
 
     <div @click="toggleExtraInfo" style="cursor: pointer">
       <!-- Route -->
-      <span class="entry-route">
+      <div class="entry-route">
         <b>{{ timetableEntry.route.replace('|', ' - ') }}</b>
-      </span>
+      </div>
 
       <hr />
 
@@ -134,8 +134,16 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '../../../styles/responsive.scss';
+
 .timetable-history-entry {
   background-color: #1a1a1a;
   padding: 1em;
+}
+
+@include smallScreen {
+  .entry-route {
+    text-align: center;
+  }
 }
 </style>
