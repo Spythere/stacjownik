@@ -89,7 +89,7 @@ export default defineComponent({
 .tooltip-content {
   width: 300px;
   min-height: 200px;
-  background-color: #333;
+  background-color: #1f1f1f;
   box-shadow: 0 0 10px 2px #aaa;
 
   padding: 0.5em;

@@ -13,6 +13,8 @@ import BaseTooltip from './BaseTooltip.vue';
 import SpawnsTooltip from './SpawnsTooltip.vue';
 import UsersTooltip from './UsersTooltip.vue';
 
+const BOX_PADDING_PX = 20;
+
 export default defineComponent({
   components: { DonatorTooltip, VehiclePreviewTooltip, BaseTooltip, SpawnsTooltip, UsersTooltip },
 
@@ -33,14 +35,14 @@ export default defineComponent({
           const boxWidth = previewEl.getBoundingClientRect().width;
 
           let translateX = '0',
-            translateY = '30px';
+            translateY = `calc(-100% - ${BOX_PADDING_PX}px)`;
 
-          if (val[0] <= boxWidth / 2) {
+          if (val[0] <= boxWidth / 2 + BOX_PADDING_PX) {
             previewEl.style.left = '0';
-            translateX = '0px';
-          } else if (val[0] >= clientWidth - boxWidth / 2) {
+            translateX = BOX_PADDING_PX + 'px';
+          } else if (val[0] >= clientWidth - boxWidth / 2 - BOX_PADDING_PX) {
             previewEl.style.left = '100%';
-            translateX = '-100%';
+            translateX = `calc(-100% - ${BOX_PADDING_PX}px)`;
           } else {
             previewEl.style.left = `${val[0]}px`;
             translateX = '-50%';
@@ -49,10 +51,10 @@ export default defineComponent({
           previewEl.style.top = `${val[1]}px`;
 
           const isOutside =
-            val[1] + previewEl.getBoundingClientRect().height + 30 >=
-            window.innerHeight + window.scrollY;
+            val[1] - previewEl.getBoundingClientRect().height <=
+            window.scrollY + BOX_PADDING_PX * 2;
 
-          if (isOutside) translateY = 'calc(-100% - 30px)';
+          if (isOutside) translateY = BOX_PADDING_PX + 'px';
           previewEl.style.transform = `translate(${translateX}, ${translateY})`;
         });
       }

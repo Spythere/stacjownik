@@ -29,7 +29,7 @@ export default defineComponent({
   border-radius: 0.25em;
 
   width: 100%;
-  background-color: #333;
+  background-color: #1f1f1f;
   box-shadow: 0 0 5px 2px #aaa;
 }
 
