@@ -66,4 +66,16 @@ export namespace Journal {
     iconName: string;
     disabled: boolean;
   }
+
+  export interface TimetableStopDetails {
+    stopName: string;
+    arrivalTimestamp: number;
+    scheduledArrivalTimestamp: number;
+    departureTimestamp: number;
+    scheduledDepartureTimestamp: number;
+    stopTime: number;
+    stopType: string;
+    isConfirmed: boolean;
+  }
 }
+

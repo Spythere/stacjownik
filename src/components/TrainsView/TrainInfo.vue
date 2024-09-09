@@ -8,11 +8,21 @@
             #{{ train.timetableData.timetableId }}
           </span>
 
-          <span class="train-badge twr" v-if="train.timetableData?.TWR" :title="$t('general.TWR')">
+          <span
+            class="train-badge twr"
+            v-if="train.timetableData?.TWR"
+            data-tooltip-type="BaseTooltip"
+            :data-tooltip-content="$t('general.TWR') + `:\n${train.timetableData.warningNotes}`"
+          >
             TWR
           </span>
 
-          <span class="train-badge skr" v-if="train.timetableData?.SKR" :title="$t('general.SKR')">
+          <span
+            class="train-badge skr"
+            v-if="train.timetableData?.SKR"
+            data-tooltip-type="BaseTooltip"
+            :data-tooltip-content="$t('general.SKR')"
+          >
             SKR
           </span>
 
@@ -129,6 +139,20 @@
       <div class="text--grayed" style="margin-top: 0.25em">
         {{ displayTrainPosition(train) }}
       </div>
+
+      <div
+        class="train-dangers"
+        v-if="extended && (train.timetableData?.TWR || train.timetableData?.SKR)"
+      >
+        <div v-if="train.timetableData.TWR">
+          <b style="color: var(--clr-twr)">TWR</b> - {{ $t('general.TWR') }}
+          <i>({{ train.timetableData?.warningNotes }})</i>
+        </div>
+
+        <div v-if="train.timetableData.SKR">
+          <b style="color: var(--clr-skr)">SKR</b> - {{ $t('general.SKR') }}
+        </div>
+      </div>
     </section>
 
     <section class="train-stats" v-if="!extended">
@@ -199,7 +223,7 @@ export default defineComponent({
         query: {
           'search-driver': this.train.driverName
         }
-      }
+      };
     }
   }
 });
@@ -224,6 +248,10 @@ export default defineComponent({
   text-align: center;
 
   line-height: 1.5em;
+}
+
+.train-dangers {
+  margin-top: 0.5em;
 }
 
 .train-info {

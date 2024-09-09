@@ -227,6 +227,10 @@ a.a-button {
     &:hover {
       background-color: #424242;
     }
+
+    &:disabled {
+      opacity: 0.75;
+    }
   }
 
   &.btn--option {
@@ -344,4 +348,12 @@ a.a-button {
     left: 50%;
     width: 100%;
   }
+}
+
+.g-separator {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background-color: #aaa;
+  margin: 0.5em 0;
 }

@@ -94,7 +94,8 @@ export const useMainStore = defineStore('mainStore', {
                   followingStops: timetable.stopList,
                   routeDistance: timetable.stopList[timetable.stopList.length - 1].stopDistance,
                   sceneries: timetable.sceneries,
-                  // sceneryNames: sceneryNames.reverse(),
+                  warningNotes: timetable.warningNotes,
+
                   timetablePath: timetable.path.split(';').map((pathElementString) => {
                     const [arrival, station, departure] = pathElementString.split(',');
 

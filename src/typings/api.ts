@@ -17,13 +17,13 @@ export namespace API {
       trainsAPI: APIDataStatus;
       dispatchersAPI: APIDataStatus;
       sceneryRequirementsAPI: APIDataStatus;
-      caches: APICache[];
     }
 
     export interface Response {
       activeSceneries?: API.ActiveSceneries.Response;
       trains?: API.ActiveTrains.Response;
       apiStatuses?: APIStatuses;
+      caches: APICache[];
     }
   }
 
@@ -204,6 +204,7 @@ export namespace API {
       sceneries: string[];
 
       path: string;
+      warningNotes: string | null;
     }
   }
 
@@ -246,8 +247,6 @@ export namespace API {
       authorName?: string;
       authorId?: number;
 
-      stopsString?: string;
-
       stockString?: string;
       stockHistory: string[];
 
@@ -255,17 +254,18 @@ export namespace API {
       stockLength?: number;
       maxSpeed?: number;
 
-      hashesString?: string;
       currentSceneryName?: string;
       currentSceneryHash?: string;
-      routeSceneries?: string;
-      checkpointArrivals?: string[];
-      checkpointDepartures?: string[];
-      checkpointArrivalsScheduled?: string[];
-      checkpointDeparturesScheduled?: string[];
-      checkpointStopTypes?: string[];
-      visitedSceneries?: string[];
+      routeSceneries: string;
+      checkpointArrivals: string[];
+      checkpointDepartures: string[];
+      checkpointArrivalsScheduled: string[];
+      checkpointDeparturesScheduled: string[];
+      checkpointStopTypes: string[];
+      visitedSceneries: string[];
+      sceneryNames: string[];
       path: string;
+      warningNotes: string | null;
     }
 
     export type Response = Data[];

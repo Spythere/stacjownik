@@ -1,5 +1,5 @@
 <template>
-  <div class="item-status" style="margin: 0.5em 0">
+  <div class="entry-status" style="margin: 0.5em 0">
     <ProgressBar
       :progressPercent="~~((timetable.currentDistance / timetable.routeDistance) * 100)"
       :progressType="!timetable.fulfilled && timetable.terminated ? 'abandoned' : ''"
@@ -61,7 +61,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '../../../styles/responsive.scss';
 
-.item-status {
+.entry-status {
   display: flex;
   align-items: center;
   flex-wrap: wrap;

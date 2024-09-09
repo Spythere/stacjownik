@@ -117,13 +117,12 @@ export default defineComponent({
 @import '../styles/responsive.scss';
 
 .trains-view {
-  min-height: 600px;
   position: relative;
 }
 
 .trains_wrapper {
   margin: 1rem auto;
-  max-width: 1500px;
+  max-width: var(--max-container-width);
 }
 
 .trains_topbar {

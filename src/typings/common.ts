@@ -72,19 +72,22 @@ export interface Train {
   isTimeout: boolean;
   isSupporter: boolean;
 
-  driverRouteLocation: RouteLocationRaw,
+  driverRouteLocation: RouteLocationRaw;
 
-  timetableData?: {
-    timetableId: number;
-    category: string;
-    route: string;
-    followingStops: TrainStop[];
-    TWR: boolean;
-    SKR: boolean;
-    routeDistance: number;
-    sceneries: string[];
-    timetablePath: TimetablePathElement[];
-  };
+  timetableData?: TrainTimetableData;
+}
+
+export interface TrainTimetableData {
+  timetableId: number;
+  category: string;
+  route: string;
+  followingStops: TrainStop[];
+  TWR: boolean;
+  SKR: boolean;
+  routeDistance: number;
+  sceneries: string[];
+  timetablePath: TimetablePathElement[];
+  warningNotes: string | null;
 }
 
 export interface Station {

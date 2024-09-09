@@ -2,7 +2,7 @@
   <div>
     <div class="details-actions">
       <button class="btn--action" @click="toggleExtraInfo">
-        <b>{{ $t('journal.stock-info') }}</b>
+        <b>{{ $t('journal.entry-details') }}</b>
         <img :src="`/images/icon-arrow-${showExtraInfo ? 'asc' : 'desc'}.svg`" alt="Arrow icon" />
       </button>
 
@@ -16,23 +16,25 @@
       </router-link>
     </div>
 
-    <div class="details-body" v-if="timetable.stockString && timetable.stockMass && showExtraInfo">
-      <hr />
+    <div class="details-body" v-if="showExtraInfo">
+      <div class="g-separator"></div>
+
+      <EntryStops :timetable="timetable" />
+
+      <div class="g-separator"></div>
 
       <div class="stock-specs">
-        <span class="badge">
+        <span class="badge" v-if="timetable.authorName">
           <span>{{ $t('journal.dispatcher-name') }}</span>
           <span>{{ timetable.authorName }}</span>
         </span>
-      </div>
 
-      <div class="stock-specs">
-        <span class="badge">
+        <span class="badge" v-if="timetable.maxSpeed">
           <span>{{ $t('journal.stock-max-speed') }}</span>
           <span>{{ timetable.maxSpeed }}km/h</span>
         </span>
 
-        <span class="badge">
+        <span class="badge" v-if="timetable.stockLength">
           <span>{{ $t('journal.stock-length') }}</span>
           <span>
             {{
@@ -43,13 +45,13 @@
           </span>
         </span>
 
-        <span class="badge">
+        <span class="badge" v-if="timetable.stockMass">
           <span>{{ $t('journal.stock-mass') }}</span>
           <span>
             {{
               Math.floor(
                 (currentHistoryIndex == 0
-                  ? timetable.stockMass!
+                  ? timetable.stockMass
                   : stockHistory[currentHistoryIndex].stockMass || timetable.stockMass) / 1000
               )
             }}t
@@ -57,27 +59,56 @@
         </span>
       </div>
 
-      <!-- Historia zmian w składzie -->
-      <div class="stock-history" v-if="stockHistory.length > 1">
-        <button
-          v-for="(sh, i) in stockHistory"
-          :key="i"
-          class="btn--action"
-          :data-checked="i == currentHistoryIndex"
-          @click.stop="currentHistoryIndex = i"
-        >
-          {{ sh.updatedAt }}
-        </button>
+      <div class="stock-dangers" v-if="timetable.twr || timetable.skr">
+        <div class="g-separator"></div>
+
+        <b>{{ $t('journal.stock-dangers') }}:</b>
+
+        <ul>
+          <li v-if="timetable.twr">
+            <b class="text--primary">{{ $t('general.TWR') }} (TWR)</b>
+            <span v-if="timetable.warningNotes">
+              | <i>{{ timetable.warningNotes }}</i>
+            </span>
+          </li>
+
+          <li v-if="timetable.skr">
+            <b class="text--primary">{{ $t('general.SKR') }}</b>
+            <span v-if="timetable.warningNotes">
+              | Komentarze: <i>{{ timetable.warningNotes }}</i>
+            </span>
+          </li>
+        </ul>
       </div>
 
-      <StockList
-        :trainStockList="
-          (currentHistoryIndex == 0
-            ? timetable.stockString
-            : stockHistory[currentHistoryIndex].stockString
-          ).split(';')
-        "
-      />
+      <!-- Historia zmian w składzie -->
+      <div v-if="timetable.stockString || stockHistory.length != 0">
+        <div class="g-separator"></div>
+        <b>{{ $t('journal.stock-preview') }}:</b>
+
+        <div class="stock-history" v-if="stockHistory.length > 1">
+          <button
+            v-for="(sh, i) in stockHistory"
+            :key="i"
+            class="btn--action"
+            :data-checked="i == currentHistoryIndex"
+            @click.stop="currentHistoryIndex = i"
+          >
+            {{ sh.updatedAt }}
+          </button>
+        </div>
+
+        <div v-if="timetable.stockString" style="margin-top: 1em">
+          <StockList
+            :trainStockList="
+              (currentHistoryIndex == 0
+                ? timetable.stockString
+                : stockHistory[currentHistoryIndex].stockString
+              ).split(';')
+            "
+          />
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -87,9 +118,10 @@ import { PropType, defineComponent } from 'vue';
 import StockList from '../../Global/StockList.vue';
 import { API } from '../../../typings/api';
 import { RouteLocationRaw } from 'vue-router';
+import EntryStops from './EntryStops.vue';
 
 export default defineComponent({
-  components: { StockList },
+  components: { StockList, EntryStops },
 
   emits: ['toggleExtraInfo'],
 
@@ -133,7 +165,7 @@ export default defineComponent({
         query: {
           trainId: `${this.timetable.driverId}|${this.timetable.trainNo}|eu`
         }
-      }
+      };
     }
   },
   methods: {
@@ -161,6 +193,7 @@ export default defineComponent({
 .details-actions {
   display: flex;
   gap: 0.5em;
+  margin-top: 1em;
 
   button img {
     height: 1.25em;
@@ -182,7 +215,6 @@ export default defineComponent({
   display: flex;
   flex-wrap: wrap;
   gap: 0.5em;
-  margin-top: 0.5em;
 
   .badge {
     margin: 0;
@@ -194,20 +226,14 @@ export default defineComponent({
   }
 }
 
-ul.stock-list {
-  display: flex;
-  align-items: flex-end;
-  overflow: auto;
+hr {
+  margin: 0.5em 0;
+}
 
-  padding-bottom: 0.5em;
-
-  li > div {
-    margin: 1em 0;
-
-    text-align: center;
-    color: #aaa;
-    font-size: 0.9em;
-  }
+.stock-dangers ul {
+  list-style: disc;
+  padding-left: 1em;
+  padding-top: 0.5em;
 }
 
 @include smallScreen() {

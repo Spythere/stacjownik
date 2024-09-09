@@ -11,8 +11,8 @@
 
 .list_wrapper {
   overflow-y: auto;
-  height: 90vh;
-  min-height: 650px;
+  height: calc(100vh - 12.5em);
+  min-height: 500px;
   margin-top: 0.5em;
   position: relative;
 
@@ -20,7 +20,7 @@
 }
 
 .journal_wrapper {
-  max-width: 1500px;
+  max-width: var(--max-container-width);
   width: 100%;
 
   margin: 0 auto;

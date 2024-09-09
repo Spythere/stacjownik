@@ -41,11 +41,11 @@ $animType: ease-in-out;
   }
 
   &-enter-active {
-    transition: all $animDuration ease-out;
+    transition: all $animDuration ease-in-out;
   }
 
   &-leave-active {
-    transition: all $animDuration ease-out;
+    transition: all $animDuration ease-in-out;
   }
 }
 

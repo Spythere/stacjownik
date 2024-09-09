@@ -1,5 +1,5 @@
 <template>
-  <div class="vehicle-thumbnail">
+  <div class="vehicle-thumbnail" :data-load-status="imgStatus">
     <img
       ref="imgRef"
       :src="`https://static.spythere.eu/thumbnails/v2/${imgName}.png`"
@@ -7,7 +7,6 @@
       loading="lazy"
       data-tooltip-type="VehiclePreviewTooltip"
       :data-tooltip-content="vehicleName"
-      :data-load-status="imgStatus"
       @error="onImageError"
       @load="onImageLoad"
     />
@@ -15,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, Ref, ref } from 'vue';
+import { Ref, ref } from 'vue';
 
 const props = defineProps({
   vehicleName: { type: String, required: true },
@@ -29,8 +28,6 @@ const imgRef = ref(null) as Ref<HTMLElement | null>;
 const imgStatus = ref('loading');
 
 function onImageError(event: Event) {
-  console.log('error');
-
   (event.target as HTMLImageElement).src = `/images/${props.fallbackName}.png`;
   imgStatus.value = 'error';
 }
@@ -40,22 +37,22 @@ function onImageLoad() {
     imgStatus.value = 'loaded';
   }
 
-  imgRef.value!.style.opacity = '1';
+  if (imgRef.value) imgRef.value.style.opacity = '1';
 }
 </script>
 
 <style lang="scss" scoped>
 .vehicle-thumbnail {
   position: relative;
+
+  &[data-load-status='loading'] {
+    min-height: 60px;
+    min-width: 200px;
+  }
 }
 
 img {
   opacity: 0;
   transition: opacity 100ms ease-in-out;
-
-  &[data-load-status='loading'] {
-    min-height: 60px;
-    min-width: 150px;
-  }
 }
 </style>

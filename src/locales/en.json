@@ -83,7 +83,9 @@
 
     "ZN": "inspection / diagnostic type",
     "ZU": "other maintenance type",
-    "ZG": "emergency (deprecated category)",
+    "ZG": "emergency (deprecated)",
+
+    "AP": "voivodeship regio (deprecated)",
 
     "E": "electric loco",
     "J": "EMU",
@@ -407,9 +409,10 @@
     "driver-return-link": "GO BACK",
 
     "driver-not-found-header": "Train not found! :/",
-    "driver-not-found-desc-1": "This train has already been terminated or it's offline.",
+    "driver-not-found-desc-1": "This train has already been terminated, changed its number or is offline.",
     "driver-not-found-desc-2": "You can browse timetable history in the",
     "driver-not-found-journal": "TIMETABLES JOURNAL",
+    "driver-not-found-others": "Player {driver} is online as:",
     "driver-not-found-return": "GO BACK TO THE MAIN SITE"
   },
   "train-stats": {
@@ -438,6 +441,7 @@
 
     "no-further-data": "No further data for current parameters",
     "loading-further-data": "Loading...",
+    
 
     "route-length": "Route length:",
     "station-count": "Stations:",
@@ -455,10 +459,15 @@
     "minutes": "{value} min | {value} mins",
     "seconds": "{value} s",
 
-    "stock-info": "DETAILS",
+    "entry-details": "DETAILS",
+    "no-entry-details": "NO DETAILS AVAILABLE",
+
     "stock-length": "Length",
     "stock-mass": "Mass",
     "stock-max-speed": "Max. speed",
+
+    "stock-dangers": "ADDITIONAL NOTES",
+    "stock-preview": "STOCK PREVIEW",
 
     "load-data": "Load further data...",
 

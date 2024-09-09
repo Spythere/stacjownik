@@ -19,6 +19,7 @@ export const useApiStore = defineStore('apiStore', {
     sceneryData: [] as StationJSONData[],
 
     nextUpdateTime: 0,
+    nextDataCheckTime: 0,
 
     client: undefined as AxiosInstance | undefined,
 
@@ -48,17 +49,26 @@ export const useApiStore = defineStore('apiStore', {
     },
 
     async connectToAPI() {
-      // Static data
-      this.fetchDonatorsData();
-      this.fetchStationsGeneralInfo();
-      this.fetchVehiclesInfo();
-
       window.requestAnimationFrame(this.updateTick);
     },
 
     updateTick(t: number) {
       if (this.dataStatuses.connection == Status.Data.Offline) return;
 
+      // Static data refresh
+      if (t >= this.nextDataCheckTime) {
+        this.fetchDonatorsData();
+        this.fetchVehiclesInfo();
+
+        // Revalidation after staling
+        this.fetchStationsGeneralInfo().then(() => {
+          this.fetchStationsGeneralInfo();
+        });
+
+        this.nextDataCheckTime = t + 3600000;
+      }
+
+      // Active data fefresh
       if (t >= this.nextUpdateTime) {
         this.fetchActiveData();
         this.nextUpdateTime = t + 20000;
@@ -68,17 +78,6 @@ export const useApiStore = defineStore('apiStore', {
     },
 
     async fetchActiveData() {
-      // if (import.meta.env.VITE_API_ACTIVE_DATA_MODE == 'mocking') {
-      //   import('../../tests/data/getActiveData.json').then((data) => {
-      //     console.warn('activeData: mocking mode');
-      //     this.activeData = data.default as API.ActiveData.Response;
-
-      //     this.dataStatuses.connection = Status.Data.Loaded;
-      //   });
-
-      //   return;
-      // }
-
       if (!this.activeData) this.dataStatuses.connection = Status.Data.Loading;
 
       try {
@@ -105,7 +104,7 @@ export const useApiStore = defineStore('apiStore', {
     async fetchStationsGeneralInfo() {
       try {
         const sceneryData: StationJSONData[] = (
-          await this.client!.get<StationJSONData[]>('api/getSceneries')
+          await this.client!.get<StationJSONData[]>(`api/getSceneries`)
         ).data;
 
         this.dataStatuses.sceneries = Status.Data.Loaded;
@@ -117,16 +116,6 @@ export const useApiStore = defineStore('apiStore', {
     },
 
     async fetchVehiclesInfo() {
-      // if (import.meta.env.VITE_API_VEHICLES_MODE == 'mocking') {
-      //   import('../../tests/data/vehicles.json').then((data) => {
-      //     console.warn('vehicles.json: mocking mode');
-      //     this.vehiclesData = data.default;
-      //     this.dataStatuses.vehicles = Status.Data.Loaded;
-      //   });
-
-      //   return;
-      // }
-
       try {
         const response = await this.client!.get<API.Vehicles.Response>('api/getVehicles');
 

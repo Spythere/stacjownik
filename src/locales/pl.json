@@ -82,6 +82,8 @@
     "ZU": "inny utrzymaniowy",
     "ZG": "ratunkowy (kat. wycofana)",
 
+    "AP": "wojewódzki osobowy (kat. wycofana)",
+
     "E": "elektrowóz",
     "J": "EZT",
     "S": "spalinowóz",
@@ -393,9 +395,10 @@
     "driver-return-link": "POWRÓT",
 
     "driver-not-found-header": "Nie znaleziono pociągu! :/",
-    "driver-not-found-desc-1": "Ten pociąg prawdopodobnie zakończył już swój bieg lub jest offline.",
+    "driver-not-found-desc-1": "Ten pociąg prawdopodobnie zakończył już swój bieg, zmienił numer lub jest offline.",
     "driver-not-found-desc-2": "Historię rozkładów jazdy możesz przejrzeć w",
     "driver-not-found-journal": "DZIENNIKU RJ",
+    "driver-not-found-others": "Gracz {driver} jest online jako:",
     "driver-not-found-return": "WRÓĆ NA STRONĘ GŁÓWNĄ"
   },
   "train-stats": {
@@ -440,10 +443,15 @@
     "timetable-abandoned": "PORZUCONY",
     "timetable-online-button": "RJ ONLINE",
 
-    "stock-info": "SZCZEGÓŁY",
+    "entry-details": "SZCZEGÓŁY",
+    "no-entry-details": "BRAK DOSTĘPNYCH SZCZEGÓŁÓW",
+
     "stock-length": "Długość",
     "stock-mass": "Masa",
     "stock-max-speed": "Prędkość maks.",
+
+    "stock-dangers": "DODATKOWE UWAGI",
+    "stock-preview": "PODGLĄD SKŁADU",
 
     "load-data": "Pobierz dalszą historię...",
 
