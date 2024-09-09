@@ -85,6 +85,7 @@
       <div v-if="timetable.stockString || stockHistory.length != 0">
         <div class="g-separator"></div>
         <b>{{ $t('journal.stock-preview') }}:</b>
+
         <div class="stock-history" v-if="stockHistory.length > 1">
           <button
             v-for="(sh, i) in stockHistory"
@@ -97,7 +98,7 @@
           </button>
         </div>
 
-        <div v-if="timetable.stockString">
+        <div v-if="timetable.stockString" style="margin-top: 1em">
           <StockList
             :trainStockList="
               (currentHistoryIndex == 0
@@ -233,22 +234,6 @@ hr {
   list-style: disc;
   padding-left: 1em;
   padding-top: 0.5em;
-}
-
-ul.stock-list {
-  display: flex;
-  align-items: flex-end;
-  overflow: auto;
-
-  padding-bottom: 0.5em;
-
-  li > div {
-    margin: 1em 0;
-
-    text-align: center;
-    color: #aaa;
-    font-size: 0.9em;
-  }
 }
 
 @include smallScreen() {

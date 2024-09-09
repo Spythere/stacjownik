@@ -1,48 +1,44 @@
 <template>
-  <transition name="status-anim" mode="out-in">
-    <div :key="dataStatus">
-      <div class="journal_warning" v-if="store.isOffline">
-        {{ $t('app.offline') }}
-      </div>
+  <div class="journal_warning" v-if="store.isOffline">
+    {{ $t('app.offline') }}
+  </div>
 
-      <Loading v-else-if="dataStatus == Status.Data.Loading" />
+  <Loading v-else-if="dataStatus == Status.Data.Loading" />
 
-      <div v-else-if="dataStatus == Status.Data.Error" class="journal_warning error">
-        {{ $t('app.error') }}
-      </div>
+  <div v-else-if="dataStatus == Status.Data.Error" class="journal_warning error">
+    {{ $t('app.error') }}
+  </div>
 
-      <div class="journal_warning" v-else-if="dispatcherHistory.length == 0">
-        {{ $t('app.no-result') }}
-      </div>
+  <div class="journal_warning" v-else-if="dispatcherHistory.length == 0">
+    {{ $t('app.no-result') }}
+  </div>
 
-      <ul v-else class="journal-list">
-        <transition-group name="list-anim">
-          <JournalDispatcherEntry
-            v-for="entry in dispatcherHistory"
-            :key="entry.id"
-            :entry="entry"
-            :onToggleShowExtraInfo="toggleExtraInfo"
-            :showExtraInfo="extraInfoIndexes.includes(entry.id)"
-          />
-        </transition-group>
+  <div v-else>
+    <transition-group name="list-anim" class="journal-list" tag="ul">
+      <JournalDispatcherEntry
+        v-for="entry in dispatcherHistory"
+        :key="entry.id"
+        :entry="entry"
+        :onToggleShowExtraInfo="toggleExtraInfo"
+        :showExtraInfo="extraInfoIndexes.includes(entry.id)"
+      />
+    </transition-group>
 
-        <AddDataButton
-          :list="dispatcherHistory"
-          :scrollDataLoaded="scrollDataLoaded"
-          :scrollNoMoreData="scrollNoMoreData"
-          @addHistoryData="addHistoryData"
-        />
-      </ul>
+    <AddDataButton
+      :list="dispatcherHistory"
+      :scrollDataLoaded="scrollDataLoaded"
+      :scrollNoMoreData="scrollNoMoreData"
+      @addHistoryData="addHistoryData"
+    />
+  </div>
 
-      <div class="journal_warning" v-if="scrollNoMoreData">
-        {{ $t('journal.no-further-data') }}
-      </div>
+  <div class="journal_warning" v-if="scrollNoMoreData">
+    {{ $t('journal.no-further-data') }}
+  </div>
 
-      <div class="journal_warning" v-else-if="!scrollDataLoaded">
-        {{ $t('journal.loading-further-data') }}
-      </div>
-    </div>
-  </transition>
+  <div class="journal_warning" v-else-if="!scrollDataLoaded">
+    {{ $t('journal.loading-further-data') }}
+  </div>
 </template>
 
 <script lang="ts">

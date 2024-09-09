@@ -37,7 +37,7 @@ function onImageLoad() {
     imgStatus.value = 'loaded';
   }
 
-  imgRef.value!.style.opacity = '1';
+  if (imgRef.value) imgRef.value.style.opacity = '1';
 }
 </script>
 

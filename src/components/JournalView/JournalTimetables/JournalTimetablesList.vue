@@ -1,41 +1,37 @@
 <template>
   <div>
-    <transition name="status-anim" mode="out-in">
-      <div :key="dataStatus">
-        <div class="journal_warning" v-if="store.isOffline">
-          {{ $t('app.offline') }}
-        </div>
+    <div class="journal_warning" v-if="store.isOffline">
+      {{ $t('app.offline') }}
+    </div>
 
-        <Loading v-else-if="dataStatus == Status.Data.Loading" />
+    <Loading v-else-if="dataStatus == Status.Data.Loading" />
 
-        <div v-else-if="dataStatus == Status.Data.Error" class="journal_warning error">
-          {{ $t('app.error') }}
-        </div>
+    <div v-else-if="dataStatus == Status.Data.Error" class="journal_warning error">
+      {{ $t('app.error') }}
+    </div>
 
-        <div v-else-if="timetableHistory.length == 0" class="journal_warning">
-          {{ $t('app.no-result') }}
-        </div>
+    <div v-else-if="timetableHistory.length == 0" class="journal_warning">
+      {{ $t('app.no-result') }}
+    </div>
 
-        <ul v-else class="journal-list">
-          <transition-group name="list-anim">
-            <JournalTimetableEntry
-              v-for="(timetableEntry, i) in timetableHistory"
-              :key="timetableEntry.id"
-              :timetableEntry="timetableEntry"
-              :onToggleShowExtraInfo="() => toggleExtraInfo(timetableEntry.id)"
-              :showExtraInfo="extraInfoIndexes.includes(timetableEntry.id)"
-            />
-          </transition-group>
+    <div v-else>
+      <transition-group name="list-anim" class="journal-list" tag="ul">
+        <JournalTimetableEntry
+          v-for="(timetableEntry, i) in timetableHistory"
+          :key="timetableEntry.id"
+          :timetableEntry="timetableEntry"
+          :onToggleShowExtraInfo="() => toggleExtraInfo(timetableEntry.id)"
+          :showExtraInfo="extraInfoIndexes.includes(timetableEntry.id)"
+        />
+      </transition-group>
 
-          <AddDataButton
-            :list="timetableHistory"
-            :scrollDataLoaded="scrollDataLoaded"
-            :scrollNoMoreData="scrollNoMoreData"
-            @addHistoryData="addHistoryData"
-          />
-        </ul>
-      </div>
-    </transition>
+      <AddDataButton
+        :list="timetableHistory"
+        :scrollDataLoaded="scrollDataLoaded"
+        :scrollNoMoreData="scrollNoMoreData"
+        @addHistoryData="addHistoryData"
+      />
+    </div>
 
     <div class="journal_warning" v-if="scrollNoMoreData">{{ $t('journal.no-further-data') }}</div>
 
@@ -91,10 +87,14 @@ export default defineComponent({
   },
 
   watch: {
-    timetableHistory: {
+    '$route.query': {
       deep: true,
       handler() {
         this.extraInfoIndexes.length = 0;
+
+        this.$nextTick(() => {
+          console.log(this.$el.querySelector('ul'));
+        });
       }
     }
   },

@@ -306,14 +306,6 @@ export default defineComponent({
         this.searchersValues[v as Journal.TimetableSearchKey] = options[v] ?? '';
       });
 
-      // this.searchersValues['search-date'] = options['search-date'] ?? '';
-      // this.searchersValues['search-driver'] = options['search-driver'] ?? '';
-      // this.searchersValues['search-train'] = options['search-train'] ?? '';
-      // this.searchersValues['search-dispatcher'] = options['search-dispatcher'] ?? '';
-      // this.searchersValues['search-issuedFrom'] = options['search-issuedFrom'] ?? '';
-      // this.searchersValues['search-via'] = options['search-via'] ?? '';
-      // this.searchersValues['search-terminatingAt'] = options['search-terminatingAt'] ?? '';
-
       this.sorterActive.id =
         (options['sorter-active'] as Journal.TimetableSorterKey) ?? 'timetableId';
 
