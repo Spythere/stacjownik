@@ -364,7 +364,10 @@
     "current-track": "na szlaku",
 
     "vmax-tooltip": "Maksymalna prędkość na podstawie pojazdów w składzie - nie bierze pod uwagę masy hamowania",
-    "we4a-tooltip": "Szlak niezelektryfikowany",
+    
+    "catenary-tooltip": "Szlak zelektryfikowany",
+    "no-catenary-tooltip": "Szlak niezelektryfikowany",
+    "sbl-tooltip": "Szlak posiadający\nsamoczynną blokadę liniową",
 
     "delayed": "Opóźniony: ",
     "preponed": "Przed czasem: ",

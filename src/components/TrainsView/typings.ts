@@ -1,3 +1,5 @@
+import { StationRoutesInfo } from "../../typings/common";
+
 export enum TrainFilterSection {
   TRAIN_TYPE = 'TRAIN_TYPE',
   TIMETABLE_TYPE = 'TIMETABLE_TYPE',
@@ -117,3 +119,40 @@ export const sorterOptions: TrainSorter[] = [
     value: 'długość'
   }
 ];
+
+export interface TrainScheduleStop {
+  nameHtml: string;
+  nameRaw: string;
+
+  status: 'confirmed' | 'unconfirmed' | 'stopped';
+  type: string;
+  position: 'begin' | 'end' | 'en-route';
+
+  arrivalScheduled: number;
+  arrivalReal: number;
+
+  departureScheduled: number;
+  departureReal: number;
+
+  departureDelay: number;
+  arrivalDelay: number;
+
+  duration: number | null;
+
+  isActive: boolean;
+  isLastConfirmed: boolean;
+  isSBL: boolean;
+
+  sceneryName: string | null;
+  distance: number;
+
+  arrivalLine: string | null;
+  departureLine: string | null;
+
+  arrivalLineInfo?: StationRoutesInfo;
+  departureLineInfo?: StationRoutesInfo;
+
+  isExternal: boolean;
+
+  comments: string | null;
+}
