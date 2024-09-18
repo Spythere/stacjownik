@@ -80,7 +80,6 @@ export default defineComponent({
       const x = this.vehicleData?.group.cargoTypes?.find(
         (c) => c.id == this.tooltipStore.content.split(':')[1]
       );
-      console.log(this.vehicleData, x);
 
       return x;
     }
