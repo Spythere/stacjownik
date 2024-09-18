@@ -1,12 +1,16 @@
 <template>
-  <div class="vehicle-thumbnail" :data-load-status="imgStatus">
+  <div class="vehicle-thumbnail" :data-load-status="imgStatus" ref="thumbRef">
+    <div class="stock-text">
+      <div>{{ vehicleName }}</div>
+      <small v-if="vehicleCargo">({{ vehicleCargo }})</small>
+    </div>
+
     <img
-      ref="imgRef"
       :src="`https://static.spythere.eu/thumbnails/v2/${imgName}.png`"
       height="60"
       loading="lazy"
       data-tooltip-type="VehiclePreviewTooltip"
-      :data-tooltip-content="vehicleName"
+      :data-tooltip-content="vehicleString"
       @error="onImageError"
       @load="onImageLoad"
     />
@@ -14,18 +18,20 @@
 </template>
 
 <script setup lang="ts">
-import { Ref, ref } from 'vue';
+import { computed, Ref, ref } from 'vue';
 
 const props = defineProps({
-  vehicleName: { type: String, required: true },
+  vehicleString: { type: String, required: true },
   imgName: { type: String, required: true },
   fallbackName: { type: String, required: true },
   placeholderName: String
 });
 
-const imgRef = ref(null) as Ref<HTMLElement | null>;
-
+const thumbRef = ref(null) as Ref<HTMLElement | null>;
 const imgStatus = ref('loading');
+
+const vehicleName = computed(() => props.vehicleString.split(':')[0].replace(/_/g, ' '));
+const vehicleCargo = computed(() => props.vehicleString.split(':')[1]);
 
 function onImageError(event: Event) {
   (event.target as HTMLImageElement).src = `/images/${props.fallbackName}.png`;
@@ -37,13 +43,15 @@ function onImageLoad() {
     imgStatus.value = 'loaded';
   }
 
-  if (imgRef.value) imgRef.value.style.opacity = '1';
+  if (thumbRef.value) thumbRef.value.style.opacity = '1';
 }
 </script>
 
 <style lang="scss" scoped>
 .vehicle-thumbnail {
   position: relative;
+  opacity: 0;
+  transition: opacity 100ms ease-in-out;
 
   &[data-load-status='loading'] {
     min-height: 60px;
@@ -51,8 +59,11 @@ function onImageLoad() {
   }
 }
 
-img {
-  opacity: 0;
-  transition: opacity 100ms ease-in-out;
+.stock-text {
+  text-align: center;
+  color: #aaa;
+  font-size: 0.9em;
+  margin-bottom: 0.25em;
+  padding: 0.25em 0;
 }
 </style>
