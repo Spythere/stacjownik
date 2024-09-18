@@ -1,21 +1,11 @@
 <template>
   <div class="stock-list">
     <ul>
-      <li
-        v-for="(
-          { vehicleName, vehicleCargo, images, imagesFallbacks, vehicleString }, i
-        ) in thumbnailNames"
-        :key="i"
-      >
-        <div class="stock-text">
-          <div>{{ vehicleName.replace(/_/g, ' ') }}</div>
-          <small v-if="vehicleCargo">({{ vehicleCargo }})</small>
-        </div>
-
+      <li v-for="({ images, imagesFallbacks, vehicleString }, i) in thumbnailNames" :key="i">
         <span>
           <VehicleThumbnail
             v-for="(thumbnailImage, imageIndex) in images"
-            :vehicle-name="vehicleString"
+            :vehicle-string="vehicleString"
             :img-name="thumbnailImage"
             :fallback-name="imagesFallbacks[imageIndex]"
           />
@@ -59,13 +49,12 @@ export default defineComponent({
       return (this.tractionOnly ? this.trainStockList.slice(0, 1) : this.trainStockList)
         .filter((v) => v.length != 0)
         .map((vehicleString) => {
-          const [vehicleName, vehicleCargo] = vehicleString.split(':');
+          const [vehicleName] = vehicleString.split(':');
 
           const vehicleThumbnailData = {
             images: [] as string[],
             imagesFallbacks: [] as string[],
             vehicleName,
-            vehicleCargo,
             vehicleString
           };
 
@@ -186,13 +175,5 @@ ul > li > span {
   display: flex;
   align-items: flex-end;
   cursor: crosshair;
-}
-
-.stock-text {
-  text-align: center;
-  color: #aaa;
-  font-size: 0.9em;
-  margin-bottom: 0.25em;
-  padding: 0.25em 0;
 }
 </style>

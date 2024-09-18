@@ -55,12 +55,28 @@
                   <span>{{ stop.departureLine }}</span>
                   <span v-if="stop.departureLineInfo">
                     | {{ stop.departureLineInfo.routeSpeed }}
-                    <span v-if="stop.departureLineInfo.isElectric">⚡</span>
+
                     <img
-                      v-else
-                      src="/images/icon-we4a.png"
-                      :title="$t('trains.we4a-tooltip')"
+                      :src="
+                        stop.departureLineInfo.isElectric
+                          ? '/images/icon-catenary.svg'
+                          : '/images/icon-we4a.png'
+                      "
                       width="10"
+                      data-tooltip-type="BaseTooltip"
+                      :data-tooltip-content="
+                        $t(
+                          `trains.${!stop.departureLineInfo.isElectric ? 'no-' : ''}catenary-tooltip`
+                        )
+                      "
+                    />
+
+                    <img
+                      v-if="stop.departureLineInfo.isRouteSBL"
+                      src="/images/icon-sbl-transparent.svg"
+                      width="10"
+                      data-tooltip-type="BaseTooltip"
+                      :data-tooltip-content="$t('trains.sbl-tooltip')"
                     />
                   </span>
                 </div>
@@ -71,7 +87,7 @@
                 >
                   <span>{{ scheduleStops[i + 1].sceneryName }}</span>
                   <span v-if="stop.departureLineInfo?.routeTracks == 1"> &UpDownArrow;</span>
-                  <span v-else> &UpArrowDownArrow;</span>
+                  <span v-else> &DownArrowUpArrow;</span>
                 </div>
 
                 <div class="scenery-route">
@@ -79,12 +95,28 @@
 
                   <span v-if="scheduleStops[i + 1].arrivalLineInfo">
                     | {{ scheduleStops[i + 1].arrivalLineInfo!.routeSpeed }}
-                    <span v-if="scheduleStops[i + 1].arrivalLineInfo!.isElectric">⚡</span>
+
                     <img
-                      v-else
-                      src="/images/icon-we4a.png"
-                      :title="$t('trains.we4a-tooltip')"
+                      :src="
+                        scheduleStops[i + 1].arrivalLineInfo!.isElectric
+                          ? '/images/icon-catenary.svg'
+                          : '/images/icon-we4a.png'
+                      "
+                      data-tooltip-type="BaseTooltip"
+                      :data-tooltip-content="
+                        $t(
+                          `trains.${!scheduleStops[i + 1].arrivalLineInfo!.isElectric ? 'no-' : ''}catenary-tooltip`
+                        )
+                      "
                       width="10"
+                    />
+
+                    <img
+                      v-if="scheduleStops[i + 1].arrivalLineInfo!.isRouteSBL"
+                      src="/images/icon-sbl-transparent.svg"
+                      width="10"
+                      data-tooltip-type="BaseTooltip"
+                      :data-tooltip-content="$t('trains.sbl-tooltip')"
                     />
                   </span>
                 </div>
@@ -105,43 +137,7 @@ import StockList from '../Global/StockList.vue';
 import { useMainStore } from '../../store/mainStore';
 import { useApiStore } from '../../store/apiStore';
 import { StationRoutesInfo, Train } from '../../typings/common';
-
-export interface TrainScheduleStop {
-  nameHtml: string;
-  nameRaw: string;
-
-  status: 'confirmed' | 'unconfirmed' | 'stopped';
-  type: string;
-  position: 'begin' | 'end' | 'en-route';
-
-  arrivalScheduled: number;
-  arrivalReal: number;
-
-  departureScheduled: number;
-  departureReal: number;
-
-  departureDelay: number;
-  arrivalDelay: number;
-
-  duration: number | null;
-
-  isActive: boolean;
-  isLastConfirmed: boolean;
-  isSBL: boolean;
-
-  sceneryName: string | null;
-  distance: number;
-
-  arrivalLine: string | null;
-  departureLine: string | null;
-
-  arrivalLineInfo?: StationRoutesInfo;
-  departureLineInfo?: StationRoutesInfo;
-
-  isExternal: boolean;
-
-  comments: string | null;
-}
+import { TrainScheduleStop } from './typings';
 
 export default defineComponent({
   components: { StopLabel, StockList },
@@ -534,6 +530,7 @@ $blinkAnim: 0.5s ease-in-out alternate infinite blink;
 
   img {
     width: 1em;
+    cursor: help;
   }
 }
 

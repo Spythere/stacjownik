@@ -377,7 +377,10 @@
     "current-track": "on track",
 
     "vmax-tooltip": "Maximum train speed based on rolling stock vehicles - braked weight is not included",
-    "we4a-tooltip": "Non-electrified track",
+   
+    "catenary-tooltip": "Electrified route",
+    "no-catenary-tooltip": "Non-electrified route",
+    "sbl-tooltip": "Route with SBL\n(automatic block signalling)",
 
     "delayed": "Delayed: ",
     "preponed": "Ahead of schedule: ",

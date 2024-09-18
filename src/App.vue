@@ -81,6 +81,7 @@ export default defineComponent({
 
   async mounted() {
     window.addEventListener('mousemove', (e: MouseEvent) => this.tooltipStore.handle(e));
+    window.addEventListener('mousedown', () => this.tooltipStore.hide());
   },
 
   methods: {

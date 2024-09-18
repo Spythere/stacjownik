@@ -70,7 +70,7 @@
 <script lang="ts">
 import { PropType, defineComponent } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
-import { TrainScheduleStop } from './TrainSchedule.vue';
+import { TrainScheduleStop } from './typings';
 
 export default defineComponent({
   mixins: [dateMixin],

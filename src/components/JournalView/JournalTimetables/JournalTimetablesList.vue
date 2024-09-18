@@ -91,10 +91,6 @@ export default defineComponent({
       deep: true,
       handler() {
         this.extraInfoIndexes.length = 0;
-
-        this.$nextTick(() => {
-          console.log(this.$el.querySelector('ul'));
-        });
       }
     }
   },
