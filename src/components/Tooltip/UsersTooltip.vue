@@ -32,12 +32,11 @@ export default defineComponent({
 
 <style scoped>
 .tooltip-content {
-  width: 300px;
+  width: 200px;
 
   padding: 0.25em 0.5em;
   border-radius: 0.25em;
 
-  width: 100%;
   background-color: #1b1b1b;
   box-shadow: 0 0 5px 2px #aaa;
 }
