@@ -1,15 +1,13 @@
 <template>
-  <div class="stock-list">
-    <ul>
-      <li v-for="({ images, imagesFallbacks, vehicleString }, i) in thumbnailNames" :key="i">
-        <span>
-          <VehicleThumbnail
-            v-for="(thumbnailImage, imageIndex) in images"
-            :vehicle-string="vehicleString"
-            :img-name="thumbnailImage"
-            :fallback-name="imagesFallbacks[imageIndex]"
-          />
-        </span>
+  <div class="list-wrapper">
+    <ul class="stock-list">
+      <li v-for="({ images, imagesFallbacks, vehicleString }, i) in thumbnailNames">
+        <VehicleThumbnail
+          :key="i"
+          :vehicle-string="vehicleString"
+          :images="images"
+          :image-fallbacks="imagesFallbacks"
+        />
       </li>
     </ul>
   </div>
@@ -148,32 +146,21 @@ export default defineComponent({
           return vehicleThumbnailData;
         });
     }
-  },
-
-  methods: {
-    onImageError(event: Event, fallbackImage: string) {
-      (event.target as HTMLImageElement).src = `/images/${fallbackImage}.png`;
-    }
   }
 });
 </script>
 
 <style lang="scss" scoped>
-.stock-list {
+
+.list-wrapper {
   display: flex;
   justify-content: center;
 }
 
-.stock-list ul {
+.stock-list {
   display: flex;
   align-items: flex-end;
   overflow: auto;
   margin: 0 auto;
-}
-
-ul > li > span {
-  display: flex;
-  align-items: flex-end;
-  cursor: crosshair;
 }
 </style>
