@@ -33,6 +33,7 @@ node_modules
 
 # Env
 .env
+.env.*
 
 .fake
 .ionide
