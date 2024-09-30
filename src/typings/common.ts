@@ -84,10 +84,12 @@ export interface TrainTimetableData {
   followingStops: TrainStop[];
   TWR: boolean;
   SKR: boolean;
+  hasDangerousCargo: boolean;
+  hasExtraDeliveries: boolean;
+  warningNotes: string | null;
   routeDistance: number;
   sceneries: string[];
   timetablePath: TimetablePathElement[];
-  warningNotes: string | null;
 }
 
 export interface Station {

@@ -7,19 +7,36 @@
         class="train-badge twr"
         v-if="timetable.twr"
         data-tooltip-type="BaseTooltip"
-        :data-tooltip-content="
-          $t('general.TWR') + `${timetable.warningNotes ? ':\n' + timetable.warningNotes : ''}`
-        "
+        :data-tooltip-content="$t('warnings.TWR')"
       >
         TWR
       </span>
+
       <span
         class="train-badge skr"
         v-if="timetable.skr"
         data-tooltip-type="BaseTooltip"
-        :data-tooltip-content="$t('general.SKR')"
+        :data-tooltip-content="$t('warnings.SKR')"
       >
         SKR
+      </span>
+
+      <span
+        class="train-badge tn"
+        v-if="timetable.hasDangerousCargo"
+        data-tooltip-type="BaseTooltip"
+        :data-tooltip-content="$t('warnings.TN')"
+      >
+        TN
+      </span>
+
+      <span
+        class="train-badge pn"
+        v-if="timetable.hasExtraDeliveries"
+        data-tooltip-type="BaseTooltip"
+        :data-tooltip-content="$t('warnings.PN')"
+      >
+        PN
       </span>
 
       <span>

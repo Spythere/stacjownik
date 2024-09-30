@@ -20,11 +20,16 @@
     "dispatcher-message": "Dispatcher supporting the Stacjownik project!",
     "driver-message": "Driver supporting the Stacjownik project!"
   },
+  "warnings": {
+    "TWR": "Train with high risk cargo",
+    "SKR": "Train with exceeded gauge",
+    "PN": "Train with extra deliveries", 
+    "TN": "Train with dangerous cargo",
+    "header-title": "Freight notes:"
+  },
   "general": {
     "and": " and ",
-    "refresh": "REFRESH",
-    "TWR": "High risk freight train",
-    "SKR": "Train with exceeded gauge"
+    "refresh": "REFRESH"
   },
   "update": {
     "title": "Stacjownik update!",

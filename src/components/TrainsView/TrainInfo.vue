@@ -12,18 +12,27 @@
             class="train-badge twr"
             v-if="train.timetableData?.TWR"
             data-tooltip-type="BaseTooltip"
-            :data-tooltip-content="$t('general.TWR') + `:\n${train.timetableData.warningNotes}`"
+            :data-tooltip-content="$t('warnings.TWR')"
           >
             TWR
           </span>
 
           <span
-            class="train-badge skr"
-            v-if="train.timetableData?.SKR"
+            class="train-badge tn"
+            v-if="train.timetableData?.hasDangerousCargo"
             data-tooltip-type="BaseTooltip"
-            :data-tooltip-content="$t('general.SKR')"
+            :data-tooltip-content="$t('warnings.TN')"
           >
-            SKR
+            TN
+          </span>
+
+          <span
+            class="train-badge pn"
+            v-if="train.timetableData?.hasExtraDeliveries"
+            data-tooltip-type="BaseTooltip"
+            :data-tooltip-content="$t('warnings.PN')"
+          >
+            PN
           </span>
 
           <b
@@ -34,7 +43,9 @@
           >
             {{ train.timetableData.category }}
           </b>
+
           <b class="train-number">{{ train.trainNo }}</b>
+
           <span>&bull;</span>
 
           <div class="train-driver">
@@ -142,15 +153,30 @@
 
       <div
         class="train-dangers"
-        v-if="extended && (train.timetableData?.TWR || train.timetableData?.SKR)"
+        v-if="extended && train.timetableData && train.timetableData.warningNotes"
       >
-        <div v-if="train.timetableData.TWR">
-          <b style="color: var(--clr-twr)">TWR</b> - {{ $t('general.TWR') }}
-          <i>({{ train.timetableData?.warningNotes }})</i>
+        <div class="dangers-badges">
+          <div v-if="train.timetableData?.TWR">
+            <div class="train-badge twr">TWR</div>
+            - {{ $t('warnings.TWR') }}
+          </div>
+
+          <div v-if="train.timetableData?.hasDangerousCargo">
+            <div class="train-badge tn">TN</div>
+            - {{ $t('warnings.TN') }}
+          </div>
+
+          <div v-if="train.timetableData?.hasExtraDeliveries">
+            <div class="train-badge pn">PN</div>
+            - {{ $t('warnings.PN') }}
+          </div>
         </div>
 
-        <div v-if="train.timetableData.SKR">
-          <b style="color: var(--clr-skr)">SKR</b> - {{ $t('general.SKR') }}
+        <div class="dangers-notes">
+          <h4>{{ $t('warnings.header-title') }}</h4>
+          <p>
+            <i>{{ train.timetableData?.warningNotes }}</i>
+          </p>
         </div>
       </div>
     </section>
@@ -252,6 +278,24 @@ export default defineComponent({
 
 .train-dangers {
   margin-top: 0.5em;
+}
+
+.dangers-badges {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+.dangers-notes {
+  margin-top: 0.5em;
+  white-space: pre-wrap;
+
+  p {
+    margin-top: 0.25em;
+    max-height: 200px;
+    max-width: 500px;
+    overflow: auto;
+  }
 }
 
 .train-info {

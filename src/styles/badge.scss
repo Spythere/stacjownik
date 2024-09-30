@@ -79,23 +79,33 @@
 }
 
 .train-badge {
-  display: flex;
-  align-items: center;
+  display: inline-block;
   gap: 0.3em;
 
   padding: 0.1em 0.3em;
   border-radius: 0.2em;
   font-weight: bold;
+  user-select: none;
 
   &.twr {
     background-color: var(--clr-twr);
     box-shadow: 0 0 5px 1px var(--clr-twr);
-    color: black;
   }
 
   &.skr {
     background-color: var(--clr-skr);
     box-shadow: 0 0 5px 1px var(--clr-skr);
+  }
+
+  &.tn {
+    background-color: var(--clr-tn);
+    box-shadow: 0 0 5px 1px var(--clr-tn);
+  }
+
+  &.pn {
+    background-color: var(--clr-pn);
+    box-shadow: 0 0 5px 1px var(--clr-pn);
+    color: black;
   }
 
   &.offline {
