@@ -263,6 +263,7 @@ export namespace API {
       checkpointArrivalsScheduled: string[];
       checkpointDeparturesScheduled: string[];
       checkpointStopTypes: string[];
+      checkpointComments: string[];
       visitedSceneries: string[];
       sceneryNames: string[];
       path: string;

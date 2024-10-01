@@ -94,12 +94,13 @@ import { API } from '../../../typings/api';
 
 interface ITimetableStopDetails {
   stopName: string;
+  stopComments: string | null;
+  stopTime: number;
+  stopType: string;
   arrivalTimestamp: number;
   scheduledArrivalTimestamp: number;
   departureTimestamp: number;
   scheduledDepartureTimestamp: number;
-  stopTime: number;
-  stopType: string;
   isConfirmed: boolean;
 }
 
@@ -164,15 +165,17 @@ export default defineComponent({
 
         const stopTime = Number(timetable.checkpointStopTypes.at(i)?.split(',')[0]) || 0;
         const stopType = timetable.checkpointStopTypes.at(i)?.split(',').slice(1).join(',') || 'pt';
+        const stopComments = timetable.checkpointComments.at(i) ?? null;
 
         acc.push({
           stopName,
+          stopTime,
+          stopType,
+          stopComments,
           arrivalTimestamp: this.dateStringToTimestamp(arrivalDate),
           scheduledArrivalTimestamp: this.dateStringToTimestamp(scheduledArrivalDate),
           departureTimestamp: this.dateStringToTimestamp(departureDate),
           scheduledDepartureTimestamp: this.dateStringToTimestamp(scheduledDepartureDate),
-          stopTime,
-          stopType,
           isConfirmed: i < timetable.confirmedStopsCount
         });
 
