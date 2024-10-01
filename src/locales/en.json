@@ -193,7 +193,7 @@
     "sort-beginDate": "date",
     "sort-timetableId": "timetable ID",
     "sort-timestampFrom": "date",
-    "sort-duration": "duration",
+    "sort-currentDuration": "duration",
 
     "filter-noComments": "NO COMMENTS",
     "filter-withComments": "COMMENTS",

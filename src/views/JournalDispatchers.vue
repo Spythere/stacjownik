@@ -7,8 +7,8 @@
         <JournalOptions
           @on-search-confirm="fetchHistoryData"
           @on-options-reset="resetOptions"
-          @on-refresh-data="fetchHistoryData(true)"
-          :sorter-option-ids="['timestampFrom', 'duration']"
+          @on-refresh-data="fetchHistoryData"
+          :sorter-option-ids="['timestampFrom', 'currentDuration']"
           :data-status="dataStatus"
           :current-options-active="currentOptionsActive"
           optionsType="dispatchers"
@@ -59,6 +59,28 @@ const statsButtons: Journal.StatsButton[] = [
   }
 ];
 
+interface DispatchersQueryParams {
+  dispatcherName?: string;
+  stationName?: string;
+  stationHash?: string;
+  timestampFrom?: number;
+  timestampTo?: number;
+  countFrom?: number;
+  countLimit?: number;
+  sortBy?: Journal.DispatcherSorter['id'];
+}
+
+const defaultQueryParams: DispatchersQueryParams = {
+  countLimit: 30,
+  sortBy: 'timestampFrom',
+  countFrom: undefined,
+  dispatcherName: undefined,
+  stationHash: undefined,
+  stationName: undefined,
+  timestampFrom: undefined,
+  timestampTo: undefined
+};
+
 export default defineComponent({
   components: {
     JournalOptions,
@@ -83,9 +105,8 @@ export default defineComponent({
   data: () => ({
     statsButtons,
 
-    currentQuery: '',
-    currentQueryArray: [] as string[],
     dataRefreshedAt: null as Date | null,
+    currentQueryParams: {} as DispatchersQueryParams,
 
     scrollDataLoaded: true,
     scrollNoMoreData: false,
@@ -109,9 +130,6 @@ export default defineComponent({
       'search-date': ''
     } as Journal.DispatcherSearchType);
 
-    const countFromIndex = ref(0);
-    const countLimit = 15;
-
     provide('sorterActive', sorterActive);
     provide('journalFilterActive', journalFilterActive);
     provide('searchersValues', searchersValues);
@@ -126,19 +144,17 @@ export default defineComponent({
       sorterActive,
       searchersValues,
 
-      countFromIndex,
-      countLimit,
-
-      scrollElement,
-      maxCount: ref(15)
+      scrollElement
     };
   },
 
   watch: {
-    currentQueryArray(q: string[]) {
-      this.currentOptionsActive =
-        q.length > 2 ||
-        q.some((qv) => qv.startsWith('sortBy=') && qv.split('=')[1] != 'timestampFrom');
+    currentQueryParams(queryParams: DispatchersQueryParams) {
+      this.currentOptionsActive = Object.keys(queryParams).some(
+        (k) =>
+          queryParams[k as keyof DispatchersQueryParams] !=
+          defaultQueryParams[k as keyof DispatchersQueryParams]
+      );
     },
 
     'mainStore.dispatcherStatsData'(stats) {
@@ -234,13 +250,10 @@ export default defineComponent({
 
     async addHistoryData() {
       this.scrollDataLoaded = false;
-
-      this.countFromIndex = this.historyList.length;
+      this.currentQueryParams['countFrom'] = this.historyList.length;
 
       const responseData: API.DispatcherHistory.Response = await (
-        await this.apiStore.client!.get(
-          `api/getDispatchers?${this.currentQuery}&countFrom=${this.countFromIndex}`
-        )
+        await this.apiStore.client!.get(`api/getDispatchers`, { params: this.currentQueryParams })
       ).data;
 
       if (!responseData) return;
@@ -254,43 +267,38 @@ export default defineComponent({
       this.scrollDataLoaded = true;
     },
 
-    async fetchHistoryData(reset = false) {
-      const queries: string[] = [];
+    async fetchHistoryData() {
+      const queryParams: DispatchersQueryParams = {};
 
-      const dispatcher = this.searchersValues['search-dispatcher'].trim();
-      const station = this.searchersValues['search-station'].trim();
-      const dateString = this.searchersValues['search-date'].trim();
+      const dispatcherName = this.searchersValues['search-dispatcher'].trim() || undefined;
+      const stationName = this.searchersValues['search-station'].trim() || undefined;
+      const dateString = this.searchersValues['search-date'].trim() || undefined;
 
       const timestampFrom = dateString
         ? Date.parse(new Date(dateString).toISOString()) - 120 * 60 * 1000
         : undefined;
+
       const timestampTo = timestampFrom ? timestampFrom + 86400000 : undefined;
 
-      if (dispatcher) queries.push(`dispatcherName=${dispatcher}`);
-      
-      if (station.startsWith("#")) queries.push(`stationHash=${station.slice(1)}`);
-      else if (station.length > 0) queries.push(`stationName=${station}`);
+      queryParams['dispatcherName'] = dispatcherName;
+      queryParams['timestampFrom'] = timestampFrom;
+      queryParams['timestampTo'] = timestampTo;
+      queryParams['countLimit'] = 30;
 
-      if (timestampFrom && timestampTo)
-        queries.push(`timestampFrom=${timestampFrom}`, `timestampTo=${timestampTo}`);
+      if (stationName && stationName.startsWith('#'))
+        queryParams['stationHash'] = stationName.slice(1);
+      else queryParams['stationName'] = stationName;
 
-      // API: const SORT_TYPES = ['allStopsCount', 'endDate', 'beginDate', 'routeDistance'];
-      if (this.sorterActive.id == 'timestampFrom') queries.push('sortBy=timestampFrom');
-      else if (this.sorterActive.id == 'duration') queries.push('sortBy=currentDuration');
-      else queries.push('sortBy=timestampFrom');
+      queryParams['sortBy'] = this.sorterActive.id;
 
-      queries.push('countLimit=30');
+      if (JSON.stringify(this.currentQueryParams) != JSON.stringify(queryParams))
+        this.dataStatus = Status.Data.Loading;
 
-      if (this.currentQuery != queries.join('&')) this.dataStatus = Status.Data.Loading;
-
-      this.currentQuery = queries.join('&');
-      this.currentQueryArray = queries;
+      this.currentQueryParams = queryParams;
 
       try {
-        if (reset) this.dataStatus = Status.Data.Loading;
-
         const responseData: API.DispatcherHistory.Response = await (
-          await this.apiStore.client!.get(`api/getDispatchers?${this.currentQuery}`)
+          await this.apiStore.client!.get(`api/getDispatchers`, { params: this.currentQueryParams })
         ).data;
 
         if (!responseData) {

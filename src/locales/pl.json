@@ -182,7 +182,7 @@
     "sort-beginDate": "data",
     "sort-timetableId": "ID rozkładu",
     "sort-timestampFrom": "data",
-    "sort-duration": "czas dyżuru",
+    "sort-currentDuration": "czas dyżuru",
     "sort-id": "id rozkładu",
 
     "sort-mass": "masa",

@@ -94,6 +94,7 @@ export default defineComponent({
       }
     }
   },
+  
   methods: {
     toggleExtraInfo(id: number) {
       const existingIdx = this.extraInfoIndexes.indexOf(id);

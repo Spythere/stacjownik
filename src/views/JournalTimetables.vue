@@ -124,8 +124,6 @@ interface TimetablesQueryParams {
   timetableId?: string;
 
   authorName?: string;
-  // timestampFrom?: number;
-  // timestampTo?: number;
 
   dateFrom?: string;
   dateTo?: string;
@@ -335,7 +333,7 @@ export default defineComponent({
 
       const responseData: API.TimetableHistory.Response = await (
         await this.apiStore.client!.get('api/getTimetables', {
-          params: { ...this.currentQueryParams }
+          params: this.currentQueryParams
         })
       ).data;
 
