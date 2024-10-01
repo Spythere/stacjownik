@@ -45,8 +45,11 @@ function filterTrainList(
         case TrainFilterId.twr:
           return !train.timetableData?.TWR;
 
-        case TrainFilterId.skr:
-          return !train.timetableData?.SKR;
+        case TrainFilterId.pn:
+          return !train.timetableData?.hasExtraDeliveries;
+
+        case TrainFilterId.tn:
+          return !train.timetableData?.hasDangerousCargo;
 
         case TrainFilterId.common:
           return train.timetableData?.SKR || train.timetableData?.TWR;

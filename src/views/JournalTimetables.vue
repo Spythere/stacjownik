@@ -105,7 +105,13 @@ export const journalTimetableFilters: Journal.TimetableFilter[] = [
     default: false
   },
   {
-    id: Journal.TimetableFilterId.TWR_SKR,
+    id: Journal.TimetableFilterId.TN,
+    filterSection: Journal.FilterSection.SPECIAL,
+    isActive: false,
+    default: false
+  },
+  {
+    id: Journal.TimetableFilterId.PN,
     filterSection: Journal.FilterSection.SPECIAL,
     isActive: false,
     default: false
@@ -136,6 +142,8 @@ interface TimetablesQueryParams {
 
   twr?: number;
   skr?: number;
+  pn?: number;
+  tn?: number;
 
   sortBy?: Journal.TimetableSorter['id'];
 }
@@ -391,21 +399,24 @@ export default defineComponent({
             case Journal.TimetableFilterId.ALL_SPECIALS:
               queryParams['twr'] = undefined;
               queryParams['skr'] = undefined;
+              queryParams['pn'] = undefined;
+              queryParams['tn'] = undefined;
               break;
 
             case Journal.TimetableFilterId.TWR:
               queryParams['twr'] = 1;
-              queryParams['skr'] = 0;
               break;
 
             case Journal.TimetableFilterId.SKR:
-              queryParams['twr'] = 0;
               queryParams['skr'] = 1;
               break;
 
-            case Journal.TimetableFilterId.TWR_SKR:
-              queryParams['twr'] = 1;
-              queryParams['skr'] = 1;
+            case Journal.TimetableFilterId.TN:
+              queryParams['tn'] = 1;
+              break;
+
+            case Journal.TimetableFilterId.PN:
+              queryParams['pn'] = 1;
               break;
 
             default:

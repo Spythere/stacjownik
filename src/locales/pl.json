@@ -195,8 +195,10 @@
 
     "filter-withComments": "UWAGI EKSPLOATACYJNE",
     "filter-noComments": "BEZ UWAG",
-    "filter-twr": "WYS. RYZYKA",
-    "filter-skr": "SKRAJNIA",
+    "filter-twr": "TWR",
+    "filter-skr": "SKR",
+    "filter-tn": "TN",
+    "filter-pn": "PN",
     "filter-twr-skr": "TWR/SKR",
     "filter-all-statuses": "WSZYSTKIE",
     "filter-common": "ZWYKŁE",

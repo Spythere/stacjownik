@@ -39,6 +39,8 @@ export namespace Journal {
     ALL_SPECIALS = 'all-specials',
     TWR = 'twr',
     SKR = 'skr',
+    PN = 'pn',
+    TN = 'tn',
     TWR_SKR = 'twr-skr'
   }
 
