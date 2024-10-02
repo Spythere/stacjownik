@@ -20,11 +20,16 @@
     "dispatcher-message": "Dispatcher supporting the Stacjownik project!",
     "driver-message": "Driver supporting the Stacjownik project!"
   },
+  "warnings": {
+    "TWR": "Train with high risk cargo",
+    "SKR": "Train with exceeded gauge",
+    "PN": "Train with extra deliveries", 
+    "TN": "Train with dangerous cargo",
+    "header-title": "Freight notes:"
+  },
   "general": {
     "and": " and ",
-    "refresh": "REFRESH",
-    "TWR": "High risk freight train",
-    "SKR": "Train with exceeded gauge"
+    "refresh": "REFRESH"
   },
   "update": {
     "title": "Stacjownik update!",
@@ -188,15 +193,17 @@
     "sort-beginDate": "date",
     "sort-timetableId": "timetable ID",
     "sort-timestampFrom": "date",
-    "sort-duration": "duration",
+    "sort-currentDuration": "duration",
 
     "filter-noComments": "NO COMMENTS",
     "filter-withComments": "COMMENTS",
-    "filter-twr": "HIGH RISK CARGO",
-    "filter-skr": "EXCEEDED GAUGE",
+    "filter-twr": "TWR",
+    "filter-skr": "SKR",
+    "filter-tn": "TN",
+    "filter-pn": "PN",
     "filter-twr-skr": "BOTH TYPES",
     "filter-all-specials": "ALL",
-    "filter-common": "NO WARNINGS",
+    "filter-common": "COMMON",
     "filter-passenger": "PASSENGER",
     "filter-freight": "FREIGHT",
     "filter-other": "OTHER",

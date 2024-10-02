@@ -19,7 +19,7 @@ export namespace Journal {
   };
 
   export type TimetableSorterKey = 'timetableId' | 'beginDate' | 'distance' | 'total-stops';
-  export type DispatcherSorterKey = 'timestampFrom' | 'duration';
+  export type DispatcherSorterKey = 'timestampFrom' | 'currentDuration';
 
   export interface DispatcherSorter {
     id: DispatcherSorterKey;
@@ -39,6 +39,8 @@ export namespace Journal {
     ALL_SPECIALS = 'all-specials',
     TWR = 'twr',
     SKR = 'skr',
+    PN = 'pn',
+    TN = 'tn',
     TWR_SKR = 'twr-skr'
   }
 

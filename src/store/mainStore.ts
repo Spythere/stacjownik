@@ -87,14 +87,16 @@ export const useMainStore = defineStore('mainStore', {
             timetableData: timetable
               ? {
                   timetableId: timetable.timetableId,
-                  SKR: timetable.SKR,
-                  TWR: timetable.TWR,
                   route: timetable.route,
                   category: timetable.category,
                   followingStops: timetable.stopList,
                   routeDistance: timetable.stopList[timetable.stopList.length - 1].stopDistance,
                   sceneries: timetable.sceneries,
+                  TWR: timetable.TWR,
+                  SKR: timetable.SKR,
                   warningNotes: timetable.warningNotes,
+                  hasDangerousCargo: timetable.hasDangerousCargo,
+                  hasExtraDeliveries: timetable.hasExtraDeliveries,
 
                   timetablePath: timetable.path.split(';').map((pathElementString) => {
                     const [arrival, station, departure] = pathElementString.split(',');

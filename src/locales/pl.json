@@ -20,11 +20,16 @@
     "dispatcher-message": "Dyżurny wspierający projekt Stacjownika!",
     "driver-message": "Maszynista wspierający projekt Stacjownika!"
   },
+  "warnings": {
+    "TWR": "Pociąg z towarami niebezpiecznie wysokiego ryzyka",
+    "SKR": "Pociąg z przekroczoną skrajnią",
+    "PN": "Pociąg z przesyłkami nadzwyczajnymi",
+    "TN": "Pociąg z towarami niebezpiecznymi",
+    "header-title": "Uwagi przewozowe:"
+  },
   "general": {
     "and": " oraz ",
-    "refresh": "ODŚWIEŻ",
-    "TWR": "Towar niebezpieczny wysokiego ryzyka",
-    "SKR": "Przekroczona skrajnia"
+    "refresh": "ODŚWIEŻ"
   },
   "update": {
     "title": "Aktualizacja Stacjownika!",
@@ -177,7 +182,7 @@
     "sort-beginDate": "data",
     "sort-timetableId": "ID rozkładu",
     "sort-timestampFrom": "data",
-    "sort-duration": "czas dyżuru",
+    "sort-currentDuration": "czas dyżuru",
     "sort-id": "id rozkładu",
 
     "sort-mass": "masa",
@@ -190,8 +195,10 @@
 
     "filter-withComments": "UWAGI EKSPLOATACYJNE",
     "filter-noComments": "BEZ UWAG",
-    "filter-twr": "WYS. RYZYKA",
-    "filter-skr": "SKRAJNIA",
+    "filter-twr": "TWR",
+    "filter-skr": "SKR",
+    "filter-tn": "TN",
+    "filter-pn": "PN",
     "filter-twr-skr": "TWR/SKR",
     "filter-all-statuses": "WSZYSTKIE",
     "filter-common": "ZWYKŁE",
@@ -364,7 +371,7 @@
     "current-track": "na szlaku",
 
     "vmax-tooltip": "Maksymalna prędkość na podstawie pojazdów w składzie - nie bierze pod uwagę masy hamowania",
-    
+
     "catenary-tooltip": "Szlak zelektryfikowany",
     "no-catenary-tooltip": "Szlak niezelektryfikowany",
     "sbl-tooltip": "Szlak posiadający\nsamoczynną blokadę liniową",

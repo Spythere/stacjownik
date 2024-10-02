@@ -33,6 +33,10 @@ node_modules
 
 # Env
 .env
+.env.*
 
 .fake
 .ionide
+
+# api-mock
+/api-mock/endpoints/

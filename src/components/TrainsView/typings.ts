@@ -12,12 +12,14 @@ export const enum TrainFilterId {
   withComments = 'withComments',
 
   twr = 'twr',
-  skr = 'skr',
+  tn = 'tn',
+  pn = 'pn',
   common = 'common',
 
   passenger = 'passenger',
   freight = 'freight',
   other = 'other',
+
   noTimetable = 'noTimetable',
   withTimetable = 'withTimetable'
 }
@@ -40,7 +42,12 @@ export const trainFilters: TrainFilter[] = [
     isActive: true
   },
   {
-    id: TrainFilterId.skr,
+    id: TrainFilterId.tn,
+    section: TrainFilterSection.TRAIN_TYPE,
+    isActive: true
+  },
+  {
+    id: TrainFilterId.pn,
     section: TrainFilterSection.TRAIN_TYPE,
     isActive: true
   },

@@ -201,10 +201,11 @@ export namespace API {
 
       TWR: boolean;
       SKR: boolean;
-      sceneries: string[];
-
-      path: string;
+      hasDangerousCargo: boolean;
+      hasExtraDeliveries: boolean;
       warningNotes: string | null;
+      sceneries: string[];
+      path: string;
     }
   }
 
@@ -262,10 +263,13 @@ export namespace API {
       checkpointArrivalsScheduled: string[];
       checkpointDeparturesScheduled: string[];
       checkpointStopTypes: string[];
+      checkpointComments: string[];
       visitedSceneries: string[];
       sceneryNames: string[];
       path: string;
       warningNotes: string | null;
+      hasDangerousCargo: boolean;
+      hasExtraDeliveries: boolean;
     }
 
     export type Response = Data[];
