@@ -59,11 +59,7 @@ export const useApiStore = defineStore('apiStore', {
       if (t >= this.nextDataCheckTime) {
         this.fetchDonatorsData();
         this.fetchVehiclesInfo();
-
-        // Revalidation after staling
-        this.fetchStationsGeneralInfo().then(() => {
-          this.fetchStationsGeneralInfo();
-        });
+        this.fetchStationsGeneralInfo();
 
         this.nextDataCheckTime = t + 3600000;
       }
