@@ -12,7 +12,6 @@
       @error="onImageError"
       width="300"
       height="176"
-      class="rounded-md w-full h-auto"
       :src="`https://stacjownik.spythere.eu/static/images/${vehicleName}--300px.jpg`"
     />
 
