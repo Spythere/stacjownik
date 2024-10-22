@@ -6,6 +6,7 @@
     />
 
     <Tooltip />
+    
     <AppHeader :current-lang="currentLang" @change-lang="changeLang" />
 
     <main class="app_main">
@@ -16,21 +17,12 @@
       </router-view>
     </main>
 
-    <footer class="app_footer">
-      &copy;
-      <a href="https://td2.info.pl/profile/?u=20777" target="_blank">Spythere</a>
-      {{ new Date().getUTCFullYear() }} |
-      <button class="btn--text" @click="() => (isUpdateCardOpen = true)">
-        v{{ VERSION }}{{ isOnProductionHost ? '' : 'dev' }}
-      </button>
-
-      <br />
-      <a href="https://discord.gg/x2mpNN3svk">
-        <img src="/images/icon-discord.png" alt="" />&nbsp;<b>{{ $t('footer.discord') }}</b>
-      </a>
-
-      <div style="display: none">&int; ukryta taktyczna całka do programowania w HTMLu</div>
-    </footer>
+    <AppFooter
+      :version="VERSION"
+      :is-on-production-host="isOnProductionHost"
+      :is-update-card-open="isUpdateCardOpen"
+      @open-update-card="() => (isUpdateCardOpen = true)"
+    />
   </div>
 </template>
 
@@ -38,7 +30,7 @@
 import { defineComponent } from 'vue';
 import axios from 'axios';
 
-import { version } from '.././package.json';
+import { version } from '../package.json';
 import { Status } from './typings/common';
 import { useMainStore } from './store/mainStore';
 import { useApiStore } from './store/apiStore';
@@ -51,6 +43,7 @@ import Tooltip from './components/Tooltip/Tooltip.vue';
 import UpdateCard from './components/App/UpdateCard.vue';
 
 import StorageManager from './managers/storageManager';
+import AppFooter from './components/App/AppFooter.vue';
 
 const STORAGE_VERSION_KEY = 'app_version';
 
@@ -59,6 +52,7 @@ export default defineComponent({
     Clock,
     StatusIndicator,
     AppHeader,
+    AppFooter,
     UpdateCard,
     Tooltip
   },

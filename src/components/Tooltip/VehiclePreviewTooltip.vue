@@ -1,22 +1,21 @@
 <template>
   <div class="tooltip-content">
-    <div v-if="imageState == 'loading'" class="loading-info">
-      {{ $t('vehicle-preview.loading') }}
+    <div class="image-box">
+      <div v-if="imageState == 'loading'" class="loading-info">
+        {{ $t('vehicle-preview.loading') }}
+      </div>
+
+      <div v-if="imageState == 'error'" class="loading-info">{{ $t('vehicle-preview.error') }}</div>
+
+      <img
+        v-if="tooltipStore.type"
+        @load="onImageLoad"
+        @error="onImageError"
+        width="300"
+        height="176"
+        :src="`https://stacjownik.spythere.eu/static/images/${vehicleName}--300px.jpg`"
+      />
     </div>
-
-    <div v-if="imageState == 'error'">{{ $t('vehicle-preview.error') }}</div>
-
-    <img
-      v-if="tooltipStore.type"
-      @load="onImageLoad"
-      @error="onImageError"
-      width="300"
-      height="176"
-      class="rounded-md w-full h-auto"
-      :src="`https://static.spythere.eu/images/${vehicleName}--300px.jpg`"
-    />
-
-    <div v-if="imageState == 'error'" class="error-placeholder"></div>
 
     <div class="vehicle-name">
       {{ vehicleName.replace(/_/g, ' ') }}
@@ -98,10 +97,17 @@ export default defineComponent({
   border-radius: 0.5em;
 }
 
+.image-box {
+  position: relative;
+  min-height: 150px;
+}
+
 .loading-info {
   position: absolute;
   left: 50%;
-  transform: translateX(-50%);
+  top: 50%;
+  font-size: 1.15em;
+  transform: translate(-50%, -50%);
 }
 
 img {
