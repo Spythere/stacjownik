@@ -13,7 +13,7 @@
       width="300"
       height="176"
       class="rounded-md w-full h-auto"
-      :src="`https://static.spythere.eu/images/${vehicleName}--300px.jpg`"
+      :src="`https://stacjownik.spythere.eu/static/images/${vehicleName}--300px.jpg`"
     />
 
     <div v-if="imageState == 'error'" class="error-placeholder"></div>

@@ -8,7 +8,7 @@
     <div class="stock-images">
       <img
         v-for="(thumbnailImage, imageIndex) in images"
-        :src="`https://static.spythere.eu/thumbnails/v2/${thumbnailImage}.png`"
+        :src="`https://stacjownik.spythere.eu/static/thumbnails/${thumbnailImage}.png`"
         height="60"
         loading="lazy"
         data-tooltip-type="VehiclePreviewTooltip"
