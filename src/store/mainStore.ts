@@ -216,16 +216,20 @@ export const useMainStore = defineStore('mainStore', {
         return acc;
       }, [] as ActiveScenery[]);
 
+
+      const referenceTimestamp = Date.now();
+
       const onlineActiveSceneries = apiStore.activeData?.activeSceneries.reduce((list, scenery) => {
         if (scenery.isOnline !== 1 && Date.now() - scenery.lastSeen > 1000 * 60 * 2) return list;
         if (scenery.dispatcherStatus == Status.ActiveDispatcher.UNKNOWN) return list;
 
         const dispatcherTimestamp =
           scenery.dispatcherStatus == Status.ActiveDispatcher.NO_LIMIT
-            ? Date.now() + 25500000
+            ? referenceTimestamp + 25500000
             : scenery.dispatcherStatus > 5
               ? scenery.dispatcherStatus
               : null;
+              
 
         list.push({
           name: scenery.stationName,
