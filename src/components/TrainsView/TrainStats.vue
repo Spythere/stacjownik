@@ -249,7 +249,6 @@ h3 {
 }
 
 @include smallScreen {
-  h1,
   .no-data {
     text-align: center;
   }

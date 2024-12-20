@@ -133,4 +133,10 @@ export default defineComponent({
   position: relative;
   margin-bottom: 0.5em;
 }
+
+@include smallScreen {
+  .trains_topbar {
+    justify-content: space-between;
+  }
+}
 </style>

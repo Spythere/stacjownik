@@ -17,12 +17,16 @@
             <span class="hidable">
               {{ $t('trains.driver-journal-link') }}
             </span>
+            
             <img src="/images/icon-train.svg" alt="train icon" />
           </router-link>
         </div>
 
         <div class="train-card">
-          <TrainInfo :train="chosenTrain" :extended="true" ref="trainInfo" />
+          <TrainInfo :train="chosenTrain" :extended="true" />
+          <div style="margin-top: 1em">
+            <StockList :trainStockList="chosenTrain.stockList" />
+          </div>
           <TrainSchedule :train="chosenTrain" />
         </div>
       </div>
@@ -69,6 +73,7 @@
 import { computed } from 'vue';
 import TrainInfo from '../components/TrainsView/TrainInfo.vue';
 import TrainSchedule from '../components/TrainsView/TrainSchedule.vue';
+import StockList from '../components/Global/StockList.vue';
 import Loading from '../components/Global/Loading.vue';
 import { useMainStore } from '../store/mainStore';
 import { useApiStore } from '../store/apiStore';
@@ -131,6 +136,7 @@ $viewBgCol: #1a1a1a;
 }
 
 .train-card {
+  padding: 1em;
   background-color: $viewBgCol;
   border-radius: 0 0 0.5em 0.5em;
 }

@@ -18,7 +18,12 @@
 
         <span class="header_brand">
           <router-link to="/">
-            <img src="/images/stacjownik-header-logo.svg" alt="Stacjownik" />
+            <img
+              v-if="isChristmas"
+              src="/images/stacjownik-header-logo-christmas.svg"
+              alt="Stacjownik logo (christmas)"
+            />
+            <img v-else src="/images/stacjownik-header-logo.svg" alt="Stacjownik logo" />
           </router-link>
         </span>
 
@@ -69,7 +74,10 @@ import Clock from './Clock.vue';
 import RegionDropdown from '../Global/RegionDropdown.vue';
 
 export default defineComponent({
+  components: { StatusIndicator, Clock, RegionDropdown },
+
   emits: ['changeLang'],
+
   props: {
     currentLang: {
       type: String,
@@ -98,9 +106,14 @@ export default defineComponent({
       return this.store.activeSceneryList.filter(
         (scenery) => scenery.region == this.store.region.id && scenery.dispatcherId != -1
       ).length;
+    },
+
+    isChristmas() {
+      const date = new Date();
+
+      return date.getUTCMonth() == 11 && date.getUTCDate() >= 24 && date.getUTCDate() <= 26;
     }
-  },
-  components: { StatusIndicator, Clock, RegionDropdown }
+  }
 });
 </script>
 <style lang="scss" scoped>

@@ -13,15 +13,7 @@
       </div>
 
       <transition-group name="list-anim" tag="ul">
-        <li
-          class="train-row"
-          v-for="train in trains"
-          :key="train.id"
-        >
-          <router-link class="a-block" :to="train.driverRouteLocation">
-            <TrainInfo :train="train" :extended="false" />
-          </router-link>
-        </li>
+        <TrainTableItem v-for="train in trains" :key="train.id" :train="train" />
       </transition-group>
     </div>
   </transition>
@@ -30,13 +22,15 @@
 <script lang="ts">
 import { defineComponent, inject, PropType, Ref } from 'vue';
 import { useMainStore } from '../../store/mainStore';
-import Loading from '../Global/Loading.vue';
-import TrainInfo from './TrainInfo.vue';
-import { Status, Train } from '../../typings/common';
 import { useApiStore } from '../../store/apiStore';
+import { Status, Train } from '../../typings/common';
+
+import Loading from '../Global/Loading.vue';
+import TrainTableItem from './TrainTableItem.vue';
+import TrainInfo from './TrainInfo.vue';
 
 export default defineComponent({
-  components: { Loading, TrainInfo },
+  components: { Loading, TrainInfo, TrainTableItem },
 
   props: {
     trains: {
@@ -99,9 +93,5 @@ export default defineComponent({
   background: #1a1a1a;
 }
 
-li.train-row {
-  background-color: var(--clr-secondary);
-  margin-bottom: 1em;
-  width: 100%;
-}
+
 </style>
