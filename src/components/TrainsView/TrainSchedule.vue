@@ -1,7 +1,5 @@
 <template>
-  <div class="train-schedule" @click="toggleShowState">
-    <StockList :trainStockList="train.stockList" />
-
+  <div class="train-schedule">
     <div class="schedule-wrapper" v-if="train.timetableData">
       <div class="stops">
         <div
@@ -252,12 +250,6 @@ export default defineComponent({
 
       return activeMinorStopList;
     }
-  },
-
-  methods: {
-    toggleShowState() {
-      this.$emit('click');
-    }
   }
 });
 </script>
@@ -279,10 +271,6 @@ $blinkAnim: 0.5s ease-in-out alternate infinite blink;
   to {
     border-color: $confirmedClr;
   }
-}
-
-.train-schedule {
-  padding: 1em;
 }
 
 .schedule-wrapper {

@@ -1,203 +1,183 @@
 <template>
   <div class="train-info" :data-extended="extended">
-    <section class="train-general">
-      <div class="general-top-bar">
-        <div class="top-bar-header">
-          <b class="warning-timeout" v-if="train.isTimeout" :title="$t('trains.timeout')">?</b>
-          <span class="timetable-id" v-if="train.timetableData">
-            #{{ train.timetableData.timetableId }}
-          </span>
+    <div class="general-top-bar">
+      <div class="top-bar-header">
+        <b class="warning-timeout" v-if="train.isTimeout" :title="$t('trains.timeout')">?</b>
+        <span class="timetable-id" v-if="train.timetableData">
+          #{{ train.timetableData.timetableId }}
+        </span>
 
-          <span
-            class="train-badge twr"
-            v-if="train.timetableData?.TWR"
-            data-tooltip-type="BaseTooltip"
-            :data-tooltip-content="$t('warnings.TWR')"
-          >
-            TWR
-          </span>
+        <span
+          class="train-badge twr"
+          v-if="train.timetableData?.TWR"
+          data-tooltip-type="BaseTooltip"
+          :data-tooltip-content="$t('warnings.TWR')"
+        >
+          TWR
+        </span>
 
-          <span
-            class="train-badge tn"
-            v-if="train.timetableData?.hasDangerousCargo"
-            data-tooltip-type="BaseTooltip"
-            :data-tooltip-content="$t('warnings.TN')"
-          >
-            TN
-          </span>
+        <span
+          class="train-badge tn"
+          v-if="train.timetableData?.hasDangerousCargo"
+          data-tooltip-type="BaseTooltip"
+          :data-tooltip-content="$t('warnings.TN')"
+        >
+          TN
+        </span>
 
-          <span
-            class="train-badge pn"
-            v-if="train.timetableData?.hasExtraDeliveries"
-            data-tooltip-type="BaseTooltip"
-            :data-tooltip-content="$t('warnings.PN')"
-          >
-            PN
-          </span>
+        <span
+          class="train-badge pn"
+          v-if="train.timetableData?.hasExtraDeliveries"
+          data-tooltip-type="BaseTooltip"
+          :data-tooltip-content="$t('warnings.PN')"
+        >
+          PN
+        </span>
 
+        <b
+          v-if="train.timetableData"
+          data-tooltip-type="BaseTooltip"
+          :data-tooltip-content="getCategoryExplanation(train.timetableData.category)"
+          class="text--primary tooltip-help"
+        >
+          {{ train.timetableData.category }}
+        </b>
+
+        <b class="train-number">{{ train.trainNo }}</b>
+
+        <span>&bull;</span>
+
+        <div class="train-driver">
           <b
-            v-if="train.timetableData"
-            data-tooltip-type="BaseTooltip"
-            :data-tooltip-content="getCategoryExplanation(train.timetableData.category)"
-            class="text--primary tooltip-help"
+            class="level-badge driver"
+            :style="calculateExpStyle(train.driverLevel, train.isSupporter)"
           >
-            {{ train.timetableData.category }}
+            {{ train.driverLevel < 2 ? 'L' : `${train.driverLevel}` }}
           </b>
 
-          <b class="train-number">{{ train.trainNo }}</b>
+          <b
+            v-if="apiStore.donatorsData.includes(train.driverName)"
+            data-tooltip-type="DonatorTooltip"
+            :data-tooltip-content="$t('donations.driver-message')"
+          >
+            {{ train.driverName }}
+            <img src="/images/icon-diamond.svg" alt="donator diamond icon" />
+          </b>
 
-          <span>&bull;</span>
-
-          <div class="train-driver">
-            <b
-              class="level-badge driver"
-              :style="calculateExpStyle(train.driverLevel, train.isSupporter)"
-            >
-              {{ train.driverLevel < 2 ? 'L' : `${train.driverLevel}` }}
-            </b>
-
-            <b
-              v-if="apiStore.donatorsData.includes(train.driverName)"
-              data-tooltip-type="DonatorTooltip"
-              :data-tooltip-content="$t('donations.driver-message')"
-            >
-              {{ train.driverName }}
-              <img src="/images/icon-diamond.svg" alt="donator diamond icon" />
-            </b>
-
-            <span v-else>{{ train.driverName }}</span>
-          </div>
+          <span v-else>{{ train.driverName }}</span>
         </div>
       </div>
+    </div>
 
-      <div class="general-timetable" v-if="train.timetableData">
-        <strong>{{ train.timetableData.route.replace('|', ' - ') }}</strong>
-        <span
-          v-if="getSceneriesWithComments(train.timetableData).length > 0"
-          data-tooltip-type="BaseTooltip"
-          :data-tooltip-content="`${$t('trains.timetable-comments')} (${getSceneriesWithComments(
-            train.timetableData
-          )})`"
-        >
-          <img class="image-warning" src="/images/icon-warning.svg" />
-        </span>
-      </div>
-
-      <hr style="margin: 0.25em 0" />
-
-      <div class="general-stops" v-if="train.timetableData">
-        <span v-if="train.timetableData.followingStops.length > 2">
-          {{ $t('trains.via-title') }}
-          <span v-html="getTrainStopsHtml(train.timetableData.followingStops)"></span>
-        </span>
-      </div>
-
-      <div class="general-status">
-        <div class="status-timetable-progress" v-if="train.timetableData">
-          <ProgressBar :progressPercent="confirmedPercentage(train.timetableData.followingStops)" />
-
-          <span class="progress-distance">
-            <span>{{ currentDistance(train.timetableData.followingStops) }} km</span>
-            <span>/</span>
-            <span class="text--primary">{{ train.timetableData.routeDistance }} km </span>
-            <span>|</span>
-            <span v-html="currentDelay(train.timetableData.followingStops)"></span>
-          </span>
-        </div>
-
-        <div class="status-badges">
-          <div v-if="!train.currentStationHash" class="train-badge offline">
-            <img src="/images/icon-offline.svg" alt="offline train icon" />
-            {{ $t('trains.scenery-offline') }}
-          </div>
-
-          <div v-if="!train.online" class="train-badge offline">
-            <img src="/images/icon-offline.svg" alt="offline train icon" />
-            Offline {{ lastSeenMessage(train.lastSeen) }}
-          </div>
-        </div>
-      </div>
-
-      <div class="general-stats" v-if="extended">
-        <div>
-          <img src="/images/icon-length.svg" alt="length icon" />
-          {{ train.length }}m
-        </div>
-
-        <div>
-          <img src="/images/icon-mass.svg" alt="mass icon" />
-          {{ (train.mass / 1000).toFixed(1) }}t
-        </div>
-
-        <div>
-          <img src="/images/icon-speed.svg" alt="speed icon" />
-          {{ train.speed }} km/h
-
-          <span v-if="stockSpeedLimit != Infinity">
-            &bull;
-            <em
-              class="text--grayed"
-              style="text-decoration: underline dotted"
-              tabindex="0"
-              :data-tooltip="$t('trains.vmax-tooltip')"
-            >
-              {{ stockSpeedLimit }} km/h
-            </em>
-          </span>
-        </div>
-      </div>
-
-      <div class="text--grayed" style="margin-top: 0.25em">
-        {{ displayTrainPosition(train) }}
-      </div>
-
-      <div
-        class="train-dangers"
-        v-if="extended && train.timetableData && train.timetableData.warningNotes"
+    <div class="general-timetable" v-if="train.timetableData">
+      <strong>{{ train.timetableData.route.replace('|', ' - ') }}</strong>
+      <span
+        v-if="getSceneriesWithComments(train.timetableData).length > 0"
+        data-tooltip-type="BaseTooltip"
+        :data-tooltip-content="`${$t('trains.timetable-comments')} (${getSceneriesWithComments(
+          train.timetableData
+        )})`"
       >
-        <div class="dangers-badges">
-          <div v-if="train.timetableData?.TWR">
-            <div class="train-badge twr">TWR</div>
-            - {{ $t('warnings.TWR') }}
-          </div>
+        <img class="image-warning" src="/images/icon-warning.svg" />
+      </span>
+    </div>
 
-          <div v-if="train.timetableData?.hasDangerousCargo">
-            <div class="train-badge tn">TN</div>
-            - {{ $t('warnings.TN') }}
-          </div>
+    <hr style="margin: 0.25em 0" />
 
-          <div v-if="train.timetableData?.hasExtraDeliveries">
-            <div class="train-badge pn">PN</div>
-            - {{ $t('warnings.PN') }}
-          </div>
+    <div class="general-stops" v-if="train.timetableData">
+      <span v-if="train.timetableData.followingStops.length > 2">
+        {{ $t('trains.via-title') }}
+        <span v-html="getTrainStopsHtml(train.timetableData.followingStops)"></span>
+      </span>
+    </div>
+
+    <div class="general-status">
+      <div class="status-timetable-progress" v-if="train.timetableData">
+        <ProgressBar :progressPercent="confirmedPercentage(train.timetableData.followingStops)" />
+
+        <span class="progress-distance">
+          <span>{{ currentDistance(train.timetableData.followingStops) }} km</span>
+          <span>/</span>
+          <span class="text--primary">{{ train.timetableData.routeDistance }} km </span>
+          <span>|</span>
+          <span v-html="currentDelay(train.timetableData.followingStops)"></span>
+        </span>
+      </div>
+
+      <div class="status-badges">
+        <div v-if="!train.currentStationHash" class="train-badge offline">
+          <img src="/images/icon-offline.svg" alt="offline train icon" />
+          {{ $t('trains.scenery-offline') }}
         </div>
 
-        <div class="dangers-notes">
-          <h4>{{ $t('warnings.header-title') }}</h4>
-          <p>
-            <i>{{ train.timetableData?.warningNotes }}</i>
-          </p>
+        <div v-if="!train.online" class="train-badge offline">
+          <img src="/images/icon-offline.svg" alt="offline train icon" />
+          Offline {{ lastSeenMessage(train.lastSeen) }}
         </div>
       </div>
-    </section>
+    </div>
 
-    <section class="train-stats" v-if="!extended">
-      <StockList :trainStockList="train.stockList" :tractionOnly="true" />
+    <div class="general-stats" v-if="extended">
+      <div>
+        <img src="/images/icon-length.svg" alt="length icon" />
+        {{ train.length }}m
+      </div>
 
       <div>
-        <span>{{ train.speed }}km/h</span>
+        <img src="/images/icon-mass.svg" alt="mass icon" />
+        {{ (train.mass / 1000).toFixed(1) }}t
+      </div>
 
-        <div>
-          <span> {{ train.length }}m</span>
+      <div>
+        <img src="/images/icon-speed.svg" alt="speed icon" />
+        {{ train.speed }} km/h
+
+        <span v-if="stockSpeedLimit != Infinity">
           &bull;
-          <span> {{ (train.mass / 1000).toFixed(1) }}t</span>
-          <span v-if="train.stockList.length > 1">
-            &bull;
-            {{ $t('trains.cars') }}: {{ train.stockList.length - 1 }}
-          </span>
+          <em
+            class="text--grayed"
+            style="text-decoration: underline dotted"
+            tabindex="0"
+            :data-tooltip="$t('trains.vmax-tooltip')"
+          >
+            {{ stockSpeedLimit }} km/h
+          </em>
+        </span>
+      </div>
+    </div>
+
+    <div class="text--grayed" style="margin-top: 0.25em">
+      {{ displayTrainPosition(train) }}
+    </div>
+
+    <div
+      class="train-dangers"
+      v-if="extended && train.timetableData && train.timetableData.warningNotes"
+    >
+      <div class="dangers-badges">
+        <div v-if="train.timetableData?.TWR">
+          <div class="train-badge twr">TWR</div>
+          - {{ $t('warnings.TWR') }}
+        </div>
+
+        <div v-if="train.timetableData?.hasDangerousCargo">
+          <div class="train-badge tn">TN</div>
+          - {{ $t('warnings.TN') }}
+        </div>
+
+        <div v-if="train.timetableData?.hasExtraDeliveries">
+          <div class="train-badge pn">PN</div>
+          - {{ $t('warnings.PN') }}
         </div>
       </div>
-    </section>
+
+      <div class="dangers-notes">
+        <h4>{{ $t('warnings.header-title') }}</h4>
+        <p>
+          <i>{{ train.timetableData?.warningNotes }}</i>
+        </p>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -256,24 +236,12 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/responsive.scss';
 @import '../../styles/badge.scss';
 
 .image-warning {
   height: 1em;
   margin-left: 0.5em;
   vertical-align: middle;
-}
-
-.train-stats {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  flex-direction: column;
-  text-align: center;
-
-  line-height: 1.5em;
 }
 
 .train-dangers {
@@ -299,15 +267,9 @@ export default defineComponent({
 }
 
 .train-info {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  grid-template-rows: 1fr;
-
-  &[data-extended='true'] {
-    grid-template-columns: 1fr;
-  }
-
-  padding: 1em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
 
   background-color: #1a1a1a;
   gap: 0.5em;
@@ -335,12 +297,6 @@ export default defineComponent({
   text-align: center;
 
   padding: 0 0.25em;
-}
-
-.train-general {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25em;
 }
 
 .general-stops {
@@ -418,12 +374,5 @@ export default defineComponent({
 .timetable-warnings {
   display: flex;
   gap: 0.25em;
-}
-
-@include smallScreen() {
-  .train-info {
-    grid-template-columns: 1fr;
-    gap: 1em 0;
-  }
 }
 </style>
