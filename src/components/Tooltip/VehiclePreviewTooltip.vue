@@ -1,11 +1,7 @@
 <template>
   <div class="tooltip-content">
     <div class="image-box">
-      <div v-if="imageState == 'loading'" class="loading-info">
-        {{ $t('vehicle-preview.loading') }}
-      </div>
-
-      <div v-if="imageState == 'error'" class="loading-info">{{ $t('vehicle-preview.error') }}</div>
+      <Loading v-if="imageState == 'loading'" class="loading-info" />
 
       <img
         v-if="tooltipStore.type"
@@ -34,8 +30,11 @@
 import { defineComponent } from 'vue';
 import { useTooltipStore } from '../../store/tooltipStore';
 import { useApiStore } from '../../store/apiStore';
+import Loading from '../Global/Loading.vue';
 
 export default defineComponent({
+  components: { Loading },
+
   data() {
     return {
       tooltipStore: useTooltipStore(),
@@ -60,9 +59,12 @@ export default defineComponent({
     },
 
     onImageError(e: Event) {
+      if (!e.target || !(e.target instanceof HTMLImageElement) || this.imageState == 'error')
+        return;
+
       this.imageState = 'error';
 
-      (e.target as HTMLElement).style.display = 'none';
+      e.target.src = '/images/no-vehicle-image.png';
     }
   },
 
@@ -99,14 +101,13 @@ export default defineComponent({
 
 .image-box {
   position: relative;
-  min-height: 150px;
+  min-height: 170px;
 }
 
 .loading-info {
   position: absolute;
   left: 50%;
-  top: 50%;
-  font-size: 1.15em;
+  top: 35%;
   transform: translate(-50%, -50%);
 }
 
