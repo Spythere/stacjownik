@@ -423,7 +423,11 @@
     "driver-not-found-desc-2": "You can browse timetable history in the",
     "driver-not-found-journal": "TIMETABLES JOURNAL",
     "driver-not-found-others": "Player {driver} is online as:",
-    "driver-not-found-return": "GO BACK TO THE MAIN SITE"
+    "driver-not-found-return": "GO BACK TO THE MAIN SITE",
+
+    "stock-copy": "COPY THE STOCK",
+    "stock-clipboard-success": "Successfully copied the railway stock in a text form to your clipboard!",
+    "stock-clipboard-failure": "Oops! Something happened and the railway stock couldn't be copied to your clipboard! :/"
   },
   "train-stats": {
     "stats-button": "STATISTICS",
@@ -478,6 +482,9 @@
 
     "stock-dangers": "ADDITIONAL NOTES",
     "stock-preview": "STOCK PREVIEW",
+    "stock-copy": "COPY THE STOCK",
+   "stock-clipboard-success": "Successfully copied the railway stock in a text form to your clipboard:",
+    "stock-clipboard-failure": "Oops! Something happened and the railway stock couldn't be copied to your clipboard! :/",
 
     "load-data": "Load further data...",
 

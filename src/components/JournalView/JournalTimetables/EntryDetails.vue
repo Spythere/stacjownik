@@ -95,7 +95,11 @@
         <div class="g-separator"></div>
         <b>{{ $t('journal.stock-preview') }}:</b>
 
-        <div class="stock-history" v-if="stockHistory.length > 1">
+        <div class="stock-history">
+          <button class="btn btn--action" @click="copyStockToClipboard()">
+            <i class="fa-regular fa-copy"></i> {{ $t('journal.stock-copy') }}
+          </button>
+
           <button
             v-for="(sh, i) in stockHistory"
             :key="i"
@@ -128,6 +132,7 @@ import StockList from '../../Global/StockList.vue';
 import { API } from '../../../typings/api';
 import { RouteLocationRaw } from 'vue-router';
 import EntryStops from './EntryStops.vue';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   components: { StockList, EntryStops },
@@ -146,7 +151,8 @@ export default defineComponent({
   },
   data() {
     return {
-      currentHistoryIndex: 0
+      currentHistoryIndex: 0,
+      i18n: useI18n()
     };
   },
   computed: {
@@ -167,6 +173,7 @@ export default defineComponent({
           };
         });
     },
+
     driverRouteLocation(): RouteLocationRaw | null {
       if (this.timetable.terminated) return null;
       return {
@@ -185,6 +192,25 @@ export default defineComponent({
 
     toggleExtraInfo() {
       this.$emit('toggleExtraInfo', this.timetable.id);
+    },
+
+    copyStockToClipboard() {
+      const currentStockString =
+        this.stockHistory[this.currentHistoryIndex]?.stockString ?? this.timetable.stockString;
+
+      if (!currentStockString) {
+        alert(this.i18n.t('journal.stock-clipboard-failure'));
+        return;
+      }
+
+      navigator.clipboard
+        .writeText(currentStockString)
+        .then(() => {
+          prompt(this.i18n.t('journal.stock-clipboard-success'), currentStockString);
+        })
+        .catch(() => {
+          alert(this.i18n.t('journal.stock-clipboard-failure'));
+        });
     }
   }
 });
