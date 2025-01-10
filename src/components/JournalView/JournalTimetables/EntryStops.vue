@@ -221,6 +221,10 @@ export default defineComponent({
 .stop-name {
   font-weight: bold;
   color: #ccc;
+
+  i {
+    display: none;
+  }
 }
 
 .stop-date {

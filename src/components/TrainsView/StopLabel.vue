@@ -4,10 +4,10 @@
     :data-minor="stop.isSBL || (stop.nameRaw.endsWith(', po') && !stop.duration)"
   >
     <router-link v-if="/(, podg$|<strong>)/.test(stop.nameHtml)" :to="sceneryHref">
-      <span class="stop-name" v-html="stop.nameHtml"></span>
+      <b class="stop-name">{{ stop.nameRaw }}</b>
     </router-link>
 
-    <span v-else class="stop-name" v-html="stop.nameHtml"></span>
+    <span v-else class="stop-name">{{ stop.nameRaw }}</span>
 
     <span
       v-if="stop.position != 'begin'"
@@ -118,6 +118,10 @@ s {
     &.misc {
       background: gray;
     }
+
+    i {
+      display: none;
+    }
   }
 
   .date {
@@ -138,6 +142,10 @@ s {
       background: none;
       color: #aaa;
       padding: 0;
+    }
+
+    i {
+      display: none;
     }
   }
 
