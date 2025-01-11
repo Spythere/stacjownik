@@ -59,7 +59,7 @@
         </span>
       </div>
 
-      <div class="stock-dangers" v-if="timetable.twr || timetable.skr">
+      <div class="stock-dangers" v-if="timetable.warningNotes">
         <div class="g-separator"></div>
 
         <b>{{ $t('journal.stock-dangers') }}:</b>
