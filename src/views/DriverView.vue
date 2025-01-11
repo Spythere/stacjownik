@@ -17,16 +17,19 @@
             <span class="hidable">
               {{ $t('trains.driver-journal-link') }}
             </span>
-            
+
             <img src="/images/icon-train.svg" alt="train icon" />
           </router-link>
         </div>
 
         <div class="train-card">
           <TrainInfo :train="chosenTrain" :extended="true" />
-          <div style="margin-top: 1em">
-            <StockList :trainStockList="chosenTrain.stockList" />
-          </div>
+
+          <button class="btn btn--action" style="margin: 1em 0" @click="copyStockToClipboard()">
+            <i class="fa-regular fa-copy"></i> {{ $t('trains.stock-copy') }}
+          </button>
+
+          <StockList :trainStockList="chosenTrain.stockList" />
           <TrainSchedule :train="chosenTrain" />
         </div>
       </div>
@@ -79,6 +82,7 @@ import { useMainStore } from '../store/mainStore';
 import { useApiStore } from '../store/apiStore';
 import { Status } from '../typings/common';
 import { regions as regionsJSON } from '../data/options.json';
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
   trainId: {
@@ -93,6 +97,8 @@ const props = defineProps({
 const mainStore = useMainStore();
 const apiStore = useApiStore();
 
+const i18n = useI18n();
+
 const chosenTrain = computed(() =>
   mainStore.trainList.find((train) => train.id == props.trainId || train.modalId == props.modalId)
 );
@@ -104,6 +110,24 @@ const otherDriverTrains = computed(() => {
       (train.timetableData || train.online || train.lastSeen >= Date.now() - 60000)
   );
 });
+
+function copyStockToClipboard() {
+  const stockString = chosenTrain.value?.stockList.join(';');
+
+  if (!stockString) {
+    alert(i18n.t('trains.stock-clipboard-failure'));
+    return;
+  }
+
+  navigator.clipboard
+    .writeText(stockString)
+    .then(() => {
+      prompt(i18n.t('trains.stock-clipboard-success'), stockString);
+    })
+    .catch(() => {
+      alert(i18n.t('trains.stock-clipboard-failure'));
+    });
+}
 </script>
 
 <style lang="scss" scoped>

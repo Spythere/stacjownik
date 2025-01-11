@@ -106,12 +106,12 @@
 
       <div class="status-badges">
         <div v-if="!train.currentStationHash" class="train-badge offline">
-          <img src="/images/icon-offline.svg" alt="offline train icon" />
+          <i class="fa-solid fa-shop-slash"></i>
           {{ $t('trains.scenery-offline') }}
         </div>
 
         <div v-if="!train.online" class="train-badge offline">
-          <img src="/images/icon-offline.svg" alt="offline train icon" />
+          <i class="fa-solid fa-user-slash"></i>
           Offline {{ lastSeenMessage(train.lastSeen) }}
         </div>
       </div>

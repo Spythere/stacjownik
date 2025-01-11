@@ -409,7 +409,11 @@
     "driver-not-found-desc-2": "Historię rozkładów jazdy możesz przejrzeć w",
     "driver-not-found-journal": "DZIENNIKU RJ",
     "driver-not-found-others": "Gracz {driver} jest online jako:",
-    "driver-not-found-return": "WRÓĆ NA STRONĘ GŁÓWNĄ"
+    "driver-not-found-return": "WRÓĆ NA STRONĘ GŁÓWNĄ",
+
+    "stock-copy": "SKOPIUJ SKŁAD",
+    "stock-clipboard-success": "Pomyślnie skopiowano skład w postaci tekstowej do schowka!",
+    "stock-clipboard-failure": "Ups! Nie udało się skopiować składu do schowka! :/"
   },
   "train-stats": {
     "stats-button": "STATYSTYKI",
@@ -462,6 +466,9 @@
 
     "stock-dangers": "DODATKOWE UWAGI",
     "stock-preview": "PODGLĄD SKŁADU",
+    "stock-copy": "SKOPIUJ SKŁAD",
+    "stock-clipboard-success": "Pomyślnie skopiowano skład w postaci tekstowej do schowka:",
+    "stock-clipboard-failure": "Ups! Nie udało się skopiować składu do schowka! :/",
 
     "load-data": "Pobierz dalszą historię...",
 
