@@ -21,7 +21,7 @@
     "driver-message": "Maszynista wspierający projekt Stacjownika!"
   },
   "warnings": {
-    "TWR": "Pociąg z towarami niebezpiecznie wysokiego ryzyka",
+    "TWR": "Pociąg z towarami niebezpiecznymi wysokiego ryzyka",
     "SKR": "Pociąg z przekroczoną skrajnią",
     "PN": "Pociąg z przesyłkami nadzwyczajnymi",
     "TN": "Pociąg z towarami niebezpiecznymi",
