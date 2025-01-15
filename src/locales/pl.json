@@ -45,7 +45,9 @@
     "loading": "Pobieranie danych...",
     "error": "Wystąpił problem z załadowaniem danych!",
     "no-result": "Brak wyników o podanych kryteriach!",
-    "offline": "Aplikacja w trybie offline!"
+    "offline": "Aplikacja w trybie offline!",
+    "tooltip-driver-offline": "Maszynista offline",
+    "tooltip-scenery-offline": "Jazda offline przez scenerię"
   },
   "footer": {
     "discord": "Serwer Discord Stacjownika"

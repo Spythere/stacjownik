@@ -48,7 +48,9 @@
     "no-result": "No results for current search!",
     "migration-warning": "Stacjownik services will be unavailable 2/06/2022 between 1-3am (CEST time) due to the migration of API hostings!",
     "migration-confirm": "Roger that!",
-    "offline": "App is in the offline mode!"
+    "offline": "App is in the offline mode!",
+    "tooltip-driver-offline": "Driver is offline",
+    "tooltip-scenery-offline": "Offline ride through the scenery"
   },
   "footer": {
     "discord": "Stacjownik Discord server"
