@@ -21,7 +21,7 @@
     "driver-message": "Maszynista wspierający projekt Stacjownika!"
   },
   "warnings": {
-    "TWR": "Pociąg z towarami niebezpiecznie wysokiego ryzyka",
+    "TWR": "Pociąg z towarami niebezpiecznymi wysokiego ryzyka",
     "SKR": "Pociąg z przekroczoną skrajnią",
     "PN": "Pociąg z przesyłkami nadzwyczajnymi",
     "TN": "Pociąg z towarami niebezpiecznymi",
@@ -45,7 +45,9 @@
     "loading": "Pobieranie danych...",
     "error": "Wystąpił problem z załadowaniem danych!",
     "no-result": "Brak wyników o podanych kryteriach!",
-    "offline": "Aplikacja w trybie offline!"
+    "offline": "Aplikacja w trybie offline!",
+    "tooltip-driver-offline": "Maszynista offline",
+    "tooltip-scenery-offline": "Sceneria offline"
   },
   "footer": {
     "discord": "Serwer Discord Stacjownika"

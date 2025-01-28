@@ -43,7 +43,7 @@ export const useMainStore = defineStore('mainStore', {
       sceneriesTrains.clear();
 
       return (apiStore.activeData?.trains ?? [])
-        .filter((train) => train.timetable || train.online)
+        .filter((train) => train.timetable || train.lastSeen >= Date.now() - 60000)
         .map((train) => {
           const stock = train.stockString.split(';');
           const locoType = stock ? stock[0] : train.stockString;
@@ -112,13 +112,15 @@ export const useMainStore = defineStore('mainStore', {
               : undefined
           } as Train;
 
+          const stationNameKey = train.currentStationName.indexOf('.sc') != -1 ? train.currentStationName.split(' ').slice(0, -1).join(' ') : train.currentStationName;          
+
           // Sceneries trains map
-          if (sceneriesTrains.has(train.currentStationName)) {
-            sceneriesTrains.set(train.currentStationName, [
-              ...sceneriesTrains.get(train.currentStationName)!,
+          if (sceneriesTrains.has(stationNameKey)) {
+            sceneriesTrains.set(stationNameKey, [
+              ...sceneriesTrains.get(stationNameKey)!,
               trainObj
             ]);
-          } else sceneriesTrains.set(train.currentStationName, [trainObj]);
+          } else sceneriesTrains.set(stationNameKey, [trainObj]);
 
           // Checkpoints trains map
           if (trainObj.timetableData) {
@@ -216,7 +218,6 @@ export const useMainStore = defineStore('mainStore', {
         return acc;
       }, [] as ActiveScenery[]);
 
-
       const referenceTimestamp = Date.now();
 
       const onlineActiveSceneries = apiStore.activeData?.activeSceneries.reduce((list, scenery) => {
@@ -229,7 +230,6 @@ export const useMainStore = defineStore('mainStore', {
             : scenery.dispatcherStatus > 5
               ? scenery.dispatcherStatus
               : null;
-              
 
         list.push({
           name: scenery.stationName,

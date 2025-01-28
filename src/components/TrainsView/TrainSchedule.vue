@@ -134,7 +134,7 @@ import StopLabel from './StopLabel.vue';
 import StockList from '../Global/StockList.vue';
 import { useMainStore } from '../../store/mainStore';
 import { useApiStore } from '../../store/apiStore';
-import { StationRoutesInfo, Train } from '../../typings/common';
+import { Train } from '../../typings/common';
 import { TrainScheduleStop } from './typings';
 
 export default defineComponent({
@@ -172,6 +172,10 @@ export default defineComponent({
 
           const sceneryName = timetablePath[currentPathIndex].stationName;
           const sceneryInfo = this.apiStore.sceneryData.find((st) => st.name == sceneryName);
+
+          const isSceneryOnline =
+            (this.apiStore.activeData?.activeSceneries?.find((sc) => sc.stationName == sceneryName)
+              ?.isOnline ?? 0) == 1;
 
           const arrivalLineInfo = sceneryInfo?.routesInfo.find(
             (r) => r.routeName == stop.arrivalLine
@@ -214,8 +218,10 @@ export default defineComponent({
             isLastConfirmed: this.lastConfirmed === i && !stop.terminatesHere,
             isSBL: /sbl/gi.test(stop.stopName),
             position: stop.beginsHere ? 'begin' : stop.terminatesHere ? 'end' : 'en-route',
+            status: stop.confirmed ? 'confirmed' : stop.stopped ? 'stopped' : 'unconfirmed',
+
             sceneryName,
-            status: stop.confirmed ? 'confirmed' : stop.stopped ? 'stopped' : 'unconfirmed'
+            isSceneryOnline
           };
         }) ?? []
       );

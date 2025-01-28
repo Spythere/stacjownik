@@ -19,8 +19,25 @@
         :data-status="status"
       >
         <router-link :to="train.driverRouteLocation" class="a-block">
-          <span class="user_train">{{ train.trainNo }}</span>
-          <span class="user_name">{{ train.driverName }}</span>
+          <span class="user_train"> {{ train.trainNo }}</span>
+          <span class="user_name">
+            {{ train.driverName }}
+            <i
+              v-if="train.timetableData != undefined && train.lastSeen <= Date.now() - 120000"
+              class="fa-solid fa-user-slash"
+              style="color: lightcoral"
+              data-tooltip-type="BaseTooltip"
+              :data-tooltip-content="$t('app.tooltip-driver-offline')"
+            ></i>
+
+            <i
+              v-if="train.currentStationName.indexOf('.sc') != -1"
+              class="fa-solid fa-ban"
+              style="color: lightcoral"
+              data-tooltip-type="BaseTooltip"
+              :data-tooltip-content="$t('app.tooltip-scenery-offline')"
+            ></i>
+          </span>
         </router-link>
       </li>
     </transition-group>
@@ -66,8 +83,13 @@ export default defineComponent({
             this.station?.generalInfo?.checkpoints.includes(stop.stopNameRAW)
         );
 
+        const sceneryName =
+          train.currentStationName.indexOf('.sc') != -1
+            ? train.currentStationName.split(' ').slice(0, -1).join(' ')
+            : train.currentStationName;
+
         const status = stop
-          ? getTrainStopStatus(stop, train.currentStationName, this.onlineScenery!.name)
+          ? getTrainStopStatus(stop, sceneryName, this.onlineScenery!.name)
           : 'no-timetable';
 
         return {
