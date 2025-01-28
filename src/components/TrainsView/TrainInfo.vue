@@ -106,7 +106,7 @@
 
       <div class="status-badges">
         <div v-if="!train.currentStationHash" class="train-badge offline">
-          <i class="fa-solid fa-shop-slash"></i>
+          <i class="fa-solid fa-ban"></i>
           {{ $t('trains.scenery-offline') }}
         </div>
 

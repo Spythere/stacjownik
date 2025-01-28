@@ -4,7 +4,16 @@
     :data-minor="stop.isSBL || (stop.nameRaw.endsWith(', po') && !stop.duration)"
   >
     <router-link v-if="/(, podg$|<strong>)/.test(stop.nameHtml)" :to="sceneryHref">
-      <b class="stop-name">{{ stop.nameRaw }}</b>
+      <b class="stop-name"
+        ><i
+          v-if="!stop.isSceneryOnline"
+          class="fa-solid fa-ban"
+          data-tooltip-type="BaseTooltip"
+          :data-tooltip-content="$t('app.tooltip-scenery-offline')"
+          style="margin-right: 0.25rem; color: salmon"
+        ></i>
+        {{ stop.nameRaw }}
+      </b>
     </router-link>
 
     <span v-else class="stop-name">{{ stop.nameRaw }}</span>
@@ -117,10 +126,6 @@ s {
 
     &.misc {
       background: gray;
-    }
-
-    i {
-      display: none;
     }
   }
 

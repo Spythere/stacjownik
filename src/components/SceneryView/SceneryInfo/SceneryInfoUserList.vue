@@ -29,11 +29,11 @@
               data-tooltip-type="BaseTooltip"
               :data-tooltip-content="$t('app.tooltip-driver-offline')"
             ></i>
-            
+
             <i
               v-if="train.currentStationName.indexOf('.sc') != -1"
-              class="fa-solid fa-user-slash"
-              style="color: salmon"
+              class="fa-solid fa-ban"
+              style="color: lightcoral"
               data-tooltip-type="BaseTooltip"
               :data-tooltip-content="$t('app.tooltip-scenery-offline')"
             ></i>

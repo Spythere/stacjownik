@@ -47,7 +47,7 @@
     "no-result": "Brak wyników o podanych kryteriach!",
     "offline": "Aplikacja w trybie offline!",
     "tooltip-driver-offline": "Maszynista offline",
-    "tooltip-scenery-offline": "Jazda offline przez scenerię"
+    "tooltip-scenery-offline": "Sceneria offline"
   },
   "footer": {
     "discord": "Serwer Discord Stacjownika"

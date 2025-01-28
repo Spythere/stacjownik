@@ -50,7 +50,7 @@
     "migration-confirm": "Roger that!",
     "offline": "App is in the offline mode!",
     "tooltip-driver-offline": "Driver is offline",
-    "tooltip-scenery-offline": "Offline ride through the scenery"
+    "tooltip-scenery-offline": "Scenery is offline"
   },
   "footer": {
     "discord": "Stacjownik Discord server"

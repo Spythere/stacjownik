@@ -151,6 +151,8 @@ export interface TrainScheduleStop {
   isSBL: boolean;
 
   sceneryName: string | null;
+  isSceneryOnline: boolean;
+
   distance: number;
 
   arrivalLine: string | null;
