@@ -21,7 +21,7 @@
       >
     </span>
 
-    <span class="text--grayed" v-if="timetable.currentSceneryName">
+    <span class="entry-location" v-if="timetable.currentSceneryName">
       <b>
         {{ $t(`journal.${timetable.terminated ? 'last-seen-at' : 'currently-at'}`) }}
         {{ timetable.currentSceneryName.replace(/.[a-zA-Z0-9]+.sc/, '') }}
@@ -70,5 +70,10 @@ export default defineComponent({
   @include smallScreen() {
     justify-content: center;
   }
+}
+
+.entry-location {
+  text-align: center;
+  color: #ccc;
 }
 </style>
