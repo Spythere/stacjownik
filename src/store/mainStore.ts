@@ -112,7 +112,10 @@ export const useMainStore = defineStore('mainStore', {
               : undefined
           } as Train;
 
-          const stationNameKey = train.currentStationName.indexOf('.sc') != -1 ? train.currentStationName.split(' ').slice(0, -1).join(' ') : train.currentStationName;          
+          const stationNameKey =
+            train.currentStationName.indexOf('.sc') != -1
+              ? train.currentStationName.split(' ').slice(0, -1).join(' ')
+              : train.currentStationName;
 
           // Sceneries trains map
           if (sceneriesTrains.has(stationNameKey)) {
@@ -319,6 +322,8 @@ export const useMainStore = defineStore('mainStore', {
       return apiStore.sceneryData.map((scenery) => {
         const routes = scenery.routesInfo.reduce(
           (acc, route) => {
+            acc['all'].push(route);
+
             if (route.hidden) return acc;
 
             const tracksKey = route.routeTracks == 2 ? 'double' : 'single';
@@ -349,6 +354,7 @@ export const useMainStore = defineStore('mainStore', {
             doubleElectrifiedNames: [],
             doubleOtherNames: [],
             sblNames: [],
+            all: [],
             minRouteSpeed: 0,
             maxRouteSpeed: 0
           } as StationRoutes

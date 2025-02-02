@@ -4,15 +4,17 @@
     :data-minor="stop.isSBL || (stop.nameRaw.endsWith(', po') && !stop.duration)"
   >
     <router-link v-if="/(, podg$|<strong>)/.test(stop.nameHtml)" :to="sceneryHref">
-      <b class="stop-name"
-        ><i
-          v-if="!stop.isSceneryOnline"
-          class="fa-solid fa-ban"
+      <b class="stop-name">
+        <span>
+          {{ stop.nameRaw }}
+        </span>
+        <i
+          v-if="!stop.isSceneryOnline && stop.status != 'confirmed'"
+          class="fa-solid fa-ban fa-md"
           data-tooltip-type="BaseTooltip"
           :data-tooltip-content="$t('app.tooltip-scenery-offline')"
-          style="margin-right: 0.25rem; color: salmon"
+          style="color: salmon; margin-left: 0.25em"
         ></i>
-        {{ stop.nameRaw }}
       </b>
     </router-link>
 
@@ -54,7 +56,10 @@
     <span
       v-if="
         stop.position != 'end' &&
-        (stop.duration != 0 || stop.status == 'stopped' || stop.departureDelay != stop.arrivalDelay)
+        (stop.duration != 0 ||
+          stop.position == 'begin' ||
+          stop.status == 'stopped' ||
+          stop.departureDelay != stop.arrivalDelay)
       "
       class="date departure"
       :data-status-delayed="stop.departureDelay > 0"
@@ -77,16 +82,16 @@
 </template>
 
 <script lang="ts">
-import { PropType, defineComponent } from 'vue';
+import { PropType, defineComponent, stop } from 'vue';
 import dateMixin from '../../mixins/dateMixin';
-import { TrainScheduleStop } from './typings';
+import { TrainSchedulePoint } from './typings';
 
 export default defineComponent({
   mixins: [dateMixin],
 
   props: {
     stop: {
-      type: Object as PropType<TrainScheduleStop>,
+      type: Object as PropType<TrainSchedulePoint>,
       required: true
     }
   },
