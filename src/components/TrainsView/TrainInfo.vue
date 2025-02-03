@@ -140,9 +140,14 @@
             tabindex="0"
             :data-tooltip="$t('trains.vmax-tooltip')"
           >
+            vMax:
             {{ stockSpeedLimit }} km/h
           </em>
         </span>
+
+        <span v-if="train.timetableData?.trainMaxSpeed" 
+          >&bull; vRJ: {{ train.timetableData.trainMaxSpeed }} km/h</span
+        >
       </div>
     </div>
 

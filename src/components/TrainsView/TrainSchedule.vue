@@ -270,7 +270,7 @@ export default defineComponent({
           arrivalLine: stop.arrivalLine,
           departureLine: stop.departureLine,
 
-          arrivalLineInfo,
+          arrivalLineInfo: arrivalLineInfo,
           departureLineInfo,
 
           isExternal,

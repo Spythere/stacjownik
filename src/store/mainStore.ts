@@ -97,6 +97,7 @@ export const useMainStore = defineStore('mainStore', {
                   warningNotes: timetable.warningNotes,
                   hasDangerousCargo: timetable.hasDangerousCargo,
                   hasExtraDeliveries: timetable.hasExtraDeliveries,
+                  trainMaxSpeed: timetable.trainMaxSpeed,
 
                   timetablePath: timetable.path.split(';').map((pathElementString) => {
                     const [arrival, station, departure] = pathElementString.split(',');
