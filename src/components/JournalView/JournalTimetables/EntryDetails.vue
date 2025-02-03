@@ -29,11 +29,6 @@
           <span>{{ timetable.authorName }}</span>
         </span>
 
-        <span class="badge" v-if="timetable.maxSpeed">
-          <span>{{ $t('journal.stock-max-speed') }}</span>
-          <span>{{ timetable.maxSpeed }}km/h</span>
-        </span>
-
         <span class="badge" v-if="timetable.stockLength">
           <span>{{ $t('journal.stock-length') }}</span>
           <span>
@@ -56,6 +51,16 @@
               )
             }}t
           </span>
+        </span>
+
+        <span class="badge" v-if="timetable.maxSpeed">
+          <span>{{ $t('journal.stock-max-speed') }}</span>
+          <span>{{ timetable.maxSpeed }}km/h</span>
+        </span>
+
+        <span class="badge" v-if="timetable.trainMaxSpeed">
+          <span>{{ $t('journal.stock-timetable-speed') }}</span>
+          <span> {{ timetable.trainMaxSpeed }}km/h </span>
         </span>
       </div>
 

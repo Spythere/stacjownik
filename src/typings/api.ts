@@ -269,6 +269,7 @@ export namespace API {
       warningNotes: string | null;
       hasDangerousCargo: boolean;
       hasExtraDeliveries: boolean;
+      trainMaxSpeed?: number;
     }
 
     export type Response = Data[];
