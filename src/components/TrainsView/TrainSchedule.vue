@@ -12,6 +12,8 @@
           :data-delayed="stop.departureDelay > 0"
           :data-stop-type="stop.type"
           :data-is-active="stop.isActive"
+          :data-track-count-departure="stop.departureLineInfo?.routeTracks ?? 2"
+          :data-track-count-arrival="stop.arrivalLineInfo?.routeTracks ?? 2"
         >
           <span class="stop_info">
             <span class="distance">
@@ -55,15 +57,15 @@
                   <span>{{ stop.departureLine }}</span>
 
                   <span v-if="stop.departureLineInfo">
-                    <span v-if="stop.departureLineInfo.routeTracks == 1"> &UpDownArrow;</span>
-                    <span v-else> &DownArrowUpArrow;</span> {{ stop.departureLineInfo.routeSpeed }}
+                    <span> | {{ stop.departureLineInfo.routeSpeed }}</span>
+
                     <img
                       :src="
                         stop.departureLineInfo.isElectric
                           ? '/images/icon-catenary.svg'
                           : '/images/icon-we4a.png'
                       "
-                      width="10"
+                      width="14"
                       data-tooltip-type="BaseTooltip"
                       :data-tooltip-content="
                         $t(
@@ -75,7 +77,7 @@
                     <img
                       v-if="stop.departureLineInfo.isRouteSBL"
                       src="/images/icon-sbl-transparent.svg"
-                      width="10"
+                      width="14"
                       data-tooltip-type="BaseTooltip"
                       :data-tooltip-content="$t('trains.sbl-tooltip')"
                     />
@@ -87,8 +89,6 @@
                   class="scenery-change-name"
                 >
                   <span>{{ scheduleStopsV2[i + 1].sceneryName }}</span>
-                  <span v-if="stop.departureLineInfo?.routeTracks == 1"> &UpDownArrow;</span>
-                  <span v-else> &DownArrowUpArrow;</span>
                 </div>
 
                 <div
@@ -98,9 +98,7 @@
                   <span> {{ scheduleStopsV2[i + 1].arrivalLine }}</span>
 
                   <span v-if="scheduleStopsV2[i + 1].arrivalLineInfo">
-                    <span v-if="stop.arrivalLineInfo?.routeTracks == 1"> &UpDownArrow;</span>
-                    <span v-else> &DownArrowUpArrow;</span>
-                    {{ scheduleStopsV2[i + 1].arrivalLineInfo!.routeSpeed }}
+                    <span> | {{ scheduleStopsV2[i + 1].arrivalLineInfo!.routeSpeed }} </span>
 
                     <img
                       :src="
@@ -114,13 +112,13 @@
                           `trains.${!scheduleStopsV2[i + 1].arrivalLineInfo?.isElectric ? 'no-' : ''}catenary-tooltip`
                         )
                       "
-                      width="10"
+                      width="14"
                     />
 
                     <img
                       v-if="scheduleStopsV2[i + 1].arrivalLineInfo!.isRouteSBL"
                       src="/images/icon-sbl-transparent.svg"
-                      width="10"
+                      width="14"
                       data-tooltip-type="BaseTooltip"
                       :data-tooltip-content="$t('trains.sbl-tooltip')"
                     />
@@ -317,22 +315,12 @@ export default defineComponent({
 
             for (let i = stopRows.length - 1; i > 0; i--) {
               stopRows[i].departureLineInfo = pathData.departureLineData;
-              // stopRows[i].departureTracks = pathData.departureLineData.routeTracks;
-              // stopRows[i].departureSpeed = pathData.departureLineData.routeSpeed;
-              // stopRows[i].departureElectric = pathData.departureLineData.isElectric;
-              // stopRows[i].realLineNo = pathData.departureLineData.realLineNo ?? 0;
 
               if (/(^<strong>|, podg$)/.test(stopRows[i].nameHtml)) {
-                // stopRows[i].departureSpeed = pathData.departureLineData.routeSpeed;
-                // stopRows[i].departureTracks = pathData.departureLineData.routeTracks;
-                // stopRows[i].departureElectric = pathData.departureLineData.isElectric;
                 break;
               }
-              stopRows[i].arrivalLineInfo = pathData.departureLineData;
 
-              // stopRows[i].arrivalSpeed = pathData.departureLineData.routeSpeed;
-              // stopRows[i].arrivalTracks = pathData.departureLineData.routeTracks;
-              // stopRows[i].arrivalElectric = pathData.departureLineData.isElectric;
+              stopRows[i].arrivalLineInfo = pathData.departureLineData;
             }
           }
 
@@ -340,6 +328,8 @@ export default defineComponent({
           pathData = this.getPathSceneryData(currentPath);
         }
       }
+
+      console.log(stopRows);
 
       return stopRows;
     },
@@ -503,19 +493,22 @@ $blinkAnim: 0.5s ease-in-out alternate infinite blink;
   // Unused so far
   &[data-track-count-departure='2'] {
     .progress > .line {
-      width: 6px;
+      width: 8px;
+      border-width: 3px;
     }
   }
 
   &[data-track-count-arrival='2'] {
     .progress > .line_node-top {
-      width: 6px;
+      width: 8px;
+      border-width: 3px;
     }
   }
 
   &[data-track-count-arrival='1'] {
     .progress > .line_node-top {
-      width: 4px;
+      width: 2px;
+      border-width: 2px;
     }
   }
 
@@ -643,8 +636,7 @@ $blinkAnim: 0.5s ease-in-out alternate infinite blink;
     align-items: center;
   }
 
-  img {
-    width: 1em;
+  img[data-tooltip] {
     cursor: help;
   }
 }
