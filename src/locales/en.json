@@ -385,7 +385,7 @@
     "current-signal": "at signal",
     "current-track": "on track",
 
-    "vmax-tooltip": "Maximum train speed based on rolling stock vehicles - braked weight is not included",
+    "vmax-tooltip": "Maximum speed based on vehicles and acceptable train mass",
    
     "catenary-tooltip": "Electrified route",
     "no-catenary-tooltip": "Non-electrified route",

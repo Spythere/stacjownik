@@ -372,7 +372,7 @@
     "current-signal": "przy semaforze",
     "current-track": "na szlaku",
 
-    "vmax-tooltip": "Maksymalna prędkość na podstawie pojazdów w składzie - nie bierze pod uwagę masy hamowania",
+    "vmax-tooltip": "Maksymalna prędkość obliczona na podstawie pojazdów w składzie i masy dopuszczalnej",
 
     "catenary-tooltip": "Szlak zelektryfikowany",
     "no-catenary-tooltip": "Szlak niezelektryfikowany",

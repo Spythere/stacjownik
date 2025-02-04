@@ -184,14 +184,20 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import styleMixin from '../../mixins/styleMixin';
-import trainInfoMixin from '../../mixins/trainInfoMixin';
-import ProgressBar from '../Global/ProgressBar.vue';
 import { useMainStore } from '../../store/mainStore';
 import { useApiStore } from '../../store/apiStore';
-import StockList from '../Global/StockList.vue';
 import { Train } from '../../typings/common';
+import speedLimits from '../../data/speedLimits.json';
+import styleMixin from '../../mixins/styleMixin';
+import trainInfoMixin from '../../mixins/trainInfoMixin';
 import trainCategoryMixin from '../../mixins/trainCategoryMixin';
+import ProgressBar from '../Global/ProgressBar.vue';
+import StockList from '../Global/StockList.vue';
+
+export type SpeedLimitLocoType = keyof typeof speedLimits;
+
+const isCompatibleLoco = (locoType: string): locoType is SpeedLimitLocoType =>
+  locoType in speedLimits;
 
 export default defineComponent({
   mixins: [trainInfoMixin, styleMixin, trainCategoryMixin],
@@ -216,13 +222,36 @@ export default defineComponent({
 
   computed: {
     stockSpeedLimit() {
-      return this.train.stockList.reduce((acc, stockName) => {
-        const vehicleSpeed =
-          this.apiStore.vehiclesData?.find((v) => v.name == stockName.split(':')[0])?.group.speed ??
-          300;
+      let isPassenger = true;
+
+      const vehicleMaxSpeed = this.train.stockList.reduce((acc, stockName) => {
+        const vehicleData = this.apiStore.vehiclesData?.find(
+          (v) => v.name == stockName.split(':')[0]
+        );
+
+        if (!vehicleData) return acc;
+        if (vehicleData.type == 'wagon-freight') isPassenger = false;
+
+        const vehicleSpeed = vehicleData.group.speed;
 
         return Math.min(vehicleSpeed, acc);
-      }, 300);
+      }, Infinity);
+
+      const headLoco = this.train.stockList[0].slice(0, this.train.stockList[0].indexOf('-'));
+
+      if (!isCompatibleLoco(headLoco)) return vehicleMaxSpeed;
+
+      if (this.train.stockList.length == 1) return speedLimits[headLoco]['none'];
+
+      const speedTable = speedLimits[headLoco][isPassenger ? 'passenger' : 'cargo'];
+
+      if (!speedTable) return vehicleMaxSpeed;
+
+      let massKey = Object.keys(speedTable).findLast(
+        (massKey) => this.train.mass >= Number(massKey)
+      );
+
+      return massKey ? ((speedTable as any)[massKey] as number) : vehicleMaxSpeed;
     },
     journalRouteLocation() {
       return {
