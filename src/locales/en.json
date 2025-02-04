@@ -23,7 +23,7 @@
   "warnings": {
     "TWR": "Train with high risk cargo",
     "SKR": "Train with exceeded gauge",
-    "PN": "Train with extra deliveries", 
+    "PN": "Train with extra deliveries",
     "TN": "Train with dangerous cargo",
     "header-title": "Freight notes:"
   },
@@ -59,20 +59,16 @@
     "EI": "domestic express",
     "EC": "international express",
     "EN": "domestic night express",
-
     "MP": "intervoivodeship bullet",
     "MO": "intervoivodeship regio",
     "MM": "international bullet",
     "MH": "intervoivodeship night bullet",
-
     "RP": "voivodeship bullet",
     "RM": "international voivodeship regio",
     "RO": "voivodeship regio",
     "RA": "voivodeship regio (urban)",
-
     "PW": "empty passenger",
     "PX": "empty passenger test drive",
-
     "TC": "international freight (intermodal)",
     "TG": "international freight (organized cargo)",
     "TR": "international freight (unorganized cargo)",
@@ -82,18 +78,14 @@
     "TK": "freight (for stations & sidings)",
     "TS": "empty freight test drive",
     "TH": "locomotive rolling stock (over 3 vehicles)",
-
     "LT": "freight locomotive only",
     "LP": "passenger locomotive only",
     "LS": "shunting locomotive only",
     "LZ": "shunting locomotive only",
-
     "ZN": "inspection / diagnostic type",
     "ZU": "other maintenance type",
     "ZG": "emergency (deprecated)",
-
     "AP": "voivodeship regio (deprecated)",
-
     "E": "electric loco",
     "J": "EMU",
     "S": "diesel loco",
@@ -132,7 +124,6 @@
     "mechaniczne": "levers (mechanical)",
     "mechaniczne+SPK": "levers + SPK",
     "mechaniczne+SCS": "levers + SCS",
-
     "abbrevs": {
       "SPK": "SPK",
       "SCS": "SCS",
@@ -161,14 +152,11 @@
   "options": {
     "filters": "FILTERS",
     "donate": "DONATE",
-
     "search-button": "SEARCH",
     "reset-button": "RESET",
-
     "sort-title": "SORT BY:",
     "filter-title": "FILTER BY:",
     "search-title": "SEARCH:",
-
     "search-train-no": "Train no. / #",
     "search-train": "Train no.",
     "search-driver": "Driver name",
@@ -178,10 +166,10 @@
     "search-issuedFrom": "Issuing scenery name",
     "search-via": "Via scenery name",
     "search-terminatingAt": "Terminating scenery name",
-    "search-timetables-date": "Timetable date (UTC+2 / CEST)",
-    "search-dispatchers-date": "Service date (UTC+2 / CEST)",
-    "search-date": "Date (UTC+2 / CEST)",
-
+    "search-timetables-date": "Timetable date",
+    "search-dispatchers-date": "Service date (from / to)",
+    "search-date-from": "Date (UTC+2 / CEST)",
+    "search-date-to": "Date (UTC+2 / CEST)",
     "sort-mass": "mass",
     "sort-speed": "speed",
     "sort-length": "length",
@@ -190,13 +178,11 @@
     "sort-progress": "route progress",
     "sort-delay": "current delay",
     "sort-id": "timetable id",
-
     "sort-allStopsCount": "total stops",
     "sort-beginDate": "date",
     "sort-timetableId": "timetable ID",
     "sort-timestampFrom": "date",
     "sort-currentDuration": "duration",
-
     "filter-noComments": "NO COMMENTS",
     "filter-withComments": "COMMENTS",
     "filter-twr": "TWR",
@@ -211,13 +197,10 @@
     "filter-other": "OTHER",
     "filter-noTimetable": "NO TIMETABLE",
     "filter-withTimetable": "TIMETABLE",
-
     "filter-reset": "RESET FILTERS",
     "filter-clear": "CLEAR FILTERS",
-
     "filter-section-timetable-status": "TIMETABLE STATUS",
     "filter-section-special": "SPECIAL TYPE",
-
     "filter-all-statuses": "ALL",
     "filter-abandoned": "ABANDONED",
     "filter-fulfilled": "FULFILLED",
@@ -225,7 +208,6 @@
   },
   "filters": {
     "desc": " &bull; Left mouse click: select / unselect chosen filter <br /> &bull; Double left click: unselect all filters but chosen from a <b class='text--primary'>group</b> <br /> &bull; <span style='color: coral'>RESET</span>: reset all filters from a <b class='text--primary'>group</b>",
-
     "sections": {
       "quick": "QUICK FILTERS",
       "stationType": "STATION TYPE",
@@ -240,18 +222,14 @@
       "timetables": "ACTIVE TIMETABLES",
       "spawns": "OPEN SPAWNS"
     },
-
     "changed-filters-count": "Changed filters:",
     "no-changed-filters": "No changed filters",
-
     "all-available": "ALL AVAILABLE",
     "all-free": "CURRENTLY FREE",
-
     "endingStatus": "ENDS SOON",
     "afkStatus": "AFK",
     "noSpaceStatus": "NO SPACE",
     "unavailableStatus": "UNAVAILABLE",
-
     "title": "STATION FILTERS",
     "default": "IN-GAME",
     "notDefault": "ADDITIONAL",
@@ -260,7 +238,6 @@
     "unavailable": "UNSUPPORTED",
     "nonPublic": "NON-PUBLIC",
     "abandoned": "ABANDONED",
-
     "SPK": "SPK",
     "SPK-R": "SPK + MANUAL",
     "SPK-M": "SPK + MECH.",
@@ -270,29 +247,22 @@
     "SPE": "SPE",
     "manual": "MANUAL",
     "mechanical": "MECHANICAL",
-
     "SUP": "SUP (RASP-UZK)",
     "noSUP": "WITHOUT SUP",
-
     "ASDEK": "ASDEK",
     "noASDEK": "NO ASDEK",
-
     "SBL": "AUTOMATIC (SBL)",
     "PBL": "SEMIAUTOMATIC (PBL)",
-
     "modern": "MODERN",
     "semaphores": "SEMAPHORES",
     "mixed": "MIXED",
     "historical": "HISTORICAL",
     "free": "FREE",
     "occupied": "OCCUPIED",
-
     "withActiveTimetables": "ACTIVE",
     "withoutActiveTimetables": "NO ACTIVE",
-
     "junction": "JUNCTIONS",
     "nonJunction": "OTHER",
-
     "sliders": {
       "minLevel": "MIN. REQUIRED DISPATCHER LEVEL",
       "maxLevel": "MAX. REQUIRED DISPATCHER LEVEL",
@@ -303,13 +273,11 @@
       "minTwoWayCatenary": "MIN. CATENARY DOUBLE TRACK ROUTES",
       "minTwoWay": "MIN. OTHER DOUBLE TRACK ROUTES"
     },
-
     "sceneries-search": "SCENERY SEARCH:",
     "sceneries-placeholder": "Enter scenery name...",
     "authors-search": "SEARCH BY AUTHOR NAME (other filters apply):",
     "authors-placeholder": "Enter the author nickname...",
     "search-button-title": "SEARCH",
-
     "minimum-hours-title": "SHOW ONLY SCENERIES UNTIL:",
     "now": "NOW",
     "hour": "h",
@@ -372,7 +340,6 @@
     "no-trains": "No trains to show here!",
     "loading": "Loading train data...",
     "offline": "Offline ride",
-
     "stats": "TRAFFIC STATISTICS",
     "stats-speed": "TRAINS SPEED (MIN, AVG, MAX) [km/h]",
     "stats-length": "TIMETABLES LENGTH (MIN, AVG, MAX) [km]",
@@ -380,23 +347,17 @@
     "stats-special-twr": "HIGH RISK",
     "stats-special-skr": "EXCEEDED STRUCT. GAUGE",
     "stats-locos": "MOST COMMON UNITS",
-
     "current-scenery": "on scenery",
     "current-signal": "at signal",
     "current-track": "on track",
-
-    "vmax-tooltip": "Maximum train speed based on rolling stock vehicles - braked weight is not included",
-   
+    "vmax-tooltip": "Maximum speed based on vehicles and acceptable train mass",
     "catenary-tooltip": "Electrified route",
     "no-catenary-tooltip": "Non-electrified route",
     "sbl-tooltip": "Route with SBL\n(automatic block signalling)",
-
     "delayed": "Delayed: ",
     "preponed": "Ahead of schedule: ",
     "on-time": "On time",
-
     "route-progress": "Progress: ",
-
     "detailed-timetable": "Detailed timetable for train no. ",
     "via-title": "Via: ",
     "no-timetable": "no current timetable",
@@ -409,24 +370,20 @@
     "timetable-comments": "Exploitation comments available for this train",
     "comment": "Exploitation comments for: ",
     "table-limit": "For performance reasons there's a limit of 10 trains shown at the same time.",
-
     "last-seen-now": "since now",
     "last-seen-min": "since one minute",
     "last-seen-ago": "since {minutes} minutes",
-
     "scenery-offline": "Offline ride",
     "timeout": "An error occured while trying to refresh SWDR timetable data!",
-
     "driver-journal-link": "DRIVER JOURNAL",
+    "driver-srjp-link": "SRJP",
     "driver-return-link": "GO BACK",
-
     "driver-not-found-header": "Train not found! :/",
     "driver-not-found-desc-1": "This train has already been terminated, changed its number or is offline.",
     "driver-not-found-desc-2": "You can browse timetable history in the",
     "driver-not-found-journal": "TIMETABLES JOURNAL",
     "driver-not-found-others": "Player {driver} is online as:",
     "driver-not-found-return": "GO BACK TO THE MAIN SITE",
-
     "stock-copy": "COPY THE STOCK",
     "stock-clipboard-success": "Successfully copied the railway stock in a text form to your clipboard!",
     "stock-clipboard-failure": "Oops! Something happened and the railway stock couldn't be copied to your clipboard! :/"
@@ -451,14 +408,10 @@
     "loading": "Loading dispatcher history data...",
     "no-history": "No dispatcher history found!",
     "data-refreshed-at": "Data refreshed at",
-
     "section-timetables": "TIMETABLES",
     "section-dispatchers": "DISPATCHERS",
-
     "no-further-data": "No further data for current parameters",
     "loading-further-data": "Loading...",
-    
-
     "route-length": "Route length:",
     "station-count": "Stations:",
     "dispatcher-name": "Author",
@@ -467,32 +420,25 @@
     "timetable-fulfilled": "FULFILLED",
     "timetable-abandoned": "ABANDONED",
     "timetable-online-button": "ONLINE TIMETABLE",
-
     "online-since": "ONLINE SINCE",
     "duty-lasted": "The duty lasted",
-
     "hours": "{value} hour | {value} hours",
     "minutes": "{value} min | {value} mins",
     "seconds": "{value} s",
-
     "entry-details": "DETAILS",
     "no-entry-details": "NO DETAILS AVAILABLE",
-
     "stock-length": "Length",
     "stock-mass": "Mass",
     "stock-max-speed": "Max. speed",
-
+    "stock-timetable-speed": "Timetable speed",
     "stock-dangers": "ADDITIONAL NOTES",
     "stock-preview": "STOCK PREVIEW",
     "stock-copy": "COPY THE STOCK",
-   "stock-clipboard-success": "Successfully copied the railway stock in a text form to your clipboard:",
+    "stock-clipboard-success": "Successfully copied the railway stock in a text form to your clipboard:",
     "stock-clipboard-failure": "Oops! Something happened and the railway stock couldn't be copied to your clipboard! :/",
-
     "load-data": "Load further data...",
-
     "last-seen-at": "Last seen at",
     "currently-at": "Currently at",
-
     "driver-stats": {
       "button": "DRIVER STATS",
       "title": "{name}'s DRIVER STATS",
@@ -503,7 +449,6 @@
       "distance": "DISTANCE",
       "stations": "STATIONS"
     },
-
     "daily-stats": {
       "button": "DAILY STATS",
       "title": "STATS OF THE DAY",
@@ -515,14 +460,12 @@
       "most-active-driver": "The most active driver: {driver} (total driven distance: {distance})",
       "longest-duties": "The longest service: {dispatcher} at {station} (duration: {duration})",
       "count": "timetable | timetables",
-
       "rippedSwitches": "RIPPED SWITCHES",
       "derailments": "DERAILMENTS",
       "skippedStopSignals": "SKIPPED STOP SIGNALS",
       "radioStops": "RADIOSTOPS",
       "kills": "KILLS"
     },
-
     "dispatcher-stats": {
       "button": "DISPATCHER STATS",
       "title": "{name}'s DISPATCHER STATS",
@@ -536,13 +479,10 @@
       "timetables-max": "LONGEST TIMETABLE",
       "timetables-avg": "AVG TIMETABLE DISTANCE"
     },
-
     "stats-loading": "Fetching statistics...",
     "stats-error": "Oops! An unexpected error occurred while trying to fetch statistics! :/",
-
     "timetable-location-signal": "signal:",
     "timetable-location-route": "route:",
-
     "history-name": "Scenery name",
     "history-hash": "Hash",
     "history-dispatcher": "Dispatcher",
@@ -569,30 +509,22 @@
     "project-title": "Project name",
     "one-way-routes": "One way routes",
     "two-way-routes": "Two way routes",
-
     "option-active-timetables": "Active timetables",
     "option-timetables-history": "Timetables history PL1",
     "option-dispatchers-history": "Dispatchers history PL1",
-
     "timetable-via": "ALL TIMETABLES",
     "timetable-issuedFrom": "BEGINS HERE",
     "timetable-terminatingAt": "TERMINATES HERE",
-
     "timetable-issued-date": "Issued",
     "timetable-issued-by": " by:",
     "timetable-issued-for": " for driver:",
-
     "dispatcher-rate": "Rate:",
     "dispatcher-status-changes": "Status changes:",
-
     "req-level": "all dispatcher levels | dispatcher level {lvl} required | dispatcher level {lvl} required",
     "history-list-empty": "No recorded scenery history!",
-
     "forum-topic": "Official {name} forum topic",
-
     "pragotron-link": "Timetable pallet board",
     "tablice-link": "Timetable summary board (by Thundo)",
-
     "bottom-info": "Show full history in the Journal tab"
   },
   "availability": {
@@ -609,10 +541,8 @@
     "terminated": "Timetable terminated",
     "begins": "BEGINS HERE",
     "terminates": "TERMINATES\nHERE",
-
     "from": "FROM",
     "to": "TO",
-
     "desc-arriving": "The train is not here yet. It's going to come from: {prevStationName} (szlak {prevDepartureLine})",
     "desc-online": "The train is at the station. It's going to leave to: {nextStationName} (szlak {nextArrivalLine})",
     "desc-stopped": "The train is at the station and is stopped. It's going to leave towards: {nextStationName} (szlak {nextArrivalLine})",

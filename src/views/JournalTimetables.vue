@@ -215,7 +215,7 @@ export default defineComponent({
       'search-issuedFrom': '',
       'search-via': '',
       'search-terminatingAt': '',
-      'search-date': ''
+      'search-date-from': ''
     } as Journal.TimetableSearchType);
 
     const countFromIndex = ref(0);
@@ -352,7 +352,7 @@ export default defineComponent({
       const driverName = this.searchersValues['search-driver'].trim() || undefined;
       const trainNo = this.searchersValues['search-train'].trim() || undefined;
       const authorName = this.searchersValues['search-dispatcher'].trim() || undefined;
-      const dateFrom = this.searchersValues['search-date'].trim() || undefined;
+      const dateFrom = this.searchersValues['search-date-from'].trim() || undefined;
       const issuedFrom = this.searchersValues['search-issuedFrom'].trim() || undefined;
       const via = this.searchersValues['search-via'].trim() || undefined;
       const terminatingAt = this.searchersValues['search-terminatingAt'].trim() || undefined;

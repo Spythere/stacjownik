@@ -1,4 +1,5 @@
 import { RouteLocationRaw } from 'vue-router';
+import { StationJSONData } from '../store/typings';
 
 export type Availability = 'default' | 'unavailable' | 'nonPublic' | 'abandoned' | 'nonDefault';
 export type ScenerySpawnType = 'passenger' | 'freight' | 'loco' | 'all';
@@ -90,6 +91,7 @@ export interface TrainTimetableData {
   routeDistance: number;
   sceneries: string[];
   timetablePath: TimetablePathElement[];
+  trainMaxSpeed: number;
 }
 
 export interface Station {
@@ -122,6 +124,7 @@ export interface StationGeneralInfo {
 export interface StationRoutes {
   single: StationRoutesInfo[];
   double: StationRoutesInfo[];
+  all: StationRoutesInfo[];
 
   singleElectrifiedNames: string[];
   singleOtherNames: string[];
@@ -142,6 +145,7 @@ export interface StationRoutesInfo {
   routeSpeed: number;
   routeTracks: number;
   hidden?: boolean;
+  realLineNo?: number;
 }
 
 export interface ActiveScenery {

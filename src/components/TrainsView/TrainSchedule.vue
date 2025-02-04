@@ -3,15 +3,17 @@
     <div class="schedule-wrapper" v-if="train.timetableData">
       <div class="stops">
         <div
-          v-for="(stop, i) in scheduleStops"
+          v-for="(stop, i) in scheduleStopsV2"
           :key="i"
           class="stop"
           :data-status="stop.status"
+          :data-sbl="stop.isSBL && stop.sceneryName == scheduleStopsV2[i + 1]?.sceneryName"
           :data-position="stop.position"
           :data-delayed="stop.departureDelay > 0"
           :data-stop-type="stop.type"
-          :data-minor-stop-active="stop.isActive"
-          :data-last-confirmed="stop.isLastConfirmed"
+          :data-is-active="stop.isActive"
+          :data-track-count-departure="stop.departureLineInfo?.routeTracks ?? 2"
+          :data-track-count-arrival="stop.arrivalLineInfo?.routeTracks ?? 2"
         >
           <span class="stop_info">
             <span class="distance">
@@ -32,7 +34,7 @@
             <div></div>
 
             <div class="progress">
-              <div class="line line_connection" v-if="i < scheduleStops.length - 1"></div>
+              <div class="line line_connection" v-if="i < scheduleStopsV2.length - 1"></div>
             </div>
 
             <div class="bottom-line-info">
@@ -42,17 +44,20 @@
               </div>
 
               <!-- Routes  -->
+
               <span
                 v-if="
                   stop.departureLine &&
-                  scheduleStops[i + 1] != undefined &&
-                  !/-|_|(^it\d+)|(^sbl)/gi.test(stop.departureLine)
+                  (scheduleStopsV2[i + 1]?.arrivalLineInfo?.routeSpeed !=
+                    stop.arrivalLineInfo?.routeSpeed ||
+                    stop.sceneryName != scheduleStopsV2[i + 1]?.sceneryName)
                 "
               >
                 <div class="scenery-route">
                   <span>{{ stop.departureLine }}</span>
+
                   <span v-if="stop.departureLineInfo">
-                    | {{ stop.departureLineInfo.routeSpeed }}
+                    <span> | {{ stop.departureLineInfo.routeSpeed }}</span>
 
                     <img
                       :src="
@@ -60,7 +65,7 @@
                           ? '/images/icon-catenary.svg'
                           : '/images/icon-we4a.png'
                       "
-                      width="10"
+                      width="14"
                       data-tooltip-type="BaseTooltip"
                       :data-tooltip-content="
                         $t(
@@ -72,7 +77,7 @@
                     <img
                       v-if="stop.departureLineInfo.isRouteSBL"
                       src="/images/icon-sbl-transparent.svg"
-                      width="10"
+                      width="14"
                       data-tooltip-type="BaseTooltip"
                       :data-tooltip-content="$t('trains.sbl-tooltip')"
                     />
@@ -80,39 +85,48 @@
                 </div>
 
                 <div
-                  v-if="stop.sceneryName != scheduleStops[i + 1]?.sceneryName"
+                  v-if="stop.sceneryName != scheduleStopsV2[i + 1]?.sceneryName"
                   class="scenery-change-name"
                 >
-                  <span>{{ scheduleStops[i + 1].sceneryName }}</span>
-                  <span v-if="stop.departureLineInfo?.routeTracks == 1"> &UpDownArrow;</span>
-                  <span v-else> &DownArrowUpArrow;</span>
+                  <span>{{ scheduleStopsV2[i + 1].sceneryName }}</span>
+
+                  <i
+                    v-if="!scheduleStopsV2[i + 1].isSceneryOnline"
+                    class="fa-solid fa-ban fa-sm"
+                    data-tooltip-type="BaseTooltip"
+                    :data-tooltip-content="$t('app.tooltip-scenery-offline')"
+                    style="color: salmon; margin-left: 0.25em"
+                  ></i>
                 </div>
 
-                <div class="scenery-route">
-                  <span> {{ scheduleStops[i + 1].arrivalLine }}</span>
+                <div
+                  class="scenery-route"
+                  v-if="stop.sceneryName != scheduleStopsV2[i + 1]?.sceneryName"
+                >
+                  <span> {{ scheduleStopsV2[i + 1].arrivalLine }}</span>
 
-                  <span v-if="scheduleStops[i + 1].arrivalLineInfo">
-                    | {{ scheduleStops[i + 1].arrivalLineInfo!.routeSpeed }}
+                  <span v-if="scheduleStopsV2[i + 1].arrivalLineInfo">
+                    <span> | {{ scheduleStopsV2[i + 1].arrivalLineInfo!.routeSpeed }} </span>
 
                     <img
                       :src="
-                        scheduleStops[i + 1].arrivalLineInfo!.isElectric
+                        scheduleStopsV2[i + 1].arrivalLineInfo?.isElectric
                           ? '/images/icon-catenary.svg'
                           : '/images/icon-we4a.png'
                       "
                       data-tooltip-type="BaseTooltip"
                       :data-tooltip-content="
                         $t(
-                          `trains.${!scheduleStops[i + 1].arrivalLineInfo!.isElectric ? 'no-' : ''}catenary-tooltip`
+                          `trains.${!scheduleStopsV2[i + 1].arrivalLineInfo?.isElectric ? 'no-' : ''}catenary-tooltip`
                         )
                       "
-                      width="10"
+                      width="14"
                     />
 
                     <img
-                      v-if="scheduleStops[i + 1].arrivalLineInfo!.isRouteSBL"
+                      v-if="scheduleStopsV2[i + 1].arrivalLineInfo!.isRouteSBL"
                       src="/images/icon-sbl-transparent.svg"
-                      width="10"
+                      width="14"
                       data-tooltip-type="BaseTooltip"
                       :data-tooltip-content="$t('trains.sbl-tooltip')"
                     />
@@ -134,8 +148,8 @@ import StopLabel from './StopLabel.vue';
 import StockList from '../Global/StockList.vue';
 import { useMainStore } from '../../store/mainStore';
 import { useApiStore } from '../../store/apiStore';
-import { Train } from '../../typings/common';
-import { TrainScheduleStop } from './typings';
+import { StationRoutesInfo, TimetablePathElement, Train } from '../../typings/common';
+import { TrainSchedulePoint } from './typings';
 
 export default defineComponent({
   components: { StopLabel, StockList },
@@ -157,74 +171,173 @@ export default defineComponent({
     };
   },
 
+  methods: {
+    getPathSceneryData(pathEl: TimetablePathElement) {
+      const sceneryData =
+        this.store.stationList?.find((sc) => sc.name == pathEl.stationName) ?? null;
+
+      if (!sceneryData || !sceneryData.generalInfo) return null;
+
+      const activeScenery = this.apiStore.activeData?.activeSceneries?.find(
+        (sc) => sc.stationName == pathEl.stationName
+      );
+
+      const arrivalLineData = pathEl.arrivalRouteExt
+        ? (sceneryData.generalInfo.routes.all.find(
+            (rt) => rt.routeName == pathEl.arrivalRouteExt
+          ) ?? null)
+        : null;
+
+      const departureLineData = pathEl.departureRouteExt
+        ? (sceneryData.generalInfo.routes.all.find(
+            (rt) => rt.routeName == pathEl.departureRouteExt
+          ) ?? null)
+        : null;
+
+      return {
+        generalInfo: sceneryData.generalInfo,
+        isOnline:
+          activeScenery &&
+          (activeScenery.isOnline == 1 || activeScenery.lastSeen >= Date.now() - 60000),
+        arrivalLineData,
+        departureLineData
+      };
+    }
+  },
+
   computed: {
-    scheduleStops(): TrainScheduleStop[] {
+    scheduleStopsV2() {
       if (!this.train.timetableData) return [];
 
-      const { timetablePath } = this.train.timetableData;
+      const { timetablePath, followingStops } = this.train.timetableData;
+
+      const stopRows: TrainSchedulePoint[] = [];
+
       let currentPathIndex = 0;
+      let currentPath = timetablePath[0];
 
-      return (
-        this.train.timetableData?.followingStops.map((stop, i, arr) => {
-          const isExternal =
-            i < arr.length - 1 &&
-            stop.departureLine === timetablePath[currentPathIndex].departureRouteExt;
+      let pathData = this.getPathSceneryData(currentPath);
 
-          const sceneryName = timetablePath[currentPathIndex].stationName;
-          const sceneryInfo = this.apiStore.sceneryData.find((st) => st.name == sceneryName);
+      let arrivalLineInfo: StationRoutesInfo | null = null;
+      let departureLineInfo: StationRoutesInfo | null = null;
 
-          const isSceneryOnline =
-            (this.apiStore.activeData?.activeSceneries?.find((sc) => sc.stationName == sceneryName)
-              ?.isOnline ?? 0) == 1;
+      let isActive = false;
 
-          const arrivalLineInfo = sceneryInfo?.routesInfo.find(
-            (r) => r.routeName == stop.arrivalLine
-          );
+      if (pathData?.departureLineData) {
+        arrivalLineInfo = pathData.departureLineData;
+        departureLineInfo = pathData.departureLineData;
+      }
 
-          const departureLineInfo = sceneryInfo?.routesInfo.find(
-            (r) => r.routeName == stop.departureLine
-          );
+      for (const stop of followingStops) {
+        let isExternal = false;
 
-          if (isExternal) currentPathIndex++;
+        if (
+          stop.arrivalLine &&
+          currentPath.arrivalRouteExt &&
+          stop.arrivalLine == currentPath.arrivalRouteExt
+        ) {
+          isExternal = true;
 
-          return {
-            nameHtml: stop.stopName,
-            nameRaw: stop.stopNameRAW,
+          if (pathData?.arrivalLineData) {
+            arrivalLineInfo = pathData.arrivalLineData;
+          }
+        }
 
-            arrivalScheduled: stop.arrivalTimestamp,
-            arrivalReal: stop.arrivalRealTimestamp,
+        let correctedDepartureLineData: StationRoutesInfo | null = null;
 
-            departureScheduled: stop.departureTimestamp,
-            departureReal: stop.departureRealTimestamp,
+        const internalRouteInfo = stop.departureLine
+          ? pathData?.generalInfo.routes.all.find(
+              (route) => route.isInternal && route.routeName == stop.departureLine
+            )
+          : undefined;
 
-            departureDelay: stop.departureDelay,
-            arrivalDelay: stop.arrivalDelay,
+        if (internalRouteInfo) {
+          correctedDepartureLineData = internalRouteInfo;
+          departureLineInfo = internalRouteInfo;
+        }
 
-            duration: stop.stopTime,
+        let rowData: TrainSchedulePoint = {
+          nameHtml: stop.stopName,
+          nameRaw: stop.stopNameRAW,
 
-            comments: stop.comments ?? null,
+          arrivalScheduled: stop.arrivalTimestamp,
+          arrivalReal: stop.arrivalRealTimestamp,
 
-            arrivalLine: stop.arrivalLine,
-            departureLine: stop.departureLine,
+          departureScheduled: stop.departureTimestamp,
+          departureReal: stop.departureRealTimestamp,
 
-            arrivalLineInfo: arrivalLineInfo,
-            departureLineInfo: departureLineInfo,
+          departureDelay: stop.departureDelay,
+          arrivalDelay: stop.arrivalDelay,
 
-            isExternal,
+          duration: stop.stopTime ?? 0,
+          type: stop.stopType,
+          distance: stop.stopDistance,
 
-            type: stop.stopType,
-            distance: stop.stopDistance,
-            isActive: this.activeMinorStops.includes(i),
-            isLastConfirmed: this.lastConfirmed === i && !stop.terminatesHere,
-            isSBL: /sbl/gi.test(stop.stopName),
-            position: stop.beginsHere ? 'begin' : stop.terminatesHere ? 'end' : 'en-route',
-            status: stop.confirmed ? 'confirmed' : stop.stopped ? 'stopped' : 'unconfirmed',
+          comments: stop.comments ?? null,
 
-            sceneryName,
-            isSceneryOnline
-          };
-        }) ?? []
-      );
+          arrivalLine: stop.arrivalLine,
+          departureLine: stop.departureLine,
+
+          arrivalLineInfo: arrivalLineInfo,
+          departureLineInfo,
+
+          isExternal,
+
+          isActive: isActive,
+
+          isSBL: /sbl/gi.test(stop.stopName),
+          position: stop.beginsHere ? 'begin' : stop.terminatesHere ? 'end' : 'en-route',
+          status: stop.confirmed ? 'confirmed' : stop.stopped ? 'stopped' : 'unconfirmed',
+
+          sceneryName: currentPath.stationName,
+          isSceneryOnline: pathData?.isOnline ?? false
+        };
+
+        if (internalRouteInfo) {
+          arrivalLineInfo = departureLineInfo;
+        }
+
+        if (
+          stopRows[stopRows.length - 1]?.status == 'confirmed' &&
+          rowData.status != 'confirmed' &&
+          rowData.status != 'stopped'
+        )
+          stopRows[stopRows.length - 1].isActive = true;
+
+        if (
+          stopRows[stopRows.length - 1]?.isActive == true &&
+          !/(^<strong>|, podg$)/.test(rowData.nameHtml)
+        )
+          rowData.isActive = true;
+
+        stopRows.push(rowData);
+
+        if (
+          stop.departureLine &&
+          currentPath.departureRouteExt &&
+          stop.departureLine == currentPath.departureRouteExt
+        ) {
+          // Reverse search for last scenery checkpoint
+          if (pathData?.departureLineData) {
+            stopRows[stopRows.length - 1].isExternal = true;
+
+            for (let i = stopRows.length - 1; i > 0; i--) {
+              stopRows[i].departureLineInfo = pathData.departureLineData;
+
+              if (/(^<strong>|, podg$)/.test(stopRows[i].nameHtml)) {
+                break;
+              }
+
+              stopRows[i].arrivalLineInfo = pathData.departureLineData;
+            }
+          }
+
+          currentPath = timetablePath[++currentPathIndex];
+          pathData = this.getPathSceneryData(currentPath);
+        }
+      }
+
+      return stopRows;
     },
 
     lastConfirmed() {
@@ -297,6 +410,10 @@ $blinkAnim: 0.5s ease-in-out alternate infinite blink;
 }
 
 .stop {
+  &[data-sbl='true'] {
+    display: none;
+  }
+
   // Begin stop
   &[data-position='begin'] {
     .node {
@@ -328,20 +445,19 @@ $blinkAnim: 0.5s ease-in-out alternate infinite blink;
     border-color: $haltClr;
   }
 
-  &[data-minor-stop-active='true'] {
-    .progress > .line {
-      animation: $blinkAnim;
-    }
+  // &[data-minor-stop-active='true'] {
+  //   .progress > .line {
+  //     animation: $blinkAnim;
+  //   }
 
-    & + div {
-      .progress > .line_node-top {
-        animation: $blinkAnim;
-      }
-    }
-  }
+  //   & + div {
+  //     .progress > .line_node-top {
+  //       animation: $blinkAnim;
+  //     }
+  //   }
+  // }
 
-  // Last confirmed outpost / checkpoint
-  &[data-last-confirmed='true'] {
+  &[data-is-active='true'] {
     .progress > .line_connection {
       animation: $blinkAnim;
     }
@@ -362,6 +478,7 @@ $blinkAnim: 0.5s ease-in-out alternate infinite blink;
     .progress > .node {
       border-color: $confirmedClr;
     }
+
     .progress > .line {
       border-left: 2px solid $confirmedClr;
       border-right: 2px solid $confirmedClr;
@@ -382,19 +499,22 @@ $blinkAnim: 0.5s ease-in-out alternate infinite blink;
   // Unused so far
   &[data-track-count-departure='2'] {
     .progress > .line {
-      width: 6px;
+      width: 8px;
+      border-width: 3px;
     }
   }
 
   &[data-track-count-arrival='2'] {
     .progress > .line_node-top {
-      width: 6px;
+      width: 8px;
+      border-width: 3px;
     }
   }
 
   &[data-track-count-arrival='1'] {
     .progress > .line_node-top {
-      width: 4px;
+      width: 2px;
+      border-width: 2px;
     }
   }
 
@@ -522,8 +642,7 @@ $blinkAnim: 0.5s ease-in-out alternate infinite blink;
     align-items: center;
   }
 
-  img {
-    width: 1em;
+  img[data-tooltip] {
     cursor: help;
   }
 }

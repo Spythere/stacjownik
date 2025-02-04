@@ -196,9 +196,7 @@ export namespace API {
       timetableId: number;
       category: string;
       route: string;
-
       stopList: TimetableStop[];
-
       TWR: boolean;
       SKR: boolean;
       hasDangerousCargo: boolean;
@@ -206,6 +204,7 @@ export namespace API {
       warningNotes: string | null;
       sceneries: string[];
       path: string;
+      trainMaxSpeed: number;
     }
   }
 
@@ -270,6 +269,7 @@ export namespace API {
       warningNotes: string | null;
       hasDangerousCargo: boolean;
       hasExtraDeliveries: boolean;
+      trainMaxSpeed?: number;
     }
 
     export type Response = Data[];

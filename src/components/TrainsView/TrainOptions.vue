@@ -178,6 +178,12 @@ export default defineComponent({
       this.trainFilterList.forEach((filter) => {
         filter.isActive = true;
       });
+
+      this.sorterActive.id = 'routeDistance';
+      this.sorterActive.dir = -1;
+
+      this.searchedDriver = '';
+      this.searchedTrain = '';
     },
 
     onInputClear(id: 'driver' | 'train') {

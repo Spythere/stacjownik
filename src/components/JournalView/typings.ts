@@ -1,10 +1,14 @@
 export namespace Journal {
-  export type DispatcherSearchKey = 'search-dispatcher' | 'search-station' | 'search-date';
+  export type DispatcherSearchKey =
+    | 'search-dispatcher'
+    | 'search-station'
+    | 'search-date-from'
+    | 'search-date-to';
 
   export type TimetableSearchKey =
     | 'search-driver'
     | 'search-train'
-    | 'search-date'
+    | 'search-date-from'
     | 'search-dispatcher'
     | 'search-issuedFrom'
     | 'search-terminatingAt'
@@ -80,4 +84,3 @@ export namespace Journal {
     isConfirmed: boolean;
   }
 }
-
