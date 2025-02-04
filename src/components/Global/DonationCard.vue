@@ -56,7 +56,7 @@
         </i>
       </div>
 
-      <div class="actions">
+      <div class="actions-container">
         <a
           class="action a-button btn--image coffee"
           href="https://buycoffee.to/spythere"
@@ -198,7 +198,7 @@ a.discord {
   }
 }
 
-.actions > .action {
+.actions-container > .action {
   &.paypal {
     $btnColor: #254069;
 
