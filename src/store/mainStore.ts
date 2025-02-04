@@ -42,8 +42,13 @@ export const useMainStore = defineStore('mainStore', {
       checkpointsTrains.clear();
       sceneriesTrains.clear();
 
-      return (apiStore.activeData?.trains ?? [])
-        .filter((train) => train.timetable || train.lastSeen >= Date.now() - 60000)
+      const dateNow = new Date();
+
+      const x = (apiStore.activeData?.trains ?? [])
+        .filter(
+          (train) =>
+            train.timetable || train.lastSeen >= dateNow.getTime() - 60000 || train.online == 1
+        )
         .map((train) => {
           const stock = train.stockString.split(';');
           const locoType = stock ? stock[0] : train.stockString;
@@ -163,6 +168,8 @@ export const useMainStore = defineStore('mainStore', {
 
           return trainObj;
         });
+
+      return x;
     },
 
     // computed active sceneries
