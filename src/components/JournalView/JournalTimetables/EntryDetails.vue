@@ -24,43 +24,19 @@
       <div class="g-separator"></div>
 
       <div class="stock-specs">
-        <span class="badge" v-if="timetable.authorName">
+        <span class="badge specs-badge" v-if="timetable.authorName">
           <span>{{ $t('journal.dispatcher-name') }}</span>
           <span>{{ timetable.authorName }}</span>
         </span>
 
-        <span class="badge" v-if="timetable.stockLength">
-          <span>{{ $t('journal.stock-length') }}</span>
-          <span>
-            {{
-              currentHistoryIndex == 0
-                ? timetable.stockLength
-                : stockHistory[currentHistoryIndex].stockLength || timetable.stockLength
-            }}m
-          </span>
-        </span>
-
-        <span class="badge" v-if="timetable.stockMass">
-          <span>{{ $t('journal.stock-mass') }}</span>
-          <span>
-            {{
-              Math.floor(
-                (currentHistoryIndex == 0
-                  ? timetable.stockMass
-                  : stockHistory[currentHistoryIndex].stockMass || timetable.stockMass) / 1000
-              )
-            }}t
-          </span>
-        </span>
-
-        <span class="badge" v-if="timetable.maxSpeed">
-          <span>{{ $t('journal.stock-max-speed') }}</span>
-          <span>{{ timetable.maxSpeed }}km/h</span>
-        </span>
-
-        <span class="badge" v-if="timetable.trainMaxSpeed">
+        <span class="badge specs-badge" v-if="timetable.trainMaxSpeed">
           <span>{{ $t('journal.stock-timetable-speed') }}</span>
           <span> {{ timetable.trainMaxSpeed }}km/h </span>
+        </span>
+
+        <span class="badge specs-badge" v-if="timetable.maxSpeed">
+          <span>{{ $t('journal.stock-max-speed') }}</span>
+          <span>{{ timetable.maxSpeed }}km/h</span>
         </span>
       </div>
 
@@ -98,7 +74,34 @@
       <!-- Historia zmian w składzie -->
       <div v-if="timetable.stockString || stockHistory.length != 0">
         <div class="g-separator"></div>
+
         <b>{{ $t('journal.stock-preview') }}:</b>
+
+        <div class="stock-specs" style="margin-top: 0.5em">
+          <span class="badge specs-badge" v-if="timetable.stockLength">
+            <span>{{ $t('journal.stock-length') }}</span>
+            <span>
+              {{
+                currentHistoryIndex == 0
+                  ? timetable.stockLength
+                  : stockHistory[currentHistoryIndex].stockLength || timetable.stockLength
+              }}m
+            </span>
+          </span>
+
+          <span class="badge specs-badge" v-if="timetable.stockMass">
+            <span>{{ $t('journal.stock-mass') }}</span>
+            <span>
+              {{
+                Math.floor(
+                  (currentHistoryIndex == 0
+                    ? timetable.stockMass
+                    : stockHistory[currentHistoryIndex].stockMass || timetable.stockMass) / 1000
+                )
+              }}t
+            </span>
+          </span>
+        </div>
 
         <div class="stock-history">
           <button class="btn btn--action" @click="copyStockToClipboard()">
@@ -255,14 +258,21 @@ export default defineComponent({
   display: flex;
   flex-wrap: wrap;
   gap: 0.5em;
+}
 
-  .badge {
-    margin: 0;
+.specs-badge {
+  margin: 0;
 
-    span:last-child {
-      color: black;
-      background-color: $accentCol;
-    }
+  span:first-child {
+    color: white;
+    background-color: #666;
+    border-radius: 0.25em 0 0 0.25em;
+  }
+
+  span:last-child {
+    color: black;
+    background-color: $accentCol;
+    border-radius: 0 0.25em 0.25em 0;
   }
 }
 

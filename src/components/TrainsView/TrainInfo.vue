@@ -144,10 +144,6 @@
             {{ stockSpeedLimit }} km/h
           </em>
         </span>
-
-        <span v-if="train.timetableData?.trainMaxSpeed" 
-          >&bull; vRJ: {{ train.timetableData.trainMaxSpeed }} km/h</span
-        >
       </div>
     </div>
 
