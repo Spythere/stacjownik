@@ -376,6 +376,7 @@
     "scenery-offline": "Offline ride",
     "timeout": "An error occured while trying to refresh SWDR timetable data!",
     "driver-journal-link": "DRIVER JOURNAL",
+    "driver-srjp-link": "SRJP",
     "driver-return-link": "GO BACK",
     "driver-not-found-header": "Train not found! :/",
     "driver-not-found-desc-1": "This train has already been terminated, changed its number or is offline.",

@@ -2,24 +2,40 @@
   <section class="driver-view">
     <div class="view-wrapper">
       <div v-if="chosenTrain">
-        <div class="actions">
-          <a class="a-button btn--image" @click="$router.back()">
-            <img src="/images/icon-back.svg" alt="train icon" />
-            <span>
-              {{ $t('trains.driver-return-link') }}
-            </span>
-          </a>
+        <div class="actions-container">
+          <div class="actions actions-left">
+            <a class="a-button btn--image" @click="$router.back()">
+              <img src="/images/icon-back.svg" alt="train icon" />
+              <span>
+                {{ $t('trains.driver-return-link') }}
+              </span>
+            </a>
+          </div>
 
-          <router-link
-            :to="`/journal/timetables?search-driver=${chosenTrain.driverName}`"
-            class="a-button btn--image"
-          >
-            <span class="hidable">
-              {{ $t('trains.driver-journal-link') }}
-            </span>
+          <div class="actions actions-right">
+            <a
+              class="a-button btn--image"
+              :href="`https://srjp-td2.web.app/?id=${chosenTrain.id}`"
+              target="_blank"
+            >
+              <span class="hidable">
+                {{ $t('trains.driver-srjp-link') }}
+              </span>
 
-            <img src="/images/icon-train.svg" alt="train icon" />
-          </router-link>
+              <img src="/images/icon-srjp.svg" alt="srjp icon" />
+            </a>
+
+            <router-link
+              :to="`/journal/timetables?search-driver=${chosenTrain.driverName}`"
+              class="a-button btn--image"
+            >
+              <span class="hidable">
+                {{ $t('trains.driver-journal-link') }}
+              </span>
+
+              <img src="/images/icon-train.svg" alt="train icon" />
+            </router-link>
+          </div>
         </div>
 
         <div class="train-card">
@@ -142,14 +158,19 @@ $viewBgCol: #1a1a1a;
   min-height: calc(100vh - 7em);
 }
 
-.actions {
+.actions-container {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   gap: 0.5em;
 }
 
-.actions > a {
+.actions {
+  display: flex;
+  gap: 0.5em;
+}
+
+.actions-container > .actions > a {
   background-color: $viewBgCol;
   padding: 0.5em;
   border-radius: 0.5em 0.5em 0 0;
@@ -189,7 +210,7 @@ $viewBgCol: #1a1a1a;
 }
 
 @include smallScreen {
-  .actions > a > span.hidable {
+  span.hidable {
     display: none;
   }
 }
