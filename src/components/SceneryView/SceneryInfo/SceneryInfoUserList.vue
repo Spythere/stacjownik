@@ -23,7 +23,10 @@
           <span class="user_name">
             {{ train.driverName }}
             <i
-              v-if="train.timetableData != undefined && train.lastSeen <= Date.now() - 120000"
+              v-if="
+                train.timetableData != undefined &&
+                (train.lastSeen <= Date.now() - 60000 || !train.online)
+              "
               class="fa-solid fa-user-slash"
               style="color: lightcoral"
               data-tooltip-type="BaseTooltip"
