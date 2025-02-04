@@ -33,7 +33,7 @@
           <h1 class="option-title">{{ $t('options.search-title') }}</h1>
           <div class="search_content">
             <div class="search" v-for="(_, propName) in searchersValues" :key="propName">
-              <label v-if="propName == 'search-date'" for="search-date">{{
+              <label v-if="propName == 'search-date-from'" for="search-date">{{
                 $t(`options.search-${optionsType}-date`)
               }}</label>
 
@@ -45,13 +45,13 @@
                   @focus="preventKeyDown = true"
                   @blur="preventKeyDown = false"
                   :placeholder="$t(`options.${propName}`)"
-                  :type="propName == 'search-date' ? 'date' : 'text'"
-                  :min="propName == 'search-date' ? '2022-02-01' : undefined"
+                  :type="propName.toString().startsWith('search-date') ? 'date' : 'text'"
+                  :min="propName.toString().startsWith('search-date') ? '2022-02-01' : undefined"
                   :id="`${propName}`"
                   :list="propName.toString()"
                 />
 
-                <button class="search-exit" v-if="propName != 'search-date'">
+                <button class="search-exit" v-if="!propName.toString().startsWith('search-date')">
                   <img
                     src="/images/icon-exit.svg"
                     alt="exit-icon"

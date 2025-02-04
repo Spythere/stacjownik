@@ -65,6 +65,8 @@ interface DispatchersQueryParams {
   stationHash?: string;
   timestampFrom?: number;
   timestampTo?: number;
+  dateFrom?: string;
+  dateTo?: string;
   countFrom?: number;
   countLimit?: number;
   sortBy?: Journal.DispatcherSorter['id'];
@@ -127,7 +129,8 @@ export default defineComponent({
     const searchersValues = reactive({
       'search-dispatcher': '',
       'search-station': '',
-      'search-date': ''
+      'search-date-from': '',
+      'search-date-to': ''
     } as Journal.DispatcherSearchType);
 
     provide('sorterActive', sorterActive);
@@ -189,7 +192,8 @@ export default defineComponent({
     handleRouteParams() {
       this.$router.push({
         query: {
-          'search-date': this.searchersValues['search-date'] || undefined,
+          'search-date-from': this.searchersValues['search-date-from'] || undefined,
+          'search-date-to': this.searchersValues['search-date-to'] || undefined,
           'search-station': this.searchersValues['search-station'] || undefined,
           'search-dispatcher': this.searchersValues['search-dispatcher'] || undefined
         }
@@ -235,7 +239,8 @@ export default defineComponent({
     },
 
     setOptions(options: { [key: string]: string }) {
-      this.searchersValues['search-date'] = options['search-date'] ?? '';
+      this.searchersValues['search-date-from'] = options['search-date-from'] ?? '';
+      this.searchersValues['search-date-to'] = options['search-date-to'] ?? '';
       this.searchersValues['search-station'] = options['search-station'] ?? '';
       this.searchersValues['search-dispatcher'] = options['search-dispatcher'] ?? '';
 
@@ -272,17 +277,13 @@ export default defineComponent({
 
       const dispatcherName = this.searchersValues['search-dispatcher'].trim() || undefined;
       const stationName = this.searchersValues['search-station'].trim() || undefined;
-      const dateString = this.searchersValues['search-date'].trim() || undefined;
-
-      const timestampFrom = dateString
-        ? Date.parse(new Date(dateString).toISOString()) - 120 * 60 * 1000
-        : undefined;
-
-      const timestampTo = timestampFrom ? timestampFrom + 86400000 : undefined;
+      const dateFromString = this.searchersValues['search-date-from'].trim() || undefined;
+      const dateToString = this.searchersValues['search-date-to'].trim() || undefined;
 
       queryParams['dispatcherName'] = dispatcherName;
-      queryParams['timestampFrom'] = timestampFrom;
-      queryParams['timestampTo'] = timestampTo;
+      queryParams['dateFrom'] = dateFromString;
+      queryParams['dateTo'] = dateToString ? `${dateToString}T23:00:00` : undefined;
+
       queryParams['countLimit'] = 30;
 
       if (stationName && stationName.startsWith('#'))
