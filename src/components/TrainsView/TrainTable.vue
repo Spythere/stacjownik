@@ -1,5 +1,12 @@
 <template>
-  <transition name="status-anim" mode="out-in" tag="div" class="train-table">
+  <transition
+    name="status-anim"
+    mode="out-in"
+    tag="div"
+    class="train-table"
+    @scroll="onScroll"
+    ref="trainTableRef"
+  >
     <div :key="apiStore.dataStatuses.connection">
       <div class="table-warning" key="offline" v-if="store.isOffline">
         {{ $t('app.offline') }}
@@ -39,6 +46,10 @@ export default defineComponent({
     }
   },
 
+  data: () => ({
+    scrollTop: 0
+  }),
+
   setup() {
     const store = useMainStore();
     const apiStore = useApiStore();
@@ -56,6 +67,16 @@ export default defineComponent({
         dir: number;
       }
     };
+  },
+
+  activated() {
+    (this.$refs['trainTableRef'] as HTMLElement).scrollTop = this.scrollTop;
+  },
+
+  methods: {
+    onScroll(e: Event) {
+      this.scrollTop = (e.target as HTMLElement).scrollTop;
+    }
   },
 
   computed: {
@@ -92,6 +113,4 @@ export default defineComponent({
 
   background: #1a1a1a;
 }
-
-
 </style>
