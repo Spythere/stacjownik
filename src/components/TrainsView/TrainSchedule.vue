@@ -89,6 +89,14 @@
                   class="scenery-change-name"
                 >
                   <span>{{ scheduleStopsV2[i + 1].sceneryName }}</span>
+
+                  <i
+                    v-if="!scheduleStopsV2[i + 1].isSceneryOnline"
+                    class="fa-solid fa-ban fa-sm"
+                    data-tooltip-type="BaseTooltip"
+                    :data-tooltip-content="$t('app.tooltip-scenery-offline')"
+                    style="color: salmon; margin-left: 0.25em"
+                  ></i>
                 </div>
 
                 <div
@@ -328,8 +336,6 @@ export default defineComponent({
           pathData = this.getPathSceneryData(currentPath);
         }
       }
-
-      console.log(stopRows);
 
       return stopRows;
     },

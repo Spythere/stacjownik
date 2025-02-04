@@ -5,16 +5,7 @@
   >
     <router-link v-if="/(, podg$|<strong>)/.test(stop.nameHtml)" :to="sceneryHref">
       <b class="stop-name">
-        <span>
-          {{ stop.nameRaw }}
-        </span>
-        <i
-          v-if="!stop.isSceneryOnline && stop.status != 'confirmed'"
-          class="fa-solid fa-ban fa-md"
-          data-tooltip-type="BaseTooltip"
-          :data-tooltip-content="$t('app.tooltip-scenery-offline')"
-          style="color: salmon; margin-left: 0.25em"
-        ></i>
+        {{ stop.nameRaw }}
       </b>
     </router-link>
 
