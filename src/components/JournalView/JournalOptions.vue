@@ -188,14 +188,14 @@ export default defineComponent({
       if (!value || value == '') return;
       if (value.length < 3) return;
 
-      this.startSearchTimeout('driver', value);
+      if (this.showOptions) this.startSearchTimeout('driver', value);
     },
 
     async 'searchersValues.search-dispatcher'(value: string | undefined) {
       if (!value || value == '') return;
       if (value.length < 3) return;
 
-      this.startSearchTimeout('dispatcher', value);
+      if (this.showOptions) this.startSearchTimeout('dispatcher', value);
     }
   },
 
@@ -283,7 +283,6 @@ export default defineComponent({
     },
 
     searchConfirm() {
-      this.$emit('onSearchConfirm');
       this.handleRouteParams();
     },
 

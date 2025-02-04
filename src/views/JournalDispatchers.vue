@@ -272,7 +272,7 @@ export default defineComponent({
       this.scrollDataLoaded = true;
     },
 
-    async fetchHistoryData() {
+    async fetchHistoryData() {      
       const queryParams: DispatchersQueryParams = {};
 
       const dispatcherName = this.searchersValues['search-dispatcher'].trim() || undefined;
