@@ -187,17 +187,12 @@ import { defineComponent } from 'vue';
 import { useMainStore } from '../../store/mainStore';
 import { useApiStore } from '../../store/apiStore';
 import { Train } from '../../typings/common';
-import speedLimits from '../../data/speedLimits.json';
 import styleMixin from '../../mixins/styleMixin';
 import trainInfoMixin from '../../mixins/trainInfoMixin';
 import trainCategoryMixin from '../../mixins/trainCategoryMixin';
 import ProgressBar from '../Global/ProgressBar.vue';
 import StockList from '../Global/StockList.vue';
-
-export type SpeedLimitLocoType = keyof typeof speedLimits;
-
-const isCompatibleLoco = (locoType: string): locoType is SpeedLimitLocoType =>
-  locoType in speedLimits;
+import { speedLimits } from '../../data/speedLimits';
 
 export default defineComponent({
   mixins: [trainInfoMixin, styleMixin, trainCategoryMixin],
@@ -239,19 +234,22 @@ export default defineComponent({
 
       const headLoco = this.train.stockList[0].slice(0, this.train.stockList[0].indexOf('-'));
 
-      if (!isCompatibleLoco(headLoco)) return vehicleMaxSpeed;
+      if (speedLimits[headLoco] === undefined) return vehicleMaxSpeed;
 
       if (this.train.stockList.length == 1) return speedLimits[headLoco]['none'];
 
-      const speedTable = speedLimits[headLoco][isPassenger ? 'passenger' : 'cargo'];
+      const speedTable: Record<string, number> =
+        speedLimits[headLoco][isPassenger ? 'passenger' : 'cargo'];
 
       if (!speedTable) return vehicleMaxSpeed;
 
-      let massKey = Object.keys(speedTable).findLast(
+      const massKey = Object.keys(speedTable).findLast(
         (massKey) => this.train.mass >= Number(massKey)
       );
 
-      return massKey ? ((speedTable as any)[massKey] as number) : vehicleMaxSpeed;
+      const massMaxSpeed = massKey ? speedTable[massKey] : Infinity;
+
+      return Math.min(massMaxSpeed, vehicleMaxSpeed);
     },
     journalRouteLocation() {
       return {
