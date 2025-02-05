@@ -23,7 +23,7 @@
 
       <div class="g-separator"></div>
 
-      <div class="stock-specs">
+      <div class="timetable-specs">
         <span class="badge specs-badge" v-if="timetable.authorName">
           <span>{{ $t('journal.dispatcher-name') }}</span>
           <span>{{ timetable.authorName }}</span>
@@ -254,6 +254,7 @@ export default defineComponent({
   }
 }
 
+.timetable-specs,
 .stock-specs {
   display: flex;
   flex-wrap: wrap;
@@ -300,7 +301,7 @@ hr {
 }
 
 @include smallScreen() {
-  .stock-specs {
+  .timetable-specs {
     justify-content: center;
   }
 
