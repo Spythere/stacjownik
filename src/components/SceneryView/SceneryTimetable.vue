@@ -130,7 +130,7 @@
 
             <span class="schedule-stop">
               <span class="stop-connection">
-                {{ row.arrivingLine }}
+                {{ row.currentElement.arrivalRouteExt }}
               </span>
 
               <span class="stop-time">
@@ -139,7 +139,7 @@
               </span>
 
               <span class="stop-connection">
-                {{ row.departureLine }}
+                {{ row.currentElement.departureRouteExt }}
               </span>
             </span>
 
@@ -279,12 +279,9 @@ export default defineComponent({
           return {
             checkpointStop: ct.checkpointStop,
             train: ct.train,
-            prevDepartureLine: ct.previousSceneryElement?.departureRouteExt ?? null,
-            nextArrivalLine: ct.nextSceneryElement?.arrivalRouteExt ?? null,
-            departureLine: ct.timetablePathElement.departureRouteExt ?? null,
-            arrivingLine: ct.timetablePathElement.arrivalRouteExt ?? null,
-            prevStationName: ct.previousSceneryElement?.stationName ?? null,
-            nextStationName: ct.nextSceneryElement?.stationName ?? null,
+            prevElement: ct.previousSceneryElement,
+            nextElement: ct.nextSceneryElement,
+            currentElement: ct.timetablePathElement,
             status: trainStopStatus
           };
         })

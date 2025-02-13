@@ -3,11 +3,11 @@
     <div class="schedule-wrapper" v-if="train.timetableData">
       <div class="stops">
         <div
-          v-for="(stop, i) in scheduleStopsV2"
+          v-for="(stop, i) in scheduleStops"
           :key="i"
           class="stop"
           :data-status="stop.status"
-          :data-sbl="stop.isSBL && stop.sceneryName == scheduleStopsV2[i + 1]?.sceneryName"
+          :data-sbl="stop.isSBL && stop.sceneryName == scheduleStops[i + 1]?.sceneryName"
           :data-position="stop.position"
           :data-delayed="stop.departureDelay > 0"
           :data-stop-type="stop.type"
@@ -34,7 +34,7 @@
             <div></div>
 
             <div class="progress">
-              <div class="line line_connection" v-if="i < scheduleStopsV2.length - 1"></div>
+              <div class="line line_connection" v-if="i < scheduleStops.length - 1"></div>
             </div>
 
             <div class="bottom-line-info">
@@ -48,9 +48,9 @@
               <span
                 v-if="
                   stop.departureLine &&
-                  (scheduleStopsV2[i + 1]?.arrivalLineInfo?.routeSpeed !=
+                  (scheduleStops[i + 1]?.arrivalLineInfo?.routeSpeed !=
                     stop.arrivalLineInfo?.routeSpeed ||
-                    stop.sceneryName != scheduleStopsV2[i + 1]?.sceneryName)
+                    stop.sceneryName != scheduleStops[i + 1]?.sceneryName)
                 "
               >
                 <div class="scenery-route">
@@ -85,13 +85,13 @@
                 </div>
 
                 <div
-                  v-if="stop.sceneryName != scheduleStopsV2[i + 1]?.sceneryName"
+                  v-if="stop.sceneryName != scheduleStops[i + 1]?.sceneryName"
                   class="scenery-change-name"
                 >
-                  <span>{{ scheduleStopsV2[i + 1].sceneryName }}</span>
+                  <span>{{ scheduleStops[i + 1].sceneryName }}</span>
 
                   <i
-                    v-if="!scheduleStopsV2[i + 1].isSceneryOnline"
+                    v-if="!scheduleStops[i + 1].isSceneryOnline"
                     class="fa-solid fa-ban fa-sm"
                     data-tooltip-type="BaseTooltip"
                     :data-tooltip-content="$t('app.tooltip-scenery-offline')"
@@ -101,30 +101,30 @@
 
                 <div
                   class="scenery-route"
-                  v-if="stop.sceneryName != scheduleStopsV2[i + 1]?.sceneryName"
+                  v-if="stop.sceneryName != scheduleStops[i + 1]?.sceneryName"
                 >
-                  <span> {{ scheduleStopsV2[i + 1].arrivalLine }}</span>
+                  <span> {{ scheduleStops[i + 1].arrivalLine }}</span>
 
-                  <span v-if="scheduleStopsV2[i + 1].arrivalLineInfo">
-                    <span> | {{ scheduleStopsV2[i + 1].arrivalLineInfo!.routeSpeed }} </span>
+                  <span v-if="scheduleStops[i + 1].arrivalLineInfo">
+                    <span> | {{ scheduleStops[i + 1].arrivalLineInfo!.routeSpeed }} </span>
 
                     <img
                       :src="
-                        scheduleStopsV2[i + 1].arrivalLineInfo?.isElectric
+                        scheduleStops[i + 1].arrivalLineInfo?.isElectric
                           ? '/images/icon-catenary.svg'
                           : '/images/icon-we4a.png'
                       "
                       data-tooltip-type="BaseTooltip"
                       :data-tooltip-content="
                         $t(
-                          `trains.${!scheduleStopsV2[i + 1].arrivalLineInfo?.isElectric ? 'no-' : ''}catenary-tooltip`
+                          `trains.${!scheduleStops[i + 1].arrivalLineInfo?.isElectric ? 'no-' : ''}catenary-tooltip`
                         )
                       "
                       width="14"
                     />
 
                     <img
-                      v-if="scheduleStopsV2[i + 1].arrivalLineInfo!.isRouteSBL"
+                      v-if="scheduleStops[i + 1].arrivalLineInfo!.isRouteSBL"
                       src="/images/icon-sbl-transparent.svg"
                       width="14"
                       data-tooltip-type="BaseTooltip"
@@ -206,7 +206,7 @@ export default defineComponent({
   },
 
   computed: {
-    scheduleStopsV2() {
+    scheduleStops() {
       if (!this.train.timetableData) return [];
 
       const { timetablePath, followingStops } = this.train.timetableData;
@@ -224,19 +224,17 @@ export default defineComponent({
       let isActive = false;
 
       if (pathData?.departureLineData) {
-        arrivalLineInfo = pathData.departureLineData;
+        // arrivalLineInfo = pathData.departureLineData;
         departureLineInfo = pathData.departureLineData;
       }
 
       for (const stop of followingStops) {
         let isExternal = false;
 
-        if (
-          stop.arrivalLine &&
-          currentPath.arrivalRouteExt &&
-          stop.arrivalLine == currentPath.arrivalRouteExt
-        ) {
+        if (stop.arrivalLine === currentPath.arrivalRouteExt) {
           isExternal = true;
+
+          departureLineInfo = pathData?.arrivalLineData ?? null;
 
           if (pathData?.arrivalLineData) {
             arrivalLineInfo = pathData.arrivalLineData;
@@ -282,8 +280,7 @@ export default defineComponent({
           departureLineInfo,
 
           isExternal,
-
-          isActive: isActive,
+          isActive,
 
           isSBL: /sbl/gi.test(stop.stopName),
           position: stop.beginsHere ? 'begin' : stop.terminatesHere ? 'end' : 'en-route',
@@ -312,11 +309,7 @@ export default defineComponent({
 
         stopRows.push(rowData);
 
-        if (
-          stop.departureLine &&
-          currentPath.departureRouteExt &&
-          stop.departureLine == currentPath.departureRouteExt
-        ) {
+        if (stop.departureLine === currentPath.departureRouteExt) {
           // Reverse search for last scenery checkpoint
           if (pathData?.departureLineData) {
             stopRows[stopRows.length - 1].isExternal = true;

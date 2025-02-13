@@ -12,11 +12,19 @@ import VehiclePreviewTooltip from './VehiclePreviewTooltip.vue';
 import BaseTooltip from './BaseTooltip.vue';
 import SpawnsTooltip from './SpawnsTooltip.vue';
 import UsersTooltip from './UsersTooltip.vue';
+import HtmlTooltip from './HtmlTooltip.vue';
 
 const BOX_PADDING_PX = 20;
 
 export default defineComponent({
-  components: { DonatorTooltip, VehiclePreviewTooltip, BaseTooltip, SpawnsTooltip, UsersTooltip },
+  components: {
+    DonatorTooltip,
+    VehiclePreviewTooltip,
+    BaseTooltip,
+    SpawnsTooltip,
+    UsersTooltip,
+    HtmlTooltip
+  },
 
   data() {
     return {

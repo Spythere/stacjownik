@@ -2,7 +2,9 @@
   <div class="general-status">
     <span
       :class="computedScheduledTrain.status"
-      :title="computedScheduledTrain.stopStatusDescription"
+      data-tooltip-type="HtmlTooltip"
+      :data-tooltip-content="computedScheduledTrain.stopStatusDescription"
+      @click.prevent="() => {}"
     >
       {{ computedScheduledTrain.stopStatusIndicator }}
     </span>
@@ -24,15 +26,15 @@ export default defineComponent({
 
   computed: {
     computedScheduledTrain() {
-      const { prevDepartureLine, prevStationName, nextArrivalLine, nextStationName, status } =
-        this.sceneryTimetableRow;
+      const { status, prevElement, currentElement, nextElement } = this.sceneryTimetableRow;
 
-      const prevDepartureIndicator = prevDepartureLine
-        ? `(${prevDepartureLine}) ${prevStationName}`
+      const prevDepartureIndicator = prevElement?.departureRouteExt
+        ? `(${prevElement.departureRouteExt}) ${prevElement.stationName}`
         : '---';
-      const nextArrivalIndicator = nextArrivalLine
-        ? `(${nextArrivalLine}) ${nextStationName}`
-        : '---';
+
+      const nextArrivalIndicator = nextElement?.arrivalRouteExt
+        ? `(${nextElement.arrivalRouteExt}) ${nextElement.stationName}`
+        : `${currentElement.stationName}`;
 
       let stopStatusDescription = '',
         stopStatusIndicator = '';
@@ -41,34 +43,45 @@ export default defineComponent({
         case StopStatus.ARRIVING:
           stopStatusIndicator = `${this.$t('timetables.from')}: ${prevDepartureIndicator}`;
           stopStatusDescription = this.$t('timetables.desc-arriving', {
-            prevStationName,
-            prevDepartureLine
+            prevStationName: prevElement?.stationName ?? '',
+            prevDepartureLine: prevElement?.departureRouteExt ?? ''
           });
           break;
 
         case StopStatus.ONLINE:
         case StopStatus.STOPPED:
-          stopStatusIndicator = nextArrivalLine
+          stopStatusIndicator = nextElement?.arrivalRouteExt
             ? `${this.$t('timetables.to')}: ${nextArrivalIndicator}`
             : `${this.$t('timetables.desc-end')}`;
-          stopStatusDescription = nextArrivalLine
-            ? this.$t(`timetables.desc-${status}`, { nextStationName, nextArrivalLine })
+          stopStatusDescription = nextElement?.arrivalRouteExt
+            ? this.$t(`timetables.desc-${status}`, {
+                nextStationName: nextElement?.stationName,
+                nextArrivalLine: nextElement?.arrivalRouteExt
+              })
             : '';
           break;
 
         case StopStatus.DEPARTED:
           stopStatusIndicator = `${this.$t('timetables.to')}: ${nextArrivalIndicator}`;
-          stopStatusDescription = this.$t('timetables.desc-departed', {
-            nextStationName,
-            nextArrivalLine
-          });
+
+          if (!nextElement?.stationName) {
+            stopStatusDescription = this.$t('timetables.desc-departed-ends', {
+              nextStationName: currentElement.stationName
+            });
+          } else {
+            stopStatusDescription = this.$t('timetables.desc-departed', {
+              nextStationName: nextElement?.stationName ?? currentElement.stationName,
+              nextArrivalLine: nextElement?.arrivalRouteExt
+            });
+          }
+
           break;
 
         case StopStatus.DEPARTED_AWAY:
           stopStatusIndicator = `${this.$t('timetables.to')}: ${nextArrivalIndicator}`;
           stopStatusDescription = this.$t('timetables.desc-departed-away', {
-            nextStationName,
-            nextArrivalLine
+            nextStationName: nextElement?.stationName,
+            nextArrivalLine: nextElement?.arrivalRouteExt
           });
           break;
 
@@ -93,6 +106,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .general-status {
   margin-top: 0.5em;
+  cursor: help;
 
   span.arriving {
     color: #ccc;
