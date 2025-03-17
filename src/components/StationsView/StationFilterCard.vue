@@ -130,7 +130,7 @@
                 :min="slider.minRange"
                 :max="slider.maxRange"
                 :step="slider.step"
-                v-model="filters[slider.id]"
+                v-model.number="filters[slider.id]"
               />
               <span class="slider-value">{{ filters[slider.id] }}</span>
               <div class="slider-content">

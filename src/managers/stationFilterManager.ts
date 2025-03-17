@@ -116,7 +116,7 @@ export function setupFilters(currentFilters: Record<string, any>) {
   });
 }
 
-export function getChangedFilters(currentFilters: Record<string, any>): string[] {
+export function getChangedFilters(currentFilters: Record<string, any>): string[] {  
   return (
     Object.keys(currentFilters).filter(
       (filterKey) =>
