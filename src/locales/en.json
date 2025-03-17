@@ -271,7 +271,11 @@
       "minOneWayCatenary": "MIN. CATENARY SINGLE TRACK ROUTES",
       "minOneWay": "MIN. OTHER SINGLE TRACK ROUTES",
       "minTwoWayCatenary": "MIN. CATENARY DOUBLE TRACK ROUTES",
-      "minTwoWay": "MIN. OTHER DOUBLE TRACK ROUTES"
+      "minTwoWay": "MIN. OTHER DOUBLE TRACK ROUTES",
+      "minOneWayCatenaryInt": "MIN. INTERNAL CATENARY SINGLE TRACK ROUTES",
+      "minOneWayInt": "MIN. INTERNAL OTHER SINGLE TRACK ROUTES",
+      "minTwoWayCatenaryInt": "MIN. INTERNAL CATENARY DOUBLE TRACK ROUTES",
+      "minTwoWayInt": "MIN. INTERNAL OTHER DOUBLE TRACK ROUTES"
     },
     "sceneries-search": "SCENERY SEARCH:",
     "sceneries-placeholder": "Enter scenery name...",

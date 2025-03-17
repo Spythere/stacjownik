@@ -269,7 +269,11 @@
       "minOneWayCatenary": "SZLAKI JEDNOTOROWE ZELEKTR. (MINIMUM)",
       "minOneWay": "SZLAKI JEDNOTOROWE NIEZELEKTR. (MINIMUM)",
       "minTwoWayCatenary": "SZLAKI DWUTOROWE ZELEKTR. (MINIMUM)",
-      "minTwoWay": "SZLAKI DWUTOROWE NIEZELEKTR. (MINIMUM)"
+      "minTwoWay": "SZLAKI DWUTOROWE NIEZELEKTR. (MINIMUM)",
+      "minOneWayCatenaryInt": "SZLAKI JEDNOTOROWE ZELEKTR. WEWNĘTRZNE (MINIMUM)",
+      "minOneWayInt": "SZLAKI JEDNOTOROWE NIEZELEKTR. WEWNĘTRZNE (MINIMUM)",
+      "minTwoWayCatenaryInt": "SZLAKI DWUTOROWE ZELEKTR. WEWNĘTRZNE (MINIMUM)",
+      "minTwoWayInt": "SZLAKI DWUTOROWE NIEZELEKTR. WEWNĘTRZNE (MINIMUM)"
     },
     "sceneries-search": "WYSZUKAJ SCENERIĘ:",
     "sceneries-placeholder": "Wpisz nazwę scenerii...",
