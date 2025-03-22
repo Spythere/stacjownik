@@ -515,7 +515,9 @@
     "forum-topic": "Oficjalny wątek scenerii {name}",
     "pragotron-link": "Paletowa tablica informacyjna",
     "tablice-link": "Tablica informacyjna zbiorcza (autorstwa Thundo)",
-    "bottom-info": "Pokaż pełną historię w zakładce Dziennika"
+    "bottom-info": "Pokaż pełną historię w zakładce Dziennika",
+    "btn-show-internal-routes": "Pokazuj szlaki wewnętrzne",
+    "btn-hide-internal-routes": "Ukrywaj szlaki wewnętrzne"
   },
   "availability": {
     "title": "Dostępność",

@@ -511,8 +511,8 @@
     "abbrev": "Station symbol:",
     "lines-title": "Real lines",
     "project-title": "Project name",
-    "one-way-routes": "One way routes",
-    "two-way-routes": "Two way routes",
+    "one-way-routes": "Signle track routes",
+    "two-way-routes": "Double track routes",
     "option-active-timetables": "Active timetables",
     "option-timetables-history": "Timetables history PL1",
     "option-dispatchers-history": "Dispatchers history PL1",
@@ -529,7 +529,9 @@
     "forum-topic": "Official {name} forum topic",
     "pragotron-link": "Timetable pallet board",
     "tablice-link": "Timetable summary board (by Thundo)",
-    "bottom-info": "Show full history in the Journal tab"
+    "bottom-info": "Show full history in the Journal tab",
+    "btn-show-internal-routes": "Show internal routes",
+    "btn-hide-internal-routes": "Hide internal routes"
   },
   "availability": {
     "title": "Availability",
