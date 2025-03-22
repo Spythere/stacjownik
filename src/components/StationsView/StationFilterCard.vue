@@ -668,6 +668,10 @@ h3.section-header {
     &-input {
       width: 90%;
     }
+
+    &-content {
+      text-align: center;
+    }
   }
 }
 </style>
