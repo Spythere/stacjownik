@@ -3,12 +3,12 @@
     <div class="routes one-way" v-if="oneWayRoutes.length > 0">
       <button
         class="routes-btn"
-        @click="showInternalSingle = !showInternalSingle"
+        @click="toggleRoutesVisibility('single')"
         data-tooltip-type="BaseTooltip"
-        :data-tooltip-content="`${showInternalSingle ? $t('scenery.btn-hide-internal-routes') : $t('scenery.btn-show-internal-routes')}`"
+        :data-tooltip-content="`${showInternalSingleRoutes ? $t('scenery.btn-hide-internal-routes') : $t('scenery.btn-show-internal-routes')}`"
       >
         <b>{{ $t('scenery.one-way-routes') }}</b>
-        <i class="fa-solid" :class="`${showInternalSingle ? 'fa-eye' : 'fa-eye-slash'}`"></i>
+        <i class="fa-solid" :class="`${showInternalSingleRoutes ? 'fa-eye' : 'fa-eye-slash'}`"></i>
       </button>
 
       <ul class="routes-list">
@@ -30,12 +30,12 @@
     <div class="routes two-way" v-if="twoWayRoutes.length > 0">
       <button
         class="routes-btn"
-        @click="showInternalDouble = !showInternalDouble"
+        @click="toggleRoutesVisibility('double')"
         data-tooltip-type="BaseTooltip"
-        :data-tooltip-content="`${showInternalDouble ? $t('scenery.btn-hide-internal-routes') : $t('scenery.btn-show-internal-routes')}`"
+        :data-tooltip-content="`${showInternalDoubleRoutes ? $t('scenery.btn-hide-internal-routes') : $t('scenery.btn-show-internal-routes')}`"
       >
         <b>{{ $t('scenery.two-way-routes') }}</b>
-        <i class="fa-solid" :class="`${showInternalDouble ? 'fa-eye' : 'fa-eye-slash'}`"></i>
+        <i class="fa-solid" :class="`${showInternalDoubleRoutes ? 'fa-eye' : 'fa-eye-slash'}`"></i>
       </button>
 
       <ul class="routes-list">
@@ -57,6 +57,7 @@
 <script lang="ts">
 import { PropType, defineComponent } from 'vue';
 import { Station } from '../../../typings/common';
+import StorageManager from '../../../managers/storageManager';
 
 export default defineComponent({
   props: {
@@ -68,16 +69,38 @@ export default defineComponent({
 
   data() {
     return {
-      showInternalSingle: false,
-      showInternalDouble: false
+      showInternalSingleRoutes: false,
+      showInternalDoubleRoutes: false
     };
+  },
+
+  mounted() {
+    if (StorageManager.getBooleanValue('showInternalDoubleRoutes')) {
+      this.showInternalDoubleRoutes = StorageManager.getBooleanValue('showInternalDoubleRoutes');
+    }
+
+    if (StorageManager.getBooleanValue('showInternalSingleRoutes')) {
+      this.showInternalSingleRoutes = StorageManager.getBooleanValue('showInternalSingleRoutes');
+    }
+  },
+
+  methods: {
+    toggleRoutesVisibility(type: 'single' | 'double') {
+      if (type == 'double') {
+        this.showInternalDoubleRoutes = !this.showInternalDoubleRoutes;
+        StorageManager.setBooleanValue('showInternalDoubleRoutes', this.showInternalDoubleRoutes);
+      } else {
+        this.showInternalSingleRoutes = !this.showInternalSingleRoutes;
+        StorageManager.setBooleanValue('showInternalSingleRoutes', this.showInternalSingleRoutes);
+      }
+    }
   },
 
   computed: {
     oneWayRoutes() {
       return (
         this.station.generalInfo?.routes.single
-          .filter((r) => !r.isInternal || r.isInternal == this.showInternalSingle)
+          .filter((r) => !r.isInternal || r.isInternal == this.showInternalSingleRoutes)
           .sort((r1, r2) => r1.routeName.localeCompare(r2.routeName)) ?? []
       );
     },
@@ -85,7 +108,7 @@ export default defineComponent({
     twoWayRoutes() {
       return (
         this.station.generalInfo?.routes.double
-          .filter((r) => !r.isInternal || r.isInternal == this.showInternalDouble)
+          .filter((r) => !r.isInternal || r.isInternal == this.showInternalDoubleRoutes)
           .sort((r1, r2) => r1.routeName.localeCompare(r2.routeName)) ?? []
       );
     }
