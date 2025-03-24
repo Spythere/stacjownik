@@ -17,25 +17,6 @@
       {{ station?.generalInfo.reqLevel >= 2 ? station?.generalInfo.reqLevel : 'L' }}
     </span>
 
-    <span
-      v-if="station?.generalInfo"
-      class="scenery-icon icon-info"
-      :class="station?.generalInfo.controlType.replace('+', '-')"
-      :title="
-        $t('sceneries.info.control-type') + $t(`controls.${station?.generalInfo.controlType}`)
-      "
-    >
-      {{ $t(`controls.abbrevs.${station.generalInfo.controlType}`) }}
-    </span>
-
-    <img
-      v-if="station?.generalInfo?.signalType"
-      class="icon-info"
-      :src="`/images/icon-${station.generalInfo.signalType}.svg`"
-      :alt="station.generalInfo.signalType"
-      :title="$t('sceneries.info.signals-type') + $t(`signals.${station.generalInfo.signalType}`)"
-    />
-
     <img
       v-if="station?.generalInfo?.availability == 'nonPublic'"
       class="icon-info"
@@ -60,6 +41,33 @@
       :title="$t('sceneries.info.abandoned')"
     />
 
+    <span
+      v-if="station?.generalInfo"
+      class="scenery-icon icon-info"
+      :class="station?.generalInfo.controlType.replace('+', '-')"
+      :title="
+        $t('sceneries.info.control-type') + $t(`controls.${station?.generalInfo.controlType}`)
+      "
+    >
+      {{ $t(`controls.abbrevs.${station.generalInfo.controlType}`) }}
+    </span>
+
+    <img
+      v-if="station?.generalInfo?.signalType"
+      class="icon-info"
+      :src="`/images/icon-${station.generalInfo.signalType}.svg`"
+      :alt="station.generalInfo.signalType"
+      :title="$t('sceneries.info.signals-type') + $t(`signals.${station.generalInfo.signalType}`)"
+    />
+
+    <img
+      v-if="station?.generalInfo?.lines"
+      class="icon-info"
+      src="/images/icon-real.svg"
+      alt="real scenery"
+      :title="`${$t('sceneries.info.real')} ${station.generalInfo.lines}`"
+    />
+
     <img
       v-if="station?.generalInfo?.SUP"
       class="icon-info"
@@ -74,14 +82,6 @@
       src="/images/icon-ASDEK.svg"
       alt="dSAT ASDEK"
       :title="$t('sceneries.info.ASDEK')"
-    />
-
-    <img
-      v-if="station?.generalInfo?.lines"
-      class="icon-info"
-      src="/images/icon-real.svg"
-      alt="real scenery"
-      :title="`${$t('sceneries.info.real')} ${station.generalInfo.lines}`"
     />
   </section>
 </template>

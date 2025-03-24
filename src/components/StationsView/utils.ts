@@ -120,6 +120,8 @@ function filterSliderValues(filters: Record<string, any>, generalInfo: StationGe
   const otherAvailability =
     availability == 'nonPublic' || availability == 'unavailable' || availability == 'abandoned';
 
+  const internalRoutes = routes.all.filter((r) => r.isInternal && !r.isRouteSBL && !r.hidden);
+
   return (
     filters['minLevel'] > reqLevel + (otherAvailability ? 1 : 0) ||
     filters['maxLevel'] < reqLevel + (otherAvailability ? 1 : 0) ||
@@ -130,7 +132,13 @@ function filterSliderValues(filters: Record<string, any>, generalInfo: StationGe
     filters['minOneWayCatenary'] > routes.singleElectrifiedNames.length ||
     filters['minOneWay'] > routes.singleOtherNames.length ||
     filters['minTwoWayCatenary'] > routes.doubleElectrifiedNames.length ||
-    filters['minTwoWay'] > routes.doubleOtherNames.length
+    // filters['minTwoWay'] > routes.doubleOtherNames.length ||
+    filters['minOneWayCatenaryInt'] >
+      internalRoutes.filter((r) => r.routeTracks == 1 && r.isElectric == true).length ||
+    filters['minOneWayInt'] >
+      internalRoutes.filter((r) => r.routeTracks == 1 && r.isElectric == false).length ||
+    filters['minTwoWayCatenaryInt'] >
+      internalRoutes.filter((r) => r.routeTracks == 2 && r.isElectric == true).length
   );
 }
 
@@ -235,7 +243,7 @@ export const sortStations = (a: Station, b: Station, sorter: ActiveSorter) => {
   return a.name.localeCompare(b.name);
 };
 
-export const filterStations = (station: Station, filters: Record<string, any>) => {
+export const filterStations = (station: Station, filters: Record<string, any>) => {  
   if (filters['free'] && (!station.onlineInfo || station.onlineInfo.dispatcherId == -1))
     return false;
 

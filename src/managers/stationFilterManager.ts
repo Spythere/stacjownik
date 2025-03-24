@@ -59,22 +59,29 @@ export const initFilters = {
   onlineFromHours: 0,
   minLevel: 0,
   maxLevel: 20,
-  minOneWayCatenary: 0,
   minOneWay: 0,
+  minOneWayCatenary: 0,
   minTwoWayCatenary: 0,
-  minTwoWay: 0,
+  minOneWayInt: 0,
+  minOneWayCatenaryInt: 0,
+  minTwoWayCatenaryInt: 0,
+  // minTwoWay: 0,
   authors: ''
 };
 
-export const initSliders = [
+export const sliderStates = [
   { id: 'maxVmax', minRange: 0, maxRange: 200, step: 10 },
   { id: 'minVmax', minRange: 0, maxRange: 200, step: 10 },
   { id: 'minLevel', minRange: 0, maxRange: 20, step: 1 },
   { id: 'maxLevel', minRange: 0, maxRange: 20, step: 1 },
-  { id: 'minOneWayCatenary', minRange: 0, maxRange: 5, step: 1 },
   { id: 'minOneWay', minRange: 0, maxRange: 5, step: 1 },
+  { id: 'minOneWayCatenary', minRange: 0, maxRange: 5, step: 1 },
   { id: 'minTwoWayCatenary', minRange: 0, maxRange: 5, step: 1 },
-  { id: 'minTwoWay', minRange: 0, maxRange: 5, step: 1 }
+  { id: 'minOneWayInt', minRange: 0, maxRange: 5, step: 1 },
+  { id: 'minOneWayCatenaryInt', minRange: 0, maxRange: 5, step: 1 },
+  { id: 'minTwoWayCatenaryInt', minRange: 0, maxRange: 5, step: 1 },
+  // { id: 'minTwoWay', minRange: 0, maxRange: 5, step: 1 },
+  // { id: 'minTwoWayInt', minRange: 0, maxRange: 5, step: 1 }
 ];
 
 export type StationFilter = keyof typeof initFilters;
@@ -109,7 +116,7 @@ export function setupFilters(currentFilters: Record<string, any>) {
   });
 }
 
-export function getChangedFilters(currentFilters: Record<string, any>): string[] {
+export function getChangedFilters(currentFilters: Record<string, any>): string[] {  
   return (
     Object.keys(currentFilters).filter(
       (filterKey) =>

@@ -121,7 +121,7 @@
           </section>
 
           <section class="card_sliders">
-            <div class="slider" v-for="(slider, i) in initSliders" :key="i">
+            <div class="slider" v-for="(slider, i) in sliderStates" :key="i">
               <input
                 class="slider-input"
                 type="range"
@@ -130,7 +130,7 @@
                 :min="slider.minRange"
                 :max="slider.maxRange"
                 :step="slider.step"
-                v-model="filters[slider.id]"
+                v-model.number="filters[slider.id]"
               />
               <span class="slider-value">{{ filters[slider.id] }}</span>
               <div class="slider-content">
@@ -178,7 +178,7 @@ import StorageManager from '../../managers/storageManager';
 
 import {
   filtersSections,
-  initSliders,
+  sliderStates,
   initFilters,
   getChangedFilters
 } from '../../managers/stationFilterManager';
@@ -197,7 +197,7 @@ export default defineComponent({
     saveOptions: false,
 
     filtersSections,
-    initSliders,
+    sliderStates,
 
     minimumHours: 0,
     authors: '',
@@ -567,7 +567,8 @@ h3.section-header {
 }
 
 .slider {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 50px 1fr;
   align-items: center;
   gap: 0.25em;
 
@@ -576,6 +577,7 @@ h3.section-header {
   &-value {
     color: $accentCol;
     padding: 0.1em 0.2em;
+    text-align: center;
   }
 
   &-input {
@@ -602,7 +604,8 @@ h3.section-header {
       border-radius: 50%;
 
       background: white;
-      border: 4px solid $accentCol;
+      border: 3px solid $accentCol;
+      background-color: #333;
 
       @include smallScreen() {
         width: 15px;
@@ -658,11 +661,16 @@ h3.section-header {
 
 @include smallScreen {
   .slider {
+    display: flex;
     flex-wrap: wrap;
     justify-content: center;
 
     &-input {
       width: 90%;
+    }
+
+    &-content {
+      text-align: center;
     }
   }
 }

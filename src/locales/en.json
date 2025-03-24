@@ -271,7 +271,11 @@
       "minOneWayCatenary": "MIN. CATENARY SINGLE TRACK ROUTES",
       "minOneWay": "MIN. OTHER SINGLE TRACK ROUTES",
       "minTwoWayCatenary": "MIN. CATENARY DOUBLE TRACK ROUTES",
-      "minTwoWay": "MIN. OTHER DOUBLE TRACK ROUTES"
+      "minTwoWay": "MIN. OTHER DOUBLE TRACK ROUTES",
+      "minOneWayCatenaryInt": "MIN. INTERNAL CATENARY SINGLE TRACK ROUTES",
+      "minOneWayInt": "MIN. INTERNAL OTHER SINGLE TRACK ROUTES",
+      "minTwoWayCatenaryInt": "MIN. INTERNAL CATENARY DOUBLE TRACK ROUTES",
+      "minTwoWayInt": "MIN. INTERNAL OTHER DOUBLE TRACK ROUTES"
     },
     "sceneries-search": "SCENERY SEARCH:",
     "sceneries-placeholder": "Enter scenery name...",
@@ -507,8 +511,10 @@
     "abbrev": "Station symbol:",
     "lines-title": "Real lines",
     "project-title": "Project name",
-    "one-way-routes": "One way routes",
-    "two-way-routes": "Two way routes",
+    "additional-tools-title": "Additional tools",
+    "one-way-routes": "Signle track routes",
+    "two-way-routes": "Double track routes",
+    "no-data": "No available data about this scenery",
     "option-active-timetables": "Active timetables",
     "option-timetables-history": "Timetables history PL1",
     "option-dispatchers-history": "Dispatchers history PL1",
@@ -525,7 +531,9 @@
     "forum-topic": "Official {name} forum topic",
     "pragotron-link": "Timetable pallet board",
     "tablice-link": "Timetable summary board (by Thundo)",
-    "bottom-info": "Show full history in the Journal tab"
+    "bottom-info": "Show full history in the Journal tab",
+    "btn-show-internal-routes": "Show internal routes",
+    "btn-hide-internal-routes": "Hide internal routes"
   },
   "availability": {
     "title": "Availability",

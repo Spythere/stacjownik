@@ -429,14 +429,16 @@ table {
   min-width: 1250px;
   white-space: wrap;
 
+  thead {
+    position: sticky;
+    top: 0;
+  }
+
   thead tr {
     background-color: $bgCol;
   }
 
   thead th {
-    position: sticky;
-    top: 0;
-
     &.station {
       width: 12em;
     }
