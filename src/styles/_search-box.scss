@@ -1,4 +1,4 @@
-@import 'responsive.scss';
+@use 'responsive';
 
 .search {
   label {
@@ -39,7 +39,7 @@
     max-width: 300px;
   }
 
-  @include smallScreen {
+  @include responsive.smallScreen{
     &-box,
     &-button {
       margin: 0.5em 0 0 0;

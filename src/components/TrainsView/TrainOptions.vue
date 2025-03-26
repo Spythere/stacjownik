@@ -195,8 +195,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/dropdown.scss';
-@import '../../styles/dropdown_filters.scss';
+@use '../../styles/dropdown';
+@use '../../styles/dropdown-filters';
 
 .search_content > div {
   margin: 0.5em auto;

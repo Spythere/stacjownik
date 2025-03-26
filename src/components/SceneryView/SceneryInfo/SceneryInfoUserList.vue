@@ -18,7 +18,7 @@
         :key="train.id"
         :data-status="status"
       >
-        <router-link :to="train.driverRouteLocation" class="a-block">
+        <router-link :to="train.driverRouteLocation">
           <span class="user_train"> {{ train.trainNo }}</span>
           <span class="user_name">
             {{ train.driverName }}

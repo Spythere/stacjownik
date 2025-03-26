@@ -79,14 +79,12 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/dropdown.scss';
-@import '../../styles/dropdown_filters.scss';
-@import '../../styles/variables.scss';
+@use '../../styles/dropdown';
+@use '../../styles/dropdown-filters';
 
 .dropdown_wrapper.dropdown-align-right {
   left: auto;
   right: 0;
   max-width: 700px;
-  // max-width: 100%;
 }
 </style>

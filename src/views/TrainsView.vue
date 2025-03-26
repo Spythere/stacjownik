@@ -114,7 +114,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../styles/responsive.scss';
+@use '../styles/responsive';
 
 .trains-view {
   position: relative;
@@ -134,7 +134,7 @@ export default defineComponent({
   margin-bottom: 0.5em;
 }
 
-@include smallScreen {
+@include responsive.smallScreen {
   .trains_topbar {
     justify-content: space-between;
   }

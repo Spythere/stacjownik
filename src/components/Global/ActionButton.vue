@@ -13,8 +13,7 @@ export default defineComponent({});
 </script>
 
 <style lang="scss">
-@import '../../styles/variables';
-@import '../../styles/responsive';
+@use '../../styles/responsive';
 
 .button_content {
   display: flex;

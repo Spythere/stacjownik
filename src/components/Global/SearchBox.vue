@@ -7,7 +7,12 @@
       @keypress="updateValue"
     />
 
-    <img class="search-exit" src="/images/icon-exit.svg" alt="exit-icon" @click="clearSearchValue" />
+    <img
+      class="search-exit"
+      src="/images/icon-exit.svg"
+      alt="exit-icon"
+      @click="clearSearchValue"
+    />
   </div>
 </template>
 
@@ -17,21 +22,10 @@ import { defineComponent, ref, watch } from 'vue';
 export default defineComponent({
   emits: ['update:searchedValue', 'clearValue'],
   props: {
-    searchedValue: {
-      type: String,
-      required: true
-    },
-    updateOnInput: {
-      type: Boolean,
-      default: true
-    },
-    titleToTranslate: {
-      type: String,
-      required: true
-    },
-    clearValue: {
-      type: Function
-    }
+    searchedValue: { type: String, required: true },
+    updateOnInput: { type: Boolean, default: true },
+    titleToTranslate: { type: String, required: true },
+    clearValue: { type: Function }
   },
 
   setup(props, { emit }) {
@@ -56,17 +50,13 @@ export default defineComponent({
         emit('update:searchedValue', compSearchedValue.value);
     };
 
-    return {
-      compSearchedValue,
-      updateValue,
-      clearSearchValue
-    };
+    return { compSearchedValue, updateValue, clearSearchValue };
   }
 });
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/responsive';
+@use '../../styles/responsive';
 
 .search {
   &-box {
@@ -78,7 +68,7 @@ export default defineComponent({
 
     margin: 0.5em 0 0.5em 0.5em;
 
-    @include smallScreen() {
+    @include responsive.smallScreen{
       width: 85%;
     }
   }

@@ -225,9 +225,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../../styles/variables.scss';
-@import '../../../styles/responsive.scss';
-@import '../../../styles/badge.scss';
+@use '../../../styles/responsive';
+@use '../../../styles/badge';
 
 .details-body {
   margin-top: 0.5em;
@@ -250,7 +249,7 @@ export default defineComponent({
   margin-top: 1em;
 
   button[data-checked='true'] {
-    color: $accentCol;
+    color: var(--clr-primary);
   }
 }
 
@@ -272,7 +271,7 @@ export default defineComponent({
 
   span:last-child {
     color: black;
-    background-color: $accentCol;
+    background-color: var(--clr-primary);
     border-radius: 0 0.25em 0.25em 0;
   }
 }
@@ -300,7 +299,7 @@ hr {
   }
 }
 
-@include smallScreen() {
+@include responsive.smallScreen{
   .timetable-specs {
     justify-content: center;
   }

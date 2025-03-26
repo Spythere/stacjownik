@@ -66,8 +66,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/variables.scss';
-
 label {
   position: relative;
   user-select: none;
@@ -98,7 +96,7 @@ label {
     }
 
     &:focus-visible + span {
-      outline: 1px solid $accentCol;
+      outline: 1px solid var(--clr-primary);
     }
   }
 }

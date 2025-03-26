@@ -116,9 +116,9 @@ export default defineComponent({
   }
 });
 </script>
+
 <style lang="scss" scoped>
-@import '../../styles/variables.scss';
-@import '../../styles/responsive.scss';
+@use '../../styles/responsive';
 
 // HEADER
 .app_header {
@@ -126,7 +126,7 @@ export default defineComponent({
   justify-content: center;
 
   position: relative;
-  background-color: $primaryCol;
+  background-color: #2c2c2c;
 }
 
 .header {
@@ -141,7 +141,7 @@ export default defineComponent({
 
     border-radius: 0 0 1em 1em;
 
-    @include smallScreen {
+    @include responsive.smallScreen{
       position: relative;
       margin-top: 0.5em;
     }
@@ -180,7 +180,7 @@ export default defineComponent({
 
     padding: 0.5em;
 
-    @include smallScreen {
+    @include responsive.smallScreen{
       transform: translateX(85%);
     }
   }

@@ -81,5 +81,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../../styles/JournalStats.scss';
+@use '../../../styles/journal-stats';
 </style>

@@ -482,5 +482,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../styles/JournalSection.scss';
+@use '../styles/journal-section';
 </style>

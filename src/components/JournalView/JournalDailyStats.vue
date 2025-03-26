@@ -234,9 +234,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/responsive.scss';
-@import '../../styles/JournalStats.scss';
-@import '../../styles/badge.scss';
+@use '../../styles/animations';
+@use '../../styles/journal-stats';
+@use '../../styles/responsive';
 
 .daily-stats {
   text-align: left;
@@ -265,7 +265,7 @@ ul.stats-list {
   gap: 0.5em;
 }
 
-@include smallScreen {
+@include responsive.smallScreen{
   h3 {
     text-align: center;
   }

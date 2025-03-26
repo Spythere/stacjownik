@@ -4,7 +4,7 @@
       <div class="stations-options">
         <StationFilterCard
           :showCard="filterCardOpen"
-          :exit="(filterCardOpen = false)"
+          :exit="filterCardOpen = false"
           ref="filterCardRef"
         />
 
@@ -78,8 +78,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../styles/variables.scss';
-@import '../styles/responsive.scss';
+@use '../styles/responsive';
 
 .stations-view {
   position: relative;
@@ -115,7 +114,7 @@ button.btn-donation {
     background-color: lighten($btnColor, 5%);
   }
 
-  @include smallScreen {
+  @include responsive.smallScreen{
     span {
       display: none;
     }

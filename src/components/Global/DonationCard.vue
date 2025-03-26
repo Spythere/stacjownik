@@ -150,8 +150,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/responsive.scss';
-
 .body {
   display: grid;
   grid-template-rows: 1fr auto;

@@ -379,10 +379,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/responsive';
-@import '../../styles/card';
-@import '../../styles/animations';
-@import '../../styles/variables';
+@use '../../styles/responsive';
+@use '../../styles/card';
+@use '../../styles/animations';
 
 h3.section-header {
   text-align: center;
@@ -432,7 +431,7 @@ h3.section-header {
 .card_title {
   font-size: 2em;
   font-weight: 700;
-  color: $accentCol;
+  color: var(--clr-primary);
 
   text-align: center;
 }
@@ -453,7 +452,7 @@ h3.section-header {
     span {
       min-width: 120px;
       font-weight: bold;
-      color: $accentCol;
+      color: var(--clr-primary);
     }
 
     button {
@@ -527,7 +526,7 @@ h3.section-header {
     }
 
     &:focus-visible + span {
-      outline: 1px solid $accentCol;
+      outline: 1px solid var(--clr-primary);
     }
   }
 }
@@ -575,7 +574,7 @@ h3.section-header {
   margin-bottom: 1em;
 
   &-value {
-    color: $accentCol;
+    color: var(--clr-primary);
     padding: 0.1em 0.2em;
     text-align: center;
   }
@@ -604,14 +603,14 @@ h3.section-header {
       border-radius: 50%;
 
       background: white;
-      border: 3px solid $accentCol;
+      border: 3px solid var(--clr-primary);
       background-color: #333;
 
-      @include smallScreen() {
+      @include responsive.smallScreen{
         width: 15px;
         height: 15px;
         margin-top: -5px;
-        border: 3px solid $accentCol;
+        border: 3px solid var(--clr-primary);
       }
     }
 
@@ -622,14 +621,14 @@ h3.section-header {
       border-radius: 50%;
 
       background: white;
-      border: 4px solid $accentCol;
+      border: 4px solid var(--clr-primary);
 
       cursor: pointer;
 
-      @include smallScreen() {
+      @include responsive.smallScreen{
         width: 1em;
         height: 1em;
-        border: 3px solid $accentCol;
+        border: 3px solid var(--clr-primary);
       }
     }
 
@@ -659,7 +658,7 @@ h3.section-header {
   }
 }
 
-@include smallScreen {
+@include responsive.smallScreen{
   .slider {
     display: flex;
     flex-wrap: wrap;

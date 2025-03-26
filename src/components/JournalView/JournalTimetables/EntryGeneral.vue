@@ -130,8 +130,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../../styles/responsive';
-@import '../../../styles/badge';
+@use '../../../styles/responsive';
+@use '../../../styles/badge';
 
 .item-general {
   display: flex;
@@ -191,7 +191,7 @@ export default defineComponent({
   }
 }
 
-@include smallScreen {
+@include responsive.smallScreen{
   .item-general {
     flex-direction: column;
     justify-content: center;

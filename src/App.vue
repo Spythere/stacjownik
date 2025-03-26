@@ -167,15 +167,14 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import './styles/global';
-@import './styles/animations';
+@use './styles/animations';
 
 .route {
   margin: 0 0.2em;
 
   &-active,
   &[data-active='true'] {
-    color: $accentCol;
+    color: var(--clr-primary);
     font-weight: bold;
   }
 }
@@ -183,16 +182,8 @@ export default defineComponent({
 // APP
 #app {
   color: white;
-  font-size: 1rem;
   overflow-x: hidden;
-
-  @include smallScreen() {
-    font-size: calc(0.65rem + 0.85vw);
-  }
-
-  @include screenLandscape() {
-    font-size: calc(0.45rem + 0.8vw);
-  }
+  font-size: 1em;
 }
 
 // CONTAINER
