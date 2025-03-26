@@ -147,7 +147,7 @@ function copyStockToClipboard() {
 </script>
 
 <style lang="scss" scoped>
-@import '../styles/responsive';
+@use '../styles/responsive';
 
 $viewBgCol: #1a1a1a;
 
@@ -209,7 +209,7 @@ $viewBgCol: #1a1a1a;
   gap: 0.5em;
 }
 
-@include smallScreen {
+@include responsive.smallScreen{
   span.hidable {
     display: none;
   }

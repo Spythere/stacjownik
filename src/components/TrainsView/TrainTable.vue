@@ -19,7 +19,7 @@
         >)
       </div>
 
-      <transition-group name="list-anim" tag="ul">
+      <transition-group name="list-anim" tag="div" class="list_wrapper">
         <TrainTableItem v-for="train in trains" :key="train.id" :train="train" />
       </transition-group>
     </div>
@@ -93,8 +93,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/responsive.scss';
-@import '../../styles/animations.scss';
+@use '../../styles/responsive';
+@use '../../styles/animations';
 
 .train-table {
   height: calc(100vh - 11em);
@@ -103,6 +103,10 @@ export default defineComponent({
   position: relative;
   overflow-y: auto;
   overflow-x: hidden;
+}
+
+.list_wrapper {
+  padding: 2px; // ensures focused items outline visibility
 }
 
 .table-warning {

@@ -64,7 +64,7 @@
         </div>
 
         <router-link
-          class="timetable-item a-block"
+          class="timetable-item"
           v-else
           v-for="(row, i) in sceneryTimetables"
           :key="row.train.id + i"
@@ -327,9 +327,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/responsive.scss';
-@import '../../styles/variables.scss';
-@import '../../styles/animations.scss';
+@use '../../styles/responsive';
+@use '../../styles/animations';
 
 .scenery-timetable {
   height: 100%;
@@ -436,7 +435,7 @@ export default defineComponent({
 
   &.current {
     font-weight: bold;
-    color: $accentCol;
+    color: var(--clr-primary);
   }
 }
 
@@ -449,7 +448,7 @@ export default defineComponent({
   flex-wrap: wrap;
 
   .info-number {
-    color: $accentCol;
+    color: var(--clr-primary);
   }
 
   .info-route {
@@ -485,7 +484,7 @@ export default defineComponent({
       align-self: center;
       font-size: 0.9em;
 
-      color: $accentCol;
+      color: var(--clr-primary);
 
       &::after {
         content: '\027F6';
@@ -502,7 +501,7 @@ export default defineComponent({
   font-size: 0.85em;
 }
 
-@include smallScreen {
+@include responsive.smallScreen {
   .timetable-item {
     grid-template-columns: 1fr;
   }

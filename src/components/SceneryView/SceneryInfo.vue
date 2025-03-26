@@ -59,8 +59,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import '../../styles/responsive.scss';
-@import '../../styles/badge.scss';
+@use '../../styles/responsive';
+@use '../../styles/badge';
 
 h3.section-header {
   margin: 0.5em 0;

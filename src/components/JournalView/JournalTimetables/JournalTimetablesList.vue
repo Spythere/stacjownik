@@ -107,10 +107,11 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../../styles/JournalSection.scss';
-@import '../../../styles/animations.scss';
+@use '../../../styles/animations';
+@use '../../../styles/journal-section';
+@use '../../../styles/responsive';
 
-@include smallScreen {
+@include responsive.smallScreen{
   .journal_item-info {
     text-align: center;
   }

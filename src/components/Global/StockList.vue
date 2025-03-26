@@ -22,20 +22,12 @@ export default defineComponent({
   components: { VehicleThumbnail },
 
   props: {
-    trainStockList: {
-      type: Array as PropType<string[]>,
-      required: true
-    },
-    tractionOnly: {
-      type: Boolean,
-      required: false
-    }
+    trainStockList: { type: Array as PropType<string[]>, required: true },
+    tractionOnly: { type: Boolean, required: false }
   },
 
   data() {
-    return {
-      apiStore: useApiStore()
-    };
+    return { apiStore: useApiStore() };
   },
 
   computed: {
@@ -151,7 +143,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-
 .list-wrapper {
   display: flex;
   justify-content: center;

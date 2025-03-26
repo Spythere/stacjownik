@@ -300,6 +300,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/dropdown';
-@import '../../styles/dropdown_filters';
+@use '../../styles/dropdown';
+@use '../../styles/dropdown-filters';
 </style>

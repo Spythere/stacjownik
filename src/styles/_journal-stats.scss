@@ -1,6 +1,5 @@
-@import 'variables.scss';
-@import 'responsive.scss';
-@import 'badge.scss';
+@use 'responsive';
+@use 'badge';
 
 .stats-tab {
   position: absolute;
@@ -11,7 +10,7 @@
   width: 100%;
 
   background-color: #1a1a1a;
-  box-shadow: 0 0 5px 1px $accentCol;
+  box-shadow: 0 0 5px 1px var(--clr-primary);
 
   padding: 1em;
   display: flex;
@@ -33,7 +32,7 @@ hr.section-separator {
   gap: 0.5em;
 }
 
-@include smallScreen {
+@include responsive.smallScreen{
   .journal-stats {
     text-align: center;
   }

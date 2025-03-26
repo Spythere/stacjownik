@@ -310,7 +310,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/responsive.scss';
+@use '../../styles/responsive';
 
 // INDICATOR TOOLTIP ANIMATION
 .tooltip-anim {
@@ -379,7 +379,7 @@ export default defineComponent({
       content: '';
     }
 
-    @include midScreen() {
+    @include responsive.midScreen() {
       left: auto;
       right: 200%;
 
@@ -393,7 +393,7 @@ export default defineComponent({
       }
     }
 
-    @include smallScreen() {
+    @include responsive.smallScreen{
       min-width: 8em;
     }
   }

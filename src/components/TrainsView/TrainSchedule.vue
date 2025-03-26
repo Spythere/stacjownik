@@ -367,7 +367,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/responsive.scss';
+@use '../../styles/responsive';
 
 $barClr: #b1b1b1;
 $confirmedClr: #4ae24a;

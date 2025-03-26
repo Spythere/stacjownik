@@ -190,8 +190,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/dropdown.scss';
-@import '../../styles/badge.scss';
+@use '../../styles/dropdown';
+@use '../../styles/badge';
+@use '../../styles/responsive';
 
 h1 img {
   vertical-align: text-bottom;
@@ -229,7 +230,7 @@ ul.stats-list {
   }
 }
 
-@include smallScreen {
+@include responsive.smallScreen{
   .filter-button span {
     display: none;
   }

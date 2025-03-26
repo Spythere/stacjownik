@@ -51,7 +51,6 @@ function onImageLoad() {
 
 <style lang="scss" scoped>
 .vehicle-thumbnail {
-  
   position: relative;
   opacity: 0;
   transition: opacity 100ms ease-in-out;

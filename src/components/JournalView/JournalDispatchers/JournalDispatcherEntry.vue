@@ -121,14 +121,8 @@ import StationStatusBadge from '../../Global/StationStatusBadge.vue';
 
 export default defineComponent({
   props: {
-    entry: {
-      type: Object as PropType<API.DispatcherHistory.Data>,
-      required: true
-    },
-    showExtraInfo: {
-      type: Boolean,
-      required: true
-    }
+    entry: { type: Object as PropType<API.DispatcherHistory.Data>, required: true },
+    showExtraInfo: { type: Boolean, required: true }
   },
 
   components: { StationStatusBadge },
@@ -136,10 +130,7 @@ export default defineComponent({
   emits: ['toggleShowExtraInfo'],
 
   data() {
-    return {
-      regions,
-      apiStore: useApiStore()
-    };
+    return { regions, apiStore: useApiStore() };
   },
 
   methods: {
@@ -151,8 +142,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../../styles/responsive.scss';
-@import '../../../styles/badge.scss';
+@use '../../../styles/responsive';
+@use '../../../styles/badge';
 
 .region-badge {
   padding: 0 0.25em;
@@ -207,7 +198,7 @@ export default defineComponent({
   border-radius: 1em;
 }
 
-@include smallScreen {
+@include responsive.smallScreen{
   .entry-info {
     flex-direction: column;
     justify-content: center;

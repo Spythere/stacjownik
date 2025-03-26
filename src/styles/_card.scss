@@ -1,5 +1,4 @@
-@import './variables.scss';
-@import './responsive.scss';
+@use 'responsive';
 
 .card-dimmer {
   position: fixed;
@@ -46,7 +45,7 @@
   }
 }
 
-@include smallScreen {
+@include responsive.smallScreen{
   .card {
     max-height: 85vh;
   }

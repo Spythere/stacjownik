@@ -6,9 +6,7 @@
 import { computed, defineComponent, ref } from 'vue';
 export default defineComponent({
   name: 'VueClock',
-  data: () => ({
-    timestamp: Date.now()
-  }),
+  data: () => ({ timestamp: Date.now() }),
   setup() {
     let timestamp = ref(Date.now());
 
@@ -28,8 +26,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/responsive.scss';
-
 .clock {
   display: flex;
   align-items: center;

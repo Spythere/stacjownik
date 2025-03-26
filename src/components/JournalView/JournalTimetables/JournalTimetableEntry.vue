@@ -3,14 +3,14 @@
     <!-- General -->
     <EntryGeneral :timetable="timetableEntry" />
 
+    <!-- Route -->
+    <div class="entry-route">
+      <b>{{ timetableEntry.route.replace('|', ' - ') }}</b>
+    </div>
+
+    <hr />
+
     <div @click="toggleExtraInfo" style="cursor: pointer">
-      <!-- Route -->
-      <div class="entry-route">
-        <b>{{ timetableEntry.route.replace('|', ' - ') }}</b>
-      </div>
-
-      <hr />
-
       <!-- Status -->
       <EntryStatus :timetable="timetableEntry" />
     </div>
@@ -134,15 +134,20 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../../styles/responsive.scss';
+@use '../../../styles/responsive';
 
 .timetable-history-entry {
   background-color: #1a1a1a;
   padding: 1em;
 }
 
-@include smallScreen {
+.entry-route {
+  display: flex;
+}
+
+@include responsive.smallScreen{
   .entry-route {
+    justify-content: center;
     text-align: center;
   }
 }

@@ -187,7 +187,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../../styles/badge.scss';
+@use '../../../styles/badge';
 
 .entry-stops {
   word-wrap: break-word;

@@ -120,8 +120,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/variables.scss';
-
 .region-dropdown {
   display: flex;
   align-items: center;
@@ -182,7 +180,7 @@ li.option {
     background: none;
 
     &:focus + span {
-      color: $accentCol;
+      color: var(--clr-primary);
       font-weight: 800;
     }
   }

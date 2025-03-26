@@ -188,8 +188,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/responsive.scss';
-@import '../../styles/sceneryViewTables.scss';
+@use '../../styles/responsive';
+@use '../../styles/scenery-history-table';
 
 .scenery-timetables-history {
   height: 100%;

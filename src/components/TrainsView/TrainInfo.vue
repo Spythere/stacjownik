@@ -264,7 +264,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/badge.scss';
+@use '../../styles/badge';
 
 .image-warning {
   height: 1em;
@@ -297,6 +297,7 @@ export default defineComponent({
 .train-info {
   display: flex;
   flex-direction: column;
+  font-size: 1em;
   gap: 0.25em;
 
   background-color: #1a1a1a;

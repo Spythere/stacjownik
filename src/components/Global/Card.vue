@@ -43,7 +43,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/responsive.scss';
+@use '../../styles/responsive';
 
 .card {
   position: fixed;
@@ -85,7 +85,7 @@ export default defineComponent({
   overflow: auto;
 }
 
-@include smallScreen {
+@include responsive.smallScreen{
   .card {
     align-items: flex-start;
   }

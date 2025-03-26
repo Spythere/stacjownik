@@ -80,7 +80,11 @@
             <h3>{{ $t('train-stats.top-units') }}</h3>
 
             <transition-group tag="ul" name="stats-anim">
-              <li class="badge stat-badge" v-for="top in stats.topUnits.slice(0, 7)" :key="top.name">
+              <li
+                class="badge stat-badge"
+                v-for="top in stats.topUnits.slice(0, 7)"
+                :key="top.name"
+              >
                 <span>{{ top.name }}</span>
                 <span>{{ top.count }}</span>
               </li>
@@ -221,9 +225,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/dropdown.scss';
-@import '../../styles/badge.scss';
-@import '../../styles/responsive.scss';
+@use '../../styles/dropdown';
+@use '../../styles/badge';
+@use '../../styles/responsive';
 
 h1 img {
   vertical-align: text-bottom;
@@ -248,7 +252,7 @@ h3 {
   max-width: 600px;
 }
 
-@include smallScreen {
+@include responsive.smallScreen{
   .no-data {
     text-align: center;
   }

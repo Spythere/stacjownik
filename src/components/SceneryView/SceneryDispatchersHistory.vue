@@ -148,8 +148,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/responsive.scss';
-@import '../../styles/sceneryViewTables.scss';
+@use '../../styles/responsive';
+@use '../../styles/scenery-history-table';
 
 .scenery-dispatchers-history {
   height: 100%;
@@ -194,7 +194,7 @@ export default defineComponent({
   color: springgreen;
 }
 
-@include smallScreen {
+@include responsive.smallScreen{
   .journal-list > div {
     flex-direction: column;
     justify-content: center;
