@@ -403,6 +403,8 @@ export default defineComponent({
 @use '../../styles/responsive';
 @use '../../styles/icons';
 
+@use 'sass:color';
+
 $rowCol: #424242;
 
 .station_table {
@@ -503,13 +505,13 @@ tr,
   vertical-align: middle;
 
   &:nth-child(even) {
-    background-color: lighten($rowCol, 5);
+    background-color: color.adjust($rowCol, $lightness: 5%);
     color: white;
   }
 
   &:hover,
   &:focus {
-    background-color: lighten($rowCol, 20);
+    background-color: color.adjust($rowCol, $lightness: 15%);
   }
 
   td {

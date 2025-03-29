@@ -169,16 +169,6 @@ export default defineComponent({
 <style lang="scss">
 @use './styles/animations';
 
-.route {
-  margin: 0 0.2em;
-
-  &-active,
-  &[data-active='true'] {
-    color: var(--clr-primary);
-    font-weight: bold;
-  }
-}
-
 // APP
 #app {
   color: white;

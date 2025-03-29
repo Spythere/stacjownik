@@ -140,18 +140,27 @@ a {
   color: inherit;
 }
 
+a.a-row {
+  display: table-row;
+}
+
 a:focus-visible {
   outline: 1px solid var(--clr-primary);
 }
 
-.route-active,
-.route[data-active='true'] {
-  color: #ffc014;
-  font-weight: 700;
-}
+.route-link {
+  margin: 0 0.2em;
+  transition: color 100ms;
 
-a.a-row {
-  display: table-row;
+  &-active,
+  &[data-active='true'] {
+    color: var(--clr-primary);
+    font-weight: bold;
+  }
+
+  &:hover {
+    color: var(--clr-primary);
+  }
 }
 
 ul {

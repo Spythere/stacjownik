@@ -198,30 +198,26 @@ a.discord {
 
 .actions-container > .action {
   &.paypal {
-    $btnColor: #254069;
-
-    background-color: $btnColor;
+    background-color: #254069;
 
     &:hover {
-      background-color: lighten($btnColor, 5%);
+      background-color: #2f5185;
     }
   }
 
   &.coffee {
-    $btnColor: #009255;
-    background-color: $btnColor;
+    background-color: #009255;
 
     &:hover {
-      background-color: lighten($btnColor, 5%);
+      background-color: #00a35f;
     }
   }
 
   &.exit {
-    $btnColor: #686868;
-    background-color: $btnColor;
+    background-color: #686868;
 
     &:hover {
-      background-color: lighten($btnColor, 5%);
+      background-color: #8d8d8d;
     }
   }
 }

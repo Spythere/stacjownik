@@ -1,11 +1,16 @@
 <template>
   <section class="journal-header">
     <div class="journal-type-options">
-      <router-link class="router-link" active-class="route-active" to="/journal/timetables" exact>
+      <router-link
+        class="route-link"
+        active-class="route-link-active"
+        to="/journal/timetables"
+        exact
+      >
         {{ $t('journal.section-timetables') }}
       </router-link>
       &nbsp;&bull;&nbsp;
-      <router-link class="router-link" active-class="route-active" to="/journal/dispatchers">
+      <router-link class="route-link" active-class="route-link-active" to="/journal/dispatchers">
         {{ $t('journal.section-dispatchers') }}
       </router-link>
     </div>
@@ -38,9 +43,5 @@ export default defineComponent({});
 
   display: flex;
   justify-content: center;
-}
-
-.router-link.active {
-  color: gold;
 }
 </style>

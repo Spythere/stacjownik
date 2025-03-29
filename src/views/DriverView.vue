@@ -148,6 +148,7 @@ function copyStockToClipboard() {
 
 <style lang="scss" scoped>
 @use '../styles/responsive';
+@use 'sass:color';
 
 $viewBgCol: #1a1a1a;
 
@@ -176,7 +177,7 @@ $viewBgCol: #1a1a1a;
   border-radius: 0.5em 0.5em 0 0;
 
   &:hover {
-    background-color: lighten($viewBgCol, 10);
+    background-color: color.adjust($viewBgCol, $lightness: 10%);
   }
 }
 

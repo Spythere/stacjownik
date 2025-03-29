@@ -106,15 +106,13 @@ export default defineComponent({
 button.btn-donation {
   margin-left: auto;
 
-  $btnColor: #254069;
-
-  background-color: $btnColor;
+  background-color: #254069;
 
   &:hover {
-    background-color: lighten($btnColor, 5%);
+    background-color: #2e4f81;
   }
 
-  @include responsive.smallScreen{
+  @include responsive.smallScreen {
     span {
       display: none;
     }

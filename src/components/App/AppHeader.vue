@@ -45,17 +45,17 @@
         </span>
 
         <span class="header_links">
-          <router-link class="route" active-class="route-active" to="/" exact>
+          <router-link class="route-link" active-class="route-link-active" to="/" exact>
             {{ $t('app.sceneries') }}
           </router-link>
           /
-          <router-link class="route" active-class="route-active" to="/trains">{{
+          <router-link class="route-link" active-class="route-link-active" to="/trains">{{
             $t('app.trains')
           }}</router-link>
           /
           <router-link
-            class="route"
-            active-class="route-active"
+            class="route-link"
+            active-class="route-link-active"
             :data-active="$route.path.startsWith('/journal')"
             to="/journal"
           >
