@@ -107,7 +107,7 @@
             </div>
           </div>
 
-          <div v-else>{{ $t('station-stats.no-stats') }}</div>
+          <div class="no-data" v-else>{{ $t('station-stats.no-stats') }}</div>
         </div>
 
         <div tabindex="0" @focus="() => (showDropdown = false)"></div>
@@ -271,6 +271,11 @@ h1.stats-title img {
   [data-factor-highest='true'] {
     color: rgb(22, 245, 22);
   }
+}
+
+.no-data {
+  font-size: 1.1em;
+  color: #ccc;
 }
 
 @include responsive.smallScreen {
