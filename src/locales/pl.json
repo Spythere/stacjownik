@@ -327,13 +327,19 @@
     "active-filters": "Uwaga! Masz obecnie aktywne filtry!"
   },
   "station-stats": {
+    "title": "STATYSTYKI AKTYWNYCH SCENERII",
+    "stats-button": "STATYSTYKI",
     "u-factor": "Współczynnik Ugla",
     "u-factor-tooltip": "(?) Współczynnik ruchu na serwerze (liczba maszynistów online dzielona na liczbę dyżurnych ruchu)",
-    "avg-timetable-count": "Średnia liczba rozkładów jazdy na sceneriach:",
+    "avg-timetable-count": "Średnia RJ:",
     "single-track-count": "Szlaki jednotorowe:",
     "double-track-count": "Szlaki dwutorowe:",
-    "cross-sceneries": "Scenerie przejściowe (1-tor <-> 2-tor):",
-    "open-spawns": "Otwarte spawny:"
+    "cross-sceneries": "Scenerie przejściowe:",
+    "open-spawns-all": "Spawny (ALL):",
+    "open-spawns-pas": "Spawny (PAS):",
+    "open-spawns-freight": "Spawny (TOW):",
+    "open-spawns-loco": "Spawny (LOK):",
+    "no-stats": "Brak statystyk online dla wybranego serwera!"
   },
   "trains": {
     "no-trains": "Brak pociągów do wyświetlenia!",
@@ -380,7 +386,7 @@
   },
   "train-stats": {
     "stats-button": "STATYSTYKI",
-    "title": "STATYSTYKI ONLINE",
+    "title": "STATYSTYKI AKTYWNYCH POCIĄGÓW",
     "timetable-count": "AKTYWNE RJ",
     "avg-speed": "ŚREDNIA PRĘDKOŚĆ",
     "avg-timetable": "ŚREDNI RJ",

@@ -8,58 +8,106 @@
 
     <button class="filter-button btn--filled btn--image" @click="toggleDropdown" ref="button">
       <img src="/images/icon-stats.svg" alt="Open filters icon" />
-      <!-- {{ $t('train-stats.stats-button') }} -->
-      <span>STATYSTYKI</span>
+      {{ $t('station-stats.stats-button') }}
     </button>
 
     <transition name="dropdown-anim">
       <div class="dropdown_wrapper" v-if="showDropdown">
         <div>
-          <h1 class="text--primary">
+          <h1 class="stats-title text--primary">
             <img src="/images/icon-stats.svg" alt="Open filters icon" />
-            {{ $t('train-stats.title') }}
+            {{ $t('station-stats.title') }}
           </h1>
 
           <hr style="margin: 0.5em 0" />
 
-          <ul class="stats-list">
-            <li>
-              <span>
-                {{ $t('station-stats.u-factor') }}
-                <a
-                  href="https://td2.info.pl/dyskusje/wspolczynnik-ugla-czy-to-ma-sens/msg81011/#msg81011"
-                  target="_blank"
-                  :data-tooltip="$t('station-stats.u-factor-tooltip')"
-                  >(?)</a
-                >:
-              </span>
-              <b class="u-factor" :style="calculateFactorStyle()">
-                {{ uFactor.toFixed(2) }}
-              </b>
-            </li>
-            <li>
-              {{ $t('station-stats.avg-timetable-count') }}
-              <b>{{ avgTimetableCount.toFixed(2) }}</b>
-            </li>
-            <li>
-              {{ $t('station-stats.single-track-count') }}
-              <b>{{ trackCount.oneWay }}</b> (<b>{{ trackCount.oneWayElectric }} ⚡</b>)
-            </li>
-            <li>
-              {{ $t('station-stats.double-track-count') }}
-              <b>{{ trackCount.twoWay }}</b>
-              (<b>{{ trackCount.twoWayElectric }} ⚡</b>)
-            </li>
-            <li>
-              {{ $t('station-stats.cross-sceneries') }}
-              <b>{{ trackCount.crossTrack }}</b> (<b>{{ trackCount.crossTrackElectric }} ⚡</b>)
-            </li>
-            <li>
-              {{ $t('station-stats.open-spawns') }} <b>{{ spawnCount.passenger }}</b> - PAS /
-              <b>{{ spawnCount.freight }}</b> - TOW / <b>{{ spawnCount.loco }}</b> - LUZ /
-              <b>{{ spawnCount.all }}</b> - ALL
-            </li>
-          </ul>
+          <div v-if="uFactor > -1 || avgTimetableCount > -1 || trackCount.all > 0">
+            <div class="badges-container">
+              <div class="badge stat-badge">
+                <span>
+                  {{ $t('station-stats.u-factor') }}
+                  <a
+                    href="https://td2.info.pl/dyskusje/wspolczynnik-ugla-czy-to-ma-sens/msg81011/#msg81011"
+                    target="_blank"
+                    :data-tooltip="$t('station-stats.u-factor-tooltip')"
+                    >(?)</a
+                  >:
+                </span>
+
+                <span>
+                  <b class="u-factor" :style="calculateFactorStyle()">
+                    {{ uFactor >= 0 ? uFactor.toFixed(2) : '---' }}
+                  </b>
+                </span>
+              </div>
+
+              <div class="badge stat-badge">
+                <span>{{ $t('station-stats.avg-timetable-count') }}</span>
+                <span>
+                  <b>{{ avgTimetableCount >= 0 ? avgTimetableCount.toFixed(2) : '---' }}</b>
+                </span>
+              </div>
+            </div>
+
+            <hr style="margin: 0.5em 0" />
+
+            <div class="badges-container">
+              <div class="badge stat-badge">
+                <span>{{ $t('station-stats.single-track-count') }}</span>
+                <span>
+                  <b> {{ trackCount.oneWay }}</b> (<b>{{ trackCount.oneWayElectric }} ⚡</b>)
+                </span>
+              </div>
+
+              <div class="badge stat-badge">
+                <span>{{ $t('station-stats.double-track-count') }}</span>
+                <span>
+                  <b>{{ trackCount.twoWay }}</b> (<b>{{ trackCount.twoWayElectric }} ⚡</b>)
+                </span>
+              </div>
+
+              <div class="badge stat-badge">
+                <span> {{ $t('station-stats.cross-sceneries') }}</span>
+                <span>
+                  <b>{{ trackCount.crossTrack }}</b> (<b>{{ trackCount.crossTrackElectric }} ⚡</b>)
+                </span>
+              </div>
+            </div>
+
+            <hr style="margin: 0.5em 0" />
+
+            <div class="badges-container">
+              <div class="badge stat-badge">
+                <span> {{ $t('station-stats.open-spawns-all') }}</span>
+                <span>
+                  <b>{{ spawnCount.all }}</b>
+                </span>
+              </div>
+
+              <div class="badge stat-badge">
+                <span> {{ $t('station-stats.open-spawns-pas') }}</span>
+                <span>
+                  <b>{{ spawnCount.passenger }}</b>
+                </span>
+              </div>
+
+              <div class="badge stat-badge">
+                <span> {{ $t('station-stats.open-spawns-freight') }}</span>
+                <span>
+                  <b>{{ spawnCount.freight }}</b>
+                </span>
+              </div>
+
+              <div class="badge stat-badge">
+                <span> {{ $t('station-stats.open-spawns-loco') }}</span>
+                <span>
+                  <b>{{ spawnCount.loco }}</b>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div v-else>{{ $t('station-stats.no-stats') }}</div>
         </div>
 
         <div tabindex="0" @focus="() => (showDropdown = false)"></div>
@@ -86,9 +134,9 @@ export default defineComponent({
     },
 
     calculateFactorStyle() {
-      if (this.uFactor == 0) return '';
+      if (this.uFactor <= 0) return '';
 
-      const norm = this.uFactor == 0 ? 1 : Math.max(Math.min(this.uFactor / 2, 1), 0);
+      const norm = Math.max(Math.min(this.uFactor / 2, 1), 0);
       const lerp = 120 * norm;
 
       return `color: hsl(${lerp}, 100%, 60%)`;
@@ -105,7 +153,7 @@ export default defineComponent({
         (train) => train.region == this.mainStore.region.id
       );
 
-      return activeDispatchers.length != 0 ? activeTrains.length / activeDispatchers.length : 0;
+      return activeDispatchers.length != 0 ? activeTrains.length / activeDispatchers.length : -1;
     },
 
     avgTimetableCount() {
@@ -118,7 +166,7 @@ export default defineComponent({
         return acc;
       }, 0);
 
-      if (regionSceneries.length == 0) return 0;
+      if (regionSceneries.length == 0) return -1;
 
       return timetableCountSum / regionSceneries.length;
     },
@@ -134,6 +182,8 @@ export default defineComponent({
         .reduce(
           (acc, st) => {
             const { routes } = st.generalInfo!;
+
+            acc.all++;
 
             if (
               routes.single.filter((r) => !r.isInternal).length > 0 &&
@@ -163,7 +213,8 @@ export default defineComponent({
             twoWay: 0,
             twoWayElectric: 0,
             crossTrack: 0,
-            crossTrackElectric: 0
+            crossTrackElectric: 0,
+            all: 0
           }
         );
     },
@@ -194,12 +245,14 @@ export default defineComponent({
 @use '../../styles/badge';
 @use '../../styles/responsive';
 
-h1 img {
+h1.stats-title img {
   vertical-align: text-bottom;
 }
 
-h3 {
-  margin: 0.5em 0;
+.badges-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
 }
 
 .u-factor {
@@ -220,19 +273,9 @@ h3 {
   }
 }
 
-ul.stats-list {
-  list-style: disc;
-  padding-left: 1em;
-  margin-top: 1em;
-
-  & > li {
-    margin: 0.25em 0;
-  }
-}
-
-@include responsive.smallScreen{
-  .filter-button span {
-    display: none;
+@include responsive.smallScreen {
+  h1.stats-title {
+    text-align: center;
   }
 }
 </style>
