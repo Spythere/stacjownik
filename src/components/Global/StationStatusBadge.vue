@@ -20,15 +20,9 @@ import { Status } from '../../typings/common';
 
 export default defineComponent({
   props: {
-    dispatcherStatus: {
-      type: Number as PropType<Status.ActiveDispatcher | number>
-    },
-    dispatcherTimestamp: {
-      type: Number as PropType<number | null>
-    },
-    isOnline: {
-      type: Boolean
-    }
+    dispatcherStatus: { type: Number as PropType<Status.ActiveDispatcher | number> },
+    dispatcherTimestamp: { type: Number as PropType<number | null> },
+    isOnline: { type: Boolean }
   },
   mixins: [dateMixin],
 

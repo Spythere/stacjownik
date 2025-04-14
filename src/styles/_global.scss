@@ -1,6 +1,5 @@
-@import 'fonts';
-@import 'variables';
-@import 'responsive';
+@use 'fonts';
+@use 'responsive';
 
 :root {
   --clr-primary: #ffc014;
@@ -8,6 +7,7 @@
 
   --clr-bg: #4d4d4d;
   --clr-bg2: #1b1b1b;
+  --clr-bg3: #1d1d1d;
 
   --clr-accent: #1085b3;
   --clr-accent2: #ff3d5d;
@@ -18,7 +18,7 @@
   --clr-pn: #ffd000;
 
   --clr-error: #fa3636;
-  --clr-warning: #c59429;
+  --clr-warning: #ffe15b;
 
   --clr-donator: #f7a4ff;
 
@@ -60,11 +60,21 @@ body {
   overflow-x: hidden;
   position: relative;
 
+  font-size: 16px;
+
+  @include responsive.smallScreen {
+    font-size: calc(0.65rem + 0.85vw);
+  }
+
+  @include responsive.screenLandscape {
+    font-size: calc(0.45rem + 0.8vw);
+  }
+
   &.no-scroll {
     overflow-y: hidden;
     padding-right: var(--no-scroll-padding);
 
-    @include smallScreen() {
+    @include responsive.smallScreen {
       padding: 0;
     }
   }
@@ -108,11 +118,11 @@ input {
 }
 
 *:focus-visible {
-  outline: 1px solid $accentCol;
+  outline: 1px solid var(--clr-primary);
 }
 
 .title {
-  color: $accentCol;
+  color: var(--clr-primary);
   font-weight: 600;
 
   padding: 0.35em 0;
@@ -130,24 +140,27 @@ a {
   color: inherit;
 }
 
-a:not(.a-block):not(.a-button):not(.a-row) {
-  display: inline-block;
-
-  transition: color 0.3s;
-
-  &:hover,
-  &:focus {
-    color: $accentCol;
-    border: none;
-  }
-}
-
-a.a-block {
-  display: block;
-}
-
 a.a-row {
   display: table-row;
+}
+
+a:focus-visible {
+  outline: 1px solid var(--clr-primary);
+}
+
+.route-link {
+  margin: 0 0.2em;
+  transition: color 100ms;
+
+  &-active,
+  &[data-active='true'] {
+    color: var(--clr-primary);
+    font-weight: bold;
+  }
+
+  &:hover {
+    color: var(--clr-primary);
+  }
 }
 
 ul {
@@ -292,7 +305,7 @@ a.a-button {
     width: 1.3em;
   }
 
-  @include smallScreen() {
+  @include responsive.smallScreen {
     bottom: 1em;
     right: 0;
     left: 50%;
@@ -330,7 +343,7 @@ a.a-button {
   cursor: help;
 }
 
-@include smallScreen {
+@include responsive.smallScreen {
   ::-webkit-scrollbar {
     width: 0.5em;
     height: 0.5em;

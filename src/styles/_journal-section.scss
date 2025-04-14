@@ -1,5 +1,5 @@
-@import 'responsive.scss';
-@import 'animations.scss';
+@use 'responsive';
+@use 'animations';
 
 .journal-list {
   display: flex;
@@ -12,7 +12,7 @@
 .list_wrapper {
   overflow-y: auto;
   height: calc(100vh - 12.5em);
-  min-height: 500px;
+  min-height: 650px;
   margin-top: 0.5em;
   position: relative;
 
@@ -68,7 +68,7 @@
   font-size: 1.2em;
 }
 
-@include smallScreen() {
+@include responsive.smallScreen{
   .journal_top-bar {
     justify-content: center;
     flex-wrap: wrap;

@@ -1,6 +1,5 @@
-@import 'search_box.scss';
-@import 'responsive.scss';
-@import 'variables.scss';
+@use 'search-box';
+@use 'responsive';
 
 .actions-bar {
   display: flex;
@@ -51,7 +50,7 @@ h1.option-title {
 }
 
 .sort-option[data-selected='true'] {
-  color: $accentCol;
+  color: var(--clr-primary);
   font-weight: bold;
 }
 
@@ -73,15 +72,6 @@ h1.option-title {
   .search {
     margin: 0.5em auto;
   }
-
-  .search-box {
-    .search-exit {
-      position: absolute;
-      transform: translateY(-50%);
-      top: 50%;
-      right: 0;
-    }
-  }
 }
 
 .options_actions {
@@ -95,7 +85,7 @@ h1.option-title {
   }
 }
 
-@include smallScreen() {
+@include responsive.smallScreen{
   h1 {
     text-align: center;
 

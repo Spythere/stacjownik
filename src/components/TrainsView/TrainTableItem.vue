@@ -1,29 +1,27 @@
 <template>
-  <li class="train-item">
-    <router-link class="a-block" :to="train.driverRouteLocation">
-      <div class="item-wrapper">
-        <TrainInfo :train="train" />
+  <router-link :to="train.driverRouteLocation" class="train-item">
+    <div class="item-wrapper">
+      <TrainInfo :train="train" />
 
-        <div class="train-stats">
-          <StockList :trainStockList="train.stockList" :tractionOnly="true" />
+      <div class="train-stats">
+        <StockList :trainStockList="train.stockList" :tractionOnly="true" />
+
+        <div>
+          <span>{{ train.speed }}km/h</span>
 
           <div>
-            <span>{{ train.speed }}km/h</span>
-
-            <div>
-              <span> {{ train.length }}m</span>
+            <span> {{ train.length }}m</span>
+            &bull;
+            <span> {{ (train.mass / 1000).toFixed(1) }}t</span>
+            <span v-if="train.stockList.length > 1">
               &bull;
-              <span> {{ (train.mass / 1000).toFixed(1) }}t</span>
-              <span v-if="train.stockList.length > 1">
-                &bull;
-                {{ $t('trains.cars') }}: {{ train.stockList.length - 1 }}
-              </span>
-            </div>
+              {{ $t('trains.cars') }}: {{ train.stockList.length - 1 }}
+            </span>
           </div>
         </div>
       </div>
-    </router-link>
-  </li>
+    </div>
+  </router-link>
 </template>
 
 <script setup lang="ts">
@@ -41,9 +39,10 @@ defineProps({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/responsive.scss';
+@use '../../styles/responsive';
 
 .train-item {
+  display: block;
   background-color: #1a1a1a;
   margin-bottom: 1em;
   width: 100%;
@@ -67,7 +66,7 @@ defineProps({
   line-height: 1.5em;
 }
 
-@include smallScreen() {
+@include responsive.smallScreen {
   .item-wrapper {
     grid-template-columns: 1fr;
     gap: 1em 0;

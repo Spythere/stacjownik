@@ -1,4 +1,4 @@
-@import 'responsive.scss';
+@use 'responsive';
 
 .search {
   label {
@@ -11,8 +11,9 @@
     position: relative;
 
     display: flex;
+    align-items: center;
+    gap: 0.25em;
 
-    border-radius: 0.5em;
     min-width: 200px;
     margin-right: 0.25em;
   }
@@ -20,6 +21,8 @@
   &-input {
     border: none;
     background-color: #424242;
+    color: white;
+    border-radius: 0.5em;
 
     padding: 0.35em 0.5em;
     width: 100%;
@@ -27,6 +30,7 @@
 
   &-exit {
     background-color: #424242;
+    border-radius: 0.5em;
 
     img {
       vertical-align: middle;
@@ -39,7 +43,7 @@
     max-width: 300px;
   }
 
-  @include smallScreen {
+  @include responsive.smallScreen {
     &-box,
     &-button {
       margin: 0.5em 0 0 0;
@@ -49,4 +53,16 @@
       width: 100%;
     }
   }
+}
+
+.search-box > i {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  padding-right: 0.5em;
+}
+
+select.search-input {
+
 }

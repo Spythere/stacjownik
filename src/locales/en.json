@@ -157,9 +157,8 @@
     "sort-title": "SORT BY:",
     "filter-title": "FILTER BY:",
     "search-title": "SEARCH:",
-    "search-train-no": "Train no. / #",
-    "search-train": "Train no.",
-    "search-driver": "Driver name",
+    "search-train": "Train no. / #",
+    "search-driver": "Choose a driver...",
     "search-dispatcher": "Dispatcher name",
     "search-station": "Scenery name / #",
     "search-author": "Timetable author name",
@@ -332,13 +331,19 @@
     "active-filters": "Attention! You got active filters!"
   },
   "station-stats": {
+    "title": "ONLINE SCENERIES STATS",
+    "stats-button": "STATISTICS",
     "u-factor": "U-factor",
     "u-factor-tooltip": "(?) Current server traffic factor (driver count divided by dispatcher count)",
-    "avg-timetable-count": "Average count of scenery timetables:",
+    "avg-timetable-count": "TT average:",
     "single-track-count": "Single track routes:",
     "double-track-count": "Double track routes:",
-    "cross-sceneries": "Cross-track sceneries (1-track <-> 2-track)",
-    "open-spawns": "Open spawns:"
+    "cross-sceneries": "Cross-track sceneries",
+    "open-spawns-all": "Spawns (ALL):",
+    "open-spawns-pas": "Spawns (PAS):",
+    "open-spawns-freight": "Spawns (TOW):",
+    "open-spawns-loco": "Spawns (LOK):",
+    "no-stats": "No statistics available for the current region!"
   },
   "trains": {
     "no-trains": "No trains to show here!",
@@ -394,7 +399,7 @@
   },
   "train-stats": {
     "stats-button": "STATISTICS",
-    "title": "STATISTICS ONLINE",
+    "title": "ONLINE TRAINS STATS",
     "timetable-count": "ACTIVE TIMETABLES",
     "avg-speed": "AVG SPEED",
     "avg-timetable": "AVG TIMETABLE",

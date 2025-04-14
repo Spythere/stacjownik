@@ -73,11 +73,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/variables';
-
 ::v-deep(h1) {
   text-align: center;
-  color: $accentCol;
+  color: var(--clr-primary);
 }
 
 ::v-deep(h2) {

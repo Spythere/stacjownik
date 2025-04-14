@@ -102,7 +102,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../../styles/icons.scss';
+@use '../../../styles/icons';
 
 .info-icons {
   display: flex;

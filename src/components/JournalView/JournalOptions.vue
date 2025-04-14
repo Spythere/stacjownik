@@ -51,7 +51,7 @@
                   :list="propName.toString()"
                 />
 
-                <button class="search-exit" v-if="!propName.toString().startsWith('search-date')">
+                <button class="btn btn--action search-exit" v-if="!propName.toString().startsWith('search-date')">
                   <img
                     src="/images/icon-exit.svg"
                     alt="exit-icon"
@@ -300,6 +300,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/dropdown';
-@import '../../styles/dropdown_filters';
+@use '../../styles/dropdown';
+@use '../../styles/dropdown-filters';
 </style>

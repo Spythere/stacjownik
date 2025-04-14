@@ -53,8 +53,6 @@ export const useApiStore = defineStore('apiStore', {
     },
 
     updateTick(t: number) {
-      if (this.dataStatuses.connection == Status.Data.Offline) return;
-
       // Static data refresh
       if (t >= this.nextDataCheckTime) {
         this.fetchDonatorsData();

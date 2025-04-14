@@ -32,25 +32,25 @@
         </span>
       </div>
 
-      <hr class="section-separator" />
+      <hr class="section-separator" v-if="stats.issuedTimetables" />
 
-      <div class="info-stats">
-        <span class="badge stat-badge" v-if="stats.issuedTimetables">
+      <div class="info-stats" v-if="stats.issuedTimetables">
+        <span class="badge stat-badge">
           <span>{{ $t('journal.dispatcher-stats.timetables-count') }}</span>
           <span>{{ stats.issuedTimetables.count }}</span>
         </span>
 
-        <span class="badge stat-badge" v-if="stats.issuedTimetables">
+        <span class="badge stat-badge">
           <span>{{ $t('journal.dispatcher-stats.timetables-sum') }}</span>
           <span>{{ stats.issuedTimetables.distanceSum.toFixed(2) }}km</span>
         </span>
 
-        <span class="badge stat-badge" v-if="stats.issuedTimetables">
+        <span class="badge stat-badge">
           <span>{{ $t('journal.dispatcher-stats.timetables-max') }}</span>
           <span>{{ stats.issuedTimetables.distanceMax.toFixed(2) }}km</span>
         </span>
 
-        <span class="badge stat-badge" v-if="stats.issuedTimetables">
+        <span class="badge stat-badge">
           <span>{{ $t('journal.dispatcher-stats.timetables-avg') }}</span>
           <span>{{ stats.issuedTimetables.distanceAvg.toFixed(2) }}km</span>
         </span>
@@ -81,5 +81,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../../styles/JournalStats.scss';
+@use '../../../styles/journal-stats';
 </style>

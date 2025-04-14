@@ -24,31 +24,26 @@
                 @blur="preventKeyDown = false"
                 :placeholder="$t(`options.search-train`)"
               />
-              <button class="search-exit">
-                <img
-                  src="/images/icon-exit.svg"
-                  alt="Trains search clear icon"
-                  @click="onInputClear('train')"
-                />
+              <button class="btn btn--action search-exit" @click="onInputClear('train')">
+                <img src="/images/icon-exit.svg" alt="Trains search clear icon" />
               </button>
             </div>
 
             <div class="search-box">
-              <input
-                v-model="searchedDriver"
+              <select
                 class="search-input"
-                id="driver-search"
-                name="driver-search"
-                @focus="preventKeyDown = true"
-                @blur="preventKeyDown = false"
-                :placeholder="$t(`options.search-driver`)"
-              />
-              <button class="search-exit">
-                <img
-                  src="/images/icon-exit.svg"
-                  alt="Driver search clear icon"
-                  @click="onInputClear('driver')"
-                />
+                name="active-trains"
+                id="active-trains"
+                v-model="searchedDriver"
+              >
+                <option value="">{{ $t('options.search-driver') }}</option>
+                <option v-for="driverName in activeDriverNames" :value="driverName">
+                  {{ driverName }}
+                </option>
+              </select>
+
+              <button class="btn btn--action search-exit" @click="onInputClear('driver')">
+                <img src="/images/icon-exit.svg" alt="Trains search clear icon" />
               </button>
             </div>
           </div>
@@ -101,6 +96,7 @@
 import { defineComponent, inject, PropType } from 'vue';
 import keyMixin from '../../mixins/keyMixin';
 import { TrainFilter, TrainFilterSection } from './typings';
+import { useMainStore } from '../../store/mainStore';
 
 export default defineComponent({
   mixins: [keyMixin],
@@ -120,6 +116,7 @@ export default defineComponent({
   data() {
     return {
       showOptions: false,
+      store: useMainStore(),
       lastSelectedFilter: null as TrainFilter | null,
       TrainFilterSection
     };
@@ -141,6 +138,16 @@ export default defineComponent({
         id,
         value: this.$t(`options.sort-${id}`)
       }));
+    },
+
+    activeDriverNames() {
+      const driverNameSet = new Set<string>();
+
+      this.store.trainList.forEach((train) => {
+        driverNameSet.add(train.driverName);
+      });
+
+      return [...driverNameSet].sort((a, b) => a.localeCompare(b));
     }
   },
 
@@ -195,8 +202,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/dropdown.scss';
-@import '../../styles/dropdown_filters.scss';
+@use '../../styles/dropdown';
+@use '../../styles/dropdown-filters';
 
 .search_content > div {
   margin: 0.5em auto;

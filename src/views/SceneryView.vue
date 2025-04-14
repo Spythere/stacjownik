@@ -13,7 +13,7 @@
           :station="stationInfo"
           :onlineScenery="onlineSceneryInfo"
         />
-        
+
         <SceneryInfo :station="stationInfo" :onlineScenery="onlineSceneryInfo" />
       </div>
 
@@ -173,8 +173,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../styles/responsive.scss';
-@import '../styles/variables.scss';
+@use '../styles/responsive';
 
 button.back-btn {
   img {
@@ -193,7 +192,7 @@ button.back-btn {
     text-align: center;
     padding: 2em 1em;
 
-    color: $warningCol;
+    color: var(--clr-warning);
 
     display: inline-block;
 
@@ -275,7 +274,7 @@ button.back-btn {
   .checkpoint_item {
     &.current {
       font-weight: bold;
-      color: $accentCol;
+      color: var(--clr-primary);
     }
 
     &:not(:last-child)::after {
@@ -286,7 +285,7 @@ button.back-btn {
   }
 }
 
-@include midScreen {
+@include responsive.midScreen {
   .scenery-wrapper {
     grid-template-columns: 1fr;
     gap: 0;
@@ -304,7 +303,7 @@ button.back-btn {
   }
 }
 
-@include smallScreen {
+@include responsive.smallScreen{
   .scenery-left {
     max-height: 100vh;
   }

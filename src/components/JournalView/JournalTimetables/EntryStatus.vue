@@ -59,7 +59,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../../styles/responsive.scss';
+@use '../../../styles/responsive';
 
 .entry-status {
   display: flex;
@@ -67,7 +67,7 @@ export default defineComponent({
   flex-wrap: wrap;
   gap: 0.5em;
 
-  @include smallScreen() {
+  @include responsive.smallScreen{
     justify-content: center;
   }
 }

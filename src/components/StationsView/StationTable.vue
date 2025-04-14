@@ -400,9 +400,10 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/responsive.scss';
-@import '../../styles/variables.scss';
-@import '../../styles/icons.scss';
+@use '../../styles/responsive';
+@use '../../styles/icons';
+
+@use 'sass:color';
 
 $rowCol: #424242;
 
@@ -435,7 +436,7 @@ table {
   }
 
   thead tr {
-    background-color: $bgCol;
+    background-color: var(--clr-bg3);
   }
 
   thead th {
@@ -477,7 +478,7 @@ table {
     }
 
     padding: 0.5em 0.25em;
-    background-color: $bgCol;
+    background-color: var(--clr-bg3);
     white-space: pre-wrap;
 
     cursor: pointer;
@@ -504,13 +505,13 @@ tr,
   vertical-align: middle;
 
   &:nth-child(even) {
-    background-color: lighten($rowCol, 5);
+    background-color: color.adjust($rowCol, $lightness: 5%);
     color: white;
   }
 
   &:hover,
   &:focus {
-    background-color: lighten($rowCol, 20);
+    background-color: color.adjust($rowCol, $lightness: 15%);
   }
 
   td {
@@ -524,7 +525,7 @@ tr,
       opacity: 0.2;
     }
 
-    @include smallScreen() {
+    @include responsive.smallScreen{
       margin: 0;
       padding: 0.3em 0.5em;
       font-size: 1em;
@@ -537,7 +538,7 @@ tr,
   max-width: 200px;
 
   &.default {
-    color: $accentCol;
+    color: var(--clr-primary);
   }
 
   &.nonPublic {

@@ -45,17 +45,17 @@
         </span>
 
         <span class="header_links">
-          <router-link class="route" active-class="route-active" to="/" exact>
+          <router-link class="route-link" active-class="route-link-active" to="/" exact>
             {{ $t('app.sceneries') }}
           </router-link>
           /
-          <router-link class="route" active-class="route-active" to="/trains">{{
+          <router-link class="route-link" active-class="route-link-active" to="/trains">{{
             $t('app.trains')
           }}</router-link>
           /
           <router-link
-            class="route"
-            active-class="route-active"
+            class="route-link"
+            active-class="route-link-active"
             :data-active="$route.path.startsWith('/journal')"
             to="/journal"
           >
@@ -116,9 +116,9 @@ export default defineComponent({
   }
 });
 </script>
+
 <style lang="scss" scoped>
-@import '../../styles/variables.scss';
-@import '../../styles/responsive.scss';
+@use '../../styles/responsive';
 
 // HEADER
 .app_header {
@@ -126,7 +126,7 @@ export default defineComponent({
   justify-content: center;
 
   position: relative;
-  background-color: $primaryCol;
+  background-color: #2c2c2c;
 }
 
 .header {
@@ -141,7 +141,7 @@ export default defineComponent({
 
     border-radius: 0 0 1em 1em;
 
-    @include smallScreen {
+    @include responsive.smallScreen{
       position: relative;
       margin-top: 0.5em;
     }
@@ -180,7 +180,7 @@ export default defineComponent({
 
     padding: 0.5em;
 
-    @include smallScreen {
+    @include responsive.smallScreen{
       transform: translateX(85%);
     }
   }

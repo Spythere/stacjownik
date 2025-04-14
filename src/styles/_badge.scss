@@ -1,5 +1,4 @@
-@import 'variables.scss';
-@import 'responsive.scss';
+@use 'responsive';
 
 .badge {
   font-weight: 600;
@@ -9,7 +8,7 @@
 
   margin: 0.25em;
 
-  span {
+  & > span {
     display: inline-block;
     background: #585858;
     padding: 0.2em 0.4em;
@@ -23,7 +22,7 @@
 
     text-align: center;
 
-    @include smallScreen() {
+    @include responsive.smallScreen{
       font-size: 1em;
     }
   }
@@ -131,7 +130,7 @@
   color: white;
 
   & > span:first-child {
-    background-color: $accentCol;
+    background-color: var(--clr-primary);
     color: black;
   }
 }
