@@ -36,7 +36,7 @@
                 id="active-trains"
                 v-model="searchedDriver"
               >
-                <option value="">{{ $t('options.search-driver') }}</option>
+                <option value="">{{ $t('options.select-driver') }}</option>
                 <option v-for="driverName in activeDriverNames" :value="driverName">
                   {{ driverName }}
                 </option>

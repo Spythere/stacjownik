@@ -8,7 +8,8 @@
 
   margin: 0.25em;
 
-  & > span {
+  & > span,
+  & > a > span {
     display: inline-block;
     background: #585858;
     padding: 0.2em 0.4em;
@@ -22,7 +23,7 @@
 
     text-align: center;
 
-    @include responsive.smallScreen{
+    @include responsive.smallScreen {
       font-size: 1em;
     }
   }
