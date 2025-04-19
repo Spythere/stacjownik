@@ -382,6 +382,7 @@
     "driver-not-found-others": "Gracz {driver} jest online jako:",
     "driver-not-found-return": "WRÓĆ NA STRONĘ GŁÓWNĄ",
     "stock-copy": "SKOPIUJ SKŁAD",
+    "number-propositions": "ZAPROPONUJ NUMERY",
     "stock-clipboard-success": "Pomyślnie skopiowano skład w postaci tekstowej do schowka!",
     "stock-clipboard-failure": "Ups! Nie udało się skopiować składu do schowka! :/"
   },

@@ -395,6 +395,7 @@
     "driver-not-found-others": "Player {driver} is online as:",
     "driver-not-found-return": "GO BACK TO THE MAIN SITE",
     "stock-copy": "COPY THE STOCK",
+    "number-propositions": "PROPOSE NUMBERS",
     "stock-clipboard-success": "Successfully copied the railway stock in a text form to your clipboard!",
     "stock-clipboard-failure": "Oops! Something happened and the railway stock couldn't be copied to your clipboard! :/"
   },
