@@ -233,7 +233,6 @@ export default defineComponent({
 
           if (vehicleCargo !== undefined && vehicleData.group.speedLoaded) {
             vehicleSpeed = vehicleData.group.speedLoaded;
-            console.log('detected loaded', vehicleSpeed);
           }
         }
 
