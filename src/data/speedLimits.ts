@@ -4,6 +4,9 @@ export const speedLimits: Record<string, any> = {
       '650000': 125
     },
     cargo: {
+      '750000': 100,
+      '1000000': 90,
+      '1500000': 80,
       '2000000': 70
     },
     none: 110
@@ -13,6 +16,9 @@ export const speedLimits: Record<string, any> = {
       '650000': 125
     },
     cargo: {
+      '750000': 100,
+      '1000000': 90,
+      '1500000': 80,
       '2000000': 70
     },
     none: 110
@@ -22,6 +28,9 @@ export const speedLimits: Record<string, any> = {
       '650000': 125
     },
     cargo: {
+      '750000': 100,
+      '1000000': 90,
+      '1500000': 80,
       '2000000': 70
     },
     none: 110
@@ -65,6 +74,7 @@ export const speedLimits: Record<string, any> = {
     },
     cargo: {
       '1200000': 100,
+      '2000000': 80,
       '3100000': 70
     },
     none: 125

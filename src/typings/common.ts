@@ -229,6 +229,8 @@ export interface VehiclesGroup {
   id: number;
   name: string;
   speed: number;
+  speedLoaded?: number;
+  speedLoco?: number;
   length: number;
   weight: number;
   cargoTypes: VehicleCargo[] | null;
