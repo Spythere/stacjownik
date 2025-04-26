@@ -250,9 +250,9 @@ const availableCategories = computed(() => {
     else if (stockList.slice(1).every((v) => /PKPE/.test(v))) {
       availableCategories.push('ZU', 'ZN');
     } else if (wagonsNamesArr.length < 3 || cargoNamesSet.size < 3) {
-      availableCategories.push('TM', 'TG', 'TS');
+      availableCategories.push('TM', 'TG', 'TS', 'TK');
     } else {
-      availableCategories.push('TN', 'TK', 'TR', 'TS');
+      availableCategories.push('TN', 'TR', 'TS', 'TK');
     }
   }
 
