@@ -54,7 +54,8 @@
           </div>
 
           <div style="margin-top: 0.5em">
-            <b>{{ i18n.t('trains.number-propositions-title') }}</b> <i>{{ numberPropositions.join(', ') }}</i>
+            <b>{{ i18n.t('trains.number-propositions-title') }}</b>
+            <i>{{ numberPropositions.join(', ') }}</i>
           </div>
         </div>
 
@@ -246,9 +247,13 @@ const availableCategories = computed(() => {
   else {
     if (wagonsNamesArr.every((v) => /^(627Z|412Z)/.test(v)))
       availableCategories.push('TC', 'TD', 'TS');
-    else if (wagonsNamesArr.length < 3 || cargoNamesSet.size < 3)
+    else if (stockList.slice(1).every((v) => /PKPE/.test(v))) {
+      availableCategories.push('ZU', 'ZN');
+    } else if (wagonsNamesArr.length < 3 || cargoNamesSet.size < 3) {
       availableCategories.push('TM', 'TG', 'TS');
-    else availableCategories.push('TN', 'TK', 'TR', 'TS', 'ZU', 'ZN');
+    } else {
+      availableCategories.push('TN', 'TK', 'TR', 'TS');
+    }
   }
 
   return availableCategories.map((c) => `${c}${categoryTraction}`);
