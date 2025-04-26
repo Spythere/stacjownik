@@ -8,7 +8,7 @@
 
       <Loading v-else-if="apiStore.dataStatuses.connection == Status.Data.Loading" />
 
-      <DriverNotFound v-else />
+      <DriverNotFound v-else :trainId="props.trainId" />
     </div>
   </section>
 </template>
