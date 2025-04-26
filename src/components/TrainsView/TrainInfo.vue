@@ -219,15 +219,22 @@ export default defineComponent({
     stockSpeedLimit() {
       let isPassenger = true;
 
-      const vehicleMaxSpeed = this.train.stockList.reduce((acc, stockName) => {
-        const vehicleData = this.apiStore.vehiclesData?.find(
-          (v) => v.name == stockName.split(':')[0]
-        );
+      const vehicleMaxSpeed = this.train.stockList.reduce((acc, stockName, i) => {
+        const [vehicleName, vehicleCargo] = stockName.split(':');
+
+        const vehicleData = this.apiStore.vehiclesData?.find((v) => v.name == vehicleName);
 
         if (!vehicleData) return acc;
-        if (vehicleData.type == 'wagon-freight') isPassenger = false;
 
-        const vehicleSpeed = vehicleData.group.speed;
+        let vehicleSpeed = vehicleData.group.speed;
+
+        if (vehicleData.type == 'wagon-freight') {
+          isPassenger = false;
+
+          if (vehicleCargo !== undefined && vehicleData.group.speedLoaded) {
+            vehicleSpeed = vehicleData.group.speedLoaded;
+          }
+        }
 
         return Math.min(vehicleSpeed, acc);
       }, Infinity);

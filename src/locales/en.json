@@ -170,6 +170,7 @@
     "search-dispatchers-date": "Service date (from / to)",
     "search-date-from": "Date (UTC+2 / CEST)",
     "search-date-to": "Date (UTC+2 / CEST)",
+    "select-categoryCode": "Train category",
     "sort-mass": "mass",
     "sort-speed": "speed",
     "sort-length": "length",
@@ -395,8 +396,15 @@
     "driver-not-found-others": "Player {driver} is online as:",
     "driver-not-found-return": "GO BACK TO THE MAIN SITE",
     "stock-copy": "COPY THE STOCK",
+    "number-propositions": "PROPOSE NUMBER",
     "stock-clipboard-success": "Successfully copied the railway stock in a text form to your clipboard!",
-    "stock-clipboard-failure": "Oops! Something happened and the railway stock couldn't be copied to your clipboard! :/"
+    "stock-clipboard-failure": "Oops! Something happened and the railway stock couldn't be copied to your clipboard! :/",
+  
+    "number-propositions-header": "Generate number examples for selected category:",
+    "number-propositions-third-number": "Third digit:",
+    "number-propositions-last-nums": "{count} last digits from the range of:",
+    "number-propositions-title": "Propositions:",
+    "number-propositions-empty": "No propositions available for the chosen category! :/"
   },
   "train-stats": {
     "stats-button": "STATISTICS",

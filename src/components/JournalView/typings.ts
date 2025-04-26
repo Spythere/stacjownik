@@ -12,7 +12,8 @@ export namespace Journal {
     | 'search-dispatcher'
     | 'search-issuedFrom'
     | 'search-terminatingAt'
-    | 'search-via';
+    | 'search-via'
+    | 'select-categoryCode';
 
   export type TimetableSearchType = {
     [key in TimetableSearchKey]: string;

@@ -122,6 +122,7 @@ interface TimetablesQueryParams {
   driverName?: string;
   trainNo?: string;
   timetableId?: string;
+  categoryCode?: string;
 
   authorName?: string;
 
@@ -215,6 +216,7 @@ export default defineComponent({
       'search-issuedFrom': '',
       'search-via': '',
       'search-terminatingAt': '',
+      'select-categoryCode': '',
       'search-date-from': ''
     } as Journal.TimetableSearchType);
 
@@ -230,6 +232,7 @@ export default defineComponent({
     return {
       sorterActive,
       searchersValues,
+
       filterList,
       initFilters,
 
@@ -356,6 +359,7 @@ export default defineComponent({
       const issuedFrom = this.searchersValues['search-issuedFrom'].trim() || undefined;
       const via = this.searchersValues['search-via'].trim() || undefined;
       const terminatingAt = this.searchersValues['search-terminatingAt'].trim() || undefined;
+      const categoryCode = this.searchersValues['select-categoryCode'].trim() || undefined;
 
       let dateTo: string | undefined = undefined;
 
@@ -365,8 +369,6 @@ export default defineComponent({
 
         dateTo = d.toISOString().split('T')[0];
       }
-      // const timestampFrom = dateString ? Date.parse(new Date(dateString).toISOString()) : undefined;
-      // const timestampTo = timestampFrom ? timestampFrom + 86400000 : undefined;
 
       const queryParams: TimetablesQueryParams = {};
 
@@ -433,6 +435,7 @@ export default defineComponent({
       queryParams['issuedFrom'] = issuedFrom;
       queryParams['terminatingAt'] = terminatingAt;
       queryParams['via'] = via;
+      queryParams['categoryCode'] = categoryCode;
 
       queryParams['issuedFrom'] = issuedFrom;
       queryParams['sortBy'] =

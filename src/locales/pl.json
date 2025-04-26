@@ -167,6 +167,7 @@
     "search-dispatchers-date": "Data służby (od / do)",
     "search-date-from": "Data (UTC+2 / CEST)",
     "search-date-to": "Data (UTC+2 / CEST)",
+    "select-categoryCode": "Kategoria pociągu",
     "sort-routeDistance": "kilometraż",
     "sort-allStopsCount": "stacje",
     "sort-beginDate": "data",
@@ -382,8 +383,16 @@
     "driver-not-found-others": "Gracz {driver} jest online jako:",
     "driver-not-found-return": "WRÓĆ NA STRONĘ GŁÓWNĄ",
     "stock-copy": "SKOPIUJ SKŁAD",
+    "number-propositions": "ZAPROPONUJ NUMER",
     "stock-clipboard-success": "Pomyślnie skopiowano skład w postaci tekstowej do schowka!",
-    "stock-clipboard-failure": "Ups! Nie udało się skopiować składu do schowka! :/"
+    "stock-clipboard-failure": "Ups! Nie udało się skopiować składu do schowka! :/",
+
+    "number-propositions-header": "Wygeneruj propozycje numerów dla kategorii pociągu:",
+    "number-propositions-third-number": "Trzecia cyfra:",
+    "number-propositions-last-nums": "{count} ostatnie cyfry z przedziału:",
+    "number-propositions-title": "Propozycje:",
+    "number-propositions-empty": "Brak propozycji dla wybranej kategorii! :/"
+
   },
   "train-stats": {
     "stats-button": "STATYSTYKI",

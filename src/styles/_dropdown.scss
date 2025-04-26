@@ -29,17 +29,19 @@
   top: calc(100% + 0.5em);
 
   background-color: var(--clr-bg3);
-  // box-shadow: 0 5px 10px 2px #0f0f0f;
   box-shadow: 0 0 5px 1px var(--clr-primary);
 
   width: 100%;
   max-width: 550px;
 
+  max-height: 750px;
+  overflow: auto;
+
   padding: 1em;
   z-index: 100;
 }
 
-@include responsive.smallScreen{
+@include responsive.smallScreen {
   .dropdown_wrapper {
     font-size: 1.1em;
     max-width: 100%;
