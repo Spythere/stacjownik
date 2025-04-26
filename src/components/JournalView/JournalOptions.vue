@@ -33,31 +33,56 @@
           <h1 class="option-title">{{ $t('options.search-title') }}</h1>
           <div class="search_content">
             <div class="search" v-for="(_, propName) in searchersValues" :key="propName">
-              <label v-if="propName == 'search-date-from'" for="search-date">{{
-                $t(`options.search-${optionsType}-date`)
-              }}</label>
+              <!-- Train category select -->
+              <div v-if="propName.toString() == 'select-categoryCode'">
+                <label for="journalCategoryCode">{{ $t(`options.${propName}`) }}</label>
 
-              <div class="search-box">
-                <input
-                  class="search-input"
-                  v-model="searchersValues[propName]"
-                  @keydown.enter="searchConfirm"
-                  @focus="preventKeyDown = true"
-                  @blur="preventKeyDown = false"
-                  :placeholder="$t(`options.${propName}`)"
-                  :type="propName.toString().startsWith('search-date') ? 'date' : 'text'"
-                  :min="propName.toString().startsWith('search-date') ? '2022-02-01' : undefined"
-                  :id="`${propName}`"
-                  :list="propName.toString()"
-                />
+                <div class="search-box">
+                  <select
+                    class="search-input"
+                    name="journalCategoryCode"
+                    id="journalCategoryCode"
+                    v-model="searchersValues[propName]"
+                  >
+                    <option value="">...</option>
+                    <option v-for="categoryName in allCategories" :value="categoryName">
+                      {{ categoryName }} - {{ getCategoryExplanation(categoryName) }}
+                    </option>
+                  </select>
+                </div>
+              </div>
 
-                <button class="btn btn--action search-exit" v-if="!propName.toString().startsWith('search-date')">
-                  <img
-                    src="/images/icon-exit.svg"
-                    alt="exit-icon"
-                    @click="onInputClear(propName)"
+              <!-- Other inputs -->
+              <div v-else>
+                <label v-if="propName == 'search-date-from'" for="search-date">{{
+                  $t(`options.search-${optionsType}-date`)
+                }}</label>
+                
+                <div class="search-box">
+                  <input
+                    class="search-input"
+                    v-model="searchersValues[propName]"
+                    @keydown.enter="searchConfirm"
+                    @focus="preventKeyDown = true"
+                    @blur="preventKeyDown = false"
+                    :placeholder="$t(`options.${propName}`)"
+                    :type="propName.toString().startsWith('search-date') ? 'date' : 'text'"
+                    :min="propName.toString().startsWith('search-date') ? '2022-02-01' : undefined"
+                    :id="`${propName}`"
+                    :list="propName.toString()"
                   />
-                </button>
+
+                  <button
+                    class="btn btn--action search-exit"
+                    v-if="!propName.toString().startsWith('search-date')"
+                  >
+                    <img
+                      src="/images/icon-exit.svg"
+                      alt="exit-icon"
+                      @click="onInputClear(propName)"
+                    />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -117,10 +142,12 @@ import { useMainStore } from '../../store/mainStore';
 import { Journal } from './typings';
 import { Status } from '../../typings/common';
 import { useApiStore } from '../../store/apiStore';
+import { allCategories } from '../../data/trainNumberRules.json';
+import trainCategoryMixin from '../../mixins/trainCategoryMixin';
 
 export default defineComponent({
   emits: ['onSearchConfirm', 'onOptionsReset', 'onRefreshData'],
-  mixins: [keyMixin],
+  mixins: [keyMixin, trainCategoryMixin],
 
   props: {
     sorterOptionIds: {
@@ -152,6 +179,7 @@ export default defineComponent({
   data() {
     return {
       showOptions: false,
+      allCategories,
 
       driverSuggestions: [] as string[],
       dispatcherSuggestions: [] as string[],

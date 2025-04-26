@@ -167,6 +167,7 @@
     "search-dispatchers-date": "Data służby (od / do)",
     "search-date-from": "Data (UTC+2 / CEST)",
     "search-date-to": "Data (UTC+2 / CEST)",
+    "select-categoryCode": "Kategoria pociągu",
     "sort-routeDistance": "kilometraż",
     "sort-allStopsCount": "stacje",
     "sort-beginDate": "data",
