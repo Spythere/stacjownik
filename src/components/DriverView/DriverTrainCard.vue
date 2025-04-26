@@ -54,7 +54,7 @@
           </div>
 
           <div style="margin-top: 0.5em">
-            <b>{{ i18n.t('trains.number-propositions-title') }}</b>
+            <b>{{ i18n.t('trains.number-propositions-title') }}&nbsp;</b>
             <i>{{ numberPropositions.join(', ') }}</i>
           </div>
         </div>
