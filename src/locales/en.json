@@ -170,6 +170,7 @@
     "search-dispatchers-date": "Service date (from / to)",
     "search-date-from": "Date (UTC+2 / CEST)",
     "search-date-to": "Date (UTC+2 / CEST)",
+    "select-categoryCode": "Train category",
     "sort-mass": "mass",
     "sort-speed": "speed",
     "sort-length": "length",
