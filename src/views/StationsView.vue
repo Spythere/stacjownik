@@ -1,24 +1,46 @@
 <template>
   <section class="stations-view">
     <div class="wrapper">
-      <div class="stations-options">
-        <StationFilterCard
-          :showCard="filterCardOpen"
-          :exit="filterCardOpen = false"
-          ref="filterCardRef"
-        />
+      <div class="stations-topbar">
+        <div class="topbar-cards">
+          <StationFilterCard
+            :showCard="filterCardOpen"
+            :exit="filterCardOpen = false"
+            ref="filterCardRef"
+          />
 
-        <StationStats />
+          <StationStats />
+        </div>
 
-        <button
-          class="btn-donation btn--image"
-          ref="btn"
-          @click="isDonationCardOpen = true"
-          @focus="isDonationCardOpen = false"
-        >
-          <img src="/images/icon-dollar.svg" alt="dollar donation icon" />
-          <span>{{ $t('donations.button-title') }}</span>
-        </button>
+        <div class="topbar-links">
+          <a
+            class="a-button btn--image gnr-link"
+            href="https://generator-td2.web.app/"
+            target="_blank"
+          >
+            <img src="/images/icon-gnr.svg" alt="GeneraTOR app icon" />
+            <span>{{ $t('app.gnr-link-content') }}</span>
+          </a>
+
+          <a
+            class="a-button btn--image pojazdownik-link"
+            href="https://pojazdownik-td2.web.app/"
+            target="_blank"
+          >
+            <img src="/images/icon-pojazdownik.svg" alt="Pojazdownik app icon" />
+            <span>{{ $t('app.pojazdownik-link-content') }}</span>
+          </a>
+
+          <button
+            class="btn--image donation-button"
+            ref="btn"
+            @click="isDonationCardOpen = true"
+            @focus="isDonationCardOpen = false"
+          >
+            <img src="/images/icon-diamond.svg" alt="dollar donation icon" />
+            <span>{{ $t('donations.button-title') }}</span>
+          </button>
+        </div>
       </div>
 
       <DonationCard :is-card-open="isDonationCardOpen" @toggle-card="toggleDonationCard" />
@@ -94,32 +116,51 @@ export default defineComponent({
   width: var(--max-container-width);
 }
 
-.stations-options {
+.stations-topbar {
   display: flex;
-  flex-wrap: wrap;
   gap: 0.5em;
+  justify-content: space-between;
 
   position: relative;
   margin-bottom: 0.5em;
+
+  & > div {
+    display: flex;
+    gap: 0.5em;
+  }
 }
 
-button.btn-donation {
+button.donation-button {
   margin-left: auto;
-
-  background-color: #254069;
+  background: #833AB4;
+  background: linear-gradient(120deg, rgba(131, 58, 180, 1) 0%, rgba(253, 29, 29, 1) 50%, rgba(131, 58, 180, 1) 100%);
+  transition: background 300ms;
+  background-size: 300%;
 
   &:hover {
-    background-color: #2e4f81;
-  }
-
-  @include responsive.smallScreen {
-    span {
-      display: none;
-    }
+    background-size: 100%;
   }
 }
 
-.count {
-  padding: 0.5em;
+a.pojazdownik-link {
+  background-color: #1f263b;
+
+  &:hover {
+    background-color: #2e3958;
+  }
+}
+
+a.gnr-link {
+  background-color: #141414;
+
+  &:hover {
+    background-color: #222222;
+  }
+}
+
+@media only screen and (max-width: 900px) {
+  .topbar-links > * > span {
+    display: none;
+  }
 }
 </style>

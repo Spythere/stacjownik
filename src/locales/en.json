@@ -50,7 +50,9 @@
     "migration-confirm": "Roger that!",
     "offline": "App is in the offline mode!",
     "tooltip-driver-offline": "Driver is offline",
-    "tooltip-scenery-offline": "Scenery is offline"
+    "tooltip-scenery-offline": "Scenery is offline",
+    "pojazdownik-link-content": "POJAZDOWNIK",
+    "gnr-link-content": "WRITTEN ORDERS"
   },
   "footer": {
     "discord": "Stacjownik Discord server"
@@ -399,7 +401,6 @@
     "number-propositions": "PROPOSE NUMBER",
     "stock-clipboard-success": "Successfully copied the railway stock in a text form to your clipboard!",
     "stock-clipboard-failure": "Oops! Something happened and the railway stock couldn't be copied to your clipboard! :/",
-  
     "number-propositions-header": "Generate number examples for selected category:",
     "number-propositions-third-number": "Third digit:",
     "number-propositions-last-nums": "{count} last digits from the range of:",

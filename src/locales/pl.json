@@ -47,7 +47,9 @@
     "no-result": "Brak wyników o podanych kryteriach!",
     "offline": "Aplikacja w trybie offline!",
     "tooltip-driver-offline": "Maszynista offline",
-    "tooltip-scenery-offline": "Sceneria offline"
+    "tooltip-scenery-offline": "Sceneria offline",
+    "pojazdownik-link-content": "POJAZDOWNIK",
+    "gnr-link-content": "ROZKAZY PISEMNE"
   },
   "footer": {
     "discord": "Serwer Discord Stacjownika"
@@ -386,13 +388,11 @@
     "number-propositions": "ZAPROPONUJ NUMER",
     "stock-clipboard-success": "Pomyślnie skopiowano skład w postaci tekstowej do schowka!",
     "stock-clipboard-failure": "Ups! Nie udało się skopiować składu do schowka! :/",
-
     "number-propositions-header": "Wygeneruj propozycje numerów dla kategorii pociągu:",
     "number-propositions-third-number": "Trzecia cyfra:",
     "number-propositions-last-nums": "{count} ostatnie cyfry z przedziału:",
     "number-propositions-title": "Propozycje:",
     "number-propositions-empty": "Brak propozycji dla wybranej kategorii! :/"
-
   },
   "train-stats": {
     "stats-button": "STATYSTYKI",

@@ -411,11 +411,6 @@ h3.section-header {
 .card_controls {
   display: flex;
   gap: 0.5em;
-
-  input {
-    border-radius: 0.5em 0.5em 0 0;
-    height: 100%;
-  }
 }
 
 .card_content {
@@ -606,7 +601,7 @@ h3.section-header {
       border: 3px solid var(--clr-primary);
       background-color: #333;
 
-      @include responsive.smallScreen{
+      @include responsive.smallScreen {
         width: 15px;
         height: 15px;
         margin-top: -5px;
@@ -625,7 +620,7 @@ h3.section-header {
 
       cursor: pointer;
 
-      @include responsive.smallScreen{
+      @include responsive.smallScreen {
         width: 1em;
         height: 1em;
         border: 3px solid var(--clr-primary);
@@ -658,7 +653,7 @@ h3.section-header {
   }
 }
 
-@include responsive.smallScreen{
+@include responsive.smallScreen {
   .slider {
     display: flex;
     flex-wrap: wrap;
@@ -671,6 +666,10 @@ h3.section-header {
     &-content {
       text-align: center;
     }
+  }
+
+  .card_controls > button > p {
+    display: none;
   }
 }
 </style>
