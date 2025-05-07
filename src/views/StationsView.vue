@@ -17,18 +17,20 @@
             class="a-button btn--image gnr-link"
             href="https://generator-td2.web.app/"
             target="_blank"
+            data-tooltip-type="HtmlTooltip"
+            :data-tooltip-content="`<b>${$t('app.gnr-link-content')}</b>`"
           >
             <img src="/images/icon-gnr.svg" alt="GeneraTOR app icon" />
-            <span>{{ $t('app.gnr-link-content') }}</span>
           </a>
 
           <a
             class="a-button btn--image pojazdownik-link"
             href="https://pojazdownik-td2.web.app/"
             target="_blank"
+            data-tooltip-type="HtmlTooltip"
+            :data-tooltip-content="`<b>${$t('app.pojazdownik-link-content')}</b>`"
           >
             <img src="/images/icon-pojazdownik.svg" alt="Pojazdownik app icon" />
-            <span>{{ $t('app.pojazdownik-link-content') }}</span>
           </a>
 
           <button
@@ -132,8 +134,13 @@ export default defineComponent({
 
 button.donation-button {
   margin-left: auto;
-  background: #833AB4;
-  background: linear-gradient(120deg, rgba(131, 58, 180, 1) 0%, rgba(253, 29, 29, 1) 50%, rgba(131, 58, 180, 1) 100%);
+  background: #833ab4;
+  background: linear-gradient(
+    120deg,
+    rgba(131, 58, 180, 1) 0%,
+    rgba(253, 29, 29, 1) 50%,
+    rgba(131, 58, 180, 1) 100%
+  );
   transition: background 300ms;
   background-size: 300%;
 
