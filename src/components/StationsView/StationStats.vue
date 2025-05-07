@@ -15,7 +15,7 @@
       <div class="dropdown_wrapper" v-if="showDropdown">
         <div>
           <h1 class="stats-title text--primary">
-            <img src="/images/icon-stats.svg" alt="Open filters icon" />
+            <img src="/images/icon-stats.svg" alt="Open filters icon" height="28" />
             {{ $t('station-stats.title') }}
           </h1>
 

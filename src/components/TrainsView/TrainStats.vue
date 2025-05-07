@@ -14,7 +14,7 @@
     <transition name="dropdown-anim">
       <div class="dropdown_wrapper" v-if="showOptions">
         <h1 class="text--primary">
-          <img src="/images/icon-stats.svg" alt="Open filters icon" />
+          <img src="/images/icon-stats.svg" alt="Open filters icon" height="28" />
           {{ $t('train-stats.title') }}
         </h1>
 
@@ -254,6 +254,10 @@ h3 {
 
 @include responsive.smallScreen{
   .no-data {
+    text-align: center;
+  }
+
+  h1 {
     text-align: center;
   }
 }
