@@ -72,7 +72,7 @@ const router = createRouter({
       from.query['view'] === undefined &&
       !savedPosition
     )
-      return { el: `.app_main`, top: -15 };
+      return { el: `.scenery-left`, behavior: 'instant', top: 3 };
 
     if (savedPosition) return savedPosition;
   },
