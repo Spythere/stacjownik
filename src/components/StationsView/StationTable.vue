@@ -123,10 +123,9 @@
                 @click.prevent="openDonationCard"
                 data-tooltip-type="DonatorTooltip"
                 :data-tooltip-content="$t('donations.dispatcher-message')"
-                class="text--donator"
               >
-                <img src="/images/icon-diamond.svg" alt="" />
-                {{ station.onlineInfo.dispatcherName }}
+                <img src="/images/icon-diamond.svg" alt="donator diamond icon" />
+                <span class="text--donator">&nbsp;{{ station.onlineInfo.dispatcherName }}</span>
               </b>
 
               <div v-else>

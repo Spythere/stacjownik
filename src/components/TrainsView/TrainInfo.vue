@@ -59,9 +59,8 @@
             v-if="apiStore.donatorsData.includes(train.driverName)"
             data-tooltip-type="DonatorTooltip"
             :data-tooltip-content="$t('donations.driver-message')"
-            class="text--donator"
           >
-            {{ train.driverName }}
+            <span class="text--donator">{{ train.driverName }}&nbsp;</span>
             <img src="/images/icon-diamond.svg" alt="donator diamond icon" />
           </b>
 

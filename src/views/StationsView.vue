@@ -39,8 +39,8 @@
             @click="isDonationCardOpen = true"
             @focus="isDonationCardOpen = false"
           >
-            <img src="/images/icon-diamond.svg" alt="dollar donation icon" />
-            <span>{{ $t('donations.button-title') }}</span>
+            <img src="/images/icon-diamond.svg" alt="donator diamond icon" />
+            <span>&nbsp;{{ $t('donations.button-title') }}</span>
           </button>
         </div>
       </div>

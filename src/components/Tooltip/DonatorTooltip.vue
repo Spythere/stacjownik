@@ -1,6 +1,6 @@
 <template>
   <div class="tooltip-content">
-    <img src="/images/icon-diamond.svg" alt="diamond icon" />
+    <img src="/images/icon-diamond.svg" alt="donator diamond icon" />
     <span>{{ tooltipStore.content }}</span>
   </div>
 </template>
