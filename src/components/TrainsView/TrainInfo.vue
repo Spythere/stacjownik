@@ -192,7 +192,6 @@ import trainInfoMixin from '../../mixins/trainInfoMixin';
 import trainCategoryMixin from '../../mixins/trainCategoryMixin';
 import ProgressBar from '../Global/ProgressBar.vue';
 import StockList from '../Global/StockList.vue';
-import { speedLimits } from '../../data/speedLimits';
 
 export default defineComponent({
   mixins: [trainInfoMixin, styleMixin, trainCategoryMixin],
@@ -219,6 +218,7 @@ export default defineComponent({
     stockSpeedLimit() {
       let isPassenger = true;
 
+      // Check the whole consist speed limit
       const vehicleMaxSpeed = this.train.stockList.reduce((acc, stockName, i) => {
         const [vehicleName, vehicleCargo] = stockName.split(':');
 
@@ -239,22 +239,34 @@ export default defineComponent({
         return Math.min(vehicleSpeed, acc);
       }, Infinity);
 
-      const headLoco = this.train.stockList[0].slice(0, this.train.stockList[0].indexOf('-'));
+      // Check the head vehicle speed limit
+      const headLocoName = this.train.stockList[0];
+      const headLocoVehicleData = this.apiStore.vehiclesData?.find((v) => v.name == headLocoName);
 
-      if (speedLimits[headLoco] === undefined) return vehicleMaxSpeed;
+      console.log(headLocoName, headLocoVehicleData);
 
-      if (this.train.stockList.length == 1) return speedLimits[headLoco]['none'];
+      // Omit speed check for head vehicle if there's no data for it
+      if (!headLocoName || !headLocoVehicleData || !headLocoVehicleData.group.massSpeeds)
+        return vehicleMaxSpeed;
 
-      const speedTable: Record<string, number> =
-        speedLimits[headLoco][isPassenger ? 'passenger' : 'cargo'];
+      const massSpeeds =
+        headLocoVehicleData.group.massSpeeds[
+          this.train.stockList.length == 1 ? 'none' : isPassenger ? 'passenger' : 'cargo'
+        ];
 
-      if (!speedTable) return vehicleMaxSpeed;
+      // Omit speed check if there's no data on mass speeds
+      if (!massSpeeds) return vehicleMaxSpeed;
 
-      const massKey = Object.keys(speedTable).findLast(
+      // Number type for locomotives alone
+      if (typeof massSpeeds === 'number') return massSpeeds;
+
+      // Record type for passenger or cargo, find the closest range
+      const massKey = Object.keys(massSpeeds).findLast(
         (massKey) => this.train.mass >= Number(massKey)
       );
 
-      const massMaxSpeed = massKey ? speedTable[massKey] : Infinity;
+      const massMaxSpeed = massKey ? massSpeeds[massKey] : Infinity;
+      console.log(massMaxSpeed);
 
       return Math.min(massMaxSpeed, vehicleMaxSpeed);
     },

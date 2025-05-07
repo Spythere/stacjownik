@@ -234,10 +234,19 @@ export interface VehiclesGroup {
   length: number;
   weight: number;
   cargoTypes: VehicleCargo[] | null;
+
   locoProps: {
     coldStart: boolean;
     doubleManned: boolean;
   } | null;
+
+  massSpeeds: VehicleGroupMassSpeeds | null;
+}
+
+export interface VehicleGroupMassSpeeds {
+  passenger: Record<string, number> | null;
+  cargo: Record<string, number> | null;
+  none: number | null;
 }
 
 export interface VehicleCargo {
