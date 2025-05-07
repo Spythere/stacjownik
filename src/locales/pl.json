@@ -47,7 +47,9 @@
     "no-result": "Brak wyników o podanych kryteriach!",
     "offline": "Aplikacja w trybie offline!",
     "tooltip-driver-offline": "Maszynista offline",
-    "tooltip-scenery-offline": "Sceneria offline"
+    "tooltip-scenery-offline": "Sceneria offline",
+    "pojazdownik-link-content": "POJAZDOWNIK",
+    "gnr-link-content": "GENERATOR <br> ROZKAZÓW PISEMNYCH"
   },
   "footer": {
     "discord": "Serwer Discord Stacjownika"
@@ -386,13 +388,11 @@
     "number-propositions": "ZAPROPONUJ NUMER",
     "stock-clipboard-success": "Pomyślnie skopiowano skład w postaci tekstowej do schowka!",
     "stock-clipboard-failure": "Ups! Nie udało się skopiować składu do schowka! :/",
-
     "number-propositions-header": "Wygeneruj propozycje numerów dla kategorii pociągu:",
     "number-propositions-third-number": "Trzecia cyfra:",
     "number-propositions-last-nums": "{count} ostatnie cyfry z przedziału:",
     "number-propositions-title": "Propozycje:",
     "number-propositions-empty": "Brak propozycji dla wybranej kategorii! :/"
-
   },
   "train-stats": {
     "stats-button": "STATYSTYKI",
@@ -505,7 +505,7 @@
     "no-users": "BRAK AKTYWNYCH GRACZY",
     "no-spawns": "BRAK OTWARTYCH SPAWNÓW",
     "no-scenery": "Ups! Ta sceneria nie istnieje!",
-    "return-btn": "Wróć na stronę główną",
+    "return-btn": "Powrót",
     "history-btn": "Przejdź do widoku historii dyżurnych ruchu",
     "info-btn": "Wróć do widoku scenerii",
     "authors-title": "Autor scenerii | Autorzy scenerii",
@@ -530,8 +530,9 @@
     "req-level": "ogólnodostępna | minimum {lvl} poziom dyżurnego | minimum {lvl} poziom dyżurnego",
     "history-list-empty": "Brak historii dla tej scenerii!",
     "forum-topic": "Oficjalny wątek scenerii {name}",
+    "gnr-link": "Generator rozkazów pisemnych",
     "pragotron-link": "Paletowa tablica informacyjna",
-    "tablice-link": "Tablica informacyjna zbiorcza (autorstwa Thundo)",
+    "tablice-link": "Tablica informacyjna zbiorcza <br> (autorstwa Thundo)",
     "bottom-info": "Pokaż pełną historię w zakładce Dziennika",
     "btn-show-internal-routes": "Pokazuj szlaki wewnętrzne",
     "btn-hide-internal-routes": "Ukrywaj szlaki wewnętrzne"

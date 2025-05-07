@@ -50,7 +50,9 @@
     "migration-confirm": "Roger that!",
     "offline": "App is in the offline mode!",
     "tooltip-driver-offline": "Driver is offline",
-    "tooltip-scenery-offline": "Scenery is offline"
+    "tooltip-scenery-offline": "Scenery is offline",
+    "pojazdownik-link-content": "POJAZDOWNIK",
+    "gnr-link-content": "TRAIN ORDERS <br> GENERATOR"
   },
   "footer": {
     "discord": "Stacjownik Discord server"
@@ -388,18 +390,17 @@
     "timeout": "An error occured while trying to refresh SWDR timetable data!",
     "driver-journal-link": "DRIVER JOURNAL",
     "driver-srjp-link": "SRJP",
-    "driver-return-link": "GO BACK",
+    "driver-return-link": "RETURN",
     "driver-not-found-header": "Train not found! :/",
     "driver-not-found-desc-1": "This train has already been terminated, changed its number or is offline.",
     "driver-not-found-desc-2": "You can browse timetable history in the",
     "driver-not-found-journal": "TIMETABLES JOURNAL",
     "driver-not-found-others": "Player {driver} is online as:",
-    "driver-not-found-return": "GO BACK TO THE MAIN SITE",
+    "driver-not-found-return": "RETURN TO THE MAIN SITE",
     "stock-copy": "COPY THE STOCK",
     "number-propositions": "PROPOSE NUMBER",
     "stock-clipboard-success": "Successfully copied the railway stock in a text form to your clipboard!",
     "stock-clipboard-failure": "Oops! Something happened and the railway stock couldn't be copied to your clipboard! :/",
-  
     "number-propositions-header": "Generate number examples for selected category:",
     "number-propositions-third-number": "Third digit:",
     "number-propositions-last-nums": "{count} last digits from the range of:",
@@ -518,7 +519,7 @@
     "no-users": "NO ACTIVE PLAYERS",
     "no-spawns": "NO OPEN SPAWNS",
     "no-scenery": "Oops! This scenery doesn't exist!",
-    "return-btn": "Return to main site",
+    "return-btn": "Return",
     "history-btn": "View the dispatcher history",
     "info-btn": "Return to the scenery view",
     "authors-title": "Scenery author | Scenery authors",
@@ -543,8 +544,9 @@
     "req-level": "all dispatcher levels | dispatcher level {lvl} required | dispatcher level {lvl} required",
     "history-list-empty": "No recorded scenery history!",
     "forum-topic": "Official {name} forum topic",
+    "gnr-link": "Train orders generator",
     "pragotron-link": "Timetable pallet board",
-    "tablice-link": "Timetable summary board (by Thundo)",
+    "tablice-link": "Timetable summary board <br> (by Thundo)",
     "bottom-info": "Show full history in the Journal tab",
     "btn-show-internal-routes": "Show internal routes",
     "btn-hide-internal-routes": "Hide internal routes"

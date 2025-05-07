@@ -6,8 +6,7 @@
       <SceneryInfoRoutes v-if="station" :station="station" />
       <SceneryInfoAuthors :station="station" />
 
-
-      <div style="margin: 2em 0; height: 2px; background-color: white"></div>
+      <div style="margin: 1em 0; height: 2px; background-color: white"></div>
 
       <!-- info dispatcher -->
       <SceneryInfoDispatcher :onlineScenery="onlineScenery" />
@@ -32,7 +31,7 @@ import SceneryInfoUserList from './SceneryInfo/SceneryInfoUserList.vue';
 import SceneryInfoSpawnList from './SceneryInfo/SceneryInfoSpawnList.vue';
 import SceneryInfoRoutes from './SceneryInfo/SceneryInfoRoutes.vue';
 import SceneryInfoGeneral from './SceneryInfo/SceneryInfoGeneral.vue';
-import SceneryInfoAuthors from "./SceneryInfo/SceneryInfoAuthors.vue";
+import SceneryInfoAuthors from './SceneryInfo/SceneryInfoAuthors.vue';
 
 import { ActiveScenery, Station } from '../../typings/common';
 
@@ -44,7 +43,7 @@ export default defineComponent({
     SceneryInfoAuthors,
     SceneryInfoUserList,
     SceneryInfoSpawnList,
-    SceneryInfoRoutes,
+    SceneryInfoRoutes
   },
   props: {
     station: {

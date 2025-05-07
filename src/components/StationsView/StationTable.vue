@@ -124,8 +124,8 @@
                 data-tooltip-type="DonatorTooltip"
                 :data-tooltip-content="$t('donations.dispatcher-message')"
               >
-                <img src="/images/icon-diamond.svg" alt="" />
-                {{ station.onlineInfo.dispatcherName }}
+                <img src="/images/icon-diamond.svg" alt="donator diamond icon" />
+                <span class="text--donator">&nbsp;{{ station.onlineInfo.dispatcherName }}</span>
               </b>
 
               <div v-else>
@@ -525,7 +525,7 @@ tr,
       opacity: 0.2;
     }
 
-    @include responsive.smallScreen{
+    @include responsive.smallScreen {
       margin: 0;
       padding: 0.3em 0.5em;
       font-size: 1em;

@@ -118,7 +118,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .info-routes {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   justify-content: center;
   flex-direction: column;
 

@@ -1,6 +1,6 @@
 <template>
   <div class="tooltip-content">
-    <img src="/images/icon-diamond.svg" alt="" />
+    <img src="/images/icon-diamond.svg" alt="donator diamond icon" />
     <span>{{ tooltipStore.content }}</span>
   </div>
 </template>
@@ -20,7 +20,10 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .tooltip-content {
+  display: flex;
+  align-items: center;
   gap: 0.5em;
+  flex-wrap: wrap;
 
   padding: 0.5em;
   border-radius: 0.25em;
@@ -34,6 +37,5 @@ export default defineComponent({
 img {
   vertical-align: middle;
   height: 1em;
-  margin-right: 0.5em;
 }
 </style>

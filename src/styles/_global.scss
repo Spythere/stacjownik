@@ -201,7 +201,15 @@ ul {
 
   &--donator {
     color: var(--clr-donator);
-    text-shadow: var(--clr-donator) 0 0 10px;
+    color: transparent;
+
+    background: var(--clr-donator);
+    background: linear-gradient(90deg, #ff88db 30%, #ffffff 70%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;   
+
+    text-shadow: #f050ff 0 0 10px;
   }
 }
 
@@ -271,7 +279,7 @@ a.a-button {
     padding: 0.35em 0.75em;
 
     img {
-      width: 1.35em;
+      height: 1.35em;
       vertical-align: middle;
     }
   }

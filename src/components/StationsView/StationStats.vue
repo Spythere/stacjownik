@@ -8,14 +8,14 @@
 
     <button class="filter-button btn--filled btn--image" @click="toggleDropdown" ref="button">
       <img src="/images/icon-stats.svg" alt="Open filters icon" />
-      {{ $t('station-stats.stats-button') }}
+      <span>{{ $t('station-stats.stats-button') }}</span>
     </button>
 
     <transition name="dropdown-anim">
       <div class="dropdown_wrapper" v-if="showDropdown">
         <div>
           <h1 class="stats-title text--primary">
-            <img src="/images/icon-stats.svg" alt="Open filters icon" />
+            <img src="/images/icon-stats.svg" alt="Open filters icon" height="28" />
             {{ $t('station-stats.title') }}
           </h1>
 
@@ -281,6 +281,10 @@ h1.stats-title img {
 @include responsive.smallScreen {
   h1.stats-title {
     text-align: center;
+  }
+
+  .filter-button > span {
+    display: none;
   }
 }
 </style>
