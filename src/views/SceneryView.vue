@@ -3,8 +3,8 @@
     <div class="scenery-wrapper" ref="card-wrapper">
       <div class="scenery-left">
         <div class="scenery-actions">
-          <button class="back-btn btn" :title="$t('scenery.return-btn')" @click="navigateTo('/')">
-            <img src="/images/icon-back.svg" alt="Back to scenery" />
+          <button class="back-btn" :title="$t('scenery.return-btn')" @click="onReturnButtonClick">
+            <img src="/images/icon-back.svg" alt="return button" />
           </button>
         </div>
 
@@ -167,6 +167,10 @@ export default defineComponent({
       if (!this.stationInfo?.generalInfo?.checkpoints) return;
       if (this.stationInfo.generalInfo.checkpoints.length == 0) return;
       this.selectedCheckpoint = this.stationInfo.generalInfo.checkpoints[0];
+    },
+
+    onReturnButtonClick() {
+      this.$router.back();
     }
   }
 });
@@ -303,7 +307,7 @@ button.back-btn {
   }
 }
 
-@include responsive.smallScreen{
+@include responsive.smallScreen {
   .scenery-left {
     max-height: 100vh;
   }
