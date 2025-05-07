@@ -49,7 +49,7 @@
     "tooltip-driver-offline": "Maszynista offline",
     "tooltip-scenery-offline": "Sceneria offline",
     "pojazdownik-link-content": "POJAZDOWNIK",
-    "gnr-link-content": "ROZKAZY PISEMNE"
+    "gnr-link-content": "GENERATOR <br> ROZKAZÓW PISEMNYCH"
   },
   "footer": {
     "discord": "Serwer Discord Stacjownika"
@@ -534,7 +534,8 @@
     "tablice-link": "Tablica informacyjna zbiorcza (autorstwa Thundo)",
     "bottom-info": "Pokaż pełną historię w zakładce Dziennika",
     "btn-show-internal-routes": "Pokazuj szlaki wewnętrzne",
-    "btn-hide-internal-routes": "Ukrywaj szlaki wewnętrzne"
+    "btn-hide-internal-routes": "Ukrywaj szlaki wewnętrzne",
+    "gnr-link-content": "OTWÓRZ GENERATOR ROZKAZÓW PISEMNYCH DLA TEJ SCENERII"
   },
   "availability": {
     "title": "Dostępność",

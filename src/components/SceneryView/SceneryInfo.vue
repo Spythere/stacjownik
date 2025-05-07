@@ -6,8 +6,19 @@
       <SceneryInfoRoutes v-if="station" :station="station" />
       <SceneryInfoAuthors :station="station" />
 
+      <!-- Link to GeneraTOR app -->
+      <section class="generator-app" v-if="onlineScenery">
+        <a
+          class="a-button btn--action btn--image"
+          :href="`https://generator-td2.web.app/?sceneryId=${onlineScenery.name}|${onlineScenery.region}`"
+          target="_blank"
+        >
+          <img src="/public/images/icon-gnr.svg" alt="GeneraTOR app icon" />
+          {{ $t('scenery.gnr-link-content') }}
+        </a>
+      </section>
 
-      <div style="margin: 2em 0; height: 2px; background-color: white"></div>
+      <div style="margin: 1em 0; height: 2px; background-color: white"></div>
 
       <!-- info dispatcher -->
       <SceneryInfoDispatcher :onlineScenery="onlineScenery" />
@@ -32,7 +43,7 @@ import SceneryInfoUserList from './SceneryInfo/SceneryInfoUserList.vue';
 import SceneryInfoSpawnList from './SceneryInfo/SceneryInfoSpawnList.vue';
 import SceneryInfoRoutes from './SceneryInfo/SceneryInfoRoutes.vue';
 import SceneryInfoGeneral from './SceneryInfo/SceneryInfoGeneral.vue';
-import SceneryInfoAuthors from "./SceneryInfo/SceneryInfoAuthors.vue";
+import SceneryInfoAuthors from './SceneryInfo/SceneryInfoAuthors.vue';
 
 import { ActiveScenery, Station } from '../../typings/common';
 
@@ -44,7 +55,7 @@ export default defineComponent({
     SceneryInfoAuthors,
     SceneryInfoUserList,
     SceneryInfoSpawnList,
-    SceneryInfoRoutes,
+    SceneryInfoRoutes
   },
   props: {
     station: {
@@ -83,5 +94,9 @@ h3.section-header {
 
 .scenery-topic a {
   font-weight: bold;
+}
+
+.generator-app {
+  margin-top: 2em;
 }
 </style>

@@ -52,7 +52,7 @@
     "tooltip-driver-offline": "Driver is offline",
     "tooltip-scenery-offline": "Scenery is offline",
     "pojazdownik-link-content": "POJAZDOWNIK",
-    "gnr-link-content": "WRITTEN ORDERS"
+    "gnr-link-content": "TRAIN ORDERS <br> GENERATOR"
   },
   "footer": {
     "discord": "Stacjownik Discord server"
@@ -548,7 +548,8 @@
     "tablice-link": "Timetable summary board (by Thundo)",
     "bottom-info": "Show full history in the Journal tab",
     "btn-show-internal-routes": "Show internal routes",
-    "btn-hide-internal-routes": "Hide internal routes"
+    "btn-hide-internal-routes": "Hide internal routes",
+    "gnr-link-content": "OPEN TRAIN ORDERS GENERATOR FOR THIS SCENERY"
   },
   "availability": {
     "title": "Availability",
