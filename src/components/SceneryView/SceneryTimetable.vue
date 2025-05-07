@@ -13,12 +13,31 @@
           </span>
         </span>
 
-        <span class="header_links" v-if="station">
-          <a :href="pragotronHref" target="_blank" :title="$t('scenery.pragotron-link')">
+        <span class="header_links" v-if="station && onlineScenery">
+          <a
+            :href="generatorHref"
+            target="_blank"
+            data-tooltip-type="HtmlTooltip"
+            :data-tooltip-content="`<b>${$t('scenery.gnr-link')}</b>`"
+          >
+            <img src="/images/icon-gnr.svg" alt="GeneraTOR app icon" />
+          </a>
+
+          <a
+            :href="pragotronHref"
+            target="_blank"
+            data-tooltip-type="HtmlTooltip"
+            :data-tooltip-content="`<b>${$t('scenery.pragotron-link')}</b>`"
+          >
             <img src="/images/icon-pragotron.svg" alt="icon-pragotron" />
           </a>
 
-          <a :href="tabliceZbiorczeHref" target="_blank" :title="$t('scenery.tablice-link')">
+          <a
+            :href="tabliceZbiorczeHref"
+            target="_blank"
+            data-tooltip-type="HtmlTooltip"
+            :data-tooltip-content="`<b>${$t('scenery.tablice-link')}</b>`"
+          >
             <img src="/images/icon-tablice.ico" alt="icon-tablice" />
           </a>
         </span>
@@ -256,6 +275,10 @@ export default defineComponent({
       return url;
     },
 
+    generatorHref() {
+      return `https://generator-td2.web.app/?sceneryId=${this.onlineScenery!.name}|${this.onlineScenery!.region}`;
+    },
+
     sceneryTimetables(): SceneryTimetableRow[] {
       if (!this.onlineScenery) return [];
 
@@ -363,7 +386,7 @@ export default defineComponent({
 
 .header_links {
   display: flex;
-  gap: 0.5em;
+  gap: 0.25em;
   margin-left: 0.5em;
 }
 

@@ -544,12 +544,12 @@
     "req-level": "all dispatcher levels | dispatcher level {lvl} required | dispatcher level {lvl} required",
     "history-list-empty": "No recorded scenery history!",
     "forum-topic": "Official {name} forum topic",
+    "gnr-link-content": "Train orders generator",
     "pragotron-link": "Timetable pallet board",
-    "tablice-link": "Timetable summary board (by Thundo)",
+    "tablice-link": "Timetable summary board <br> (by Thundo)",
     "bottom-info": "Show full history in the Journal tab",
     "btn-show-internal-routes": "Show internal routes",
-    "btn-hide-internal-routes": "Hide internal routes",
-    "gnr-link-content": "OPEN TRAIN ORDERS GENERATOR FOR THIS SCENERY"
+    "btn-hide-internal-routes": "Hide internal routes"
   },
   "availability": {
     "title": "Availability",

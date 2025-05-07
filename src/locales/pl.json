@@ -530,12 +530,12 @@
     "req-level": "ogólnodostępna | minimum {lvl} poziom dyżurnego | minimum {lvl} poziom dyżurnego",
     "history-list-empty": "Brak historii dla tej scenerii!",
     "forum-topic": "Oficjalny wątek scenerii {name}",
+    "gnr-link": "Generator rozkazów pisemnych",
     "pragotron-link": "Paletowa tablica informacyjna",
-    "tablice-link": "Tablica informacyjna zbiorcza (autorstwa Thundo)",
+    "tablice-link": "Tablica informacyjna zbiorcza <br> (autorstwa Thundo)",
     "bottom-info": "Pokaż pełną historię w zakładce Dziennika",
     "btn-show-internal-routes": "Pokazuj szlaki wewnętrzne",
-    "btn-hide-internal-routes": "Ukrywaj szlaki wewnętrzne",
-    "gnr-link-content": "OTWÓRZ GENERATOR ROZKAZÓW PISEMNYCH DLA TEJ SCENERII"
+    "btn-hide-internal-routes": "Ukrywaj szlaki wewnętrzne"
   },
   "availability": {
     "title": "Dostępność",

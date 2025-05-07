@@ -299,7 +299,7 @@ button.back-btn {
 
   .scenery-right {
     border-radius: 1em;
-    height: auto;
+    height: 100vh;
   }
 }
 
