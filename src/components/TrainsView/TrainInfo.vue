@@ -243,8 +243,6 @@ export default defineComponent({
       const headLocoName = this.train.stockList[0];
       const headLocoVehicleData = this.apiStore.vehiclesData?.find((v) => v.name == headLocoName);
 
-      console.log(headLocoName, headLocoVehicleData);
-
       // Omit speed check for head vehicle if there's no data for it
       if (!headLocoName || !headLocoVehicleData || !headLocoVehicleData.group.massSpeeds)
         return vehicleMaxSpeed;
@@ -266,7 +264,6 @@ export default defineComponent({
       );
 
       const massMaxSpeed = massKey ? massSpeeds[massKey] : Infinity;
-      console.log(massMaxSpeed);
 
       return Math.min(massMaxSpeed, vehicleMaxSpeed);
     },
