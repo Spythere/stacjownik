@@ -544,7 +544,7 @@
     "req-level": "all dispatcher levels | dispatcher level {lvl} required | dispatcher level {lvl} required",
     "history-list-empty": "No recorded scenery history!",
     "forum-topic": "Official {name} forum topic",
-    "gnr-link-content": "Train orders generator",
+    "gnr-link": "Train orders generator",
     "pragotron-link": "Timetable pallet board",
     "tablice-link": "Timetable summary board <br> (by Thundo)",
     "bottom-info": "Show full history in the Journal tab",
