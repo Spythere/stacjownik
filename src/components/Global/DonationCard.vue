@@ -9,7 +9,7 @@
           <transition mode="out-in" name="slider-anim" class="current-name">
             <span :key="displayingName">
               <img src="/images/icon-diamond.svg" alt="donator diamond icon" />
-              {{ displayingName }}
+              <span class="text--donator">{{ displayingName }}</span>
             </span>
           </transition>
         </div>
@@ -45,7 +45,7 @@
           </template>
 
           <template v-slot:b2>
-            <b>{{ $t('donations.p4-b2') }}</b>
+            <b class="text--donator">{{ $t('donations.p4-b2') }}</b>
           </template>
         </i18n-t>
         <br />

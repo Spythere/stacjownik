@@ -123,6 +123,7 @@
                 @click.prevent="openDonationCard"
                 data-tooltip-type="DonatorTooltip"
                 :data-tooltip-content="$t('donations.dispatcher-message')"
+                class="text--donator"
               >
                 <img src="/images/icon-diamond.svg" alt="" />
                 {{ station.onlineInfo.dispatcherName }}
@@ -525,7 +526,7 @@ tr,
       opacity: 0.2;
     }
 
-    @include responsive.smallScreen{
+    @include responsive.smallScreen {
       margin: 0;
       padding: 0.3em 0.5em;
       font-size: 1em;
