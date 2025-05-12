@@ -83,8 +83,7 @@ export interface TrainTimetableData {
   category: string;
   route: string;
   followingStops: TrainStop[];
-  TWR: boolean;
-  SKR: boolean;
+  twr: boolean;
   hasDangerousCargo: boolean;
   hasExtraDeliveries: boolean;
   warningNotes: string | null;
