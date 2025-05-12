@@ -197,8 +197,7 @@ export namespace API {
       category: string;
       route: string;
       stopList: TimetableStop[];
-      TWR: boolean;
-      SKR: boolean;
+      twr: boolean;
       hasDangerousCargo: boolean;
       hasExtraDeliveries: boolean;
       warningNotes: string | null;

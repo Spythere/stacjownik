@@ -43,7 +43,7 @@ function filterTrainList(
           return train.timetableData?.followingStops.some((stop) => stop.comments);
 
         case TrainFilterId.twr:
-          return !train.timetableData?.TWR;
+          return !train.timetableData?.twr;
 
         case TrainFilterId.pn:
           return !train.timetableData?.hasExtraDeliveries;
@@ -52,7 +52,7 @@ function filterTrainList(
           return !train.timetableData?.hasDangerousCargo;
 
         case TrainFilterId.common:
-          return train.timetableData?.SKR || train.timetableData?.TWR;
+          return train.timetableData?.twr;
 
         case TrainFilterId.passenger:
           return !/^[AMRE]\D{2}$/.test(train.timetableData?.category || '');

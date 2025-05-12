@@ -9,7 +9,7 @@
 
         <span
           class="train-badge twr"
-          v-if="train.timetableData?.TWR"
+          v-if="train.timetableData?.twr"
           data-tooltip-type="BaseTooltip"
           :data-tooltip-content="$t('warnings.TWR')"
         >
@@ -156,7 +156,7 @@
       v-if="extended && train.timetableData && train.timetableData.warningNotes"
     >
       <div class="dangers-badges">
-        <div v-if="train.timetableData?.TWR">
+        <div v-if="train.timetableData?.twr">
           <div class="train-badge twr">TWR</div>
           - {{ $t('warnings.TWR') }}
         </div>
