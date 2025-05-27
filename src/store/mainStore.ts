@@ -32,7 +32,8 @@ export const useMainStore = defineStore('mainStore', {
 
       chosenModalTrainId: undefined,
 
-      modalLastClickedTarget: null
+      modalLastClickedTarget: null,
+      currentLocale: 'pl'
     }) as MainStoreState,
 
   getters: {

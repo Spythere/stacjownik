@@ -1,7 +1,7 @@
 {
   "welcome": {
     "title": "Welcome to Stacjownik!",
-    "app-desc": "{b1} is a web tool made for {link1}, which main goal is to assist in-game dispatchers and drivers on their duties. Here you can find who is currently online and on what scenery, find a train driver or browse the journal, which contains a history of past timetables and dispatcher duty.",
+    "app-desc": "{b1} is a web tool made for {link}, which main goal is to assist in-game dispatchers and drivers on their duties. Here you can find who is currently online and on what scenery, find a train driver or browse the journal, which contains a history of past timetables and dispatcher duty.",
     "app-desc-b1": "Stacjownik",
     "sceneries-header": "Sceneries",
     "sceneries-desc": "Under the {b1} tab, you will find information about the dispatchers and sceneries they currently occupy. You can also browse all available sceneries in the simulator (in the filters, check the “Free” option to show the rest of the unoccupied ones) and filter them by various aspects, such as control types, additional software, signaling types, required duty level or types of routes. Click on the corresponding scenery in the table to show its details.",
@@ -18,6 +18,8 @@
     "srjp-desc": "Polish working train timetable",
     "donation-info": "If you appreciate the Stacjownik project as well as other applications, please consider supporting it financially - click the button with {icon1} to learn more!",
     "donation-info-icon1-text": "the diamond icon",
+    "discord-info": "I also invite you to the official {discord}, where you will find a dedicated Stacjobot, with which you can search for additional data from the simulator, unavailable on this site!",
+    "discord-info-link-text": "Stacjownik Discord server",
     "bottom-text": "Enjoy!\n~Spythere",
     "button-confirm": "Start using the app!"
   },

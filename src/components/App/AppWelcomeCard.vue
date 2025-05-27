@@ -20,7 +20,7 @@
           </template>
 
           <template v-slot:link>
-            <a href="https://td2.info.pl/" class="link">Train Driver 2</a>
+            <a href="https://td2.info.pl/" class="link" target="_blank">Train Driver 2</a>
           </template>
         </i18n-t>
       </section>
@@ -91,6 +91,14 @@
           </template>
         </i18n-t>
 
+        <i18n-t keypath="welcome.discord-info" tag="div" class="discord-info">
+          <template v-slot:discord>
+            <a href="https://discord.gg/x2mpNN3svk" class="link" target="_blank">
+              <b class="text--discord">{{ $t('welcome.discord-info-link-text') }}</b>
+            </a>
+          </template>
+        </i18n-t>
+
         <div class="bottom-text">
           <i>{{ $t('welcome.bottom-text') }}</i>
         </div>
@@ -108,8 +116,11 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import Card from '../Global/Card.vue';
+import { useMainStore } from '../../store/mainStore';
+import StorageManager from '../../managers/storageManager';
 
 const i18n = useI18n();
+const store = useMainStore();
 
 const emit = defineEmits(['toggleCard']);
 const props = defineProps({
@@ -122,6 +133,9 @@ function toggleCard(state: boolean) {
 
 function changeLang(localeName: string) {
   i18n.locale.value = localeName;
+  store.currentLocale = localeName;
+
+  StorageManager.setStringValue('lang', localeName);
 }
 </script>
 
@@ -201,6 +215,15 @@ a.link {
 .donation-info {
   font-weight: bold;
   font-size: 1.1em;
+
+  img {
+    vertical-align: middle;
+  }
+}
+
+.discord-info {
+  margin-top: 1em;
+  font-weight: bold;
 
   img {
     vertical-align: middle;

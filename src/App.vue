@@ -12,7 +12,7 @@
 
     <Tooltip />
 
-    <AppHeader :current-lang="currentLang" @change-lang="changeLang" />
+    <AppHeader :current-lang="store.currentLocale" @change-lang="changeLang" />
 
     <main class="app_main">
       <router-view v-slot="{ Component }">
@@ -73,7 +73,6 @@ export default defineComponent({
     isUpdateCardOpen: false,
     isWelcomeCardOpen: true,
 
-    currentLang: 'pl',
     isOnProductionHost: location.hostname == 'stacjownik-td2.web.app'
   }),
 
@@ -148,7 +147,7 @@ export default defineComponent({
 
     changeLang(lang: string) {
       this.$i18n.locale = lang;
-      this.currentLang = lang;
+      this.store.currentLocale = lang;
 
       StorageManager.setStringValue('lang', lang);
     },
@@ -165,7 +164,7 @@ export default defineComponent({
 
       const naviLanguage = window.navigator.language.toString();
 
-      if (naviLanguage.startsWith('en')) {
+      if (!naviLanguage.startsWith('pl')) {
         this.changeLang('en');
         return;
       }

@@ -1,7 +1,7 @@
 {
   "welcome": {
     "title": "Witaj na Stacjowniku!",
-    "app-desc": "{b1} to aplikacja stworzona dla symulatora {link1}, której celem jest wspomaganie dyżurnego ruchu i maszynisty. Możesz sprawdzić tutaj kto i na jakiej scenerii obecnie pełni służbę, znaleźć maszynistę lub przejrzeć dziennik, który zawiera historię przeszłych dyżurów i rozkładów jazdy.",
+    "app-desc": "{b1} to aplikacja stworzona dla symulatora {link}, której celem jest wspomaganie dyżurnego ruchu i maszynisty. Możesz sprawdzić tutaj kto i na jakiej scenerii obecnie pełni służbę, znaleźć maszynistę lub przejrzeć dziennik, który zawiera historię przeszłych dyżurów i rozkładów jazdy.",
     "app-desc-b1": "Stacjownik",
     "sceneries-header": "Scenerie",
     "sceneries-desc": "W zakładce {b1} znajdziesz informacje o dyżurnych ruchu pełniących służby na wybranych sceneriach. Możesz również przeglądać wszystkie dostępne scenerie w symulatorze (w filtrach należy zaznaczyć opcję \"Wolna\", aby pokazać resztę niezajętych) i filtrować je pod względem wielu kryteriów, takich jak sterowanie, dodatkowe oprogramowanie, sygnalizacja, wymagany poziom dyżurnego czy szlaki. Aby wyświetlić detale danej scenerii, kliknij na nią w tabelce.",
@@ -18,6 +18,8 @@
     "srjp-desc": "służbowy rozkład jazdy pociągu",
     "donation-info": "Jeśli doceniasz projekt Stacjownika jak i inne aplikacje mojego autorstwa, rozważ jego wsparcie finansowe - kliknij przycisk z {icon1}, aby dowiedzieć się więcej!",
     "donation-info-icon1-text": "ikoną diamentu",
+    "discord-info": "Zapraszam także na oficjalnego {discord}, gdzie znajdziesz dedykowanego Stacjobota, za pomocą którego możesz wyszukiwać dodatkowe dane z symulatora niedostępne na tej stronie",
+    "discord-info-link-text": "Discorda Stacjownika",
     "bottom-text": "Miłego korzystania\n~Spythere",
     "button-confirm": "Zacznij korzystać z aplikacji!"
   },
