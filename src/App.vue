@@ -5,10 +5,7 @@
       @toggle-card="() => (isUpdateCardOpen = false)"
     />
 
-    <AppWelcomeCard
-      :is-card-open="isWelcomeCardOpen"
-      @toggle-card="() => (isWelcomeCardOpen = false)"
-    />
+    <AppWelcomeCard :is-card-open="isWelcomeCardOpen" @toggle-card="closeWelcomeCard" />
 
     <Tooltip />
 
@@ -52,6 +49,7 @@ import AppFooter from './components/App/AppFooter.vue';
 import AppWelcomeCard from './components/App/AppWelcomeCard.vue';
 
 const STORAGE_VERSION_KEY = 'app_version';
+const WELCOME_CARD_SEEN_KEY = 'welcome_card_seen';
 
 export default defineComponent({
   components: {
@@ -71,7 +69,7 @@ export default defineComponent({
     tooltipStore: useTooltipStore(),
 
     isUpdateCardOpen: false,
-    isWelcomeCardOpen: true,
+    isWelcomeCardOpen: false,
 
     isOnProductionHost: location.hostname == 'stacjownik-td2.web.app'
   }),
@@ -92,12 +90,26 @@ export default defineComponent({
       this.loadLang();
       this.setupOfflineHandling();
       this.checkAppVersion();
+      this.handleQueries();
 
       this.apiStore.setupAPIData();
     },
 
+    handleQueries() {
+      const query = new URLSearchParams(window.location.search);
+      
+      if (query.get('welcomeCard') == '1') {
+        this.isWelcomeCardOpen = true;
+      }
+    },
+
     async checkAppVersion() {
+      const isWelcomeCardSeen = StorageManager.getBooleanValue(WELCOME_CARD_SEEN_KEY);
       const storageVersion = StorageManager.getStringValue(STORAGE_VERSION_KEY);
+
+      if (isWelcomeCardSeen == false && storageVersion == '') {
+        this.isWelcomeCardOpen = true;
+      }
 
       try {
         const releaseData = await (
@@ -168,6 +180,11 @@ export default defineComponent({
         this.changeLang('en');
         return;
       }
+    },
+
+    closeWelcomeCard() {
+      this.isWelcomeCardOpen = false;
+      StorageManager.setBooleanValue(WELCOME_CARD_SEEN_KEY, true);
     }
   }
 });
