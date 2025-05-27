@@ -97,7 +97,7 @@ export default defineComponent({
 
     handleQueries() {
       const query = new URLSearchParams(window.location.search);
-      
+
       if (query.get('welcomeCard') == '1') {
         this.isWelcomeCardOpen = true;
       }
@@ -108,7 +108,9 @@ export default defineComponent({
       const storageVersion = StorageManager.getStringValue(STORAGE_VERSION_KEY);
 
       if (isWelcomeCardSeen == false && storageVersion == '') {
-        this.isWelcomeCardOpen = true;
+        setTimeout(() => {
+          this.isWelcomeCardOpen = true;
+        }, 1500);
       }
 
       try {
