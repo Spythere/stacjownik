@@ -5,8 +5,13 @@
       @toggle-card="() => (isUpdateCardOpen = false)"
     />
 
+    <AppWelcomeCard
+      :is-card-open="isWelcomeCardOpen"
+      @toggle-card="() => (isWelcomeCardOpen = false)"
+    />
+
     <Tooltip />
-    
+
     <AppHeader :current-lang="currentLang" @change-lang="changeLang" />
 
     <main class="app_main">
@@ -44,6 +49,7 @@ import UpdateCard from './components/App/UpdateCard.vue';
 
 import StorageManager from './managers/storageManager';
 import AppFooter from './components/App/AppFooter.vue';
+import AppWelcomeCard from './components/App/AppWelcomeCard.vue';
 
 const STORAGE_VERSION_KEY = 'app_version';
 
@@ -54,6 +60,7 @@ export default defineComponent({
     AppHeader,
     AppFooter,
     UpdateCard,
+    AppWelcomeCard,
     Tooltip
   },
 
@@ -64,6 +71,7 @@ export default defineComponent({
     tooltipStore: useTooltipStore(),
 
     isUpdateCardOpen: false,
+    isWelcomeCardOpen: true,
 
     currentLang: 'pl',
     isOnProductionHost: location.hostname == 'stacjownik-td2.web.app'

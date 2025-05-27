@@ -1,4 +1,26 @@
 {
+  "welcome": {
+    "title": "Welcome to Stacjownik!",
+    "app-desc": "{b1} is a web tool made for {link1}, which main goal is to assist in-game dispatchers and drivers on their duties. Here you can find who is currently online and on what scenery, find a train driver or browse the journal, which contains a history of past timetables and dispatcher duty.",
+    "app-desc-b1": "Stacjownik",
+    "sceneries-header": "Sceneries",
+    "sceneries-desc": "Under the {b1} tab, you will find information about the dispatchers and sceneries they currently occupy. You can also browse all available sceneries in the simulator (in the filters, check the “Free” option to show the rest of the unoccupied ones) and filter them by various aspects, such as control types, additional software, signaling types, required duty level or types of routes. Click on the corresponding scenery in the table to show its details.",
+    "sceneries-desc-b1": "Sceneries",
+    "trains-header": "Trains",
+    "trains-desc": "The {b1} tab contains a list of active drivers and timetables that are currently realized on the selected server (server selection is at the top of the page, next to the counters). The list can be filtered and sorted, taking into account the most important criteria, such as driver name, train number or timetable details. You can also click on the train to show additional information.",
+    "trains-desc-b1": "Trains",
+    "journal-header": "Journal",
+    "journal-desc": "The {b1} is a tab where you can find dispatcher duty and timetables history (currently only from the main PL1 game server). You can also search for a particular player's history using additional filters.",
+    "journal-desc-b1": "Journal",
+    "other-apps": "Also check out other apps designed to make TD2 gameplay easier:",
+    "pojazdownik-desc": "online rolling stock editor",
+    "generator-desc": "graphical manager of train orders",
+    "srjp-desc": "Polish working train timetable",
+    "donation-info": "If you appreciate the Stacjownik project as well as other applications, please consider supporting it financially - click the button with {icon1} to learn more!",
+    "donation-info-icon1-text": "the diamond icon",
+    "bottom-text": "Enjoy!\n~Spythere",
+    "button-confirm": "Start using the app!"
+  },
   "donations": {
     "button-title": "TOSS A COIN",
     "header": "Toss a coin to Stacjownik!",
