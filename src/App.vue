@@ -5,9 +5,11 @@
       @toggle-card="() => (isUpdateCardOpen = false)"
     />
 
+    <AppWelcomeCard :is-card-open="isWelcomeCardOpen" @toggle-card="closeWelcomeCard" />
+
     <Tooltip />
-    
-    <AppHeader :current-lang="currentLang" @change-lang="changeLang" />
+
+    <AppHeader :current-lang="store.currentLocale" @change-lang="changeLang" />
 
     <main class="app_main">
       <router-view v-slot="{ Component }">
@@ -44,8 +46,10 @@ import UpdateCard from './components/App/UpdateCard.vue';
 
 import StorageManager from './managers/storageManager';
 import AppFooter from './components/App/AppFooter.vue';
+import AppWelcomeCard from './components/App/AppWelcomeCard.vue';
 
 const STORAGE_VERSION_KEY = 'app_version';
+const WELCOME_CARD_SEEN_KEY = 'welcome_card_seen';
 
 export default defineComponent({
   components: {
@@ -54,6 +58,7 @@ export default defineComponent({
     AppHeader,
     AppFooter,
     UpdateCard,
+    AppWelcomeCard,
     Tooltip
   },
 
@@ -64,8 +69,8 @@ export default defineComponent({
     tooltipStore: useTooltipStore(),
 
     isUpdateCardOpen: false,
+    isWelcomeCardOpen: false,
 
-    currentLang: 'pl',
     isOnProductionHost: location.hostname == 'stacjownik-td2.web.app'
   }),
 
@@ -85,12 +90,28 @@ export default defineComponent({
       this.loadLang();
       this.setupOfflineHandling();
       this.checkAppVersion();
+      this.handleQueries();
 
       this.apiStore.setupAPIData();
     },
 
+    handleQueries() {
+      const query = new URLSearchParams(window.location.search);
+
+      if (query.get('welcomeCard') == '1') {
+        this.isWelcomeCardOpen = true;
+      }
+    },
+
     async checkAppVersion() {
+      const isWelcomeCardSeen = StorageManager.getBooleanValue(WELCOME_CARD_SEEN_KEY);
       const storageVersion = StorageManager.getStringValue(STORAGE_VERSION_KEY);
+
+      if (isWelcomeCardSeen == false && storageVersion == '') {
+        setTimeout(() => {
+          this.isWelcomeCardOpen = true;
+        }, 1500);
+      }
 
       try {
         const releaseData = await (
@@ -140,7 +161,7 @@ export default defineComponent({
 
     changeLang(lang: string) {
       this.$i18n.locale = lang;
-      this.currentLang = lang;
+      this.store.currentLocale = lang;
 
       StorageManager.setStringValue('lang', lang);
     },
@@ -157,10 +178,15 @@ export default defineComponent({
 
       const naviLanguage = window.navigator.language.toString();
 
-      if (naviLanguage.startsWith('en')) {
+      if (!naviLanguage.startsWith('pl')) {
         this.changeLang('en');
         return;
       }
+    },
+
+    closeWelcomeCard() {
+      this.isWelcomeCardOpen = false;
+      StorageManager.setBooleanValue(WELCOME_CARD_SEEN_KEY, true);
     }
   }
 });

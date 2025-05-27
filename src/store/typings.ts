@@ -12,6 +12,7 @@ export interface MainStoreState {
   driverStatsStatus: Status.Data;
   chosenModalTrainId?: string;
   modalLastClickedTarget: EventTarget | null;
+  currentLocale: string;
 }
 
 export interface StationJSONData {

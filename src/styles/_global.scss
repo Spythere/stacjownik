@@ -23,7 +23,6 @@
 
   --clr-donator: #f7a4ff;
 
-
   --no-scroll-padding: 17px;
   --max-container-width: 1700px;
 
@@ -207,9 +206,22 @@ ul {
     background: linear-gradient(90deg, #ff88db 30%, #ffffff 70%);
     background-clip: text;
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;   
+    -webkit-text-fill-color: transparent;
 
     text-shadow: #f050ff 0 0 10px;
+  }
+
+  &--discord {
+    color: var(--clr-donator);
+    color: transparent;
+
+    background: var(--clr-donator);
+    background: linear-gradient(90deg, #7fb6ff 0%, #60ecff 70%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    text-shadow: #88ddff 0 0 10px;
   }
 }
 
