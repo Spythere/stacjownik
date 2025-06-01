@@ -23,8 +23,8 @@
             v-for="(viewMode, i) in viewModes"
             :key="i"
             class="btn btn--option"
-            :class="{ checked: currentMode == viewMode.component }"
-            @click="setViewMode(viewMode.component)"
+            :class="{ checked: currentMode == viewMode.component.name }"
+            @click="setViewMode(viewMode.component.name!)"
           >
             {{ $t(viewMode.id) }}
           </button>
@@ -32,17 +32,17 @@
 
         <div
           v-if="
-            apiStore.dataStatuses.sceneries == Status.Loading ||
-            apiStore.dataStatuses.connection == Status.Loading
+            apiStore.dataStatuses.sceneries == Status.Data.Loading ||
+            apiStore.dataStatuses.connection == Status.Data.Loading
           "
         ></div>
 
         <keep-alive v-else>
           <component
-            :is="currentMode"
+            :is="currentViewComponent"
             :onlineScenery="onlineSceneryInfo"
             :station="stationInfo"
-            :key="currentMode"
+            :key="currentViewComponent.name"
           ></component>
         </keep-alive>
       </div>
@@ -50,130 +50,99 @@
   </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from 'vue';
-import { useRoute } from 'vue-router';
-import routerMixin from '../mixins/routerMixin';
+<script lang="ts" setup>
+import { computed, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { useMainStore } from '../store/mainStore';
 
 import SceneryInfo from '../components/SceneryView/SceneryInfo.vue';
 import SceneryHeader from '../components/SceneryView/SceneryHeader.vue';
+
 import SceneryTimetable from '../components/SceneryView/SceneryTimetable.vue';
 import SceneryTimetablesHistory from '../components/SceneryView/SceneryTimetablesHistory.vue';
 import SceneryDispatchersHistory from '../components/SceneryView/SceneryDispatchersHistory.vue';
-import ActionButton from '../components/Global/ActionButton.vue';
-import { Status } from '../typings/common';
+
 import { useApiStore } from '../store/apiStore';
+import { ref } from 'vue';
+import { Status } from '../typings/common';
 
-enum SceneryViewMode {
-  'TIMETABLES_ACTIVE',
-  'TIMETABLES_HISTORY',
-  'SCENERY_HISTORY'
-}
+const route = useRoute();
+const router = useRouter();
 
-export default defineComponent({
-  name: 'SceneryView',
+const prevPath = ref('/');
 
-  components: {
-    SceneryInfo,
-    SceneryTimetable,
-    ActionButton,
-    SceneryHeader,
-    SceneryTimetablesHistory,
-    SceneryDispatchersHistory
+const props = defineProps({
+  region: {
+    type: String,
+    required: false
   },
 
-  props: {
-    region: {
-      type: String,
-      required: false
-    },
-
-    station: {
-      type: String,
-      required: true
-    }
-  },
-
-  mixins: [routerMixin],
-
-  data: () => ({
-    store: useMainStore(),
-    apiStore: useApiStore(),
-
-    viewModes: [
-      {
-        id: 'scenery.option-active-timetables',
-        component: 'SceneryTimetable'
-      },
-      {
-        id: 'scenery.option-timetables-history',
-        component: 'SceneryTimetablesHistory'
-      },
-      {
-        id: 'scenery.option-dispatchers-history',
-        component: 'SceneryDispatchersHistory'
-      }
-    ],
-    sceneryViewMode: SceneryViewMode,
-    selectedCheckpoint: '',
-    currentViewCompontent: 'SceneryTimetable',
-    onlineFrom: -1,
-    Status: Status.Data
-  }),
-
-  setup() {
-    const route = useRoute();
-
-    const isComponentVisible = computed(() => route.path === '/scenery');
-
-    return {
-      isComponentVisible
-    };
-  },
-
-  computed: {
-    currentMode() {
-      return this.$route.query.view?.toString() ?? 'SceneryTimetable';
-    },
-
-    stationInfo() {
-      return this.store.stationList.find(
-        (station) => station.name === this.station?.toString().replace(/_/g, ' ')
-      );
-    },
-
-    onlineSceneryInfo() {
-      return this.store.activeSceneryList.find(
-        (scenery) =>
-          scenery.name === this.station?.toString().replace(/_/g, ' ') &&
-          scenery.region == this.store.region.id
-      );
-    }
-  },
-
-  methods: {
-    setViewMode(componentName: string) {
-      this.$router.push({
-        path: this.$route.path,
-        query: {
-          ...this.$route.query,
-          view: componentName
-        }
-      });
-    },
-
-    loadSelectedCheckpoint() {
-      if (!this.stationInfo?.generalInfo?.checkpoints) return;
-      if (this.stationInfo.generalInfo.checkpoints.length == 0) return;
-      this.selectedCheckpoint = this.stationInfo.generalInfo.checkpoints[0];
-    },
-
-    onReturnButtonClick() {
-      this.$router.back();
-    }
+  station: {
+    type: String,
+    required: true
   }
 });
+
+const store = useMainStore();
+const apiStore = useApiStore();
+
+const viewModes = [
+  {
+    id: 'scenery.option-active-timetables',
+    component: SceneryTimetable
+  },
+  {
+    id: 'scenery.option-timetables-history',
+    component: SceneryTimetablesHistory
+  },
+  {
+    id: 'scenery.option-dispatchers-history',
+    component: SceneryDispatchersHistory
+  }
+];
+
+onMounted(() => {
+  prevPath.value = (route.meta['prevPath'] as string) ?? '/';
+});
+
+const currentMode = computed(() => {
+  return route.query.view?.toString() ?? 'SceneryTimetable';
+});
+
+const currentViewComponent = computed(() => {
+  return (
+    viewModes.find((mode) => mode.component.name == currentMode.value)?.component ??
+    SceneryTimetable
+  );
+});
+
+const stationInfo = computed(() => {
+  return store.stationList.find(
+    (station) => station.name === props.station?.toString().replace(/_/g, ' ')
+  );
+});
+
+const onlineSceneryInfo = computed(() => {
+  return store.activeSceneryList.find(
+    (scenery) =>
+      scenery.name === props.station?.toString().replace(/_/g, ' ') &&
+      scenery.region == store.region.id
+  );
+});
+
+function setViewMode(componentName: string) {
+  router.push({
+    path: route.path,
+    query: {
+      ...route.query,
+      view: componentName
+    }
+  });
+}
+
+function onReturnButtonClick() {
+  router.push(prevPath.value);
+}
 </script>
 
 <style lang="scss" scoped>
