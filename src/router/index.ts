@@ -36,7 +36,10 @@ const routes: Array<RouteRecordRaw> = [
     props: (route) => ({
       region: route.query.region,
       station: route.query.station
-    })
+    }),
+    beforeEnter: (to, from) => {
+      to.meta['prevPath'] = from.fullPath;
+    }
   },
   {
     path: '/journal',
@@ -72,7 +75,7 @@ const router = createRouter({
       from.query['view'] === undefined &&
       !savedPosition
     )
-      return { el: `.scenery-left`, behavior: 'instant', top: 3 };
+      return { el: `.app_main`, behavior: 'instant', top: -13 };
 
     if (savedPosition) return savedPosition;
   },
