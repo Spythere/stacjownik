@@ -93,18 +93,54 @@
           <span class="timetable-general">
             <span class="general-info">
               <div class="info-train">
-                <b
-                  data-tooltip-type="BaseTooltip"
-                  :data-tooltip-content="getCategoryExplanation(row.train.timetableData!.category)"
-                  class="text--primary tooltip-help"
-                >
-                  {{ row.train.timetableData!.category }}
-                </b>
-                <span>&nbsp;</span>
-                <b>{{ row.train.trainNo }}</b>
-                <span>&nbsp;&bull;&nbsp;</span>
-                <span>{{ row.train.driverName }}</span>
+                <!-- Cargo warnings & details badges -->
                 <span
+                  class="train-badge twr"
+                  v-if="row.train.timetableData!.twr"
+                  data-tooltip-type="BaseTooltip"
+                  :data-tooltip-content="$t('warnings.TWR')"
+                >
+                  TWR
+                </span>
+
+                <span
+                  class="train-badge tn"
+                  v-if="row.train.timetableData!.hasDangerousCargo"
+                  data-tooltip-type="BaseTooltip"
+                  :data-tooltip-content="$t('warnings.TN')"
+                >
+                  TN
+                </span>
+
+                <span
+                  class="train-badge pn"
+                  v-if="row.train.timetableData!.hasExtraDeliveries"
+                  data-tooltip-type="BaseTooltip"
+                  :data-tooltip-content="$t('warnings.PN')"
+                >
+                  PN
+                </span>
+
+                <!-- Train info -->
+                <span>
+                  <b
+                    data-tooltip-type="BaseTooltip"
+                    :data-tooltip-content="
+                      getCategoryExplanation(row.train.timetableData!.category)
+                    "
+                    class="text--primary tooltip-help"
+                  >
+                    {{ row.train.timetableData!.category }}
+                  </b>
+
+                  <b>&nbsp;{{ row.train.trainNo }}</b>
+                  <span>&nbsp;&bull;&nbsp;</span>
+                  <span>{{ row.train.driverName }}</span>
+                </span>
+
+                <!-- Train stop comments -->
+                <span
+                  class="stop-comments-icon"
                   v-if="row.checkpointStop.comments"
                   data-tooltip-type="BaseTooltip"
                   :data-tooltip-content="row.checkpointStop.comments"
@@ -352,6 +388,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 @use '../../styles/responsive';
 @use '../../styles/animations';
+@use '../../styles/badge';
 
 .scenery-timetable {
   height: 100%;
@@ -469,20 +506,28 @@ export default defineComponent({
 .general-info {
   display: flex;
   flex-wrap: wrap;
+}
 
-  .info-number {
-    color: var(--clr-primary);
-  }
+.info-train {
+  display: flex;
+  gap: 0.5em;
+}
 
-  .info-route {
-    width: 100%;
-  }
+.info-train > .train-badge {
+  font-size: 0.85em;
+}
 
-  img {
-    height: 0.9em;
-    vertical-align: middle;
-    margin: 0 0.25em;
-  }
+.info-number {
+  color: var(--clr-primary);
+}
+
+.info-route {
+  width: 100%;
+}
+
+.stop-comments-icon > img {
+  width: 1.2em;
+  vertical-align: middle;
 }
 
 .schedule {
