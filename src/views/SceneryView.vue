@@ -2,12 +2,6 @@
   <div class="scenery-view">
     <div class="scenery-wrapper" ref="card-wrapper">
       <div class="scenery-left">
-        <div class="scenery-actions">
-          <button class="back-btn" :title="$t('scenery.return-btn')" @click="onReturnButtonClick">
-            <img src="/images/icon-back.svg" alt="return button" />
-          </button>
-        </div>
-
         <SceneryHeader
           :stationName="station"
           :station="stationInfo"
@@ -63,13 +57,10 @@ import SceneryTimetablesHistory from '../components/SceneryView/SceneryTimetable
 import SceneryDispatchersHistory from '../components/SceneryView/SceneryDispatchersHistory.vue';
 
 import { useApiStore } from '../store/apiStore';
-import { ref } from 'vue';
 import { Status } from '../typings/common';
 
 const route = useRoute();
 const router = useRouter();
-
-const prevPath = ref('/');
 
 const props = defineProps({
   region: {
@@ -100,10 +91,6 @@ const viewModes = [
     component: SceneryDispatchersHistory
   }
 ];
-
-onMounted(() => {
-  prevPath.value = (route.meta['prevPath'] as string) ?? '/';
-});
 
 const currentMode = computed(() => {
   return route.query.view?.toString() ?? 'SceneryTimetable';
@@ -139,20 +126,10 @@ function setViewMode(componentName: string) {
     }
   });
 }
-
-function onReturnButtonClick() {
-  router.push(prevPath.value);
-}
 </script>
 
 <style lang="scss" scoped>
 @use '../styles/responsive';
-
-button.back-btn {
-  img {
-    width: 2em;
-  }
-}
 
 .scenery {
   &-view {
