@@ -586,7 +586,7 @@
     "desc-departed-ends": "Na scenerii / <i>odprawiony do: <b>{nextStationName}</b></i>",
     "desc-departed-away": "<i>Odprawiony do: <b>{nextStationName} ({nextArrivalLine})</b></i>",
     "desc-end": "Pociąg kończy bieg",
-    "desc-terminated": "Pociąg zaskończył bieg"
+    "desc-terminated": "Pociąg zakończył bieg"
   },
   "history": {
     "title": "DZIENNIK ROZKŁADÓW JAZDY"

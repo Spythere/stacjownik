@@ -47,7 +47,7 @@ export default defineComponent({
                 nextStationName: nextElement?.stationName,
                 nextArrivalLine: nextElement?.arrivalRouteExt
               })
-            : '';
+            : this.$t(`timetables.desc-end`);
           break;
 
         case StopStatus.DEPARTED:
