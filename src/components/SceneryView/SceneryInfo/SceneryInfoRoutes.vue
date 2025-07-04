@@ -44,6 +44,7 @@
             {{ route.routeName }}
           </span>
           <span v-if="route.routeSpeed" class="speed">{{ route.routeSpeed }}</span>
+          <span v-if="route.routeSpeedExit" class="speed">| {{ route.routeSpeedExit }}</span>
           <span v-if="route.routeLength" class="length">
             {{ (route.routeLength / 1000).toFixed(1) + 'km' }}
           </span>
