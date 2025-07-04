@@ -134,9 +134,9 @@
                   </b>
 
                   <b>&nbsp;{{ row.train.trainNo }}</b>
-                  <span>&nbsp;&bull;&nbsp;</span>
-                  <span>{{ row.train.driverName }}</span>
                 </span>
+                <span>&bull;</span>
+                <span>{{ row.train.driverName }}</span>
 
                 <!-- Train stop comments -->
                 <span
@@ -510,7 +510,8 @@ export default defineComponent({
 
 .info-train {
   display: flex;
-  gap: 0.5em;
+  flex-wrap: wrap;
+  gap: 0.25em;
 }
 
 .info-train > .train-badge {
