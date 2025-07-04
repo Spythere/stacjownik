@@ -137,6 +137,8 @@
                 </span>
                 <span>&bull;</span>
                 <span>{{ row.train.driverName }}</span>
+                <span>&bull;</span>
+                <b style="color: #ddd">{{ row.train.stockList[0] }}</b>
 
                 <!-- Train stop comments -->
                 <span
@@ -505,6 +507,7 @@ export default defineComponent({
 
 .general-info {
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
 }
 
