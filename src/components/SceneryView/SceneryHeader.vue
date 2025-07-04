@@ -1,7 +1,7 @@
 <template>
   <section class="info-header">
     <button
-      class="btn btn-return btn--action"
+      class="btn btn-return"
       :title="$t('scenery.return-btn')"
       @click="onReturnButtonClick"
     >
@@ -56,12 +56,19 @@ function onReturnButtonClick() {
 
 <style lang="scss" scoped>
 @use '../../styles/responsive';
+@use 'sass:color';
 
 .btn-return {
-  margin-bottom: 1em;
+  $bgColor: #2b2b2b;
+  background-color: $bgColor;
+  margin-bottom: 0.5em;
 
   img {
     width: 2em;
+  }
+
+  &:hover {
+    background-color: color.adjust($color: $bgColor, $lightness: 15%);
   }
 }
 
