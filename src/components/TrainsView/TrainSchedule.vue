@@ -57,7 +57,14 @@
                   <span>{{ stop.departureLine }}</span>
 
                   <span v-if="stop.departureLineInfo">
-                    <span> | {{ stop.departureLineInfo.routeSpeed }}</span>
+                    <span>
+                      |
+                      {{
+                        stop.departureLineInfo.routeSpeedExit
+                          ? `${stop.departureLineInfo.routeSpeedExit} (${stop.departureLineInfo.routeSpeed})`
+                          : stop.departureLineInfo.routeSpeed
+                      }}</span
+                    >
 
                     <img
                       :src="
@@ -85,13 +92,13 @@
                 </div>
 
                 <div
-                  v-if="stop.sceneryName != scheduleStops[i + 1]?.sceneryName"
+                  v-if="stop.nextPointRef && stop.sceneryName != stop.nextPointRef.sceneryName"
                   class="scenery-change-name"
                 >
-                  <span>{{ scheduleStops[i + 1].sceneryName }}</span>
+                  <span>{{ stop.nextPointRef.sceneryName }}</span>
 
                   <i
-                    v-if="!scheduleStops[i + 1].isSceneryOnline"
+                    v-if="!stop.nextPointRef.isSceneryOnline"
                     class="fa-solid fa-ban fa-sm"
                     data-tooltip-type="BaseTooltip"
                     :data-tooltip-content="$t('app.tooltip-scenery-offline')"
@@ -101,30 +108,33 @@
 
                 <div
                   class="scenery-route"
-                  v-if="stop.sceneryName != scheduleStops[i + 1]?.sceneryName"
+                  v-if="stop.nextPointRef && stop.sceneryName != stop.nextPointRef.sceneryName"
                 >
-                  <span> {{ scheduleStops[i + 1].arrivalLine }}</span>
+                  <span> {{ stop.nextPointRef.arrivalLine }}</span>
 
-                  <span v-if="scheduleStops[i + 1].arrivalLineInfo">
-                    <span> | {{ scheduleStops[i + 1].arrivalLineInfo!.routeSpeed }} </span>
+                  <span v-if="stop.nextPointRef.arrivalLineInfo">
+                    <span> | {{ stop.nextPointRef.arrivalLineInfo!.routeSpeed }}</span>
+                    <span v-if="stop.nextPointRef.arrivalLineInfo!.routeSpeedExit"
+                      >({{ stop.nextPointRef.arrivalLineInfo!.routeSpeedExit }})</span
+                    >
 
                     <img
                       :src="
-                        scheduleStops[i + 1].arrivalLineInfo?.isElectric
+                        stop.nextPointRef.arrivalLineInfo?.isElectric
                           ? '/images/icon-catenary.svg'
                           : '/images/icon-we4a.png'
                       "
                       data-tooltip-type="BaseTooltip"
                       :data-tooltip-content="
                         $t(
-                          `trains.${!scheduleStops[i + 1].arrivalLineInfo?.isElectric ? 'no-' : ''}catenary-tooltip`
+                          `trains.${!stop.nextPointRef.arrivalLineInfo?.isElectric ? 'no-' : ''}catenary-tooltip`
                         )
                       "
                       width="14"
                     />
 
                     <img
-                      v-if="scheduleStops[i + 1].arrivalLineInfo!.isRouteSBL"
+                      v-if="stop.nextPointRef.arrivalLineInfo!.isRouteSBL"
                       src="/images/icon-sbl-transparent.svg"
                       width="14"
                       data-tooltip-type="BaseTooltip"
@@ -228,7 +238,7 @@ export default defineComponent({
         departureLineInfo = pathData.departureLineData;
       }
 
-      for (const stop of followingStops) {
+      followingStops.forEach((stop, i) => {
         let isExternal = false;
 
         if (stop.arrivalLine === currentPath.arrivalRouteExt) {
@@ -287,7 +297,9 @@ export default defineComponent({
           status: stop.confirmed ? 'confirmed' : stop.stopped ? 'stopped' : 'unconfirmed',
 
           sceneryName: currentPath.stationName,
-          isSceneryOnline: pathData?.isOnline ?? false
+          isSceneryOnline: pathData?.isOnline ?? false,
+
+          nextPointRef: null
         };
 
         if (internalRouteInfo) {
@@ -309,6 +321,11 @@ export default defineComponent({
 
         stopRows.push(rowData);
 
+        // Assign this row data object to the last one as reference
+        if (i != 0) {
+          stopRows[i - 1].nextPointRef = rowData;
+        }
+
         if (stop.departureLine === currentPath.departureRouteExt) {
           // Reverse search for last scenery checkpoint
           if (pathData?.departureLineData) {
@@ -328,7 +345,7 @@ export default defineComponent({
           currentPath = timetablePath[++currentPathIndex];
           pathData = this.getPathSceneryData(currentPath);
         }
-      }
+      });
 
       return stopRows;
     },
