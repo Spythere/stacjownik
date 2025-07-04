@@ -591,6 +591,7 @@
     "terminates": "TERMINATES\nHERE",
     "from": "Arrives from",
     "to": "Departs to",
+    "desc-beginning": "The train begins here",
     "desc-arriving": "<i>Arrives from: <b>{prevStationName} ({prevDepartureLine})</b></i>",
     "desc-online": "On scenery / <i>direction: <b>{nextStationName} ({nextArrivalLine})</b></i>",
     "desc-stopped": "On scenery - stopped / <i>direction: <b>{nextStationName} ({nextArrivalLine})</b></i>",

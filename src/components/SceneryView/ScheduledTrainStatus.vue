@@ -26,23 +26,18 @@ export default defineComponent({
     computedScheduledTrain() {
       const { status, prevElement, currentElement, nextElement } = this.sceneryTimetableRow;
 
-      const prevDepartureIndicator = prevElement?.departureRouteExt
-        ? `(${prevElement.departureRouteExt}) ${prevElement.stationName}`
-        : '---';
-
-      const nextArrivalIndicator = nextElement?.arrivalRouteExt
-        ? `(${nextElement.arrivalRouteExt}) ${nextElement.stationName}`
-        : `${currentElement.stationName}`;
-
-      let stopStatusDescription = '',
-        stopStatusIndicator = '';
+      let stopStatusIndicator = '';
 
       switch (status) {
         case StopStatus.ARRIVING:
-          stopStatusIndicator = this.$t('timetables.desc-arriving', {
-            prevStationName: prevElement?.stationName ?? '',
-            prevDepartureLine: prevElement?.departureRouteExt ?? ''
-          });
+          if (prevElement) {
+            stopStatusIndicator = this.$t('timetables.desc-arriving', {
+              prevStationName: prevElement?.stationName ?? '',
+              prevDepartureLine: prevElement?.departureRouteExt ?? ''
+            });
+          } else {
+            stopStatusIndicator = this.$t('timetables.desc-beginning');
+          }
           break;
 
         case StopStatus.ONLINE:
@@ -56,8 +51,6 @@ export default defineComponent({
           break;
 
         case StopStatus.DEPARTED:
-          // stopStatusIndicator = `${this.$t('timetables.to')}: ${nextArrivalIndicator}`;
-
           if (!nextElement?.stationName) {
             stopStatusIndicator = this.$t('timetables.desc-departed-ends', {
               nextStationName: currentElement.stationName
@@ -72,7 +65,6 @@ export default defineComponent({
           break;
 
         case StopStatus.DEPARTED_AWAY:
-          // stopStatusIndicator = `${this.$t('timetables.to')}: ${nextArrivalIndicator}`;
           stopStatusIndicator = this.$t('timetables.desc-departed-away', {
             nextStationName: nextElement?.stationName,
             nextArrivalLine: nextElement?.arrivalRouteExt
@@ -80,7 +72,6 @@ export default defineComponent({
           break;
 
         case StopStatus.TERMINATED:
-          // stopStatusIndicator = `X ${this.$t('timetables.desc-terminated')}`;
           stopStatusIndicator = this.$t('timetables.desc-terminated');
           break;
 
