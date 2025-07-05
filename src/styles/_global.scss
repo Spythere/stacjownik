@@ -297,48 +297,6 @@ a.a-button {
   }
 }
 
-.return-btn {
-  display: none;
-  justify-content: center;
-  align-items: center;
-
-  position: fixed;
-  right: 2.5rem;
-  bottom: 4rem;
-
-  z-index: 100;
-
-  width: 3.5rem;
-
-  font-size: 3rem;
-
-  background-color: #555;
-  outline: 3px solid #222;
-  color: white;
-
-  border-radius: 50%;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #3c3c3c;
-  }
-
-  img {
-    width: 1.3em;
-  }
-
-  @include responsive.smallScreen {
-    bottom: 1em;
-    right: 0;
-    left: 50%;
-
-    width: 1em;
-    height: 1em;
-
-    transform: translateX(-50%);
-  }
-}
-
 // Basic tooltip
 [data-tooltip] {
   cursor: help;

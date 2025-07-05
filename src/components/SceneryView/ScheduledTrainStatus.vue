@@ -2,11 +2,9 @@
   <div class="general-status">
     <span
       :class="computedScheduledTrain.status"
-      data-tooltip-type="HtmlTooltip"
-      :data-tooltip-content="computedScheduledTrain.stopStatusDescription"
       @click.prevent="() => {}"
+      v-html="computedScheduledTrain.stopStatusIndicator"
     >
-      {{ computedScheduledTrain.stopStatusIndicator }}
     </span>
   </div>
 </template>
@@ -28,48 +26,37 @@ export default defineComponent({
     computedScheduledTrain() {
       const { status, prevElement, currentElement, nextElement } = this.sceneryTimetableRow;
 
-      const prevDepartureIndicator = prevElement?.departureRouteExt
-        ? `(${prevElement.departureRouteExt}) ${prevElement.stationName}`
-        : '---';
-
-      const nextArrivalIndicator = nextElement?.arrivalRouteExt
-        ? `(${nextElement.arrivalRouteExt}) ${nextElement.stationName}`
-        : `${currentElement.stationName}`;
-
-      let stopStatusDescription = '',
-        stopStatusIndicator = '';
+      let stopStatusIndicator = '';
 
       switch (status) {
         case StopStatus.ARRIVING:
-          stopStatusIndicator = `${this.$t('timetables.from')}: ${prevDepartureIndicator}`;
-          stopStatusDescription = this.$t('timetables.desc-arriving', {
-            prevStationName: prevElement?.stationName ?? '',
-            prevDepartureLine: prevElement?.departureRouteExt ?? ''
-          });
+          if (prevElement) {
+            stopStatusIndicator = this.$t('timetables.desc-arriving', {
+              prevStationName: prevElement?.stationName ?? '',
+              prevDepartureLine: prevElement?.departureRouteExt ?? ''
+            });
+          } else {
+            stopStatusIndicator = this.$t('timetables.desc-beginning');
+          }
           break;
 
         case StopStatus.ONLINE:
         case StopStatus.STOPPED:
           stopStatusIndicator = nextElement?.arrivalRouteExt
-            ? `${this.$t('timetables.to')}: ${nextArrivalIndicator}`
-            : `${this.$t('timetables.desc-end')}`;
-          stopStatusDescription = nextElement?.arrivalRouteExt
             ? this.$t(`timetables.desc-${status}`, {
                 nextStationName: nextElement?.stationName,
                 nextArrivalLine: nextElement?.arrivalRouteExt
               })
-            : '';
+            : this.$t(`timetables.desc-end`);
           break;
 
         case StopStatus.DEPARTED:
-          stopStatusIndicator = `${this.$t('timetables.to')}: ${nextArrivalIndicator}`;
-
           if (!nextElement?.stationName) {
-            stopStatusDescription = this.$t('timetables.desc-departed-ends', {
+            stopStatusIndicator = this.$t('timetables.desc-departed-ends', {
               nextStationName: currentElement.stationName
             });
           } else {
-            stopStatusDescription = this.$t('timetables.desc-departed', {
+            stopStatusIndicator = this.$t('timetables.desc-departed', {
               nextStationName: nextElement?.stationName ?? currentElement.stationName,
               nextArrivalLine: nextElement?.arrivalRouteExt
             });
@@ -78,16 +65,14 @@ export default defineComponent({
           break;
 
         case StopStatus.DEPARTED_AWAY:
-          stopStatusIndicator = `${this.$t('timetables.to')}: ${nextArrivalIndicator}`;
-          stopStatusDescription = this.$t('timetables.desc-departed-away', {
+          stopStatusIndicator = this.$t('timetables.desc-departed-away', {
             nextStationName: nextElement?.stationName,
             nextArrivalLine: nextElement?.arrivalRouteExt
           });
           break;
 
         case StopStatus.TERMINATED:
-          stopStatusIndicator = `X ${this.$t('timetables.desc-terminated')}`;
-          stopStatusDescription = this.$t('timetables.desc-terminated');
+          stopStatusIndicator = this.$t('timetables.desc-terminated');
           break;
 
         default:
@@ -95,7 +80,6 @@ export default defineComponent({
       }
       return {
         ...this.sceneryTimetableRow,
-        stopStatusDescription,
         stopStatusIndicator
       };
     }
@@ -106,7 +90,6 @@ export default defineComponent({
 <style lang="scss" scoped>
 .general-status {
   margin-top: 0.5em;
-  cursor: help;
 
   span.arriving {
     color: #ccc;
@@ -114,17 +97,14 @@ export default defineComponent({
 
   span.departed {
     color: lime;
-    font-weight: bold;
 
     &-away {
-      font-weight: bold;
       color: #5ecc5e;
     }
   }
 
   span.stopped {
     color: #ffa600;
-    font-weight: bold;
   }
 
   span.online {
@@ -133,7 +113,6 @@ export default defineComponent({
 
   span.terminated {
     color: salmon;
-    font-weight: bold;
   }
 }
 </style>

@@ -196,4 +196,6 @@ export interface TrainSchedulePoint {
   isSBL: boolean;
   sceneryName: string | null;
   isSceneryOnline: boolean;
+
+  nextPointRef: TrainSchedulePoint | null;
 }

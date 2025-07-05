@@ -142,6 +142,7 @@ export interface StationRoutesInfo {
   isRouteSBL: boolean;
   routeLength: number;
   routeSpeed: number;
+  routeSpeedExit?: number;
   routeTracks: number;
   hidden?: boolean;
   realLineNo?: number;
