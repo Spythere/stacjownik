@@ -13,6 +13,7 @@ import BaseTooltip from './BaseTooltip.vue';
 import SpawnsTooltip from './SpawnsTooltip.vue';
 import UsersTooltip from './UsersTooltip.vue';
 import HtmlTooltip from './HtmlTooltip.vue';
+import TrainInfoTooltip from "./TrainInfoTooltip.vue";
 
 const BOX_PADDING_PX = 20;
 
@@ -23,7 +24,8 @@ export default defineComponent({
     BaseTooltip,
     SpawnsTooltip,
     UsersTooltip,
-    HtmlTooltip
+    HtmlTooltip,
+    TrainInfoTooltip
   },
 
   data() {

@@ -248,7 +248,9 @@
             class="station-users"
             :class="{ inactive: !station.onlineInfo }"
             data-tooltip-type="UsersTooltip"
-            :data-tooltip-content="JSON.stringify(station.onlineInfo?.stationTrains ?? [])"
+            :data-tooltip-content="
+              JSON.stringify(getStationUsersTrains(station.onlineInfo?.stationTrains ?? []))
+            "
           >
             <span class="text--primary">{{
               station.onlineInfo?.stationTrains?.length ?? '-'
@@ -318,7 +320,7 @@ import dateMixin from '../../mixins/dateMixin';
 import styleMixin from '../../mixins/styleMixin';
 import { useApiStore } from '../../store/apiStore';
 import { useMainStore } from '../../store/mainStore';
-import { Station, Status } from '../../typings/common';
+import { Station, Status, TooltipUserTrain, Train } from '../../typings/common';
 import { useTooltipStore } from '../../store/tooltipStore';
 import { getChangedFilters } from '../../managers/stationFilterManager';
 import { ActiveSorter, HeadIdsType, headIconsIds, headIds } from './typings';
@@ -394,6 +396,13 @@ export default defineComponent({
       else this.activeSorter.dir = 1;
 
       this.activeSorter.headerName = headerName;
+    },
+
+    getStationUsersTrains(stationTrains: Train[]): TooltipUserTrain[] {
+      return stationTrains.map((train) => ({
+        driverName: train.driverName,
+        trainNo: train.trainNo
+      }));
     }
   }
 });

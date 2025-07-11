@@ -122,28 +122,24 @@
                 </span>
 
                 <!-- Train info -->
-                <span>
-                  <b
-                    data-tooltip-type="BaseTooltip"
-                    :data-tooltip-content="
-                      getCategoryExplanation(row.train.timetableData!.category)
-                    "
-                    class="text--primary tooltip-help"
-                  >
+                <span
+                  data-tooltip-type="TrainInfoTooltip"
+                  :data-tooltip-content="JSON.stringify(row.train)"
+                  class="tooltip-help"
+                >
+                  <b class="text--primary">
                     {{ row.train.timetableData!.category }}
                   </b>
 
                   <b>&nbsp;{{ row.train.trainNo }}</b>
+                  &bull;
+                  {{ row.train.driverName }}
                 </span>
-                <span>&bull;</span>
-                <span>{{ row.train.driverName }}</span>
-                <span>&bull;</span>
-                <b style="color: #ddd">{{ row.train.stockList[0] }}</b>
 
                 <!-- Train stop comments -->
                 <span
-                  class="stop-comments-icon"
                   v-if="row.checkpointStop.comments"
+                  class="stop-comments-icon"
                   data-tooltip-type="BaseTooltip"
                   :data-tooltip-content="row.checkpointStop.comments"
                 >
@@ -243,7 +239,7 @@ import { useMainStore } from '../../store/mainStore';
 import { useApiStore } from '../../store/apiStore';
 import ScheduledTrainStatus from './ScheduledTrainStatus.vue';
 import { SceneryTimetableRow } from './typings';
-import { ActiveScenery, Station } from '../../typings/common';
+import { ActiveScenery, Station, Train } from '../../typings/common';
 import { getTrainStopStatus, stopStatusPriority } from './utils';
 
 export default defineComponent({
@@ -530,8 +526,8 @@ export default defineComponent({
 }
 
 .stop-comments-icon > img {
-  width: 1.2em;
-  vertical-align: middle;
+  width: 1.3em;
+  vertical-align: top;
 }
 
 .schedule {

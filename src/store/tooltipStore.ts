@@ -8,7 +8,8 @@ export const tooltipKeys = [
   'VehiclePreviewTooltip',
   'SpawnsTooltip',
   'UsersTooltip',
-  'HtmlTooltip'
+  'HtmlTooltip',
+  'TrainInfoTooltip'
 ] as const;
 
 export type TooltipType = (typeof tooltipKeys)[number];

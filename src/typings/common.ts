@@ -253,3 +253,24 @@ export interface VehicleCargo {
   id: string;
   weight: number;
 }
+
+export interface TooltipUserTrain {
+  driverName: string;
+  trainNo: number;
+}
+
+export interface TooltipTrainInfo {
+  mass: number;
+  length: number;
+  speed: number;
+  signal: string;
+  distance: number;
+  connectedTrack: string;
+  trainNo: number;
+  driverName: string;
+  driverLevel: number;
+  currentStationName: string;
+  currentStationHash: string;
+  headVehicleName: string;
+  stockLength: number;
+}
