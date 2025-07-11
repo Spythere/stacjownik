@@ -124,7 +124,7 @@
                 <!-- Train info -->
                 <span
                   data-tooltip-type="TrainInfoTooltip"
-                  :data-tooltip-content="JSON.stringify(row.train)"
+                  :data-tooltip-content="row.train.id"
                   class="tooltip-help"
                 >
                   <b class="text--primary">
@@ -239,7 +239,7 @@ import { useMainStore } from '../../store/mainStore';
 import { useApiStore } from '../../store/apiStore';
 import ScheduledTrainStatus from './ScheduledTrainStatus.vue';
 import { SceneryTimetableRow } from './typings';
-import { ActiveScenery, Station, Train } from '../../typings/common';
+import { ActiveScenery, Station, TooltipTrainInfo, Train } from '../../typings/common';
 import { getTrainStopStatus, stopStatusPriority } from './utils';
 
 export default defineComponent({

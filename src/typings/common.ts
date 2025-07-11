@@ -272,5 +272,6 @@ export interface TooltipTrainInfo {
   currentStationName: string;
   currentStationHash: string;
   headVehicleName: string;
-  stockLength: number;
+  stockCount: number;
+  trainTimetableCategory?: string;
 }

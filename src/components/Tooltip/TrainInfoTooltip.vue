@@ -1,37 +1,49 @@
 <template>
   <div class="tooltip-content">
-    <span v-if="trainInfoObj">
-      {{ trainInfoObj.driverName }}
+    <span v-if="trainInfo">
+      <b v-if="trainInfo.timetableData" style="text-transform: uppercase">
+        {{ getCategoryExplanation(trainInfo.timetableData.category) }}
+      </b>
+
+      <div class="text--primary">
+        <b>{{ trainInfo.stockList[0] }}</b> &bull;
+        {{ trainInfo.length }}m &bull; {{ (trainInfo.mass / 1000).toFixed(2) }}t &bull;
+        {{ trainInfo.speed }}km/h
+      </div>
+
+      <div class="text--grayed">{{ displayTrainPosition(trainInfo) }}</div>
     </span>
   </div>
 </template>
 
-<script lang="ts" setup>
-import { computed } from 'vue';
+<script lang="ts">
+import { defineComponent } from 'vue';
 import { useTooltipStore } from '../../store/tooltipStore';
-import { Train } from '../../typings/common';
+import trainCategoryMixin from '../../mixins/trainCategoryMixin';
+import trainInfoMixin from '../../mixins/trainInfoMixin';
+import { useMainStore } from '../../store/mainStore';
 
-const tooltipStore = useTooltipStore();
+export default defineComponent({
+  mixins: [trainCategoryMixin, trainInfoMixin],
 
-const trainInfoObj = computed(() => {
-  if (tooltipStore.content == '') return null;
+  data: () => ({
+    tooltipStore: useTooltipStore(),
+    mainStore: useMainStore()
+  }),
 
-  try {
-    return (JSON.parse(tooltipStore.content) as Train) ?? null;
-  } catch (error) {
-    return null;
+  computed: {
+    trainInfo() {
+      if (this.tooltipStore.content == '') return null;
+
+      // Passed "content" string should be the desired train's ID
+      return this.mainStore.trainList.find((t) => t.id === this.tooltipStore.content);
+    }
   }
 });
 </script>
 
 <style lang="scss" scoped>
 .tooltip-content {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5em;
-  white-space: pre-line;
-
   padding: 0.25em 0.5em;
   border-radius: 0.25em;
 

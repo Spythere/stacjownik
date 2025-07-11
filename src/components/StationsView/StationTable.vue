@@ -248,9 +248,7 @@
             class="station-users"
             :class="{ inactive: !station.onlineInfo }"
             data-tooltip-type="UsersTooltip"
-            :data-tooltip-content="
-              JSON.stringify(getStationUsersTrains(station.onlineInfo?.stationTrains ?? []))
-            "
+            :data-tooltip-content="getUsersTooltipContent(station.onlineInfo?.stationTrains ?? [])"
           >
             <span class="text--primary">{{
               station.onlineInfo?.stationTrains?.length ?? '-'
@@ -398,11 +396,13 @@ export default defineComponent({
       this.activeSorter.headerName = headerName;
     },
 
-    getStationUsersTrains(stationTrains: Train[]): TooltipUserTrain[] {
-      return stationTrains.map((train) => ({
+    getUsersTooltipContent(stationTrains: Train[]): string {
+      const usersTrains: TooltipUserTrain[] = stationTrains.map((train) => ({
         driverName: train.driverName,
         trainNo: train.trainNo
       }));
+
+      return JSON.stringify(usersTrains);
     }
   }
 });
