@@ -523,6 +523,7 @@ export default defineComponent({
 
 .info-route {
   width: 100%;
+  margin-top: 0.25em;
 }
 
 .stop-comments-icon > img {
