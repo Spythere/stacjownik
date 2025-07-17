@@ -6,12 +6,13 @@
       </b>
 
       <div class="text--primary">
-        <b>{{ trainInfo.stockList[0] }}</b> &bull;
-        {{ trainInfo.length }}m &bull; {{ (trainInfo.mass / 1000).toFixed(2) }}t &bull;
-        {{ trainInfo.speed }}km/h
+        <b>{{ trainInfo.stockList[0] }}</b> &bull; {{ trainInfo.length }}m &bull;
+        {{ (trainInfo.mass / 1000).toFixed(2) }}t
       </div>
 
-      <div class="text--grayed">{{ displayTrainPosition(trainInfo) }}</div>
+      <div class="text--grayed">
+        {{ displayTrainPosition(trainInfo) }} - {{ trainInfo.speed }}km/h
+      </div>
     </span>
   </div>
 </template>
