@@ -2,6 +2,7 @@
   <div class="tooltip-content">
     <span v-if="trainInfo">
       <b v-if="trainInfo.timetableData" style="text-transform: uppercase">
+        <span class="text--primary">{{ trainInfo.timetableData.category }}</span>
         {{ getCategoryExplanation(trainInfo.timetableData.category) }}
       </b>
 
