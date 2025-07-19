@@ -1,11 +1,18 @@
 <template>
   <div class="general-status">
     <router-link
+      v-if="computedScheduledTrain.stationNameHref"
       :to="`/scenery?station=${computedScheduledTrain.stationNameHref}`"
       :class="computedScheduledTrain.status"
       v-html="computedScheduledTrain.stopStatusIndicator"
     >
     </router-link>
+
+    <span
+      v-else
+      :class="computedScheduledTrain.status"
+      v-html="computedScheduledTrain.stopStatusIndicator"
+    ></span>
   </div>
 </template>
 

@@ -579,7 +579,7 @@
     "terminates": "KOŃCZY BIEG",
     "from": "Przyjedzie z",
     "to": "Odjeżdża do",
-    "desc-beginning": "Pociąg rozpoczyna bieg",
+    "desc-beginning": "Poza scenerią / rozpoczyna bieg",
     "desc-arriving": "Przyjedzie z: <b><u>{prevStationName} ({prevDepartureLine})</u></b>",
     "desc-online": "Na scenerii / kierunek: <b><u>{nextStationName} ({nextArrivalLine})</u></b>",
     "desc-stopped": "Na scenerii - postój / kierunek: <b><u>{nextStationName} ({nextArrivalLine})</u></b>",
