@@ -110,7 +110,10 @@
           {{ $t('trains.scenery-offline') }}
         </div>
 
-        <div v-if="!train.online" class="train-badge offline">
+        <div
+          v-if="!train.online && train.lastSeen >= Date.now() - 60000"
+          class="train-badge offline"
+        >
           <i class="fa-solid fa-user-slash"></i>
           Offline {{ lastSeenMessage(train.lastSeen) }}
         </div>

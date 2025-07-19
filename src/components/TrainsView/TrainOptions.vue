@@ -30,17 +30,20 @@
             </div>
 
             <div class="search-box">
-              <select
-                class="search-input"
-                name="active-trains"
-                id="active-trains"
-                v-model="searchedDriver"
-              >
-                <option value="">{{ $t('options.select-driver') }}</option>
+              <datalist id="search-active-driver">
                 <option v-for="driverName in activeDriverNames" :value="driverName">
                   {{ driverName }}
                 </option>
-              </select>
+              </datalist>
+
+              <input
+                class="search-input"
+                list="search-active-driver"
+                name="search-active-driver"
+                id="search-active-driver"
+                :placeholder="$t(`options.search-driver`)"
+                v-model="searchedDriver"
+              />
 
               <button class="btn btn--action search-exit" @click="onInputClear('driver')">
                 <img src="/images/icon-exit.svg" alt="Trains search clear icon" />
