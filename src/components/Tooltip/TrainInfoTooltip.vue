@@ -13,7 +13,12 @@
 
       <div class="text--grayed">
         {{ displayTrainPosition(trainInfo) }} - {{ trainInfo.speed }}km/h
+        <span v-if="!trainInfo.online" style="color: salmon">
+          - offline {{ lastSeenMessage(trainInfo.lastSeen) }}</span
+        >
       </div>
+
+      <div></div>
     </span>
   </div>
 </template>
@@ -39,6 +44,10 @@ export default defineComponent({
 
       // Passed "content" string should be the desired train's ID
       return this.mainStore.trainList.find((t) => t.id === this.tooltipStore.content);
+    },
+
+    lastSceneryStatus() {
+      
     }
   }
 });

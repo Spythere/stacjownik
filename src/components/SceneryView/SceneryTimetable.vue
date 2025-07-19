@@ -134,6 +134,12 @@
                   <b>&nbsp;{{ row.train.trainNo }}</b>
                   &bull;
                   {{ row.train.driverName }}
+
+                  <i
+                    class="fa-solid fa-user-slash"
+                    style="color: salmon"
+                    v-if="!row.train.online && row.train.lastSeen <= Date.now() - 60000"
+                  ></i>
                 </span>
 
                 <!-- Train stop comments -->
