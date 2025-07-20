@@ -340,7 +340,7 @@
       "SUP": "Wymaga programu SUP do kontroli systemu RASP-UZK",
       "ASDEK": "Dostępny program ASDEK do detekcji stanów awaryjnych taboru w ruchu",
       "default": "Sceneria dostępna domyślnie w paczce z grą",
-      "nonDefault": "Sceneria dostępna do pobrania ze strony forum",
+      "nonDefault": "Sceneria dostępna do pobrania z forum symulatora",
       "req-level": "ogólnodostępna | od {lvl} poz. DR | od {lvl} poz. DR",
       "non-public": "Sceneria niepubliczna",
       "unavailable": "Sceneria niedostępna",
