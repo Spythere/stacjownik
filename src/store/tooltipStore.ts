@@ -8,7 +8,8 @@ export const tooltipKeys = [
   'VehiclePreviewTooltip',
   'SpawnsTooltip',
   'UsersTooltip',
-  'HtmlTooltip'
+  'HtmlTooltip',
+  'TrainInfoTooltip'
 ] as const;
 
 export type TooltipType = (typeof tooltipKeys)[number];
@@ -33,6 +34,7 @@ export const useTooltipStore = defineStore('tooltipStore', {
       this.content = '';
     },
 
+    // Tooltip handler reading attributes of DOM elements
     handle(e: MouseEvent) {
       const targetEl = e
         .composedPath()
@@ -44,6 +46,7 @@ export const useTooltipStore = defineStore('tooltipStore', {
         return;
       }
 
+      // Tooltip content is a string but may be parsed to objects / html in corresponding tooltip type components
       const tooltipType = targetEl.getAttribute('data-tooltip-type');
       const tooltipContent = targetEl.getAttribute('data-tooltip-content');
 

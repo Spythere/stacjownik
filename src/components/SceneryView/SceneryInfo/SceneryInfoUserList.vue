@@ -18,7 +18,11 @@
         :key="train.id"
         :data-status="status"
       >
-        <router-link :to="train.driverRouteLocation">
+        <router-link
+          :to="train.driverRouteLocation"
+          data-tooltip-type="TrainInfoTooltip"
+          :data-tooltip-content="train.id"
+        >
           <span class="user_train"> {{ train.trainNo }}</span>
           <span class="user_name">
             {{ train.driverName }}

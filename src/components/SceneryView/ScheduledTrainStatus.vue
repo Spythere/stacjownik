@@ -1,11 +1,18 @@
 <template>
   <div class="general-status">
-    <span
+    <router-link
+      v-if="computedScheduledTrain.stationNameHref"
+      :to="`/scenery?station=${computedScheduledTrain.stationNameHref}`"
       :class="computedScheduledTrain.status"
-      @click.prevent="() => {}"
       v-html="computedScheduledTrain.stopStatusIndicator"
     >
-    </span>
+    </router-link>
+
+    <span
+      v-else
+      :class="computedScheduledTrain.status"
+      v-html="computedScheduledTrain.stopStatusIndicator"
+    ></span>
   </div>
 </template>
 
@@ -27,6 +34,7 @@ export default defineComponent({
       const { status, prevElement, currentElement, nextElement } = this.sceneryTimetableRow;
 
       let stopStatusIndicator = '';
+      let stationNameHref = '';
 
       switch (status) {
         case StopStatus.ARRIVING:
@@ -35,6 +43,8 @@ export default defineComponent({
               prevStationName: prevElement?.stationName ?? '',
               prevDepartureLine: prevElement?.departureRouteExt ?? ''
             });
+
+            stationNameHref = prevElement?.stationName ?? '';
           } else {
             stopStatusIndicator = this.$t('timetables.desc-beginning');
           }
@@ -48,6 +58,9 @@ export default defineComponent({
                 nextArrivalLine: nextElement?.arrivalRouteExt
               })
             : this.$t(`timetables.desc-end`);
+
+          stationNameHref = nextElement?.stationName ?? '';
+
           break;
 
         case StopStatus.DEPARTED:
@@ -55,11 +68,15 @@ export default defineComponent({
             stopStatusIndicator = this.$t('timetables.desc-departed-ends', {
               nextStationName: currentElement.stationName
             });
+
+            stationNameHref = nextElement?.stationName ?? '';
           } else {
             stopStatusIndicator = this.$t('timetables.desc-departed', {
               nextStationName: nextElement?.stationName ?? currentElement.stationName,
               nextArrivalLine: nextElement?.arrivalRouteExt
             });
+
+            stationNameHref = nextElement?.stationName ?? '';
           }
 
           break;
@@ -69,6 +86,8 @@ export default defineComponent({
             nextStationName: nextElement?.stationName,
             nextArrivalLine: nextElement?.arrivalRouteExt
           });
+
+          stationNameHref = nextElement?.stationName ?? '';
           break;
 
         case StopStatus.TERMINATED:
@@ -80,8 +99,17 @@ export default defineComponent({
       }
       return {
         ...this.sceneryTimetableRow,
+        stationNameHref,
         stopStatusIndicator
       };
+    }
+  },
+
+  methods: {
+    navigateToScenery(sceneryName?: string) {
+      if (!sceneryName) return;
+
+      this.$router.push(`/scenery?station=${sceneryName}`);
     }
   }
 });
@@ -91,11 +119,11 @@ export default defineComponent({
 .general-status {
   margin-top: 0.5em;
 
-  span.arriving {
+  & > .arriving {
     color: #ccc;
   }
 
-  span.departed {
+  & > .departed {
     color: lime;
 
     &-away {
@@ -103,15 +131,15 @@ export default defineComponent({
     }
   }
 
-  span.stopped {
+  & > .stopped {
     color: #ffa600;
   }
 
-  span.online {
+  & > .online {
     color: gold;
   }
 
-  span.terminated {
+  & > .terminated {
     color: salmon;
   }
 }

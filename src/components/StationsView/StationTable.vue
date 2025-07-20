@@ -33,12 +33,12 @@
             class="header-image"
             :class="headerName"
           >
-            <span class="header_wrapper">
-              <img
-                :src="`/images/icon-${headerName}.svg`"
-                :alt="headerName"
-                :title="$t(`sceneries.headers.${headerName}`)"
-              />
+            <span
+              class="header_wrapper"
+              data-tooltip-type="BaseTooltip"
+              :data-tooltip-content="$t(`sceneries.headers.${headerName}`)"
+            >
+              <img :src="`/images/icon-${headerName}.svg`" :alt="headerName" />
 
               <img
                 class="sort-icon"
@@ -76,37 +76,49 @@
                   station.generalInfo.availability != 'nonPublic' &&
                   station.generalInfo.availability != 'unavailable'
                 "
+                data-tooltip-type="BaseTooltip"
+                :data-tooltip-content="`${$t(`sceneries.info.${station.generalInfo.availability}`)} (${$t(
+                  'sceneries.info.req-level',
+                  { lvl: station.generalInfo.reqLevel },
+                  station.generalInfo.reqLevel
+                )})`"
                 :style="calculateExpStyle(station.generalInfo.reqLevel)"
               >
                 {{ station.generalInfo.reqLevel >= 2 ? station.generalInfo.reqLevel : 'L' }}
               </span>
 
-              <span v-else-if="station.generalInfo.availability == 'abandoned'">
-                <img
-                  src="/images/icon-abandoned.svg"
-                  alt="non-public"
-                  :title="$t('sceneries.info.abandoned')"
-                />
+              <span
+                v-else-if="station.generalInfo.availability == 'abandoned'"
+                data-tooltip-type="BaseTooltip"
+                :data-tooltip-content="$t('sceneries.info.abandoned')"
+              >
+                <img src="/images/icon-abandoned.svg" alt="non-public" />
               </span>
 
-              <span v-else-if="station.generalInfo.availability == 'nonPublic'">
-                <img
-                  src="/images/icon-lock.svg"
-                  alt="non-public"
-                  :title="$t('sceneries.info.non-public')"
-                />
+              <span
+                v-else-if="station.generalInfo.availability == 'nonPublic'"
+                data-tooltip-type="BaseTooltip"
+                :data-tooltip-content="$t('sceneries.info.non-public')"
+              >
+                <img src="/images/icon-lock.svg" alt="non-public" />
               </span>
 
-              <span v-else>
-                <img
-                  src="/images/icon-unavailable.svg"
-                  alt="unavailable"
-                  :title="$t('sceneries.info.unavailable')"
-                />
+              <span
+                v-else
+                data-tooltip-type="BaseTooltip"
+                :data-tooltip-content="$t('sceneries.info.unavailable')"
+              >
+                <img src="/images/icon-unavailable.svg" alt="unavailable" />
               </span>
             </span>
 
-            <span v-else> ? </span>
+            <span
+              v-else
+              data-tooltip-type="BaseTooltip"
+              :data-tooltip-content="$t('sceneries.info.unknown')"
+            >
+              ?
+            </span>
           </td>
 
           <td class="station-status">
@@ -153,7 +165,8 @@
               <span
                 v-if="station.generalInfo.routes.singleElectrifiedNames.length != 0"
                 class="track catenary"
-                :title="`${$t('sceneries.info.single-track-routes-catenary')}${
+                data-tooltip-type="BaseTooltip"
+                :data-tooltip-content="`${$t('sceneries.info.single-track-routes-catenary')}${
                   station.generalInfo.routes.singleElectrifiedNames.length
                 }`"
               >
@@ -163,7 +176,8 @@
               <span
                 v-if="station.generalInfo.routes.singleOtherNames.length != 0"
                 class="track no-catenary"
-                :title="`${$t('sceneries.info.single-track-routes-other')}${
+                data-tooltip-type="BaseTooltip"
+                :data-tooltip-content="`${$t('sceneries.info.single-track-routes-other')}${
                   station.generalInfo.routes.singleOtherNames.length
                 }`"
               >
@@ -177,7 +191,8 @@
               <span
                 v-if="station.generalInfo.routes.doubleElectrifiedNames.length != 0"
                 class="track catenary"
-                :title="`${$t('sceneries.info.double-track-routes-catenary')}${
+                data-tooltip-type="BaseTooltip"
+                :data-tooltip-content="`${$t('sceneries.info.double-track-routes-catenary')}${
                   station.generalInfo.routes.doubleElectrifiedNames.length
                 }`"
               >
@@ -187,7 +202,8 @@
               <span
                 v-if="station.generalInfo.routes.doubleOtherNames.length != 0"
                 class="track no-catenary"
-                :title="`${$t('sceneries.info.double-track-routes-other')}${
+                data-tooltip-type="BaseTooltip"
+                :data-tooltip-content="`${$t('sceneries.info.double-track-routes-other')}${
                   station.generalInfo.routes.doubleOtherNames.length
                 }`"
               >
@@ -201,7 +217,8 @@
               v-if="station.generalInfo?.signalType"
               class="scenery-icon icon-info"
               :class="station.generalInfo?.controlType.replace('+', '-')"
-              :title="
+              data-tooltip-type="BaseTooltip"
+              :data-tooltip-content="
                 $t('sceneries.info.control-type') +
                 $t(`controls.${station.generalInfo?.controlType}`)
               "
@@ -214,7 +231,8 @@
               class="icon-info"
               :src="`/images/icon-${station.generalInfo.signalType}.svg`"
               :alt="station.generalInfo.signalType"
-              :title="
+              data-tooltip-type="BaseTooltip"
+              :data-tooltip-content="
                 $t('sceneries.info.signals-type') + $t(`signals.${station.generalInfo.signalType}`)
               "
             />
@@ -224,7 +242,8 @@
               class="icon-info"
               src="/images/icon-SUP.svg"
               alt="SUP (RASP-UZK)"
-              :title="$t('sceneries.info.SUP')"
+              data-tooltip-type="BaseTooltip"
+              :data-tooltip-content="$t('sceneries.info.SUP')"
             />
 
             <img
@@ -232,7 +251,8 @@
               class="icon-info"
               src="/images/icon-ASDEK.svg"
               alt="dSAT ASDEK"
-              :title="$t('sceneries.info.ASDEK')"
+              data-tooltip-type="BaseTooltip"
+              :data-tooltip-content="$t('sceneries.info.ASDEK')"
             />
 
             <img
@@ -240,7 +260,8 @@
               class="icon-info"
               src="/images/icon-unknown.svg"
               alt="icon-unknown"
-              :title="$t('sceneries.info.unknown')"
+              data-tooltip-type="BaseTooltip"
+              :data-tooltip-content="$t('sceneries.info.unknown')"
             />
           </td>
 
@@ -248,7 +269,7 @@
             class="station-users"
             :class="{ inactive: !station.onlineInfo }"
             data-tooltip-type="UsersTooltip"
-            :data-tooltip-content="JSON.stringify(station.onlineInfo?.stationTrains ?? [])"
+            :data-tooltip-content="getUsersTooltipContent(station.onlineInfo?.stationTrains ?? [])"
           >
             <span class="text--primary">{{
               station.onlineInfo?.stationTrains?.length ?? '-'
@@ -318,7 +339,7 @@ import dateMixin from '../../mixins/dateMixin';
 import styleMixin from '../../mixins/styleMixin';
 import { useApiStore } from '../../store/apiStore';
 import { useMainStore } from '../../store/mainStore';
-import { Station, Status } from '../../typings/common';
+import { Station, Status, TooltipUserTrain, Train } from '../../typings/common';
 import { useTooltipStore } from '../../store/tooltipStore';
 import { getChangedFilters } from '../../managers/stationFilterManager';
 import { ActiveSorter, HeadIdsType, headIconsIds, headIds } from './typings';
@@ -394,6 +415,15 @@ export default defineComponent({
       else this.activeSorter.dir = 1;
 
       this.activeSorter.headerName = headerName;
+    },
+
+    getUsersTooltipContent(stationTrains: Train[]): string {
+      const usersTrains: TooltipUserTrain[] = stationTrains.map((train) => ({
+        driverName: train.driverName,
+        trainNo: train.trainNo
+      }));
+
+      return JSON.stringify(usersTrains);
     }
   }
 });
