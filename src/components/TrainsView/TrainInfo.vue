@@ -111,7 +111,7 @@
         </div>
 
         <div
-          v-if="!train.online && train.lastSeen >= Date.now() - 60000"
+          v-if="!train.online && train.lastSeen <= Date.now() - 60000"
           class="train-badge offline"
         >
           <i class="fa-solid fa-user-slash"></i>
@@ -397,6 +397,7 @@ export default defineComponent({
 .status-badges {
   display: flex;
   flex-wrap: wrap;
+  margin-left: 0.25em;
 
   gap: 0.25em;
 
