@@ -43,6 +43,8 @@
                 id="search-active-driver"
                 :placeholder="$t(`options.search-driver`)"
                 v-model="searchedDriver"
+                @focus="preventKeyDown = true"
+                @blur="preventKeyDown = false"
               />
 
               <button class="btn btn--action search-exit" @click="onInputClear('driver')">
