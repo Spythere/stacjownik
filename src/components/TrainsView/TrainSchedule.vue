@@ -186,26 +186,28 @@ export default defineComponent({
       const sceneryData =
         this.store.stationList?.find((sc) => sc.name == pathEl.stationName) ?? null;
 
-      if (!sceneryData || !sceneryData.generalInfo) return null;
-
       const activeScenery = this.apiStore.activeData?.activeSceneries?.find(
         (sc) => sc.stationName == pathEl.stationName
       );
 
-      const arrivalLineData = pathEl.arrivalRouteExt
-        ? (sceneryData.generalInfo.routes.all.find(
-            (rt) => rt.routeName == pathEl.arrivalRouteExt
-          ) ?? null)
+      const arrivalLineData = sceneryData?.generalInfo
+        ? pathEl.arrivalRouteExt
+          ? (sceneryData.generalInfo.routes.all.find(
+              (rt) => rt.routeName == pathEl.arrivalRouteExt
+            ) ?? null)
+          : null
         : null;
 
-      const departureLineData = pathEl.departureRouteExt
-        ? (sceneryData.generalInfo.routes.all.find(
-            (rt) => rt.routeName == pathEl.departureRouteExt
-          ) ?? null)
+      const departureLineData = sceneryData?.generalInfo
+        ? pathEl.departureRouteExt
+          ? (sceneryData.generalInfo.routes.all.find(
+              (rt) => rt.routeName == pathEl.departureRouteExt
+            ) ?? null)
+          : null
         : null;
 
       return {
-        generalInfo: sceneryData.generalInfo,
+        generalInfo: sceneryData?.generalInfo ?? null,
         isOnline:
           activeScenery &&
           (activeScenery.isOnline == 1 || activeScenery.lastSeen >= Date.now() - 60000),
@@ -234,7 +236,7 @@ export default defineComponent({
       let isActive = false;
 
       if (pathData?.departureLineData) {
-        // arrivalLineInfo = pathData.departureLineData;
+        arrivalLineInfo = pathData.departureLineData;
         departureLineInfo = pathData.departureLineData;
       }
 
@@ -245,22 +247,16 @@ export default defineComponent({
           isExternal = true;
 
           departureLineInfo = pathData?.arrivalLineData ?? null;
-
-          if (pathData?.arrivalLineData) {
-            arrivalLineInfo = pathData.arrivalLineData;
-          }
+          arrivalLineInfo = pathData.arrivalLineData;
         }
 
-        let correctedDepartureLineData: StationRoutesInfo | null = null;
-
         const internalRouteInfo = stop.departureLine
-          ? pathData?.generalInfo.routes.all.find(
+          ? pathData?.generalInfo?.routes.all.find(
               (route) => route.isInternal && route.routeName == stop.departureLine
             )
           : undefined;
 
         if (internalRouteInfo) {
-          correctedDepartureLineData = internalRouteInfo;
           departureLineInfo = internalRouteInfo;
         }
 
