@@ -87,7 +87,8 @@ export default defineComponent({
         const stop = train.timetableData?.followingStops.find(
           (stop) =>
             stop.stopNameRAW.toLowerCase() == name.toLowerCase() ||
-            this.station?.generalInfo?.checkpoints.includes(stop.stopNameRAW)
+            this.station?.generalInfo?.checkpoints.includes(stop.stopNameRAW) ||
+            this.onlineScenery?.missingCheckpoints.includes(stop.stopNameRAW)
         );
 
         const sceneryName =

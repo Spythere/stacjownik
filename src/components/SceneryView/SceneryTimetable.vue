@@ -54,6 +54,18 @@
           >
         </template>
       </div>
+
+      <div class="timetable-checkpoints" v-else-if="onlineScenery">
+        <template v-for="(ch, i) in onlineScenery.missingCheckpoints" :key="i">
+          <template v-if="i > 0">&bull;</template>
+          <router-link
+            class="checkpoint-item"
+            :class="{ current: chosenCheckpoint === ch }"
+            :to="`/scenery?station=${onlineScenery.name}&checkpoint=${ch}`"
+            >{{ ch }}</router-link
+          >
+        </template>
+      </div>
     </div>
 
     <div class="timetable-list">
@@ -287,6 +299,7 @@ export default defineComponent({
 
     const chosenCheckpoint = ref(
       props.station?.generalInfo?.checkpoints[0] ??
+        props.onlineScenery?.missingCheckpoints[0] ??
         props.station?.name ??
         route.query['station']?.toString() ??
         ''
@@ -365,21 +378,30 @@ export default defineComponent({
 
   methods: {
     loadSelectedOption() {
-      if (!this.station) return;
-
-      if (!this.station.generalInfo) {
-        this.chosenCheckpoint = this.station.name;
-        return;
-      }
-
       const queryCheckpoint = this.$route.query['checkpoint']?.toString();
 
-      this.chosenCheckpoint =
-        this.station.generalInfo.checkpoints.find(
-          (ch) => ch.toLocaleLowerCase() === queryCheckpoint?.toLocaleLowerCase()
-        ) ??
-        this.station.generalInfo.checkpoints[0] ??
-        this.station.name;
+      let checkpointsListRef: string[] | null = null;
+      let sceneryName = '';
+
+      if (this.station && this.station.generalInfo) {
+        checkpointsListRef = this.station.generalInfo.checkpoints;
+        sceneryName = this.station.name;
+      } else if (this.onlineScenery) {
+        checkpointsListRef = this.onlineScenery.missingCheckpoints;
+        sceneryName = this.onlineScenery.name;
+      } else if (this.station) {
+        this.chosenCheckpoint = this.station.name;
+        sceneryName = this.station.name;
+      }
+
+      if (checkpointsListRef) {
+        this.chosenCheckpoint =
+          checkpointsListRef.find(
+            (ch) => ch.toLocaleLowerCase() === queryCheckpoint?.toLocaleLowerCase()
+          ) ??
+          checkpointsListRef[0] ??
+          sceneryName;
+      }
     },
 
     setCheckpoint(cp: string) {
