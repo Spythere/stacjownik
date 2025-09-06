@@ -139,7 +139,7 @@
     "title": "Sterowanie",
     "SPK": "SPK",
     "SCS": "SCS",
-    "SCS-SPK": "SCS/SPK",
+    "SCS-SPK": "SCS + SPK",
     "SPE": "SPE",
     "ręczne": "ręczne",
     "ręczne+SPK": "ręczne z SPK",
@@ -150,7 +150,7 @@
     "abbrevs": {
       "SPK": "SPK",
       "SCS": "SCS",
-      "SCS-SPK": "S/S",
+      "SCS-SPK": "S+S",
       "SPE": "SPE",
       "ręczne": "R",
       "ręczne+SPK": "R",

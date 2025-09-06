@@ -142,7 +142,7 @@
     "title": "Control type",
     "SPK": "SPK",
     "SCS": "SCS",
-    "SCS-SPK": "SCS/SPK",
+    "SCS-SPK": "SCS + SPK",
     "SPE": "SPE",
     "ręczne": "manual",
     "ręczne+SPK": "manual + SPK",
@@ -153,7 +153,7 @@
     "abbrevs": {
       "SPK": "SPK",
       "SCS": "SCS",
-      "SCS-SPK": "S/S",
+      "SCS-SPK": "S+S",
       "SPE": "SPE",
       "ręczne": "R",
       "ręczne+SPK": "R",
