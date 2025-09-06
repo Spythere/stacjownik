@@ -68,7 +68,8 @@
                     <span>
                       |
                       {{
-                        stop.departureLineInfo.routeSpeedExit
+                        stop.departureLineInfo.routeSpeedExit &&
+                        stop.departureLineInfo.routeSpeedExit != stop.departureLineInfo.routeSpeed
                           ? `${stop.departureLineInfo.routeSpeedExit} (${stop.departureLineInfo.routeSpeed})`
                           : stop.departureLineInfo.routeSpeed
                       }}</span
@@ -121,10 +122,16 @@
                   <span> {{ stop.nextPointRef.arrivalLine }}</span>
 
                   <span v-if="stop.nextPointRef.arrivalLineInfo">
-                    <span> | {{ stop.nextPointRef.arrivalLineInfo!.routeSpeed }}</span>
-                    <span v-if="stop.nextPointRef.arrivalLineInfo!.routeSpeedExit"
-                      >({{ stop.nextPointRef.arrivalLineInfo!.routeSpeedExit }})</span
+                    <span> | {{ stop.nextPointRef.arrivalLineInfo.routeSpeed }}</span>
+                    <span
+                      v-if="
+                        stop.nextPointRef.arrivalLineInfo.routeSpeedExit &&
+                        stop.nextPointRef.arrivalLineInfo.routeSpeedExit !=
+                          stop.nextPointRef.arrivalLineInfo.routeSpeed
+                      "
                     >
+                      ({{ stop.nextPointRef.arrivalLineInfo.routeSpeedExit }})
+                    </span>
 
                     <img
                       :src="
