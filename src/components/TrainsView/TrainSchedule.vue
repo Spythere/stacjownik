@@ -12,8 +12,16 @@
           :data-delayed="stop.departureDelay > 0"
           :data-stop-type="stop.type"
           :data-is-active="stop.isActive"
-          :data-track-count-departure="stop.departureLineInfo?.routeTracks ?? 2"
-          :data-track-count-arrival="stop.arrivalLineInfo?.routeTracks ?? 2"
+          :data-track-count-departure="
+            stop.departureLineInfo?.routeTracks ??
+            stop.nextPointRef?.arrivalLineInfo?.routeTracks ??
+            2
+          "
+          :data-track-count-arrival="
+            stop.arrivalLineInfo?.routeTracks ??
+            scheduleStops[i - 1]?.departureLineInfo?.routeTracks ??
+            2
+          "
         >
           <span class="stop_info">
             <span class="distance">
