@@ -13,6 +13,7 @@ import { useApiStore } from './apiStore';
 import { MainStoreState } from './typings';
 
 const checkpointsTrains: Map<string, CheckpointTrain[]> = new Map();
+const unknownSceneryCheckpoints: Map<string, Set<string>> = new Map();
 const sceneriesTrains: Map<string, Train[]> = new Map();
 
 export const useMainStore = defineStore('mainStore', {
@@ -42,6 +43,7 @@ export const useMainStore = defineStore('mainStore', {
 
       checkpointsTrains.clear();
       sceneriesTrains.clear();
+      unknownSceneryCheckpoints.clear();
 
       const dateNow = new Date();
 
@@ -133,8 +135,13 @@ export const useMainStore = defineStore('mainStore', {
 
           // Checkpoints trains map
           if (trainObj.timetableData) {
-            let currentSceneryIndex = 0;
             const timetablePath = trainObj.timetableData.timetablePath;
+            let currentSceneryIndex = 0;
+
+            let currentSceneryData: Station | null =
+              this.stationList.find(
+                (s) => s.name == timetablePath[currentSceneryIndex].stationName
+              ) ?? null;
 
             trainObj.timetableData.followingStops.forEach((stop, i) => {
               if (/strong|podg|pe/.test(stop.stopName)) {
@@ -153,16 +160,41 @@ export const useMainStore = defineStore('mainStore', {
                   timetablePathElement: timetablePath[currentSceneryIndex]
                 };
 
+                // Adding missing sceneries checkpoints as a fallback when scenery data is missing (and "generalInfo" is unavailable)
+                if (!currentSceneryData) {
+                  const sceneryCheckpointsSet = unknownSceneryCheckpoints.get(
+                    checkpointTrain.timetablePathElement.stationName
+                  );
+
+                  if (!sceneryCheckpointsSet) {
+                    unknownSceneryCheckpoints.set(
+                      checkpointTrain.timetablePathElement.stationName,
+                      new Set([stop.stopNameRAW])
+                    );
+                  } else {
+                    sceneryCheckpointsSet.add(stop.stopNameRAW);
+                  }
+                }
+
+                // Adding trains to their corresponding checkpoints
                 if (checkpointsTrains.has(stop.stopNameRAW.toLowerCase())) {
                   checkpointsTrains.set(stop.stopNameRAW.toLowerCase(), [
                     ...checkpointsTrains.get(stop.stopNameRAW.toLowerCase())!,
                     checkpointTrain
                   ]);
-                } else checkpointsTrains.set(stop.stopNameRAW.toLowerCase(), [checkpointTrain]);
+                } else {
+                  checkpointsTrains.set(stop.stopNameRAW.toLowerCase(), [checkpointTrain]);
+                }
               }
 
-              if (timetablePath[currentSceneryIndex].departureRouteExt == stop.departureLine)
+              if (timetablePath[currentSceneryIndex].departureRouteExt == stop.departureLine) {
                 currentSceneryIndex++;
+
+                currentSceneryData =
+                  this.stationList.find(
+                    (s) => s.name == timetablePath[currentSceneryIndex].stationName
+                  ) ?? null;
+              }
             });
           }
 
@@ -222,7 +254,9 @@ export const useMainStore = defineStore('mainStore', {
               all: 0,
               confirmed: 0,
               unconfirmed: 0
-            }
+            },
+
+            missingCheckpoints: []
           });
         });
 
@@ -266,7 +300,9 @@ export const useMainStore = defineStore('mainStore', {
             all: 0,
             confirmed: 0,
             unconfirmed: 0
-          }
+          },
+
+          missingCheckpoints: []
         });
 
         return list;
@@ -277,7 +313,7 @@ export const useMainStore = defineStore('mainStore', {
       for (let i = 0, n = allActiveSceneries.length; i < n; i++) {
         const scenery = allActiveSceneries[i];
 
-        const station = this.stationList.find((s) => s.name === scenery.name);
+        let station = this.stationList.find((s) => s.name === scenery.name);
 
         let checkpointsSet: Set<string> = new Set();
 
@@ -292,6 +328,14 @@ export const useMainStore = defineStore('mainStore', {
 
         scenery.stationTrains =
           sceneriesTrains.get(scenery.name)?.filter((sc) => sc.region == this.region.id) ?? [];
+
+        // Missing checkpoints as a fallback for sceneries without generalInfo & checkpoints property
+        const missingCheckpointsToAdd = unknownSceneryCheckpoints.get(scenery.name);
+
+        if (missingCheckpointsToAdd) {
+          checkpoints.push(...missingCheckpointsToAdd);
+          scenery.missingCheckpoints.push(...missingCheckpointsToAdd);
+        }
 
         const uniqueTrainIds: string[] = [];
         checkpoints.forEach((cp) => {

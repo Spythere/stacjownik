@@ -170,6 +170,7 @@ export interface ActiveScenery {
     confirmed: number;
     unconfirmed: number;
   };
+  missingCheckpoints: string[];  
 }
 
 export interface ScenerySpawn {

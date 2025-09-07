@@ -43,8 +43,12 @@
           <span :class="{ 'no-catenary': !route.isElectric, internal: route.isInternal }">
             {{ route.routeName }}
           </span>
-          <span v-if="route.routeSpeed" class="speed">{{ route.routeSpeed }}</span>
-          <span v-if="route.routeSpeedExit" class="speed">| {{ route.routeSpeedExit }}</span>
+          <span v-if="route.routeSpeed" class="speed">
+            <span>{{ route.routeSpeed }}</span>
+            <span v-if="route.routeSpeedExit && route.routeSpeedExit != route.routeSpeed">
+              | {{ route.routeSpeedExit }}
+            </span>
+          </span>
           <span v-if="route.routeLength" class="length">
             {{ (route.routeLength / 1000).toFixed(1) + 'km' }}
           </span>
@@ -156,7 +160,7 @@ ul.routes-list {
     -moz-user-select: none;
     -webkit-user-select: none;
 
-    span {
+    & > span {
       padding: 0.2em;
       background-color: #007599;
       font-weight: bold;
