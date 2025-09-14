@@ -62,11 +62,12 @@ export const initFilters = {
   maxLevel: 20,
   minOneWay: 0,
   minOneWayCatenary: 0,
-  minTwoWayCatenary: 0,
   minOneWayInt: 0,
   minOneWayCatenaryInt: 0,
+  minTwoWay: 0,
+  minTwoWayCatenary: 0,
+  minTwoWayInt: 0,
   minTwoWayCatenaryInt: 0,
-  // minTwoWay: 0,
   authors: ''
 };
 
@@ -77,12 +78,12 @@ export const sliderStates = [
   { id: 'maxLevel', minRange: 0, maxRange: 20, step: 1 },
   { id: 'minOneWay', minRange: 0, maxRange: 5, step: 1 },
   { id: 'minOneWayCatenary', minRange: 0, maxRange: 5, step: 1 },
-  { id: 'minTwoWayCatenary', minRange: 0, maxRange: 5, step: 1 },
   { id: 'minOneWayInt', minRange: 0, maxRange: 5, step: 1 },
   { id: 'minOneWayCatenaryInt', minRange: 0, maxRange: 5, step: 1 },
+  { id: 'minTwoWay', minRange: 0, maxRange: 5, step: 1 },
+  { id: 'minTwoWayCatenary', minRange: 0, maxRange: 5, step: 1 },
+  { id: 'minTwoWayInt', minRange: 0, maxRange: 5, step: 1 },
   { id: 'minTwoWayCatenaryInt', minRange: 0, maxRange: 5, step: 1 },
-  // { id: 'minTwoWay', minRange: 0, maxRange: 5, step: 1 },
-  // { id: 'minTwoWayInt', minRange: 0, maxRange: 5, step: 1 }
 ];
 
 export type StationFilter = keyof typeof initFilters;
