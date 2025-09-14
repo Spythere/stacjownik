@@ -225,6 +225,12 @@ ul {
   }
 }
 
+.font {
+  &--italic {
+    font-style: italic;
+  }
+}
+
 button,
 a.a-button {
   cursor: pointer;
