@@ -31,6 +31,7 @@ export const initFilters = {
   mechanical: false,
   'SPK-M': false,
   'SCS-M': false,
+  'SCS-SPK': false,
   modern: false,
   semaphores: false,
   historical: false,
@@ -95,7 +96,7 @@ export const filtersSections: Record<StationFilterSection, StationFilter[]> = {
   stationType: ['junction', 'nonJunction'],
   access: ['nonPublic', 'unavailable', 'abandoned'],
   addons: ['SUP', 'ASDEK', 'noSUP', 'noASDEK'],
-  control: ['SPK', 'SCS', 'SPE', 'SPK-M', 'SCS-M', 'mechanical', 'SPK-R', 'SCS-R', 'manual'],
+  control: ['SPK', 'SCS', 'SPE', 'SCS-SPK', 'SPK-M', 'SCS-M', 'mechanical', 'SPK-R', 'SCS-R', 'manual'],
   blockades: ['SBL', 'PBL'],
   signals: ['modern', 'semaphores', 'mixed', 'historical']
 };

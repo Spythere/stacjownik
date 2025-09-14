@@ -271,6 +271,7 @@
     "SCS": "SCS",
     "SCS-R": "SCS + MANUAL",
     "SCS-M": "SCS + MECH.",
+    "SCS-SPK": "SCS + SPK",
     "SPE": "SPE",
     "manual": "MANUAL",
     "mechanical": "MECHANICAL",
