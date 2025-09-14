@@ -14,10 +14,10 @@
     <transition name="dropdown-anim">
       <div class="dropdown_wrapper" v-if="showDropdown">
         <div>
-          <h1 class="stats-title text--primary">
+          <h2 class="stats-title text--primary">
             <img src="/images/icon-stats.svg" alt="Open filters icon" height="28" />
             {{ $t('station-stats.title') }}
-          </h1>
+          </h2>
 
           <hr style="margin: 0.5em 0" />
 
@@ -245,7 +245,7 @@ export default defineComponent({
 @use '../../styles/badge';
 @use '../../styles/responsive';
 
-h1.stats-title img {
+.stats-title img {
   vertical-align: text-bottom;
 }
 
@@ -279,7 +279,7 @@ h1.stats-title img {
 }
 
 @include responsive.smallScreen {
-  h1.stats-title {
+  .stats-title {
     text-align: center;
   }
 
