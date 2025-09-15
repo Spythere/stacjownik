@@ -21,11 +21,9 @@ export default defineConfig({
     vue(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['/images/*.{png,svg,jpg}', '/fonts/*.{woff,woff2}'],
-
       workbox: {
         disableDevLogs: true,
-        globPatterns: ['**/*.{js,css,html,png,svg,jpg}'],
+        globPatterns: ['**/*.{js,css,html,png,svg,jpg,ico,woff,woff2,ttf}'],
         cleanupOutdatedCaches: true,
         runtimeCaching: [
           {
@@ -36,7 +34,7 @@ export default defineConfig({
               cacheName: 'stacjownik-api-cache',
               cacheableResponse: { statuses: [0, 200] }
             }
-          }
+          },
         ]
       },
       devOptions: { enabled: true, suppressWarnings: true }

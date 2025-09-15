@@ -9,6 +9,17 @@
       <div class="text--primary">
         <b>{{ trainInfo.stockList[0] }}</b> &bull; {{ trainInfo.length }}m &bull;
         {{ (trainInfo.mass / 1000).toFixed(2) }}t
+        <span v-if="trainInfo.timetableData">
+          &bull; vRJ:
+          {{
+            trainInfo.timetableData?.trainMaxSpeed ||
+            getStockSpeedLimit(trainInfo.stockList, trainInfo.mass)
+          }}km/h
+        </span>
+        <span v-else class="text--grayed font--italic">
+          &bull; vMax:
+          {{ getStockSpeedLimit(trainInfo.stockList, trainInfo.mass) }}km/h
+        </span>
       </div>
 
       <div class="text--grayed">
@@ -46,9 +57,7 @@ export default defineComponent({
       return this.mainStore.trainList.find((t) => t.id === this.tooltipStore.content);
     },
 
-    lastSceneryStatus() {
-      
-    }
+    lastSceneryStatus() {}
   }
 });
 </script>
