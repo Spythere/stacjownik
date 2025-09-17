@@ -333,8 +333,12 @@ export const useMainStore = defineStore('mainStore', {
         const missingCheckpointsToAdd = unknownSceneryCheckpoints.get(scenery.name);
 
         if (missingCheckpointsToAdd) {
-          checkpoints.push(...missingCheckpointsToAdd);
-          scenery.missingCheckpoints.push(...missingCheckpointsToAdd);
+          [...missingCheckpointsToAdd].forEach((cp) => {
+            if (cp.toLowerCase() == scenery.name.toLowerCase()) return;
+
+            checkpoints.push(cp);
+            scenery.missingCheckpoints.push(cp);
+          });
         }
 
         const uniqueTrainIds: string[] = [];

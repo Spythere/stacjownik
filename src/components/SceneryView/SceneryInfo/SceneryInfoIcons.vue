@@ -118,6 +118,7 @@ export default defineComponent({
   align-items: center;
 
   width: 3em;
+  height: 3em;
   margin: 0.25em;
 
   border: 2px solid #4e4e4e;
