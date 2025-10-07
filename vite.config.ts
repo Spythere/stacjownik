@@ -5,7 +5,7 @@ import path from 'path';
 
 export default defineConfig({
   server: { port: 5123, open: true },
-  preview: { port: 4001, open: true },
+  preview: { port: 4001, open: false },
   publicDir: 'public',
   css: {
     preprocessorOptions: {
@@ -23,7 +23,7 @@ export default defineConfig({
       registerType: 'autoUpdate',
       workbox: {
         disableDevLogs: true,
-        globPatterns: ['**/*.{js,css,html,png,svg,jpg,ico,woff,woff2,ttf}'],
+        globPatterns: ['**/*.{js,css,html,ico,woff,woff2,ttf}', '**/*.{png,jpg,jpeg,svg,webp,gif}'],
         cleanupOutdatedCaches: true,
         runtimeCaching: [
           {
@@ -34,7 +34,7 @@ export default defineConfig({
               cacheName: 'stacjownik-api-cache',
               cacheableResponse: { statuses: [0, 200] }
             }
-          },
+          }
         ]
       },
       devOptions: { enabled: true, suppressWarnings: true }
