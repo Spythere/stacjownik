@@ -96,6 +96,7 @@ export default defineComponent({
   data() {
     return {
       historyList: [] as API.DispatcherHistory.Response,
+      lastStationName: '',
       dataStatus: Status.Data.Loading,
       DataStatus: Status.Data,
       apiStore: useApiStore()
@@ -103,10 +104,10 @@ export default defineComponent({
   },
 
   async activated() {
-    // if (this.historyList.length == 0) {
+    this.historyList.length = 0;
+
     const fetchedHistory = await this.fetchAPIData();
     if (fetchedHistory) this.historyList = fetchedHistory;
-    // }
   },
 
   methods: {
@@ -194,7 +195,7 @@ export default defineComponent({
   color: springgreen;
 }
 
-@include responsive.smallScreen{
+@include responsive.smallScreen {
   .journal-list > div {
     flex-direction: column;
     justify-content: center;

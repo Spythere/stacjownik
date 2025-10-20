@@ -136,12 +136,14 @@ export default defineComponent({
   },
 
   async activated() {
+    this.checkedHistoryMode = 'via';
     this.fetchAPIData();
   },
 
   methods: {
     async fetchAPIData() {
       const stationName = this.$route.query['station'];
+      this.dataStatus = Status.Data.Loading;
 
       if (!stationName) {
         this.historyList = [];
@@ -165,12 +167,12 @@ export default defineComponent({
         this.dataStatus = Status.Data.Loaded;
       } catch (error) {
         console.error(error);
+        this.dataStatus = Status.Data.Error;
       }
     },
 
     checkHistoryMode(mode: HistoryMode) {
       this.checkedHistoryMode = mode;
-      this.dataStatus = Status.Data.Loading;
       this.fetchAPIData();
     },
 
