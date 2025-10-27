@@ -68,7 +68,12 @@
   font-size: 1.2em;
 }
 
-@include responsive.smallScreen{
+.stats-actions {
+  display: flex;
+  gap: 0.5em;
+}
+
+@include responsive.smallScreen {
   .journal_top-bar {
     justify-content: center;
     flex-wrap: wrap;

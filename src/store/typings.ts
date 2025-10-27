@@ -7,9 +7,6 @@ export interface MainStoreState {
   appUpdate: { version: string; changelog: string; releaseURL: string } | null;
   dispatcherStatsName: string;
   dispatcherStatsData?: API.DispatcherStats.Response;
-  driverStatsName: string;
-  driverStatsData?: API.DriverStats.Response;
-  driverStatsStatus: Status.Data;
   chosenModalTrainId?: string;
   modalLastClickedTarget: EventTarget | null;
   currentLocale: string;

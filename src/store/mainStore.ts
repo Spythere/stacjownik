@@ -27,10 +27,6 @@ export const useMainStore = defineStore('mainStore', {
       dispatcherStatsName: '',
       dispatcherStatsStatus: Status.Data.Initialized,
 
-      driverStatsName: '',
-      driverStatsData: undefined,
-      driverStatsStatus: Status.Data.Initialized,
-
       chosenModalTrainId: undefined,
 
       modalLastClickedTarget: null,

@@ -14,7 +14,10 @@
           optionsType="timetables"
         />
 
-        <JournalStatsDropdown />
+        <div class="stats-actions">
+          <JournalPlayerStatsButton :playerId="driverId" />
+          <JournalStatsDropdown />
+        </div>
       </div>
 
       <div class="journal_refreshed-date">
@@ -38,14 +41,6 @@
 <script lang="ts">
 import { defineComponent, provide, reactive, Ref, ref } from 'vue';
 
-import dateMixin from '../mixins/dateMixin';
-import routerMixin from '../mixins/routerMixin';
-
-import JournalOptions from '../components/JournalView/JournalOptions.vue';
-import JournalHeader from '../components/JournalView/JournalHeader.vue';
-import JournalTimetablesList from '../components/JournalView/JournalTimetables/JournalTimetablesList.vue';
-import JournalStatsDropdown from '../components/JournalView/JournalStatsDropdown.vue';
-
 import { useMainStore } from '../store/mainStore';
 
 import { LocationQuery } from 'vue-router';
@@ -55,7 +50,16 @@ import { Status } from '../typings/common';
 import { API } from '../typings/api';
 import { useApiStore } from '../store/apiStore';
 
-export const journalTimetableFilters: Journal.TimetableFilter[] = [
+import dateMixin from '../mixins/dateMixin';
+import routerMixin from '../mixins/routerMixin';
+
+import JournalOptions from '../components/JournalView/JournalOptions.vue';
+import JournalHeader from '../components/JournalView/JournalHeader.vue';
+import JournalTimetablesList from '../components/JournalView/JournalTimetables/JournalTimetablesList.vue';
+import JournalStatsDropdown from '../components/JournalView/JournalStatsDropdown.vue';
+import JournalPlayerStatsButton from '../components/JournalView/JournalPlayerStatsButton.vue';
+
+const journalTimetableFilters: Journal.TimetableFilter[] = [
   {
     id: Journal.TimetableFilterId.ALL_STATUSES,
     filterSection: Journal.FilterSection.TIMETABLE_STATUS,
@@ -150,11 +154,12 @@ interface TimetablesQueryParams {
 export default defineComponent({
   components: {
     JournalOptions,
-    JournalStatsDropdown,
     JournalHeader,
-    JournalTimetablesList
+    JournalTimetablesList,
+    JournalStatsDropdown,
+    JournalPlayerStatsButton
   },
-  
+
   mixins: [dateMixin, routerMixin],
 
   name: 'JournalTimetables',
@@ -183,7 +188,9 @@ export default defineComponent({
     timetableHistory: [] as API.TimetableHistory.Response,
 
     dataStatus: Status.Data.Loading,
-    dataErrorMessage: ''
+    dataErrorMessage: '',
+
+    driverId: -1
   }),
 
   setup() {
@@ -232,15 +239,6 @@ export default defineComponent({
   watch: {
     currentQueryParams(q: TimetablesQueryParams) {
       this.currentOptionsActive = Object.values(q).some((v) => v !== undefined);
-    },
-
-    // 'mainStore.driverStatsData'(driverStats) {
-    //   this.statsButtons.find((sb) => sb.tab == Journal.StatsTab.DRIVER_STATS)!.disabled =
-    //     driverStats === undefined;
-    // },
-
-    async 'mainStore.driverStatsName'() {
-      this.fetchDriverStats();
     }
   },
 
@@ -271,30 +269,33 @@ export default defineComponent({
       this.setOptions(query as any);
     },
 
-    async fetchDriverStats() {
-      if (!this.mainStore.driverStatsName) {
-        this.mainStore.driverStatsData = undefined;
-        this.mainStore.driverStatsStatus = Status.Data.Initialized;
-        return;
-      }
+    // async fetchDriverStats() {
+    //   if (!this.mainStore.driverStatsName) {
+    //     this.mainStore.driverStatsData = undefined;
+    //     this.mainStore.driverStatsStatus = Status.Data.Initialized;
+    //     return;
+    //   }
 
-      try {
-        this.mainStore.driverStatsStatus = Status.Data.Loading;
+    //   try {
+    //     this.mainStore.driverStatsStatus = Status.Data.Loading;
 
-        const statsData: API.DriverStats.Response = await (
-          await this.apiStore.client!.get(
-            `api/getDriverInfo?name=${this.mainStore.driverStatsName}`
-          )
-        ).data;
+    //     const statsData: API.DriverStats.Response = await (
+    //       await this.apiStore.client!.get(
+    //         `api/getDriverInfo?name=${this.mainStore.driverStatsName}`
+    //       )
+    //     ).data;
 
-        this.mainStore.driverStatsData = statsData;
-        this.mainStore.driverStatsStatus = Status.Data.Loaded;
-      } catch (error) {
-        this.mainStore.driverStatsData = undefined;
-        this.mainStore.driverStatsStatus = Status.Data.Error;
-        console.error('Ups! Wystąpił błąd przy próbie pobrania statystyk maszynisty! :/');
-      }
-    },
+    //     this.mainStore.driverStatsData = statsData;
+    //     this.mainStore.driverStatsStatus = Status.Data.Loaded;
+    //     this.driverId = statsData !== undefined;
+    //   } catch (error) {
+    //     this.mainStore.driverStatsData = undefined;
+    //     this.mainStore.driverStatsStatus = Status.Data.Error;
+    //     this.driverId = false;
+
+    //     console.error('Ups! Wystąpił błąd przy próbie pobrania statystyk maszynisty! :/');
+    //   }
+    // },
 
     setOptions(options: { [key: string]: string }) {
       Object.keys(this.searchersValues).forEach((v) => {
@@ -451,10 +452,10 @@ export default defineComponent({
         this.timetableHistory = responseData;
 
         // Stats display
-        this.mainStore.driverStatsName =
+        this.driverId =
           this.timetableHistory.length > 0 && this.searchersValues['search-driver'].trim()
-            ? this.timetableHistory[0].driverName
-            : '';
+            ? this.timetableHistory[0].driverId
+            : -1;
 
         this.dataStatus = Status.Data.Loaded;
         this.dataRefreshedAt = new Date();
