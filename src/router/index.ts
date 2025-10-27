@@ -62,6 +62,15 @@ const routes: Array<RouteRecordRaw> = [
     })
   },
   {
+    path: '/player/:id',
+    name: 'PlayerInfoView',
+    component: () => import('../views/PlayerInfoView.vue'),
+
+    props: (route) => ({
+      id: route.query.id
+    })
+  },
+  {
     path: '/:catchAll(.*)',
     redirect: '/'
   }

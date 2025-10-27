@@ -14,7 +14,7 @@
           optionsType="timetables"
         />
 
-        <JournalStats :statsButtons="statsButtons" />
+        <JournalStatsDropdown />
       </div>
 
       <div class="journal_refreshed-date">
@@ -42,14 +42,14 @@ import dateMixin from '../mixins/dateMixin';
 import routerMixin from '../mixins/routerMixin';
 
 import JournalOptions from '../components/JournalView/JournalOptions.vue';
-import JournalStats from '../components/JournalView/JournalStats.vue';
 import JournalHeader from '../components/JournalView/JournalHeader.vue';
+import JournalTimetablesList from '../components/JournalView/JournalTimetables/JournalTimetablesList.vue';
+import JournalStatsDropdown from '../components/JournalView/JournalStatsDropdown.vue';
 
 import { useMainStore } from '../store/mainStore';
 
 import { LocationQuery } from 'vue-router';
 
-import JournalTimetablesList from '../components/JournalView/JournalTimetables/JournalTimetablesList.vue';
 import { Journal } from '../components/JournalView/typings';
 import { Status } from '../typings/common';
 import { API } from '../typings/api';
@@ -150,10 +150,11 @@ interface TimetablesQueryParams {
 export default defineComponent({
   components: {
     JournalOptions,
-    JournalStats,
+    JournalStatsDropdown,
     JournalHeader,
     JournalTimetablesList
   },
+  
   mixins: [dateMixin, routerMixin],
 
   name: 'JournalTimetables',
@@ -168,21 +169,6 @@ export default defineComponent({
     journalTimetableFilters,
     mainStore: useMainStore(),
     apiStore: useApiStore(),
-
-    statsButtons: [
-      {
-        tab: Journal.StatsTab.DAILY_STATS,
-        localeKey: 'journal.daily-stats.button',
-        iconName: 'stats',
-        disabled: false
-      },
-      {
-        tab: Journal.StatsTab.DRIVER_STATS,
-        localeKey: 'journal.driver-stats.button',
-        iconName: 'train',
-        disabled: true
-      }
-    ],
 
     currentQueryParams: {} as TimetablesQueryParams,
     dataRefreshedAt: null as Date | null,
@@ -248,10 +234,10 @@ export default defineComponent({
       this.currentOptionsActive = Object.values(q).some((v) => v !== undefined);
     },
 
-    'mainStore.driverStatsData'(driverStats) {
-      this.statsButtons.find((sb) => sb.tab == Journal.StatsTab.DRIVER_STATS)!.disabled =
-        driverStats === undefined;
-    },
+    // 'mainStore.driverStatsData'(driverStats) {
+    //   this.statsButtons.find((sb) => sb.tab == Journal.StatsTab.DRIVER_STATS)!.disabled =
+    //     driverStats === undefined;
+    // },
 
     async 'mainStore.driverStatsName'() {
       this.fetchDriverStats();

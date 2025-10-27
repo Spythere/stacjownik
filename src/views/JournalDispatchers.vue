@@ -14,7 +14,7 @@
           optionsType="dispatchers"
         />
 
-        <JournalStats :statsButtons="statsButtons" />
+        <JournalStatsDropdown />
       </div>
 
       <div class="journal_refreshed-date">
@@ -43,21 +43,12 @@ import { LocationQuery } from 'vue-router';
 import { Journal } from '../components/JournalView/typings';
 import { API } from '../typings/api';
 import { Status } from '../typings/common';
+import { useApiStore } from '../store/apiStore';
 
 import JournalDispatchersList from '../components/JournalView/JournalDispatchers/JournalDispatchersList.vue';
 import JournalOptions from '../components/JournalView/JournalOptions.vue';
 import JournalHeader from '../components/JournalView/JournalHeader.vue';
-import JournalStats from '../components/JournalView/JournalStats.vue';
-import { useApiStore } from '../store/apiStore';
-
-const statsButtons: Journal.StatsButton[] = [
-  {
-    tab: Journal.StatsTab.DISPATCHER_STATS,
-    localeKey: 'journal.dispatcher-stats.button',
-    iconName: 'user',
-    disabled: true
-  }
-];
+import JournalStatsDropdown from '../components/JournalView/JournalStatsDropdown.vue';
 
 interface DispatchersQueryParams {
   dispatcherName?: string;
@@ -87,8 +78,8 @@ export default defineComponent({
   components: {
     JournalOptions,
     JournalHeader,
-    JournalStats,
-    JournalDispatchersList
+    JournalDispatchersList,
+    JournalStatsDropdown
   },
   name: 'JournalDispatchers',
 
@@ -105,8 +96,6 @@ export default defineComponent({
   },
 
   data: () => ({
-    statsButtons,
-
     dataRefreshedAt: null as Date | null,
     currentQueryParams: {} as DispatchersQueryParams,
 
@@ -160,10 +149,10 @@ export default defineComponent({
       );
     },
 
-    'mainStore.dispatcherStatsData'(stats) {
-      this.statsButtons.find((sb) => sb.tab == Journal.StatsTab.DISPATCHER_STATS)!.disabled =
-        stats === undefined;
-    },
+    // 'mainStore.dispatcherStatsData'(stats) {
+    //   this.statsButtons.find((sb) => sb.tab == Journal.StatsTab.DISPATCHER_STATS)!.disabled =
+    //     stats === undefined;
+    // },
 
     async 'mainStore.dispatcherStatsName'() {
       this.fetchDispatcherStats();
@@ -272,7 +261,7 @@ export default defineComponent({
       this.scrollDataLoaded = true;
     },
 
-    async fetchHistoryData() {      
+    async fetchHistoryData() {
       const queryParams: DispatchersQueryParams = {};
 
       const dispatcherName = this.searchersValues['search-dispatcher'].trim() || undefined;

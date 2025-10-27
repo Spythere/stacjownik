@@ -198,7 +198,7 @@ export default defineComponent({
   border-radius: 1em;
 }
 
-@include responsive.smallScreen{
+@include responsive.smallScreen {
   .entry-info {
     flex-direction: column;
     justify-content: center;
