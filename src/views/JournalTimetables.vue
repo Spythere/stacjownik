@@ -15,7 +15,7 @@
         />
 
         <div class="stats-actions">
-          <JournalPlayerStatsButton :playerId="driverId" />
+          <JournalPlayerProfileButton :playerId="driverId" />
           <JournalStatsDropdown />
         </div>
       </div>
@@ -57,7 +57,7 @@ import JournalOptions from '../components/JournalView/JournalOptions.vue';
 import JournalHeader from '../components/JournalView/JournalHeader.vue';
 import JournalTimetablesList from '../components/JournalView/JournalTimetables/JournalTimetablesList.vue';
 import JournalStatsDropdown from '../components/JournalView/JournalStatsDropdown.vue';
-import JournalPlayerStatsButton from '../components/JournalView/JournalPlayerStatsButton.vue';
+import JournalPlayerProfileButton from '../components/JournalView/JournalPlayerProfileButton.vue';
 
 const journalTimetableFilters: Journal.TimetableFilter[] = [
   {
@@ -157,7 +157,7 @@ export default defineComponent({
     JournalHeader,
     JournalTimetablesList,
     JournalStatsDropdown,
-    JournalPlayerStatsButton
+    JournalPlayerProfileButton
   },
 
   mixins: [dateMixin, routerMixin],
@@ -462,6 +462,8 @@ export default defineComponent({
       } catch (error) {
         this.dataStatus = Status.Data.Error;
         this.dataErrorMessage = 'Ups! Coś poszło nie tak!';
+
+        this.driverId = -1;
       }
 
       this.scrollNoMoreData = false;

@@ -63,8 +63,8 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/player/:id',
-    name: 'PlayerInfoView',
-    component: () => import('../views/PlayerInfoView.vue'),
+    name: 'PlayerProfileView',
+    component: () => import('../views/PlayerProfileView.vue'),
 
     props: (route) => ({
       id: route.query.id

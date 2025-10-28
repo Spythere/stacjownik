@@ -14,7 +14,10 @@
           optionsType="dispatchers"
         />
 
-        <JournalStatsDropdown />
+        <div class="stats-actions">
+          <JournalPlayerProfileButton :playerId="dispatcherId" />
+          <JournalStatsDropdown />
+        </div>
       </div>
 
       <div class="journal_refreshed-date">
@@ -49,6 +52,7 @@ import JournalDispatchersList from '../components/JournalView/JournalDispatchers
 import JournalOptions from '../components/JournalView/JournalOptions.vue';
 import JournalHeader from '../components/JournalView/JournalHeader.vue';
 import JournalStatsDropdown from '../components/JournalView/JournalStatsDropdown.vue';
+import JournalPlayerProfileButton from '../components/JournalView/JournalPlayerProfileButton.vue';
 
 interface DispatchersQueryParams {
   dispatcherName?: string;
@@ -79,7 +83,8 @@ export default defineComponent({
     JournalOptions,
     JournalHeader,
     JournalDispatchersList,
-    JournalStatsDropdown
+    JournalStatsDropdown,
+    JournalPlayerProfileButton
   },
   name: 'JournalDispatchers',
 
@@ -107,8 +112,11 @@ export default defineComponent({
     currentOptionsActive: false,
 
     dataStatus: Status.Data.Loading,
+    dataErrorMessage: '',
 
-    historyList: [] as API.DispatcherHistory.Response
+    historyList: [] as API.DispatcherHistory.Response,
+
+    dispatcherId: -1
   }),
 
   setup() {
@@ -147,15 +155,6 @@ export default defineComponent({
           queryParams[k as keyof DispatchersQueryParams] !=
           defaultQueryParams[k as keyof DispatchersQueryParams]
       );
-    },
-
-    // 'mainStore.dispatcherStatsData'(stats) {
-    //   this.statsButtons.find((sb) => sb.tab == Journal.StatsTab.DISPATCHER_STATS)!.disabled =
-    //     stats === undefined;
-    // },
-
-    async 'mainStore.dispatcherStatsName'() {
-      this.fetchDispatcherStats();
     }
   },
 
@@ -204,28 +203,28 @@ export default defineComponent({
       this.setOptions(query as any);
     },
 
-    async fetchDispatcherStats() {
-      if (!this.mainStore.dispatcherStatsName) {
-        this.mainStore.dispatcherStatsData = undefined;
-        return;
-      }
+    // async fetchDispatcherStats() {
+    //   if (!this.mainStore.dispatcherStatsName) {
+    //     this.mainStore.dispatcherStatsData = undefined;
+    //     return;
+    //   }
 
-      try {
-        const statsData: API.DispatcherStats.Response = await (
-          await this.apiStore.client!.get('api/getDispatcherStats', {
-            params: {
-              name: this.mainStore.dispatcherStatsName
-            }
-          })
-        ).data;
+    //   try {
+    //     const statsData: API.DispatcherStats.Response = await (
+    //       await this.apiStore.client!.get('api/getDispatcherStats', {
+    //         params: {
+    //           name: this.mainStore.dispatcherStatsName
+    //         }
+    //       })
+    //     ).data;
 
-        this.mainStore.dispatcherStatsData = statsData;
-      } catch (error) {
-        this.mainStore.dispatcherStatsData = undefined;
+    //     this.mainStore.dispatcherStatsData = statsData;
+    //   } catch (error) {
+    //     this.mainStore.dispatcherStatsData = undefined;
 
-        console.error('Ups! Wystąpił błąd przy próbie pobrania statystyk dyżurnego! :/');
-      }
-    },
+    //     console.error('Ups! Wystąpił błąd przy próbie pobrania statystyk dyżurnego! :/');
+    //   }
+    // },
 
     setOptions(options: { [key: string]: string }) {
       this.searchersValues['search-date-from'] = options['search-date-from'] ?? '';
@@ -293,6 +292,7 @@ export default defineComponent({
 
         if (!responseData) {
           this.dataStatus = Status.Data.Error;
+          this.dataErrorMessage = 'Brak danych!';
           return;
         }
 
@@ -302,15 +302,18 @@ export default defineComponent({
         this.historyList = responseData;
 
         // Stats display
-        this.mainStore.dispatcherStatsName =
+        this.dispatcherId =
           this.historyList.length > 0 && this.searchersValues['search-dispatcher'].trim()
-            ? this.historyList[0].dispatcherName
-            : '';
+            ? this.historyList[0].dispatcherId
+            : -1;
 
         this.dataRefreshedAt = new Date();
         this.dataStatus = Status.Data.Loaded;
       } catch (error) {
         this.dataStatus = Status.Data.Error;
+        this.dataErrorMessage = 'Ups! Coś poszło nie tak!';
+
+        this.dispatcherId = -1;
       }
 
       this.scrollNoMoreData = false;
