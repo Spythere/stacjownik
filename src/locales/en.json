@@ -605,9 +605,7 @@
     "desc-end": "The train terminates here",
     "desc-terminated": "The train has been terminated"
   },
-  "history": {
-    "title": "TIMETABLE JOURNAL",
-    "search-train": "Train no.",
-    "search-driver": "Driver name"
+  "player-profile": {
+    "button": "PLAYER PROFILE"
   }
 }
