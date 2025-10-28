@@ -591,6 +591,9 @@
     "desc-end": "Pociąg kończy bieg",
     "desc-terminated": "Pociąg zakończył bieg"
   },
+  "player-profile": {
+    "button": "PROFIL GRACZA"
+  },
   "history": {
     "title": "DZIENNIK ROZKŁADÓW JAZDY"
   }
