@@ -1,5 +1,6 @@
 import { RouteLocationRaw } from 'vue-router';
 import { StationJSONData } from '../store/typings';
+import { API } from './api';
 
 export type Availability = 'default' | 'unavailable' | 'nonPublic' | 'abandoned' | 'nonDefault';
 export type ScenerySpawnType = 'passenger' | 'freight' | 'loco' | 'all';
@@ -170,7 +171,7 @@ export interface ActiveScenery {
     confirmed: number;
     unconfirmed: number;
   };
-  missingCheckpoints: string[];  
+  missingCheckpoints: string[];
 }
 
 export interface ScenerySpawn {

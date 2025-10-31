@@ -207,6 +207,37 @@ export namespace API {
     }
   }
 
+  export namespace TimetableHistoryShort {
+    export interface Data {
+      allStopsCount: number;
+      confirmedStopsCount: number;
+      createdAt: string;
+      beginDate: string;
+      driverId: number;
+      driverName: string;
+      route: string;
+      routeDistance: number;
+      currentDistance: number;
+      currentLocation: string[];
+      currentSceneryName: string;
+      currentSceneryHash: string;
+      driverLevel: number;
+      fulfilled: boolean;
+      terminated: boolean;
+      driverIsSupporter: boolean;
+      trainCategoryCode: string;
+      trainNo: number;
+      id: number;
+      region: string;
+      hasDangerousCargo: boolean;
+      hasExtraDeliveries: boolean;
+      twr: boolean;
+      skr: boolean;
+    }
+
+    export type Response = Data[];
+  }
+
   export namespace TimetableHistory {
     export interface Data {
       id: number;
@@ -331,6 +362,23 @@ export namespace API {
 
   export namespace Vehicles {
     export type Response = VehicleData[];
+  }
+
+  export namespace PlayerActivity {
+    export interface Response {
+      driver: API.TimetableHistoryShort.Data;
+      dispatcher: API.DispatcherHistory.Data;
+    }
+  }
+
+  export namespace PlayerInfo {
+    export interface Response {
+      driverTimetables: API.TimetableHistoryShort.Response;
+      dispatcherDuties: API.DispatcherHistory.Response;
+      driverStats: API.DriverStats.Response;
+      dispatcherStats: API.DispatcherStats.Response;
+      currentActivity: API.PlayerActivity.Response;
+    }
   }
 }
 
