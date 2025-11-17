@@ -9,7 +9,7 @@
       <img
         v-for="(thumbnailImage, imageIndex) in images"
         :src="`https://stacjownik.spythere.eu/static/thumbnails/${thumbnailImage}.png`"
-        height="60"
+        height="70"
         loading="lazy"
         data-tooltip-type="VehiclePreviewTooltip"
         :data-tooltip-content="vehicleString"
@@ -62,10 +62,11 @@ function onImageLoad() {
 }
 
 .stock-text {
+  max-width: 90%;
   text-align: center;
   color: #aaa;
-  font-size: 0.9em;
-  margin-bottom: 0.25em;
+  font-size: 0.85em;
+  margin: 0 auto;
   padding: 0.25em 0;
 }
 
