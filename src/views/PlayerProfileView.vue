@@ -28,6 +28,108 @@
       </button>
     </div> -->
 
+    <h3 class="journal-header">DYŻURNY RUCHU</h3>
+
+    <div class="info-stats" v-if="dispatcherStats">
+      <span class="badge stat-badge" v-if="dispatcherStats.services">
+        <span>{{ t('journal.dispatcher-stats.services-count') }}</span>
+        <span>{{ dispatcherStats.services.count }}</span>
+      </span>
+
+      <span class="badge stat-badge" v-if="dispatcherStats.services">
+        <span>{{ t('journal.dispatcher-stats.service-max') }}</span>
+        <span>{{ calculateDuration(dispatcherStats.services.durationMax) }}</span>
+      </span>
+
+      <span class="badge stat-badge" v-if="dispatcherStats.services">
+        <span>{{ t('journal.dispatcher-stats.service-avg') }}</span>
+        <span>{{ calculateDuration(dispatcherStats.services.durationAvg) }}</span>
+      </span>
+    </div>
+
+    <div class="info-stats" v-if="dispatcherStats && dispatcherStats.issuedTimetables">
+      <div class="info-stats" v-if="dispatcherStats.issuedTimetables">
+        <span class="badge stat-badge">
+          <span>{{ t('journal.dispatcher-stats.timetables-count') }}</span>
+          <span>{{ dispatcherStats.issuedTimetables.count }}</span>
+        </span>
+
+        <span class="badge stat-badge">
+          <span>{{ t('journal.dispatcher-stats.timetables-sum') }}</span>
+          <span>{{ dispatcherStats.issuedTimetables.distanceSum.toFixed(2) }}km</span>
+        </span>
+
+        <span class="badge stat-badge">
+          <span>{{ t('journal.dispatcher-stats.timetables-max') }}</span>
+          <span>{{ dispatcherStats.issuedTimetables.distanceMax.toFixed(2) }}km</span>
+        </span>
+
+        <span class="badge stat-badge">
+          <span>{{ t('journal.dispatcher-stats.timetables-avg') }}</span>
+          <span>{{ dispatcherStats.issuedTimetables.distanceAvg.toFixed(2) }}km</span>
+        </span>
+      </div>
+    </div>
+
+    <h3 class="journal-header">MASZYNISTA</h3>
+
+    <div class="info-stats" v-if="driverStats">
+      <span class="badge stat-badge">
+        <span>{{ t('journal.driver-stats.longest-timetable') }}</span>
+        <span> {{ driverStats._max.routeDistance.toFixed(2) }}km </span>
+      </span>
+
+      <span class="badge stat-badge">
+        <span>{{ t('journal.driver-stats.avg-timetable') }}</span>
+        <span> {{ driverStats._avg.routeDistance.toFixed(2) }}km </span>
+      </span>
+
+      <span class="badge stat-badge">
+        <span>{{ t('journal.driver-stats.timetables') }}</span>
+        <span>
+          {{ driverStats._count.fulfilled }} /
+          {{ driverStats._count._all }}
+
+          <template v-if="driverStats._count._all > 0">
+            ({{ ((driverStats._count.fulfilled / driverStats._count._all) * 100).toFixed(2) }}%)
+          </template>
+        </span>
+      </span>
+
+      <span class="badge stat-badge">
+        <span>{{ t('journal.driver-stats.distance') }}</span>
+        <span>
+          {{ driverStats._sum.currentDistance.toFixed(2) }} /
+          {{ driverStats._sum.routeDistance.toFixed(2) }}km
+
+          <template v-if="driverStats._sum.routeDistance > 0">
+            ({{
+              ((driverStats._sum.currentDistance / driverStats._sum.routeDistance) * 100).toFixed(
+                2
+              )
+            }}%)
+          </template>
+        </span>
+      </span>
+
+      <span class="badge stat-badge">
+        <span>{{ t('journal.driver-stats.stations') }}</span>
+        <span>
+          {{ driverStats._sum.confirmedStopsCount }} /
+          {{ driverStats._sum.allStopsCount }}
+
+          <template v-if="driverStats._sum.allStopsCount > 0">
+            ({{
+              (
+                (driverStats._sum.confirmedStopsCount / driverStats._sum.allStopsCount) *
+                100
+              ).toFixed(2)
+            }}%)
+          </template>
+        </span>
+      </span>
+    </div>
+
     <h3 class="journal-header">Historia ostatniej aktywności</h3>
 
     <ul v-if="playerJournalComputed.length" class="journal-list">
@@ -68,11 +170,13 @@ import { useRoute } from 'vue-router';
 import { useApiStore } from '../store/apiStore';
 import { API } from '../typings/api';
 import { Status } from '../typings/common';
+import { useI18n } from 'vue-i18n';
 
-type JournalModeType = 'duties' | 'timetables' | 'issuedTimetables';
+// type JournalModeType = 'duties' | 'timetables' | 'issuedTimetables';
 
 const apiStore = useApiStore();
 const route = useRoute();
+const { t } = useI18n();
 
 // Variables
 const dataStatus = ref<Status.Data>(Status.Data.Initialized);
@@ -80,13 +184,13 @@ const playerJournal = ref<API.PlayerJournal.Response | null>(null);
 const dispatcherStats = ref<API.DispatcherStats.Response | null>(null);
 const driverStats = ref<API.DriverStats.Response | null>(null);
 
-const currentJournalMode = ref<JournalModeType>('timetables');
+// const currentJournalMode = ref<JournalModeType>('timetables');
 
-const journalModes = reactive<Record<JournalModeType, boolean>>({
-  duties: true,
-  issuedTimetables: true,
-  timetables: true
-});
+// const journalModes = reactive<Record<JournalModeType, boolean>>({
+//   duties: true,
+//   issuedTimetables: true,
+//   timetables: true
+// });
 
 const playerId = computed(() => route.params.id);
 
@@ -139,19 +243,21 @@ onActivated(() => {
 });
 
 // Methods
-function toggleJournalMode(mode: JournalModeType) {
-  // let stateAfter = !journalModes[mode];
+function calculateDuration(timestampMs: number, showSeconds = false) {
+  const secondsTotal = Math.floor(timestampMs / 1000);
+  const minsTotal = Math.round(timestampMs / 60000);
+  const hoursTotal = Math.floor(minsTotal / 60);
+  const minsInHour = minsTotal % 60;
 
-  // if (
-  //   stateAfter == false &&
-  //   Object.values(journalModes).filter((v) => v == false).length >=
-  //     Object.values(journalModes).length - 1
-  // )
-  //   return;
-
-  // journalModes[mode] = stateAfter;
-
-  currentJournalMode.value = mode;
+  return minsTotal >= 60
+    ? `${t('journal.hours', { value: hoursTotal }, hoursTotal)} ${t(
+        'journal.minutes',
+        { value: minsInHour },
+        minsInHour
+      )}`
+    : showSeconds && secondsTotal <= 60
+      ? t('journal.seconds', { value: secondsTotal }, secondsTotal)
+      : t('journal.minutes', { value: minsTotal }, minsTotal);
 }
 
 async function fetchPlayerData() {
@@ -164,10 +270,10 @@ async function fetchPlayerData() {
       apiStore.client.get<API.PlayerJournal.Response>('/api/getPlayerJournal', {
         params: { playerId: playerId.value, countLimit: 30 }
       }),
-      apiStore.client.get<API.DriverStats.Response>('/api/getDriverInfo', {
+      apiStore.client.get<API.DriverStats.Response>('/api/getDriverStats', {
         params: { playerId: playerId.value }
       }),
-      apiStore.client.get<API.DispatcherStats.Response>('/api/getDispatcherInfo', {
+      apiStore.client.get<API.DispatcherStats.Response>('/api/getDispatcherStats', {
         params: { playerId: playerId.value }
       })
     ]);
@@ -190,6 +296,8 @@ async function fetchPlayerData() {
 </script>
 
 <style lang="scss" scoped>
+@use '../styles/badge';
+
 .player-profile {
   padding: 1em;
 
@@ -203,18 +311,12 @@ async function fetchPlayerData() {
   grid-template-rows: auto auto 1fr;
 }
 
-.modes-options {
+.info-stats {
   display: flex;
+  flex-wrap: wrap;
+
   gap: 0.5em;
-  margin: 1em 0;
-
-  button {
-    font-weight: bold;
-
-    &[data-checked='true'] {
-      color: var(--clr-primary);
-    }
-  }
+  margin-top: 0.5em;
 }
 
 .journal-header {
