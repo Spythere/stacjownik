@@ -371,13 +371,11 @@ export namespace API {
     }
   }
 
-  export namespace PlayerInfo {
+  export namespace PlayerJournal {
     export interface Response {
-      driverTimetables: API.TimetableHistoryShort.Response;
-      dispatcherDuties: API.DispatcherHistory.Response;
-      driverStats: API.DriverStats.Response;
-      dispatcherStats: API.DispatcherStats.Response;
-      currentActivity: API.PlayerActivity.Response;
+      timetables: API.TimetableHistory.Response;
+      issuedTimetables: API.TimetableHistory.Response;
+      duties: API.DispatcherHistory.Response;
     }
   }
 }
