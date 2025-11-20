@@ -472,16 +472,6 @@
     "load-data": "Pobierz dalszą historię...",
     "last-seen-at": "Ostatnio widziany na: ",
     "currently-at": "Obecnie na scenerii: ",
-    "driver-stats": {
-      "button": "STAT. MASZYNISTY",
-      "title": "STATYSTYKI MASZYNISTY {name}",
-      "info": "Wpisz nazwę użytkownika w filtrach [F], aby zobaczyć jego statystyki maszynisty!",
-      "timetables": "ROZKŁADY JAZDY",
-      "longest-timetable": "NAJDŁUŻSZY RJ",
-      "avg-timetable": "ŚREDNIA DŁUGOŚĆ RJ",
-      "distance": "DYSTANS",
-      "stations": "STACJE"
-    },
     "daily-stats": {
       "button": "STATYSTYKI DNIA",
       "title": "STATYSTYKI DNIA",
@@ -498,18 +488,6 @@
       "skippedStopSignals": "POMINIĘTE S1",
       "radioStops": "RADIOSTOPY",
       "kills": "POTRĄCENIA"
-    },
-    "dispatcher-stats": {
-      "button": "STATYSTYKI DYŻURNEGO",
-      "title": "STATYSTYKI DYŻURNEGO {name}",
-      "info": "Wpisz nazwę użytkownika w filtrach [F], aby zobaczyć jego statystyki dyżurnego!",
-      "services-count": "DYŻURY",
-      "service-max": "MAKS. CZAS DYŻURU",
-      "service-avg": "ŚREDNI CZAS DYŻURU",
-      "timetables-count": "WYSTAWIONE RJ",
-      "timetables-sum": "SUMA WYSTAWIONYCH RJ",
-      "timetables-max": "NAJDŁUŻSZY WYSTAWIONY RJ",
-      "timetables-avg": "ŚREDNIA WYSTAWIONYCH RJ"
     },
     "stats-loading": "Pobieranie statystyk...",
     "stats-error": "Ups! Wystąpił błąd podczas próby pobrania statystyk!",
@@ -592,6 +570,28 @@
     "desc-terminated": "Pociąg zakończył bieg"
   },
   "player-profile": {
-    "button": "PROFIL GRACZA"
+    "button": "PROFIL GRACZA",
+    "stats": {
+      "dispatcher-header": "DYŻURNY RUCHU - SŁUŻBY",
+      "dispatcher-count": "ŁĄCZNIE",
+      "dispatcher-max": "MAKSYMALNY CZAS",
+      "dispatcher-avg": "ŚREDNI CZAS",
+
+      "issued-timetables-header": "DYŻURNY RUCHU - WYSTAWIONE ROZKŁADY JAZDY",
+      "issued-timetables-count": "ŁĄCZNIE",
+      "issued-timetables-sum": "SUMA DYSTANSU",
+      "issued-timetables-max": "NAJDŁUŻSZY",
+      "issued-timetables-avg": "ŚREDNIO",
+
+      "timetables-header": "MASZYNISTA - ROZKŁADY JAZDY",
+      "timetables-count-all": "ŁĄCZNIE",
+      "timetables-count-fulfilled": "WYPEŁNIONE",
+      "timetables-distance-max": "NAJDŁUŻSZY",
+      "timetables-distance-avg": "ŚREDNIO",
+      "timetables-distance-all": "ŁĄCZNIE",
+      "timetables-distance-current": "PRZEBYTO",
+      "timetables-stations": "STACJE"
+    },
+    "journal-title": "HISTORIA OSTATNIEJ AKTYWNOŚCI"
   }
 }

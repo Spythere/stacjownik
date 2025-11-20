@@ -1,8 +1,157 @@
 <template>
   <section class="player-profile">
-    <h2 class="header">
+    <h2 class="profile-header">
       Profil użytkownika <b class="text--primary">{{ playerName }}</b>
     </h2>
+
+    <div class="player-stats">
+      <h3 class="stats-header">{{ t('player-profile.stats.dispatcher-header') }}</h3>
+
+      <div class="info-stats" v-if="dispatcherStats?.services">
+        <span class="badge stat-badge">
+          <span>{{ t('player-profile.stats.dispatcher-count') }}</span>
+          <span>{{ dispatcherStats.services.count }}</span>
+        </span>
+
+        <span class="badge stat-badge">
+          <span>{{ t('player-profile.stats.dispatcher-max') }}</span>
+          <span>{{ calculateDuration(dispatcherStats.services.durationMax) }}</span>
+        </span>
+
+        <span class="badge stat-badge">
+          <span>{{ t('player-profile.stats.dispatcher-avg') }}</span>
+          <span>{{ calculateDuration(dispatcherStats.services.durationAvg) }}</span>
+        </span>
+      </div>
+
+      <h3 class="stats-header">DYŻURNY RUCHU - WYSTAWIONE ROZKŁADY JAZDY</h3>
+
+      <div class="info-stats" v-if="dispatcherStats?.issuedTimetables">
+        <span class="badge stat-badge">
+          <span>{{ t('player-profile.stats.issued-timetables-count') }}</span>
+          <span>{{ dispatcherStats.issuedTimetables.count }}</span>
+        </span>
+
+        <span class="badge stat-badge">
+          <span>{{ t('player-profile.stats.issued-timetables-sum') }}</span>
+          <span>{{ dispatcherStats.issuedTimetables.distanceSum.toFixed(2) }}km</span>
+        </span>
+
+        <span class="badge stat-badge">
+          <span>{{ t('player-profile.stats.issued-timetables-max') }}</span>
+          <span>{{ dispatcherStats.issuedTimetables.distanceMax.toFixed(2) }}km</span>
+        </span>
+
+        <span class="badge stat-badge">
+          <span>{{ t('player-profile.stats.issued-timetables-avg') }}</span>
+          <span>{{ dispatcherStats.issuedTimetables.distanceAvg.toFixed(2) }}km</span>
+        </span>
+      </div>
+
+      <h3 class="stats-header">{{ t('player-profile.stats.timetables-header') }}</h3>
+
+      <div class="info-stats" v-if="driverStats">
+        <span class="badge stat-badge">
+          <span>{{ t('player-profile.stats.timetables-count-all') }}</span>
+          <span>
+            {{ driverStats._count._all }}
+          </span>
+        </span>
+
+        <span class="badge stat-badge">
+          <span>{{ t('player-profile.stats.timetables-count-fulfilled') }}</span>
+          <span>
+            {{ driverStats._count.fulfilled }}
+
+            <template v-if="driverStats._count._all > 0">
+              ({{ ((driverStats._count.fulfilled / driverStats._count._all) * 100).toFixed(2) }}%)
+            </template>
+          </span>
+        </span>
+      </div>
+
+      <div class="info-stats" v-if="driverStats">
+        <span class="badge stat-badge">
+          <span>{{ t('player-profile.stats.timetables-distance-max') }}</span>
+          <span> {{ driverStats._max.routeDistance.toFixed(2) }}km </span>
+        </span>
+
+        <span class="badge stat-badge">
+          <span>{{ t('player-profile.stats.timetables-distance-avg') }}</span>
+          <span> {{ driverStats._avg.routeDistance.toFixed(2) }}km </span>
+        </span>
+
+        <span class="badge stat-badge">
+          <span>{{ t('player-profile.stats.timetables-distance-all') }}</span>
+          <span> {{ driverStats._sum.routeDistance.toFixed(2) }}km </span>
+        </span>
+
+        <span class="badge stat-badge">
+          <span>{{ t('player-profile.stats.timetables-distance-current') }}</span>
+          <span>
+            {{ driverStats._sum.currentDistance.toFixed(2) }}km
+
+            <template v-if="driverStats._sum.routeDistance > 0">
+              ({{
+                ((driverStats._sum.currentDistance / driverStats._sum.routeDistance) * 100).toFixed(
+                  2
+                )
+              }}%)
+            </template>
+          </span>
+        </span>
+
+        <span class="badge stat-badge">
+          <span>{{ t('player-profile.stats.timetables-stations') }}</span>
+          <span>
+            {{ driverStats._sum.confirmedStopsCount }} /
+            {{ driverStats._sum.allStopsCount }}
+
+            <template v-if="driverStats._sum.allStopsCount > 0">
+              ({{
+                (
+                  (driverStats._sum.confirmedStopsCount / driverStats._sum.allStopsCount) *
+                  100
+                ).toFixed(2)
+              }}%)
+            </template>
+          </span>
+        </span>
+      </div>
+    </div>
+
+    <h3 class="journal-header">{{ t('player-profile.journal-title') }}</h3>
+
+    <ul v-if="playerJournalComputed.length" class="journal-list">
+      <li v-for="item in playerJournalComputed" class="journal-item">
+        <!-- Timetable type -->
+        <div v-if="'beginDate' in item" class="item-wrapper">
+          <div class="type-indicator train">
+            <img src="/images/icon-train.svg" alt="icon train" />
+          </div>
+
+          <div>
+            {{ new Date(item.scheduledBeginDate).toLocaleString('pl-PL') }} -
+            {{ new Date(item.scheduledEndDate).toLocaleString('pl-PL') }} timetable
+            {{ item.route }}
+            {{ item.driverName }}
+          </div>
+        </div>
+
+        <!-- Dispatcher type -->
+        <div v-else class="item-wrapper">
+          <div class="type-indicator dispatcher">
+            <img src="/images/icon-user.svg" alt="icon user" />
+          </div>
+
+          <div>
+            {{ new Date(item.timestampFrom).toLocaleString('pl-PL') }}
+            {{ item.timestampTo ? ' - ' + new Date(item.timestampTo).toLocaleString('pl-PL') : '' }}
+            dispatcher {{ item.stationName }}
+          </div>
+        </div>
+      </li>
+    </ul>
     <!-- 
     <div class="modes-options">
       <button
@@ -27,140 +176,6 @@
         DYŻURY
       </button>
     </div> -->
-
-    <h3 class="journal-header">DYŻURNY RUCHU</h3>
-
-    <div class="info-stats" v-if="dispatcherStats">
-      <span class="badge stat-badge" v-if="dispatcherStats.services">
-        <span>{{ t('journal.dispatcher-stats.services-count') }}</span>
-        <span>{{ dispatcherStats.services.count }}</span>
-      </span>
-
-      <span class="badge stat-badge" v-if="dispatcherStats.services">
-        <span>{{ t('journal.dispatcher-stats.service-max') }}</span>
-        <span>{{ calculateDuration(dispatcherStats.services.durationMax) }}</span>
-      </span>
-
-      <span class="badge stat-badge" v-if="dispatcherStats.services">
-        <span>{{ t('journal.dispatcher-stats.service-avg') }}</span>
-        <span>{{ calculateDuration(dispatcherStats.services.durationAvg) }}</span>
-      </span>
-    </div>
-
-    <div class="info-stats" v-if="dispatcherStats && dispatcherStats.issuedTimetables">
-      <div class="info-stats" v-if="dispatcherStats.issuedTimetables">
-        <span class="badge stat-badge">
-          <span>{{ t('journal.dispatcher-stats.timetables-count') }}</span>
-          <span>{{ dispatcherStats.issuedTimetables.count }}</span>
-        </span>
-
-        <span class="badge stat-badge">
-          <span>{{ t('journal.dispatcher-stats.timetables-sum') }}</span>
-          <span>{{ dispatcherStats.issuedTimetables.distanceSum.toFixed(2) }}km</span>
-        </span>
-
-        <span class="badge stat-badge">
-          <span>{{ t('journal.dispatcher-stats.timetables-max') }}</span>
-          <span>{{ dispatcherStats.issuedTimetables.distanceMax.toFixed(2) }}km</span>
-        </span>
-
-        <span class="badge stat-badge">
-          <span>{{ t('journal.dispatcher-stats.timetables-avg') }}</span>
-          <span>{{ dispatcherStats.issuedTimetables.distanceAvg.toFixed(2) }}km</span>
-        </span>
-      </div>
-    </div>
-
-    <h3 class="journal-header">MASZYNISTA</h3>
-
-    <div class="info-stats" v-if="driverStats">
-      <span class="badge stat-badge">
-        <span>{{ t('journal.driver-stats.longest-timetable') }}</span>
-        <span> {{ driverStats._max.routeDistance.toFixed(2) }}km </span>
-      </span>
-
-      <span class="badge stat-badge">
-        <span>{{ t('journal.driver-stats.avg-timetable') }}</span>
-        <span> {{ driverStats._avg.routeDistance.toFixed(2) }}km </span>
-      </span>
-
-      <span class="badge stat-badge">
-        <span>{{ t('journal.driver-stats.timetables') }}</span>
-        <span>
-          {{ driverStats._count.fulfilled }} /
-          {{ driverStats._count._all }}
-
-          <template v-if="driverStats._count._all > 0">
-            ({{ ((driverStats._count.fulfilled / driverStats._count._all) * 100).toFixed(2) }}%)
-          </template>
-        </span>
-      </span>
-
-      <span class="badge stat-badge">
-        <span>{{ t('journal.driver-stats.distance') }}</span>
-        <span>
-          {{ driverStats._sum.currentDistance.toFixed(2) }} /
-          {{ driverStats._sum.routeDistance.toFixed(2) }}km
-
-          <template v-if="driverStats._sum.routeDistance > 0">
-            ({{
-              ((driverStats._sum.currentDistance / driverStats._sum.routeDistance) * 100).toFixed(
-                2
-              )
-            }}%)
-          </template>
-        </span>
-      </span>
-
-      <span class="badge stat-badge">
-        <span>{{ t('journal.driver-stats.stations') }}</span>
-        <span>
-          {{ driverStats._sum.confirmedStopsCount }} /
-          {{ driverStats._sum.allStopsCount }}
-
-          <template v-if="driverStats._sum.allStopsCount > 0">
-            ({{
-              (
-                (driverStats._sum.confirmedStopsCount / driverStats._sum.allStopsCount) *
-                100
-              ).toFixed(2)
-            }}%)
-          </template>
-        </span>
-      </span>
-    </div>
-
-    <h3 class="journal-header">Historia ostatniej aktywności</h3>
-
-    <ul v-if="playerJournalComputed.length" class="journal-list">
-      <li v-for="item in playerJournalComputed" class="journal-item">
-        <!-- Timetable type -->
-        <div v-if="'beginDate' in item" class="item-wrapper">
-          <div class="type-indicator train">
-            <img src="/images/icon-train.svg" alt="icon train" />
-          </div>
-
-          <div>
-            {{ new Date(item.scheduledBeginDate).toLocaleString('pl-PL') }} -
-            {{ new Date(item.scheduledEndDate).toLocaleString('pl-PL') }} timetable {{ item.route }}
-            {{ item.driverName }}
-          </div>
-        </div>
-
-        <!-- Dispatcher type -->
-        <div v-else class="item-wrapper">
-          <div class="type-indicator dispatcher">
-            <img src="/images/icon-user.svg" alt="icon user" />
-          </div>
-
-          <div>
-            {{ new Date(item.timestampFrom).toLocaleString('pl-PL') }}
-            {{ item.timestampTo ? ' - ' + new Date(item.timestampTo).toLocaleString('pl-PL') : '' }}
-            dispatcher {{ item.stationName }}
-          </div>
-        </div>
-      </li>
-    </ul>
   </section>
 </template>
 
@@ -297,6 +312,7 @@ async function fetchPlayerData() {
 
 <style lang="scss" scoped>
 @use '../styles/badge';
+@use '../styles/responsive';
 
 .player-profile {
   padding: 1em;
@@ -305,10 +321,11 @@ async function fetchPlayerData() {
   background-color: var(--clr-view-bg);
   margin: 1em auto;
 
+  min-height: 700px;
   height: calc(100vh - 8.5em);
 
   display: grid;
-  grid-template-rows: auto auto 1fr;
+  grid-template-rows: auto auto auto 1fr;
 }
 
 .info-stats {
@@ -316,17 +333,17 @@ async function fetchPlayerData() {
   flex-wrap: wrap;
 
   gap: 0.5em;
-  margin-top: 0.5em;
+  margin-bottom: 0.5em;
 }
 
+.stats-header,
 .journal-header {
-  margin: 0.5em 0;
+  padding: 0.5em 0;
 }
 
 .journal-list {
   overflow: auto;
   min-height: 100%;
-  padding: 0.5em 0;
 }
 
 .journal-item {
@@ -382,6 +399,21 @@ async function fetchPlayerData() {
     width: 5px;
     height: 100%;
     background-color: var(--clr-bg);
+  }
+}
+
+@include responsive.smallScreen {
+  h2,
+  h3 {
+    text-align: center;
+  }
+
+  .stats-header {
+    text-align: center;
+  }
+
+  .info-stats {
+    justify-content: center;
   }
 }
 </style>
