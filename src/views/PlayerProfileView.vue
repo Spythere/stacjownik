@@ -5,118 +5,140 @@
     </h2>
 
     <div class="player-stats">
-      <h3 class="stats-header">{{ t('player-profile.stats.dispatcher-header') }}</h3>
+      <h3 class="stats-header">STATYSTYKI MASZYNISTY</h3>
 
-      <div class="info-stats" v-if="dispatcherStats?.services">
-        <span class="badge stat-badge">
-          <span>{{ t('player-profile.stats.dispatcher-count') }}</span>
-          <span>{{ dispatcherStats.services.count }}</span>
-        </span>
+      <div class="driver-stats" v-if="driverStats">
+        <div class="stat-item">
+          <div>{{ driverStats._count._all }}</div>
+          <div class="separator"></div>
+          <div>ROZKŁADY JAZDY</div>
+        </div>
 
-        <span class="badge stat-badge">
-          <span>{{ t('player-profile.stats.dispatcher-max') }}</span>
-          <span>{{ calculateDuration(dispatcherStats.services.durationMax) }}</span>
-        </span>
-
-        <span class="badge stat-badge">
-          <span>{{ t('player-profile.stats.dispatcher-avg') }}</span>
-          <span>{{ calculateDuration(dispatcherStats.services.durationAvg) }}</span>
-        </span>
-      </div>
-
-      <h3 class="stats-header">DYŻURNY RUCHU - WYSTAWIONE ROZKŁADY JAZDY</h3>
-
-      <div class="info-stats" v-if="dispatcherStats?.issuedTimetables">
-        <span class="badge stat-badge">
-          <span>{{ t('player-profile.stats.issued-timetables-count') }}</span>
-          <span>{{ dispatcherStats.issuedTimetables.count }}</span>
-        </span>
-
-        <span class="badge stat-badge">
-          <span>{{ t('player-profile.stats.issued-timetables-sum') }}</span>
-          <span>{{ dispatcherStats.issuedTimetables.distanceSum.toFixed(2) }}km</span>
-        </span>
-
-        <span class="badge stat-badge">
-          <span>{{ t('player-profile.stats.issued-timetables-max') }}</span>
-          <span>{{ dispatcherStats.issuedTimetables.distanceMax.toFixed(2) }}km</span>
-        </span>
-
-        <span class="badge stat-badge">
-          <span>{{ t('player-profile.stats.issued-timetables-avg') }}</span>
-          <span>{{ dispatcherStats.issuedTimetables.distanceAvg.toFixed(2) }}km</span>
-        </span>
-      </div>
-
-      <h3 class="stats-header">{{ t('player-profile.stats.timetables-header') }}</h3>
-
-      <div class="info-stats" v-if="driverStats">
-        <span class="badge stat-badge">
-          <span>{{ t('player-profile.stats.timetables-count-all') }}</span>
-          <span>
-            {{ driverStats._count._all }}
-          </span>
-        </span>
-
-        <span class="badge stat-badge">
-          <span>{{ t('player-profile.stats.timetables-count-fulfilled') }}</span>
-          <span>
+        <div class="stat-item">
+          <div>
             {{ driverStats._count.fulfilled }}
+            ({{ ((driverStats._count.fulfilled / driverStats._count._all) * 100).toFixed(2) }}%)
+          </div>
+          <div class="separator"></div>
+          <div>WYPEŁNIONE ROZKŁADY</div>
+        </div>
 
-            <template v-if="driverStats._count._all > 0">
-              ({{ ((driverStats._count.fulfilled / driverStats._count._all) * 100).toFixed(2) }}%)
-            </template>
-          </span>
-        </span>
+        <div class="stat-item">
+          <div>{{ driverStats._sum.routeDistance.toFixed(2) }}km</div>
+          <div class="separator"></div>
+          <div>DYSTANS ROZKŁADÓW</div>
+        </div>
+
+        <div class="stat-item">
+          <div>
+            {{ driverStats._sum.currentDistance.toFixed(2) }}km ({{
+              ((driverStats._sum.currentDistance / driverStats._sum.routeDistance) * 100).toFixed(
+                2
+              )
+            }}%)
+          </div>
+          <div class="separator"></div>
+          <div>PRZEBYTY DYSTANS</div>
+        </div>
+
+        <div class="stat-item">
+          <div>{{ driverStats._max.routeDistance.toFixed(2) }}km</div>
+          <div class="separator"></div>
+          <div>NAJDŁUŻSZY ROZKŁAD</div>
+        </div>
+
+        <div class="stat-item">
+          <div>{{ driverStats._avg.routeDistance.toFixed(2) }}km</div>
+          <div class="separator"></div>
+          <div>ŚREDNIA DŁUGOŚĆ</div>
+        </div>
+
+        <div class="stat-item">
+          <div>
+            {{ driverStats._sum.confirmedStopsCount }} / {{ driverStats._sum.allStopsCount }} ({{
+              (
+                (driverStats._sum.confirmedStopsCount / driverStats._sum.allStopsCount) *
+                100
+              ).toFixed(2)
+            }}%)
+          </div>
+          <div class="separator"></div>
+          <div>LICZBA STACJI</div>
+        </div>
+
+        <!-- <div class="stat-circle">
+          <svg width="100" height="100" viewBox="0 0 100 100">
+            <text x="50%" y="50%" text-anchor="middle" alignment-baseline="middle" fill="white">
+              {{ percent }}%
+            </text>
+
+            <circle cx="50" cy="50" r="45" fill="none" stroke="#aaa" stroke-width="10" />
+
+            <circle
+              class="percent fifty"
+              cx="50"
+              cy="50"
+              r="45"
+              fill="none"
+              stroke="gold"
+              stroke-width="10"
+              :stroke-dasharray="`${percent} ${100 - percent}`"
+              stroke-dashoffset="-75"
+              pathLength="100"
+            />
+          </svg>
+
+          <div>
+            145 / 160 <br />
+            UKOŃCZONYCH RJ
+          </div>
+        </div> -->
       </div>
 
-      <div class="info-stats" v-if="driverStats">
-        <span class="badge stat-badge">
-          <span>{{ t('player-profile.stats.timetables-distance-max') }}</span>
-          <span> {{ driverStats._max.routeDistance.toFixed(2) }}km </span>
-        </span>
+      <h3 class="stats-header">STATYSTYKI DYŻURNEGO</h3>
 
-        <span class="badge stat-badge">
-          <span>{{ t('player-profile.stats.timetables-distance-avg') }}</span>
-          <span> {{ driverStats._avg.routeDistance.toFixed(2) }}km </span>
-        </span>
+      <div class="dispatcher-stats" v-if="dispatcherStats">
+        <div class="stat-item" v-if="dispatcherStats.services">
+          <div>{{ dispatcherStats.services.count }}</div>
+          <div class="separator"></div>
+          <div>SŁUŻBY DYŻURNEGO</div>
+        </div>
 
-        <span class="badge stat-badge">
-          <span>{{ t('player-profile.stats.timetables-distance-all') }}</span>
-          <span> {{ driverStats._sum.routeDistance.toFixed(2) }}km </span>
-        </span>
+        <div class="stat-item" v-if="dispatcherStats.services">
+          <div>{{ calculateDuration(dispatcherStats.services.durationMax) }}</div>
+          <div class="separator"></div>
+          <div>NAJDŁUŻSZY CZAS SŁUŻBY</div>
+        </div>
 
-        <span class="badge stat-badge">
-          <span>{{ t('player-profile.stats.timetables-distance-current') }}</span>
-          <span>
-            {{ driverStats._sum.currentDistance.toFixed(2) }}km
+        <div class="stat-item" v-if="dispatcherStats.services">
+          <div>{{ calculateDuration(dispatcherStats.services.durationAvg) }}</div>
+          <div class="separator"></div>
+          <div>ŚREDNI CZAS SŁUŻBY</div>
+        </div>
 
-            <template v-if="driverStats._sum.routeDistance > 0">
-              ({{
-                ((driverStats._sum.currentDistance / driverStats._sum.routeDistance) * 100).toFixed(
-                  2
-                )
-              }}%)
-            </template>
-          </span>
-        </span>
+        <div class="stat-item" v-if="dispatcherStats.issuedTimetables">
+          <div>{{ dispatcherStats.issuedTimetables.count }}</div>
+          <div class="separator"></div>
+          <div>WYSTAWIONE ROZKŁADY</div>
+        </div>
 
-        <span class="badge stat-badge">
-          <span>{{ t('player-profile.stats.timetables-stations') }}</span>
-          <span>
-            {{ driverStats._sum.confirmedStopsCount }} /
-            {{ driverStats._sum.allStopsCount }}
+        <div class="stat-item" v-if="dispatcherStats.issuedTimetables">
+          <div>{{ dispatcherStats.issuedTimetables.distanceMax.toFixed(2) }}km</div>
+          <div class="separator"></div>
+          <div>NADJŁUŻSZY ROZKŁAD</div>
+        </div>
 
-            <template v-if="driverStats._sum.allStopsCount > 0">
-              ({{
-                (
-                  (driverStats._sum.confirmedStopsCount / driverStats._sum.allStopsCount) *
-                  100
-                ).toFixed(2)
-              }}%)
-            </template>
-          </span>
-        </span>
+        <div class="stat-item" v-if="dispatcherStats.issuedTimetables">
+          <div>{{ dispatcherStats.issuedTimetables.distanceSum.toFixed(2) }}km</div>
+          <div class="separator"></div>
+          <div>SUMA ROZKŁADÓW</div>
+        </div>
+
+        <div class="stat-item" v-if="dispatcherStats.issuedTimetables">
+          <div>{{ dispatcherStats.issuedTimetables.distanceAvg.toFixed(2) }}km</div>
+          <div class="separator"></div>
+          <div>ŚREDNIA ROZKŁADÓW</div>
+        </div>
       </div>
     </div>
 
@@ -180,7 +202,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onActivated, reactive, ref } from 'vue';
+import { computed, onActivated, onMounted, reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useApiStore } from '../store/apiStore';
 import { API } from '../typings/api';
@@ -192,6 +214,16 @@ import { useI18n } from 'vue-i18n';
 const apiStore = useApiStore();
 const route = useRoute();
 const { t } = useI18n();
+
+const percent = ref(25);
+
+// onMounted(() => {
+//   setInterval(() => {
+//     percent.value++;
+
+//     if (percent.value >= 100) percent.value = 0;
+//   }, 100);
+// });
 
 // Variables
 const dataStatus = ref<Status.Data>(Status.Data.Initialized);
@@ -322,18 +354,38 @@ async function fetchPlayerData() {
   margin: 1em auto;
 
   min-height: 700px;
-  height: calc(100vh - 8.5em);
+  // height: calc(100vh - 8.5em);
 
   display: grid;
-  grid-template-rows: auto auto auto 1fr;
+  grid-template-rows: auto auto auto auto;
 }
 
-.info-stats {
-  display: flex;
-  flex-wrap: wrap;
-
+.driver-stats,
+.dispatcher-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 0.5em;
-  margin-bottom: 0.5em;
+  width: 100%;
+  overflow: auto;
+}
+
+.stat-item {
+  padding: 0.5em;
+  background-color: #333;
+  text-align: center;
+  font-weight: bold;
+  border-radius: 0.5em;
+}
+
+.stat-item > div:first-child {
+  color: var(--clr-primary);
+}
+
+.stat-item > .separator {
+  width: 100%;
+  height: 2px;
+  background-color: #fff;
+  margin: 0.25em 0;
 }
 
 .stats-header,
@@ -400,6 +452,33 @@ async function fetchPlayerData() {
     height: 100%;
     background-color: var(--clr-bg);
   }
+}
+
+.circular-progress {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: conic-gradient(hotpink 75%, pink 0);
+}
+
+.inner-circle {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: white;
+}
+
+.percentage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 20px;
+  color: hotpink;
 }
 
 @include responsive.smallScreen {
