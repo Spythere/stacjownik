@@ -106,7 +106,7 @@ import { useApiStore } from '../../store/apiStore';
 import routerMixin from '../../mixins/routerMixin';
 import { useMainStore } from '../../store/mainStore';
 
-const historyModeList = ['includesScenery', 'via', 'issuedFrom', 'terminatingAt'] as const;
+const historyModeList = ['includesScenery', 'issuedFrom', 'via', 'terminatingAt'] as const;
 type HistoryMode = (typeof historyModeList)[number];
 
 export default defineComponent({
@@ -218,7 +218,6 @@ export default defineComponent({
 
   button {
     padding: 0.35em;
-    min-width: 120px;
   }
 }
 
