@@ -106,7 +106,7 @@ import { useApiStore } from '../../store/apiStore';
 import routerMixin from '../../mixins/routerMixin';
 import { useMainStore } from '../../store/mainStore';
 
-const historyModeList = ['via', 'issuedFrom', 'terminatingAt'] as const;
+const historyModeList = ['includesScenery', 'via', 'issuedFrom', 'terminatingAt'] as const;
 type HistoryMode = (typeof historyModeList)[number];
 
 export default defineComponent({
@@ -131,12 +131,12 @@ export default defineComponent({
       dataStatus: Status.Data.Loading,
       DataStatus: Status.Data,
 
-      checkedHistoryMode: 'via' as HistoryMode
+      checkedHistoryMode: 'includesScenery' as HistoryMode
     };
   },
 
   async activated() {
-    this.checkedHistoryMode = 'via';
+    this.checkedHistoryMode = 'includesScenery';
     this.fetchAPIData();
   },
 
@@ -154,6 +154,7 @@ export default defineComponent({
       const requestFilters: Record<string, any> = {};
       requestFilters[this.checkedHistoryMode] = stationName.toString();
       requestFilters.countLimit = 30;
+      requestFilters['returnType'] = 'short';
 
       try {
         const response: API.TimetableHistory.Response = await (
