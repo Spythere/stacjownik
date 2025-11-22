@@ -46,24 +46,22 @@
 
               <span>
                 {{ $t('scenery.timetable-issued-for') }}
-                <b>
-                  <router-link
-                    :to="`/journal/timetables?search-driver=${timetableHistory.driverName}`"
-                  >
-                    {{ timetableHistory.driverName }}
-                  </router-link>
-                </b>
+                <router-link
+                  class="journal-link"
+                  :to="`/journal/timetables?search-driver=${timetableHistory.driverName}`"
+                >
+                  {{ timetableHistory.driverName }}
+                </router-link>
               </span>
 
               <span v-if="timetableHistory.authorName">
                 {{ $t('scenery.timetable-issued-by') }}
-                <b>
-                  <router-link
-                    :to="`/journal/timetables?search-dispatcher=${timetableHistory.authorName}`"
-                  >
-                    {{ timetableHistory.authorName }}
-                  </router-link>
-                </b>
+                <router-link
+                  class="journal-link"
+                  :to="`/journal/timetables?search-dispatcher=${timetableHistory.authorName}`"
+                >
+                  {{ timetableHistory.authorName }}
+                </router-link>
               </span>
             </div>
           </span>
@@ -224,6 +222,15 @@ export default defineComponent({
 
   button {
     padding: 0.35em;
+  }
+}
+
+.journal-link {
+  font-weight: bold;
+  color: #eee;
+
+  &:hover {
+    color: var(--clr-primary);
   }
 }
 
