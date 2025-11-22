@@ -40,24 +40,7 @@
               <span>
                 {{ $t('scenery.timetable-issued-date') }}
                 <b>
-                  {{
-                    localeDateTime(
-                      timetableHistory.createdAt > timetableHistory.beginDate
-                        ? timetableHistory.beginDate
-                        : timetableHistory.createdAt,
-                      $i18n.locale
-                    )
-                  }}
-                </b></span
-              >
-              <span v-if="timetableHistory.authorName">
-                {{ $t('scenery.timetable-issued-by') }}
-                <b>
-                  <router-link
-                    :to="`/journal/timetables?search-dispatcher=${timetableHistory.authorName}`"
-                  >
-                    {{ timetableHistory.authorName }}
-                  </router-link>
+                  {{ parseCreatedDate(timetableHistory, $i18n.locale) }}
                 </b>
               </span>
 
@@ -68,6 +51,17 @@
                     :to="`/journal/timetables?search-driver=${timetableHistory.driverName}`"
                   >
                     {{ timetableHistory.driverName }}
+                  </router-link>
+                </b>
+              </span>
+
+              <span v-if="timetableHistory.authorName">
+                {{ $t('scenery.timetable-issued-by') }}
+                <b>
+                  <router-link
+                    :to="`/journal/timetables?search-dispatcher=${timetableHistory.authorName}`"
+                  >
+                    {{ timetableHistory.authorName }}
                   </router-link>
                 </b>
               </span>
@@ -183,6 +177,18 @@ export default defineComponent({
         query: {
           [`search-${this.checkedHistoryMode}`]: this.station?.name || this.onlineScenery?.name
         }
+      });
+    },
+
+    parseCreatedDate(timetable: API.TimetableHistory.Data, locale: string) {
+      const createdDate =
+        timetable.createdAt > timetable.beginDate
+          ? new Date(timetable.beginDate)
+          : new Date(timetable.createdAt);
+
+      return createdDate.toLocaleString(locale == 'pl' ? 'pl-PL' : 'en-GB', {
+        timeStyle: 'short',
+        dateStyle: 'medium'
       });
     }
   },

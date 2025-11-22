@@ -566,7 +566,7 @@
     "timetable-terminatingAt": "ENDS HERE",
     "timetable-issued-date": "Issued",
     "timetable-issued-by": " by:",
-    "timetable-issued-for": " for driver:",
+    "timetable-issued-for": " for:",
     "dispatcher-rate": "Rate:",
     "dispatcher-status-changes": "Status changes:",
     "req-level": "all dispatcher levels | dispatcher level {lvl} required | dispatcher level {lvl} required",
