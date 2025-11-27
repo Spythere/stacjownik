@@ -13,6 +13,18 @@
         </div>
 
         <div class="topbar-links">
+          <button
+            class="btn--image lang-button"
+            @click="toggleLocales()"
+            data-tooltip-type="HtmlTooltip"
+            :data-tooltip-content="`<b>${$t('app.language-tooltip-content')}</b>`"
+          >
+            <img
+              :src="`/images/icon-${mainStore.currentLocale}.svg`"
+              alt="change language flag icon"
+            />
+          </button>
+
           <a
             class="a-button btn--image gnr-link"
             href="https://generator-td2.web.app/"
@@ -96,6 +108,10 @@ export default defineComponent({
   methods: {
     toggleDonationCard(value: boolean) {
       this.isDonationCardOpen = value;
+    },
+
+    toggleLocales() {
+      this.mainStore.changeLocale(this.mainStore.currentLocale == 'pl' ? 'en' : 'pl');
     }
   }
 });
@@ -147,6 +163,11 @@ button.donation-button {
   &:hover {
     background-size: 100%;
   }
+}
+
+button.lang-button {
+  padding: 0 0.5em;
+  background-color: #111;
 }
 
 a.pojazdownik-link {

@@ -9,7 +9,7 @@
 
     <Tooltip />
 
-    <AppHeader :current-lang="store.currentLocale" @change-lang="changeLang" />
+    <AppHeader />
 
     <main class="app_main">
       <router-view v-slot="{ Component }">
@@ -159,18 +159,11 @@ export default defineComponent({
       this.apiStore.connectToAPI();
     },
 
-    changeLang(lang: string) {
-      this.$i18n.locale = lang;
-      this.store.currentLocale = lang;
-
-      StorageManager.setStringValue('lang', lang);
-    },
-
     loadLang() {
       const storageLang = StorageManager.getStringValue('lang');
 
       if (storageLang) {
-        this.changeLang(storageLang);
+        this.store.changeLocale(storageLang);
         return;
       }
 
@@ -179,7 +172,7 @@ export default defineComponent({
       const naviLanguage = window.navigator.language.toString();
 
       if (!naviLanguage.startsWith('pl')) {
-        this.changeLang('en');
+        this.store.changeLocale('en');
         return;
       }
     },

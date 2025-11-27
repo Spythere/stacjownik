@@ -76,6 +76,7 @@
     "tooltip-driver-offline": "Driver is offline",
     "tooltip-scenery-offline": "Scenery is offline",
     "pojazdownik-link-content": "POJAZDOWNIK",
+    "language-tooltip-content": "JĘZYK / LANGUAGE",
     "gnr-link-content": "TRAIN ORDERS <br> GENERATOR"
   },
   "footer": {

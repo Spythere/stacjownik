@@ -1,18 +1,6 @@
 <template>
   <header class="app_header">
     <div class="header_container">
-      <div class="header_icons">
-        <span class="icons-top">
-          <img
-            src="/images/icon-pl.svg"
-            alt="icon-pl"
-            @click="changeLang('en')"
-            v-if="currentLang == 'pl'"
-          />
-          <img src="/images/icon-en.jpg" alt="icon-en" @click="changeLang('pl')" v-else />
-        </span>
-      </div>
-
       <div class="header_body">
         <StatusIndicator />
 
@@ -76,25 +64,10 @@ import RegionDropdown from '../Global/RegionDropdown.vue';
 export default defineComponent({
   components: { StatusIndicator, Clock, RegionDropdown },
 
-  emits: ['changeLang'],
-
-  props: {
-    currentLang: {
-      type: String,
-      required: true
-    }
-  },
-
   setup() {
     return {
       store: useMainStore()
     };
-  },
-
-  methods: {
-    changeLang(lang: string) {
-      this.$emit('changeLang', lang);
-    }
   },
 
   computed: {
@@ -141,7 +114,7 @@ export default defineComponent({
 
     border-radius: 0 0 1em 1em;
 
-    @include responsive.smallScreen{
+    @include responsive.smallScreen {
       position: relative;
       margin-top: 0.5em;
     }
@@ -180,17 +153,9 @@ export default defineComponent({
 
     padding: 0.5em;
 
-    @include responsive.smallScreen{
+    @include responsive.smallScreen {
       transform: translateX(85%);
     }
-  }
-}
-
-// ICONS
-.icons-top {
-  img {
-    width: 2.5em;
-    cursor: pointer;
   }
 }
 
