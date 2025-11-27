@@ -23,6 +23,7 @@ export interface StationJSONData {
   project: string;
   projectUrl: string;
   hash: string;
+  hidden: boolean;
 
   reqLevel: number;
 
