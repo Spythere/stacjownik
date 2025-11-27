@@ -305,10 +305,9 @@
       "minTwoWayCatenaryInt": "MIN. INTERNAL CATENARY DOUBLE TRACK ROUTES",
       "minTwoWayInt": "MIN. INTERNAL OTHER DOUBLE TRACK ROUTES"
     },
-    "sceneries-search": "SCENERY SEARCH:",
-    "sceneries-placeholder": "Enter scenery name...",
-    "authors-search": "SEARCH BY AUTHOR NAME (other filters apply):",
-    "authors-placeholder": "Enter the author nickname...",
+    "sceneries-placeholder": "Search for scenery",
+    "authors-placeholder": "Scenery author (other filters apply)",
+    "projects-placeholder": "Scenery project (other filters apply)",
     "search-button-title": "SEARCH",
     "minimum-hours-title": "SHOW ONLY SCENERIES UNTIL:",
     "now": "NOW",

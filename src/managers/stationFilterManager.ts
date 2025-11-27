@@ -68,7 +68,8 @@ export const initFilters = {
   minTwoWayCatenary: 0,
   minTwoWayInt: 0,
   minTwoWayCatenaryInt: 0,
-  authors: ''
+  authors: '',
+  projects: ''
 };
 
 export const sliderStates = [
@@ -83,7 +84,7 @@ export const sliderStates = [
   { id: 'minTwoWay', minRange: 0, maxRange: 5, step: 1 },
   { id: 'minTwoWayCatenary', minRange: 0, maxRange: 5, step: 1 },
   { id: 'minTwoWayInt', minRange: 0, maxRange: 5, step: 1 },
-  { id: 'minTwoWayCatenaryInt', minRange: 0, maxRange: 5, step: 1 },
+  { id: 'minTwoWayCatenaryInt', minRange: 0, maxRange: 5, step: 1 }
 ];
 
 export type StationFilter = keyof typeof initFilters;
@@ -97,7 +98,18 @@ export const filtersSections: Record<StationFilterSection, StationFilter[]> = {
   stationType: ['junction', 'nonJunction'],
   access: ['nonPublic', 'unavailable', 'abandoned'],
   addons: ['SUP', 'ASDEK', 'noSUP', 'noASDEK'],
-  control: ['SPK', 'SCS', 'SPE', 'SCS-SPK', 'SPK-M', 'SCS-M', 'mechanical', 'SPK-R', 'SCS-R', 'manual'],
+  control: [
+    'SPK',
+    'SCS',
+    'SPE',
+    'SCS-SPK',
+    'SPK-M',
+    'SCS-M',
+    'mechanical',
+    'SPK-R',
+    'SCS-R',
+    'manual'
+  ],
   blockades: ['SBL', 'PBL'],
   signals: ['modern', 'semaphores', 'mixed', 'historical']
 };
@@ -118,7 +130,7 @@ export function setupFilters(currentFilters: Record<string, any>) {
   });
 }
 
-export function getChangedFilters(currentFilters: Record<string, any>): string[] {  
+export function getChangedFilters(currentFilters: Record<string, any>): string[] {
   return (
     Object.keys(currentFilters).filter(
       (filterKey) =>

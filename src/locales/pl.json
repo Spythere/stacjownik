@@ -303,10 +303,9 @@
       "minTwoWayCatenaryInt": "SZLAKI DWUTOROWE ZELEKTR. WEWNĘTRZNE (MINIMUM)",
       "minTwoWayInt": "SZLAKI DWUTOROWE NIEZELEKTR. WEWNĘTRZNE (MINIMUM)"
     },
-    "sceneries-search": "WYSZUKAJ SCENERIĘ:",
-    "sceneries-placeholder": "Wpisz nazwę scenerii...",
-    "authors-search": "WYSZUKAJ AUTORA (uwzględnia inne filtry):",
-    "authors-placeholder": "Wpisz nick autora...",
+    "sceneries-placeholder": "Wyszukaj scenerię",
+    "authors-placeholder": "Autor scenerii (uwzględnia inne filtry)",
+    "projects-placeholder": "Projekt scenerii (uwzględnia inne filtry)",
     "search-button-title": "SZUKAJ",
     "minimum-hours-title": "POKAŻ TYLKO SCENERIE DOSTĘPNE MINIMUM DO:",
     "now": "TERAZ",
