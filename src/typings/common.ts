@@ -118,6 +118,7 @@ export interface StationGeneralInfo {
   availability: Availability;
   routes: StationRoutes;
   checkpoints: string[];
+  hidden: boolean;
 }
 
 export interface StationRoutes {

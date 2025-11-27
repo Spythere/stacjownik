@@ -289,8 +289,8 @@ export default defineComponent({
     projectsOptions() {
       return this.store.stationList
         .reduce((acc, station) => {
-          if (!station.generalInfo || !station.generalInfo.project) return acc;
-          if (!acc.includes(station.generalInfo.project)) acc.push(station.generalInfo.project);
+          if (!station.generalInfo || !station.generalInfo.project || station.generalInfo.hidden) return acc;
+          if (!acc.includes(station.generalInfo.project.trim())) acc.push(station.generalInfo.project.trim());
 
           return acc;
         }, [] as string[])
