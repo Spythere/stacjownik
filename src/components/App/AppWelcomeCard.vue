@@ -9,7 +9,7 @@
         </button>
 
         <button :data-active="$i18n.locale == 'en'" @click="store.changeLocale('en')">
-          <img src="/images/icon-en.jpg" alt="" width="45" />
+          <img src="/images/icon-en.svg" alt="" width="45" />
         </button>
       </div>
 
