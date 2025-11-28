@@ -9,7 +9,7 @@
       <img
         v-for="(thumbnailImage, imageIndex) in images"
         :src="`https://stacjownik.spythere.eu/static/thumbnails/${thumbnailImage}.png`"
-        height="60"
+        height="70"
         loading="lazy"
         data-tooltip-type="VehiclePreviewTooltip"
         :data-tooltip-content="vehicleString"
@@ -20,7 +20,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts">    
 import { computed, PropType, Ref, ref } from 'vue';
 
 const props = defineProps({
@@ -56,16 +56,17 @@ function onImageLoad() {
   transition: opacity 100ms ease-in-out;
 
   &[data-load-status='loading'] {
-    min-height: 60px;
+    min-height: 70px;
     min-width: 200px;
   }
 }
 
 .stock-text {
+  max-width: 90%;
   text-align: center;
   color: #aaa;
-  font-size: 0.9em;
-  margin-bottom: 0.25em;
+  font-size: 0.85em;
+  margin: 0 auto;
   padding: 0.25em 0;
 }
 

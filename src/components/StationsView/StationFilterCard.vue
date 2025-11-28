@@ -21,9 +21,7 @@
             <template v-else>{{ $t('filters.no-changed-filters') }}</template>
           </div>
 
-          <section class="card_sceneries-search">
-            <h3 class="section-header">{{ $t('filters.sceneries-search') }}</h3>
-
+          <section class="card_input-search">
             <datalist id="sceneries">
               <option
                 v-for="scenery in sortedStationList"
@@ -32,18 +30,60 @@
               ></option>
             </datalist>
 
-            <form action="javascript:void(0);" @submit="handleSceneriesInput">
-              <input
-                v-model="chosenSearchScenery"
-                id="scenery-search"
-                list="sceneries"
-                :placeholder="$t('filters.sceneries-placeholder')"
-                @focus="preventKeyDown = true"
-                @blur="preventKeyDown = false"
-              />
+            <input
+              v-model="chosenSearchScenery"
+              id="scenery-search"
+              list="sceneries"
+              :placeholder="$t('filters.sceneries-placeholder')"
+              @focus="preventKeyDown = true"
+              @blur="preventKeyDown = false"
+            />
 
-              <button class="btn--action">{{ $t('filters.search-button-title') }}</button>
-            </form>
+            <button class="btn--action" @click="handleSceneriesInput">
+              {{ $t('filters.search-button-title') }}
+            </button>
+          </section>
+
+          <section class="card_input-search authors">
+            <datalist id="authors" name="authors">
+              <option v-for="(author, i) in authorsOptions" :key="i" :value="author"></option>
+            </datalist>
+
+            <input
+              type="text"
+              id="author"
+              list="authors"
+              name="authors"
+              v-model="filters['authors']"
+              :placeholder="$t('filters.authors-placeholder')"
+              @focus="preventKeyDown = true"
+              @blur="preventKeyDown = false"
+            />
+
+            <button class="btn--action btn--image" @click="resetAuthorsInput">
+              <img src="/images/icon-exit.svg" alt="reset authors search" />
+            </button>
+          </section>
+
+          <section class="card_input-search">
+            <datalist id="projects" name="projects">
+              <option v-for="(project, i) in projectsOptions" :key="i" :value="project"></option>
+            </datalist>
+
+            <input
+              type="text"
+              id="projects"
+              list="projects"
+              name="projects"
+              v-model="filters['projects']"
+              :placeholder="$t('filters.projects-placeholder')"
+              @focus="preventKeyDown = true"
+              @blur="preventKeyDown = false"
+            />
+
+            <button class="btn--action btn--image" @click="resetProjectsInput">
+              <img src="/images/icon-exit.svg" alt="reset projects search" />
+            </button>
           </section>
 
           <section class="card_options">
@@ -95,29 +135,6 @@
               }}</span>
               <button class="btn--action" @click="addHour">+</button>
             </span>
-          </section>
-
-          <section class="card_authors-search">
-            <h3 class="section-header">{{ $t('filters.authors-search') }}</h3>
-
-            <datalist id="authors" name="authors">
-              <option v-for="(author, i) in authorsHint" :key="i" :value="author"></option>
-            </datalist>
-
-            <form action="javascript:void(0);" @submit="handleAuthorsInput">
-              <input
-                type="text"
-                id="author"
-                list="authors"
-                name="authors"
-                v-model="authors"
-                :placeholder="$t('filters.authors-placeholder')"
-                @focus="preventKeyDown = true"
-                @blur="preventKeyDown = false"
-              />
-
-              <button class="btn--action">{{ $t('filters.search-button-title') }}</button>
-            </form>
           </section>
 
           <section class="card_sliders">
@@ -200,7 +217,8 @@ export default defineComponent({
     sliderStates,
 
     minimumHours: 0,
-    authors: '',
+    authorSearchFilter: '',
+    projectSearchFilter: '',
 
     currentRegion: { id: '', value: '' },
 
@@ -255,17 +273,24 @@ export default defineComponent({
         .sort((s1, s2) => (s1.name > s2.name ? 1 : -1));
     },
 
-    currentOptionsActive() {
-      return true;
-    },
-
-    authorsHint() {
+    authorsOptions() {
       return this.store.stationList
         .reduce((acc, station) => {
           station.generalInfo?.authors?.forEach((author) => {
             if (author.trim() != '' && !acc.includes(author.toLocaleLowerCase()))
               acc.push(author.toLocaleLowerCase());
           });
+
+          return acc;
+        }, [] as string[])
+        .sort((a, b) => a.localeCompare(b));
+    },
+
+    projectsOptions() {
+      return this.store.stationList
+        .reduce((acc, station) => {
+          if (!station.generalInfo || !station.generalInfo.project || station.generalInfo.hidden) return acc;
+          if (!acc.includes(station.generalInfo.project.trim())) acc.push(station.generalInfo.project.trim());
 
           return acc;
         }, [] as string[])
@@ -294,8 +319,12 @@ export default defineComponent({
       this.scrollTop = (e.target as HTMLElement).scrollTop;
     },
 
-    handleAuthorsInput() {
-      this.filters['authors'] = this.authors;
+    resetAuthorsInput() {
+      this.filters['authors'] = this.authorSearchFilter;
+    },
+
+    resetProjectsInput() {
+      this.filters['projects'] = this.projectSearchFilter;
     },
 
     handleSceneriesInput() {
@@ -340,7 +369,7 @@ export default defineComponent({
 
       // Reset local model values
       this.minimumHours = 0;
-      this.authors = '';
+      this.authorSearchFilter = '';
 
       // Reset global filters
       Object.keys(this.filters).forEach((filterKey) => {
@@ -456,27 +485,23 @@ h3.section-header {
   }
 }
 
-.card_authors-search,
-.card_sceneries-search {
-  margin: 1em 0;
+.card_input-search {
   display: flex;
-  flex-direction: column;
   align-items: center;
+  gap: 0.5em;
 
-  form {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 0.5em;
-    width: 100%;
-    margin-top: 1em;
+  button {
+    height: 100%;
   }
 
   input {
-    width: 70%;
-    max-width: 400px;
+    width: 100%;
     padding: 0.5em;
-    outline: 1px solid white;
+    border: 1px solid #aaa;
+  }
+
+  &.authors {
+    margin-top: 1em;
   }
 }
 

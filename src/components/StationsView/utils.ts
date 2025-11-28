@@ -146,10 +146,11 @@ function filterSliderValues(filters: Record<string, any>, generalInfo: StationGe
 
 function filterInputValues(filters: Record<string, any>, generalInfo: StationGeneralInfo) {
   return (
-    filters['authors'].length > 3 &&
-    !generalInfo.authors
-      ?.map((a) => a.toLocaleLowerCase())
-      .includes(filters['authors'].toLocaleLowerCase())
+    (filters['authors'].length > 3 &&
+      !generalInfo.authors
+        ?.map((a) => a.toLocaleLowerCase())
+        .includes(filters['authors'].toLocaleLowerCase())) ||
+    (filters['projects'].length > 0 && generalInfo.project != filters['projects'])
   );
 }
 

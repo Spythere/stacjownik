@@ -11,6 +11,8 @@ import {
 } from '../typings/common';
 import { useApiStore } from './apiStore';
 import { MainStoreState } from './typings';
+import i18n from '../i18n';
+import StorageManager from '../managers/storageManager';
 
 const checkpointsTrains: Map<string, CheckpointTrain[]> = new Map();
 const unknownSceneryCheckpoints: Map<string, Set<string>> = new Map();
@@ -36,6 +38,15 @@ export const useMainStore = defineStore('mainStore', {
       modalLastClickedTarget: null,
       currentLocale: 'pl'
     }) as MainStoreState,
+
+  actions: {
+    changeLocale(localeName: string) {
+      (i18n.global.locale.value as any) = localeName;
+      this.currentLocale = localeName;
+
+      StorageManager.setStringValue('lang', localeName);
+    }
+  },
 
   getters: {
     trainList(): Train[] {

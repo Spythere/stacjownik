@@ -4,12 +4,12 @@
       <h1>{{ $t('welcome.title') }}</h1>
 
       <div class="language-select">
-        <button :data-active="$i18n.locale == 'pl'" @click="changeLang('pl')">
+        <button :data-active="$i18n.locale == 'pl'" @click="store.changeLocale('pl')">
           <img src="/images/icon-pl.svg" alt="" width="45" />
         </button>
 
-        <button :data-active="$i18n.locale == 'en'" @click="changeLang('en')">
-          <img src="/images/icon-en.jpg" alt="" width="45" />
+        <button :data-active="$i18n.locale == 'en'" @click="store.changeLocale('en')">
+          <img src="/images/icon-en.svg" alt="" width="45" />
         </button>
       </div>
 
@@ -114,12 +114,9 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
 import Card from '../Global/Card.vue';
 import { useMainStore } from '../../store/mainStore';
-import StorageManager from '../../managers/storageManager';
 
-const i18n = useI18n();
 const store = useMainStore();
 
 const emit = defineEmits(['toggleCard']);
@@ -129,13 +126,6 @@ const props = defineProps({
 
 function toggleCard(state: boolean) {
   emit('toggleCard', state);
-}
-
-function changeLang(localeName: string) {
-  i18n.locale.value = localeName;
-  store.currentLocale = localeName;
-
-  StorageManager.setStringValue('lang', localeName);
 }
 </script>
 

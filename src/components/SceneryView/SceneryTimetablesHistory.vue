@@ -40,36 +40,28 @@
               <span>
                 {{ $t('scenery.timetable-issued-date') }}
                 <b>
-                  {{
-                    localeDateTime(
-                      timetableHistory.createdAt > timetableHistory.beginDate
-                        ? timetableHistory.beginDate
-                        : timetableHistory.createdAt,
-                      $i18n.locale
-                    )
-                  }}
-                </b></span
-              >
-              <span v-if="timetableHistory.authorName">
-                {{ $t('scenery.timetable-issued-by') }}
-                <b>
-                  <router-link
-                    :to="`/journal/timetables?search-dispatcher=${timetableHistory.authorName}`"
-                  >
-                    {{ timetableHistory.authorName }}
-                  </router-link>
+                  {{ parseCreatedDate(timetableHistory, $i18n.locale) }}
                 </b>
               </span>
 
               <span>
                 {{ $t('scenery.timetable-issued-for') }}
-                <b>
-                  <router-link
-                    :to="`/journal/timetables?search-driver=${timetableHistory.driverName}`"
-                  >
-                    {{ timetableHistory.driverName }}
-                  </router-link>
-                </b>
+                <router-link
+                  class="journal-link"
+                  :to="`/journal/timetables?search-driver=${timetableHistory.driverName}`"
+                >
+                  {{ timetableHistory.driverName }}
+                </router-link>
+              </span>
+
+              <span v-if="timetableHistory.authorName">
+                {{ $t('scenery.timetable-issued-by') }}
+                <router-link
+                  class="journal-link"
+                  :to="`/journal/timetables?search-dispatcher=${timetableHistory.authorName}`"
+                >
+                  {{ timetableHistory.authorName }}
+                </router-link>
               </span>
             </div>
           </span>
@@ -106,7 +98,7 @@ import { useApiStore } from '../../store/apiStore';
 import routerMixin from '../../mixins/routerMixin';
 import { useMainStore } from '../../store/mainStore';
 
-const historyModeList = ['via', 'issuedFrom', 'terminatingAt'] as const;
+const historyModeList = ['includesScenery', 'issuedFrom', 'via', 'terminatingAt'] as const;
 type HistoryMode = (typeof historyModeList)[number];
 
 export default defineComponent({
@@ -131,12 +123,12 @@ export default defineComponent({
       dataStatus: Status.Data.Loading,
       DataStatus: Status.Data,
 
-      checkedHistoryMode: 'via' as HistoryMode
+      checkedHistoryMode: 'includesScenery' as HistoryMode
     };
   },
 
   async activated() {
-    this.checkedHistoryMode = 'via';
+    this.checkedHistoryMode = 'includesScenery';
     this.fetchAPIData();
   },
 
@@ -154,6 +146,7 @@ export default defineComponent({
       const requestFilters: Record<string, any> = {};
       requestFilters[this.checkedHistoryMode] = stationName.toString();
       requestFilters.countLimit = 30;
+      requestFilters['returnType'] = 'short';
 
       try {
         const response: API.TimetableHistory.Response = await (
@@ -182,6 +175,18 @@ export default defineComponent({
         query: {
           [`search-${this.checkedHistoryMode}`]: this.station?.name || this.onlineScenery?.name
         }
+      });
+    },
+
+    parseCreatedDate(timetable: API.TimetableHistory.Data, locale: string) {
+      const createdDate =
+        timetable.createdAt > timetable.beginDate
+          ? new Date(timetable.beginDate)
+          : new Date(timetable.createdAt);
+
+      return createdDate.toLocaleString(locale == 'pl' ? 'pl-PL' : 'en-GB', {
+        timeStyle: 'short',
+        dateStyle: 'medium'
       });
     }
   },
@@ -217,7 +222,15 @@ export default defineComponent({
 
   button {
     padding: 0.35em;
-    min-width: 120px;
+  }
+}
+
+.journal-link {
+  font-weight: bold;
+  color: #eee;
+
+  &:hover {
+    color: var(--clr-primary);
   }
 }
 
