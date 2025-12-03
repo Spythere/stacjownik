@@ -39,14 +39,5 @@ export default defineConfig({
       },
       devOptions: { enabled: true, suppressWarnings: true }
     })
-  ],
-  build: {
-    rollupOptions: {
-      output: {
-        entryFileNames: 'app-[name].js',
-        assetFileNames: 'app-[name].css',
-        chunkFileNames: 'chunk-[name].js'
-      }
-    }
-  }
+  ]
 });
