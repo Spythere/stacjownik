@@ -16,5 +16,5 @@ jobs:
             echo "${{ secrets.VPS_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
       - name: Send files to the web server and remove old assets
         run: | 
-            ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} -p 2022 "rm -r /var/www/stacjownik/assets"
+            ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} -p 2022 "rm -rf /var/www/stacjownik/assets"
             scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa -P 2022 -r ./dist/* ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/stacjownik
