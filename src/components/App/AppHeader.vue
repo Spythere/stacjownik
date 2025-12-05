@@ -84,7 +84,7 @@ export default defineComponent({
     isChristmas() {
       const date = new Date();
 
-      return date.getUTCMonth() == 11 && date.getUTCDate() >= 20 && date.getUTCDate() <= 31;
+      return date.getUTCMonth() == 11 && date.getUTCDate() >= 6 && date.getUTCDate() <= 31;
     }
   }
 });
