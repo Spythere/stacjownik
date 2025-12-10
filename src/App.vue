@@ -71,7 +71,7 @@ export default defineComponent({
     isUpdateCardOpen: false,
     isWelcomeCardOpen: false,
 
-    isOnProductionHost: location.hostname == 'stacjownik-td2.web.app'
+    isOnProductionHost: /(stacjownik-td2)(\.web\.app|\.spythere\.eu)/.test(location.hostname)
   }),
 
   created() {
