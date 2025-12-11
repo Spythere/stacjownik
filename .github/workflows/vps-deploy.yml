@@ -1,8 +1,13 @@
 name: Build & Deploy to VPS
-'on':
+
+on:
   push:
     branches:
       - master
+
+env:
+  PROJECT_NAME: stacjownik
+
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest

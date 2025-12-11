@@ -170,6 +170,7 @@ export default defineComponent({
     },
 
     handleMigrateInfo() {
+      if (location.hostname != 'stacjownik-td2.web.app') return;
       if (StorageManager.getBooleanValue(MIGRATE_INFO_CARD_SEEN_KEY) === true) return;
 
       this.isMigrateInfoCardOpen = true;
