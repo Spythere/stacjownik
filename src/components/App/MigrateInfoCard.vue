@@ -17,9 +17,9 @@
         </p>
 
         <p>
-          <a class="new-link" href="https://stacjownik-td2.spythere.eu/"
-            >https://stacjownik-td2.spythere.eu/</a
-          >
+          <a class="new-link" href="https://stacjownik-td2.spythere.eu/" target="_blank">
+            https://stacjownik-td2.spythere.eu/
+          </a>
         </p>
 
         <p>
@@ -66,7 +66,7 @@ function toggleCard() {
 <style lang="scss" scoped>
 .body-content {
   max-width: 800px;
-  min-height: 300px;
+  min-height: 500px;
   padding: 1em 0.5em;
 
   display: grid;

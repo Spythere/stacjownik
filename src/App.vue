@@ -201,7 +201,7 @@ export default defineComponent({
 
     closeMigrateInfoCard() {
       this.isMigrateInfoCardOpen = false;
-      // StorageManager.setBooleanValue(MIGRATE_INFO_CARD_SEEN_KEY, true);
+      StorageManager.setBooleanValue(MIGRATE_INFO_CARD_SEEN_KEY, true);
     }
   }
 });

@@ -85,10 +85,4 @@ export default defineComponent({
 
   overflow: auto;
 }
-
-@include responsive.smallScreen{
-  .card {
-    align-items: flex-start;
-  }
-}
 </style>
