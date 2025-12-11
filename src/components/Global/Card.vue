@@ -81,6 +81,7 @@ export default defineComponent({
 
   background-color: #1a1a1a;
   box-shadow: 0 0 15px 10px #0e0e0e;
+  border-radius: 1em;
 
   overflow: auto;
 }
