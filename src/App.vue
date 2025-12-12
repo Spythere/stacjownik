@@ -7,6 +7,11 @@
 
     <AppWelcomeCard :is-card-open="isWelcomeCardOpen" @toggle-card="closeWelcomeCard" />
 
+    <MigrateInfoCard
+      :is-open="store.isMigrateInfoCardOpen"
+      @toggle-card="closeMigrateInfoCard"
+    ></MigrateInfoCard>
+
     <Tooltip />
 
     <AppHeader />
@@ -47,9 +52,11 @@ import UpdateCard from './components/App/UpdateCard.vue';
 import StorageManager from './managers/storageManager';
 import AppFooter from './components/App/AppFooter.vue';
 import AppWelcomeCard from './components/App/AppWelcomeCard.vue';
+import MigrateInfoCard from './components/App/MigrateInfoCard.vue';
 
 const STORAGE_VERSION_KEY = 'app_version';
 const WELCOME_CARD_SEEN_KEY = 'welcome_card_seen';
+const MIGRATE_INFO_CARD_SEEN_KEY = 'migrate_info_card_seen';
 
 export default defineComponent({
   components: {
@@ -59,6 +66,7 @@ export default defineComponent({
     AppFooter,
     UpdateCard,
     AppWelcomeCard,
+    MigrateInfoCard,
     Tooltip
   },
 
@@ -71,7 +79,7 @@ export default defineComponent({
     isUpdateCardOpen: false,
     isWelcomeCardOpen: false,
 
-    isOnProductionHost: location.hostname == 'stacjownik-td2.web.app'
+    isOnProductionHost: /(stacjownik-td2)(\.web\.app|\.spythere\.eu)/.test(location.hostname)
   }),
 
   created() {
@@ -91,6 +99,7 @@ export default defineComponent({
       this.setupOfflineHandling();
       this.checkAppVersion();
       this.handleQueries();
+      this.handleMigrateInfo();
 
       this.apiStore.setupAPIData();
     },
@@ -100,6 +109,10 @@ export default defineComponent({
 
       if (query.get('welcomeCard') == '1') {
         this.isWelcomeCardOpen = true;
+      }
+
+      if (query.get('migrateCard') == '1') {
+        this.store.isMigrateInfoCardOpen = true;
       }
     },
 
@@ -159,6 +172,13 @@ export default defineComponent({
       this.apiStore.connectToAPI();
     },
 
+    handleMigrateInfo() {
+      if (location.hostname != 'stacjownik-td2.web.app') return;
+      if (StorageManager.getBooleanValue(MIGRATE_INFO_CARD_SEEN_KEY) === true) return;
+
+      this.store.isMigrateInfoCardOpen = true;
+    },
+
     loadLang() {
       const storageLang = StorageManager.getStringValue('lang');
 
@@ -180,6 +200,11 @@ export default defineComponent({
     closeWelcomeCard() {
       this.isWelcomeCardOpen = false;
       StorageManager.setBooleanValue(WELCOME_CARD_SEEN_KEY, true);
+    },
+
+    closeMigrateInfoCard() {
+      this.store.isMigrateInfoCardOpen = false;
+      StorageManager.setBooleanValue(MIGRATE_INFO_CARD_SEEN_KEY, true);
     }
   }
 });

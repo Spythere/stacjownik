@@ -13,6 +13,7 @@ export interface MainStoreState {
   chosenModalTrainId?: string;
   modalLastClickedTarget: EventTarget | null;
   currentLocale: string;
+  isMigrateInfoCardOpen: boolean;
 }
 
 export interface StationJSONData {

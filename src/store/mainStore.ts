@@ -36,7 +36,9 @@ export const useMainStore = defineStore('mainStore', {
       chosenModalTrainId: undefined,
 
       modalLastClickedTarget: null,
-      currentLocale: 'pl'
+      currentLocale: 'pl',
+
+      isMigrateInfoCardOpen: false
     }) as MainStoreState,
 
   actions: {
