@@ -23,6 +23,13 @@
     "bottom-text": "Miłego korzystania\n~Spythere",
     "button-confirm": "Zacznij korzystać z aplikacji!"
   },
+  "migrate-info": {
+    "header-text": "Uwaga!",
+    "paragraph-1-html": "Ze względu na coraz większe zainteresowanie Stacjownikiem oraz innymi aplikacjami mojego autorstwa <b>z dniem 1 stycznia 2026r. Stacjownik zostaje <u>permamentnie przeniesiony</u> na nową dedykowaną domenę:</b>",
+    "paragraph-2-link-text": "https://stacjownik-td2.spythere.eu/",
+    "paragraph-3-text": "Obecna strona nie będzie otrzymywać już przyszłych aktualizacji, a po Nowym Roku będzie jedynie przenosić na powyższy adres.",
+    "paragraph-4-html": "<i>\"Po co psujesz? Przecież było dobrze tyle czasu!\"</i> <br /> Zmiana podyktowana jest głównie wzrostem zainteresowania stroną i przekraczaniem darmowego limitu obecnego hostingu Google'a, który wymusza płatność za każde użycie serwisu ponad określoną wartość (lub w przeciwnym wypadku blokuje do niego dostęp). Przenosząc stronę na dedykowaną domenę (która jest już wykupiona i utrzymywana dzięki pomocy <span class=\"text--donator\">Wspierających</span>), pozbędę się niepotrzebnego wydatku dla wielkiej korporacji, która w każdej chwili może mi wyłączyć aplikację."
+  },
   "donations": {
     "button-title": "GROSZA DAJ",
     "header": "Grosza daj Stacjownikowi!",

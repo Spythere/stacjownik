@@ -3,40 +3,23 @@
     <div class="body-content">
       <div class="content-top">
         <img src="/images/icon-loading.svg" alt="loading" height="125" />
-        <h1>Uwaga!</h1>
+        <h1>{{ t('migrate-info.header-text') }}</h1>
       </div>
 
       <div>
-        <p>
-          Ze względu na coraz większe zainteresowanie Stacjownikiem oraz innymi aplikacjami mojego
-          autorstwa
-          <b>
-            z dniem 1 stycznia 2026r. Stacjownik zostaje <u>permamentnie przeniesiony</u> na nową
-            dedykowaną domenę:
-          </b>
-        </p>
+        <p v-html="t('migrate-info.paragraph-1-html')"></p>
 
         <p>
           <a class="new-link" href="https://stacjownik-td2.spythere.eu/" target="_blank">
-            https://stacjownik-td2.spythere.eu/
+            {{ t('migrate-info.paragraph-2-link-text') }}
           </a>
         </p>
 
         <p>
-          Obecna strona nie będzie otrzymywać już przyszłych aktualizacji, a po Nowym Roku będzie
-          jedynie przenosić na powyższy adres.
+          {{ t('migrate-info.paragraph-3-text') }}
         </p>
 
-        <p class="info-bottom">
-          <i>"Po co psujesz? Przecież było dobrze tyle czasu!"</i>
-          <br />
-          Zmiana podyktowana jest głównie wzrostem zainteresowania stroną i przekraczaniem darmowego
-          limitu obecnego hostingu Google'a, który wymusza płatność za każde użycie serwisu ponad
-          określoną wartość (lub w przeciwnym wypadku blokuje do niego dostęp). Przenosząc stronę na
-          dedykowaną domenę (która jest już wykupiona i utrzymywana dzięki pomocy
-          <span class="text--donator">Wspierających</span>), pozbędę się niepotrzebnego wydatku dla
-          wielkiej korporacji, która w każdej chwili może mi wyłączyć aplikację.
-        </p>
+        <p class="info-bottom" v-html="t('migrate-info.paragraph-4-html')"></p>
       </div>
 
       <div class="content-actions">
@@ -47,7 +30,10 @@
 </template>
 
 <script lang="ts" setup>
+import { useI18n } from 'vue-i18n';
 import Card from '../Global/Card.vue';
+
+const { t } = useI18n();
 
 defineProps({
   isOpen: {

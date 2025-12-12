@@ -111,6 +111,10 @@ export default defineComponent({
       if (query.get('welcomeCard') == '1') {
         this.isWelcomeCardOpen = true;
       }
+
+      if (query.get('migrateCard') == '1') {
+        this.isMigrateInfoCardOpen = true;
+      }
     },
 
     async checkAppVersion() {
