@@ -14,6 +14,15 @@
 
         <div class="topbar-links">
           <button
+            class="btn--image migrate-info-button"
+            @click="toggleMigrateInfoCard(true)"
+            data-tooltip-type="HtmlTooltip"
+            :data-tooltip-content="`<b>${$t('migrate-info.tooltip-content')}</b>`"
+          >
+            <img :src="`/images/icon-alert-triangle.svg`" alt="show migrate info card"  />
+          </button>
+
+          <button
             class="btn--image lang-button"
             @click="toggleLocales()"
             data-tooltip-type="HtmlTooltip"
@@ -110,6 +119,10 @@ export default defineComponent({
       this.isDonationCardOpen = value;
     },
 
+    toggleMigrateInfoCard(value: boolean) {
+      this.mainStore.isMigrateInfoCardOpen = value;
+    },
+
     toggleLocales() {
       this.mainStore.changeLocale(this.mainStore.currentLocale == 'pl' ? 'en' : 'pl');
     }
@@ -138,6 +151,7 @@ export default defineComponent({
   display: flex;
   gap: 0.5em;
   justify-content: space-between;
+  overflow-x: auto;
 
   position: relative;
   margin-bottom: 0.5em;
@@ -168,6 +182,11 @@ button.donation-button {
 button.lang-button {
   padding: 0 0.5em;
   background-color: #111;
+}
+
+button.migrate-info-button {
+  padding: 0 0.5em;
+  background-color: var(--clr-primary);
 }
 
 a.pojazdownik-link {

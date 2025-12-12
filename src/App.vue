@@ -8,7 +8,7 @@
     <AppWelcomeCard :is-card-open="isWelcomeCardOpen" @toggle-card="closeWelcomeCard" />
 
     <MigrateInfoCard
-      :is-open="isMigrateInfoCardOpen"
+      :is-open="store.isMigrateInfoCardOpen"
       @toggle-card="closeMigrateInfoCard"
     ></MigrateInfoCard>
 
@@ -78,7 +78,6 @@ export default defineComponent({
 
     isUpdateCardOpen: false,
     isWelcomeCardOpen: false,
-    isMigrateInfoCardOpen: false,
 
     isOnProductionHost: /(stacjownik-td2)(\.web\.app|\.spythere\.eu)/.test(location.hostname)
   }),
@@ -113,7 +112,7 @@ export default defineComponent({
       }
 
       if (query.get('migrateCard') == '1') {
-        this.isMigrateInfoCardOpen = true;
+        this.store.isMigrateInfoCardOpen = true;
       }
     },
 
@@ -177,7 +176,7 @@ export default defineComponent({
       if (location.hostname != 'stacjownik-td2.web.app') return;
       if (StorageManager.getBooleanValue(MIGRATE_INFO_CARD_SEEN_KEY) === true) return;
 
-      this.isMigrateInfoCardOpen = true;
+      this.store.isMigrateInfoCardOpen = true;
     },
 
     loadLang() {
@@ -204,7 +203,7 @@ export default defineComponent({
     },
 
     closeMigrateInfoCard() {
-      this.isMigrateInfoCardOpen = false;
+      this.store.isMigrateInfoCardOpen = false;
       StorageManager.setBooleanValue(MIGRATE_INFO_CARD_SEEN_KEY, true);
     }
   }
