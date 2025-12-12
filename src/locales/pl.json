@@ -24,6 +24,7 @@
     "button-confirm": "Zacznij korzystać z aplikacji!"
   },
   "migrate-info": {
+    "tooltip-content": "Informacja o migracji\nstrony Stacjownika!",
     "header-text": "Uwaga!",
     "paragraph-1-html": "Ze względu na coraz większe zainteresowanie Stacjownikiem oraz innymi aplikacjami mojego autorstwa <b>z dniem 1 stycznia 2026r. Stacjownik zostaje <u>permamentnie przeniesiony</u> na nową dedykowaną domenę:</b>",
     "paragraph-2-link-text": "https://stacjownik-td2.spythere.eu/",

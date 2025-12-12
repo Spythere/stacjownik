@@ -24,12 +24,13 @@
     "button-confirm": "Start using the app!"
   },
   "migrate-info": {
+    "tooltip-content": "Information about migration of\nStacjownik site!",
     "header-text": "Attention!",
     "paragraph-1-html": "Due to the growing interest in Stacjownik and other applications I have made, <b>as of January 1, 2026, Stacjownik will be <u>permanently moved</u> to a new dedicated domain:</b>",
     "paragraph-2-link-text": "https://stacjownik-td2.spythere.eu/",
     "paragraph-3-text": "This website will no longer receive future updates and after the New Year it will only redirect to the address above.",
     "paragraph-4-italic-text": "\"Why are you messing this up? It's been fine for so long!\"",
-    "paragraph-4-html": "<i>\"Why are you messing this up? It's been fine for so long!\"</i> <br /> The change is mainly caused by the growing website interest and exceeding the free limit plan of the current Google hosting, which forces additional payment for each use of the service above a certain threshold (or otherwise blocks access to it). By moving the site to a dedicated domain (which has already been purchased and is maintained with the financial help of <span class=\"text--donator\">Supporters</span>), I will get rid of unnecessary expenses for a large corporation that can shut down my application at any given time."
+    "paragraph-4-html": "<i>\"Why are you messing this up? It's been fine for so long!\"</i> <br /> The change is mainly caused by the growing website interest and exceeding the free limit plan of the current Google hosting, which forces additional fees for each use of the service above a certain threshold (or otherwise blocks access to it). By moving the site to a dedicated domain (which has already been purchased and is maintained with the financial help of <span class=\"text--donator\">Supporters</span>), I will get rid of unnecessary expenses for a large corporation that can shut down my application at any given time."
   },
   "donations": {
     "button-title": "TOSS A COIN",
