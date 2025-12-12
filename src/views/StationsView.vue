@@ -14,12 +14,13 @@
 
         <div class="topbar-links">
           <button
+            v-if="isOldStacjownikDomain"
             class="btn--image migrate-info-button"
             @click="toggleMigrateInfoCard(true)"
             data-tooltip-type="HtmlTooltip"
             :data-tooltip-content="`<b>${$t('migrate-info.tooltip-content')}</b>`"
           >
-            <img :src="`/images/icon-alert-triangle.svg`" alt="show migrate info card"  />
+            <img :src="`/images/icon-alert-triangle.svg`" alt="show migrate info card" />
           </button>
 
           <button
@@ -125,6 +126,12 @@ export default defineComponent({
 
     toggleLocales() {
       this.mainStore.changeLocale(this.mainStore.currentLocale == 'pl' ? 'en' : 'pl');
+    }
+  },
+
+  computed: {
+    isOldStacjownikDomain() {
+      return location.hostname == 'stacjownik-td2.web.app';
     }
   }
 });
