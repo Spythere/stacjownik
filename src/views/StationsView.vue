@@ -156,12 +156,12 @@ export default defineComponent({
 
 .stations-topbar {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5em;
   justify-content: space-between;
-  overflow-x: auto;
 
-  position: relative;
   margin-bottom: 0.5em;
+  position: relative;
 
   & > div {
     display: flex;
