@@ -35,6 +35,7 @@
               id="scenery-search"
               list="sceneries"
               :placeholder="$t('filters.sceneries-placeholder')"
+              @change="handleSceneriesInput"
               @focus="preventKeyDown = true"
               @blur="preventKeyDown = false"
             />
@@ -258,6 +259,8 @@ export default defineComponent({
     authorsOptions() {
       return this.store.stationList
         .reduce((acc, station) => {
+          if (station.generalInfo?.hidden === true) return acc;
+
           station.generalInfo?.authors?.forEach((author) => {
             if (author.trim() != '' && !acc.includes(author.toLocaleLowerCase()))
               acc.push(author.toLocaleLowerCase());
