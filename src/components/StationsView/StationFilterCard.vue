@@ -45,20 +45,12 @@
           </section>
 
           <section class="card_input-search authors">
-            <datalist id="authors" name="authors">
-              <option v-for="(author, i) in authorsOptions" :key="i" :value="author"></option>
-            </datalist>
-
-            <input
-              type="text"
-              id="author"
-              list="authors"
-              name="authors"
-              v-model="filters['authors']"
-              :placeholder="$t('filters.authors-placeholder')"
-              @focus="preventKeyDown = true"
-              @blur="preventKeyDown = false"
-            />
+            <select id="author" name="authors" v-model="filters['authors']">
+              <option value="">{{ $t('filters.authors-placeholder') }}</option>
+              <option v-for="(author, i) in authorsOptions" :key="i" :value="author">
+                {{ author }}
+              </option>
+            </select>
 
             <button class="btn--action btn--image" @click="resetAuthorsInput">
               <img src="/images/icon-exit.svg" alt="reset authors search" />
@@ -66,20 +58,12 @@
           </section>
 
           <section class="card_input-search">
-            <datalist id="projects" name="projects">
-              <option v-for="(project, i) in projectsOptions" :key="i" :value="project"></option>
-            </datalist>
-
-            <input
-              type="text"
-              id="projects"
-              list="projects"
-              name="projects"
-              v-model="filters['projects']"
-              :placeholder="$t('filters.projects-placeholder')"
-              @focus="preventKeyDown = true"
-              @blur="preventKeyDown = false"
-            />
+            <select type="text" id="projects" name="projects" v-model="filters['projects']">
+              <option value="">{{ $t('filters.projects-placeholder') }}</option>
+              <option v-for="(project, i) in projectsOptions" :key="i" :value="project">
+                {{ project }}
+              </option>
+            </select>
 
             <button class="btn--action btn--image" @click="resetProjectsInput">
               <img src="/images/icon-exit.svg" alt="reset projects search" />
@@ -217,8 +201,6 @@ export default defineComponent({
     sliderStates,
 
     minimumHours: 0,
-    authorSearchFilter: '',
-    projectSearchFilter: '',
 
     currentRegion: { id: '', value: '' },
 
@@ -289,8 +271,10 @@ export default defineComponent({
     projectsOptions() {
       return this.store.stationList
         .reduce((acc, station) => {
-          if (!station.generalInfo || !station.generalInfo.project || station.generalInfo.hidden) return acc;
-          if (!acc.includes(station.generalInfo.project.trim())) acc.push(station.generalInfo.project.trim());
+          if (!station.generalInfo || !station.generalInfo.project || station.generalInfo.hidden)
+            return acc;
+          if (!acc.includes(station.generalInfo.project.trim()))
+            acc.push(station.generalInfo.project.trim());
 
           return acc;
         }, [] as string[])
@@ -320,11 +304,11 @@ export default defineComponent({
     },
 
     resetAuthorsInput() {
-      this.filters['authors'] = this.authorSearchFilter;
+      this.filters['authors'] = '';
     },
 
     resetProjectsInput() {
-      this.filters['projects'] = this.projectSearchFilter;
+      this.filters['projects'] = '';
     },
 
     handleSceneriesInput() {
@@ -369,7 +353,6 @@ export default defineComponent({
 
       // Reset local model values
       this.minimumHours = 0;
-      this.authorSearchFilter = '';
 
       // Reset global filters
       Object.keys(this.filters).forEach((filterKey) => {
@@ -494,7 +477,8 @@ h3.section-header {
     height: 100%;
   }
 
-  input {
+  input,
+  select {
     width: 100%;
     padding: 0.5em;
     border: 1px solid #aaa;
