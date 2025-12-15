@@ -69,7 +69,8 @@
     "confirm": "ROGER THAT!",
     "no-data": "No data about the latest app update has been found",
     "info-1": "This changelog will be available to see once again after clicking the version number in the footer",
-    "info-2": "The full app changelog available on <a href='https://github.com/Spythere/stacjownik' target='_blank'>the project's GitHub</a>"
+    "info-2": "The full app changelog available on {link}",
+    "info-2-link-text": "the project's GitHub page"
   },
   "app": {
     "sceneries": "SCENERIES",

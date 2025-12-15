@@ -68,7 +68,8 @@
     "confirm": "PRZYJĄŁEM!",
     "no-data": "Nie znaleziono informacji o ostatnich zmianach w aplikacji",
     "info-1": "Ten changelog będzie zawsze dostępny po kliknięciu numeru wersji w stopce strony",
-    "info-2": "Pełny changelog dostępny na <a href='https://github.com/Spythere/stacjownik' target='_blank'>GitHubie projektu</a>"
+    "info-2": "Pełny changelog dostępny na {link}",
+    "info-2-link-text": "GitHubie projektu"
   },
   "app": {
     "sceneries": "SCENERIE",
