@@ -45,7 +45,21 @@
             </button>
           </section>
 
-          <section class="card_input-search authors">
+          <section class="card_input-search">
+            <input
+              v-model="filters['lines']"
+              id="line-numbers-search"
+              :placeholder="$t('filters.line-numbers-placeholder')"
+              @focus="preventKeyDown = true"
+              @blur="preventKeyDown = false"
+            />
+
+            <button class="btn--action btn--image" @click="resetLineNumbersInput">
+              <img src="/images/icon-exit.svg" alt="reset line numbers search" />
+            </button>
+          </section>
+
+          <section class="card_input-search">
             <select id="author" name="authors" v-model="filters['authors']">
               <option value="">{{ $t('filters.authors-placeholder') }}</option>
               <option v-for="(author, i) in authorsOptions" :key="i" :value="author">
@@ -59,7 +73,7 @@
           </section>
 
           <section class="card_input-search">
-            <select type="text" id="projects" name="projects" v-model="filters['projects']">
+            <select id="projects" name="projects" v-model="filters['projects']">
               <option value="">{{ $t('filters.projects-placeholder') }}</option>
               <option v-for="(project, i) in projectsOptions" :key="i" :value="project">
                 {{ project }}
@@ -77,7 +91,7 @@
               v-for="(sectionFilters, sectionKey) in filtersSections"
               :key="sectionKey"
             >
-              <h3 class="text--primary">
+              <h3 class="section-header">
                 <span class="active-indicator" v-if="!areSectionFiltersDefault(sectionKey)"></span>
                 {{ $t(`filters.sections.${sectionKey}`) }}
                 <button @click="resetSectionFilters(sectionKey)">RESET</button>
@@ -107,7 +121,7 @@
           </section>
 
           <section class="card_timestamp">
-            <h3 class="section-header">{{ $t('filters.minimum-hours-title') }}</h3>
+            <h3 class="hours-section-header">{{ $t('filters.minimum-hours-title') }}</h3>
 
             <span class="clock">
               <button class="btn--action" @click="subHour">-</button>
@@ -314,6 +328,10 @@ export default defineComponent({
       this.filters['projects'] = '';
     },
 
+    resetLineNumbersInput() {
+      this.filters['lines'] = '';
+    },
+
     handleSceneriesInput() {
       const chosenStation = this.store.stationList.find(
         ({ name }) => name == this.chosenSearchScenery
@@ -399,6 +417,14 @@ export default defineComponent({
 @use '../../styles/animations';
 
 h3.section-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.25em;
+  gap: 0.5em;
+  color: var(--clr-primary);
+}
+
+h3.hours-section-header {
   text-align: center;
   margin: 0.5em 0;
 }
@@ -486,10 +512,6 @@ h3.section-header {
     padding: 0.5em;
     border: 1px solid #aaa;
   }
-
-  &.authors {
-    margin-top: 1em;
-  }
 }
 
 .section-filters {
@@ -560,12 +582,6 @@ h3.section-header {
 }
 
 .option-section h3 {
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.25em;
-
-  gap: 0.5em;
-
   button {
     padding: 0.15em;
     color: coral;

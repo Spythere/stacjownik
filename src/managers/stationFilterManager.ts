@@ -69,7 +69,8 @@ export const initFilters = {
   minTwoWayInt: 0,
   minTwoWayCatenaryInt: 0,
   authors: '',
-  projects: ''
+  projects: '',
+  lines: ''
 };
 
 export const sliderStates = [

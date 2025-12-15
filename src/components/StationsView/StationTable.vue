@@ -364,7 +364,7 @@ export default defineComponent({
 
     const filters = inject('StationsView_filters') as Record<string, any>;
     const activeSorter = inject('StationsView_activeSorter') as ActiveSorter;
-
+    
     const filteredStationList = computed(() =>
       mainStore.allStationInfo
         .filter((station) => filterStations(station, filters))

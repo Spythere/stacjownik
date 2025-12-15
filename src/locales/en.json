@@ -317,8 +317,9 @@
       "minTwoWayInt": "MIN. INTERNAL OTHER DOUBLE TRACK ROUTES"
     },
     "sceneries-placeholder": "Search for scenery",
-    "authors-placeholder": "Scenery author (other filters apply)",
-    "projects-placeholder": "Scenery project (other filters apply)",
+    "line-numbers-placeholder": "Line numbers (separated by commas)",
+    "authors-placeholder": "Scenery author",
+    "projects-placeholder": "Scenery project",
     "search-button-title": "SEARCH",
     "minimum-hours-title": "SHOW ONLY SCENERIES UNTIL:",
     "now": "NOW",

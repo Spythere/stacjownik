@@ -107,7 +107,7 @@ export interface StationGeneralInfo {
   abbr: string;
   hash?: string;
   reqLevel: number;
-  lines: string;
+  lines?: string;
   project: string;
   projectUrl?: string;
   signalType: string;
