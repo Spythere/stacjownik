@@ -200,6 +200,7 @@
     "search-dispatcher": "Dispatcher name",
     "search-station": "Scenery name / #",
     "search-author": "Timetable author name",
+    "search-includesScenery": "Includes scenery name",
     "search-issuedFrom": "Issuing scenery name",
     "search-via": "Via scenery name",
     "search-terminatingAt": "Terminating scenery name",

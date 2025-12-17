@@ -196,6 +196,7 @@
     "search-dispatcher": "Nick dyżurnego",
     "search-station": "Nazwa scenerii / #",
     "search-author": "Nick autora rozkładu jazdy",
+    "search-includesScenery": "Zawiera scenerię",
     "search-issuedFrom": "Sceneria początkowa",
     "search-via": "Przez scenerię",
     "search-terminatingAt": "Sceneria końcowa",

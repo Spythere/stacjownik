@@ -132,6 +132,7 @@ interface TimetablesQueryParams {
   issuedFrom?: string;
   terminatingAt?: string;
   via?: string;
+  includesScenery?: string;
 
   countFrom?: number;
   countLimit?: number;
@@ -213,6 +214,7 @@ export default defineComponent({
       'search-train': '',
       'search-driver': '',
       'search-dispatcher': '',
+      'search-includesScenery': '',
       'search-issuedFrom': '',
       'search-via': '',
       'search-terminatingAt': '',
@@ -356,6 +358,7 @@ export default defineComponent({
       const trainNo = this.searchersValues['search-train'].trim() || undefined;
       const authorName = this.searchersValues['search-dispatcher'].trim() || undefined;
       const dateFrom = this.searchersValues['search-date-from'].trim() || undefined;
+      const includesScenery = this.searchersValues['search-includesScenery'].trim() || undefined;
       const issuedFrom = this.searchersValues['search-issuedFrom'].trim() || undefined;
       const via = this.searchersValues['search-via'].trim() || undefined;
       const terminatingAt = this.searchersValues['search-terminatingAt'].trim() || undefined;
@@ -432,6 +435,7 @@ export default defineComponent({
       queryParams['authorName'] = authorName;
       queryParams['dateFrom'] = dateFrom;
       queryParams['dateTo'] = dateTo;
+      queryParams['includesScenery'] = includesScenery;
       queryParams['issuedFrom'] = issuedFrom;
       queryParams['terminatingAt'] = terminatingAt;
       queryParams['via'] = via;
