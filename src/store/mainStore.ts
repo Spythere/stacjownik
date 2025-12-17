@@ -38,7 +38,8 @@ export const useMainStore = defineStore('mainStore', {
       modalLastClickedTarget: null,
       currentLocale: 'pl',
 
-      isMigrateInfoCardOpen: false
+      isMigrateInfoCardOpen: false,
+      pinnedStationNames: []
     }) as MainStoreState,
 
   actions: {
@@ -431,7 +432,6 @@ export const useMainStore = defineStore('mainStore', {
 
         return {
           name: scenery.name,
-
           generalInfo: {
             ...scenery,
             authors: scenery.authors?.split(',').map((a) => a.trim()),
@@ -446,7 +446,7 @@ export const useMainStore = defineStore('mainStore', {
     },
 
     allStationInfo(): Station[] {
-      const onlineUnsavedStations = this.activeSceneryList
+      const onlineUnsavedStations: Station[] = this.activeSceneryList
         .filter(
           (scenery) =>
             this.stationList.findIndex((st) => st.name == scenery.name) == -1 &&

@@ -14,7 +14,7 @@
             class="header-text"
             :class="headerName"
           >
-            <span class="header_wrapper">
+            <div class="header_wrapper">
               <div v-html="$t(`sceneries.headers.${headerName}`)"></div>
 
               <img
@@ -23,7 +23,7 @@
                 :src="`/images/icon-arrow-${activeSorter.dir == 1 ? 'asc' : 'desc'}.svg`"
                 alt="sort icon"
               />
-            </span>
+            </div>
           </th>
 
           <th
@@ -52,14 +52,14 @@
       </thead>
 
       <tbody>
-        <router-link
+        <tr
           v-for="station in filteredStationList"
           class="a-row"
-          role="row"
+          tabindex="0"
           :key="station.name"
           @click.right.prevent="openForumSite($event, station.generalInfo?.url)"
-          @keydown.space.prevent="openForumSite($event, station.generalInfo?.url)"
-          :to="getSceneryRoute(station)"
+          @click="getSceneryRoute(station)"
+          @keydown.enter="getSceneryRoute(station)"
         >
           <td class="station-name" :class="station.generalInfo?.availability">
             <b v-if="station.generalInfo?.project" style="color: salmon">{{
@@ -314,7 +314,7 @@
           >
             {{ station.onlineInfo?.scheduledTrainCount.confirmed ?? '-' }}
           </td>
-        </router-link>
+        </tr>
       </tbody>
     </table>
 
@@ -364,7 +364,7 @@ export default defineComponent({
 
     const filters = inject('StationsView_filters') as Record<string, any>;
     const activeSorter = inject('StationsView_activeSorter') as ActiveSorter;
-    
+
     const filteredStationList = computed(() =>
       mainStore.allStationInfo
         .filter((station) => filterStations(station, filters))
@@ -384,15 +384,13 @@ export default defineComponent({
 
   methods: {
     getSceneryRoute(station: Station) {
-      // TODO: Hide tooltips when navigating away
-
-      return {
+      this.$router.push({
         name: 'SceneryView',
         query: {
           station: station.name,
           region: this.$route.query.region || undefined
         }
-      };
+      });
     },
 
     openDonationCard(e: Event) {
@@ -459,78 +457,78 @@ table {
   width: 100%;
   min-width: 1250px;
   white-space: wrap;
+}
 
-  thead {
-    position: sticky;
-    top: 0;
+thead {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+thead tr {
+  background-color: var(--clr-bg3);
+}
+
+thead th {
+  background-color: var(--clr-bg3);
+  white-space: pre-wrap;
+  padding: 0.5em 0.25em;
+
+  cursor: pointer;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+
+  &.station {
+    width: 12em;
   }
 
-  thead tr {
-    background-color: var(--clr-bg3);
+  &.min-lvl {
+    width: 4em;
   }
 
-  thead th {
-    &.station {
-      width: 12em;
-    }
+  &.status {
+    width: 10em;
+  }
 
-    &.min-lvl {
-      width: 4em;
-    }
+  &.dispatcher {
+    width: 12em;
+  }
 
-    &.status {
-      width: 10em;
-    }
+  &.dispatcher-lvl {
+    width: 6em;
+  }
 
-    &.dispatcher {
-      width: 12em;
-    }
+  &.routes-double,
+  &.routes-single {
+    width: 7em;
+  }
 
-    &.dispatcher-lvl {
-      width: 6em;
-    }
+  &.general {
+    width: 11em;
+  }
 
-    &.routes-double,
-    &.routes-single {
-      width: 7em;
-    }
+  &.header-image {
+    width: 3.5em;
 
-    &.general {
-      width: 11em;
-    }
-
-    &.header-image {
-      width: 3.5em;
-
-      &.user {
-        width: 5em;
-      }
-    }
-
-    padding: 0.5em 0.25em;
-    background-color: var(--clr-bg3);
-    white-space: pre-wrap;
-
-    cursor: pointer;
-    user-select: none;
-    -moz-user-select: none;
-    -webkit-user-select: none;
-
-    span {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      img {
-        width: 1.5em;
-        vertical-align: middle;
-      }
+    &.user {
+      width: 5em;
     }
   }
 }
 
-tr,
-.a-row {
+thead th .header_wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 1.5em;
+    vertical-align: middle;
+  }
+}
+
+tbody tr {
   background-color: $rowCol;
   vertical-align: middle;
 
@@ -550,6 +548,7 @@ tr,
     cursor: pointer;
     overflow: hidden;
     text-overflow: ellipsis;
+    height: 2.5em;
 
     &.inactive {
       opacity: 0.2;
