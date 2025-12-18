@@ -57,20 +57,8 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @use '../../styles/responsive';
-@use '../../styles/badge';
-
-h3.section-header {
-  margin: 0.5em 0;
-  padding: 0.3em;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  font-size: 1.2em;
-}
 
 .info-lists {
   display: flex;
