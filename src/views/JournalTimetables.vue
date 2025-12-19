@@ -376,8 +376,6 @@ export default defineComponent({
 
         dateFromISO = dateFrom.toISOString();
         dateToISO = dateTo.toISOString();
-
-        console.log(dateFromISO, dateToISO);
       }
 
       const queryParams: TimetablesQueryParams = {};
