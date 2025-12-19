@@ -1,6 +1,6 @@
 <template>
   <Card :is-open="isUpdateCardOpen" @toggle-card="toggleCard(false)">
-    <div class="content">
+    <div class="content" tabindex="0" ref="content">
       <h1 style="margin-bottom: 0.5em">🚀 {{ $t('update.title') }}</h1>
 
       <div class="features-body" v-if="htmlChangelog != ''" v-html="htmlChangelog"></div>
@@ -13,7 +13,14 @@
       <p class="bottom-info">
         {{ $t('update.info-1') }}
         <br />
-        <span v-html="$t('update.info-2')"></span>
+
+        <i18n-t keypath="update.info-2">
+          <template v-slot:link>
+            <a href="https://github.com/Spythere/stacjownik" target="_blank">{{
+              $t('update.info-2-link-text')
+            }}</a>
+          </template>
+        </i18n-t>
       </p>
     </div>
   </Card>
@@ -51,7 +58,7 @@ export default defineComponent({
   watch: {
     isUpdateCardOpen(val: boolean) {
       this.$nextTick(() => {
-        if (val) (this.$refs['confirm-btn'] as HTMLElement).focus();
+        if (val) (this.$refs['content'] as HTMLElement).focus();
       });
     }
   },
@@ -83,9 +90,13 @@ export default defineComponent({
   border-bottom: 1px solid #aaa;
 }
 
+::v-deep(h3) {
+  padding: 0.5em 0;
+}
+
 ::v-deep(ul) {
-  list-style: initial;
-  padding: 1em;
+  list-style: disc;
+  padding: 0 1.5em;
   line-height: 1.5em;
 }
 
@@ -117,5 +128,6 @@ p.bottom-info {
 
 a {
   text-decoration: underline;
+  color: white;
 }
 </style>

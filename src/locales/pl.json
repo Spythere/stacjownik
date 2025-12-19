@@ -68,7 +68,8 @@
     "confirm": "PRZYJĄŁEM!",
     "no-data": "Nie znaleziono informacji o ostatnich zmianach w aplikacji",
     "info-1": "Ten changelog będzie zawsze dostępny po kliknięciu numeru wersji w stopce strony",
-    "info-2": "Pełny changelog dostępny na <a href='https://github.com/Spythere/stacjownik' target='_blank'>GitHubie projektu</a>"
+    "info-2": "Pełny changelog dostępny na {link}",
+    "info-2-link-text": "GitHubie projektu"
   },
   "app": {
     "sceneries": "SCENERIE",
@@ -195,6 +196,7 @@
     "search-dispatcher": "Nick dyżurnego",
     "search-station": "Nazwa scenerii / #",
     "search-author": "Nick autora rozkładu jazdy",
+    "search-includesScenery": "Zawiera scenerię",
     "search-issuedFrom": "Sceneria początkowa",
     "search-via": "Przez scenerię",
     "search-terminatingAt": "Sceneria końcowa",
@@ -313,8 +315,9 @@
       "minTwoWayInt": "SZLAKI DWUTOROWE NIEZELEKTR. WEWNĘTRZNE (MINIMUM)"
     },
     "sceneries-placeholder": "Wyszukaj scenerię",
-    "authors-placeholder": "Autor scenerii (uwzględnia inne filtry)",
-    "projects-placeholder": "Projekt scenerii (uwzględnia inne filtry)",
+    "line-numbers-placeholder": "Numery linii (oddzielone przecinkami)",
+    "authors-placeholder": "Autor scenerii",
+    "projects-placeholder": "Projekt scenerii",
     "search-button-title": "SZUKAJ",
     "minimum-hours-title": "POKAŻ TYLKO SCENERIE DOSTĘPNE MINIMUM DO:",
     "now": "TERAZ",

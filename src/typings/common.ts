@@ -95,9 +95,7 @@ export interface TrainTimetableData {
 
 export interface Station {
   name: string;
-
   generalInfo?: StationGeneralInfo;
-
   onlineInfo?: ActiveScenery;
 }
 
@@ -107,7 +105,7 @@ export interface StationGeneralInfo {
   abbr: string;
   hash?: string;
   reqLevel: number;
-  lines: string;
+  lines?: string;
   project: string;
   projectUrl?: string;
   signalType: string;

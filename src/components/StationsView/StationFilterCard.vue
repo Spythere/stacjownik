@@ -35,6 +35,7 @@
               id="scenery-search"
               list="sceneries"
               :placeholder="$t('filters.sceneries-placeholder')"
+              @change="handleSceneriesInput"
               @focus="preventKeyDown = true"
               @blur="preventKeyDown = false"
             />
@@ -44,21 +45,27 @@
             </button>
           </section>
 
-          <section class="card_input-search authors">
-            <datalist id="authors" name="authors">
-              <option v-for="(author, i) in authorsOptions" :key="i" :value="author"></option>
-            </datalist>
-
+          <section class="card_input-search">
             <input
-              type="text"
-              id="author"
-              list="authors"
-              name="authors"
-              v-model="filters['authors']"
-              :placeholder="$t('filters.authors-placeholder')"
+              v-model="filters['lines']"
+              id="line-numbers-search"
+              :placeholder="$t('filters.line-numbers-placeholder')"
               @focus="preventKeyDown = true"
               @blur="preventKeyDown = false"
             />
+
+            <button class="btn--action btn--image" @click="resetLineNumbersInput">
+              <img src="/images/icon-exit.svg" alt="reset line numbers search" />
+            </button>
+          </section>
+
+          <section class="card_input-search">
+            <select id="author" name="authors" v-model="filters['authors']">
+              <option value="">{{ $t('filters.authors-placeholder') }}</option>
+              <option v-for="(author, i) in authorsOptions" :key="i" :value="author">
+                {{ author }}
+              </option>
+            </select>
 
             <button class="btn--action btn--image" @click="resetAuthorsInput">
               <img src="/images/icon-exit.svg" alt="reset authors search" />
@@ -66,20 +73,12 @@
           </section>
 
           <section class="card_input-search">
-            <datalist id="projects" name="projects">
-              <option v-for="(project, i) in projectsOptions" :key="i" :value="project"></option>
-            </datalist>
-
-            <input
-              type="text"
-              id="projects"
-              list="projects"
-              name="projects"
-              v-model="filters['projects']"
-              :placeholder="$t('filters.projects-placeholder')"
-              @focus="preventKeyDown = true"
-              @blur="preventKeyDown = false"
-            />
+            <select id="projects" name="projects" v-model="filters['projects']">
+              <option value="">{{ $t('filters.projects-placeholder') }}</option>
+              <option v-for="(project, i) in projectsOptions" :key="i" :value="project">
+                {{ project }}
+              </option>
+            </select>
 
             <button class="btn--action btn--image" @click="resetProjectsInput">
               <img src="/images/icon-exit.svg" alt="reset projects search" />
@@ -92,7 +91,7 @@
               v-for="(sectionFilters, sectionKey) in filtersSections"
               :key="sectionKey"
             >
-              <h3 class="text--primary">
+              <h3 class="section-header">
                 <span class="active-indicator" v-if="!areSectionFiltersDefault(sectionKey)"></span>
                 {{ $t(`filters.sections.${sectionKey}`) }}
                 <button @click="resetSectionFilters(sectionKey)">RESET</button>
@@ -122,7 +121,7 @@
           </section>
 
           <section class="card_timestamp">
-            <h3 class="section-header">{{ $t('filters.minimum-hours-title') }}</h3>
+            <h3 class="hours-section-header">{{ $t('filters.minimum-hours-title') }}</h3>
 
             <span class="clock">
               <button class="btn--action" @click="subHour">-</button>
@@ -217,8 +216,6 @@ export default defineComponent({
     sliderStates,
 
     minimumHours: 0,
-    authorSearchFilter: '',
-    projectSearchFilter: '',
 
     currentRegion: { id: '', value: '' },
 
@@ -276,6 +273,8 @@ export default defineComponent({
     authorsOptions() {
       return this.store.stationList
         .reduce((acc, station) => {
+          if (station.generalInfo?.hidden === true) return acc;
+
           station.generalInfo?.authors?.forEach((author) => {
             if (author.trim() != '' && !acc.includes(author.toLocaleLowerCase()))
               acc.push(author.toLocaleLowerCase());
@@ -289,8 +288,10 @@ export default defineComponent({
     projectsOptions() {
       return this.store.stationList
         .reduce((acc, station) => {
-          if (!station.generalInfo || !station.generalInfo.project || station.generalInfo.hidden) return acc;
-          if (!acc.includes(station.generalInfo.project.trim())) acc.push(station.generalInfo.project.trim());
+          if (!station.generalInfo || !station.generalInfo.project || station.generalInfo.hidden)
+            return acc;
+          if (!acc.includes(station.generalInfo.project.trim()))
+            acc.push(station.generalInfo.project.trim());
 
           return acc;
         }, [] as string[])
@@ -320,11 +321,15 @@ export default defineComponent({
     },
 
     resetAuthorsInput() {
-      this.filters['authors'] = this.authorSearchFilter;
+      this.filters['authors'] = '';
     },
 
     resetProjectsInput() {
-      this.filters['projects'] = this.projectSearchFilter;
+      this.filters['projects'] = '';
+    },
+
+    resetLineNumbersInput() {
+      this.filters['lines'] = '';
     },
 
     handleSceneriesInput() {
@@ -369,7 +374,6 @@ export default defineComponent({
 
       // Reset local model values
       this.minimumHours = 0;
-      this.authorSearchFilter = '';
 
       // Reset global filters
       Object.keys(this.filters).forEach((filterKey) => {
@@ -413,6 +417,14 @@ export default defineComponent({
 @use '../../styles/animations';
 
 h3.section-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.25em;
+  gap: 0.5em;
+  color: var(--clr-primary);
+}
+
+h3.hours-section-header {
   text-align: center;
   margin: 0.5em 0;
 }
@@ -494,14 +506,11 @@ h3.section-header {
     height: 100%;
   }
 
-  input {
+  input,
+  select {
     width: 100%;
     padding: 0.5em;
     border: 1px solid #aaa;
-  }
-
-  &.authors {
-    margin-top: 1em;
   }
 }
 
@@ -573,12 +582,6 @@ h3.section-header {
 }
 
 .option-section h3 {
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.25em;
-
-  gap: 0.5em;
-
   button {
     padding: 0.15em;
     color: coral;

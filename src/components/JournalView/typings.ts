@@ -10,6 +10,7 @@ export namespace Journal {
     | 'search-train'
     | 'search-date-from'
     | 'search-dispatcher'
+    | 'search-includesScenery'
     | 'search-issuedFrom'
     | 'search-terminatingAt'
     | 'search-via'

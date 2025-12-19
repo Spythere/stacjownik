@@ -272,7 +272,7 @@ export default defineComponent({
       this.scrollDataLoaded = true;
     },
 
-    async fetchHistoryData() {      
+    async fetchHistoryData() {
       const queryParams: DispatchersQueryParams = {};
 
       const dispatcherName = this.searchersValues['search-dispatcher'].trim() || undefined;
@@ -280,9 +280,25 @@ export default defineComponent({
       const dateFromString = this.searchersValues['search-date-from'].trim() || undefined;
       const dateToString = this.searchersValues['search-date-to'].trim() || undefined;
 
+      let dateFromISO: string | undefined = undefined;
+      let dateToISO: string | undefined = undefined;
+
+      if (dateFromString) {
+        let dateFrom = new Date(dateFromString);
+        dateFrom.setMinutes(dateFrom.getMinutes() + dateFrom.getTimezoneOffset());
+        dateFromISO = dateFrom.toISOString();
+      }
+
+      if (dateToString) {
+        let dateTo = new Date(dateToString);
+        dateTo.setMinutes(dateTo.getMinutes() + dateTo.getTimezoneOffset());
+        dateToISO = dateTo.toISOString();
+      }
+
       queryParams['dispatcherName'] = dispatcherName;
-      queryParams['dateFrom'] = dateFromString;
-      queryParams['dateTo'] = dateToString ? `${dateToString}T23:00:00` : undefined;
+
+      queryParams['dateFrom'] = dateFromISO;
+      queryParams['dateTo'] = dateToISO;
 
       queryParams['countLimit'] = 30;
 

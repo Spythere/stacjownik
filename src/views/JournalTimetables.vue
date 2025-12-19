@@ -132,6 +132,7 @@ interface TimetablesQueryParams {
   issuedFrom?: string;
   terminatingAt?: string;
   via?: string;
+  includesScenery?: string;
 
   countFrom?: number;
   countLimit?: number;
@@ -213,6 +214,7 @@ export default defineComponent({
       'search-train': '',
       'search-driver': '',
       'search-dispatcher': '',
+      'search-includesScenery': '',
       'search-issuedFrom': '',
       'search-via': '',
       'search-terminatingAt': '',
@@ -355,19 +357,25 @@ export default defineComponent({
       const driverName = this.searchersValues['search-driver'].trim() || undefined;
       const trainNo = this.searchersValues['search-train'].trim() || undefined;
       const authorName = this.searchersValues['search-dispatcher'].trim() || undefined;
-      const dateFrom = this.searchersValues['search-date-from'].trim() || undefined;
+      const dateFromString = this.searchersValues['search-date-from'].trim() || undefined;
+      const includesScenery = this.searchersValues['search-includesScenery'].trim() || undefined;
       const issuedFrom = this.searchersValues['search-issuedFrom'].trim() || undefined;
       const via = this.searchersValues['search-via'].trim() || undefined;
       const terminatingAt = this.searchersValues['search-terminatingAt'].trim() || undefined;
       const categoryCode = this.searchersValues['select-categoryCode'].trim() || undefined;
 
-      let dateTo: string | undefined = undefined;
+      let dateFromISO: string | undefined = undefined;
+      let dateToISO: string | undefined = undefined;
 
-      if (dateFrom) {
-        const d = new Date(dateFrom);
-        d.setDate(d.getDate() + 1);
+      if (dateFromString) {
+        let dateFrom = new Date(dateFromString);
+        dateFrom.setMinutes(dateFrom.getMinutes() + dateFrom.getTimezoneOffset());
 
-        dateTo = d.toISOString().split('T')[0];
+        let dateTo = new Date(dateFrom);
+        dateTo.setDate(dateTo.getDate() + 1);
+
+        dateFromISO = dateFrom.toISOString();
+        dateToISO = dateTo.toISOString();
       }
 
       const queryParams: TimetablesQueryParams = {};
@@ -430,8 +438,9 @@ export default defineComponent({
       queryParams['countLimit'] = undefined;
 
       queryParams['authorName'] = authorName;
-      queryParams['dateFrom'] = dateFrom;
-      queryParams['dateTo'] = dateTo;
+      queryParams['dateFrom'] = dateFromISO;
+      queryParams['dateTo'] = dateToISO;
+      queryParams['includesScenery'] = includesScenery;
       queryParams['issuedFrom'] = issuedFrom;
       queryParams['terminatingAt'] = terminatingAt;
       queryParams['via'] = via;

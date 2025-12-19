@@ -89,7 +89,8 @@ select {
   font-size: 1em;
 }
 
-input {
+input,
+select {
   background: none;
   color: white;
   font-size: 1em;
@@ -357,4 +358,23 @@ a.a-button {
   height: 2px;
   background-color: #aaa;
   margin: 0.5em 0;
+}
+
+.g-checkbox {
+  position: relative;
+  display: inline-block;
+
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+  }
 }

@@ -1,6 +1,6 @@
 <template>
   <section class="info-user-list">
-    <h3 class="user-header section-header">
+    <h3 class="user-header">
       <img src="/images/icon-user.svg" alt="Users icon" />
       &nbsp;{{ $t('scenery.users') }} &nbsp;
       <span class="text--primary">{{ onlineScenery?.stationTrains?.length || 0 }}</span
@@ -111,12 +111,25 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@use '../../../styles/badge';
+
 $no-timetable: #aaa;
 $departed: springgreen;
 $stopped: #ffa600;
 $online: gold;
 $terminated: salmon;
 $disconnected: slategray;
+
+h3.user-header {
+  margin: 0.5em 0;
+  padding: 0.3em;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 1.2em;
+}
 
 .info-user-list {
   width: 100%;
