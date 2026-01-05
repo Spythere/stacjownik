@@ -18,9 +18,9 @@
       <span v-if="vehicleCargo">({{ vehicleCargo.id }})</span>
     </div>
 
-    <div class="vehicle-props" v-if="vehicleData">
-      {{ vehicleData.group.speed }}km/h &bull; {{ vehicleData.group.length }}m &bull;
-      {{ (vehicleData.group.weight / 1000).toFixed(1) }}t
+    <div class="vehicle-props" v-if="vehicleGroup">
+      {{ vehicleGroup.speed }}km/h &bull; {{ vehicleGroup.length }}m &bull;
+      {{ (vehicleGroup.weight / 1000).toFixed(1) }}t
       <span v-if="vehicleCargo">(+{{ (vehicleCargo.weight / 1000).toFixed(1) }}t)</span>
     </div>
   </div>
@@ -73,12 +73,18 @@ export default defineComponent({
       return this.tooltipStore.content.split(':')[0];
     },
 
-    vehicleData() {
-      return this.apiStore.vehiclesData?.find((v) => v.name == this.vehicleName);
+    vehicleGroup() {
+      if (!this.apiStore.vehiclesData) return null;
+
+      const vehicle = this.apiStore.vehiclesData.vehicles.find((v) => v.name == this.vehicleName);
+
+      if (!vehicle) return null;
+
+      return this.apiStore.vehiclesData.vehicleGroups.find((g) => g.id == vehicle?.vehicleGroupsId);
     },
 
     vehicleCargo() {
-      const x = this.vehicleData?.group.cargoTypes?.find(
+      const x = this.vehicleGroup?.cargoTypes?.find(
         (c) => c.id == this.tooltipStore.content.split(':')[1]
       );
 

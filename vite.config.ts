@@ -28,7 +28,7 @@ export default defineConfig({
         runtimeCaching: [
           {
             urlPattern:
-              /^https:\/\/stacjownik.spythere.eu\/api\/(getVehicles|getDonators|getSceneries)/i,
+              /^https:\/\/stacjownik.spythere.eu\/api\/(getVehiclesData|getDonators|getSceneries)/i,
             handler: 'NetworkFirst',
             options: {
               cacheName: 'stacjownik-api-cache',
