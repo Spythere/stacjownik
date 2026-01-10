@@ -86,7 +86,8 @@ export default defineComponent({
 }
 
 ::v-deep(h2) {
-  padding: 0.25em 0;
+  margin-top: 1em;
+  padding: 0.5em 0;
   border-bottom: 1px solid #aaa;
 }
 
@@ -116,7 +117,7 @@ export default defineComponent({
 }
 
 button {
-  margin: 0 auto;
+  margin: 0.5em auto;
   padding: 0.5em 0.75em;
   font-size: 1.1em;
 }
