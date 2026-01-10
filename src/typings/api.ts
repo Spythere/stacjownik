@@ -1,4 +1,4 @@
-import { Status, VehicleData } from './common';
+import { Status, Vehicle, VehicleGroup } from './common';
 
 export enum APIDataStatus {
   OK = 'OK',
@@ -329,8 +329,51 @@ export namespace API {
     export type Response = string[];
   }
 
-  export namespace Vehicles {
-    export type Response = VehicleData[];
+  export namespace VehiclesData {
+    export interface VehicleObject {
+      id: number;
+      name: string;
+      type: string;
+      cabinName: string | null;
+      restrictions: Record<string, any> | null;
+      vehicleGroupsId: number;
+    }
+
+    export interface VehicleGroupObject {
+      id: number;
+      name: string;
+      speed: number;
+      speedLoaded?: number;
+      speedLoco?: number;
+      length: number;
+      weight: number;
+      cargoTypes: VehicleCargo[] | null;
+
+      locoProps: {
+        coldStart: boolean;
+        doubleManned: boolean;
+      } | null;
+
+      massSpeeds: VehicleGroupMassSpeeds | null;
+    }
+
+    export interface VehicleGroupMassSpeeds {
+      passenger: Record<string, number> | null;
+      cargo: Record<string, number> | null;
+      none: number | null;
+    }
+
+    export interface VehicleCargo {
+      id: string;
+      weight: number;
+    }
+
+    export interface Data {
+      vehicles: VehicleObject[];
+      vehicleGroups: VehicleGroupObject[];
+    }
+
+    export type Response = Data;
   }
 }
 

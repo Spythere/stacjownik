@@ -1,6 +1,6 @@
 <template>
   <section class="info-spawn-list">
-    <h3 class="spawn-header section-header">
+    <h3 class="spawn-header">
       <img src="/images/icon-spawn.svg" alt="Open spawns icon" />
       &nbsp;{{ $t('scenery.spawns') }} &nbsp;
       <span class="text--primary">{{ onlineScenery?.spawns.length || '0' }}</span>
@@ -53,8 +53,21 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@use '../../../styles/badge';
+
 ul {
   position: relative;
+}
+
+h3.spawn-header {
+  margin: 0.5em 0;
+  padding: 0.3em;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 1.2em;
 }
 
 .spawns-anim {

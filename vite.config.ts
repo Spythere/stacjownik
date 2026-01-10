@@ -4,7 +4,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 import path from 'path';
 
 export default defineConfig({
-  server: { port: 5123, open: true },
+  server: { port: 5123, open: false },
   preview: { port: 4001, open: false },
   publicDir: 'public',
   css: {
@@ -28,7 +28,7 @@ export default defineConfig({
         runtimeCaching: [
           {
             urlPattern:
-              /^https:\/\/stacjownik.spythere.eu\/api\/(getVehicles|getDonators|getSceneries)/i,
+              /^https:\/\/stacjownik.spythere.eu\/api\/(getVehiclesData|getDonators|getSceneries)/i,
             handler: 'NetworkFirst',
             options: {
               cacheName: 'stacjownik-api-cache',

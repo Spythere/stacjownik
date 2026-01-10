@@ -13,7 +13,7 @@ export const useApiStore = defineStore('apiStore', {
     },
 
     activeData: undefined as API.ActiveData.Response | undefined,
-    vehiclesData: undefined as API.Vehicles.Response | undefined,
+    vehiclesData: undefined as API.VehiclesData.Response | undefined,
 
     donatorsData: [] as API.Donators.Response,
     sceneryData: [] as StationJSONData[],
@@ -111,7 +111,7 @@ export const useApiStore = defineStore('apiStore', {
 
     async fetchVehiclesInfo() {
       try {
-        const response = await this.client!.get<API.Vehicles.Response>('api/getVehicles');
+        const response = await this.client!.get<API.VehiclesData.Response>('api/getVehiclesData');
 
         this.vehiclesData = response.data;
         this.dataStatuses.vehicles = response.data ? Status.Data.Loaded : Status.Data.Warning;

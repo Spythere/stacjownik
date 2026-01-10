@@ -69,7 +69,8 @@
     "confirm": "ROGER THAT!",
     "no-data": "No data about the latest app update has been found",
     "info-1": "This changelog will be available to see once again after clicking the version number in the footer",
-    "info-2": "The full app changelog available on <a href='https://github.com/Spythere/stacjownik' target='_blank'>the project's GitHub</a>"
+    "info-2": "The full app changelog available on {link}",
+    "info-2-link-text": "the project's GitHub page"
   },
   "app": {
     "sceneries": "SCENERIES",
@@ -199,6 +200,7 @@
     "search-dispatcher": "Dispatcher name",
     "search-station": "Scenery name / #",
     "search-author": "Timetable author name",
+    "search-includesScenery": "Includes scenery name",
     "search-issuedFrom": "Issuing scenery name",
     "search-via": "Via scenery name",
     "search-terminatingAt": "Terminating scenery name",
@@ -316,8 +318,9 @@
       "minTwoWayInt": "MIN. INTERNAL OTHER DOUBLE TRACK ROUTES"
     },
     "sceneries-placeholder": "Search for scenery",
-    "authors-placeholder": "Scenery author (other filters apply)",
-    "projects-placeholder": "Scenery project (other filters apply)",
+    "line-numbers-placeholder": "Line numbers (separated by commas)",
+    "authors-placeholder": "Scenery author",
+    "projects-placeholder": "Scenery project",
     "search-button-title": "SEARCH",
     "minimum-hours-title": "SHOW ONLY SCENERIES UNTIL:",
     "now": "NOW",

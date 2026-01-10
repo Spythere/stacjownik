@@ -122,19 +122,27 @@ export default defineComponent({
 
       // Check the whole consist speed limit
       const vehicleMaxSpeed = stockList.reduce((acc, stockName, i) => {
+        if (!this.apiStore.vehiclesData) return acc;
+
         const [vehicleName, vehicleCargo] = stockName.split(':');
 
-        const vehicleData = this.apiStore.vehiclesData?.find((v) => v.name == vehicleName);
+        const vehicle = this.apiStore.vehiclesData.vehicles.find((v) => v.name == vehicleName);
 
-        if (!vehicleData) return acc;
+        if (!vehicle) return acc;
 
-        let vehicleSpeed = vehicleData.group.speed;
+        const vehicleGroup = this.apiStore.vehiclesData.vehicleGroups.find(
+          (g) => g.id == vehicle.vehicleGroupsId
+        );
 
-        if (vehicleData.type == 'wagon-freight') {
+        if (!vehicleGroup) return acc;
+
+        let vehicleSpeed = vehicleGroup.speed;
+
+        if (vehicle.type == 'wagon-freight') {
           isPassenger = false;
 
-          if (vehicleCargo !== undefined && vehicleData.group.speedLoaded) {
-            vehicleSpeed = vehicleData.group.speedLoaded;
+          if (vehicleCargo !== undefined && vehicleGroup.speedLoaded) {
+            vehicleSpeed = vehicleGroup.speedLoaded;
           }
         }
 
@@ -143,14 +151,23 @@ export default defineComponent({
 
       // Check the head vehicle speed limit
       const headLocoName = stockList[0];
-      const headLocoVehicleData = this.apiStore.vehiclesData?.find((v) => v.name == headLocoName);
+
+      const headLocoVehicle = this.apiStore.vehiclesData!.vehicles.find(
+        (v) => v.name == headLocoName
+      );
+
+      const headLocoVehicleGroup = this.apiStore.vehiclesData!.vehicleGroups.find(
+        (g) => g.id == headLocoVehicle?.vehicleGroupsId
+      );
+
+      if (!headLocoVehicleGroup) return vehicleMaxSpeed;
 
       // Omit speed check for head vehicle if there's no data for it
-      if (!headLocoName || !headLocoVehicleData || !headLocoVehicleData.group.massSpeeds)
+      if (!headLocoName || !headLocoVehicle || !headLocoVehicleGroup.massSpeeds)
         return vehicleMaxSpeed;
 
       const massSpeeds =
-        headLocoVehicleData.group.massSpeeds[
+        headLocoVehicleGroup.massSpeeds[
           stockList.length == 1 ? 'none' : isPassenger ? 'passenger' : 'cargo'
         ];
 

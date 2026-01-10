@@ -151,6 +151,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 @use '../../styles/responsive';
 @use '../../styles/scenery-history-table';
+@use '../../styles/badge';
 
 .scenery-dispatchers-history {
   height: 100%;

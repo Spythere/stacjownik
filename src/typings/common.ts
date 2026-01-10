@@ -1,5 +1,6 @@
 import { RouteLocationRaw } from 'vue-router';
 import { StationJSONData } from '../store/typings';
+import { API } from './api';
 
 export type Availability = 'default' | 'unavailable' | 'nonPublic' | 'abandoned' | 'nonDefault';
 export type ScenerySpawnType = 'passenger' | 'freight' | 'loco' | 'all';
@@ -95,9 +96,7 @@ export interface TrainTimetableData {
 
 export interface Station {
   name: string;
-
   generalInfo?: StationGeneralInfo;
-
   onlineInfo?: ActiveScenery;
 }
 
@@ -107,7 +106,7 @@ export interface StationGeneralInfo {
   abbr: string;
   hash?: string;
   reqLevel: number;
-  lines: string;
+  lines?: string;
   project: string;
   projectUrl?: string;
   signalType: string;
@@ -171,7 +170,7 @@ export interface ActiveScenery {
     confirmed: number;
     unconfirmed: number;
   };
-  missingCheckpoints: string[];  
+  missingCheckpoints: string[];
 }
 
 export interface ScenerySpawn {
@@ -216,45 +215,8 @@ export interface CheckpointTrain {
 }
 
 // Vehicles Data
-
-export interface VehicleData {
-  id: number;
-  name: string;
-  type: string;
-  cabinName: string | null;
-  restrictions: Record<string, any> | null;
-  vehicleGroupsId: number;
-  group: VehiclesGroup;
-}
-
-export interface VehiclesGroup {
-  id: number;
-  name: string;
-  speed: number;
-  speedLoaded?: number;
-  speedLoco?: number;
-  length: number;
-  weight: number;
-  cargoTypes: VehicleCargo[] | null;
-
-  locoProps: {
-    coldStart: boolean;
-    doubleManned: boolean;
-  } | null;
-
-  massSpeeds: VehicleGroupMassSpeeds | null;
-}
-
-export interface VehicleGroupMassSpeeds {
-  passenger: Record<string, number> | null;
-  cargo: Record<string, number> | null;
-  none: number | null;
-}
-
-export interface VehicleCargo {
-  id: string;
-  weight: number;
-}
+export type Vehicle = API.VehiclesData.VehicleObject;
+export type VehicleGroup = API.VehiclesData.VehicleGroupObject;
 
 export interface TooltipUserTrain {
   driverName: string;

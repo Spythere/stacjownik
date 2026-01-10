@@ -145,13 +145,33 @@ function filterSliderValues(filters: Record<string, any>, generalInfo: StationGe
 }
 
 function filterInputValues(filters: Record<string, any>, generalInfo: StationGeneralInfo) {
-  return (
-    (filters['authors'].length > 3 &&
-      !generalInfo.authors
-        ?.map((a) => a.toLocaleLowerCase())
-        .includes(filters['authors'].toLocaleLowerCase())) ||
-    (filters['projects'].length > 0 && generalInfo.project != filters['projects'])
-  );
+  if (
+    filters['authors'].length > 3 &&
+    generalInfo.authors &&
+    !generalInfo.authors.some(
+      (a) => a.toLocaleLowerCase() == filters['authors'].toLocaleLowerCase()
+    )
+  )
+    return true;
+
+  if (filters['projects'].length > 0 && generalInfo.project != filters['projects']) return true;
+
+  if (filters['lines'].length > 0) {
+    const linesNumbers = (filters['lines'] as string)
+      .split(',')
+      .map((l) => Number(l))
+      .filter((l) => !isNaN(l) && l != 0);
+
+    if (
+      !generalInfo.lines
+        ?.split(',')
+        .map((l) => Number(l))
+        .some((l) => linesNumbers.includes(l))
+    )
+      return true;
+  }
+
+  return false;
 }
 
 export const sortStations = (a: Station, b: Station, sorter: ActiveSorter) => {

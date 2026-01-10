@@ -205,7 +205,7 @@ const availableCategories = computed(() => {
   for (const stockName of stockList) {
     const [vehicleName, ...cargoList] = stockName.split(':');
 
-    const vehicleData = apiStore.vehiclesData?.find((v) => v.name == vehicleName);
+    const vehicleData = apiStore.vehiclesData?.vehicles.find((v) => v.name == vehicleName);
 
     if (!vehicleData) continue;
 

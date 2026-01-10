@@ -15,8 +15,8 @@ app.get('/api/getSceneries', (_, res) => {
   res.sendFile(path.join(cwd(), 'endpoints', 'getSceneries.json'));
 });
 
-app.get('/api/getVehicles', (_, res) => {
-  res.sendFile(path.join(cwd(), 'endpoints', 'getVehicles.json'));
+app.get('/api/getVehiclesData', (_, res) => {
+  res.sendFile(path.join(cwd(), 'endpoints', 'getVehiclesData.json'));
 });
 
 app.get('/api/getDonators', (_, res) => {
