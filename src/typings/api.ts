@@ -114,6 +114,7 @@ export namespace API {
       dispatcherId: number;
       dispatcherName: string;
       dispatcherIsSupporter: boolean;
+      dispatcherLanguageId: number;
       stationName: string;
       stationHash: string;
       region: string;
@@ -152,6 +153,7 @@ export namespace API {
       driverId: number;
       driverIsSupporter: boolean;
       driverLevel?: number;
+      driverLanguageId: number;
 
       currentStationName: string;
       currentStationHash?: string;

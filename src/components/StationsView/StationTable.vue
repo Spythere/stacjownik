@@ -146,6 +146,14 @@
             </span>
           </td>
 
+          <td class="station-dispatcher-lang">
+            <img
+              v-if="station.onlineInfo"
+              :src="`/images/flags/${getLanguageNameById(station.onlineInfo.dispatcherLanguageId)}.svg`"
+              alt="user flag"
+            />
+          </td>
+
           <td class="station-dispatcher-exp">
             <span
               v-if="station.onlineInfo && station.onlineInfo?.dispatcherExp != -1"
@@ -344,6 +352,7 @@ import { useTooltipStore } from '../../store/tooltipStore';
 import { getChangedFilters } from '../../managers/stationFilterManager';
 import { ActiveSorter, HeadIdsType, headIconsIds, headIds } from './typings';
 import { filterStations, sortStations } from './utils';
+import { getLanguageNameById } from '../../utils/languageUtils';
 
 export default defineComponent({
   emits: ['toggleDonationCard'],
@@ -354,7 +363,8 @@ export default defineComponent({
   data: () => ({
     headIconsIds,
     headIds,
-    getChangedFilters
+    getChangedFilters,
+    getLanguageNameById
   }),
 
   setup() {
@@ -495,6 +505,10 @@ thead th {
     width: 12em;
   }
 
+  &.dispatcher-lang {
+    width: 6em;
+  }
+
   &.dispatcher-lvl {
     width: 6em;
   }
@@ -601,6 +615,13 @@ tbody tr {
   img {
     max-width: 1.35em;
     vertical-align: text-bottom;
+  }
+}
+
+.station-dispatcher-lang {
+  img {
+    max-width: 2em;
+    vertical-align: middle;
   }
 }
 

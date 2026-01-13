@@ -60,6 +60,7 @@ export interface Train {
   distance: number;
   connectedTrack: string;
   driverId: number;
+  driverLanguageId: number;
   trainNo: number;
   driverName: string;
   driverLevel: number;
@@ -162,6 +163,7 @@ export interface ActiveScenery {
   dispatcherIsSupporter: boolean;
   dispatcherStatus: Status.ActiveDispatcher | number;
   dispatcherTimestamp: number | null;
+  dispatcherLanguageId: number;
   isOnline: boolean;
   stationTrains: Train[];
   scheduledTrains: CheckpointTrain[];

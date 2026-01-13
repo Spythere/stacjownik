@@ -66,6 +66,13 @@
 
           <span v-else>{{ train.driverName }}</span>
         </div>
+
+        <div class="train-language-flag">
+          <img
+            :src="`/images/flags/${getLanguageNameById(train.driverLanguageId)}.svg`"
+            alt="user flag"
+          />
+        </div>
       </div>
     </div>
 
@@ -199,6 +206,7 @@ import trainInfoMixin from '../../mixins/trainInfoMixin';
 import trainCategoryMixin from '../../mixins/trainCategoryMixin';
 import ProgressBar from '../Global/ProgressBar.vue';
 import StockList from '../Global/StockList.vue';
+import { getLanguageNameById } from '../../utils/languageUtils';
 
 export default defineComponent({
   mixins: [trainInfoMixin, styleMixin, trainCategoryMixin],
@@ -217,7 +225,8 @@ export default defineComponent({
   data() {
     return {
       store: useMainStore(),
-      apiStore: useApiStore()
+      apiStore: useApiStore(),
+      getLanguageNameById
     };
   },
 
@@ -287,6 +296,11 @@ export default defineComponent({
 
 .train-driver img {
   max-height: 20px;
+  vertical-align: text-bottom;
+}
+
+.train-language-flag img {
+  width: 1.5em;
   vertical-align: text-bottom;
 }
 

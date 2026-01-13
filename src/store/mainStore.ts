@@ -87,6 +87,7 @@ export const useMainStore = defineStore('mainStore', {
             online: Boolean(train.online),
             driverId: train.driverId,
             driverName: train.driverName,
+            driverLanguageId: train.driverLanguageId,
             currentStationName: train.currentStationName,
             currentStationHash: train.currentStationHash,
             connectedTrack: train.connectedTrack,
@@ -258,6 +259,7 @@ export const useMainStore = defineStore('mainStore', {
             dispatcherIsSupporter: false,
             dispatcherStatus: Status.ActiveDispatcher.FREE,
             dispatcherTimestamp: -1,
+            dispatcherLanguageId: -1,
 
             isOnline: false,
 
@@ -304,6 +306,7 @@ export const useMainStore = defineStore('mainStore', {
           dispatcherIsSupporter: scenery.dispatcherIsSupporter,
           dispatcherStatus: scenery.dispatcherStatus,
           dispatcherTimestamp: dispatcherTimestamp,
+          dispatcherLanguageId: scenery.dispatcherLanguageId,
 
           isOnline: scenery.isOnline == 1,
 

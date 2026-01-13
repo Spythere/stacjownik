@@ -334,6 +334,7 @@
       "min-lvl": "Poziom\nscenerii",
       "status": "Status",
       "dispatcher": "Dyżurny",
+      "dispatcher-lang": "Język",
       "dispatcher-lvl": "Poziom\ndyżurnego",
       "routes-single": "Szlaki\n1-torowe",
       "routes-double": "Szlaki\n2-torowe",
