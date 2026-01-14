@@ -200,6 +200,7 @@ export default defineComponent({
   text-align: center;
   align-items: center;
   gap: 0.25em;
+  font-weight: bold;
 }
 
 .status-list {
