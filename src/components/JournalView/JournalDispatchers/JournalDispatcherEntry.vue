@@ -17,6 +17,7 @@
         >
           {{ entry.dispatcherLevel >= 2 ? entry.dispatcherLevel : 'L' }}
         </b>
+
         <b style="margin-left: 5px">
           <span
             v-if="apiStore.donatorsData.includes(entry.dispatcherName)"
@@ -38,6 +39,10 @@
             {{ entry.dispatcherName }}
           </router-link>
         </b>
+
+        <span class="dispatcher-language" v-if="entry.dispatcherLanguageId != null">
+          <FlagIcon :language-id="entry.dispatcherLanguageId" width="1.5em" />
+        </span>
 
         <div>
           <span v-if="entry.timestampTo">
@@ -118,6 +123,7 @@ import dateMixin from '../../../mixins/dateMixin';
 import styleMixin from '../../../mixins/styleMixin';
 import { useApiStore } from '../../../store/apiStore';
 import StationStatusBadge from '../../Global/StationStatusBadge.vue';
+import FlagIcon from '../../Global/FlagIcon.vue';
 
 export default defineComponent({
   props: {
@@ -125,7 +131,7 @@ export default defineComponent({
     showExtraInfo: { type: Boolean, required: true }
   },
 
-  components: { StationStatusBadge },
+  components: { StationStatusBadge, FlagIcon },
   mixins: [dateMixin, styleMixin],
   emits: ['toggleShowExtraInfo'],
 
@@ -164,6 +170,11 @@ export default defineComponent({
   padding: 1em;
 }
 
+.dispatcher-language {
+  display: inline-block;
+  margin: 0 0.25em;
+}
+
 .entry-info {
   display: flex;
   justify-content: space-between;
@@ -198,7 +209,7 @@ export default defineComponent({
   border-radius: 1em;
 }
 
-@include responsive.smallScreen{
+@include responsive.smallScreen {
   .entry-info {
     flex-direction: column;
     justify-content: center;
