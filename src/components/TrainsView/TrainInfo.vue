@@ -68,7 +68,7 @@
         </div>
 
         <div class="train-language-flag">
-          <FlagIcon :language-id="train.driverLanguageId" width="1.5em" />
+          <FlagIcon :language-id="train.driverLanguageId" width="1.75em" />
         </div>
       </div>
     </div>

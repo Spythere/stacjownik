@@ -73,7 +73,7 @@
       </router-link>
 
       <div v-if="timetable.driverLanguageId != null">
-        <FlagIcon :language-id="timetable.driverLanguageId" width="1.5em" />
+        <FlagIcon :language-id="timetable.driverLanguageId" width="1.75em" />
       </div>
     </span>
 

@@ -31,6 +31,12 @@ const languageFlagSrc = computed(
 </script>
 
 <style scoped>
+.flag-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .flag-icon img {
   vertical-align: middle;
 }
