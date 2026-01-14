@@ -5,11 +5,11 @@
 
       <div class="language-select">
         <button :data-active="$i18n.locale == 'pl'" @click="store.changeLocale('pl')">
-          <img src="/images/icon-pl.svg" alt="" width="45" />
+          <FlagIcon :language-id="0" width="2.5em" />
         </button>
 
         <button :data-active="$i18n.locale == 'en'" @click="store.changeLocale('en')">
-          <img src="/images/icon-en.svg" alt="" width="45" />
+          <FlagIcon :language-id="1" width="2.5em" />
         </button>
       </div>
 
@@ -116,6 +116,7 @@
 <script setup lang="ts">
 import Card from '../Global/Card.vue';
 import { useMainStore } from '../../store/mainStore';
+import FlagIcon from '../Global/FlagIcon.vue';
 
 const store = useMainStore();
 
@@ -157,7 +158,7 @@ a.link {
   justify-content: center;
   margin: 0.5em 0;
 
-  button[data-active='false'] img {
+  button[data-active='false'] ::v-deep(img) {
     opacity: 0.5;
   }
 }

@@ -146,12 +146,8 @@
             </span>
           </td>
 
-          <td class="station-dispatcher-lang">
-            <img
-              v-if="station.onlineInfo"
-              :src="`/images/flags/${getLanguageNameById(station.onlineInfo.dispatcherLanguageId)}.svg`"
-              alt="user flag"
-            />
+          <td class="station-dispatcher-lang" v-if="station.onlineInfo">
+            <FlagIcon :language-id="station.onlineInfo.dispatcherLanguageId" width="2.25em" />
           </td>
 
           <td class="station-dispatcher-exp">
@@ -353,18 +349,18 @@ import { getChangedFilters } from '../../managers/stationFilterManager';
 import { ActiveSorter, HeadIdsType, headIconsIds, headIds } from './typings';
 import { filterStations, sortStations } from './utils';
 import { getLanguageNameById } from '../../utils/languageUtils';
+import FlagIcon from '../Global/FlagIcon.vue';
 
 export default defineComponent({
   emits: ['toggleDonationCard'],
 
-  components: { Loading, StationStatusBadge },
+  components: { Loading, StationStatusBadge, FlagIcon },
   mixins: [styleMixin, dateMixin],
 
   data: () => ({
     headIconsIds,
     headIds,
-    getChangedFilters,
-    getLanguageNameById
+    getChangedFilters
   }),
 
   setup() {
@@ -615,13 +611,6 @@ tbody tr {
   img {
     max-width: 1.35em;
     vertical-align: text-bottom;
-  }
-}
-
-.station-dispatcher-lang {
-  img {
-    max-width: 2em;
-    vertical-align: middle;
   }
 }
 

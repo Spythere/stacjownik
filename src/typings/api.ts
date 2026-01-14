@@ -38,6 +38,7 @@ export namespace API {
       dispatcherLevel: number | null;
       dispatcherRate: number;
       dispatcherIsSupporter: boolean;
+      dispatcherLanguageId: number | null;
       dispatcherStatus?: number;
       isOnline: boolean;
       lastOnlineTimestamp: number;
@@ -223,6 +224,7 @@ export namespace API {
       driverName: string;
       driverLevel: number | null;
       driverIsSupporter: boolean;
+      driverLanguageId: number | null;
 
       route: string;
       twr: number;

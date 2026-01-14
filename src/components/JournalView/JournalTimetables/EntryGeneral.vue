@@ -71,6 +71,8 @@
       <router-link v-else :to="`/journal/timetables?search-driver=${timetable.driverName}`">
         <strong>{{ timetable.driverName }}</strong>
       </router-link>
+
+      <div v-if="timetable.driverLanguageId != null"></div>
     </span>
 
     <span class="general-time">
@@ -110,6 +112,7 @@ import dateMixin from '../../../mixins/dateMixin';
 import styleMixin from '../../../mixins/styleMixin';
 import { useApiStore } from '../../../store/apiStore';
 import trainCategoryMixin from '../../../mixins/trainCategoryMixin';
+import { getLanguageNameById } from '../../../utils/languageUtils';
 
 export default defineComponent({
   mixins: [dateMixin, styleMixin, trainCategoryMixin],
@@ -191,7 +194,7 @@ export default defineComponent({
   }
 }
 
-@include responsive.smallScreen{
+@include responsive.smallScreen {
   .item-general {
     flex-direction: column;
     justify-content: center;

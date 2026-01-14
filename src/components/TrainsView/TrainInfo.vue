@@ -68,10 +68,7 @@
         </div>
 
         <div class="train-language-flag">
-          <img
-            :src="`/images/flags/${getLanguageNameById(train.driverLanguageId)}.svg`"
-            alt="user flag"
-          />
+          <FlagIcon :language-id="train.driverLanguageId" width="1.5em" />
         </div>
       </div>
     </div>
@@ -206,11 +203,11 @@ import trainInfoMixin from '../../mixins/trainInfoMixin';
 import trainCategoryMixin from '../../mixins/trainCategoryMixin';
 import ProgressBar from '../Global/ProgressBar.vue';
 import StockList from '../Global/StockList.vue';
-import { getLanguageNameById } from '../../utils/languageUtils';
+import FlagIcon from '../Global/FlagIcon.vue';
 
 export default defineComponent({
   mixins: [trainInfoMixin, styleMixin, trainCategoryMixin],
-  components: { ProgressBar, StockList },
+  components: { ProgressBar, StockList, FlagIcon },
 
   props: {
     train: {
@@ -225,8 +222,7 @@ export default defineComponent({
   data() {
     return {
       store: useMainStore(),
-      apiStore: useApiStore(),
-      getLanguageNameById
+      apiStore: useApiStore()
     };
   },
 
@@ -296,11 +292,6 @@ export default defineComponent({
 
 .train-driver img {
   max-height: 20px;
-  vertical-align: text-bottom;
-}
-
-.train-language-flag img {
-  width: 1.5em;
   vertical-align: text-bottom;
 }
 
