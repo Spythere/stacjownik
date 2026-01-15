@@ -210,6 +210,11 @@ export const sortStations = (a: Station, b: Station, sorter: ActiveSorter) => {
       diff = (a.onlineInfo?.dispatcherExp || 0) - (b.onlineInfo?.dispatcherExp || 0);
       break;
 
+    case 'dispatcher-lang':
+      diff =
+        (a.onlineInfo?.dispatcherLanguageId ?? -1) - (b.onlineInfo?.dispatcherLanguageId ?? -1);
+      break;
+
     case 'routes-single':
       diff =
         (a.generalInfo?.routes.single.filter((r) => !r.hidden && !r.isInternal).length ?? -1) -
