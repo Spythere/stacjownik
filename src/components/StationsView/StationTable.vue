@@ -146,8 +146,12 @@
             </span>
           </td>
 
-          <td class="station-dispatcher-lang" v-if="station.onlineInfo">
-            <FlagIcon :language-id="station.onlineInfo.dispatcherLanguageId" width="2.25em" />
+          <td class="station-dispatcher-lang">
+            <FlagIcon
+              v-if="station.onlineInfo && station.onlineInfo.dispatcherLanguageId != -1"
+              :language-id="station.onlineInfo.dispatcherLanguageId"
+              width="2.25em"
+            />
           </td>
 
           <td class="station-dispatcher-exp">
