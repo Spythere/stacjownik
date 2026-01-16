@@ -66,6 +66,10 @@
 
           <span v-else>{{ train.driverName }}</span>
         </div>
+
+        <div class="train-language-flag">
+          <FlagIcon :language-id="train.driverLanguageId" width="1.75em" />
+        </div>
       </div>
     </div>
 
@@ -199,10 +203,11 @@ import trainInfoMixin from '../../mixins/trainInfoMixin';
 import trainCategoryMixin from '../../mixins/trainCategoryMixin';
 import ProgressBar from '../Global/ProgressBar.vue';
 import StockList from '../Global/StockList.vue';
+import FlagIcon from '../Global/FlagIcon.vue';
 
 export default defineComponent({
   mixins: [trainInfoMixin, styleMixin, trainCategoryMixin],
-  components: { ProgressBar, StockList },
+  components: { ProgressBar, StockList, FlagIcon },
 
   props: {
     train: {

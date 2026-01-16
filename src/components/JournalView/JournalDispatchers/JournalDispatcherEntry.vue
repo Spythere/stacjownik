@@ -1,23 +1,22 @@
 <template>
   <li class="dispatcher-history-entry">
     <div class="entry-info">
-      <span>
-        <span>
+      <span class="entry-info-left">
+        <div class="station-info">
           <router-link :to="`/journal/dispatchers?search-station=${entry.stationName}`">
             <b>{{ entry.stationName }}</b>
           </router-link>
 
           <b class="text--grayed"> #{{ entry.stationHash }}</b>
-        </span>
-        &bull;
-        <b
-          v-if="entry.dispatcherLevel !== null"
-          class="level-badge dispatcher"
-          :style="calculateExpStyle(entry.dispatcherLevel, entry.dispatcherIsSupporter)"
-        >
-          {{ entry.dispatcherLevel >= 2 ? entry.dispatcherLevel : 'L' }}
-        </b>
-        <b style="margin-left: 5px">
+          &bull;
+          <b
+            v-if="entry.dispatcherLevel !== null"
+            class="level-badge dispatcher"
+            :style="calculateExpStyle(entry.dispatcherLevel, entry.dispatcherIsSupporter)"
+          >
+            {{ entry.dispatcherLevel >= 2 ? entry.dispatcherLevel : 'L' }}
+          </b>
+
           <span
             v-if="apiStore.donatorsData.includes(entry.dispatcherName)"
             data-tooltip-type="DonatorTooltip"
@@ -37,7 +36,11 @@
           >
             {{ entry.dispatcherName }}
           </router-link>
-        </b>
+
+          <span class="dispatcher-language" v-if="entry.dispatcherLanguageId != null">
+            <FlagIcon :language-id="entry.dispatcherLanguageId" width="1.75em" />
+          </span>
+        </div>
 
         <div>
           <span v-if="entry.timestampTo">
@@ -118,6 +121,7 @@ import dateMixin from '../../../mixins/dateMixin';
 import styleMixin from '../../../mixins/styleMixin';
 import { useApiStore } from '../../../store/apiStore';
 import StationStatusBadge from '../../Global/StationStatusBadge.vue';
+import FlagIcon from '../../Global/FlagIcon.vue';
 
 export default defineComponent({
   props: {
@@ -125,7 +129,7 @@ export default defineComponent({
     showExtraInfo: { type: Boolean, required: true }
   },
 
-  components: { StationStatusBadge },
+  components: { StationStatusBadge, FlagIcon },
   mixins: [dateMixin, styleMixin],
   emits: ['toggleShowExtraInfo'],
 
@@ -164,6 +168,11 @@ export default defineComponent({
   padding: 1em;
 }
 
+.dispatcher-language {
+  display: inline-block;
+  vertical-align: middle;
+}
+
 .entry-info {
   display: flex;
   justify-content: space-between;
@@ -185,6 +194,15 @@ export default defineComponent({
   margin-top: 1em;
 }
 
+.station-info {
+  display: flex;
+  flex-wrap: wrap;
+  text-align: center;
+  align-items: center;
+  gap: 0.25em;
+  font-weight: bold;
+}
+
 .status-list {
   display: flex;
   overflow: auto;
@@ -198,11 +216,15 @@ export default defineComponent({
   border-radius: 1em;
 }
 
-@include responsive.smallScreen{
+@include responsive.smallScreen {
   .entry-info {
     flex-direction: column;
     justify-content: center;
     text-align: center;
+  }
+
+  .station-info {
+    justify-content: center;
   }
 }
 </style>

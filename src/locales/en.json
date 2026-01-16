@@ -337,6 +337,7 @@
       "min-lvl": "Scenery\nlevel",
       "status": "Status",
       "dispatcher": "Dispatcher",
+      "dispatcher-lang": "Language",
       "dispatcher-lvl": "Dispatcher\nlevel",
       "routes-single": "1-track\nroutes",
       "routes-double": "2-track\nroutes",

@@ -146,6 +146,14 @@
             </span>
           </td>
 
+          <td class="station-dispatcher-lang">
+            <FlagIcon
+              v-if="station.onlineInfo && station.onlineInfo.dispatcherLanguageId != -1"
+              :language-id="station.onlineInfo.dispatcherLanguageId"
+              width="2.25em"
+            />
+          </td>
+
           <td class="station-dispatcher-exp">
             <span
               v-if="station.onlineInfo && station.onlineInfo?.dispatcherExp != -1"
@@ -344,11 +352,13 @@ import { useTooltipStore } from '../../store/tooltipStore';
 import { getChangedFilters } from '../../managers/stationFilterManager';
 import { ActiveSorter, HeadIdsType, headIconsIds, headIds } from './typings';
 import { filterStations, sortStations } from './utils';
+import { getLanguageNameById } from '../../utils/languageUtils';
+import FlagIcon from '../Global/FlagIcon.vue';
 
 export default defineComponent({
   emits: ['toggleDonationCard'],
 
-  components: { Loading, StationStatusBadge },
+  components: { Loading, StationStatusBadge, FlagIcon },
   mixins: [styleMixin, dateMixin],
 
   data: () => ({
@@ -493,6 +503,10 @@ thead th {
 
   &.dispatcher {
     width: 12em;
+  }
+
+  &.dispatcher-lang {
+    width: 6em;
   }
 
   &.dispatcher-lvl {

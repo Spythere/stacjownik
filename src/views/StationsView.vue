@@ -29,10 +29,7 @@
             data-tooltip-type="HtmlTooltip"
             :data-tooltip-content="`<b>${$t('app.language-tooltip-content')}</b>`"
           >
-            <img
-              :src="`/images/icon-${mainStore.currentLocale}.svg`"
-              alt="change language flag icon"
-            />
+            <FlagIcon :language-id="mainStore.currentLocale == 'pl' ? 0 : 1" />
           </button>
 
           <a
@@ -85,6 +82,7 @@ import { reactive } from 'vue';
 import { provide } from 'vue';
 import { ActiveSorter } from '../components/StationsView/typings';
 import { onMounted } from 'vue';
+import FlagIcon from '../components/Global/FlagIcon.vue';
 
 const filterInitStates = { ...initFilters };
 
@@ -93,7 +91,8 @@ export default defineComponent({
     StationTable,
     StationFilterCard,
     StationStats,
-    DonationCard
+    DonationCard,
+    FlagIcon
   },
 
   data: () => ({

@@ -21,6 +21,8 @@
         </span>
         <span v-else>{{ onlineScenery.dispatcherName }}</span>
       </router-link>
+
+      <FlagIcon :languageId="onlineScenery.dispatcherLanguageId" width="1.25em" />
     </div>
 
     <div class="info-bottom">
@@ -51,9 +53,11 @@ import styleMixin from '../../../mixins/styleMixin';
 import StationStatusBadge from '../../Global/StationStatusBadge.vue';
 import { ActiveScenery } from '../../../typings/common';
 import { useApiStore } from '../../../store/apiStore';
+import FlagIcon from '../../Global/FlagIcon.vue';
 
 export default defineComponent({
   mixins: [styleMixin, dateMixin, routerMixin],
+  components: { StationStatusBadge, FlagIcon },
 
   data() {
     return {
@@ -66,8 +70,7 @@ export default defineComponent({
       type: Object as PropType<ActiveScenery>,
       required: false
     }
-  },
-  components: { StationStatusBadge }
+  }
 });
 </script>
 

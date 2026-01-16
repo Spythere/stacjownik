@@ -71,6 +71,10 @@
       <router-link v-else :to="`/journal/timetables?search-driver=${timetable.driverName}`">
         <strong>{{ timetable.driverName }}</strong>
       </router-link>
+
+      <div v-if="timetable.driverLanguageId != null">
+        <FlagIcon :language-id="timetable.driverLanguageId" width="1.75em" />
+      </div>
     </span>
 
     <span class="general-time">
@@ -110,8 +114,10 @@ import dateMixin from '../../../mixins/dateMixin';
 import styleMixin from '../../../mixins/styleMixin';
 import { useApiStore } from '../../../store/apiStore';
 import trainCategoryMixin from '../../../mixins/trainCategoryMixin';
+import FlagIcon from '../../Global/FlagIcon.vue';
 
 export default defineComponent({
+  components: { FlagIcon },
   mixins: [dateMixin, styleMixin, trainCategoryMixin],
 
   data() {
@@ -191,7 +197,7 @@ export default defineComponent({
   }
 }
 
-@include responsive.smallScreen{
+@include responsive.smallScreen {
   .item-general {
     flex-direction: column;
     justify-content: center;

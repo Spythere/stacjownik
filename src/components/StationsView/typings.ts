@@ -10,6 +10,7 @@ export const headIds = [
   'min-lvl',
   'status',
   'dispatcher',
+  'dispatcher-lang',
   'dispatcher-lvl',
   'routes-single',
   'routes-double',
