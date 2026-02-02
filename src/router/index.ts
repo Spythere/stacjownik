@@ -62,6 +62,11 @@ const routes: Array<RouteRecordRaw> = [
     })
   },
   {
+    path: '/profile/:id',
+    name: 'PlayerProfileView',
+    component: () => import('../views/PlayerProfileView.vue')
+  },
+  {
     path: '/:catchAll(.*)',
     redirect: '/'
   }
