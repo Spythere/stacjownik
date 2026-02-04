@@ -27,6 +27,15 @@ export namespace API {
     }
   }
 
+  export namespace PlayerActivity {
+    export interface Data {
+      dispatcher: API.ActiveSceneries.Data[];
+      driver: API.ActiveTrains.Data;
+    }
+
+    export type Response = Data;
+  }
+
   export namespace DispatcherHistory {
     export type Response = Data[];
 
@@ -52,32 +61,25 @@ export namespace API {
   }
 
   export namespace DispatcherStats {
-    export interface DistanceStat {
-      routeDistance: number | null;
+    export interface Services {
+      count: number;
+      durationMax: number;
+      durationAvg: number;
     }
 
-    export interface DurationStat {
-      currentDuration: number | null;
+    export interface IssuedTimetables {
+      count: number;
+      distanceMax: number;
+      distanceAvg: number;
+      distanceSum: number;
     }
 
-    export interface Count {
-      _all: number;
+    export interface Data {
+      services: Services | null;
+      issuedTimetables: IssuedTimetables | null;
     }
 
-    export interface Response {
-      services: {
-        count: number;
-        durationMax: number;
-        durationAvg: number;
-      } | null;
-
-      issuedTimetables: {
-        count: number;
-        distanceMax: number;
-        distanceAvg: number;
-        distanceSum: number;
-      } | null;
-    }
+    export type Response = Data;
   }
 
   export namespace DriverStats {
@@ -102,11 +104,23 @@ export namespace API {
       routeDistance: number;
     }
 
-    export interface Response {
+    export interface Data {
       _sum: SumStats;
       _count: CountStats;
       _max: MaxStats;
       _avg: AvdStats;
+    }
+
+    export type Response = Data;
+  }
+
+  export namespace PlayerInfo {
+    export interface Data {
+      currentActivity: PlayerActivity.Data;
+      dispatcherStats: DispatcherStats.Data;
+      dispatcherStatsLastMonth: DispatcherStats.Data;
+      driverStats: DriverStats.Data;
+      driverStatsLastMonth: DriverStats.Data;
     }
   }
 
@@ -211,12 +225,40 @@ export namespace API {
   }
 
   export namespace TimetableHistory {
-    export interface Data {
-      id: number;
-      createdAt: string;
+    export interface Data extends DataShort {
       updatedAt: string;
 
       timetableId: number;
+      sceneriesString: string;
+      endDate: string;
+
+      scheduledBeginDate: string;
+      scheduledEndDate: string;
+
+      stockString?: string;
+      stockHistory: string[];
+
+      stockMass?: number;
+      stockLength?: number;
+      maxSpeed?: number;
+
+      routeSceneries: string;
+      checkpointArrivals: string[];
+      checkpointDepartures: string[];
+      checkpointArrivalsScheduled: string[];
+      checkpointDeparturesScheduled: string[];
+      checkpointStopTypes: string[];
+      checkpointComments: string[];
+      visitedSceneries: string[];
+      sceneryNames: string[];
+      path: string;
+      warningNotes: string | null;
+      trainMaxSpeed?: number;
+    }
+
+    export interface DataShort {
+      id: number;
+      createdAt: string;
       trainNo: number;
       trainCategoryCode: string;
 
@@ -229,7 +271,6 @@ export namespace API {
       route: string;
       twr: number;
       skr: number;
-      sceneriesString: string;
       currentLocation: string[];
 
       routeDistance: number;
@@ -239,10 +280,6 @@ export namespace API {
       allStopsCount: number;
 
       beginDate: string;
-      endDate: string;
-
-      scheduledBeginDate: string;
-      scheduledEndDate: string;
 
       terminated: boolean;
       fulfilled: boolean;
@@ -250,32 +287,14 @@ export namespace API {
       authorName?: string;
       authorId?: number;
 
-      stockString?: string;
-      stockHistory: string[];
-
-      stockMass?: number;
-      stockLength?: number;
-      maxSpeed?: number;
-
       currentSceneryName?: string;
       currentSceneryHash?: string;
-      routeSceneries: string;
-      checkpointArrivals: string[];
-      checkpointDepartures: string[];
-      checkpointArrivalsScheduled: string[];
-      checkpointDeparturesScheduled: string[];
-      checkpointStopTypes: string[];
-      checkpointComments: string[];
-      visitedSceneries: string[];
-      sceneryNames: string[];
-      path: string;
-      warningNotes: string | null;
       hasDangerousCargo: boolean;
       hasExtraDeliveries: boolean;
-      trainMaxSpeed?: number;
     }
 
     export type Response = Data[];
+    export type ResponseShort = DataShort[];
   }
 
   export namespace DailyStats {

@@ -220,6 +220,7 @@ export interface CheckpointTrain {
 export type Vehicle = API.VehiclesData.VehicleObject;
 export type VehicleGroup = API.VehiclesData.VehicleGroupObject;
 
+// Train Tooltip Info
 export interface TooltipUserTrain {
   driverName: string;
   trainNo: number;

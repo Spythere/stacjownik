@@ -19,10 +19,13 @@
           <p>Stacjosponsor od 01.01.2024</p>
         </div>
 
-        <div class="player-stats">
+        <div class="player-stats" v-if="playerInfo">
           <div class="stats-showcase">
             <div>
-              <div>245 / 250 (95.55%)</div>
+              <div>
+                {{ playerInfo.driverStats._count.fulfilled }} /
+                {{ playerInfo.driverStats._count._all }} (95.55%)
+              </div>
               <div>ROZKŁADÓW JAZDY</div>
             </div>
 
@@ -85,12 +88,37 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
+import { useApiStore } from '../store/apiStore';
+import { API } from '../typings/api';
 
+const apiStore = useApiStore();
 const route = useRoute();
 
-const playerId = computed(() => route.params.id);
+const playerInfo = ref<API.PlayerInfo.Data | null>(null);
+
+onMounted(() => {
+  fetchPlayerInfoData();
+});
+
+async function fetchPlayerInfoData() {
+  const playerId = route.params.id.toString();
+
+  if (!apiStore.client || !playerId) return;
+
+  try {
+    const response = await apiStore.client.get<API.PlayerInfo.Data>('api/getPlayerInfo', {
+      params: {
+        playerId: playerId
+      }
+    });
+
+    playerInfo.value = response.data;
+  } catch (error) {
+    console.error(error);
+  }
+}
 // const playerName = ref('');
 </script>
 
