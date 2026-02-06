@@ -41,6 +41,8 @@ export namespace API {
 
     export interface Data {
       id: number;
+      createdAt: string;
+      updatedAt: string;
       currentDuration: number;
       dispatcherId: number;
       dispatcherName: string;

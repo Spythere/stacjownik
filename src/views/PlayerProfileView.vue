@@ -93,14 +93,18 @@
         <h3 class="main-header">OSTATNIA AKTYWNOŚĆ GRACZA</h3>
 
         <div class="history-menu">
-          <button class="history-menu-button">ROZKŁADY JAZDY</button>
-          <button class="history-menu-button">SŁUŻBY DR</button>
-          <button class="history-menu-button">WYSTAWIONE RJ</button>
+          <button class="history-menu-button" @click="toggleFilter('Timetable')">
+            ROZKŁADY JAZDY
+          </button>
+          <button class="history-menu-button" @click="toggleFilter('Dispatcher')">SŁUŻBY DR</button>
+          <button class="history-menu-button" @click="toggleFilter('IssuedTimetable')">
+            WYSTAWIONE RJ
+          </button>
         </div>
 
         <div class="history-list-box">
           <ul>
-            <li></li>
+            <li v-for="entry in combinedJournal">{{ entry.type }} - {{ entry.date }}</li>
           </ul>
         </div>
       </div>
@@ -109,20 +113,75 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useApiStore } from '../store/apiStore';
 import { API } from '../typings/api';
 
+type JournalEntryType = 'Timetable' | 'Dispatcher' | 'IssuedTimetable';
+
+interface JournalEntry {
+  type: JournalEntryType;
+  date: Date;
+  value: API.TimetableHistory.DataShort | API.DispatcherHistory.Data;
+}
+
 const apiStore = useApiStore();
 const route = useRoute();
 
+const playerName = ref('');
 const playerInfo = ref<API.PlayerInfo.Data | null>(null);
 const playerJournal = ref<API.PlayerJournal.Data | null>(null);
+
+const activeFilterTypes = reactive<Record<JournalEntryType, boolean>>({
+  Timetable: true,
+  Dispatcher: true,
+  IssuedTimetable: true
+});
 
 onMounted(() => {
   fetchPlayerInfoData();
   fetchPlayerJournal();
+});
+
+const combinedJournal = computed<JournalEntry[]>(() => {
+  if (!playerJournal.value) return [];
+
+  const list = [
+    ...playerJournal.value.timetables,
+    ...playerJournal.value.duties,
+    ...playerJournal.value.issuedTimetables
+  ]
+    .reduce<JournalEntry[]>((acc, v) => {
+      // Timetable or dispatcher type
+      if ('trainNo' in v) {
+        const isIssued = v.authorName == playerName.value;
+
+        if (!isIssued && !activeFilterTypes['Timetable']) return acc;
+        if (isIssued && !activeFilterTypes['IssuedTimetable']) return acc;
+
+        acc.push({
+          date: new Date(v.createdAt),
+          type: isIssued ? 'IssuedTimetable' : 'Timetable',
+          value: v
+        });
+      } else {
+        if (!activeFilterTypes['Dispatcher']) return acc;
+
+        acc.push({
+          date: new Date(v.timestampFrom),
+          type: 'Dispatcher',
+          value: v
+        });
+      }
+
+      return acc;
+    }, [])
+    .sort((a, b) => {
+      return a.date.getTime() - b.date.getTime() > 0 ? -1 : 1;
+    });
+
+  return list;
 });
 
 async function fetchPlayerInfoData() {
@@ -156,9 +215,27 @@ async function fetchPlayerJournal() {
     });
 
     playerJournal.value = response.data;
+    playerName.value =
+      response.data.timetables.at(0)?.driverName ||
+      response.data.duties.at(0)?.dispatcherName ||
+      '';
   } catch (error) {
     console.error(error);
   }
+}
+
+function toggleFilter(filterType: JournalEntryType) {
+  const toggledState = !activeFilterTypes[filterType];
+
+  // Prevent switching off all filters at the same time (at least one must be active)
+  if (
+    toggledState === false &&
+    Object.values(activeFilterTypes).filter((v) => v === false).length ==
+      Object.values(activeFilterTypes).length - 1
+  )
+    return;
+
+  activeFilterTypes[filterType] = toggledState;
 }
 </script>
 
@@ -182,7 +259,7 @@ $tileColor: #181818;
 
   max-width: var(--max-container-width);
   width: 100%;
-  height: calc(100vh - 0.5em);
+  // height: calc(100vh - 0.5em);
   min-height: 900px;
 
   padding: 1rem 0;
@@ -191,7 +268,6 @@ $tileColor: #181818;
 
 .view-container > div {
   position: relative;
-  overflow: auto;
 
   // border-radius: 0.5em;
 }
@@ -220,7 +296,7 @@ $tileColor: #181818;
 }
 
 .profile-main {
-  max-height: 2000px;
+  overflow: hidden;
 }
 
 .main-header {
@@ -253,6 +329,12 @@ $tileColor: #181818;
     background-color: $tileColor;
     padding: 0.5em;
   }
+}
+
+.history-list-box {
+  overflow: auto;
+  height: 650px;
+  margin-top: 1em;
 }
 
 @include responsive.midScreen {
