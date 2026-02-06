@@ -619,9 +619,11 @@
     "desc-end": "The train terminates here",
     "desc-terminated": "The train has been terminated"
   },
-  "history": {
-    "title": "TIMETABLE JOURNAL",
-    "search-train": "Train no.",
-    "search-driver": "Driver name"
+  "profile": {
+    "filters": {
+      "Timetable": "TIMETABLES",
+      "Dispatcher": "DISPATCHER DUTIES",
+      "IssuedTimetable": "ISSUED TIMETABLES"
+    }
   }
 }

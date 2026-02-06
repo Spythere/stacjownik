@@ -604,7 +604,11 @@
     "desc-end": "Pociąg kończy bieg",
     "desc-terminated": "Pociąg zakończył bieg"
   },
-  "history": {
-    "title": "DZIENNIK ROZKŁADÓW JAZDY"
+  "profile": {
+    "filters": {
+      "Timetable": "ROZKŁADY JAZDY",
+      "Dispatcher": "SŁUŻBY DYŻURNEGO",
+      "IssuedTimetable": "WYSTAWIONE RJ"
+    }
   }
 }
