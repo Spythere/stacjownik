@@ -124,6 +124,14 @@ export namespace API {
     }
   }
 
+  export namespace PlayerJournal {
+    export interface Data {
+      timetables: TimetableHistory.DataShort[];
+      issuedTimetables: TimetableHistory.DataShort[];
+      duties: DispatcherHistory.Data[];
+    }
+  }
+
   export namespace ActiveSceneries {
     export interface Data {
       dispatcherId: number;
