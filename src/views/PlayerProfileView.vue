@@ -122,9 +122,7 @@
               <img v-else src="/images/icon-timetable.svg" width="20" alt="timetable icon" />
 
               <b class="text--grayed">
-                {{
-                  entry.date.toLocaleString('pl-PL', { dateStyle: 'long', timeStyle: 'short' })
-                }}
+                {{ entry.date.toLocaleString('pl-PL', { dateStyle: 'long', timeStyle: 'short' }) }}
               </b>
 
               <!-- Timetables -->
@@ -164,7 +162,6 @@ import { computed, onMounted, reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useApiStore } from '../store/apiStore';
 import { API } from '../typings/api';
-import { useI18n } from 'vue-i18n';
 import { humanizeDuration } from '../composables/time';
 
 type JournalEntryType = 'Timetable' | 'Dispatcher' | 'IssuedTimetable';
@@ -177,7 +174,6 @@ interface JournalEntry {
 
 const apiStore = useApiStore();
 const route = useRoute();
-const { t } = useI18n();
 
 const playerName = ref('');
 const playerInfo = ref<API.PlayerInfo.Data | null>(null);
@@ -403,8 +399,12 @@ $tileColor: #181818;
 @include responsive.midScreen {
   .view-container {
     grid-template-columns: 1fr;
-    gap: 0;
     max-width: 1000px;
+  }
+
+  .player-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
   }
 }
 
