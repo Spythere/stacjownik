@@ -34,7 +34,7 @@
           </div>
 
           <div class="stats-dispatcher">
-            <img src="/images/icon-user.svg" width="35" alt="clock icon" />
+            <img src="/images/icon-user.svg" width="35" alt="user icon" />
             <h3>STATYSTYKI DYŻURNEGO RUCHU</h3>
             <hr />
 
@@ -62,7 +62,7 @@
             </div>
 
             <div class="month-stat">
-              <div><img src="/images/icon-spawn.svg" width="30" alt="train icon" /></div>
+              <div><img src="/images/icon-spawn.svg" width="30" alt="spawn icon" /></div>
               <div><h3 class="text--primary">5500</h3></div>
               <div>
                 POKONANYCH <br />
@@ -71,7 +71,7 @@
             </div>
 
             <div class="month-stat">
-              <div><img src="/images/icon-user.svg" width="30" alt="train icon" /></div>
+              <div><img src="/images/icon-user.svg" width="30" alt="user icon" /></div>
               <div><h3 class="text--primary">15</h3></div>
               <div>
                 SŁUŻB <br />
@@ -80,7 +80,7 @@
             </div>
 
             <div class="month-stat">
-              <div><img src="/images/icon-timetable.svg" width="30" alt="train icon" /></div>
+              <div><img src="/images/icon-timetable.svg" width="30" alt="timetable icon" /></div>
               <div><h3 class="text--primary">12</h3></div>
               <div>
                 WYSTAWIONYCH <br />
@@ -104,7 +104,54 @@
 
         <div class="history-list-box">
           <ul>
-            <li v-for="entry in combinedJournal">{{ entry.type }} - {{ entry.date }}</li>
+            <li v-for="entry in combinedJournal">
+              <img
+                v-if="entry.type == 'Dispatcher'"
+                src="/images/icon-user.svg"
+                width="20"
+                alt="user icon"
+              />
+
+              <img
+                v-else-if="entry.type == 'Timetable'"
+                src="/images/icon-train.svg"
+                width="20"
+                alt="train icon"
+              />
+
+              <img v-else src="/images/icon-timetable.svg" width="20" alt="timetable icon" />
+
+              <b class="text--grayed">
+                {{
+                  entry.date.toLocaleString('pl-PL', { dateStyle: 'long', timeStyle: 'short' })
+                }}
+              </b>
+
+              <!-- Timetables -->
+              <span v-if="'trainNo' in entry.value">
+                <b class="text--primary">
+                  {{ entry.value.trainCategoryCode }} {{ entry.value.trainNo }}
+                </b>
+                <b class="text--grayed" v-if="entry.type == 'IssuedTimetable'">
+                  dla: {{ entry.value.driverName }}
+                </b>
+                {{ ' ' }}
+                <b>{{ entry.value.route.replace('|', ' > ') }}</b>
+                {{ ' ' }}
+                <b>({{ entry.value.currentDistance }} / {{ entry.value.routeDistance }}km) </b>
+              </span>
+
+              <!-- Dispatchers -->
+              <span v-else>
+                <b>{{ entry.value.stationName }}</b>
+                {{ ' - ' }}
+                <b>{{
+                  humanizeDuration(
+                    (entry.value.timestampTo || Date.now()) - entry.value.timestampFrom
+                  )
+                }}</b>
+              </span>
+            </li>
           </ul>
         </div>
       </div>
@@ -117,6 +164,8 @@ import { computed, onMounted, reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useApiStore } from '../store/apiStore';
 import { API } from '../typings/api';
+import { useI18n } from 'vue-i18n';
+import { humanizeDuration } from '../composables/time';
 
 type JournalEntryType = 'Timetable' | 'Dispatcher' | 'IssuedTimetable';
 
@@ -128,6 +177,7 @@ interface JournalEntry {
 
 const apiStore = useApiStore();
 const route = useRoute();
+const { t } = useI18n();
 
 const playerName = ref('');
 const playerInfo = ref<API.PlayerInfo.Data | null>(null);
@@ -210,7 +260,8 @@ async function fetchPlayerJournal() {
   try {
     const response = await apiStore.client.get<API.PlayerJournal.Data>('api/getPlayerJournal', {
       params: {
-        playerId: playerId
+        playerId: playerId,
+        countLimit: 15
       }
     });
 
@@ -335,6 +386,18 @@ $tileColor: #181818;
   overflow: auto;
   height: 650px;
   margin-top: 1em;
+
+  & > ul > li {
+    display: flex;
+    align-items: center;
+    gap: 0.25em;
+
+    background-color: $tileColor;
+    padding: 0.5em;
+
+    margin-bottom: 0.5em;
+    text-align: initial;
+  }
 }
 
 @include responsive.midScreen {
