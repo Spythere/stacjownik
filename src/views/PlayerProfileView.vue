@@ -93,12 +93,13 @@
         <h3 class="main-header">OSTATNIA AKTYWNOŚĆ GRACZA</h3>
 
         <div class="history-menu">
-          <button class="history-menu-button" @click="toggleFilter('Timetable')">
-            ROZKŁADY JAZDY
-          </button>
-          <button class="history-menu-button" @click="toggleFilter('Dispatcher')">SŁUŻBY DR</button>
-          <button class="history-menu-button" @click="toggleFilter('IssuedTimetable')">
-            WYSTAWIONE RJ
+          <button
+            v-for="(filterState, filterKey) in activeFilterTypes"
+            class="menu-btn"
+            :data-active="filterState"
+            @click="toggleFilter(filterKey)"
+          >
+            {{ t(`profile.filters.${filterKey}`) }}
           </button>
         </div>
 
@@ -163,6 +164,7 @@ import { useRoute } from 'vue-router';
 import { useApiStore } from '../store/apiStore';
 import { API } from '../typings/api';
 import { humanizeDuration } from '../composables/time';
+import { useI18n } from 'vue-i18n';
 
 type JournalEntryType = 'Timetable' | 'Dispatcher' | 'IssuedTimetable';
 
@@ -172,6 +174,7 @@ interface JournalEntry {
   value: API.TimetableHistory.DataShort | API.DispatcherHistory.Data;
 }
 
+const { t } = useI18n();
 const apiStore = useApiStore();
 const route = useRoute();
 
@@ -371,10 +374,20 @@ $tileColor: #181818;
   grid-template-columns: repeat(3, 1fr);
   gap: 1em;
   padding: 0 1px;
+}
 
-  & > button {
-    background-color: $tileColor;
-    padding: 0.5em;
+.menu-btn {
+  background-color: $tileColor;
+  padding: 0.5em;
+  font-weight: bold;
+  color: #aaa;
+
+  &:hover {
+    background-color: #2b2b2b;
+  }
+
+  &[data-active='true'] {
+    color: var(--clr-primary);
   }
 }
 
@@ -406,8 +419,5 @@ $tileColor: #181818;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
   }
-}
-
-@include responsive.smallScreen {
 }
 </style>
