@@ -62,7 +62,7 @@ const routes: Array<RouteRecordRaw> = [
     })
   },
   {
-    path: '/profile/:id',
+    path: '/profile',
     name: 'PlayerProfileView',
     component: () => import('../views/PlayerProfileView.vue')
   },

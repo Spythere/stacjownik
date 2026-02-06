@@ -175,6 +175,7 @@ interface JournalEntry {
 const apiStore = useApiStore();
 const route = useRoute();
 
+const playerId = ref(-1);
 const playerName = ref('');
 const playerInfo = ref<API.PlayerInfo.Data | null>(null);
 const playerJournal = ref<API.PlayerJournal.Data | null>(null);
@@ -186,6 +187,9 @@ const activeFilterTypes = reactive<Record<JournalEntryType, boolean>>({
 });
 
 onMounted(() => {
+  playerId.value = Number(route.query.playerId) || -1;
+  playerName.value = route.query.playerName?.toString() || '';
+
   fetchPlayerInfoData();
   fetchPlayerJournal();
 });
@@ -231,14 +235,12 @@ const combinedJournal = computed<JournalEntry[]>(() => {
 });
 
 async function fetchPlayerInfoData() {
-  const playerId = route.params.id.toString();
-
-  if (!apiStore.client || !playerId) return;
+  if (!apiStore.client || !playerId.value) return;
 
   try {
     const response = await apiStore.client.get<API.PlayerInfo.Data>('api/getPlayerInfo', {
       params: {
-        playerId: playerId
+        playerId: playerId.value
       }
     });
 
@@ -249,14 +251,12 @@ async function fetchPlayerInfoData() {
 }
 
 async function fetchPlayerJournal() {
-  const playerId = route.params.id.toString();
-
-  if (!apiStore.client || !playerId) return;
+  if (!apiStore.client || !playerId.value) return;
 
   try {
     const response = await apiStore.client.get<API.PlayerJournal.Data>('api/getPlayerJournal', {
       params: {
-        playerId: playerId,
+        playerId: playerId.value,
         countLimit: 15
       }
     });
