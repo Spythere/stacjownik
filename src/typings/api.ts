@@ -30,7 +30,7 @@ export namespace API {
   export namespace PlayerActivity {
     export interface Data {
       dispatcher: API.ActiveSceneries.Data[];
-      driver: API.ActiveTrains.Data;
+      driver: API.ActiveTrains.Data | null;
     }
 
     export type Response = Data;
@@ -77,6 +77,9 @@ export namespace API {
     }
 
     export interface Data {
+      dispatcherId: number | null;
+      dispatcherName: string | null;
+      dispatcherLevel: number | null;
       services: Services | null;
       issuedTimetables: IssuedTimetables | null;
     }
@@ -85,32 +88,19 @@ export namespace API {
   }
 
   export namespace DriverStats {
-    export interface SumStats {
-      routeDistance: number;
-      confirmedStopsCount: number;
-      allStopsCount: number;
-      currentDistance: number;
-    }
-
-    export interface CountStats {
-      fulfilled: number;
-      terminated: number;
-      _all: number;
-    }
-
-    export interface MaxStats {
-      routeDistance: number;
-    }
-
-    export interface AvdStats {
-      routeDistance: number;
-    }
-
     export interface Data {
-      _sum: SumStats;
-      _count: CountStats;
-      _max: MaxStats;
-      _avg: AvdStats;
+      driverName: string | null;
+      driverId: number | null;
+      driverLevel: number | null;
+      countAll: number;
+      countTerminated: number;
+      countFulfilled: number;
+      routeDistanceTotal: number | null;
+      routeDistanceAvg: number | null;
+      routeDistanceMax: number | null;
+      currentDistanceTotal: number | null;
+      confirmedStopsTotal: number | null;
+      allStopsTotal: number | null;
     }
 
     export type Response = Data;
@@ -118,9 +108,6 @@ export namespace API {
 
   export namespace PlayerInfo {
     export interface Data {
-      playerName: string | null;
-      playerId: number | null;
-
       currentActivity: PlayerActivity.Data;
       dispatcherStats: DispatcherStats.Data;
       dispatcherStatsLastMonth: DispatcherStats.Data;

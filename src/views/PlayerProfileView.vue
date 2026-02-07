@@ -7,17 +7,35 @@
             v-if="playerTD2Info"
             :src="`https://td2.info.pl/index.php?action=dlattach;attach=${playerTD2Info.avatar};type=avatar`"
             alt="player image"
-            width="100"
             height="100"
             @error="(e) => ((e.target as any).src = '/images/default-avatar.jpg')"
           />
 
-          <h3>{{ playerInfo.playerName }}</h3>
+          <h3>{{ playerName }}</h3>
 
-          <p>12 poziom maszynisty</p>
-          <p>12 poziom dyżurnego</p>
+          <p v-if="playerTD2Info != null">{{ playerTD2Info.levels.driver }} poziom maszynisty</p>
+          <p v-if="playerTD2Info != null">{{ playerTD2Info.levels.dispatcher }} poziom dyżurnego</p>
 
-          <p>Ostatnia aktywność: 02.02.2026 (DR)</p>
+          <div v-if="combinedJournal.length > 0">
+            <!-- <p>Ostatnia aktywność:</p> -->
+            <div v-if="playerInfo.currentActivity.dispatcher.length > 0">
+              <b class="text--primary">ONLINE JAKO DR:</b>
+              {{
+                playerInfo.currentActivity.dispatcher
+                  .map((d) => `${d.stationName} (${d.stationHash})`)
+                  .join(', ')
+              }}
+            </div>
+
+            <div
+              v-if="
+                playerInfo.currentActivity.driver && playerInfo.currentActivity.driver.length > 0
+              "
+            >
+              <b>ONLINE JAKO MASZYNISTA:</b>
+              {{ playerInfo.currentActivity.driver }}
+            </div>
+          </div>
 
           <!-- <p>Stacjosponsor od 01.01.2024</p> -->
         </div>
@@ -28,27 +46,104 @@
             <h3>STATYSTYKI MASZYNISTY</h3>
             <hr />
 
-            <div><b class="text--primary">522 / 619 (95.39%)</b> - wypełnione rozkłady jazdy</div>
-            <div>
-              <b class="text--primary">16091 / 17149 (95.39%)</b> - zatwierdzony kilometraż w RJ
+            <div v-if="playerInfo.driverStats.countAll > 0">
+              <div>
+                <b class="text--primary">
+                  {{ playerInfo.driverStats.countFulfilled }} /
+                  {{ playerInfo.driverStats.countAll }} ({{
+                    getCountPercentage(
+                      playerInfo.driverStats.countFulfilled,
+                      playerInfo.driverStats.countAll,
+                      2
+                    )
+                  }}%)
+                </b>
+                - wypełnione rozkłady jazdy
+              </div>
+              <div>
+                <b class="text--primary">
+                  {{ playerInfo.driverStats.currentDistanceTotal?.toFixed(2) }} /
+                  {{ playerInfo.driverStats.routeDistanceTotal?.toFixed(2) }} ({{
+                    getCountPercentage(
+                      playerInfo.driverStats.currentDistanceTotal || 0,
+                      playerInfo.driverStats.routeDistanceTotal || 0,
+                      2
+                    )
+                  }}%)
+                </b>
+                - zatwierdzony kilometraż w RJ
+              </div>
+              <div>
+                <b class="text--primary">
+                  {{ playerInfo.driverStats.confirmedStopsTotal }} /
+                  {{ playerInfo.driverStats.allStopsTotal }} ({{
+                    getCountPercentage(
+                      playerInfo.driverStats.confirmedStopsTotal || 0,
+                      playerInfo.driverStats.allStopsTotal || 0,
+                      2
+                    )
+                  }}%)
+                </b>
+                - potwierdzonych stacji w RJ
+              </div>
+              <div>
+                <b class="text--primary">{{ playerInfo.driverStats.routeDistanceMax || 0 }}km</b> -
+                najdłuższy rozkład jazdy
+              </div>
+              <div>
+                <b class="text--primary">
+                  {{ playerInfo.driverStats.routeDistanceAvg?.toFixed(2) || 0 }}km
+                </b>
+                - średnia długość wszystkich rozkładów
+              </div>
             </div>
-            <div>
-              <b class="text--primary">2420 / 2537 (95.39%)</b> - potwierdzonych stacji w RJ
+
+            <div class="text--grayed" v-else>
+              Ten użytkownik nie posiada statystyk maszynisty zarejestrowanych przez Stacjownik!
             </div>
-            <div><b class="text--primary">237.13km</b> - najdłuższy rozkład jazdy</div>
-            <div><b class="text--primary">60.39km</b> - średnia długość wszystkich rozkładów</div>
           </div>
 
-          <div class="stats-dispatcher">
+          <div
+            class="stats-dispatcher"
+            v-if="playerInfo.dispatcherStats && playerInfo.dispatcherStats.services?.count"
+          >
             <img src="/images/icon-user.svg" width="35" alt="user icon" />
             <h3>STATYSTYKI DYŻURNEGO RUCHU</h3>
             <hr />
 
-            <div><b class="text--primary">25</b> - służby jako dyżurny ruchu</div>
-            <div><b class="text--primary">6 godz. 13 min.</b> - najdłuższa służba</div>
-            <div><b class="text--primary">14</b> - wystawione RJ jako dyżurny ruchu</div>
-            <div><b class="text--primary">80.81km</b> - najdłuższy wystawiony RJ</div>
-            <div><b class="text--primary">670.80km</b> - suma długości wystawionych RJ</div>
+            <div>
+              <b class="text--primary">{{ playerInfo.dispatcherStats.services.count }}</b> - służby
+              jako dyżurny ruchu
+            </div>
+            <div>
+              <b class="text--primary">{{
+                humanizeDuration(playerInfo.dispatcherStats.services.durationMax)
+              }}</b>
+              - najdłuższa służba
+            </div>
+
+            <div v-if="playerInfo.dispatcherStats.issuedTimetables">
+              <div>
+                <b class="text--primary">{{ playerInfo.dispatcherStats.issuedTimetables.count }}</b>
+                - wystawione RJ jako dyżurny ruchu
+              </div>
+              <div>
+                <b class="text--primary">
+                  {{ playerInfo.dispatcherStats.issuedTimetables.distanceMax }}km
+                </b>
+                - najdłuższy wystawiony RJ
+              </div>
+              <div>
+                <b class="text--primary">
+                  {{ playerInfo.dispatcherStats.issuedTimetables.distanceSum.toFixed(2) }}km
+                </b>
+                - suma długości wystawionych RJ
+              </div>
+            </div>
+
+            <div class="text--grayed" v-else>
+              Ten dyżurny nie wystawił jeszcze żadnego rozkładu jazdy
+            </div>
           </div>
         </div>
       </div>
@@ -60,7 +155,9 @@
           <div class="month-stats-box">
             <div class="month-stat">
               <div><img src="/images/icon-train.svg" width="30" alt="train icon" /></div>
-              <div><h3 class="text--primary">55</h3></div>
+              <div>
+                <h3 class="text--primary">{{ playerInfo.driverStatsLastMonth.countAll }}</h3>
+              </div>
               <div>
                 ROZKŁADÓW <br />
                 JAZDY
@@ -69,7 +166,11 @@
 
             <div class="month-stat">
               <div><img src="/images/icon-spawn.svg" width="30" alt="spawn icon" /></div>
-              <div><h3 class="text--primary">5500</h3></div>
+              <div>
+                <h3 class="text--primary">
+                  {{ playerInfo.driverStatsLastMonth.currentDistanceTotal || 0 }}
+                </h3>
+              </div>
               <div>
                 POKONANYCH <br />
                 KILOMETRÓW
@@ -78,7 +179,11 @@
 
             <div class="month-stat">
               <div><img src="/images/icon-user.svg" width="30" alt="user icon" /></div>
-              <div><h3 class="text--primary">15</h3></div>
+              <div>
+                <h3 class="text--primary">
+                  {{ playerInfo.dispatcherStatsLastMonth.services?.count || 0 }}
+                </h3>
+              </div>
               <div>
                 SŁUŻB <br />
                 DYŻURNEGO
@@ -87,7 +192,11 @@
 
             <div class="month-stat">
               <div><img src="/images/icon-timetable.svg" width="30" alt="timetable icon" /></div>
-              <div><h3 class="text--primary">12</h3></div>
+              <div>
+                <h3 class="text--primary">
+                  {{ playerInfo.dispatcherStatsLastMonth.issuedTimetables?.count || 0 }}
+                </h3>
+              </div>
               <div>
                 WYSTAWIONYCH <br />
                 ROZKŁADÓW
@@ -172,6 +281,7 @@ import { API, Td2API } from '../typings/api';
 import { humanizeDuration } from '../composables/time';
 import { useI18n } from 'vue-i18n';
 import axios from 'axios';
+import { getCountPercentage } from '../utils/calcUtils';
 
 type JournalEntryType = 'Timetable' | 'Dispatcher' | 'IssuedTimetable';
 
@@ -185,6 +295,8 @@ const { t } = useI18n();
 const apiStore = useApiStore();
 const route = useRoute();
 
+const playerName = ref('');
+
 const playerInfo = ref<API.PlayerInfo.Data | null>(null);
 const playerJournal = ref<API.PlayerJournal.Data | null>(null);
 const playerTD2Info = ref<Td2API.UsersInfoByName.UserInfo | null>(null);
@@ -197,7 +309,7 @@ const activeFilterTypes = reactive<Record<JournalEntryType, boolean>>({
 
 watch(
   computed(() => route.query.playerId),
-  (v) => {
+  () => {
     fetchAllData();
   }
 );
@@ -207,7 +319,7 @@ onMounted(() => {
 });
 
 const combinedJournal = computed<JournalEntry[]>(() => {
-  if (!playerJournal.value || !playerInfo.value) return [];
+  if (!playerJournal.value || !playerName.value) return [];
 
   const list = [
     ...playerJournal.value.timetables,
@@ -217,7 +329,7 @@ const combinedJournal = computed<JournalEntry[]>(() => {
     .reduce<JournalEntry[]>((acc, v) => {
       // Timetable or dispatcher type
       if ('trainNo' in v) {
-        const isIssued = v.authorName == playerInfo.value!.playerName;
+        const isIssued = v.authorName == playerName.value;
 
         if (!isIssued && !activeFilterTypes['Timetable']) return acc;
         if (isIssued && !activeFilterTypes['IssuedTimetable']) return acc;
@@ -253,9 +365,16 @@ async function fetchAllData() {
 
   const playerInfoResponse = await fetchPlayerInfoData(playerId);
 
-  if (!playerInfoResponse || !playerInfoResponse.playerName) return;
+  if (!playerInfoResponse) return;
 
-  const playerTd2InfoResponse = await fetchPlayerTD2Info(playerInfoResponse.playerName);
+  playerName.value =
+    playerInfoResponse.driverStats.driverName ||
+    playerInfoResponse.dispatcherStats.dispatcherName ||
+    '';
+
+  if (!playerName.value) return;
+
+  const playerTd2InfoResponse = await fetchPlayerTD2Info(playerName.value);
   const playerJournalResponse = await fetchPlayerJournal(playerId);
 
   playerInfo.value = playerInfoResponse;
@@ -272,10 +391,6 @@ async function fetchPlayerInfoData(playerId: string) {
         playerId: playerId
       }
     });
-
-    if (response.data.playerName == null || response.data.playerId == null) {
-      return null;
-    }
 
     return response.data;
   } catch (error) {
