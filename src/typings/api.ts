@@ -118,6 +118,9 @@ export namespace API {
 
   export namespace PlayerInfo {
     export interface Data {
+      playerName: string | null;
+      playerId: number | null;
+
       currentActivity: PlayerActivity.Data;
       dispatcherStats: DispatcherStats.Data;
       dispatcherStatsLastMonth: DispatcherStats.Data;
@@ -452,6 +455,62 @@ export namespace GithubAPI {
       tarball_url: string;
       zipball_url: string;
       body: string;
+    }
+  }
+}
+
+export namespace Td2API {
+  export namespace UsersInfoByName {
+    export interface UserStat {
+      variable: string;
+      value: number;
+      position: number;
+      server_total: number;
+      server_max: number;
+      server_min: number;
+      server_avg: number;
+    }
+
+    export interface Levels {
+      driver: number;
+      dispatcher: number;
+    }
+
+    export interface UserGroup {
+      id_group: number;
+      group_name: string;
+      description: string;
+      online_color: string;
+      min_posts: number;
+      max_messages: number;
+      stars: string;
+      group_type: number;
+      hidden: number;
+      id_parent: number;
+    }
+
+    export interface UserInfo {
+      id_member: number;
+      id_group: number;
+      additional_groups: string;
+      member_name: string;
+      karma_bad: number;
+      karma_good: number;
+      date_registered: number;
+      last_login: number;
+      avatar: number;
+      lngfile: string;
+      user_stats: UserStat[];
+      levels: Levels;
+      user_groups: UserGroup[];
+    }
+
+    export type Message = UserInfo[];
+
+    export interface Response {
+      success: boolean;
+      respCode: number;
+      message: Message;
     }
   }
 }

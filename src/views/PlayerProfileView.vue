@@ -1,19 +1,25 @@
 <template>
   <div class="profile-view">
-    <div class="view-container">
+    <div class="view-container" v-if="playerInfo">
       <div class="profile-sidebar">
         <div class="player-summary">
           <img
-            src="https://td2.info.pl/index.php?action=dlattach;attach=83477;type=avatar"
+            v-if="playerTD2Info"
+            :src="`https://td2.info.pl/index.php?action=dlattach;attach=${playerTD2Info.avatar};type=avatar`"
             alt="player image"
-            width="110"
+            width="100"
+            height="100"
+            @error="(e) => ((e.target as any).src = '/images/default-avatar.jpg')"
           />
 
-          <h3>Spythere</h3>
+          <h3>{{ playerInfo.playerName }}</h3>
+
           <p>12 poziom maszynisty</p>
           <p>12 poziom dyżurnego</p>
+
           <p>Ostatnia aktywność: 02.02.2026 (DR)</p>
-          <p>Stacjosponsor od 01.01.2024</p>
+
+          <!-- <p>Stacjosponsor od 01.01.2024</p> -->
         </div>
 
         <div class="player-stats">
@@ -159,12 +165,13 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, reactive, ref } from 'vue';
+import { computed, onActivated, onMounted, reactive, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useApiStore } from '../store/apiStore';
-import { API } from '../typings/api';
+import { API, Td2API } from '../typings/api';
 import { humanizeDuration } from '../composables/time';
 import { useI18n } from 'vue-i18n';
+import axios from 'axios';
 
 type JournalEntryType = 'Timetable' | 'Dispatcher' | 'IssuedTimetable';
 
@@ -178,10 +185,9 @@ const { t } = useI18n();
 const apiStore = useApiStore();
 const route = useRoute();
 
-const playerId = ref(-1);
-const playerName = ref('');
 const playerInfo = ref<API.PlayerInfo.Data | null>(null);
 const playerJournal = ref<API.PlayerJournal.Data | null>(null);
+const playerTD2Info = ref<Td2API.UsersInfoByName.UserInfo | null>(null);
 
 const activeFilterTypes = reactive<Record<JournalEntryType, boolean>>({
   Timetable: true,
@@ -189,16 +195,19 @@ const activeFilterTypes = reactive<Record<JournalEntryType, boolean>>({
   IssuedTimetable: true
 });
 
-onMounted(() => {
-  playerId.value = Number(route.query.playerId) || -1;
-  playerName.value = route.query.playerName?.toString() || '';
+watch(
+  computed(() => route.query.playerId),
+  (v) => {
+    fetchAllData();
+  }
+);
 
-  fetchPlayerInfoData();
-  fetchPlayerJournal();
+onMounted(() => {
+  fetchAllData();
 });
 
 const combinedJournal = computed<JournalEntry[]>(() => {
-  if (!playerJournal.value) return [];
+  if (!playerJournal.value || !playerInfo.value) return [];
 
   const list = [
     ...playerJournal.value.timetables,
@@ -208,7 +217,7 @@ const combinedJournal = computed<JournalEntry[]>(() => {
     .reduce<JournalEntry[]>((acc, v) => {
       // Timetable or dispatcher type
       if ('trainNo' in v) {
-        const isIssued = v.authorName == playerName.value;
+        const isIssued = v.authorName == playerInfo.value!.playerName;
 
         if (!isIssued && !activeFilterTypes['Timetable']) return acc;
         if (isIssued && !activeFilterTypes['IssuedTimetable']) return acc;
@@ -237,41 +246,83 @@ const combinedJournal = computed<JournalEntry[]>(() => {
   return list;
 });
 
-async function fetchPlayerInfoData() {
-  if (!apiStore.client || !playerId.value) return;
+async function fetchAllData() {
+  const playerId = route.query.playerId?.toString();
+
+  if (!playerId) return;
+
+  const playerInfoResponse = await fetchPlayerInfoData(playerId);
+
+  if (!playerInfoResponse || !playerInfoResponse.playerName) return;
+
+  const playerTd2InfoResponse = await fetchPlayerTD2Info(playerInfoResponse.playerName);
+  const playerJournalResponse = await fetchPlayerJournal(playerId);
+
+  playerInfo.value = playerInfoResponse;
+  playerTD2Info.value = playerTd2InfoResponse;
+  playerJournal.value = playerJournalResponse;
+}
+
+async function fetchPlayerInfoData(playerId: string) {
+  if (!apiStore.client || !playerId) return null;
 
   try {
     const response = await apiStore.client.get<API.PlayerInfo.Data>('api/getPlayerInfo', {
       params: {
-        playerId: playerId.value
+        playerId: playerId
       }
     });
 
-    playerInfo.value = response.data;
+    if (response.data.playerName == null || response.data.playerId == null) {
+      return null;
+    }
+
+    return response.data;
   } catch (error) {
     console.error(error);
   }
+
+  return null;
 }
 
-async function fetchPlayerJournal() {
-  if (!apiStore.client || !playerId.value) return;
+async function fetchPlayerJournal(playerId: string) {
+  if (!apiStore.client || !playerId) return null;
 
   try {
     const response = await apiStore.client.get<API.PlayerJournal.Data>('api/getPlayerJournal', {
       params: {
-        playerId: playerId.value,
+        playerId: playerId,
         countLimit: 15
       }
     });
 
-    playerJournal.value = response.data;
-    playerName.value =
-      response.data.timetables.at(0)?.driverName ||
-      response.data.duties.at(0)?.dispatcherName ||
-      '';
+    return response.data;
   } catch (error) {
     console.error(error);
   }
+
+  return null;
+}
+
+async function fetchPlayerTD2Info(playerName: string) {
+  if (!apiStore.client || !playerName) return null;
+
+  try {
+    const response = await axios.get<Td2API.UsersInfoByName.Response>('https://api.td2.info.pl', {
+      params: {
+        method: 'getUsersInfoByName',
+        name: playerName
+      }
+    });
+
+    if (response.data.success && response.data.message.length == 1) {
+      return response.data.message[0];
+    }
+  } catch (error) {
+    console.error(error);
+  }
+
+  return null;
 }
 
 function toggleFilter(filterType: JournalEntryType) {
@@ -387,7 +438,7 @@ $tileColor: #181818;
   }
 
   &[data-active='true'] {
-    color: var(--clr-primary);
+    color: var(--clr-success);
   }
 }
 
