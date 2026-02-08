@@ -1,6 +1,6 @@
 <template>
   <div class="profile-view">
-    <div class="view-container" v-if="playerInfo">
+    <div class="view-container" v-if="playerInfo && playerDataStatus == Status.Data.Loaded">
       <div class="profile-sidebar">
         <div class="player-summary">
           <img
@@ -17,7 +17,6 @@
           <p v-if="playerTD2Info != null">{{ playerTD2Info.levels.dispatcher }} poziom dyżurnego</p>
 
           <div v-if="combinedJournal.length > 0">
-            <!-- <p>Ostatnia aktywność:</p> -->
             <div v-if="playerInfo.currentActivity.dispatcher.length > 0">
               <b class="text--primary">ONLINE JAKO DR:</b>
               {{
@@ -37,6 +36,7 @@
             </div>
           </div>
 
+          <!-- <p v-if="useMainStore"></p> -->
           <!-- <p>Stacjosponsor od 01.01.2024</p> -->
         </div>
 
@@ -270,6 +270,17 @@
         </div>
       </div>
     </div>
+
+    <div v-else-if="playerDataStatus == Status.Data.Loading">
+      <Loading />
+    </div>
+
+    <div class="no-data-found" v-else>
+      <div>
+        <h3>Nie znaleziono gracza! :/</h3>
+        <router-link to="/" class="btn btn--text">Powrót do strony głównej</router-link>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -282,6 +293,8 @@ import { humanizeDuration } from '../composables/time';
 import { useI18n } from 'vue-i18n';
 import axios from 'axios';
 import { getCountPercentage } from '../utils/calcUtils';
+import { Status } from '../typings/common';
+import Loading from '../components/Global/Loading.vue';
 
 type JournalEntryType = 'Timetable' | 'Dispatcher' | 'IssuedTimetable';
 
@@ -300,6 +313,7 @@ const playerName = ref('');
 const playerInfo = ref<API.PlayerInfo.Data | null>(null);
 const playerJournal = ref<API.PlayerJournal.Data | null>(null);
 const playerTD2Info = ref<Td2API.UsersInfoByName.UserInfo | null>(null);
+const playerDataStatus = ref(Status.Data.Initialized);
 
 const activeFilterTypes = reactive<Record<JournalEntryType, boolean>>({
   Timetable: true,
@@ -361,18 +375,29 @@ const combinedJournal = computed<JournalEntry[]>(() => {
 async function fetchAllData() {
   const playerId = route.query.playerId?.toString();
 
-  if (!playerId) return;
+  playerDataStatus.value = Status.Data.Loading;
+
+  if (!playerId) {
+    playerDataStatus.value = Status.Data.Loaded;
+    return;
+  }
 
   const playerInfoResponse = await fetchPlayerInfoData(playerId);
 
-  if (!playerInfoResponse) return;
+  if (!playerInfoResponse) {
+    playerDataStatus.value = Status.Data.Loaded;
+    return;
+  }
 
   playerName.value =
     playerInfoResponse.driverStats.driverName ||
     playerInfoResponse.dispatcherStats.dispatcherName ||
     '';
 
-  if (!playerName.value) return;
+  if (!playerName.value) {
+    playerDataStatus.value = Status.Data.Loaded;
+    return;
+  }
 
   const playerTd2InfoResponse = await fetchPlayerTD2Info(playerName.value);
   const playerJournalResponse = await fetchPlayerJournal(playerId);
@@ -380,6 +405,8 @@ async function fetchAllData() {
   playerInfo.value = playerInfoResponse;
   playerTD2Info.value = playerTd2InfoResponse;
   playerJournal.value = playerJournalResponse;
+
+  playerDataStatus.value = Status.Data.Loaded;
 }
 
 async function fetchPlayerInfoData(playerId: string) {
@@ -463,6 +490,22 @@ $tileColor: #181818;
 .profile-view {
   display: flex;
   justify-content: center;
+}
+
+.no-data-found {
+  text-align: center;
+
+  max-width: var(--max-container-width);
+  width: 100%;
+  background-color: $tileColor;
+  padding: 1em;
+  margin: 1em;
+
+  a {
+    display: inline-block;
+    text-decoration: underline;
+    margin-top: 0.5em;
+  }
 }
 
 .view-container {
