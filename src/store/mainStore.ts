@@ -26,20 +26,12 @@ export const useMainStore = defineStore('mainStore', {
       isOffline: false,
       appUpdate: null,
 
-      dispatcherStatsName: '',
-      dispatcherStatsStatus: Status.Data.Initialized,
-
-      driverStatsName: '',
-      driverStatsData: undefined,
-      driverStatsStatus: Status.Data.Initialized,
-
       chosenModalTrainId: undefined,
 
       modalLastClickedTarget: null,
       currentLocale: 'pl',
 
-      isMigrateInfoCardOpen: false,
-      pinnedStationNames: []
+      isMigrateInfoCardOpen: false
     }) as MainStoreState,
 
   actions: {

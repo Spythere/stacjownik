@@ -605,6 +605,7 @@
     "desc-terminated": "Pociąg zakończył bieg"
   },
   "profile": {
+    "journal-button": "PROFIL GRACZA",
     "filters": {
       "Timetable": "ROZKŁADY JAZDY",
       "Dispatcher": "SŁUŻBY DYŻURNEGO",

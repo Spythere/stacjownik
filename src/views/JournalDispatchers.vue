@@ -14,7 +14,7 @@
           optionsType="dispatchers"
         />
 
-        <JournalStats :statsButtons="statsButtons" />
+        <JournalStats :chosen-player-id="chosenPlayerId" />
       </div>
 
       <div class="journal_refreshed-date">
@@ -49,15 +49,6 @@ import JournalOptions from '../components/JournalView/JournalOptions.vue';
 import JournalHeader from '../components/JournalView/JournalHeader.vue';
 import JournalStats from '../components/JournalView/JournalStats.vue';
 import { useApiStore } from '../store/apiStore';
-
-const statsButtons: Journal.StatsButton[] = [
-  {
-    tab: Journal.StatsTab.DISPATCHER_STATS,
-    localeKey: 'journal.dispatcher-stats.button',
-    iconName: 'user',
-    disabled: true
-  }
-];
 
 interface DispatchersQueryParams {
   dispatcherName?: string;
@@ -105,18 +96,15 @@ export default defineComponent({
   },
 
   data: () => ({
-    statsButtons,
-
     dataRefreshedAt: null as Date | null,
     currentQueryParams: {} as DispatchersQueryParams,
 
     scrollDataLoaded: true,
     scrollNoMoreData: false,
 
-    showReturnButton: false,
-    statsCardOpen: false,
-    currentOptionsActive: false,
+    chosenPlayerId: -1,
 
+    currentOptionsActive: false,
     dataStatus: Status.Data.Loading,
 
     historyList: [] as API.DispatcherHistory.Response
@@ -158,15 +146,6 @@ export default defineComponent({
           queryParams[k as keyof DispatchersQueryParams] !=
           defaultQueryParams[k as keyof DispatchersQueryParams]
       );
-    },
-
-    'mainStore.dispatcherStatsData'(stats) {
-      this.statsButtons.find((sb) => sb.tab == Journal.StatsTab.DISPATCHER_STATS)!.disabled =
-        stats === undefined;
-    },
-
-    async 'mainStore.dispatcherStatsName'() {
-      this.fetchDispatcherStats();
     }
   },
 
@@ -213,29 +192,6 @@ export default defineComponent({
 
     handleQueries(query: LocationQuery) {
       this.setOptions(query as any);
-    },
-
-    async fetchDispatcherStats() {
-      if (!this.mainStore.dispatcherStatsName) {
-        this.mainStore.dispatcherStatsData = undefined;
-        return;
-      }
-
-      try {
-        const statsData: API.DispatcherStats.Response = await (
-          await this.apiStore.client!.get('api/getDispatcherStats', {
-            params: {
-              name: this.mainStore.dispatcherStatsName
-            }
-          })
-        ).data;
-
-        this.mainStore.dispatcherStatsData = statsData;
-      } catch (error) {
-        this.mainStore.dispatcherStatsData = undefined;
-
-        console.error('Ups! Wystąpił błąd przy próbie pobrania statystyk dyżurnego! :/');
-      }
     },
 
     setOptions(options: { [key: string]: string }) {
@@ -320,24 +276,24 @@ export default defineComponent({
 
         if (!responseData) {
           this.dataStatus = Status.Data.Error;
+          this.chosenPlayerId = -1;
+
           return;
         }
-
-        if (!responseData) return;
 
         // Response data exists
         this.historyList = responseData;
 
-        // Stats display
-        this.mainStore.dispatcherStatsName =
-          this.historyList.length > 0 && this.searchersValues['search-dispatcher'].trim()
-            ? this.historyList[0].dispatcherName
-            : '';
+        this.chosenPlayerId =
+          this.historyList.length > 0 && this.searchersValues['search-dispatcher'].trim() != ''
+            ? this.historyList[0].dispatcherId
+            : -1;
 
         this.dataRefreshedAt = new Date();
         this.dataStatus = Status.Data.Loaded;
       } catch (error) {
         this.dataStatus = Status.Data.Error;
+        this.chosenPlayerId = -1;
       }
 
       this.scrollNoMoreData = false;

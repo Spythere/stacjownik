@@ -14,7 +14,7 @@
           optionsType="timetables"
         />
 
-        <JournalStats :statsButtons="statsButtons" />
+        <JournalStats :chosen-player-id="chosenPlayerId" />
       </div>
 
       <div class="journal_refreshed-date">
@@ -170,35 +170,19 @@ export default defineComponent({
     mainStore: useMainStore(),
     apiStore: useApiStore(),
 
-    statsButtons: [
-      {
-        tab: Journal.StatsTab.DAILY_STATS,
-        localeKey: 'journal.daily-stats.button',
-        iconName: 'stats',
-        disabled: false
-      },
-      {
-        tab: Journal.StatsTab.DRIVER_STATS,
-        localeKey: 'journal.driver-stats.button',
-        iconName: 'train',
-        disabled: true
-      }
-    ],
-
     currentQueryParams: {} as TimetablesQueryParams,
     dataRefreshedAt: null as Date | null,
 
     scrollDataLoaded: true,
     scrollNoMoreData: false,
 
-    showReturnButton: false,
-    statsCardOpen: false,
+    chosenPlayerId: -1,
+
     currentOptionsActive: false,
 
     timetableHistory: [] as API.TimetableHistory.Response,
 
-    dataStatus: Status.Data.Loading,
-    dataErrorMessage: ''
+    dataStatus: Status.Data.Loading
   }),
 
   setup() {
@@ -248,15 +232,6 @@ export default defineComponent({
   watch: {
     currentQueryParams(q: TimetablesQueryParams) {
       this.currentOptionsActive = Object.values(q).some((v) => v !== undefined);
-    },
-
-    'mainStore.driverStatsData'(driverStats) {
-      this.statsButtons.find((sb) => sb.tab == Journal.StatsTab.DRIVER_STATS)!.disabled =
-        driverStats === undefined;
-    },
-
-    async 'mainStore.driverStatsName'() {
-      this.fetchDriverStats();
     }
   },
 
@@ -285,31 +260,6 @@ export default defineComponent({
 
     handleQueries(query: LocationQuery) {
       this.setOptions(query as any);
-    },
-
-    async fetchDriverStats() {
-      if (!this.mainStore.driverStatsName) {
-        this.mainStore.driverStatsData = undefined;
-        this.mainStore.driverStatsStatus = Status.Data.Initialized;
-        return;
-      }
-
-      try {
-        this.mainStore.driverStatsStatus = Status.Data.Loading;
-
-        const statsData: API.DriverStats.Response = await (
-          await this.apiStore.client!.get(
-            `api/getDriverInfo?name=${this.mainStore.driverStatsName}`
-          )
-        ).data;
-
-        this.mainStore.driverStatsData = statsData;
-        this.mainStore.driverStatsStatus = Status.Data.Loaded;
-      } catch (error) {
-        this.mainStore.driverStatsData = undefined;
-        this.mainStore.driverStatsStatus = Status.Data.Error;
-        console.error('Ups! Wystąpił błąd przy próbie pobrania statystyk maszynisty! :/');
-      }
     },
 
     setOptions(options: { [key: string]: string }) {
@@ -464,26 +414,23 @@ export default defineComponent({
 
         if (!responseData) {
           this.dataStatus = Status.Data.Error;
-          this.dataErrorMessage = 'Brak danych!';
+          this.chosenPlayerId = -1;
           return;
         }
-
-        if (!responseData) return;
 
         // Response data exists
         this.timetableHistory = responseData;
 
-        // Stats display
-        this.mainStore.driverStatsName =
-          this.timetableHistory.length > 0 && this.searchersValues['search-driver'].trim()
-            ? this.timetableHistory[0].driverName
-            : '';
+        this.chosenPlayerId =
+          this.timetableHistory.length > 0 && this.searchersValues['search-driver'].trim() != ''
+            ? this.timetableHistory[0].driverId
+            : -1;
 
         this.dataStatus = Status.Data.Loaded;
         this.dataRefreshedAt = new Date();
       } catch (error) {
         this.dataStatus = Status.Data.Error;
-        this.dataErrorMessage = 'Ups! Coś poszło nie tak!';
+        this.chosenPlayerId = -1;
       }
 
       this.scrollNoMoreData = false;
