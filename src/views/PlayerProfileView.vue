@@ -3,37 +3,73 @@
     <div class="view-container" v-if="playerInfo && playerDataStatus == Status.Data.Loaded">
       <div class="profile-sidebar">
         <div class="player-summary">
-          <img
-            v-if="playerTD2Info"
-            :src="`https://td2.info.pl/index.php?action=dlattach;attach=${playerTD2Info.avatar};type=avatar`"
-            alt="player image"
-            height="100"
-            @error="(e) => ((e.target as any).src = '/images/default-avatar.jpg')"
-          />
+          <div class="summary-main">
+            <img
+              v-if="playerTD2Info"
+              :src="`https://td2.info.pl/index.php?action=dlattach;attach=${playerTD2Info.avatar};type=avatar`"
+              alt="player image"
+              height="120"
+              @error="(e) => ((e.target as any).src = '/images/default-avatar.jpg')"
+            />
 
-          <h3>{{ playerName }}</h3>
+            <img class="img-placeholder" height="100" src="/images/default-avatar.jpg" v-else />
 
-          <p v-if="playerTD2Info != null">{{ playerTD2Info.levels.driver }} poziom maszynisty</p>
-          <p v-if="playerTD2Info != null">{{ playerTD2Info.levels.dispatcher }} poziom dyżurnego</p>
+            <div>
+              <h2>{{ playerName }}</h2>
 
-          <div v-if="combinedJournal.length > 0">
-            <div v-if="playerInfo.currentActivity.dispatcher.length > 0">
-              <b class="text--primary">ONLINE JAKO DR:</b>
-              {{
-                playerInfo.currentActivity.dispatcher
-                  .map((d) => `${d.stationName} (${d.stationHash})`)
-                  .join(', ')
-              }}
+              <div class="player-badges">
+                <div class="badge-container" v-if="playerInfo.driverStats.driverLevel != null">
+                  <span
+                    class="level-badge driver"
+                    :style="calculateExpStyles(playerInfo.driverStats.driverLevel)"
+                  >
+                    {{
+                      playerInfo.driverStats.driverLevel > 1
+                        ? playerInfo.driverStats.driverLevel
+                        : 'L'
+                    }}
+                  </span>
+                  MASZYNISTA
+                </div>
+
+                <div
+                  class="badge-container"
+                  v-if="playerInfo.dispatcherStats.dispatcherLevel != null"
+                >
+                  <span
+                    class="level-badge dispatcher"
+                    :style="calculateExpStyles(playerInfo.dispatcherStats.dispatcherLevel)"
+                  >
+                    {{
+                      playerInfo.dispatcherStats.dispatcherLevel > 1
+                        ? playerInfo.dispatcherStats.dispatcherLevel
+                        : 'L'
+                    }}
+                  </span>
+                  DYŻURNY RUCHU
+                </div>
+              </div>
             </div>
+          </div>
 
-            <div
-              v-if="
-                playerInfo.currentActivity.driver && playerInfo.currentActivity.driver.length > 0
-              "
-            >
-              <b>ONLINE JAKO MASZYNISTA:</b>
-              {{ playerInfo.currentActivity.driver }}
-            </div>
+          <div
+            class="player-current-activity"
+            v-if="playerInfo.currentActivity.dispatcher.length > 0"
+          >
+            <b class="text--primary">ONLINE JAKO DR:</b>
+            {{
+              playerInfo.currentActivity.dispatcher
+                .map((d) => `${d.stationName} (${d.stationHash})`)
+                .join(', ')
+            }}
+          </div>
+
+          <div
+            class="player-current-activity"
+            v-if="playerInfo.currentActivity.driver && playerInfo.currentActivity.driver.length > 0"
+          >
+            <b>ONLINE JAKO MASZYNISTA:</b>
+            {{ playerInfo.currentActivity.driver.trainNo }}
           </div>
 
           <!-- <p v-if="useMainStore"></p> -->
@@ -168,7 +204,7 @@
               <div><img src="/images/icon-spawn.svg" width="30" alt="spawn icon" /></div>
               <div>
                 <h3 class="text--primary">
-                  {{ playerInfo.driverStatsLastMonth.currentDistanceTotal || 0 }}
+                  {{ playerInfo.driverStatsLastMonth.currentDistanceTotal?.toFixed(2) || 0 }}
                 </h3>
               </div>
               <div>
@@ -295,6 +331,7 @@ import axios from 'axios';
 import { getCountPercentage } from '../utils/calcUtils';
 import { Status } from '../typings/common';
 import Loading from '../components/Global/Loading.vue';
+import { calculateExpStyles } from '../composables/badge';
 
 type JournalEntryType = 'Timetable' | 'Dispatcher' | 'IssuedTimetable';
 
@@ -375,6 +412,7 @@ const combinedJournal = computed<JournalEntry[]>(() => {
 async function fetchAllData() {
   const playerId = route.query.playerId?.toString();
 
+  playerTD2Info.value = null;
   playerDataStatus.value = Status.Data.Loading;
 
   if (!playerId) {
@@ -484,6 +522,7 @@ function toggleFilter(filterType: JournalEntryType) {
 
 <style lang="scss" scoped>
 @use '../styles/responsive';
+@use '../styles/badge';
 
 $tileColor: #181818;
 
@@ -552,6 +591,31 @@ $tileColor: #181818;
   background-color: $tileColor;
   border-radius: 0.5em;
   padding: 1em;
+}
+
+.summary-main {
+  display: flex;
+  justify-content: center;
+  gap: 1.5em;
+}
+
+.player-badges {
+  margin: 0.5em 0;
+}
+
+.badge-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin: 0.5em 0;
+
+  & > .level-badge {
+    font-size: 1.15em;
+  }
+}
+
+.player-current-activity {
+  margin-top: 1em;
 }
 
 .profile-main {
