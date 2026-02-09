@@ -15,7 +15,11 @@
             <img class="img-placeholder" height="100" src="/images/default-avatar.jpg" v-else />
 
             <div>
-              <h2>{{ playerName }}</h2>
+              <h2 class="player-name-header">
+                <a :href="`https://td2.info.pl/profile/?u=${route.query.playerId}`" target="_blank">
+                  {{ playerName }}
+                </a>
+              </h2>
 
               <div class="player-badges">
                 <div class="badge-container" v-if="playerInfo.driverStats.driverLevel != null">
@@ -69,7 +73,8 @@
             v-if="playerInfo.currentActivity.driver && playerInfo.currentActivity.driver.length > 0"
           >
             <b>ONLINE JAKO MASZYNISTA:</b>
-            {{ playerInfo.currentActivity.driver.trainNo }}
+            {{ playerInfo.currentActivity.driver.trainNo }} na scenerii
+            {{ playerInfo.currentActivity.driver.currentStationName }}
           </div>
 
           <!-- <p v-if="useMainStore"></p> -->
@@ -194,10 +199,7 @@
               <div>
                 <h3 class="text--primary">{{ playerInfo.driverStatsLastMonth.countAll }}</h3>
               </div>
-              <div>
-                ROZKŁADÓW <br />
-                JAZDY
-              </div>
+              <div>ROZKŁADÓW JAZDY</div>
             </div>
 
             <div class="month-stat">
@@ -207,10 +209,7 @@
                   {{ playerInfo.driverStatsLastMonth.currentDistanceTotal?.toFixed(2) || 0 }}
                 </h3>
               </div>
-              <div>
-                POKONANYCH <br />
-                KILOMETRÓW
-              </div>
+              <div>POKONANYCH KILOMETRÓW</div>
             </div>
 
             <div class="month-stat">
@@ -220,10 +219,7 @@
                   {{ playerInfo.dispatcherStatsLastMonth.services?.count || 0 }}
                 </h3>
               </div>
-              <div>
-                SŁUŻB <br />
-                DYŻURNEGO
-              </div>
+              <div>SŁUŻB DYŻURNEGO</div>
             </div>
 
             <div class="month-stat">
@@ -233,10 +229,7 @@
                   {{ playerInfo.dispatcherStatsLastMonth.issuedTimetables?.count || 0 }}
                 </h3>
               </div>
-              <div>
-                WYSTAWIONYCH <br />
-                ROZKŁADÓW
-              </div>
+              <div>WYSTAWIONYCH ROZKŁADÓW</div>
             </div>
           </div>
         </div>
@@ -257,28 +250,48 @@
         <div class="history-list-box">
           <ul>
             <li v-for="entry in combinedJournal">
-              <img
-                v-if="entry.type == 'Dispatcher'"
-                src="/images/icon-user.svg"
-                width="20"
-                alt="user icon"
-              />
+              <div style="display: flex; align-items: center; gap: 0.25em">
+                <img
+                  v-if="entry.type == 'Dispatcher'"
+                  src="/images/icon-user.svg"
+                  width="25"
+                  alt="user icon"
+                />
 
-              <img
-                v-else-if="entry.type == 'Timetable'"
-                src="/images/icon-train.svg"
-                width="20"
-                alt="train icon"
-              />
+                <img
+                  v-else-if="entry.type == 'Timetable'"
+                  src="/images/icon-train.svg"
+                  width="25"
+                  alt="train icon"
+                />
 
-              <img v-else src="/images/icon-timetable.svg" width="20" alt="timetable icon" />
+                <img v-else src="/images/icon-timetable.svg" width="25" alt="timetable icon" />
 
-              <b class="text--grayed">
-                {{ entry.date.toLocaleString('pl-PL', { dateStyle: 'long', timeStyle: 'short' }) }}
-              </b>
+                <b class="text--grayed">
+                  {{
+                    entry.date.toLocaleString('pl-PL', { dateStyle: 'long', timeStyle: 'short' })
+                  }}
+                </b>
+
+                <b
+                  v-if="'timestampTo' in entry.value && entry.value.timestampTo"
+                  class="text--grayed"
+                >
+                  -
+                  {{
+                    new Date(entry.value.timestampTo).toLocaleString('pl-PL', {
+                      dateStyle:
+                        new Date(entry.value.timestampTo).getDay() == entry.date.getDay()
+                          ? undefined
+                          : 'long',
+                      timeStyle: 'short'
+                    })
+                  }}
+                </b>
+              </div>
 
               <!-- Timetables -->
-              <span v-if="'trainNo' in entry.value">
+              <div v-if="'trainNo' in entry.value">
                 <b class="text--primary">
                   {{ entry.value.trainCategoryCode }} {{ entry.value.trainNo }}
                 </b>
@@ -289,18 +302,21 @@
                 <b>{{ entry.value.route.replace('|', ' > ') }}</b>
                 {{ ' ' }}
                 <b>({{ entry.value.currentDistance }} / {{ entry.value.routeDistance }}km) </b>
-              </span>
+              </div>
 
               <!-- Dispatchers -->
-              <span v-else>
-                <b>{{ entry.value.stationName }}</b>
+              <div v-else>
+                <b class="text--primary">{{ entry.value.stationName }}</b>
                 {{ ' - ' }}
-                <b>{{
-                  humanizeDuration(
-                    (entry.value.timestampTo || Date.now()) - entry.value.timestampFrom
-                  )
-                }}</b>
-              </span>
+                <b>
+                  <span v-if="entry.value.isOnline">od </span>
+                  <span>{{
+                    humanizeDuration(
+                      (entry.value.timestampTo || Date.now()) - entry.value.timestampFrom
+                    )
+                  }}</span>
+                </b>
+              </div>
             </li>
           </ul>
         </div>
@@ -472,7 +488,7 @@ async function fetchPlayerJournal(playerId: string) {
     const response = await apiStore.client.get<API.PlayerJournal.Data>('api/getPlayerJournal', {
       params: {
         playerId: playerId,
-        countLimit: 15
+        countLimit: 30
       }
     });
 
@@ -593,21 +609,22 @@ $tileColor: #181818;
   padding: 1em;
 }
 
-.summary-main {
-  display: flex;
-  justify-content: center;
-  gap: 1.5em;
+.player-name-header {
+  margin: 0.5em 0;
 }
 
 .player-badges {
-  margin: 0.5em 0;
+  display: flex;
+  justify-content: center;
+  gap: 1em;
 }
 
 .badge-container {
   display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 0.5em;
-  margin: 0.5em 0;
+
+  gap: 0.25em;
 
   & > .level-badge {
     font-size: 1.15em;
@@ -640,6 +657,15 @@ $tileColor: #181818;
   background-color: $tileColor;
   border-radius: 0.5em;
   padding: 0.5em;
+
+  h3 {
+    font-size: 1.3em;
+  }
+
+  div:nth-child(3) {
+    margin-top: 0.5em;
+    font-size: 0.9em;
+  }
 }
 
 .history-menu {
@@ -671,7 +697,7 @@ $tileColor: #181818;
 
   & > ul > li {
     display: flex;
-    align-items: center;
+    flex-direction: column;
     gap: 0.25em;
 
     background-color: $tileColor;

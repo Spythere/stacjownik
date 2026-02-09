@@ -87,7 +87,7 @@
       </b>
 
       <b
-        class="info-badge"
+        class="timetable-status-badge"
         :class="{
           fulfilled: timetable.fulfilled,
           terminated: timetable.terminated && !timetable.fulfilled,
@@ -169,23 +169,6 @@ export default defineComponent({
 .badges {
   display: flex;
   gap: 0.25em;
-}
-
-.info-badge {
-  padding: 0.05em 0.35em;
-  color: black;
-
-  &.terminated {
-    background-color: salmon;
-  }
-
-  &.fulfilled {
-    background-color: lightgreen;
-  }
-
-  &.active {
-    background-color: lightblue;
-  }
 }
 
 .btn-timetable {
