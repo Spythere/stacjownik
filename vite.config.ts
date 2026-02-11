@@ -9,7 +9,7 @@ export default defineConfig({
   publicDir: 'public',
   css: {
     preprocessorOptions: {
-      scss: { additionalData: `@use '@/styles/global';`, silenceDeprecations: ['legacy-js-api'] }
+      scss: { silenceDeprecations: ['legacy-js-api'] }
     }
   },
   resolve: {

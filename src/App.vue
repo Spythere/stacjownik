@@ -212,6 +212,7 @@ export default defineComponent({
 
 <style lang="scss">
 @use './styles/animations';
+@use './styles/global';
 
 // APP
 #app {
