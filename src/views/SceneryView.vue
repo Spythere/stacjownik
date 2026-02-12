@@ -135,6 +135,10 @@ function setViewMode(componentName: string) {
   &-view {
     display: flex;
     justify-content: center;
+    
+    height: 100vh;
+    min-height: 500px;
+    max-height: 2000px;
   }
 
   &-offline {
@@ -181,10 +185,6 @@ function setViewMode(componentName: string) {
   background-color: #181818;
   border-radius: 0.5em;
   padding: 1em 0.5em;
-
-  height: calc(100vh - 0.5em);
-  min-height: 500px;
-  max-height: 2000px;
 }
 
 .scenery-left {

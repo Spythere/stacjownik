@@ -47,6 +47,6 @@ const chosenTrain = computed(() =>
   margin: 0 auto;
   padding: 1em 0;
   max-width: var(--max-container-width);
-  min-height: calc(100vh - 7em);
+  min-height: 100vh;
 }
 </style>

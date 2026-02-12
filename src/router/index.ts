@@ -74,13 +74,14 @@ const routes: Array<RouteRecordRaw> = [
 
 const router = createRouter({
   scrollBehavior(to, from, savedPosition) {
+    console.log(to.name);
     if (
-      (to.name == 'SceneryView' || to.name == 'DriverView') &&
+      (to.name == 'SceneryView' || to.name == 'DriverView' || to.name == 'PlayerProfileView') &&
       from.name !== to.name &&
       from.query['view'] === undefined &&
       !savedPosition
     )
-      return { el: `.app_main`, behavior: 'instant', top: -13 };
+      return { el: `.app_main`, behavior: 'smooth', top: 0 };
 
     if (savedPosition) return savedPosition;
   },

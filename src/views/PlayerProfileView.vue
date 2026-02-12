@@ -488,7 +488,7 @@ async function fetchPlayerJournal(playerId: string) {
     const response = await apiStore.client.get<API.PlayerJournal.Data>('api/getPlayerJournal', {
       params: {
         playerId: playerId,
-        countLimit: 30
+        dateScope: '14d'
       }
     });
 
@@ -545,6 +545,8 @@ $tileColor: #181818;
 .profile-view {
   display: flex;
   justify-content: center;
+  height: 100vh;
+  min-height: 500px;
 }
 
 .no-data-found {
@@ -573,8 +575,6 @@ $tileColor: #181818;
 
   max-width: var(--max-container-width);
   width: 100%;
-  // height: calc(100vh - 0.5em);
-  min-height: 900px;
 
   padding: 1rem 0;
   text-align: center;
@@ -582,8 +582,6 @@ $tileColor: #181818;
 
 .view-container > div {
   position: relative;
-
-  // border-radius: 0.5em;
 }
 
 .profile-sidebar {
