@@ -135,7 +135,7 @@ function setViewMode(componentName: string) {
   &-view {
     display: flex;
     justify-content: center;
-    
+
     height: 100vh;
     min-height: 500px;
     max-height: 2000px;
@@ -236,6 +236,10 @@ function setViewMode(componentName: string) {
 }
 
 @include responsive.midScreen {
+  .scenery-view {
+    height: auto;
+  }
+  
   .scenery-wrapper {
     grid-template-columns: 1fr;
     gap: 0;

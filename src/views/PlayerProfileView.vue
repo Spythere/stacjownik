@@ -1,7 +1,7 @@
 <template>
   <div class="profile-view">
-    <div class="view-container" v-if="playerInfo && playerDataStatus == Status.Data.Loaded">
-      <div class="profile-sidebar">
+    <div class="profile-wrapper" v-if="playerInfo && playerDataStatus == Status.Data.Loaded">
+      <div class="profile-left">
         <div class="player-summary">
           <div class="summary-main">
             <img
@@ -189,10 +189,10 @@
         </div>
       </div>
 
-      <div class="profile-main">
-        <h3 class="main-header">STATYSTYKI AKTYWNOŚCI (30 OSTATNICH DNI)</h3>
+      <div class="profile-right">
+        <div class="profile-month-stats">
+          <h3 class="main-header">STATYSTYKI AKTYWNOŚCI (30 OSTATNICH DNI)</h3>
 
-        <div class="main-month-stats">
           <div class="month-stats-box">
             <div class="month-stat">
               <div><img src="/images/icon-train.svg" width="30" alt="train icon" /></div>
@@ -234,91 +234,95 @@
           </div>
         </div>
 
-        <h3 class="main-header">OSTATNIA AKTYWNOŚĆ GRACZA</h3>
+        <div class="profile-history-list">
+          <div class="list-header">
+            <h3 class="main-header">OSTATNIA AKTYWNOŚĆ GRACZA</h3>
 
-        <div class="history-menu">
-          <button
-            v-for="(filterState, filterKey) in activeFilterTypes"
-            class="menu-btn"
-            :data-active="filterState"
-            @click="toggleFilter(filterKey)"
-          >
-            {{ t(`profile.filters.${filterKey}`) }}
-          </button>
-        </div>
+            <div class="history-menu">
+              <button
+                v-for="(filterState, filterKey) in activeFilterTypes"
+                class="menu-btn"
+                :data-active="filterState"
+                @click="toggleFilter(filterKey)"
+              >
+                {{ t(`profile.filters.${filterKey}`) }}
+              </button>
+            </div>
+          </div>
 
-        <div class="history-list-box">
-          <ul>
-            <li v-for="entry in combinedJournal">
-              <div style="display: flex; align-items: center; gap: 0.25em">
-                <img
-                  v-if="entry.type == 'Dispatcher'"
-                  src="/images/icon-user.svg"
-                  width="25"
-                  alt="user icon"
-                />
+          <div class="history-list-box">
+            <ul>
+              <li v-for="entry in combinedJournal">
+                <div style="display: flex; align-items: center; gap: 0.25em">
+                  <img
+                    v-if="entry.type == 'Dispatcher'"
+                    src="/images/icon-user.svg"
+                    width="25"
+                    alt="user icon"
+                  />
 
-                <img
-                  v-else-if="entry.type == 'Timetable'"
-                  src="/images/icon-train.svg"
-                  width="25"
-                  alt="train icon"
-                />
+                  <img
+                    v-else-if="entry.type == 'Timetable'"
+                    src="/images/icon-train.svg"
+                    width="25"
+                    alt="train icon"
+                  />
 
-                <img v-else src="/images/icon-timetable.svg" width="25" alt="timetable icon" />
+                  <img v-else src="/images/icon-timetable.svg" width="25" alt="timetable icon" />
 
-                <b class="text--grayed">
-                  {{
-                    entry.date.toLocaleString('pl-PL', { dateStyle: 'long', timeStyle: 'short' })
-                  }}
-                </b>
+                  <b class="text--grayed">
+                    {{
+                      entry.date.toLocaleString('pl-PL', { dateStyle: 'long', timeStyle: 'short' })
+                    }}
+                  </b>
 
-                <b
-                  v-if="'timestampTo' in entry.value && entry.value.timestampTo"
-                  class="text--grayed"
-                >
-                  -
-                  {{
-                    new Date(entry.value.timestampTo).toLocaleString('pl-PL', {
-                      dateStyle:
-                        new Date(entry.value.timestampTo).getDay() == entry.date.getDay()
-                          ? undefined
-                          : 'long',
-                      timeStyle: 'short'
-                    })
-                  }}
-                </b>
-              </div>
+                  <b
+                    v-if="'timestampTo' in entry.value && entry.value.timestampTo"
+                    class="text--grayed"
+                  >
+                    -
+                    {{
+                      new Date(entry.value.timestampTo).toLocaleString('pl-PL', {
+                        dateStyle:
+                          new Date(entry.value.timestampTo).getDay() == entry.date.getDay()
+                            ? undefined
+                            : 'long',
+                        timeStyle: 'short'
+                      })
+                    }}
+                  </b>
+                </div>
 
-              <!-- Timetables -->
-              <div v-if="'trainNo' in entry.value">
-                <b class="text--primary">
-                  {{ entry.value.trainCategoryCode }} {{ entry.value.trainNo }}
-                </b>
-                <b class="text--grayed" v-if="entry.type == 'IssuedTimetable'">
-                  dla: {{ entry.value.driverName }}
-                </b>
-                {{ ' ' }}
-                <b>{{ entry.value.route.replace('|', ' > ') }}</b>
-                {{ ' ' }}
-                <b>({{ entry.value.currentDistance }} / {{ entry.value.routeDistance }}km) </b>
-              </div>
+                <!-- Timetables -->
+                <div v-if="'trainNo' in entry.value">
+                  <b class="text--primary">
+                    {{ entry.value.trainCategoryCode }} {{ entry.value.trainNo }}
+                  </b>
+                  <b class="text--grayed" v-if="entry.type == 'IssuedTimetable'">
+                    dla: {{ entry.value.driverName }}
+                  </b>
+                  {{ ' ' }}
+                  <b>{{ entry.value.route.replace('|', ' > ') }}</b>
+                  {{ ' ' }}
+                  <b>({{ entry.value.currentDistance }} / {{ entry.value.routeDistance }}km) </b>
+                </div>
 
-              <!-- Dispatchers -->
-              <div v-else>
-                <b class="text--primary">{{ entry.value.stationName }}</b>
-                {{ ' - ' }}
-                <b>
-                  <span v-if="entry.value.isOnline">od </span>
-                  <span>{{
-                    humanizeDuration(
-                      (entry.value.timestampTo || Date.now()) - entry.value.timestampFrom
-                    )
-                  }}</span>
-                </b>
-              </div>
-            </li>
-          </ul>
+                <!-- Dispatchers -->
+                <div v-else>
+                  <b class="text--primary">{{ entry.value.stationName }}</b>
+                  {{ ' - ' }}
+                  <b>
+                    <span v-if="entry.value.isOnline">od </span>
+                    <span>{{
+                      humanizeDuration(
+                        (entry.value.timestampTo || Date.now()) - entry.value.timestampFrom
+                      )
+                    }}</span>
+                  </b>
+                </div>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
@@ -545,8 +549,10 @@ $tileColor: #181818;
 .profile-view {
   display: flex;
   justify-content: center;
+
   height: 100vh;
   min-height: 500px;
+  max-height: 2000px;
 }
 
 .no-data-found {
@@ -565,12 +571,11 @@ $tileColor: #181818;
   }
 }
 
-.view-container {
+.profile-wrapper {
   display: grid;
   grid-template-columns: 500px 1fr;
 
   gap: 1em;
-
   position: relative;
 
   max-width: var(--max-container-width);
@@ -580,14 +585,27 @@ $tileColor: #181818;
   text-align: center;
 }
 
-.view-container > div {
-  position: relative;
-}
-
-.profile-sidebar {
+.profile-left {
   display: flex;
   flex-direction: column;
   gap: 1em;
+  overflow: auto;
+}
+
+.profile-right {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 0.5em;
+  overflow: auto;
+}
+
+.profile-month-stats {
+  overflow: hidden;
+}
+
+.profile-history-list {
+  overflow: auto;
+  height: 100%;
 }
 
 .player-stats {
@@ -633,22 +651,23 @@ $tileColor: #181818;
   margin-top: 1em;
 }
 
-.profile-main {
-  overflow: hidden;
-}
-
 .main-header {
   padding: 0.5em;
   background-color: $tileColor;
   margin-bottom: 0.5em;
-  border-radius: 0.5em;
+}
+
+.list-header {
+  position: sticky;
+  top: 0;
+  background-color: var(--clr-bg);
+  padding-bottom: 0.5em;
 }
 
 .month-stats-box {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 0.5em;
-  margin-bottom: 1em;
 }
 
 .month-stat {
@@ -689,10 +708,6 @@ $tileColor: #181818;
 }
 
 .history-list-box {
-  overflow: auto;
-  height: 650px;
-  margin-top: 1em;
-
   & > ul > li {
     display: flex;
     flex-direction: column;
@@ -707,9 +722,17 @@ $tileColor: #181818;
 }
 
 @include responsive.midScreen {
-  .view-container {
+  .profile-view {
+    height: auto;
+  }
+
+  .profile-wrapper {
     grid-template-columns: 1fr;
     max-width: 1000px;
+  }
+
+  .history-list-box {
+    max-height: 100vh;
   }
 
   .player-stats {
