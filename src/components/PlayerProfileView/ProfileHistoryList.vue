@@ -1,5 +1,5 @@
 <template>
-  <div class="profile-history-list">
+  <section class="profile-history-list">
     <div class="list-header">
       <h3>OSTATNIA AKTYWNOŚĆ GRACZA</h3>
 
@@ -83,7 +83,7 @@
         </li>
       </ul>
     </div>
-  </div>
+  </section>
 </template>
 
 <script lang="ts" setup>

@@ -1,5 +1,5 @@
 <template>
-  <div class="profile-recent-stats">
+  <section class="profile-recent-stats">
     <h3 class="stats-header">STATYSTYKI AKTYWNOŚCI (30 OSTATNICH DNI)</h3>
 
     <div class="month-stats-box">
@@ -41,7 +41,7 @@
         <div>WYSTAWIONYCH ROZKŁADÓW</div>
       </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <script lang="ts" setup>

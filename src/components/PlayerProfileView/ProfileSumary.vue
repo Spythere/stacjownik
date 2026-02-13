@@ -1,5 +1,5 @@
 <template>
-  <div class="profile-summary">
+  <section class="profile-summary">
     <div class="player-info">
       <div class="info-main">
         <img
@@ -177,7 +177,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <script lang="ts" setup>
