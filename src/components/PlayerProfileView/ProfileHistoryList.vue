@@ -1,0 +1,239 @@
+<template>
+  <div class="profile-history-list">
+    <div class="list-header">
+      <h3>OSTATNIA AKTYWNOŚĆ GRACZA</h3>
+
+      <div class="history-menu">
+        <button
+          v-for="(filterState, filterKey) in activeFilterTypes"
+          class="menu-btn"
+          :data-active="filterState"
+          @click="toggleFilter(filterKey)"
+        >
+          {{ t(`profile.filters.${filterKey}`) }}
+        </button>
+      </div>
+    </div>
+
+    <div class="history-list-box">
+      <ul>
+        <li v-for="entry in combinedJournal">
+          <div style="display: flex; align-items: center; gap: 0.25em">
+            <img
+              v-if="entry.type == 'Dispatcher'"
+              src="/images/icon-user.svg"
+              width="25"
+              alt="user icon"
+            />
+
+            <img
+              v-else-if="entry.type == 'Timetable'"
+              src="/images/icon-train.svg"
+              width="25"
+              alt="train icon"
+            />
+
+            <img v-else src="/images/icon-timetable.svg" width="25" alt="timetable icon" />
+
+            <b class="text--grayed">
+              {{ entry.date.toLocaleString('pl-PL', { dateStyle: 'long', timeStyle: 'short' }) }}
+            </b>
+
+            <b v-if="'timestampTo' in entry.value && entry.value.timestampTo" class="text--grayed">
+              -
+              {{
+                new Date(entry.value.timestampTo).toLocaleString('pl-PL', {
+                  dateStyle:
+                    new Date(entry.value.timestampTo).getDay() == entry.date.getDay()
+                      ? undefined
+                      : 'long',
+                  timeStyle: 'short'
+                })
+              }}
+            </b>
+          </div>
+
+          <!-- Timetables -->
+          <div v-if="'trainNo' in entry.value">
+            <b class="text--primary">
+              {{ entry.value.trainCategoryCode }} {{ entry.value.trainNo }}
+            </b>
+            <b class="text--grayed" v-if="entry.type == 'IssuedTimetable'">
+              dla: {{ entry.value.driverName }}
+            </b>
+            {{ ' ' }}
+            <b>{{ entry.value.route.replace('|', ' > ') }}</b>
+            {{ ' ' }}
+            <b>({{ entry.value.currentDistance }} / {{ entry.value.routeDistance }}km) </b>
+          </div>
+
+          <!-- Dispatchers -->
+          <div v-else>
+            <b class="text--primary">{{ entry.value.stationName }}</b>
+            {{ ' - ' }}
+            <b>
+              <span v-if="entry.value.isOnline">od </span>
+              <span>{{
+                humanizeDuration(
+                  (entry.value.timestampTo || Date.now()) - entry.value.timestampFrom
+                )
+              }}</span>
+            </b>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</template>
+
+<script lang="ts" setup>
+import { computed, PropType, reactive } from 'vue';
+import { humanizeDuration } from '../../composables/time';
+import { API } from '../../typings/api';
+import { useI18n } from 'vue-i18n';
+
+type JournalEntryType = 'Timetable' | 'Dispatcher' | 'IssuedTimetable';
+
+interface JournalEntry {
+  type: JournalEntryType;
+  date: Date;
+  value: API.TimetableHistory.DataShort | API.DispatcherHistory.Data;
+}
+
+const props = defineProps({
+  playerJournal: {
+    type: Object as PropType<API.PlayerJournal.Data | null>,
+    required: true
+  },
+
+  playerName: {
+    type: String
+  }
+});
+
+const { t } = useI18n();
+
+const activeFilterTypes = reactive<Record<JournalEntryType, boolean>>({
+  Timetable: true,
+  Dispatcher: true,
+  IssuedTimetable: true
+});
+
+const combinedJournal = computed<JournalEntry[]>(() => {
+  if (!props.playerJournal || !props.playerName) return [];
+
+  const list = [
+    ...props.playerJournal.timetables,
+    ...props.playerJournal.duties,
+    ...props.playerJournal.issuedTimetables
+  ]
+    .reduce<JournalEntry[]>((acc, v) => {
+      // Timetable or dispatcher type
+      if ('trainNo' in v) {
+        const isIssued = v.authorName == props.playerName;
+
+        if (!isIssued && !activeFilterTypes['Timetable']) return acc;
+        if (isIssued && !activeFilterTypes['IssuedTimetable']) return acc;
+
+        acc.push({
+          date: new Date(v.createdAt),
+          type: isIssued ? 'IssuedTimetable' : 'Timetable',
+          value: v
+        });
+      } else {
+        if (!activeFilterTypes['Dispatcher']) return acc;
+
+        acc.push({
+          date: new Date(v.timestampFrom),
+          type: 'Dispatcher',
+          value: v
+        });
+      }
+
+      return acc;
+    }, [])
+    .sort((a, b) => {
+      return a.date.getTime() - b.date.getTime() > 0 ? -1 : 1;
+    });
+
+  return list;
+});
+
+function toggleFilter(filterType: JournalEntryType) {
+  const toggledState = !activeFilterTypes[filterType];
+
+  // Prevent switching off all filters at the same time (at least one must be active)
+  if (
+    toggledState === false &&
+    Object.values(activeFilterTypes).filter((v) => v === false).length ==
+      Object.values(activeFilterTypes).length - 1
+  )
+    return;
+
+  activeFilterTypes[filterType] = toggledState;
+}
+</script>
+
+<style lang="scss" scoped>
+@use '../../styles/responsive';
+
+.profile-history-list {
+  overflow: auto;
+  height: 100%;
+}
+
+.list-header {
+  position: sticky;
+  top: 0;
+  background-color: var(--clr-bg);
+  padding-bottom: 0.5em;
+
+  & > h3 {
+    padding: 0.5em;
+    background-color: var(--clr-tile);
+    margin-bottom: 0.5em;
+  }
+}
+
+.history-menu {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1em;
+  padding: 0 1px;
+}
+
+.menu-btn {
+  background-color: var(--clr-tile);
+  padding: 0.5em;
+  font-weight: bold;
+  color: #aaa;
+
+  &:hover {
+    background-color: #2b2b2b;
+  }
+
+  &[data-active='true'] {
+    color: var(--clr-success);
+  }
+}
+
+.history-list-box {
+  & > ul > li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25em;
+
+    background-color: var(--clr-tile);
+    padding: 0.5em;
+
+    margin-bottom: 0.5em;
+    text-align: initial;
+  }
+}
+
+@include responsive.midScreen {
+  .history-list-box {
+    max-height: 100vh;
+  }
+}
+</style>
