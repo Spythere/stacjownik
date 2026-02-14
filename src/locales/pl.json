@@ -606,10 +606,50 @@
   },
   "profile": {
     "journal-button": "PROFIL GRACZA",
+    "no-player-found": "Nie znaleziono gracza! :/",
+    "return-to-main": "Powrót do strony głównej",
+
     "filters": {
       "Timetable": "ROZKŁADY JAZDY",
       "Dispatcher": "SŁUŻBY DYŻURNEGO",
       "IssuedTimetable": "WYSTAWIONE RJ"
+    },
+
+    "stats": {
+      "driver": "MASZYNISTA",
+      "dispatcher": "DYŻURNY RUCHU",
+      "online-as-driver": "ONLINE JAKO MASZYNISTA",
+      "online-as-dispatcher": "ONLINE JAKO DR",
+      "on-scenery": "na scenerii",
+
+      "header-driver": "STATYSTYKI MASZYNISTY",
+      "fulfilled-timetables": "wypełnione rozkłady jazdy",
+      "route-distance": "zatwierdzony kilometraż w RJ",
+      "confirmed-stops": "potwierdzonych stacji w RJ",
+      "longest-timetable": "najdłuższy rozkład jazdy",
+      "avg-timetable-length": "średnia długość wszystkich rozkładów",
+      "no-timetable-stats": "Ten użytkownik nie posiada statystyk maszynisty zarejestrowanych przez Stacjownik!",
+
+      "header-dispatcher": "STATYSTYKI DYŻURNEGO RUCHU",
+      "duties-count": "służby jako dyżurny ruchu",
+      "longest-duty": "najdłuższa służba",
+      "created-timetables-count": "wystawione RJ jako dyżurny ruchu",
+      "longest-created-timetable": "najdłuższy wystawiony RJ",
+      "created-timetables-length-sum": "suma długości wystawionych RJ",
+      "no-dispatcher-stats": "Ten dyżurny nie wystawił jeszcze żadnego rozkładu jazdy"
+    },
+
+    "recent-stats": {
+      "header": "STATYSTYKI AKTYWNOŚCI (30 DNI)",
+      "timetables": "ROZKŁADÓW JAZDY",
+      "distance": "POKONANYCH KILOMETRÓW",
+      "duties": "SŁUŻB DYŻURNEGO",
+      "created-timetables": "WYSTAWIONYCH ROZKŁADÓW"
+    },
+
+    "list": {
+      "for": "dla",
+      "since": "od"
     }
   }
 }

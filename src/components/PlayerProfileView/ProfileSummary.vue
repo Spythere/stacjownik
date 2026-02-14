@@ -29,7 +29,7 @@
                   playerInfo.driverStats.driverLevel > 1 ? playerInfo.driverStats.driverLevel : 'L'
                 }}
               </span>
-              MASZYNISTA
+              {{ t('profile.stats.driver') }}
             </div>
 
             <div class="badge-container" v-if="playerInfo.dispatcherStats.dispatcherLevel != null">
@@ -43,14 +43,14 @@
                     : 'L'
                 }}
               </span>
-              DYŻURNY RUCHU
+              {{ t('profile.stats.dispatcher') }}
             </div>
           </div>
         </div>
       </div>
 
       <div class="info-activity" v-if="playerInfo.currentActivity.dispatcher.length > 0">
-        <b class="text--primary">ONLINE JAKO DR:</b>
+        <b class="text--primary">{{ t('profile.online-as-dispatcher') }}</b>
         {{
           playerInfo.currentActivity.dispatcher
             .map((d) => `${d.stationName} (${d.stationHash})`)
@@ -62,8 +62,8 @@
         class="info-activity"
         v-if="playerInfo.currentActivity.driver && playerInfo.currentActivity.driver.length > 0"
       >
-        <b>ONLINE JAKO MASZYNISTA:</b>
-        {{ playerInfo.currentActivity.driver.trainNo }} na scenerii
+        <b>{{ t('profile.online-as-driver') }}</b>
+        {{ playerInfo.currentActivity.driver.trainNo }} {{ t('profile.on-scenery') }}
         {{ playerInfo.currentActivity.driver.currentStationName }}
       </div>
 
@@ -74,7 +74,7 @@
     <div class="player-stats">
       <div class="stats-driver">
         <img src="/images/icon-train.svg" width="35" alt="train icon" />
-        <h3>STATYSTYKI MASZYNISTY</h3>
+        <h3>{{ t('profile.stats.header-driver') }}</h3>
         <hr />
 
         <div v-if="playerInfo.driverStats.countAll > 0">
@@ -89,7 +89,7 @@
                 )
               }}%)
             </b>
-            - wypełnione rozkłady jazdy
+            - {{ t('profile.stats.fulfilled-timetables') }}
           </div>
           <div>
             <b class="text--primary">
@@ -102,7 +102,7 @@
                 )
               }}%)
             </b>
-            - zatwierdzony kilometraż w RJ
+            - {{ t('profile.stats.route-distance') }}
           </div>
           <div>
             <b class="text--primary">
@@ -115,22 +115,22 @@
                 )
               }}%)
             </b>
-            - potwierdzonych stacji w RJ
+            - {{ t('profile.stats.confirmed-stops') }}
           </div>
           <div>
             <b class="text--primary">{{ playerInfo.driverStats.routeDistanceMax || 0 }}km</b> -
-            najdłuższy rozkład jazdy
+            {{ t('profile.stats.longest-timetable') }}
           </div>
           <div>
             <b class="text--primary">
               {{ playerInfo.driverStats.routeDistanceAvg?.toFixed(2) || 0 }}km
             </b>
-            - średnia długość wszystkich rozkładów
+            - {{ t('profile.stats.avg-timetable-length') }}
           </div>
         </div>
 
         <div class="text--grayed" v-else>
-          Ten użytkownik nie posiada statystyk maszynisty zarejestrowanych przez Stacjownik!
+          {{ t('profile.stats.no-timetable-stats') }}
         </div>
       </div>
 
@@ -139,41 +139,41 @@
         v-if="playerInfo.dispatcherStats && playerInfo.dispatcherStats.services?.count"
       >
         <img src="/images/icon-user.svg" width="35" alt="user icon" />
-        <h3>STATYSTYKI DYŻURNEGO RUCHU</h3>
+        <h3>{{ t('profile.stats.header-dispatcher') }}</h3>
         <hr />
 
         <div>
-          <b class="text--primary">{{ playerInfo.dispatcherStats.services.count }}</b> - służby jako
-          dyżurny ruchu
+          <b class="text--primary">{{ playerInfo.dispatcherStats.services.count }}</b> -
+          {{ t('profile.stats.duties-count') }}
         </div>
         <div>
           <b class="text--primary">{{
             humanizeDuration(playerInfo.dispatcherStats.services.durationMax)
           }}</b>
-          - najdłuższa służba
+          - {{ t('profile.stats.longest-duty') }}
         </div>
 
         <div v-if="playerInfo.dispatcherStats.issuedTimetables">
           <div>
             <b class="text--primary">{{ playerInfo.dispatcherStats.issuedTimetables.count }}</b>
-            - wystawione RJ jako dyżurny ruchu
+            - {{ t('profile.stats.created-timetables-count') }}
           </div>
           <div>
             <b class="text--primary">
               {{ playerInfo.dispatcherStats.issuedTimetables.distanceMax }}km
             </b>
-            - najdłuższy wystawiony RJ
+            - {{ t('profile.stats.longest-created-timetable') }}
           </div>
           <div>
             <b class="text--primary">
               {{ playerInfo.dispatcherStats.issuedTimetables.distanceSum.toFixed(2) }}km
             </b>
-            - suma długości wystawionych RJ
+            - {{ t('profile.stats.created-timetables-length-sum') }}
           </div>
         </div>
 
         <div class="text--grayed" v-else>
-          Ten dyżurny nie wystawił jeszcze żadnego rozkładu jazdy
+          {{ t('profile.stats.no-dispatcher-stats') }}
         </div>
       </div>
     </div>
@@ -187,10 +187,13 @@ import { calculateExpStyles } from '../../composables/badge';
 import { getCountPercentage } from '../../utils/calcUtils';
 import { humanizeDuration } from '../../composables/time';
 import { useRoute } from 'vue-router';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const route = useRoute();
 
-const props = defineProps({
+defineProps({
   playerInfo: {
     type: Object as PropType<API.PlayerInfo.Data>,
     required: true
@@ -248,8 +251,9 @@ const props = defineProps({
   display: flex;
   justify-content: center;
   align-items: center;
-
   gap: 0.25em;
+
+  font-weight: bold;
 
   & > .level-badge {
     font-size: 1.15em;

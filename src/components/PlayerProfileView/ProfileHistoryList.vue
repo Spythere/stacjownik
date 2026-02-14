@@ -59,7 +59,7 @@
               {{ entry.value.trainCategoryCode }} {{ entry.value.trainNo }}
             </b>
             <b class="text--grayed" v-if="entry.type == 'IssuedTimetable'">
-              dla: {{ entry.value.driverName }}
+              {{ ' ' }} {{ t('profile.list.for') }}: {{ entry.value.driverName }}
             </b>
             {{ ' ' }}
             <b>{{ entry.value.route.replace('|', ' > ') }}</b>
@@ -72,7 +72,7 @@
             <b class="text--primary">{{ entry.value.stationName }}</b>
             {{ ' - ' }}
             <b>
-              <span v-if="entry.value.isOnline">od </span>
+              <span v-if="entry.value.isOnline">{{ t('profile.list.since') }}: </span>
               <span>{{
                 humanizeDuration(
                   (entry.value.timestampTo || Date.now()) - entry.value.timestampFrom

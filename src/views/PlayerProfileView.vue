@@ -1,7 +1,7 @@
 <template>
   <div class="profile-view">
     <div class="profile-wrapper" v-if="playerInfo && playerDataStatus == Status.Data.Loaded">
-      <ProfileSumary
+      <ProfileSummary
         :playerInfo="playerInfo"
         :playerTD2Info="playerTD2Info"
         :playerName="playerName"
@@ -19,25 +19,29 @@
 
     <div class="no-data-found" v-else>
       <div>
-        <h3>Nie znaleziono gracza! :/</h3>
-        <router-link to="/" class="btn btn--text">Powrót do strony głównej</router-link>
+        <h3>{{ t('profile.no-player-found') }}</h3>
+        <router-link to="/" class="btn btn--text"> {{ t('profile.return-to-main') }}</router-link>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
+import axios from 'axios';
+
 import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useApiStore } from '../store/apiStore';
 import { API, Td2API } from '../typings/api';
-import axios from 'axios';
+import { useI18n } from 'vue-i18n';
 import { Status } from '../typings/common';
 
 import Loading from '../components/Global/Loading.vue';
-import ProfileSumary from '../components/PlayerProfileView/ProfileSumary.vue';
+import ProfileSummary from '../components/PlayerProfileView/ProfileSummary.vue';
 import ProfileRecentStats from '../components/PlayerProfileView/ProfileRecentStats.vue';
 import ProfileHistoryList from '../components/PlayerProfileView/ProfileHistoryList.vue';
+
+const { t } = useI18n();
 
 const apiStore = useApiStore();
 const route = useRoute();

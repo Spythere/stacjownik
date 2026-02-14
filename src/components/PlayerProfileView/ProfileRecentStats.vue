@@ -1,6 +1,6 @@
 <template>
   <section class="profile-recent-stats">
-    <h3 class="stats-header">STATYSTYKI AKTYWNOŚCI (30 OSTATNICH DNI)</h3>
+    <h3 class="stats-header">{{ t('profile.recent-stats.header') }}</h3>
 
     <div class="month-stats-box">
       <div class="month-stat">
@@ -8,7 +8,7 @@
         <div>
           <h3 class="text--primary">{{ playerInfo.driverStatsLastMonth.countAll }}</h3>
         </div>
-        <div>ROZKŁADÓW JAZDY</div>
+        <div>{{ t('profile.recent-stats.timetables') }}</div>
       </div>
 
       <div class="month-stat">
@@ -18,7 +18,7 @@
             {{ playerInfo.driverStatsLastMonth.currentDistanceTotal?.toFixed(2) || 0 }}
           </h3>
         </div>
-        <div>POKONANYCH KILOMETRÓW</div>
+        <div>{{ t('profile.recent-stats.distance') }}</div>
       </div>
 
       <div class="month-stat">
@@ -28,7 +28,7 @@
             {{ playerInfo.dispatcherStatsLastMonth.services?.count || 0 }}
           </h3>
         </div>
-        <div>SŁUŻB DYŻURNEGO</div>
+        <div>{{ t('profile.recent-stats.duties') }}</div>
       </div>
 
       <div class="month-stat">
@@ -38,7 +38,7 @@
             {{ playerInfo.dispatcherStatsLastMonth.issuedTimetables?.count || 0 }}
           </h3>
         </div>
-        <div>WYSTAWIONYCH ROZKŁADÓW</div>
+        <div>{{ t('profile.recent-stats.created-timetables') }}</div>
       </div>
     </div>
   </section>
@@ -47,8 +47,11 @@
 <script lang="ts" setup>
 import { PropType } from 'vue';
 import { API } from '../../typings/api';
+import { useI18n } from 'vue-i18n';
 
-const props = defineProps({
+const { t } = useI18n();
+
+defineProps({
   playerInfo: {
     type: Object as PropType<API.PlayerInfo.Data>,
     required: true
