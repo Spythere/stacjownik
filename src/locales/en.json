@@ -428,7 +428,7 @@
     "last-seen-ago": "since {minutes} minutes",
     "scenery-offline": "Offline ride",
     "timeout": "An error occured while trying to refresh SWDR timetable data!",
-    "driver-journal-link": "DRIVER JOURNAL",
+    "driver-profile-link": "PLAYER'S PROFILE",
     "driver-srjp-link": "SRJP",
     "driver-return-link": "RETURN",
     "driver-not-found-header": "Train not found! :/",

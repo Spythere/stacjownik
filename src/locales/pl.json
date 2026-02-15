@@ -414,7 +414,7 @@
     "last-seen-ago": "od {minutes} minut",
     "scenery-offline": "Przejazd offline",
     "timeout": "Wystąpił problem z aktualizacją rozkładów jazdy z SWDR",
-    "driver-journal-link": "DZIENNIK MASZYNISTY",
+    "driver-profile-link": "PROFIL GRACZA",
     "driver-srjp-link": "SRJP",
     "driver-return-link": "POWRÓT",
     "driver-not-found-header": "Nie znaleziono pociągu! :/",
@@ -617,7 +617,7 @@
 
     "stats": {
       "currently-online": "OBECNIE ONLINE",
-      
+
       "driver": "MASZYNISTA",
       "dispatcher": "DYŻURNY RUCHU",
       "online-as-driver": "ONLINE JAKO MASZYNISTA",
