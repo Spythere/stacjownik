@@ -77,8 +77,10 @@
 
     <div class="player-stats">
       <div class="stats-driver">
-        <img src="/images/icon-train.svg" width="35" alt="train icon" />
-        <h3>{{ t('profile.stats.header-driver') }}</h3>
+        <h3 class="stats-header">
+          <img src="/images/icon-train.svg" width="30" alt="train icon" />
+          {{ t('profile.stats.header-driver') }}
+        </h3>
         <hr />
 
         <div v-if="playerInfo.driverStats.countAll > 0">
@@ -142,8 +144,11 @@
         class="stats-dispatcher"
         v-if="playerInfo.dispatcherStats && playerInfo.dispatcherStats.services?.count"
       >
-        <img src="/images/icon-user.svg" width="35" alt="user icon" />
-        <h3>{{ t('profile.stats.header-dispatcher') }}</h3>
+        <h3 class="stats-header">
+          <img src="/images/icon-user.svg" width="30" alt="user icon" />
+          {{ t('profile.stats.header-dispatcher') }}
+        </h3>
+
         <hr />
 
         <div>
@@ -285,6 +290,13 @@ const activeTrains = computed(() => {
   & > .level-badge {
     font-size: 1.15em;
   }
+}
+
+.stats-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
 }
 
 .info-activity {
