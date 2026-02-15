@@ -33,44 +33,52 @@
 
             <img v-else src="/images/icon-timetable.svg" width="25" alt="timetable icon" />
 
-            <b class="text--grayed">
+            <b
+              class="timestamp-indicator"
+              :data-online="
+                'isOnline' in entry.value
+                  ? entry.value.isOnline
+                  : !entry.value.terminated && entry.type != 'IssuedTimetable'
+              "
+            >
               {{ entry.date.toLocaleString('pl-PL', { dateStyle: 'long', timeStyle: 'short' }) }}
-            </b>
-
-            <b v-if="'timestampTo' in entry.value && entry.value.timestampTo" class="text--grayed">
-              -
-              {{
-                new Date(entry.value.timestampTo).toLocaleString('pl-PL', {
-                  dateStyle:
-                    new Date(entry.value.timestampTo).getDay() == entry.date.getDay()
-                      ? undefined
-                      : 'long',
-                  timeStyle: 'short'
-                })
-              }}
+              <span v-if="'timestampTo' in entry.value && entry.value.timestampTo" u>
+                -
+                {{
+                  new Date(entry.value.timestampTo).toLocaleString('pl-PL', {
+                    dateStyle:
+                      new Date(entry.value.timestampTo).getDay() == entry.date.getDay()
+                        ? undefined
+                        : 'long',
+                    timeStyle: 'short'
+                  })
+                }}
+              </span>
             </b>
           </div>
 
           <!-- Timetables -->
           <div v-if="'trainNo' in entry.value">
             <b class="text--primary">
-              {{ entry.value.trainCategoryCode }} {{ entry.value.trainNo }}
+              {{ entry.value.trainCategoryCode }}
             </b>
+            {{ ' ' }}
+            <b>{{ entry.value.trainNo }}</b>
             <b class="text--grayed" v-if="entry.type == 'IssuedTimetable'">
               {{ ' ' }} {{ t('profile.list.for') }}: {{ entry.value.driverName }}
             </b>
             {{ ' ' }}
             <b>{{ entry.value.route.replace('|', ' > ') }}</b>
             {{ ' ' }}
-            <b>({{ entry.value.currentDistance }} / {{ entry.value.routeDistance }}km) </b>
+            <b>({{ entry.value.currentDistance }} km / {{ entry.value.routeDistance }} km) </b>
           </div>
 
           <!-- Dispatchers -->
           <div v-else>
             <b class="text--primary">{{ entry.value.stationName }}</b>
             {{ ' - ' }}
-            <b>
-              <span v-if="entry.value.isOnline">{{ t('profile.list.since') }}: </span>
+            <b class="timestamp-indicator" :data-online="entry.value.isOnline">
+              <span v-if="entry.value.isOnline">{{ t('profile.list.online-since') }}: </span>
               <span>{{
                 humanizeDuration(
                   (entry.value.timestampTo || Date.now()) - entry.value.timestampFrom
@@ -226,6 +234,14 @@ function toggleFilter(filterType: JournalEntryType) {
 
     margin-bottom: 0.5em;
     text-align: initial;
+  }
+}
+
+.timestamp-indicator {
+  color: #ccc;
+
+  &[data-online='true'] {
+    color: var(--clr-success);
   }
 }
 

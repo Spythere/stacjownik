@@ -638,7 +638,7 @@
       "created-timetables-count": "wystawione RJ jako dyżurny ruchu",
       "longest-created-timetable": "najdłuższy wystawiony RJ",
       "created-timetables-length-sum": "suma długości wystawionych RJ",
-      "no-dispatcher-stats": "Ten dyżurny nie wystawił jeszcze żadnego rozkładu jazdy"
+      "no-dispatcher-stats": "Brak zapisanych wystawionych RJ"
     },
 
     "recent-stats": {
@@ -651,7 +651,7 @@
 
     "list": {
       "for": "dla",
-      "since": "od"
+      "online-since": "online od"
     }
   }
 }
