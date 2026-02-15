@@ -127,7 +127,7 @@ async function fetchPlayerJournal(playerId: string) {
     const response = await apiStore.client.get<API.PlayerJournal.Data>('api/getPlayerJournal', {
       params: {
         playerId: playerId,
-        dateScope: '14d'
+        dateScope: '30d'
       }
     });
 

@@ -50,7 +50,7 @@
       </div>
 
       <div class="info-activity" v-if="playerInfo.currentActivity.dispatcher.length > 0">
-        <b class="text--primary">{{ t('profile.online-as-dispatcher') }}</b>
+        <b class="text--primary">{{ t('profile.stats.online-as-dispatcher') }}</b>
         {{
           playerInfo.currentActivity.dispatcher
             .map((d) => `${d.stationName} (${d.stationHash})`)
@@ -62,8 +62,8 @@
         class="info-activity"
         v-if="playerInfo.currentActivity.driver && playerInfo.currentActivity.driver.length > 0"
       >
-        <b>{{ t('profile.online-as-driver') }}</b>
-        {{ playerInfo.currentActivity.driver.trainNo }} {{ t('profile.on-scenery') }}
+        <b>{{ t('profile.stats.online-as-driver') }}</b>
+        {{ playerInfo.currentActivity.driver.trainNo }} {{ t('profile.stats.on-scenery') }}
         {{ playerInfo.currentActivity.driver.currentStationName }}
       </div>
 

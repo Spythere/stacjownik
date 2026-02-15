@@ -1,8 +1,6 @@
 <template>
   <section class="profile-history-list">
     <div class="list-header">
-      <h3>OSTATNIA AKTYWNOŚĆ GRACZA</h3>
-
       <div class="history-menu">
         <button
           v-for="(filterState, filterKey) in activeFilterTypes"
