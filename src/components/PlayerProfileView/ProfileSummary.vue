@@ -48,27 +48,31 @@
           </div>
         </div>
       </div>
+    </div>
 
-      <div class="info-activity" v-if="playerInfo.currentActivity.dispatcher.length > 0">
-        <b class="text--primary">{{ t('profile.stats.online-as-dispatcher') }}</b>
-        {{
-          playerInfo.currentActivity.dispatcher
-            .map((d) => `${d.stationName} (${d.stationHash})`)
-            .join(', ')
-        }}
+    <!-- Current activity -->
+    <div class="player-activity" v-if="activeDispatches.length > 0 || activeTrains.length > 0">
+      <h3>{{ t('profile.stats.currently-online') }}</h3>
+
+      <div class="info-activity" v-if="activeDispatches.length > 0">
+        <router-link
+          v-for="d in activeDispatches"
+          class="dispatcher-badge"
+          :to="`/scenery?station=${d.stationName}`"
+        >
+          <img src="/images/icon-user.svg" width="25" alt="user icon" />
+          <b>{{ d.stationName }}</b>
+          <StationStatusBadge :isOnline="true" :dispatcherStatus="d.dispatcherStatus" />
+        </router-link>
       </div>
 
-      <div
-        class="info-activity"
-        v-if="playerInfo.currentActivity.driver && playerInfo.currentActivity.driver.length > 0"
-      >
-        <b>{{ t('profile.stats.online-as-driver') }}</b>
-        {{ playerInfo.currentActivity.driver.trainNo }} {{ t('profile.stats.on-scenery') }}
-        {{ playerInfo.currentActivity.driver.currentStationName }}
+      <div class="info-activity" v-if="activeTrains.length > 0">
+        <router-link v-for="d in activeTrains" :to="`/driver?trainId=${d.id}`" class="driver-badge">
+          <img src="/images/icon-train.svg" width="25" alt="train icon" />
+          <span v-if="d.timetable" class="text--primary">{{ d.timetable.category }}</span>
+          <span>{{ d.trainNo }}</span>
+        </router-link>
       </div>
-
-      <!-- <p v-if="useMainStore"></p> -->
-      <!-- <p>Stacjosponsor od 01.01.2024</p> -->
     </div>
 
     <div class="player-stats">
@@ -181,19 +185,22 @@
 </template>
 
 <script lang="ts" setup>
-import { PropType } from 'vue';
+import { computed, PropType } from 'vue';
 import { API, Td2API } from '../../typings/api';
 import { calculateExpStyles } from '../../composables/badge';
 import { getCountPercentage } from '../../utils/calcUtils';
 import { humanizeDuration } from '../../composables/time';
 import { useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
+import { useApiStore } from '../../store/apiStore';
+import StationStatusBadge from '../Global/StationStatusBadge.vue';
 
 const { t } = useI18n();
 
 const route = useRoute();
+const apiStore = useApiStore();
 
-defineProps({
+const props = defineProps({
   playerInfo: {
     type: Object as PropType<API.PlayerInfo.Data>,
     required: true
@@ -206,6 +213,25 @@ defineProps({
   playerName: {
     type: String
   }
+});
+
+const activeDispatches = computed(() => {
+  if (!props.playerName) return [];
+  if (!apiStore.activeData || !apiStore.activeData.activeSceneries) return [];
+
+  return apiStore.activeData.activeSceneries.filter(
+    (sc) =>
+      sc.dispatcherName == props.playerName && (sc.lastSeen >= Date.now() - 60000 || sc.isOnline)
+  );
+});
+
+const activeTrains = computed(() => {
+  if (!props.playerName) return [];
+  if (!apiStore.activeData || !apiStore.activeData.trains) return [];
+
+  return apiStore.activeData.trains.filter(
+    (t) => t.driverName == props.playerName && (t.lastSeen >= Date.now() - 60000 || t.online)
+  );
 });
 </script>
 
@@ -231,6 +257,7 @@ defineProps({
 }
 
 .player-info,
+.player-activity,
 .player-stats > div {
   background-color: var(--clr-tile);
   border-radius: 0.5em;
@@ -261,7 +288,29 @@ defineProps({
 }
 
 .info-activity {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1em;
   margin-top: 1em;
+}
+
+.info-activity > .dispatcher-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.25em;
+}
+
+.info-activity > .driver-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.25em;
+  font-weight: bold;
+
+  background-color: #3b3b3b;
+  padding: 0.25em 0.5em;
+  border-radius: 0.5em;
 }
 
 @include responsive.midScreen {

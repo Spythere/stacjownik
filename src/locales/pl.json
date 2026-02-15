@@ -616,6 +616,8 @@
     },
 
     "stats": {
+      "currently-online": "OBECNIE ONLINE",
+      
       "driver": "MASZYNISTA",
       "dispatcher": "DYŻURNY RUCHU",
       "online-as-driver": "ONLINE JAKO MASZYNISTA",
