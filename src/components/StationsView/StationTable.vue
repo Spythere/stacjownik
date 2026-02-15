@@ -132,7 +132,6 @@
             <span v-if="station.onlineInfo?.dispatcherName">
               <b
                 v-if="apiStore.donatorsData.includes(station.onlineInfo.dispatcherName)"
-                @click.prevent="openDonationCard"
                 data-tooltip-type="DonatorTooltip"
                 :data-tooltip-content="$t('donations.dispatcher-message')"
               >
