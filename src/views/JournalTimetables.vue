@@ -118,36 +118,6 @@ export const journalTimetableFilters: Journal.TimetableFilter[] = [
   }
 ];
 
-interface TimetablesQueryParams {
-  driverName?: string;
-  trainNo?: string;
-  timetableId?: string;
-  categoryCode?: string;
-
-  authorName?: string;
-
-  dateFrom?: string;
-  dateTo?: string;
-
-  issuedFrom?: string;
-  terminatingAt?: string;
-  via?: string;
-  includesScenery?: string;
-
-  countFrom?: number;
-  countLimit?: number;
-
-  fulfilled?: number;
-  terminated?: number;
-
-  twr?: number;
-  skr?: number;
-  pn?: number;
-  tn?: number;
-
-  sortBy?: Journal.TimetableSorter['id'];
-}
-
 export default defineComponent({
   components: {
     JournalOptions,
@@ -170,7 +140,7 @@ export default defineComponent({
     mainStore: useMainStore(),
     apiStore: useApiStore(),
 
-    currentQueryParams: {} as TimetablesQueryParams,
+    currentQueryParams: {} as API.TimetableHistory.QueryParams,
     dataRefreshedAt: null as Date | null,
 
     scrollDataLoaded: true,
@@ -180,7 +150,7 @@ export default defineComponent({
 
     currentOptionsActive: false,
 
-    timetableHistory: [] as API.TimetableHistory.Response,
+    timetableHistory: [] as API.TimetableHistory.ResponseShort,
 
     dataStatus: Status.Data.Loading
   }),
@@ -230,7 +200,7 @@ export default defineComponent({
   },
 
   watch: {
-    currentQueryParams(q: TimetablesQueryParams) {
+    currentQueryParams(q: API.TimetableHistory.QueryParams) {
       this.currentOptionsActive = Object.values(q).some((v) => v !== undefined);
     }
   },
@@ -328,7 +298,7 @@ export default defineComponent({
         dateToISO = dateTo.toISOString();
       }
 
-      const queryParams: TimetablesQueryParams = {};
+      const queryParams: API.TimetableHistory.QueryParams = {};
 
       this.filterList
         .filter((f) => f.isActive)
@@ -395,6 +365,7 @@ export default defineComponent({
       queryParams['terminatingAt'] = terminatingAt;
       queryParams['via'] = via;
       queryParams['categoryCode'] = categoryCode;
+      queryParams['returnType'] = 'short';
 
       queryParams['issuedFrom'] = issuedFrom;
       queryParams['sortBy'] =
@@ -406,7 +377,7 @@ export default defineComponent({
       this.currentQueryParams = queryParams;
 
       try {
-        const responseData: API.TimetableHistory.Response = await (
+        const responseData: API.TimetableHistory.ResponseShort = await (
           await this.apiStore.client!.get('api/getTimetables', {
             params: this.currentQueryParams
           })

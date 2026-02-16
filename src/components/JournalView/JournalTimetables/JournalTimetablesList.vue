@@ -61,7 +61,7 @@ export default defineComponent({
 
   props: {
     timetableHistory: {
-      type: Array as PropType<API.TimetableHistory.Response>,
+      type: Array as PropType<API.TimetableHistory.ResponseShort>,
       required: true
     },
     scrollNoMoreData: {

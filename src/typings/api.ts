@@ -1,3 +1,4 @@
+import { Journal } from '../components/JournalView/typings';
 import { Status, Vehicle, VehicleGroup } from './common';
 
 export enum APIDataStatus {
@@ -225,35 +226,40 @@ export namespace API {
   }
 
   export namespace TimetableHistory {
-    export interface Data extends DataShort {
+    export interface QueryParams {
+      driverName?: string;
+      trainNo?: string;
+      timetableId?: string;
+      categoryCode?: string;
+
+      authorName?: string;
+
+      dateFrom?: string;
+      dateTo?: string;
+
+      issuedFrom?: string;
+      terminatingAt?: string;
+      via?: string;
+      includesScenery?: string;
+
+      countFrom?: number;
+      countLimit?: number;
+
+      fulfilled?: number;
+      terminated?: number;
+
+      twr?: number;
+      skr?: number;
+      pn?: number;
+      tn?: number;
+
+      returnType?: 'all' | 'short' | 'detailed';
+
+      sortBy?: Journal.TimetableSorter['id'];
+    }
+
+    export interface Data extends DataShort, DataDetailsOnly {
       updatedAt: string;
-
-      timetableId: number;
-      sceneriesString: string;
-      endDate: string;
-
-      scheduledBeginDate: string;
-      scheduledEndDate: string;
-
-      stockString?: string;
-      stockHistory: string[];
-
-      stockMass?: number;
-      stockLength?: number;
-      maxSpeed?: number;
-
-      routeSceneries: string;
-      checkpointArrivals: string[];
-      checkpointDepartures: string[];
-      checkpointArrivalsScheduled: string[];
-      checkpointDeparturesScheduled: string[];
-      checkpointStopTypes: string[];
-      checkpointComments: string[];
-      visitedSceneries: string[];
-      sceneryNames: string[];
-      path: string;
-      warningNotes: string | null;
-      trainMaxSpeed?: number;
     }
 
     export interface DataShort {
@@ -261,6 +267,7 @@ export namespace API {
       createdAt: string;
       trainNo: number;
       trainCategoryCode: string;
+      timetableId: number;
 
       driverId: number;
       driverName: string;
@@ -280,6 +287,9 @@ export namespace API {
       allStopsCount: number;
 
       beginDate: string;
+      endDate: string;
+      scheduledBeginDate: string;
+      scheduledEndDate: string;
 
       terminated: boolean;
       fulfilled: boolean;
@@ -293,8 +303,42 @@ export namespace API {
       hasExtraDeliveries: boolean;
     }
 
+    export interface DataDetailsOnly {
+      id: number;
+      timetableId: number;
+
+      sceneriesString: string;
+      stockString?: string;
+      stockHistory: string[];
+
+      stockMass?: number;
+      stockLength?: number;
+      maxSpeed?: number;
+      trainMaxSpeed?: number;
+
+      routeSceneries: string;
+      checkpointArrivals: string[];
+      checkpointDepartures: string[];
+      checkpointArrivalsScheduled: string[];
+      checkpointDeparturesScheduled: string[];
+      checkpointStopTypes: string[];
+      checkpointComments: string[];
+      visitedSceneries: string[];
+      sceneryNames: string[];
+
+      path: string;
+      warningNotes: string | null;
+
+      authorId?: number;
+      authorName?: string;
+      driverId: number;
+      driverName: string;
+      driverLanguageId: number | null;
+    }
+
     export type Response = Data[];
     export type ResponseShort = DataShort[];
+    export type ResponseDetailsOnly = DataDetailsOnly[];
   }
 
   export namespace DailyStats {

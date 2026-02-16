@@ -128,7 +128,7 @@ export default defineComponent({
 
   props: {
     timetable: {
-      type: Object as PropType<API.TimetableHistory.Data>,
+      type: Object as PropType<API.TimetableHistory.DataShort>,
       required: true
     }
   }
