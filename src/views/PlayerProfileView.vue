@@ -9,7 +9,7 @@
 
       <div class="profile-side">
         <ProfileRecentStats :playerInfo="playerInfo" />
-        <ProfileHistoryList  :playerName="playerName" />
+        <ProfileHistoryList :playerName="playerName" />
       </div>
     </div>
 
@@ -66,6 +66,7 @@ onMounted(() => {
 async function fetchAllData() {
   const playerId = route.query.playerId?.toString();
 
+  playerInfo.value = null;
   playerTD2Info.value = null;
   playerDataStatus.value = Status.Data.Loading;
 

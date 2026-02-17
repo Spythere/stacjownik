@@ -60,6 +60,8 @@ defineProps({
 </script>
 
 <style lang="scss" scoped>
+@use '../../styles/responsive';
+
 .profile-recent-stats {
   overflow: hidden;
 }
@@ -88,6 +90,12 @@ defineProps({
   div:nth-child(3) {
     margin-top: 0.5em;
     font-size: 0.9em;
+  }
+}
+
+@include responsive.smallScreen {
+  .month-stats-box {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 </style>

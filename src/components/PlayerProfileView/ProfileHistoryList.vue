@@ -214,7 +214,7 @@ async function fetchPlayerJournal() {
 @use '../../styles/responsive';
 
 .profile-history-list {
-  overflow: auto;
+  overflow-y: scroll;
   height: 100%;
 }
 
@@ -284,8 +284,8 @@ async function fetchPlayerJournal() {
 }
 
 @include responsive.midScreen {
-  .history-list-box {
-    max-height: 100vh;
+  .profile-history-list {
+    height: 100vh;
   }
 }
 </style>

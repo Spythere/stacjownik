@@ -67,7 +67,6 @@
             class="player-activity"
             v-if="activeDispatches.length > 0 || activeTrains.length > 0"
           >
-
             <div class="info-activity" v-if="activeDispatches.length > 0">
               <router-link
                 v-for="d in activeDispatches"
@@ -359,6 +358,13 @@ const activeTrains = computed(() => {
   .player-stats {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+  }
+}
+
+@include responsive.smallScreen {
+  .player-stats {
+    display: grid;
+    grid-template-columns: 1fr;
   }
 }
 </style>
