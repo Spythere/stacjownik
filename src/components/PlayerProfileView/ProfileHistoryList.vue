@@ -14,80 +14,84 @@
     </div>
 
     <div class="history-list-box">
-      <ul>
-        <li v-for="entry in combinedJournal">
-          <div style="display: flex; align-items: center; gap: 0.25em">
-            <img
-              v-if="entry.type == 'Dispatcher'"
-              src="/images/icon-user.svg"
-              width="25"
-              alt="user icon"
-            />
+      <router-link
+        v-for="entry in combinedJournal"
+        :to="
+          'trainNo' in entry.value
+            ? `/journal/timetables?search-train=%23${entry.value.id}`
+            : `/journal/dispatchers?search-dispatcher=${entry.value.dispatcherName}`
+        "
+      >
+        <!-- Date -->
+        <div class="entry-top-date">
+          <img
+            v-if="entry.type == 'Dispatcher'"
+            src="/images/icon-user.svg"
+            width="25"
+            alt="user icon"
+          />
 
-            <img
-              v-else-if="entry.type == 'Timetable'"
-              src="/images/icon-train.svg"
-              width="25"
-              alt="train icon"
-            />
+          <img
+            v-else-if="entry.type == 'Timetable'"
+            src="/images/icon-train.svg"
+            width="25"
+            alt="train icon"
+          />
 
-            <img v-else src="/images/icon-timetable.svg" width="25" alt="timetable icon" />
+          <img v-else src="/images/icon-timetable.svg" width="25" alt="timetable icon" />
 
-            <b
-              class="timestamp-indicator"
-              :data-online="
-                'isOnline' in entry.value
-                  ? entry.value.isOnline
-                  : !entry.value.terminated && entry.type != 'IssuedTimetable'
-              "
-            >
-              {{ entry.date.toLocaleString('pl-PL', { dateStyle: 'long', timeStyle: 'short' }) }}
-              <span v-if="'timestampTo' in entry.value && entry.value.timestampTo" u>
-                -
-                {{
-                  new Date(entry.value.timestampTo).toLocaleString('pl-PL', {
-                    dateStyle:
-                      new Date(entry.value.timestampTo).getDay() == entry.date.getDay()
-                        ? undefined
-                        : 'long',
-                    timeStyle: 'short'
-                  })
-                }}
-              </span>
-            </b>
-          </div>
+          <b
+            class="timestamp-indicator"
+            :data-online="
+              'isOnline' in entry.value
+                ? entry.value.isOnline
+                : !entry.value.terminated && entry.type != 'IssuedTimetable'
+            "
+          >
+            {{ entry.date.toLocaleString('pl-PL', { dateStyle: 'long', timeStyle: 'short' }) }}
+            <span v-if="'timestampTo' in entry.value && entry.value.timestampTo" u>
+              -
+              {{
+                new Date(entry.value.timestampTo).toLocaleString('pl-PL', {
+                  dateStyle:
+                    new Date(entry.value.timestampTo).getDay() == entry.date.getDay()
+                      ? undefined
+                      : 'long',
+                  timeStyle: 'short'
+                })
+              }}
+            </span>
+          </b>
+        </div>
 
-          <!-- Timetables -->
-          <div v-if="'trainNo' in entry.value">
-            <b class="text--primary">
-              {{ entry.value.trainCategoryCode }}
-            </b>
-            {{ ' ' }}
-            <b>{{ entry.value.trainNo }}</b>
-            <b class="text--grayed" v-if="entry.type == 'IssuedTimetable'">
-              {{ ' ' }} {{ t('profile.list.for') }}: {{ entry.value.driverName }}
-            </b>
-            {{ ' ' }}
-            <b>{{ entry.value.route.replace('|', ' > ') }}</b>
-            {{ ' ' }}
-            <b>({{ entry.value.currentDistance }} km / {{ entry.value.routeDistance }} km) </b>
-          </div>
+        <!-- Timetables -->
+        <div v-if="'trainNo' in entry.value">
+          <b class="text--primary">
+            {{ entry.value.trainCategoryCode }}
+          </b>
+          {{ ' ' }}
+          <b>{{ entry.value.trainNo }}</b>
+          <b class="text--grayed" v-if="entry.type == 'IssuedTimetable'">
+            {{ ' ' }} {{ t('profile.list.for') }}: {{ entry.value.driverName }}
+          </b>
+          {{ ' ' }}
+          <b>{{ entry.value.route.replace('|', ' > ') }}</b>
+          {{ ' ' }}
+          <b>({{ entry.value.currentDistance }} km / {{ entry.value.routeDistance }} km) </b>
+        </div>
 
-          <!-- Dispatchers -->
-          <div v-else>
-            <b class="text--primary">{{ entry.value.stationName }}</b>
-            {{ ' - ' }}
-            <b class="timestamp-indicator" :data-online="entry.value.isOnline">
-              <span v-if="entry.value.isOnline">{{ t('profile.list.online-since') }}: </span>
-              <span>{{
-                humanizeDuration(
-                  (entry.value.timestampTo || Date.now()) - entry.value.timestampFrom
-                )
-              }}</span>
-            </b>
-          </div>
-        </li>
-      </ul>
+        <!-- Dispatchers -->
+        <div v-else>
+          <b class="text--primary">{{ entry.value.stationName }}</b>
+          {{ ' - ' }}
+          <b class="timestamp-indicator" :data-online="entry.value.isOnline">
+            <span v-if="entry.value.isOnline">{{ t('profile.list.online-since') }}: </span>
+            <span>{{
+              humanizeDuration((entry.value.timestampTo || Date.now()) - entry.value.timestampFrom)
+            }}</span>
+          </b>
+        </div>
+      </router-link>
     </div>
   </section>
 </template>
@@ -224,17 +228,25 @@ function toggleFilter(filterType: JournalEntryType) {
 }
 
 .history-list-box {
-  & > ul > li {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25em;
+  padding: 0.25em;
+}
 
-    background-color: var(--clr-tile);
-    padding: 0.5em;
+.history-list-box > a {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
 
-    margin-bottom: 0.5em;
-    text-align: initial;
-  }
+  background-color: var(--clr-tile);
+  padding: 0.5em;
+
+  margin-bottom: 0.5em;
+  text-align: initial;
+}
+
+.entry-top-date {
+  display: flex;
+  align-items: center;
+  gap: 0.25em;
 }
 
 .timestamp-indicator {

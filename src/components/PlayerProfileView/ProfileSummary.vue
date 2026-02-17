@@ -6,7 +6,6 @@
           v-if="playerTD2Info"
           :src="`https://td2.info.pl/index.php?action=dlattach;attach=${playerTD2Info.avatar};type=avatar`"
           alt="player image"
-          height="120"
           @error="(e) => ((e.target as any).src = '/images/default-avatar.jpg')"
         />
 
@@ -71,6 +70,10 @@
           <img src="/images/icon-train.svg" width="25" alt="train icon" />
           <span v-if="d.timetable" class="text--primary">{{ d.timetable.category }}</span>
           <span>{{ d.trainNo }}</span>
+          &bull;
+          <span>{{ d.currentStationName }}</span>
+          &bull;
+          <span class="text--grayed">{{ d.stockString.split(';')[0] }}</span>
         </router-link>
       </div>
     </div>
@@ -320,7 +323,6 @@ const activeTrains = computed(() => {
   gap: 0.25em;
   font-weight: bold;
 
-  background-color: #3b3b3b;
   padding: 0.25em 0.5em;
   border-radius: 0.5em;
 }
