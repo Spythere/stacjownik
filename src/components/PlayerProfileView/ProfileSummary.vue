@@ -45,36 +45,58 @@
               {{ t('profile.stats.dispatcher') }}
             </div>
           </div>
+
+          <div class="player-journal-links">
+            <router-link
+              class="a-button btn--action"
+              :to="`/journal/timetables?search-driver=${playerInfo.driverStats.driverName}`"
+            >
+              DZIENNIK RJ
+            </router-link>
+
+            <router-link
+              class="a-button btn--action"
+              :to="`/journal/dispatchers?search-dispatcher=${playerInfo.dispatcherStats.dispatcherName}`"
+            >
+              DZIENNIK DR
+            </router-link>
+          </div>
+
+          <!-- Current activity -->
+          <div
+            class="player-activity"
+            v-if="activeDispatches.length > 0 || activeTrains.length > 0"
+          >
+
+            <div class="info-activity" v-if="activeDispatches.length > 0">
+              <router-link
+                v-for="d in activeDispatches"
+                class="dispatcher-badge"
+                :to="`/scenery?station=${d.stationName}`"
+              >
+                <img src="/images/icon-user.svg" width="25" alt="user icon" />
+                <b>{{ d.stationName }}</b>
+                <StationStatusBadge :isOnline="true" :dispatcherStatus="d.dispatcherStatus" />
+              </router-link>
+            </div>
+
+            <div class="info-activity" v-if="activeTrains.length > 0">
+              <router-link
+                v-for="d in activeTrains"
+                :to="`/driver?trainId=${d.id}`"
+                class="driver-badge"
+              >
+                <img src="/images/icon-train.svg" width="25" alt="train icon" />
+                <span v-if="d.timetable" class="text--primary">{{ d.timetable.category }}</span>
+                <span>{{ d.trainNo }}</span>
+                &bull;
+                <span>{{ d.currentStationName }}</span>
+                &bull;
+                <span class="text--grayed">{{ d.stockString.split(';')[0] }}</span>
+              </router-link>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-
-    <!-- Current activity -->
-    <div class="player-activity" v-if="activeDispatches.length > 0 || activeTrains.length > 0">
-      <h3>{{ t('profile.stats.currently-online') }}</h3>
-
-      <div class="info-activity" v-if="activeDispatches.length > 0">
-        <router-link
-          v-for="d in activeDispatches"
-          class="dispatcher-badge"
-          :to="`/scenery?station=${d.stationName}`"
-        >
-          <img src="/images/icon-user.svg" width="25" alt="user icon" />
-          <b>{{ d.stationName }}</b>
-          <StationStatusBadge :isOnline="true" :dispatcherStatus="d.dispatcherStatus" />
-        </router-link>
-      </div>
-
-      <div class="info-activity" v-if="activeTrains.length > 0">
-        <router-link v-for="d in activeTrains" :to="`/driver?trainId=${d.id}`" class="driver-badge">
-          <img src="/images/icon-train.svg" width="25" alt="train icon" />
-          <span v-if="d.timetable" class="text--primary">{{ d.timetable.category }}</span>
-          <span>{{ d.trainNo }}</span>
-          &bull;
-          <span>{{ d.currentStationName }}</span>
-          &bull;
-          <span class="text--grayed">{{ d.stockString.split(';')[0] }}</span>
-        </router-link>
       </div>
     </div>
 
@@ -265,7 +287,6 @@ const activeTrains = computed(() => {
 }
 
 .player-info,
-.player-activity,
 .player-stats > div {
   background-color: var(--clr-tile);
   border-radius: 0.5em;
@@ -280,6 +301,13 @@ const activeTrains = computed(() => {
   display: flex;
   justify-content: center;
   gap: 1em;
+}
+
+.player-journal-links {
+  display: flex;
+  justify-content: center;
+  gap: 0.5em;
+  margin-top: 1em;
 }
 
 .badge-container {
