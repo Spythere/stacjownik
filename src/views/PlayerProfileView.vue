@@ -9,7 +9,7 @@
 
       <div class="profile-side">
         <ProfileRecentStats :playerInfo="playerInfo" />
-        <ProfileHistoryList :playerJournal="playerJournal" :playerName="playerName" />
+        <ProfileHistoryList  :playerName="playerName" />
       </div>
     </div>
 
@@ -49,7 +49,6 @@ const route = useRoute();
 const playerName = ref('');
 
 const playerInfo = ref<API.PlayerInfo.Data | null>(null);
-const playerJournal = ref<API.PlayerJournal.Data | null>(null);
 const playerTD2Info = ref<Td2API.UsersInfoByName.UserInfo | null>(null);
 const playerDataStatus = ref(Status.Data.Initialized);
 
@@ -93,11 +92,10 @@ async function fetchAllData() {
   }
 
   const playerTd2InfoResponse = await fetchPlayerTD2Info(playerName.value);
-  const playerJournalResponse = await fetchPlayerJournal(playerId);
 
   playerInfo.value = playerInfoResponse;
   playerTD2Info.value = playerTd2InfoResponse;
-  playerJournal.value = playerJournalResponse;
+  // playerJournal.value = playerJournalResponse;
 
   playerDataStatus.value = Status.Data.Loaded;
 }
@@ -109,25 +107,6 @@ async function fetchPlayerInfoData(playerId: string) {
     const response = await apiStore.client.get<API.PlayerInfo.Data>('api/getPlayerInfo', {
       params: {
         playerId: playerId
-      }
-    });
-
-    return response.data;
-  } catch (error) {
-    console.error(error);
-  }
-
-  return null;
-}
-
-async function fetchPlayerJournal(playerId: string) {
-  if (!apiStore.client || !playerId) return null;
-
-  try {
-    const response = await apiStore.client.get<API.PlayerJournal.Data>('api/getPlayerJournal', {
-      params: {
-        playerId: playerId,
-        dateScope: '30d'
       }
     });
 

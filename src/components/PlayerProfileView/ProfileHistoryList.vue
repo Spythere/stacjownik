@@ -97,10 +97,12 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, PropType, reactive } from 'vue';
+import { computed, onMounted, PropType, reactive, ref } from 'vue';
 import { humanizeDuration } from '../../composables/time';
 import { API } from '../../typings/api';
 import { useI18n } from 'vue-i18n';
+import { useApiStore } from '../../store/apiStore';
+import { useRoute } from 'vue-router';
 
 type JournalEntryType = 'Timetable' | 'Dispatcher' | 'IssuedTimetable';
 
@@ -111,17 +113,16 @@ interface JournalEntry {
 }
 
 const props = defineProps({
-  playerJournal: {
-    type: Object as PropType<API.PlayerJournal.Data | null>,
-    required: true
-  },
-
   playerName: {
     type: String
   }
 });
 
 const { t } = useI18n();
+const apiStore = useApiStore();
+const route = useRoute();
+
+const playerJournal = ref<API.PlayerJournal.Data | null>(null);
 
 const activeFilterTypes = reactive<Record<JournalEntryType, boolean>>({
   Timetable: true,
@@ -129,13 +130,17 @@ const activeFilterTypes = reactive<Record<JournalEntryType, boolean>>({
   IssuedTimetable: true
 });
 
+onMounted(() => {
+  fetchPlayerJournal();
+});
+
 const combinedJournal = computed<JournalEntry[]>(() => {
-  if (!props.playerJournal || !props.playerName) return [];
+  if (!playerJournal.value || !props.playerName) return [];
 
   const list = [
-    ...props.playerJournal.timetables,
-    ...props.playerJournal.duties,
-    ...props.playerJournal.issuedTimetables
+    ...playerJournal.value.timetables,
+    ...playerJournal.value.duties,
+    ...playerJournal.value.issuedTimetables
   ]
     .reduce<JournalEntry[]>((acc, v) => {
       // Timetable or dispatcher type
@@ -181,6 +186,27 @@ function toggleFilter(filterType: JournalEntryType) {
     return;
 
   activeFilterTypes[filterType] = toggledState;
+}
+
+async function fetchPlayerJournal() {
+  const playerId = route.query.playerId?.toString();
+
+  if (!apiStore.client || !playerId) return null;
+
+  try {
+    const response = await apiStore.client.get<API.PlayerJournal.Data>('api/getPlayerJournal', {
+      params: {
+        playerId: playerId,
+        dateScope: '30d'
+      }
+    });
+
+    playerJournal.value = response.data;
+  } catch (error) {
+    console.error(error);
+  }
+
+  return null;
 }
 </script>
 
