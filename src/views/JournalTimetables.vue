@@ -151,8 +151,6 @@ export default defineComponent({
 
     chosenPlayerId: -1,
 
-    currentOptionsActive: false,
-
     timetableHistory: [] as API.TimetableHistory.ResponseShort,
 
     dataStatus: Status.Data.Loading
@@ -202,17 +200,11 @@ export default defineComponent({
     };
   },
 
-  watch: {
-    currentQueryParams(q: API.TimetableHistory.QueryParams) {
-      console.log(q);
-      this.currentOptionsActive = Object.values(q).some((v) => v !== undefined);
-    },
-
-    '$route.query': {
-      deep: true,
-      handler() {
-        this.extraInfoIndexes.length = 0;
-      }
+  computed: {
+    currentOptionsActive() {
+      return Object.keys(this.currentQueryParams)
+        .filter((k) => k != 'countFrom' && k != 'returnType')
+        .some((k) => (this.currentQueryParams as any)[k] !== undefined);
     }
   },
 
@@ -303,6 +295,8 @@ export default defineComponent({
     },
 
     async fetchHistoryData() {
+      this.extraInfoIndexes.length = 0;
+
       const driverName = this.searchersValues['search-driver'].trim() || undefined;
       const trainNo = this.searchersValues['search-train'].trim() || undefined;
       const authorName = this.searchersValues['search-dispatcher'].trim() || undefined;

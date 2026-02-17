@@ -138,7 +138,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, PropType, ref } from 'vue';
 import { RouteLocationRaw } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 
@@ -156,8 +156,8 @@ const props = defineProps({
     required: true
   },
 
-  timetableId: {
-    type: Number,
+  timetableEntry: {
+    type: Object as PropType<API.TimetableHistory.DataShort>,
     required: true
   }
 });
@@ -188,12 +188,12 @@ const stockHistory = computed(() => {
 });
 
 const driverRouteLocation = computed<RouteLocationRaw | null>(() => {
-  if (!timetableDetails.value || timetableDetails.value.terminated) return null;
+  if (props.timetableEntry.terminated) return null;
 
   return {
     name: 'DriverView',
     query: {
-      trainId: `${timetableDetails.value.driverId}|${timetableDetails.value.trainNo}|eu`
+      trainId: `${props.timetableEntry.driverId}|${props.timetableEntry.trainNo}|eu`
     }
   };
 });
@@ -204,7 +204,7 @@ async function fetchTimetableDetails() {
       'api/getTimetables',
       {
         params: {
-          timetableId: props.timetableId,
+          timetableId: props.timetableEntry.id,
           returnType: 'detailed'
         }
       }

@@ -17,7 +17,7 @@
 
     <!-- Extra -->
     <EntryDetails
-      :timetable-id="timetableEntry.id"
+      :timetableEntry="timetableEntry"
       :show-extra-info="showExtraInfo"
       @toggle-extra-info="toggleExtraInfo"
     />
