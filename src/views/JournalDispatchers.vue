@@ -51,6 +51,7 @@ import JournalStats from '../components/JournalView/JournalStats.vue';
 import { useApiStore } from '../store/apiStore';
 
 interface DispatchersQueryParams {
+  dutyId?: number;
   dispatcherName?: string;
   stationName?: string;
   stationHash?: string;
@@ -114,12 +115,13 @@ export default defineComponent({
     const sorterActive: Journal.DispatcherSorter = reactive({ id: 'timestampFrom', dir: -1 });
     const journalFilterActive = ref({});
 
-    const searchersValues = reactive({
+    const searchersValues = reactive<Record<Journal.DispatcherSearchKey, string>>({
+      'search-duty-id': '',
       'search-dispatcher': '',
       'search-station': '',
       'search-date-from': '',
       'search-date-to': ''
-    } as Journal.DispatcherSearchType);
+    });
 
     provide('sorterActive', sorterActive);
     provide('journalFilterActive', journalFilterActive);
@@ -171,6 +173,7 @@ export default defineComponent({
     handleRouteParams() {
       this.$router.push({
         query: {
+          'search-duty-id': this.searchersValues['search-duty-id'] || undefined,
           'search-date-from': this.searchersValues['search-date-from'] || undefined,
           'search-date-to': this.searchersValues['search-date-to'] || undefined,
           'search-station': this.searchersValues['search-station'] || undefined,
@@ -194,7 +197,8 @@ export default defineComponent({
       this.setOptions(query as any);
     },
 
-    setOptions(options: { [key: string]: string }) {
+    setOptions(options: Record<string, string>) {
+      this.searchersValues['search-duty-id'] = options['search-duty-id'] ?? '';
       this.searchersValues['search-date-from'] = options['search-date-from'] ?? '';
       this.searchersValues['search-date-to'] = options['search-date-to'] ?? '';
       this.searchersValues['search-station'] = options['search-station'] ?? '';
@@ -231,6 +235,7 @@ export default defineComponent({
     async fetchHistoryData() {
       const queryParams: DispatchersQueryParams = {};
 
+      const dutyId = this.searchersValues['search-duty-id'].trim() || undefined;
       const dispatcherName = this.searchersValues['search-dispatcher'].trim() || undefined;
       const stationName = this.searchersValues['search-station'].trim() || undefined;
       const dateFromString = this.searchersValues['search-date-from'].trim() || undefined;
@@ -251,6 +256,7 @@ export default defineComponent({
         dateToISO = dateTo.toISOString();
       }
 
+      queryParams['dutyId'] = Number(dutyId) || undefined;
       queryParams['dispatcherName'] = dispatcherName;
 
       queryParams['dateFrom'] = dateFromISO;

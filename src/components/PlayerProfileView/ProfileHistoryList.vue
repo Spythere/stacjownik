@@ -19,7 +19,7 @@
         :to="
           'trainNo' in entry.value
             ? `/journal/timetables?search-train=%23${entry.value.id}`
-            : `/journal/dispatchers?search-dispatcher=${entry.value.dispatcherName}`
+            : `/journal/dispatchers?search-duty-id=${entry.value.id}`
         "
       >
         <!-- Date -->
@@ -209,7 +209,7 @@ function toggleFilter(filterType: JournalEntryType) {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1em;
-  padding: 0 1px;
+  padding: 1px;
 }
 
 .menu-btn {

@@ -1,5 +1,6 @@
 export namespace Journal {
   export type DispatcherSearchKey =
+    | 'search-duty-id'
     | 'search-dispatcher'
     | 'search-station'
     | 'search-date-from'
