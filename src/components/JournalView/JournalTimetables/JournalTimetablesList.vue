@@ -20,7 +20,7 @@
           v-for="(timetableEntry, i) in timetableHistory"
           :key="timetableEntry.id"
           :timetableEntry="timetableEntry"
-          :onToggleShowExtraInfo="() => toggleExtraInfo(timetableEntry.id)"
+          :onToggleShowExtraInfo="toggleExtraInfo"
           :showExtraInfo="extraInfoIndexes.includes(timetableEntry.id)"
         />
       </transition-group>
@@ -59,6 +59,8 @@ export default defineComponent({
     JournalTimetableEntry
   },
 
+  emits: ['toggleExtraInfo'],
+
   props: {
     timetableHistory: {
       type: Array as PropType<API.TimetableHistory.ResponseShort>,
@@ -75,32 +77,23 @@ export default defineComponent({
     },
     dataStatus: {
       type: Number as PropType<Status.Data>
+    },
+    extraInfoIndexes: {
+      type: Object as PropType<number[]>,
+      required: true
     }
   },
 
   data() {
     return {
       Status,
-      store: useMainStore(),
-      extraInfoIndexes: [] as number[]
+      store: useMainStore()
     };
   },
 
-  watch: {
-    '$route.query': {
-      deep: true,
-      handler() {
-        this.extraInfoIndexes.length = 0;
-      }
-    }
-  },
-  
   methods: {
-    toggleExtraInfo(id: number) {
-      const existingIdx = this.extraInfoIndexes.indexOf(id);
-
-      if (existingIdx != -1) this.extraInfoIndexes.splice(existingIdx, 1);
-      else this.extraInfoIndexes.push(id);
+    toggleExtraInfo(data: API.TimetableHistory.Data | null) {
+      this.$emit('toggleExtraInfo', data);
     }
   }
 });
@@ -111,7 +104,7 @@ export default defineComponent({
 @use '../../../styles/journal-section';
 @use '../../../styles/responsive';
 
-@include responsive.smallScreen{
+@include responsive.smallScreen {
   .journal_item-info {
     text-align: center;
   }

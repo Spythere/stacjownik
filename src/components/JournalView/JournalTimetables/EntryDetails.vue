@@ -138,7 +138,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineComponent, onActivated, onMounted, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 import { RouteLocationRaw } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 
@@ -166,15 +166,6 @@ const emits = defineEmits(['toggleExtraInfo']);
 const currentHistoryIndex = ref(0);
 
 const timetableDetails = ref<API.TimetableHistory.Data | null>(null);
-
-watch(
-  computed(() => props.showExtraInfo),
-  (state) => {
-    if (state == true) {
-      fetchTimetableDetails();
-    }
-  }
-);
 
 const stockHistory = computed(() => {
   return (
@@ -231,8 +222,12 @@ async function fetchTimetableDetails() {
   }
 }
 
-function toggleExtraInfo() {
-  emits('toggleExtraInfo', props.timetableId);
+async function toggleExtraInfo() {
+  if (props.showExtraInfo == false) {
+    await fetchTimetableDetails();
+  }
+
+  emits('toggleExtraInfo', timetableDetails.value);
 }
 
 function copyStockToClipboard() {

@@ -29,6 +29,8 @@
           :dataStatus="dataStatus"
           :scrollDataLoaded="scrollDataLoaded"
           :scrollNoMoreData="scrollNoMoreData"
+          :extraInfoIndexes="extraInfoIndexes"
+          @toggleExtraInfo="toggleExtraInfo"
         />
       </div>
     </div>
@@ -145,6 +147,7 @@ export default defineComponent({
 
     scrollDataLoaded: true,
     scrollNoMoreData: false,
+    extraInfoIndexes: [] as number[],
 
     chosenPlayerId: -1,
 
@@ -201,7 +204,15 @@ export default defineComponent({
 
   watch: {
     currentQueryParams(q: API.TimetableHistory.QueryParams) {
+      console.log(q);
       this.currentOptionsActive = Object.values(q).some((v) => v !== undefined);
+    },
+
+    '$route.query': {
+      deep: true,
+      handler() {
+        this.extraInfoIndexes.length = 0;
+      }
     }
   },
 
@@ -230,6 +241,24 @@ export default defineComponent({
 
     handleQueries(query: LocationQuery) {
       this.setOptions(query as any);
+    },
+
+    async toggleExtraInfo(timetableDetails: API.TimetableHistory.Data | null) {
+      if (!timetableDetails) return;
+
+      const existingIdx = this.extraInfoIndexes.indexOf(timetableDetails.id);
+
+      if (existingIdx == -1) {
+        this.extraInfoIndexes.push(timetableDetails.id);
+
+        const synchedTimetable = this.timetableHistory.find((t) => t.id == timetableDetails.id);
+
+        if (synchedTimetable) {
+          Object.assign(synchedTimetable, timetableDetails);
+        }
+      } else {
+        this.extraInfoIndexes.splice(existingIdx, 1);
+      }
     },
 
     setOptions(options: { [key: string]: string }) {

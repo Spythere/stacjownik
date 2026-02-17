@@ -10,7 +10,7 @@
 
     <hr />
 
-    <div @click="toggleExtraInfo" style="cursor: pointer">
+    <div style="cursor: pointer">
       <!-- Status -->
       <EntryStatus :timetable="timetableEntry" />
     </div>
@@ -60,8 +60,8 @@ export default defineComponent({
   },
 
   methods: {
-    toggleExtraInfo() {
-      this.$emit('toggleShowExtraInfo');
+    toggleExtraInfo(data: API.TimetableHistory.Data | null) {
+      this.$emit('toggleShowExtraInfo', data);
     }
   }
 });
