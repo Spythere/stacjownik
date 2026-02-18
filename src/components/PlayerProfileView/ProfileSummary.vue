@@ -12,8 +12,14 @@
         <img class="img-placeholder" height="100" src="/images/default-avatar.jpg" v-else />
 
         <div>
-          <h2 class="player-name-header">
+          <h2 class="player-name-header" :class="{ 'text--donator': isPlayerDonator }">
             <a :href="`https://td2.info.pl/profile/?u=${route.query.playerId}`" target="_blank">
+              <img
+                v-if="isPlayerDonator"
+                src="/images/icon-diamond.svg"
+                width="25"
+                alt="diamond icon"
+              />
               {{ playerName }}
             </a>
           </h2>
@@ -244,6 +250,10 @@ const props = defineProps({
   }
 });
 
+const isPlayerDonator = computed(() =>
+  props.playerName ? apiStore.donatorsData.includes(props.playerName) : false
+);
+
 const activeDispatches = computed(() => {
   if (!props.playerName) return [];
   if (!apiStore.activeData || !apiStore.activeData.activeSceneries) return [];
@@ -294,6 +304,13 @@ const activeTrains = computed(() => {
 
 .player-name-header {
   margin: 0.5em 0;
+
+  a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.25em;
+  }
 }
 
 .player-badges {
