@@ -619,6 +619,7 @@
     "stats": {
       "timetables-journal": "DZIENNIK RJ",
       "dispatchers-journal": "DZIENNIK DR",
+      "forum-profile": "PROFIL FORUM",
 
       "driver": "MASZYNISTA",
       "dispatcher": "DYŻURNY RUCHU",

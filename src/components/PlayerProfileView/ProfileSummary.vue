@@ -66,6 +66,14 @@
             >
               {{ t('profile.stats.dispatchers-journal') }}
             </router-link>
+
+            <a
+              class="a-button btn--action"
+              :href="`https://td2.info.pl/profile/?u=${route.query.playerId}`"
+              target="_blank"
+            >
+              {{ t('profile.stats.forum-profile') }}
+            </a>
           </div>
 
           <!-- Current activity -->

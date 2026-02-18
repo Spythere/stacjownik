@@ -634,6 +634,7 @@
     "stats": {
       "timetables-journal": "TIMETABLE JOURNAL",
       "dispatchers-journal": "DISPATCHER JOURNAL",
+      "forum-profile": "FORUM PROFILE",
 
       "driver": "DRIVER",
       "dispatcher": "DISPATCHER",
