@@ -29,3 +29,9 @@ export function humanizeDuration(timestampMs: number, showSeconds = false) {
       ? t('journal.seconds', { value: duration.secondsTotal }, duration.secondsTotal)
       : t('journal.minutes', { value: duration.minsTotal }, duration.minsTotal);
 }
+
+export function dateToLocaleString(date: Date, dateOptions: Intl.DateTimeFormatOptions) {
+  const { locale } = useI18n();
+
+  return date.toLocaleString(locale.value == 'pl' ? 'pl-PL' : 'en-GB', dateOptions);
+}

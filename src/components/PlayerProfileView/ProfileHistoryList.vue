@@ -48,18 +48,20 @@
                 : !entry.value.terminated && entry.type != 'IssuedTimetable'
             "
           >
-            {{ entry.date.toLocaleString('pl-PL', { dateStyle: 'long', timeStyle: 'short' }) }}
-            <span v-if="'timestampTo' in entry.value && entry.value.timestampTo" u>
+            {{ dateToLocaleString(entry.date, { dateStyle: 'long', timeStyle: 'short' }) }}
+            <span v-if="'timestampTo' in entry.value && entry.value.timestampTo">
               -
-              {{
-                new Date(entry.value.timestampTo).toLocaleString('pl-PL', {
-                  dateStyle:
-                    new Date(entry.value.timestampTo).getDay() == entry.date.getDay()
-                      ? undefined
-                      : 'long',
+              <span v-if="new Date(entry.value.timestampTo).getDay() == entry.date.getDay()">{{
+                dateToLocaleString(new Date(entry.value.timestampTo), {
                   timeStyle: 'short'
                 })
-              }}
+              }}</span>
+              <span v-else>{{
+                dateToLocaleString(new Date(entry.value.timestampTo), {
+                  dateStyle: 'long',
+                  timeStyle: 'short'
+                })
+              }}</span>
             </span>
           </b>
         </div>
@@ -97,8 +99,8 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, PropType, reactive, ref } from 'vue';
-import { humanizeDuration } from '../../composables/time';
+import { computed, onMounted, reactive, ref } from 'vue';
+import { dateToLocaleString, humanizeDuration } from '../../composables/time';
 import { API } from '../../typings/api';
 import { useI18n } from 'vue-i18n';
 import { useApiStore } from '../../store/apiStore';
