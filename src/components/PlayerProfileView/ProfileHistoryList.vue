@@ -4,7 +4,7 @@
       <div class="history-menu">
         <button
           v-for="(filterState, filterKey) in activeFilterTypes"
-          class="menu-btn"
+          class="menu-btn btn--option"
           :data-active="filterState"
           @click="toggleFilter(filterKey)"
         >
@@ -79,7 +79,8 @@
           {{ ' ' }}
           <b>{{ entry.value.route.replace('|', ' > ') }}</b>
           {{ ' ' }}
-          <b>({{ entry.value.currentDistance }} km / {{ entry.value.routeDistance }} km) </b>
+          <b class="text--primary">{{ entry.value.currentDistance }} km</b>
+          <b> / {{ entry.value.routeDistance }} km</b>
         </div>
 
         <!-- Dispatchers -->
@@ -223,12 +224,9 @@ async function fetchPlayerJournal() {
 .list-header {
   position: sticky;
   top: 0;
-  background-color: var(--clr-bg);
-  padding-bottom: 0.5em;
 
   & > h3 {
     padding: 0.5em;
-    background-color: var(--clr-tile);
     margin-bottom: 0.5em;
   }
 }
@@ -237,18 +235,14 @@ async function fetchPlayerJournal() {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1em;
-  padding: 1px;
+  padding: 0.5em;
+  background-color: var(--clr-tile);
 }
 
 .menu-btn {
-  background-color: var(--clr-tile);
   padding: 0.5em;
   font-weight: bold;
   color: #aaa;
-
-  &:hover {
-    background-color: #2b2b2b;
-  }
 
   &[data-active='true'] {
     color: var(--clr-success);
@@ -256,7 +250,7 @@ async function fetchPlayerJournal() {
 }
 
 .history-list-box {
-  padding: 0.25em;
+  padding: 0 0.5em;
 }
 
 .history-list-box > a {
@@ -264,11 +258,15 @@ async function fetchPlayerJournal() {
   flex-direction: column;
   gap: 0.25em;
 
-  background-color: var(--clr-tile);
+  background-color: var(--clr-bg-light);
   padding: 0.5em;
 
   margin-bottom: 0.5em;
   text-align: initial;
+
+  &:hover {
+    background-color: #333;
+  }
 }
 
 .entry-top-date {

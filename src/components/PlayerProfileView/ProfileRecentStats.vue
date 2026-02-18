@@ -1,6 +1,9 @@
 <template>
   <section class="profile-recent-stats">
-    <h3 class="stats-header">{{ t('profile.recent-stats.header') }}</h3>
+    <h2 class="stats-header">
+      <img src="/images/icon-stats.svg" width="30" alt="stats icon" />
+      {{ t('profile.recent-stats.header') }}
+    </h2>
 
     <div class="month-stats-box">
       <div class="month-stat">
@@ -67,19 +70,22 @@ defineProps({
 }
 
 .stats-header {
-  padding: 0.5em;
-  background-color: var(--clr-tile);
-  margin-bottom: 0.5em;
+  padding: 1em;
+
+  img {
+    vertical-align: text-bottom;
+  }
 }
 
 .month-stats-box {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 0.5em;
+  padding: 0.5em;
 }
 
 .month-stat {
-  background-color: var(--clr-tile);
+  background-color: var(--clr-bg-light);
   border-radius: 0.5em;
   padding: 0.5em;
 
