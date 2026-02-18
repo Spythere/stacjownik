@@ -51,14 +51,14 @@
               class="a-button btn--action"
               :to="`/journal/timetables?search-driver=${playerInfo.driverStats.driverName}`"
             >
-              DZIENNIK RJ
+              {{ t('profile.stats.timetables-journal') }}
             </router-link>
 
             <router-link
               class="a-button btn--action"
               :to="`/journal/dispatchers?search-dispatcher=${playerInfo.dispatcherStats.dispatcherName}`"
             >
-              DZIENNIK DR
+              {{ t('profile.stats.dispatchers-journal') }}
             </router-link>
           </div>
 

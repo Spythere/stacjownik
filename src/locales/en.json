@@ -197,6 +197,7 @@
     "search-train": "Train no. / #",
     "select-driver": "Choose a driver...",
     "search-driver": "Driver name",
+    "search-duty-id": "Duty ID",
     "search-dispatcher": "Dispatcher name",
     "search-station": "Scenery name / #",
     "search-author": "Timetable author name",
@@ -620,10 +621,51 @@
     "desc-terminated": "The train has been terminated"
   },
   "profile": {
+    "journal-button": "PLAYER'S PROFILE",
+    "no-player-found": "Player not found! :/",
+    "return-to-main": "Return to the main site",
+
     "filters": {
       "Timetable": "TIMETABLES",
       "Dispatcher": "DISPATCHER DUTIES",
       "IssuedTimetable": "ISSUED TIMETABLES"
+    },
+
+    "stats": {
+      "timetables-journal": "TIMETABLE JOURNAL",
+      "dispatchers-journal": "DISPATCHER JOURNAL",
+
+      "driver": "DRIVER",
+      "dispatcher": "DISPATCHER",
+
+      "header-driver": "DRIVER'S STATS",
+      "fulfilled-timetables": "fulfilled timetables",
+      "route-distance": "confirmed timetables distance",
+      "confirmed-stops": "confirmed stations in timetables",
+      "longest-timetable": "longest timetable",
+      "avg-timetable-length": "average distance of all timetables",
+      "no-timetable-stats": "This player does not have any registered timetables in Stacjownik!",
+
+      "header-dispatcher": "DISPATCHER'S STATS",
+      "duties-count": "duties as dispatcher",
+      "longest-duty": "longest duty",
+      "created-timetables-count": "issued timetables as dispatcher",
+      "longest-created-timetable": "longest issued timetable",
+      "created-timetables-length-sum": "distance sum of issued timetables",
+      "no-dispatcher-stats": "No registered dispatcher duties in Stacjownik!"
+    },
+
+    "recent-stats": {
+      "header": "ACTIVITY STATISTICS (30 LAST DAYS)",
+      "timetables": "TIMETABLES",
+      "distance": "MADE KILOMETERS",
+      "duties": "DISPATCHER DUTIES",
+      "created-timetables": "ISSUED TIMETABLES"
+    },
+
+    "list": {
+      "for": "for",
+      "online-since": "online since"
     }
   }
 }

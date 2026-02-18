@@ -193,6 +193,7 @@
     "search-train": "Nr pociągu / #",
     "search-driver": "Nick maszynisty",
     "select-driver": "Wybierz maszynistę...",
+    "search-duty-id": "ID służby",
     "search-dispatcher": "Nick dyżurnego",
     "search-station": "Nazwa scenerii / #",
     "search-author": "Nick autora rozkładu jazdy",
@@ -616,13 +617,11 @@
     },
 
     "stats": {
-      "currently-online": "OBECNIE ONLINE",
+      "timetables-journal": "DZIENNIK RJ",
+      "dispatchers-journal": "DZIENNIK DR",
 
       "driver": "MASZYNISTA",
       "dispatcher": "DYŻURNY RUCHU",
-      "online-as-driver": "ONLINE JAKO MASZYNISTA",
-      "online-as-dispatcher": "ONLINE JAKO DR",
-      "on-scenery": "na scenerii",
 
       "header-driver": "STATYSTYKI MASZYNISTY",
       "fulfilled-timetables": "wypełnione rozkłady jazdy",
@@ -638,7 +637,7 @@
       "created-timetables-count": "wystawione RJ jako dyżurny ruchu",
       "longest-created-timetable": "najdłuższy wystawiony RJ",
       "created-timetables-length-sum": "suma długości wystawionych RJ",
-      "no-dispatcher-stats": "Brak zapisanych wystawionych RJ"
+      "no-dispatcher-stats": "Ten użytkownik nie posiada statystyk dyżurnego zarejestrowanych przez Stacjownik!"
     },
 
     "recent-stats": {
