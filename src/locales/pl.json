@@ -651,7 +651,8 @@
 
     "list": {
       "for": "dla",
-      "online-since": "online od"
+      "online-since": "online od",
+      "no-recent-history": "Brak ostatniej aktywności w symulatorze :("
     }
   }
 }

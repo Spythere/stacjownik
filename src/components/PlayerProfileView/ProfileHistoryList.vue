@@ -14,6 +14,10 @@
     </div>
 
     <div class="history-list-box">
+      <div v-if="combinedJournal.length == 0" class="no-recent-history text--grayed">
+        {{ t('profile.list.no-recent-history') }}
+      </div>
+
       <router-link
         v-for="entry in combinedJournal"
         :to="
@@ -267,6 +271,12 @@ async function fetchPlayerJournal() {
   &:hover {
     background-color: #333;
   }
+}
+
+.no-recent-history {
+  padding: 1em;
+  font-size: 1.25em;
+  font-weight: bold;
 }
 
 .entry-top-date {

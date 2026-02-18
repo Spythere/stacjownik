@@ -666,7 +666,8 @@
 
     "list": {
       "for": "for",
-      "online-since": "online since"
+      "online-since": "online since",
+      "no-recent-history": "No recent activity in the simulator :("
     }
   }
 }
