@@ -330,6 +330,7 @@ const activeTrains = computed(() => {
 .player-journal-links {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 0.5em;
   margin-top: 1em;
 }
