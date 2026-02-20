@@ -2,14 +2,7 @@
   <section class="profile-summary">
     <div class="player-info">
       <div class="info-main">
-        <img
-          v-if="playerTD2Info"
-          :src="`https://td2.info.pl/index.php?action=dlattach;attach=${playerTD2Info.avatar};type=avatar`"
-          alt="player image"
-          @error="(e) => ((e.target as any).src = '/images/default-avatar.jpg')"
-        />
-
-        <img class="img-placeholder" height="100" src="/images/default-avatar.jpg" v-else />
+        <ProfilePlayerAvatar :avatarId="playerTD2Info?.avatar" />
 
         <div>
           <h2 class="player-name-header" :class="{ 'text--donator': isPlayerDonator }">
@@ -228,7 +221,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, PropType } from 'vue';
+import { computed, onMounted, PropType, ref } from 'vue';
 import { API, Td2API } from '../../typings/api';
 import { calculateExpStyles } from '../../composables/badge';
 import { getCountPercentage } from '../../utils/calcUtils';
@@ -237,6 +230,10 @@ import { useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useApiStore } from '../../store/apiStore';
 import StationStatusBadge from '../Global/StationStatusBadge.vue';
+import axios from 'axios';
+import { Status } from '../../typings/common';
+import Loading from '../Global/Loading.vue';
+import ProfilePlayerAvatar from './ProfilePlayerAvatar.vue';
 
 const { t } = useI18n();
 
@@ -249,18 +246,20 @@ const props = defineProps({
     required: true
   },
 
-  playerTD2Info: {
-    type: Object as PropType<Td2API.UsersInfoByName.UserInfo | null>
-  },
-
   playerName: {
     type: String
   }
 });
 
+const playerTD2Info = ref<Td2API.UsersInfoByName.UserInfo | null>(null);
+
 const isPlayerDonator = computed(() =>
   props.playerName ? apiStore.donatorsData.includes(props.playerName) : false
 );
+
+onMounted(() => {
+  fetchTD2Data();
+});
 
 const activeDispatches = computed(() => {
   if (!props.playerName) return [];
@@ -280,6 +279,27 @@ const activeTrains = computed(() => {
     (t) => t.driverName == props.playerName && (t.lastSeen >= Date.now() - 60000 || t.online)
   );
 });
+
+async function fetchTD2Data() {
+  if (!props.playerName) return;
+
+  try {
+    const response = await axios.get<Td2API.UsersInfoByName.Response>('https://api.td2.info.pl', {
+      params: {
+        method: 'getUsersInfoByName',
+        name: props.playerName
+      }
+    });
+
+    if (response.data.success && response.data.message.length == 1) {
+      playerTD2Info.value = response.data.message[0];
+    }
+  } catch (error) {
+    console.error(error);
+  }
+
+  return;
+}
 </script>
 
 <style lang="scss" scoped>
@@ -291,23 +311,6 @@ const activeTrains = computed(() => {
   flex-direction: column;
   gap: 1em;
   overflow: auto;
-}
-
-.player-stats {
-  display: flex;
-  flex-direction: column;
-  gap: 1em;
-
-  hr {
-    margin: 0.5em 0;
-  }
-}
-
-.player-info,
-.player-stats > div {
-  background-color: var(--clr-tile);
-  border-radius: 0.5em;
-  padding: 1em;
 }
 
 .player-name-header {
@@ -327,14 +330,6 @@ const activeTrains = computed(() => {
   gap: 1em;
 }
 
-.player-journal-links {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 0.5em;
-  margin-top: 1em;
-}
-
 .badge-container {
   display: flex;
   justify-content: center;
@@ -348,11 +343,12 @@ const activeTrains = computed(() => {
   }
 }
 
-.stats-header {
+.player-journal-links {
   display: flex;
-  align-items: center;
   justify-content: center;
-  gap: 0.25em;
+  flex-wrap: wrap;
+  gap: 0.5em;
+  margin-top: 1em;
 }
 
 .info-activity {
@@ -362,22 +358,49 @@ const activeTrains = computed(() => {
   flex-wrap: wrap;
   gap: 1em;
   margin-top: 1em;
+
+  .dispatcher-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.25em;
+  }
+
+  .driver-badge {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: 0.25em;
+    font-weight: bold;
+
+    padding: 0.25em 0.5em;
+    border-radius: 0.5em;
+  }
 }
 
-.info-activity > .dispatcher-badge {
+.player-stats {
   display: flex;
-  align-items: center;
-  gap: 0.25em;
+  flex-direction: column;
+  gap: 1em;
+
+  hr {
+    margin: 0.5em 0;
+  }
 }
 
-.info-activity > .driver-badge {
-  display: flex;
-  align-items: center;
-  gap: 0.25em;
-  font-weight: bold;
-
-  padding: 0.25em 0.5em;
+.player-info,
+.player-stats > div {
+  background-color: var(--clr-tile);
   border-radius: 0.5em;
+  padding: 1em;
+}
+
+.stats-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25em;
 }
 
 @include responsive.midScreen {

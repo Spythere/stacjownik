@@ -1,11 +1,7 @@
 <template>
   <div class="profile-view">
     <div class="profile-wrapper" v-if="playerInfo && playerDataStatus == Status.Data.Loaded">
-      <ProfileSummary
-        :playerInfo="playerInfo"
-        :playerTD2Info="playerTD2Info"
-        :playerName="playerName"
-      />
+      <ProfileSummary :playerInfo="playerInfo" :playerName="playerName" />
 
       <div class="profile-side">
         <ProfileRecentStats :playerInfo="playerInfo" />
@@ -49,7 +45,6 @@ const route = useRoute();
 const playerName = ref('');
 
 const playerInfo = ref<API.PlayerInfo.Data | null>(null);
-const playerTD2Info = ref<Td2API.UsersInfoByName.UserInfo | null>(null);
 const playerDataStatus = ref(Status.Data.Initialized);
 
 watch(
@@ -67,7 +62,6 @@ async function fetchAllData() {
   const playerId = route.query.playerId?.toString();
 
   playerInfo.value = null;
-  playerTD2Info.value = null;
   playerDataStatus.value = Status.Data.Loading;
 
   if (!playerId) {
@@ -92,12 +86,7 @@ async function fetchAllData() {
     return;
   }
 
-  const playerTd2InfoResponse = await fetchPlayerTD2Info(playerName.value);
-
   playerInfo.value = playerInfoResponse;
-  playerTD2Info.value = playerTd2InfoResponse;
-  // playerJournal.value = playerJournalResponse;
-
   playerDataStatus.value = Status.Data.Loaded;
 }
 
@@ -112,27 +101,6 @@ async function fetchPlayerInfoData(playerId: string) {
     });
 
     return response.data;
-  } catch (error) {
-    console.error(error);
-  }
-
-  return null;
-}
-
-async function fetchPlayerTD2Info(playerName: string) {
-  if (!apiStore.client || !playerName) return null;
-
-  try {
-    const response = await axios.get<Td2API.UsersInfoByName.Response>('https://api.td2.info.pl', {
-      params: {
-        method: 'getUsersInfoByName',
-        name: playerName
-      }
-    });
-
-    if (response.data.success && response.data.message.length == 1) {
-      return response.data.message[0];
-    }
   } catch (error) {
     console.error(error);
   }
