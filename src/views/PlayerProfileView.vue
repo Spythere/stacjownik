@@ -21,12 +21,10 @@
 </template>
 
 <script lang="ts" setup>
-import axios from 'axios';
-
-import { computed, onActivated, onMounted, ref, watch } from 'vue';
-import { onBeforeRouteUpdate, useRoute } from 'vue-router';
+import { onActivated, onDeactivated, ref } from 'vue';
+import { useRoute } from 'vue-router';
 import { useApiStore } from '../store/apiStore';
-import { API, Td2API } from '../typings/api';
+import { API } from '../typings/api';
 import { useI18n } from 'vue-i18n';
 import { Status } from '../typings/common';
 
@@ -46,8 +44,17 @@ const playerName = ref('');
 const playerInfo = ref<API.PlayerInfo.Data | null>(null);
 const playerDataStatus = ref(Status.Data.Initialized);
 
+const intervalId = ref(-1);
+
 onActivated(() => {
   fetchPlayerData();
+
+  intervalId.value = setInterval(fetchPlayerData, 30000);
+});
+
+onDeactivated(() => {
+  clearInterval(intervalId.value);
+  intervalId.value = -1;
 });
 
 async function fetchPlayerData() {

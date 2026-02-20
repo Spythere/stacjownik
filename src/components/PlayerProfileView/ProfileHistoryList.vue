@@ -107,7 +107,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, reactive, ref } from 'vue';
+import { computed, onActivated, onDeactivated, onMounted, reactive, ref } from 'vue';
 import { dateToLocaleString, humanizeDuration } from '../../composables/time';
 import { API } from '../../typings/api';
 import { useI18n } from 'vue-i18n';
@@ -138,6 +138,8 @@ const playerId = ref(-1);
 const playerJournal = ref<API.PlayerJournal.Data | null>(null);
 const journalDataStatus = ref(Status.Data.Initialized);
 
+const intervalId = ref(-1);
+
 const activeFilterTypes = reactive<Record<JournalEntryType, boolean>>({
   Timetable: true,
   Dispatcher: true,
@@ -146,6 +148,12 @@ const activeFilterTypes = reactive<Record<JournalEntryType, boolean>>({
 
 onMounted(() => {
   fetchPlayerJournal();
+  intervalId.value = setInterval(fetchPlayerJournal, 30000);
+});
+
+onDeactivated(() => {
+  clearInterval(intervalId.value);
+  intervalId.value = -1;
 });
 
 const combinedJournal = computed<JournalEntry[]>(() => {
