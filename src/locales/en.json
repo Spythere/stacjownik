@@ -87,10 +87,8 @@
     "tooltip-scenery-offline": "Scenery is offline",
     "pojazdownik-link-content": "POJAZDOWNIK",
     "language-tooltip-content": "JĘZYK / LANGUAGE",
-    "gnr-link-content": "TRAIN ORDERS <br> GENERATOR"
-  },
-  "footer": {
-    "discord": "Stacjownik Discord server"
+    "gnr-link-content": "TRAIN ORDERS <br> GENERATOR",
+    "discord-link-content": "STACJOWNIK <br> DISCORD SERVER"
   },
   "categories": {
     "EI": "domestic express",

@@ -7,13 +7,6 @@
       v{{ version }}{{ isOnProductionHost ? '' : 'dev' }}
     </button>
 
-    <br />
-    <a href="https://discord.gg/x2mpNN3svk">
-      <img src="/images/icon-discord.png" alt="discord logo icon" />&nbsp;<b class="text--discord">
-        {{ $t('footer.discord') }}
-      </b>
-    </a>
-
     <div style="display: none">&int; ukryta taktyczna całka do programowania w HTMLu</div>
   </footer>
 </template>
