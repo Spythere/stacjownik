@@ -125,7 +125,6 @@ async function fetchPlayerData() {
 .profile-side {
   display: grid;
   grid-template-rows: auto 1fr;
-  gap: 0.5em;
   overflow: auto;
   background-color: var(--clr-tile);
   border-radius: 0.5em;

@@ -243,6 +243,7 @@ async function fetchPlayerJournal() {
 .list-header {
   position: sticky;
   top: 0;
+  z-index: 100;
 
   & > h3 {
     padding: 0.5em;
@@ -254,8 +255,8 @@ async function fetchPlayerJournal() {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1em;
-  padding: 0.5em;
   background-color: var(--clr-tile);
+  padding: 0.5em;
 }
 
 .menu-btn {
