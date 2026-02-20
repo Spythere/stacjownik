@@ -14,11 +14,14 @@
     </div>
 
     <div class="history-list-box">
-      <div v-if="combinedJournal.length == 0" class="no-recent-history text--grayed">
+      <Loading v-if="journalDataStatus == Status.Data.Loading" />
+
+      <div v-else-if="combinedJournal.length == 0" class="no-recent-history">
         {{ t('profile.list.no-recent-history') }}
       </div>
 
       <router-link
+        v-else
         v-for="entry in combinedJournal"
         :to="
           'trainNo' in entry.value
@@ -110,6 +113,8 @@ import { API } from '../../typings/api';
 import { useI18n } from 'vue-i18n';
 import { useApiStore } from '../../store/apiStore';
 import { useRoute } from 'vue-router';
+import { Status } from '../../typings/common';
+import Loading from '../Global/Loading.vue';
 
 type JournalEntryType = 'Timetable' | 'Dispatcher' | 'IssuedTimetable';
 
@@ -129,7 +134,9 @@ const { t } = useI18n();
 const apiStore = useApiStore();
 const route = useRoute();
 
+const playerId = ref(-1);
 const playerJournal = ref<API.PlayerJournal.Data | null>(null);
+const journalDataStatus = ref(Status.Data.Initialized);
 
 const activeFilterTypes = reactive<Record<JournalEntryType, boolean>>({
   Timetable: true,
@@ -196,21 +203,29 @@ function toggleFilter(filterType: JournalEntryType) {
 }
 
 async function fetchPlayerJournal() {
-  const playerId = route.query.playerId?.toString();
+  const queryPlayerId = Number(route.query.playerId) || -1;
 
-  if (!apiStore.client || !playerId) return null;
+  if (!apiStore.client || !queryPlayerId) return;
+
+  if (queryPlayerId != playerId.value) {
+    journalDataStatus.value = Status.Data.Loading;
+  }
+
+  playerId.value = queryPlayerId;
 
   try {
     const response = await apiStore.client.get<API.PlayerJournal.Data>('api/getPlayerJournal', {
       params: {
-        playerId: playerId,
+        playerId: queryPlayerId,
         dateScope: '30d'
       }
     });
 
     playerJournal.value = response.data;
+    journalDataStatus.value = Status.Data.Loaded;
   } catch (error) {
     console.error(error);
+    journalDataStatus.value = Status.Data.Error;
   }
 
   return null;
@@ -255,6 +270,7 @@ async function fetchPlayerJournal() {
 
 .history-list-box {
   padding: 0 0.5em;
+  position: relative;
 }
 
 .history-list-box > a {
@@ -277,6 +293,7 @@ async function fetchPlayerJournal() {
   padding: 1em;
   font-size: 1.25em;
   font-weight: bold;
+  color: #aaa;
 }
 
 .entry-top-date {

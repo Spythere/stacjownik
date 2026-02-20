@@ -9,9 +9,7 @@
       </div>
     </div>
 
-    <div v-else-if="playerDataStatus == Status.Data.Loading">
-      <Loading />
-    </div>
+    <Loading v-else-if="playerDataStatus == Status.Data.Loading" />
 
     <div class="no-data-found" v-else>
       <div>
@@ -25,8 +23,8 @@
 <script lang="ts" setup>
 import axios from 'axios';
 
-import { computed, onMounted, ref, watch } from 'vue';
-import { useRoute } from 'vue-router';
+import { computed, onActivated, onMounted, ref, watch } from 'vue';
+import { onBeforeRouteUpdate, useRoute } from 'vue-router';
 import { useApiStore } from '../store/apiStore';
 import { API, Td2API } from '../typings/api';
 import { useI18n } from 'vue-i18n';
@@ -42,70 +40,43 @@ const { t } = useI18n();
 const apiStore = useApiStore();
 const route = useRoute();
 
+const playerId = ref(-1);
 const playerName = ref('');
 
 const playerInfo = ref<API.PlayerInfo.Data | null>(null);
 const playerDataStatus = ref(Status.Data.Initialized);
 
-watch(
-  computed(() => route.query.playerId),
-  () => {
-    fetchAllData();
-  }
-);
-
-onMounted(() => {
-  fetchAllData();
+onActivated(() => {
+  fetchPlayerData();
 });
 
-async function fetchAllData() {
-  const playerId = route.query.playerId?.toString();
+async function fetchPlayerData() {
+  const queryPlayerId = Number(route.query.playerId) || -1;
 
-  playerInfo.value = null;
-  playerDataStatus.value = Status.Data.Loading;
+  if (!apiStore.client || !queryPlayerId) return;
 
-  if (!playerId) {
-    playerDataStatus.value = Status.Data.Loaded;
-    return;
+  if (queryPlayerId != playerId.value) {
+    playerDataStatus.value = Status.Data.Loading;
   }
 
-  const playerInfoResponse = await fetchPlayerInfoData(playerId);
-
-  if (!playerInfoResponse) {
-    playerDataStatus.value = Status.Data.Loaded;
-    return;
-  }
-
-  playerName.value =
-    playerInfoResponse.driverStats.driverName ||
-    playerInfoResponse.dispatcherStats.dispatcherName ||
-    '';
-
-  if (!playerName.value) {
-    playerDataStatus.value = Status.Data.Loaded;
-    return;
-  }
-
-  playerInfo.value = playerInfoResponse;
-  playerDataStatus.value = Status.Data.Loaded;
-}
-
-async function fetchPlayerInfoData(playerId: string) {
-  if (!apiStore.client || !playerId) return null;
+  playerId.value = queryPlayerId;
 
   try {
     const response = await apiStore.client.get<API.PlayerInfo.Data>('api/getPlayerInfo', {
       params: {
-        playerId: playerId
+        playerId: queryPlayerId
       }
     });
 
-    return response.data;
+    playerName.value =
+      response.data.driverStats.driverName || response.data.dispatcherStats.dispatcherName || '';
+
+    playerInfo.value = response.data || null;
+    playerDataStatus.value = Status.Data.Loaded;
   } catch (error) {
     console.error(error);
+    playerDataStatus.value = Status.Data.Error;
   }
-
-  return null;
 }
 </script>
 
