@@ -97,7 +97,7 @@ export default defineComponent({
 @use '../../styles/animations';
 
 .train-table {
-  height: calc(100vh - 11em);
+  height: calc(100vh - 17em);
   min-height: 500px;
 
   position: relative;

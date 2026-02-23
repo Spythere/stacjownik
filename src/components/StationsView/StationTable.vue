@@ -445,7 +445,7 @@ export default defineComponent({
 $rowCol: #424242;
 
 .station_table {
-  height: calc(100vh - 11em);
+  height: calc(100vh - 17em);
   max-height: 2000px;
   min-height: 500px;
   overflow: auto;
