@@ -35,9 +35,8 @@
 }
 
 ::-webkit-scrollbar {
-  width: var(--no-scroll-padding);
-  height: var(--no-scroll-padding);
-  background-color: transparent;
+  // width: var(--no-scroll-padding);
+  // height: var(--no-scroll-padding);
 
   &-track {
     background-color: #333;
@@ -54,6 +53,7 @@
 
 body {
   background: var(--clr-bg);
+  color-scheme: dark;
 
   margin: 0;
   padding: 0;
@@ -336,19 +336,6 @@ a.a-button {
 }
 
 @include responsive.smallScreen {
-  ::-webkit-scrollbar {
-    width: 0.5em;
-    height: 0.5em;
-
-    &-track {
-      background-color: #222;
-    }
-
-    &-thumb {
-      background-color: #777;
-    }
-  }
-
   [data-tooltip]:hover::after,
   [data-tooltip]:focus::after {
     transform: translate(-50%, 2em);
