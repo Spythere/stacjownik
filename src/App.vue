@@ -7,11 +7,6 @@
 
     <AppWelcomeCard :is-card-open="isWelcomeCardOpen" @toggle-card="closeWelcomeCard" />
 
-    <MigrateInfoCard
-      :is-open="store.isMigrateInfoCardOpen"
-      @toggle-card="closeMigrateInfoCard"
-    ></MigrateInfoCard>
-
     <Tooltip />
 
     <AppHeader />
@@ -52,7 +47,6 @@ import UpdateCard from './components/App/UpdateCard.vue';
 import StorageManager from './managers/storageManager';
 import AppFooter from './components/App/AppFooter.vue';
 import AppWelcomeCard from './components/App/AppWelcomeCard.vue';
-import MigrateInfoCard from './components/App/MigrateInfoCard.vue';
 
 const STORAGE_VERSION_KEY = 'app_version';
 const WELCOME_CARD_SEEN_KEY = 'welcome_card_seen';
@@ -66,7 +60,6 @@ export default defineComponent({
     AppFooter,
     UpdateCard,
     AppWelcomeCard,
-    MigrateInfoCard,
     Tooltip
   },
 
@@ -212,6 +205,7 @@ export default defineComponent({
 
 <style lang="scss">
 @use './styles/animations';
+@use './styles/global';
 
 // APP
 #app {

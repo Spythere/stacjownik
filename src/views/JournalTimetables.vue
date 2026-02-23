@@ -14,7 +14,7 @@
           optionsType="timetables"
         />
 
-        <JournalStats :statsButtons="statsButtons" />
+        <JournalStats :chosen-player-id="chosenPlayerId" />
       </div>
 
       <div class="journal_refreshed-date">
@@ -29,6 +29,8 @@
           :dataStatus="dataStatus"
           :scrollDataLoaded="scrollDataLoaded"
           :scrollNoMoreData="scrollNoMoreData"
+          :extraInfoIndexes="extraInfoIndexes"
+          @toggleExtraInfo="toggleExtraInfo"
         />
       </div>
     </div>
@@ -118,36 +120,6 @@ export const journalTimetableFilters: Journal.TimetableFilter[] = [
   }
 ];
 
-interface TimetablesQueryParams {
-  driverName?: string;
-  trainNo?: string;
-  timetableId?: string;
-  categoryCode?: string;
-
-  authorName?: string;
-
-  dateFrom?: string;
-  dateTo?: string;
-
-  issuedFrom?: string;
-  terminatingAt?: string;
-  via?: string;
-  includesScenery?: string;
-
-  countFrom?: number;
-  countLimit?: number;
-
-  fulfilled?: number;
-  terminated?: number;
-
-  twr?: number;
-  skr?: number;
-  pn?: number;
-  tn?: number;
-
-  sortBy?: Journal.TimetableSorter['id'];
-}
-
 export default defineComponent({
   components: {
     JournalOptions,
@@ -170,35 +142,18 @@ export default defineComponent({
     mainStore: useMainStore(),
     apiStore: useApiStore(),
 
-    statsButtons: [
-      {
-        tab: Journal.StatsTab.DAILY_STATS,
-        localeKey: 'journal.daily-stats.button',
-        iconName: 'stats',
-        disabled: false
-      },
-      {
-        tab: Journal.StatsTab.DRIVER_STATS,
-        localeKey: 'journal.driver-stats.button',
-        iconName: 'train',
-        disabled: true
-      }
-    ],
-
-    currentQueryParams: {} as TimetablesQueryParams,
+    currentQueryParams: {} as API.TimetableHistory.QueryParams,
     dataRefreshedAt: null as Date | null,
 
     scrollDataLoaded: true,
     scrollNoMoreData: false,
+    extraInfoIndexes: [] as number[],
 
-    showReturnButton: false,
-    statsCardOpen: false,
-    currentOptionsActive: false,
+    chosenPlayerId: -1,
 
-    timetableHistory: [] as API.TimetableHistory.Response,
+    timetableHistory: [] as API.TimetableHistory.ResponseShort,
 
-    dataStatus: Status.Data.Loading,
-    dataErrorMessage: ''
+    dataStatus: Status.Data.Loading
   }),
 
   setup() {
@@ -245,18 +200,11 @@ export default defineComponent({
     };
   },
 
-  watch: {
-    currentQueryParams(q: TimetablesQueryParams) {
-      this.currentOptionsActive = Object.values(q).some((v) => v !== undefined);
-    },
-
-    'mainStore.driverStatsData'(driverStats) {
-      this.statsButtons.find((sb) => sb.tab == Journal.StatsTab.DRIVER_STATS)!.disabled =
-        driverStats === undefined;
-    },
-
-    async 'mainStore.driverStatsName'() {
-      this.fetchDriverStats();
+  computed: {
+    currentOptionsActive() {
+      return Object.keys(this.currentQueryParams)
+        .filter((k) => k != 'countFrom' && k != 'returnType')
+        .some((k) => (this.currentQueryParams as any)[k] !== undefined);
     }
   },
 
@@ -287,28 +235,21 @@ export default defineComponent({
       this.setOptions(query as any);
     },
 
-    async fetchDriverStats() {
-      if (!this.mainStore.driverStatsName) {
-        this.mainStore.driverStatsData = undefined;
-        this.mainStore.driverStatsStatus = Status.Data.Initialized;
-        return;
-      }
+    async toggleExtraInfo(timetableDetails: API.TimetableHistory.Data | null) {
+      if (!timetableDetails) return;
 
-      try {
-        this.mainStore.driverStatsStatus = Status.Data.Loading;
+      const existingIdx = this.extraInfoIndexes.indexOf(timetableDetails.id);
 
-        const statsData: API.DriverStats.Response = await (
-          await this.apiStore.client!.get(
-            `api/getDriverInfo?name=${this.mainStore.driverStatsName}`
-          )
-        ).data;
+      if (existingIdx == -1) {
+        this.extraInfoIndexes.push(timetableDetails.id);
 
-        this.mainStore.driverStatsData = statsData;
-        this.mainStore.driverStatsStatus = Status.Data.Loaded;
-      } catch (error) {
-        this.mainStore.driverStatsData = undefined;
-        this.mainStore.driverStatsStatus = Status.Data.Error;
-        console.error('Ups! Wystąpił błąd przy próbie pobrania statystyk maszynisty! :/');
+        const synchedTimetable = this.timetableHistory.find((t) => t.id == timetableDetails.id);
+
+        if (synchedTimetable) {
+          Object.assign(synchedTimetable, timetableDetails);
+        }
+      } else {
+        this.extraInfoIndexes.splice(existingIdx, 1);
       }
     },
 
@@ -354,6 +295,8 @@ export default defineComponent({
     },
 
     async fetchHistoryData() {
+      this.extraInfoIndexes.length = 0;
+
       const driverName = this.searchersValues['search-driver'].trim() || undefined;
       const trainNo = this.searchersValues['search-train'].trim() || undefined;
       const authorName = this.searchersValues['search-dispatcher'].trim() || undefined;
@@ -378,7 +321,7 @@ export default defineComponent({
         dateToISO = dateTo.toISOString();
       }
 
-      const queryParams: TimetablesQueryParams = {};
+      const queryParams: API.TimetableHistory.QueryParams = {};
 
       this.filterList
         .filter((f) => f.isActive)
@@ -445,6 +388,7 @@ export default defineComponent({
       queryParams['terminatingAt'] = terminatingAt;
       queryParams['via'] = via;
       queryParams['categoryCode'] = categoryCode;
+      queryParams['returnType'] = 'short';
 
       queryParams['issuedFrom'] = issuedFrom;
       queryParams['sortBy'] =
@@ -456,7 +400,7 @@ export default defineComponent({
       this.currentQueryParams = queryParams;
 
       try {
-        const responseData: API.TimetableHistory.Response = await (
+        const responseData: API.TimetableHistory.ResponseShort = await (
           await this.apiStore.client!.get('api/getTimetables', {
             params: this.currentQueryParams
           })
@@ -464,26 +408,23 @@ export default defineComponent({
 
         if (!responseData) {
           this.dataStatus = Status.Data.Error;
-          this.dataErrorMessage = 'Brak danych!';
+          this.chosenPlayerId = -1;
           return;
         }
-
-        if (!responseData) return;
 
         // Response data exists
         this.timetableHistory = responseData;
 
-        // Stats display
-        this.mainStore.driverStatsName =
-          this.timetableHistory.length > 0 && this.searchersValues['search-driver'].trim()
-            ? this.timetableHistory[0].driverName
-            : '';
+        this.chosenPlayerId =
+          this.timetableHistory.length > 0 && this.searchersValues['search-driver'].trim() != ''
+            ? this.timetableHistory[0].driverId
+            : -1;
 
         this.dataStatus = Status.Data.Loaded;
         this.dataRefreshedAt = new Date();
       } catch (error) {
         this.dataStatus = Status.Data.Error;
-        this.dataErrorMessage = 'Ups! Coś poszło nie tak!';
+        this.chosenPlayerId = -1;
       }
 
       this.scrollNoMoreData = false;

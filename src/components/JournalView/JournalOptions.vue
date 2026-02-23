@@ -1,5 +1,5 @@
 <template>
-  <div class="filters-options dropdown" @keydown.esc="showOptions = false">
+  <div class="dropdown filters-options" @keydown.esc="showOptions = false">
     <div class="dropdown_background" v-if="showOptions" @click="showOptions = false"></div>
 
     <div class="actions-bar">
@@ -57,7 +57,7 @@
                 <label v-if="propName == 'search-date-from'" for="search-date">{{
                   $t(`options.search-${optionsType}-date`)
                 }}</label>
-                
+
                 <div class="search-box">
                   <input
                     class="search-input"
@@ -330,4 +330,9 @@ export default defineComponent({
 <style lang="scss" scoped>
 @use '../../styles/dropdown';
 @use '../../styles/dropdown-filters';
+
+.filters-options > .dropdown_wrapper {
+  height: calc(100vh - 19em);
+  min-height: 500px;
+}
 </style>

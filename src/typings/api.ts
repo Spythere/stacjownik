@@ -1,3 +1,4 @@
+import { Journal } from '../components/JournalView/typings';
 import { Status, Vehicle, VehicleGroup } from './common';
 
 export enum APIDataStatus {
@@ -27,11 +28,22 @@ export namespace API {
     }
   }
 
+  export namespace PlayerActivity {
+    export interface Data {
+      dispatcher: API.ActiveSceneries.Data[];
+      driver: API.ActiveTrains.Data | null;
+    }
+
+    export type Response = Data;
+  }
+
   export namespace DispatcherHistory {
     export type Response = Data[];
 
     export interface Data {
       id: number;
+      createdAt: string;
+      updatedAt: string;
       currentDuration: number;
       dispatcherId: number;
       dispatcherName: string;
@@ -52,61 +64,64 @@ export namespace API {
   }
 
   export namespace DispatcherStats {
-    export interface DistanceStat {
-      routeDistance: number | null;
+    export interface Services {
+      count: number;
+      durationMax: number;
+      durationAvg: number;
     }
 
-    export interface DurationStat {
-      currentDuration: number | null;
+    export interface IssuedTimetables {
+      count: number;
+      distanceMax: number;
+      distanceAvg: number;
+      distanceSum: number;
     }
 
-    export interface Count {
-      _all: number;
+    export interface Data {
+      dispatcherId: number | null;
+      dispatcherName: string | null;
+      dispatcherLevel: number | null;
+      services: Services | null;
+      issuedTimetables: IssuedTimetables | null;
     }
 
-    export interface Response {
-      services: {
-        count: number;
-        durationMax: number;
-        durationAvg: number;
-      } | null;
-
-      issuedTimetables: {
-        count: number;
-        distanceMax: number;
-        distanceAvg: number;
-        distanceSum: number;
-      } | null;
-    }
+    export type Response = Data;
   }
 
   export namespace DriverStats {
-    export interface SumStats {
-      routeDistance: number;
-      confirmedStopsCount: number;
-      allStopsCount: number;
-      currentDistance: number;
+    export interface Data {
+      driverName: string | null;
+      driverId: number | null;
+      driverLevel: number | null;
+      countAll: number;
+      countTerminated: number;
+      countFulfilled: number;
+      routeDistanceTotal: number | null;
+      routeDistanceAvg: number | null;
+      routeDistanceMax: number | null;
+      currentDistanceTotal: number | null;
+      confirmedStopsTotal: number | null;
+      allStopsTotal: number | null;
     }
 
-    export interface CountStats {
-      fulfilled: number;
-      terminated: number;
-      _all: number;
-    }
+    export type Response = Data;
+  }
 
-    export interface MaxStats {
-      routeDistance: number;
+  export namespace PlayerInfo {
+    export interface Data {
+      currentActivity: PlayerActivity.Data;
+      dispatcherStats: DispatcherStats.Data;
+      dispatcherStatsLastMonth: DispatcherStats.Data;
+      driverStats: DriverStats.Data;
+      driverStatsLastMonth: DriverStats.Data;
     }
+  }
 
-    export interface AvdStats {
-      routeDistance: number;
-    }
-
-    export interface Response {
-      _sum: SumStats;
-      _count: CountStats;
-      _max: MaxStats;
-      _avg: AvdStats;
+  export namespace PlayerJournal {
+    export interface Data {
+      timetables: TimetableHistory.DataShort[];
+      issuedTimetables: TimetableHistory.DataShort[];
+      duties: DispatcherHistory.Data[];
     }
   }
 
@@ -211,14 +226,48 @@ export namespace API {
   }
 
   export namespace TimetableHistory {
-    export interface Data {
+    export interface QueryParams {
+      driverName?: string;
+      trainNo?: string;
+      timetableId?: string;
+      categoryCode?: string;
+
+      authorName?: string;
+
+      dateFrom?: string;
+      dateTo?: string;
+
+      issuedFrom?: string;
+      terminatingAt?: string;
+      via?: string;
+      includesScenery?: string;
+
+      countFrom?: number;
+      countLimit?: number;
+
+      fulfilled?: number;
+      terminated?: number;
+
+      twr?: number;
+      skr?: number;
+      pn?: number;
+      tn?: number;
+
+      returnType?: 'all' | 'short' | 'detailed';
+
+      sortBy?: Journal.TimetableSorter['id'];
+    }
+
+    export interface Data extends DataShort, DataDetailsOnly {
+      updatedAt: string;
+    }
+
+    export interface DataShort {
       id: number;
       createdAt: string;
-      updatedAt: string;
-
-      timetableId: number;
       trainNo: number;
       trainCategoryCode: string;
+      timetableId: number;
 
       driverId: number;
       driverName: string;
@@ -229,7 +278,6 @@ export namespace API {
       route: string;
       twr: number;
       skr: number;
-      sceneriesString: string;
       currentLocation: string[];
 
       routeDistance: number;
@@ -240,7 +288,6 @@ export namespace API {
 
       beginDate: string;
       endDate: string;
-
       scheduledBeginDate: string;
       scheduledEndDate: string;
 
@@ -250,15 +297,25 @@ export namespace API {
       authorName?: string;
       authorId?: number;
 
+      currentSceneryName?: string;
+      currentSceneryHash?: string;
+      hasDangerousCargo: boolean;
+      hasExtraDeliveries: boolean;
+    }
+
+    export interface DataDetailsOnly {
+      id: number;
+      timetableId: number;
+
+      sceneriesString: string;
       stockString?: string;
       stockHistory: string[];
 
       stockMass?: number;
       stockLength?: number;
       maxSpeed?: number;
+      trainMaxSpeed?: number;
 
-      currentSceneryName?: string;
-      currentSceneryHash?: string;
       routeSceneries: string;
       checkpointArrivals: string[];
       checkpointDepartures: string[];
@@ -268,14 +325,20 @@ export namespace API {
       checkpointComments: string[];
       visitedSceneries: string[];
       sceneryNames: string[];
+
       path: string;
       warningNotes: string | null;
-      hasDangerousCargo: boolean;
-      hasExtraDeliveries: boolean;
-      trainMaxSpeed?: number;
+
+      authorId?: number;
+      authorName?: string;
+      driverId: number;
+      driverName: string;
+      driverLanguageId: number | null;
     }
 
     export type Response = Data[];
+    export type ResponseShort = DataShort[];
+    export type ResponseDetailsOnly = DataDetailsOnly[];
   }
 
   export namespace DailyStats {
@@ -423,6 +486,62 @@ export namespace GithubAPI {
       tarball_url: string;
       zipball_url: string;
       body: string;
+    }
+  }
+}
+
+export namespace Td2API {
+  export namespace UsersInfoByName {
+    export interface UserStat {
+      variable: string;
+      value: number;
+      position: number;
+      server_total: number;
+      server_max: number;
+      server_min: number;
+      server_avg: number;
+    }
+
+    export interface Levels {
+      driver: number;
+      dispatcher: number;
+    }
+
+    export interface UserGroup {
+      id_group: number;
+      group_name: string;
+      description: string;
+      online_color: string;
+      min_posts: number;
+      max_messages: number;
+      stars: string;
+      group_type: number;
+      hidden: number;
+      id_parent: number;
+    }
+
+    export interface UserInfo {
+      id_member: number;
+      id_group: number;
+      additional_groups: string;
+      member_name: string;
+      karma_bad: number;
+      karma_good: number;
+      date_registered: number;
+      last_login: number;
+      avatar: number;
+      lngfile: string;
+      user_stats: UserStat[];
+      levels: Levels;
+      user_groups: UserGroup[];
+    }
+
+    export type Message = UserInfo[];
+
+    export interface Response {
+      success: boolean;
+      respCode: number;
+      message: Message;
     }
   }
 }

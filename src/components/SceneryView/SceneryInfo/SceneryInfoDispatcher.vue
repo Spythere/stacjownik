@@ -8,10 +8,7 @@
         {{ onlineScenery.dispatcherExp > 1 ? onlineScenery.dispatcherExp : 'L' }}
       </span>
 
-      <router-link
-        class="dispatcher-name"
-        :to="`/journal/dispatchers?search-dispatcher=${onlineScenery.dispatcherName}`"
-      >
+      <router-link class="dispatcher-name" :to="`/profile?playerId=${onlineScenery.dispatcherId}`">
         <span
           class="text--donator"
           v-if="apiStore.donatorsData.includes(onlineScenery.dispatcherName)"

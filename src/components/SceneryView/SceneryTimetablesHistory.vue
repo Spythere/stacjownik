@@ -115,7 +115,7 @@ export default defineComponent({
 
   data() {
     return {
-      historyList: [] as API.TimetableHistory.Response,
+      historyList: [] as API.TimetableHistory.ResponseShort,
       historyModeList,
 
       apiStore: useApiStore(),
@@ -149,7 +149,7 @@ export default defineComponent({
       requestFilters['returnType'] = 'short';
 
       try {
-        const response: API.TimetableHistory.Response = await (
+        const response: API.TimetableHistory.ResponseShort = await (
           await this.apiStore.client!.get('api/getTimetables', {
             params: requestFilters
           })
@@ -178,7 +178,7 @@ export default defineComponent({
       });
     },
 
-    parseCreatedDate(timetable: API.TimetableHistory.Data, locale: string) {
+    parseCreatedDate(timetable: API.TimetableHistory.DataShort, locale: string) {
       const createdDate =
         timetable.createdAt > timetable.beginDate
           ? new Date(timetable.beginDate)

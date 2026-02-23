@@ -83,10 +83,8 @@
     "tooltip-scenery-offline": "Sceneria offline",
     "pojazdownik-link-content": "POJAZDOWNIK",
     "language-tooltip-content": "JĘZYK / LANGUAGE",
-    "gnr-link-content": "GENERATOR <br> ROZKAZÓW PISEMNYCH"
-  },
-  "footer": {
-    "discord": "Serwer Discord Stacjownika"
+    "gnr-link-content": "GENERATOR <br> ROZKAZÓW PISEMNYCH",
+    "discord-link-content": "SERWER DISCORD <br> STACJOWNIKA"
   },
   "categories": {
     "EI": "ekspres krajowy",
@@ -193,6 +191,7 @@
     "search-train": "Nr pociągu / #",
     "search-driver": "Nick maszynisty",
     "select-driver": "Wybierz maszynistę...",
+    "search-duty-id": "ID służby",
     "search-dispatcher": "Nick dyżurnego",
     "search-station": "Nazwa scenerii / #",
     "search-author": "Nick autora rozkładu jazdy",
@@ -414,7 +413,7 @@
     "last-seen-ago": "od {minutes} minut",
     "scenery-offline": "Przejazd offline",
     "timeout": "Wystąpił problem z aktualizacją rozkładów jazdy z SWDR",
-    "driver-journal-link": "DZIENNIK MASZYNISTY",
+    "driver-profile-link": "PROFIL GRACZA",
     "driver-srjp-link": "SRJP",
     "driver-return-link": "POWRÓT",
     "driver-not-found-header": "Nie znaleziono pociągu! :/",
@@ -604,7 +603,54 @@
     "desc-end": "Pociąg kończy bieg",
     "desc-terminated": "Pociąg zakończył bieg"
   },
-  "history": {
-    "title": "DZIENNIK ROZKŁADÓW JAZDY"
+  "profile": {
+    "journal-button": "PROFIL GRACZA",
+    "no-player-found": "Nie znaleziono gracza! :/",
+    "return-to-main": "Powrót do strony głównej",
+
+    "filters": {
+      "Timetable": "ROZKŁADY JAZDY",
+      "Dispatcher": "SŁUŻBY DYŻURNEGO",
+      "IssuedTimetable": "WYSTAWIONE RJ"
+    },
+
+    "stats": {
+      "timetables-journal": "DZIENNIK RJ",
+      "dispatchers-journal": "DZIENNIK DR",
+      "forum-profile": "PROFIL FORUM",
+
+      "driver": "MASZYNISTA",
+      "dispatcher": "DYŻURNY RUCHU",
+
+      "header-driver": "STATYSTYKI MASZYNISTY",
+      "fulfilled-timetables": "wypełnione rozkłady jazdy",
+      "route-distance": "zatwierdzony kilometraż w RJ",
+      "confirmed-stops": "potwierdzonych stacji w RJ",
+      "longest-timetable": "najdłuższy rozkład jazdy",
+      "avg-timetable-length": "średnia długość wszystkich rozkładów",
+      "no-timetable-stats": "Ten użytkownik nie posiada statystyk maszynisty zarejestrowanych przez Stacjownik!",
+
+      "header-dispatcher": "STATYSTYKI DYŻURNEGO RUCHU",
+      "duties-count": "służby jako dyżurny ruchu",
+      "longest-duty": "najdłuższa służba",
+      "created-timetables-count": "wystawione RJ jako dyżurny ruchu",
+      "longest-created-timetable": "najdłuższy wystawiony RJ",
+      "created-timetables-length-sum": "suma długości wystawionych RJ",
+      "no-dispatcher-stats": "Ten użytkownik nie posiada statystyk dyżurnego zarejestrowanych przez Stacjownik!"
+    },
+
+    "recent-stats": {
+      "header": "STATYSTYKI AKTYWNOŚCI (30 DNI)",
+      "timetables": "ROZKŁADÓW JAZDY",
+      "distance": "POKONANYCH KILOMETRÓW",
+      "duties": "SŁUŻB DYŻURNEGO",
+      "created-timetables": "WYSTAWIONYCH ROZKŁADÓW"
+    },
+
+    "list": {
+      "for": "dla",
+      "online-since": "online od",
+      "no-recent-history": "Brak ostatniej aktywności w symulatorze :("
+    }
   }
 }

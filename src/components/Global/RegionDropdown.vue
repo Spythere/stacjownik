@@ -160,7 +160,7 @@ ul.options {
 
   height: auto;
 
-  z-index: 100;
+  z-index: 150;
   width: 100%;
 
   font-size: 0.9em;

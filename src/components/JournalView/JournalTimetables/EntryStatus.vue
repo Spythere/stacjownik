@@ -51,7 +51,7 @@ export default defineComponent({
   components: { ProgressBar },
   props: {
     timetable: {
-      type: Object as PropType<API.TimetableHistory.Data>,
+      type: Object as PropType<API.TimetableHistory.DataShort>,
       required: true
     }
   }

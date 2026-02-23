@@ -33,6 +33,16 @@
           </button>
 
           <a
+            class="a-button btn--image discord-link"
+            href="https://discord.gg/x2mpNN3svk"
+            target="_blank"
+            data-tooltip-type="HtmlTooltip"
+            :data-tooltip-content="`<b>${$t('app.discord-link-content')}</b>`"
+          >
+            <img src="/images/icon-discord.png" alt="discord logo icon" />
+          </a>
+
+          <a
             class="a-button btn--image gnr-link"
             href="https://generator-td2.web.app/"
             target="_blank"
@@ -203,11 +213,12 @@ a.pojazdownik-link {
   }
 }
 
-a.gnr-link {
+a.gnr-link,
+a.discord-link {
   background-color: #141414;
 
   &:hover {
-    background-color: #222222;
+    background-color: #333;
   }
 }
 

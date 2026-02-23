@@ -2,87 +2,70 @@
   <div
     class="journal-stats dropdown"
     v-if="!mainStore.isOffline"
-    @keydown.esc="currentStatsTab = null"
+    @keydown.esc="isDropdownOpen = false"
   >
-    <div
-      class="dropdown_background"
-      v-if="currentStatsTab !== null"
-      @click="currentStatsTab = null"
-    ></div>
+    <div class="dropdown_background" v-if="isDropdownOpen" @click="isDropdownOpen = false"></div>
 
     <div class="actions-bar">
+      <button class="btn--filled btn--image" @click="toggleDropdown">
+        <img :src="`/images/icon-stats.svg`" alt="stats icon" />
+        {{ $t('journal.daily-stats.button') }}
+      </button>
+
       <button
-        v-for="button in statsButtons"
-        :key="button.tab"
         class="btn--filled btn--image"
-        :data-selected="button.tab == currentStatsTab"
-        :data-disabled="button.disabled"
-        :disabled="button.disabled"
-        @click="onTabButtonClick(button.tab)"
+        :data-disabled="chosenPlayerId == -1"
+        @click="navigateToProfile"
       >
-        <img
-          v-if="button.iconName"
-          :src="`/images/icon-${button.iconName}.svg`"
-          :alt="button.iconName"
-        />
-        {{ $t(button.localeKey) }}
+        <img :src="`/images/icon-user.svg`" alt="user icon" />
+        {{ $t('profile.journal-button') }}
       </button>
     </div>
 
     <transition name="dropdown-anim">
-      <div
-        class="dropdown_wrapper"
-        :class="{ 'dropdown-align-right': true }"
-        v-if="currentStatsTab !== null"
-      >
+      <div class="dropdown_wrapper" v-if="isDropdownOpen">
         <keep-alive>
-          <component :is="currentStatsTab" :key="currentStatsTab"></component>
+          <JournalDailyStats />
         </keep-alive>
       </div>
     </transition>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType } from 'vue';
+<script lang="ts" setup>
+import { ref } from 'vue';
 import { useMainStore } from '../../store/mainStore';
-import StorageManager from '../../managers/storageManager';
-import { Journal } from './typings';
 import JournalDailyStats from './JournalDailyStats.vue';
-import JournalDispatcherStats from '../JournalView/JournalDispatchers/JournalDispatcherStats.vue';
-import JournalDriverStats from '../JournalView/JournalTimetables/JournalDriverStats.vue';
+import { useRouter } from 'vue-router';
 
-export default defineComponent({
-  components: { JournalDailyStats, JournalDriverStats, JournalDispatcherStats },
-  props: {
-    statsButtons: {
-      type: Array as PropType<Journal.StatsButton[]>,
-      required: true
-    }
-  },
-  data() {
-    return {
-      Journal,
-      mainStore: useMainStore(),
-      currentStatsTab: null as Journal.StatsTab | null
-    };
-  },
+const router = useRouter();
 
-  methods: {
-    onTabButtonClick(tab: Journal.StatsTab) {
-      this.currentStatsTab = tab == this.currentStatsTab ? null : tab;
-
-      StorageManager.setStringValue('journalStatsTab', this.currentStatsTab ?? '');
-    }
+const props = defineProps({
+  chosenPlayerId: {
+    type: Number,
+    required: true
   }
 });
+
+const mainStore = useMainStore();
+const isDropdownOpen = ref(false);
+
+function toggleDropdown() {
+  isDropdownOpen.value = !isDropdownOpen.value;
+}
+
+function navigateToProfile() {
+  if (props.chosenPlayerId == -1) return;
+
+  router.push(`/profile?playerId=${props.chosenPlayerId}`);
+}
 </script>
 
 <style lang="scss" scoped>
 @use '../../styles/dropdown';
 @use '../../styles/dropdown-filters';
 
-.dropdown_wrapper.dropdown-align-right {
+.dropdown_wrapper {
   left: auto;
   right: 0;
   max-width: 700px;
