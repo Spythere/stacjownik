@@ -81,7 +81,7 @@
                 :to="`/scenery?station=${d.stationName}`"
               >
                 <img src="/images/icon-user.svg" width="25" alt="user icon" />
-                <b>{{ d.stationName }}</b>
+                <b>{{ d.stationName }} ({{ getRegionNameById(d.region) }})</b>
                 <StationStatusBadge :isOnline="true" :dispatcherStatus="d.dispatcherStatus" />
               </router-link>
             </div>
@@ -96,7 +96,7 @@
                 <span v-if="d.timetable" class="text--primary">{{ d.timetable.category }}</span>
                 <span>{{ d.trainNo }}</span>
                 &bull;
-                <span>{{ d.currentStationName }}</span>
+                <span>{{ d.currentStationName }} ({{ getRegionNameById(d.region) }})</span>
                 &bull;
                 <span class="text--grayed">{{ d.stockString.split(';')[0] }}</span>
               </router-link>
@@ -231,9 +231,8 @@ import { useI18n } from 'vue-i18n';
 import { useApiStore } from '../../store/apiStore';
 import StationStatusBadge from '../Global/StationStatusBadge.vue';
 import axios from 'axios';
-import { Status } from '../../typings/common';
-import Loading from '../Global/Loading.vue';
 import ProfilePlayerAvatar from './ProfilePlayerAvatar.vue';
+import { getRegionNameById } from '../../utils/regionUtils';
 
 const { t } = useI18n();
 
