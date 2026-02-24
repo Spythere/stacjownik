@@ -78,7 +78,7 @@
               <router-link
                 v-for="d in activeDispatches"
                 class="dispatcher-badge"
-                :to="`/scenery?station=${d.stationName}`"
+                :to="`/scenery?station=${d.stationName}&region=${d.region}`"
               >
                 <img src="/images/icon-user.svg" width="25" alt="user icon" />
                 <b>{{ d.stationName }} ({{ getRegionNameById(d.region) }})</b>
@@ -88,17 +88,17 @@
 
             <div class="info-activity" v-if="activeTrains.length > 0">
               <router-link
-                v-for="d in activeTrains"
-                :to="`/driver?trainId=${d.id}`"
+                v-for="t in activeTrains"
+                :to="`/driver?trainId=${t.id}`"
                 class="driver-badge"
               >
                 <img src="/images/icon-train.svg" width="25" alt="train icon" />
-                <span v-if="d.timetable" class="text--primary">{{ d.timetable.category }}</span>
-                <span>{{ d.trainNo }}</span>
+                <span v-if="t.timetable" class="text--primary">{{ t.timetable.category }}</span>
+                <span>{{ t.trainNo }}</span>
                 &bull;
-                <span>{{ d.currentStationName }} ({{ getRegionNameById(d.region) }})</span>
+                <span>{{ t.currentStationName }} ({{ getRegionNameById(t.region) }})</span>
                 &bull;
-                <span class="text--grayed">{{ d.stockString.split(';')[0] }}</span>
+                <span class="text--grayed">{{ t.stockString.split(';')[0] }}</span>
               </router-link>
             </div>
           </div>
@@ -221,7 +221,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, PropType, ref } from 'vue';
+import { computed, onActivated, onMounted, PropType, ref, watch } from 'vue';
 import { API, Td2API } from '../../typings/api';
 import { calculateExpStyles } from '../../composables/badge';
 import { getCountPercentage } from '../../utils/calcUtils';
@@ -245,20 +245,18 @@ const props = defineProps({
     required: true
   },
 
+  playerTD2Info: {
+    type: Object as PropType<Td2API.UsersInfoByName.UserInfo>
+  },
+
   playerName: {
     type: String
   }
 });
 
-const playerTD2Info = ref<Td2API.UsersInfoByName.UserInfo | null>(null);
-
 const isPlayerDonator = computed(() =>
   props.playerName ? apiStore.donatorsData.includes(props.playerName) : false
 );
-
-onMounted(() => {
-  fetchTD2Data();
-});
 
 const activeDispatches = computed(() => {
   if (!props.playerName) return [];
@@ -266,7 +264,7 @@ const activeDispatches = computed(() => {
 
   return apiStore.activeData.activeSceneries.filter(
     (sc) =>
-      sc.dispatcherName == props.playerName && (sc.lastSeen >= Date.now() - 60000 || sc.isOnline)
+      sc.dispatcherName == props.playerName && (sc.lastSeen <= Date.now() - 60000 || sc.isOnline)
   );
 });
 
@@ -275,30 +273,9 @@ const activeTrains = computed(() => {
   if (!apiStore.activeData || !apiStore.activeData.trains) return [];
 
   return apiStore.activeData.trains.filter(
-    (t) => t.driverName == props.playerName && (t.lastSeen >= Date.now() - 60000 || t.online)
+    (t) => t.driverName == props.playerName && (t.lastSeen <= Date.now() - 60000 || t.online)
   );
 });
-
-async function fetchTD2Data() {
-  if (!props.playerName) return;
-
-  try {
-    const response = await axios.get<Td2API.UsersInfoByName.Response>('https://api.td2.info.pl', {
-      params: {
-        method: 'getUsersInfoByName',
-        name: props.playerName
-      }
-    });
-
-    if (response.data.success && response.data.message.length == 1) {
-      playerTD2Info.value = response.data.message[0];
-    }
-  } catch (error) {
-    console.error(error);
-  }
-
-  return;
-}
 </script>
 
 <style lang="scss" scoped>

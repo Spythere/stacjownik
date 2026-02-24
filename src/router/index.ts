@@ -74,7 +74,6 @@ const routes: Array<RouteRecordRaw> = [
 
 const router = createRouter({
   scrollBehavior(to, from, savedPosition) {
-    console.log(to.name);
     if (
       (to.name == 'SceneryView' || to.name == 'DriverView' || to.name == 'PlayerProfileView') &&
       from.name !== to.name &&

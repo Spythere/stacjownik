@@ -14,7 +14,7 @@
     </div>
 
     <div class="history-list-box">
-      <Loading v-if="journalDataStatus == Status.Data.Loading" />
+      <Loading v-if="journalStatus == Status.Data.Loading" />
 
       <div v-else-if="combinedJournal.length == 0" class="no-recent-history">
         {{ t('profile.list.no-recent-history') }}
@@ -107,12 +107,21 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onActivated, onDeactivated, onMounted, reactive, ref } from 'vue';
+import {
+  computed,
+  onActivated,
+  onDeactivated,
+  onMounted,
+  onUnmounted,
+  PropType,
+  reactive,
+  ref
+} from 'vue';
 import { dateToLocaleString, humanizeDuration } from '../../composables/time';
 import { API } from '../../typings/api';
 import { useI18n } from 'vue-i18n';
 import { useApiStore } from '../../store/apiStore';
-import { useRoute } from 'vue-router';
+import { onBeforeRouteUpdate, useRoute } from 'vue-router';
 import { Status } from '../../typings/common';
 import Loading from '../Global/Loading.vue';
 
@@ -127,18 +136,19 @@ interface JournalEntry {
 const props = defineProps({
   playerName: {
     type: String
+  },
+
+  playerJournal: {
+    type: Object as PropType<API.PlayerJournal.Data>,
+  },
+
+  journalStatus: {
+    type: Number as PropType<Status.Data>,
+    required: true
   }
 });
 
 const { t } = useI18n();
-const apiStore = useApiStore();
-const route = useRoute();
-
-const playerId = ref(-1);
-const playerJournal = ref<API.PlayerJournal.Data | null>(null);
-const journalDataStatus = ref(Status.Data.Initialized);
-
-const intervalId = ref(-1);
 
 const activeFilterTypes = reactive<Record<JournalEntryType, boolean>>({
   Timetable: true,
@@ -146,23 +156,13 @@ const activeFilterTypes = reactive<Record<JournalEntryType, boolean>>({
   IssuedTimetable: true
 });
 
-onMounted(() => {
-  fetchPlayerJournal();
-  intervalId.value = setInterval(fetchPlayerJournal, 30000);
-});
-
-onDeactivated(() => {
-  clearInterval(intervalId.value);
-  intervalId.value = -1;
-});
-
 const combinedJournal = computed<JournalEntry[]>(() => {
-  if (!playerJournal.value || !props.playerName) return [];
+  if (!props.playerJournal || !props.playerName) return [];
 
   const list = [
-    ...playerJournal.value.timetables,
-    ...playerJournal.value.duties,
-    ...playerJournal.value.issuedTimetables
+    ...props.playerJournal.timetables,
+    ...props.playerJournal.duties,
+    ...props.playerJournal.issuedTimetables
   ]
     .reduce<JournalEntry[]>((acc, v) => {
       // Timetable or dispatcher type
@@ -208,35 +208,6 @@ function toggleFilter(filterType: JournalEntryType) {
     return;
 
   activeFilterTypes[filterType] = toggledState;
-}
-
-async function fetchPlayerJournal() {
-  const queryPlayerId = Number(route.query.playerId) || -1;
-
-  if (!apiStore.client || !queryPlayerId) return;
-
-  if (queryPlayerId != playerId.value) {
-    journalDataStatus.value = Status.Data.Loading;
-  }
-
-  playerId.value = queryPlayerId;
-
-  try {
-    const response = await apiStore.client.get<API.PlayerJournal.Data>('api/getPlayerJournal', {
-      params: {
-        playerId: queryPlayerId,
-        dateScope: '30d'
-      }
-    });
-
-    playerJournal.value = response.data;
-    journalDataStatus.value = Status.Data.Loaded;
-  } catch (error) {
-    console.error(error);
-    journalDataStatus.value = Status.Data.Error;
-  }
-
-  return null;
 }
 </script>
 

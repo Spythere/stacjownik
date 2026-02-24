@@ -1,15 +1,23 @@
 <template>
   <div class="profile-view">
-    <div class="profile-wrapper" v-if="playerInfo && playerDataStatus == Status.Data.Loaded">
-      <ProfileSummary :playerInfo="playerInfo" :playerName="playerName" />
+    <div class="profile-wrapper" v-if="playerInfo && playerInfoStatus == Status.Data.Loaded">
+      <ProfileSummary
+        :playerInfo="playerInfo"
+        :playerTD2Info="playerTD2Info"
+        :playerName="playerName"
+      />
 
       <div class="profile-side">
         <ProfileRecentStats :playerInfo="playerInfo" />
-        <ProfileHistoryList :playerName="playerName" />
+        <ProfileHistoryList
+          :playerName="playerName"
+          :playerJournal="playerJournal"
+          :journalStatus="playerJournalStatus"
+        />
       </div>
     </div>
 
-    <Loading v-else-if="playerDataStatus == Status.Data.Loading" />
+    <Loading v-else-if="playerInfoStatus == Status.Data.Loading" />
 
     <div class="no-data-found" v-else>
       <div>
@@ -22,9 +30,9 @@
 
 <script lang="ts" setup>
 import { onActivated, onDeactivated, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { onBeforeRouteUpdate, useRoute } from 'vue-router';
 import { useApiStore } from '../store/apiStore';
-import { API } from '../typings/api';
+import { API, Td2API } from '../typings/api';
 import { useI18n } from 'vue-i18n';
 import { Status } from '../typings/common';
 
@@ -32,6 +40,7 @@ import Loading from '../components/Global/Loading.vue';
 import ProfileSummary from '../components/PlayerProfileView/ProfileSummary.vue';
 import ProfileRecentStats from '../components/PlayerProfileView/ProfileRecentStats.vue';
 import ProfileHistoryList from '../components/PlayerProfileView/ProfileHistoryList.vue';
+import axios from 'axios';
 
 const { t } = useI18n();
 
@@ -41,8 +50,12 @@ const route = useRoute();
 const playerId = ref(-1);
 const playerName = ref('');
 
-const playerInfo = ref<API.PlayerInfo.Data | null>(null);
-const playerDataStatus = ref(Status.Data.Initialized);
+const playerInfo = ref<API.PlayerInfo.Data | undefined>(undefined);
+const playerTD2Info = ref<Td2API.UsersInfoByName.UserInfo | undefined>(undefined);
+const playerJournal = ref<API.PlayerJournal.Data | undefined>(undefined);
+
+const playerInfoStatus = ref(Status.Data.Initialized);
+const playerJournalStatus = ref(Status.Data.Initialized);
 
 const intervalId = ref(-1);
 
@@ -57,32 +70,76 @@ onDeactivated(() => {
   intervalId.value = -1;
 });
 
+async function fetchPlayerInfo(playerId: number) {
+  return apiStore.client!.get<API.PlayerInfo.Data>('api/getPlayerInfo', {
+    params: {
+      playerId
+    }
+  });
+}
+
+async function fetchPlayerJournal(playerId: number) {
+  return apiStore.client!.get<API.PlayerJournal.Data>('api/getPlayerJournal', {
+    params: {
+      playerId,
+      dateScope: '30d'
+    }
+  });
+}
+
+async function fetchPlayerTd2Info(playerName: string) {
+  return axios.get<Td2API.UsersInfoByName.Response>('https://api.td2.info.pl', {
+    params: {
+      method: 'getUsersInfoByName',
+      name: playerName
+    }
+  });
+}
+
 async function fetchPlayerData() {
   const queryPlayerId = Number(route.query.playerId) || -1;
 
   if (!apiStore.client || !queryPlayerId) return;
 
   if (queryPlayerId != playerId.value) {
-    playerDataStatus.value = Status.Data.Loading;
+    playerInfoStatus.value = Status.Data.Loading;
+    playerJournalStatus.value = Status.Data.Loading;
   }
 
   playerId.value = queryPlayerId;
 
   try {
-    const response = await apiStore.client.get<API.PlayerInfo.Data>('api/getPlayerInfo', {
-      params: {
-        playerId: queryPlayerId
-      }
-    });
+    const playerInfoResp = await fetchPlayerInfo(playerId.value);
 
     playerName.value =
-      response.data.driverStats.driverName || response.data.dispatcherStats.dispatcherName || '';
+      playerInfoResp.data.driverStats.driverName ||
+      playerInfoResp.data.dispatcherStats.dispatcherName ||
+      '';
 
-    playerInfo.value = response.data || null;
-    playerDataStatus.value = Status.Data.Loaded;
+    playerInfo.value = playerInfoResp.data;
+    playerInfoStatus.value = Status.Data.Loaded;
+
+    if (playerName.value) {
+      const playerTD2InfoResp = await fetchPlayerTd2Info(playerName.value);
+
+      if (playerTD2InfoResp.data.success && playerTD2InfoResp.data.message.length == 1) {
+        playerTD2Info.value = playerTD2InfoResp.data.message[0];
+      }
+    }
   } catch (error) {
-    console.error(error);
-    playerDataStatus.value = Status.Data.Error;
+    playerInfo.value = undefined;
+    playerTD2Info.value = undefined;
+    playerInfoStatus.value = Status.Data.Error;
+  }
+
+  try {
+    const playerJournalResp = await fetchPlayerJournal(playerId.value);
+
+    playerJournal.value = playerJournalResp.data;
+    playerJournalStatus.value = Status.Data.Loaded;
+  } catch (error) {
+    playerJournal.value = undefined;
+    playerJournalStatus.value = Status.Data.Error;
   }
 }
 </script>
