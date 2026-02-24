@@ -61,8 +61,7 @@ const intervalId = ref(-1);
 
 onActivated(() => {
   fetchPlayerData();
-
-  intervalId.value = setInterval(fetchPlayerData, 30000);
+  intervalId.value = setInterval(fetchPlayerData, 32000);
 });
 
 onDeactivated(() => {

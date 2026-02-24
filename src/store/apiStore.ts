@@ -68,7 +68,7 @@ export const useApiStore = defineStore('apiStore', {
       // Active data fefresh
       if (t >= this.nextUpdateTime) {
         this.fetchActiveData();
-        this.nextUpdateTime = t + 20000;
+        this.nextUpdateTime = t + 31000;
       }
 
       window.requestAnimationFrame(this.updateTick);
