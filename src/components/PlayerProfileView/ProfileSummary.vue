@@ -230,7 +230,6 @@ import { useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useApiStore } from '../../store/apiStore';
 import StationStatusBadge from '../Global/StationStatusBadge.vue';
-import axios from 'axios';
 import ProfilePlayerAvatar from './ProfilePlayerAvatar.vue';
 import { getRegionNameById } from '../../utils/regionUtils';
 
@@ -264,7 +263,7 @@ const activeDispatches = computed(() => {
 
   return apiStore.activeData.activeSceneries.filter(
     (sc) =>
-      sc.dispatcherName == props.playerName && (sc.lastSeen <= Date.now() - 60000 || sc.isOnline)
+      sc.dispatcherName == props.playerName && (sc.lastSeen >= Date.now() - 60000 || sc.isOnline)
   );
 });
 
@@ -273,7 +272,7 @@ const activeTrains = computed(() => {
   if (!apiStore.activeData || !apiStore.activeData.trains) return [];
 
   return apiStore.activeData.trains.filter(
-    (t) => t.driverName == props.playerName && (t.lastSeen <= Date.now() - 60000 || t.online)
+    (t) => t.driverName == props.playerName && (t.lastSeen >= Date.now() - 60000 || t.online)
   );
 });
 </script>
