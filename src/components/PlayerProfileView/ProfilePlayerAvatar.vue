@@ -1,9 +1,8 @@
 <template>
   <div class="player-avatar">
     <img
-      v-if="avatarId"
-      v-show="avatarLoadingStatus == Status.Data.Loaded"
-      :src="avatarSrc"
+      v-if="props.playerTD2Info && props.playerTD2Info.avatar"
+      :src="`https://td2.info.pl/index.php?action=dlattach;attach=${props.playerTD2Info.avatar};type=avatar`"
       class="player-avatar-image"
       ref="avatarImageRef"
       alt="player image"
@@ -12,32 +11,36 @@
     />
 
     <img
-      v-if="avatarLoadingStatus == Status.Data.Error || avatarId == 0"
+      v-if="
+        avatarLoadingStatus == Status.Data.Error ||
+        (props.playerTD2Info && !props.playerTD2Info.avatar)
+      "
       class="img-placeholder"
       height="100"
       src="/images/default-avatar.jpg"
     />
 
-    <Loading v-else-if="avatarLoadingStatus == Status.Data.Loading || avatarId === undefined" />
+    <Loading v-else-if="avatarLoadingStatus == Status.Data.Loading" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, onMounted, PropType, ref, useTemplateRef } from 'vue';
 import { Status } from '../../typings/common';
 import Loading from '../Global/Loading.vue';
+import { Td2API } from '../../typings/api';
 
 const props = defineProps({
-  avatarId: {
-    type: Number
+  playerTD2Info: {
+    type: Object as PropType<Td2API.UsersInfoByName.UserInfo>
   }
 });
 
-const avatarSrc = computed(
-  () => `https://td2.info.pl/index.php?action=dlattach;attach=${props.avatarId};type=avatar`
-);
+onMounted(() => {
+  console.log(avatarImageRef.value);
+});
 
-const avatarImageRef = ref<HTMLImageElement | null>(null);
+const avatarImageRef = useTemplateRef('avatarImageRef');
 const avatarLoadingStatus = ref<Status.Data>(Status.Data.Loading);
 
 function onAvatarLoadSuccess() {

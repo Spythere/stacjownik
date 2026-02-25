@@ -2,7 +2,7 @@
   <section class="profile-summary">
     <div class="player-info">
       <div class="info-main">
-        <ProfilePlayerAvatar :avatarId="playerTD2Info?.avatar" />
+        <ProfilePlayerAvatar :playerTD2Info="playerTD2Info" />
 
         <div>
           <h2 class="player-name-header" :class="{ 'text--donator': isPlayerDonator }">
@@ -69,9 +69,9 @@
             </a>
           </div>
 
-          <!-- Current activity -->
+          <!-- Current activities -->
           <div
-            class="player-activity"
+            class="player-activities-box"
             v-if="activeDispatches.length > 0 || activeTrains.length > 0"
           >
             <div class="info-activity" v-if="activeDispatches.length > 0">
@@ -348,8 +348,6 @@ const activeTrains = computed(() => {
 
     gap: 0.25em;
     font-weight: bold;
-
-    padding: 0.25em 0.5em;
     border-radius: 0.5em;
   }
 }

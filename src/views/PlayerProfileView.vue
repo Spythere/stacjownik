@@ -105,6 +105,7 @@ async function fetchPlayerData() {
     playerJournalStatus.value = Status.Data.Loading;
 
     playerInfo.value = undefined;
+    playerTD2Info.value = undefined;
     playerJournal.value = undefined;
   }
 
