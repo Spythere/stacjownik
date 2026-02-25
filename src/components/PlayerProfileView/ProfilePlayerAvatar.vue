@@ -2,9 +2,10 @@
   <div class="player-avatar">
     <img
       v-if="avatarId"
+      v-show="avatarLoadingStatus == Status.Data.Loaded"
+      :src="avatarSrc"
       class="player-avatar-image"
       ref="avatarImageRef"
-      :src="`https://td2.info.pl/index.php?action=dlattach;attach=${avatarId};type=avatar`"
       alt="player image"
       @load="onAvatarLoadSuccess"
       @error="onAvatarLoadError"
@@ -22,15 +23,19 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { Status } from '../../typings/common';
 import Loading from '../Global/Loading.vue';
 
-defineProps({
+const props = defineProps({
   avatarId: {
     type: Number
   }
 });
+
+const avatarSrc = computed(
+  () => `https://td2.info.pl/index.php?action=dlattach;attach=${props.avatarId};type=avatar`
+);
 
 const avatarImageRef = ref<HTMLImageElement | null>(null);
 const avatarLoadingStatus = ref<Status.Data>(Status.Data.Loading);

@@ -30,7 +30,7 @@
 
 <script lang="ts" setup>
 import { onActivated, onDeactivated, ref } from 'vue';
-import { onBeforeRouteUpdate, useRoute } from 'vue-router';
+import { useRoute } from 'vue-router';
 import { useApiStore } from '../store/apiStore';
 import { API, Td2API } from '../typings/api';
 import { useI18n } from 'vue-i18n';
@@ -103,6 +103,9 @@ async function fetchPlayerData() {
   if (queryPlayerId != playerId.value) {
     playerInfoStatus.value = Status.Data.Loading;
     playerJournalStatus.value = Status.Data.Loading;
+
+    playerInfo.value = undefined;
+    playerJournal.value = undefined;
   }
 
   playerId.value = queryPlayerId;
