@@ -135,3 +135,20 @@
     color: black;
   }
 }
+
+.timetable-status-badge {
+  padding: 0.05em 0.35em;
+  color: black;
+
+  &.terminated {
+    background-color: salmon;
+  }
+
+  &.fulfilled {
+    background-color: lightgreen;
+  }
+
+  &.active {
+    background-color: lightblue;
+  }
+}

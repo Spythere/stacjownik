@@ -1,37 +1,41 @@
 <template>
-    <div class="driver-top-actions">
-        <div class="actions-container">
-            <div class="actions actions-left">
-                <button class="a-button btn--filled btn--image" @click="routerReturn">
-                    <img src="/images/icon-back.svg" alt="train icon" />
-                    <span>
-                        {{ t('trains.driver-return-link') }}
-                    </span>
-                </button>
-            </div>
+  <div class="driver-top-actions">
+    <div class="actions-container">
+      <div class="actions actions-left">
+        <button class="a-button btn--filled btn--image" @click="routerReturn">
+          <img src="/images/icon-back.svg" alt="train icon" />
+          <span>
+            {{ t('trains.driver-return-link') }}
+          </span>
+        </button>
+      </div>
 
-            <div class="actions actions-right">
-                <a class="a-button btn--filled btn--image" :href="`https://srjp-td2.web.app/?id=${chosenTrain.id}`"
-                    target="_blank">
-                    <span class="hidable">
-                        {{ t('trains.driver-srjp-link') }}
-                    </span>
+      <div class="actions actions-right">
+        <a
+          class="a-button btn--filled btn--image"
+          :href="`https://srjp-td2.web.app/?id=${chosenTrain.id}`"
+          target="_blank"
+        >
+          <span class="hidable">
+            {{ t('trains.driver-srjp-link') }}
+          </span>
 
-                    <img src="/images/icon-srjp.svg" alt="srjp icon" />
-                </a>
+          <img src="/images/icon-srjp.svg" alt="srjp icon" />
+        </a>
 
-                <router-link :to="`/journal/timetables?search-driver=${chosenTrain.driverName}`"
-                    class="a-button btn--filled btn--image">
-                    <span class="hidable">
-                        {{ t('trains.driver-journal-link') }}
-                    </span>
+        <router-link
+          :to="`/profile?playerId=${chosenTrain.driverId}`"
+          class="a-button btn--filled btn--image"
+        >
+          <span class="hidable">
+            {{ t('trains.driver-profile-link') }}
+          </span>
 
-                    <img src="/images/icon-train.svg" alt="train icon" />
-                </router-link>
-            </div>
-        </div>
-
+          <img src="/images/icon-user.svg" alt="user icon" />
+        </router-link>
+      </div>
     </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -44,42 +48,40 @@ const router = useRouter();
 const { t } = useI18n();
 
 defineProps({
-    chosenTrain: {
-        type: Object as PropType<Train>,
-        required: true
-    }
+  chosenTrain: {
+    type: Object as PropType<Train>,
+    required: true
+  }
 });
 
 function routerReturn() {
-    router.back();
+  router.back();
 }
 </script>
-
 
 <style lang="scss" scoped>
 @use '../../styles/responsive';
 
-
 .actions-container {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 0.5em;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.5em;
 }
 
 .actions {
-    display: flex;
-    gap: 0.5em;
+  display: flex;
+  gap: 0.5em;
 }
 
-.actions-container>.actions>.a-button {
-    padding: 0.5em;
-    border-radius: 0.5em 0.5em 0 0;
+.actions-container > .actions > .a-button {
+  padding: 0.5em;
+  border-radius: 0.5em 0.5em 0 0;
 }
 
 @include responsive.smallScreen {
-    span.hidable {
-        display: none;
-    }
+  span.hidable {
+    display: none;
+  }
 }
 </style>

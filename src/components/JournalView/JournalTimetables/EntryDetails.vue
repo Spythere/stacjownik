@@ -19,209 +19,238 @@
     <div class="details-body" v-if="showExtraInfo">
       <div class="g-separator"></div>
 
-      <EntryStops :timetable="timetable" />
+      <div v-if="timetableDetails">
+        <EntryStops :timetable="timetableDetails" />
 
-      <div class="g-separator"></div>
-
-      <div class="timetable-specs">
-        <span class="badge specs-badge" v-if="timetable.authorName">
-          <span>{{ $t('journal.dispatcher-name') }}</span>
-          <span>{{ timetable.authorName }}</span>
-        </span>
-
-        <span class="badge specs-badge" v-if="timetable.trainMaxSpeed">
-          <span>{{ $t('journal.stock-timetable-speed') }}</span>
-          <span> {{ timetable.trainMaxSpeed }}km/h </span>
-        </span>
-
-        <span class="badge specs-badge" v-if="timetable.maxSpeed">
-          <span>{{ $t('journal.stock-max-speed') }}</span>
-          <span>{{ timetable.maxSpeed }}km/h</span>
-        </span>
-      </div>
-
-      <div class="stock-dangers" v-if="timetable.warningNotes">
         <div class="g-separator"></div>
 
-        <b>{{ $t('journal.stock-dangers') }}:</b>
-
-        <ul>
-          <li v-if="timetable.twr">
-            <b class="text--primary">{{ $t('warnings.TWR') }} (TWR)</b>
-          </li>
-
-          <li v-if="timetable.skr">
-            <b class="text--primary">{{ $t('warnings.SKR') }}</b>
-          </li>
-
-          <li v-if="timetable.hasDangerousCargo">
-            <b class="text--primary">{{ $t('warnings.TN') }}</b>
-          </li>
-
-          <li v-if="timetable.hasExtraDeliveries">
-            <b class="text--primary">{{ $t('warnings.PN') }}</b>
-          </li>
-        </ul>
-
-        <div class="dangers-notes" v-if="timetable.warningNotes">
-          <h4>{{ $t('warnings.header-title') }}</h4>
-          <p>
-            <i>{{ timetable.warningNotes }}</i>
-          </p>
-        </div>
-      </div>
-
-      <!-- Historia zmian w składzie -->
-      <div v-if="timetable.stockString || stockHistory.length != 0">
-        <div class="g-separator"></div>
-
-        <b>{{ $t('journal.stock-preview') }}:</b>
-
-        <div class="stock-specs" style="margin-top: 0.5em">
-          <span class="badge specs-badge" v-if="timetable.stockLength">
-            <span>{{ $t('journal.stock-length') }}</span>
-            <span>
-              {{
-                currentHistoryIndex == 0
-                  ? timetable.stockLength
-                  : stockHistory[currentHistoryIndex].stockLength || timetable.stockLength
-              }}m
-            </span>
+        <div class="timetable-specs">
+          <span class="badge specs-badge" v-if="timetableDetails.authorName">
+            <span>{{ $t('journal.dispatcher-name') }}</span>
+            <span>{{ timetableDetails.authorName }}</span>
           </span>
 
-          <span class="badge specs-badge" v-if="timetable.stockMass">
-            <span>{{ $t('journal.stock-mass') }}</span>
-            <span>
-              {{
-                Math.floor(
-                  (currentHistoryIndex == 0
-                    ? timetable.stockMass
-                    : stockHistory[currentHistoryIndex].stockMass || timetable.stockMass) / 1000
-                )
-              }}t
-            </span>
+          <span class="badge specs-badge" v-if="timetableDetails.trainMaxSpeed">
+            <span>{{ $t('journal.stock-timetable-speed') }}</span>
+            <span> {{ timetableDetails.trainMaxSpeed }}km/h </span>
+          </span>
+
+          <span class="badge specs-badge" v-if="timetableDetails.maxSpeed">
+            <span>{{ $t('journal.stock-max-speed') }}</span>
+            <span>{{ timetableDetails.maxSpeed }}km/h</span>
           </span>
         </div>
 
-        <div class="stock-history">
-          <button class="btn btn--action" @click="copyStockToClipboard()">
-            <i class="fa-regular fa-copy"></i> {{ $t('journal.stock-copy') }}
-          </button>
+        <div class="stock-dangers" v-if="timetableDetails.warningNotes">
+          <div class="g-separator"></div>
 
-          <button
-            v-for="(sh, i) in stockHistory"
-            :key="i"
-            class="btn--action"
-            :data-checked="i == currentHistoryIndex"
-            @click.stop="currentHistoryIndex = i"
-          >
-            {{ sh.updatedAt }}
-          </button>
+          <b>{{ $t('journal.stock-dangers') }}:</b>
+
+          <ul>
+            <li v-if="timetableDetails.twr">
+              <b class="text--primary">{{ $t('warnings.TWR') }} (TWR)</b>
+            </li>
+
+            <li v-if="timetableDetails.skr">
+              <b class="text--primary">{{ $t('warnings.SKR') }}</b>
+            </li>
+
+            <li v-if="timetableDetails.hasDangerousCargo">
+              <b class="text--primary">{{ $t('warnings.TN') }}</b>
+            </li>
+
+            <li v-if="timetableDetails.hasExtraDeliveries">
+              <b class="text--primary">{{ $t('warnings.PN') }}</b>
+            </li>
+          </ul>
+
+          <div class="dangers-notes" v-if="timetableDetails.warningNotes">
+            <h4>{{ $t('warnings.header-title') }}</h4>
+            <p>
+              <i>{{ timetableDetails.warningNotes }}</i>
+            </p>
+          </div>
         </div>
 
-        <div v-if="timetable.stockString" style="margin-top: 1em">
-          <StockList
-            :trainStockList="
-              (currentHistoryIndex == 0
-                ? timetable.stockString
-                : stockHistory[currentHistoryIndex].stockString
-              ).split(';')
-            "
-          />
+        <!-- Historia zmian w składzie -->
+        <div v-if="timetableDetails.stockString || stockHistory.length != 0">
+          <div class="g-separator"></div>
+
+          <b>{{ $t('journal.stock-preview') }}:</b>
+
+          <div class="stock-specs" style="margin-top: 0.5em">
+            <span class="badge specs-badge" v-if="timetableDetails.stockLength">
+              <span>{{ $t('journal.stock-length') }}</span>
+              <span>
+                {{
+                  currentHistoryIndex == 0
+                    ? timetableDetails.stockLength
+                    : stockHistory[currentHistoryIndex].stockLength || timetableDetails.stockLength
+                }}m
+              </span>
+            </span>
+
+            <span class="badge specs-badge" v-if="timetableDetails.stockMass">
+              <span>{{ $t('journal.stock-mass') }}</span>
+              <span>
+                {{
+                  Math.floor(
+                    (currentHistoryIndex == 0
+                      ? timetableDetails.stockMass
+                      : stockHistory[currentHistoryIndex].stockMass || timetableDetails.stockMass) /
+                      1000
+                  )
+                }}t
+              </span>
+            </span>
+          </div>
+
+          <div class="stock-history">
+            <button class="btn btn--action" @click="copyStockToClipboard()">
+              <i class="fa-regular fa-copy"></i> {{ $t('journal.stock-copy') }}
+            </button>
+
+            <button
+              v-for="(sh, i) in stockHistory"
+              :key="i"
+              class="btn--action"
+              :data-checked="i == currentHistoryIndex"
+              @click.stop="currentHistoryIndex = i"
+            >
+              {{ sh.updatedAt }}
+            </button>
+          </div>
+
+          <div v-if="timetableDetails.stockString" style="margin-top: 1em">
+            <StockList
+              :trainStockList="
+                (currentHistoryIndex == 0
+                  ? timetableDetails.stockString
+                  : stockHistory[currentHistoryIndex].stockString
+                ).split(';')
+              "
+            />
+          </div>
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { PropType, defineComponent } from 'vue';
-import StockList from '../../Global/StockList.vue';
-import { API } from '../../../typings/api';
+<script lang="ts" setup>
+import { computed, PropType, ref } from 'vue';
 import { RouteLocationRaw } from 'vue-router';
-import EntryStops from './EntryStops.vue';
 import { useI18n } from 'vue-i18n';
 
-export default defineComponent({
-  components: { StockList, EntryStops },
+import StockList from '../../Global/StockList.vue';
+import EntryStops from './EntryStops.vue';
+import { API } from '../../../typings/api';
+import { useApiStore } from '../../../store/apiStore';
 
-  emits: ['toggleExtraInfo'],
+const i18n = useI18n();
+const apiStore = useApiStore();
 
-  props: {
-    showExtraInfo: {
-      type: Boolean,
-      required: true
-    },
-    timetable: {
-      type: Object as PropType<API.TimetableHistory.Data>,
-      required: true
-    }
+const props = defineProps({
+  showExtraInfo: {
+    type: Boolean,
+    required: true
   },
-  data() {
-    return {
-      currentHistoryIndex: 0,
-      i18n: useI18n()
-    };
-  },
-  computed: {
-    stockHistory() {
-      return this.timetable.stockHistory
-        .slice()
-        .reverse()
-        .map((h) => {
-          const historyData = h.split('@');
-          return {
-            updatedAt: new Date(Number(historyData[0])).toLocaleTimeString(this.$i18n.locale, {
-              hour: '2-digit',
-              minute: '2-digit'
-            }),
-            stockString: historyData[1],
-            stockMass: Number(historyData[2]) || undefined,
-            stockLength: Number(historyData[3]) || undefined
-          };
-        });
-    },
 
-    driverRouteLocation(): RouteLocationRaw | null {
-      if (this.timetable.terminated) return null;
-      return {
-        name: 'DriverView',
-        query: {
-          trainId: `${this.timetable.driverId}|${this.timetable.trainNo}|eu`
-        }
-      };
-    }
-  },
-  methods: {
-    onImageError(e: Event) {
-      const imageEl = e.target as HTMLImageElement;
-      imageEl.src = '/images/icon-unknown.png';
-    },
-
-    toggleExtraInfo() {
-      this.$emit('toggleExtraInfo', this.timetable.id);
-    },
-
-    copyStockToClipboard() {
-      const currentStockString =
-        this.stockHistory[this.currentHistoryIndex]?.stockString ?? this.timetable.stockString;
-
-      if (!currentStockString) {
-        alert(this.i18n.t('journal.stock-clipboard-failure'));
-        return;
-      }
-
-      navigator.clipboard
-        .writeText(currentStockString)
-        .then(() => {
-          prompt(this.i18n.t('journal.stock-clipboard-success'), currentStockString);
-        })
-        .catch(() => {
-          alert(this.i18n.t('journal.stock-clipboard-failure'));
-        });
-    }
+  timetableEntry: {
+    type: Object as PropType<API.TimetableHistory.DataShort>,
+    required: true
   }
 });
+
+const emits = defineEmits(['toggleExtraInfo']);
+const currentHistoryIndex = ref(0);
+
+const timetableDetails = ref<API.TimetableHistory.Data | null>(null);
+
+const stockHistory = computed(() => {
+  return (
+    timetableDetails.value?.stockHistory
+      .slice()
+      .reverse()
+      .map((h) => {
+        const historyData = h.split('@');
+        return {
+          updatedAt: new Date(Number(historyData[0])).toLocaleTimeString(i18n.locale.value, {
+            hour: '2-digit',
+            minute: '2-digit'
+          }),
+          stockString: historyData[1],
+          stockMass: Number(historyData[2]) || undefined,
+          stockLength: Number(historyData[3]) || undefined
+        };
+      }) ?? []
+  );
+});
+
+const driverRouteLocation = computed<RouteLocationRaw | null>(() => {
+  if (props.timetableEntry.terminated) return null;
+
+  return {
+    name: 'DriverView',
+    query: {
+      trainId: `${props.timetableEntry.driverId}|${props.timetableEntry.trainNo}|eu`
+    }
+  };
+});
+
+async function fetchTimetableDetails() {
+  try {
+    const responseData = await apiStore.client!.get<API.TimetableHistory.Response>(
+      'api/getTimetables',
+      {
+        params: {
+          timetableId: props.timetableEntry.id,
+          returnType: 'detailed'
+        }
+      }
+    );
+
+    if (!responseData || responseData.data.length != 1) {
+      timetableDetails.value = null;
+      return;
+    }
+
+    timetableDetails.value = responseData.data[0];
+  } catch (error) {
+    // this.dataStatus = Status.Data.Error;
+    console.error(error);
+  }
+}
+
+async function toggleExtraInfo() {
+  if (props.showExtraInfo == false) {
+    await fetchTimetableDetails();
+  }
+
+  emits('toggleExtraInfo', timetableDetails.value);
+}
+
+function copyStockToClipboard() {
+  if (!timetableDetails.value) return;
+
+  const currentStockString =
+    stockHistory.value[currentHistoryIndex.value]?.stockString ??
+    timetableDetails.value.stockString;
+
+  if (!currentStockString) {
+    alert(i18n.t('journal.stock-clipboard-failure'));
+    return;
+  }
+
+  navigator.clipboard
+    .writeText(currentStockString)
+    .then(() => {
+      prompt(i18n.t('journal.stock-clipboard-success'), currentStockString);
+    })
+    .catch(() => {
+      alert(i18n.t('journal.stock-clipboard-failure'));
+    });
+}
 </script>
 
 <style lang="scss" scoped>
@@ -299,7 +328,7 @@ hr {
   }
 }
 
-@include responsive.smallScreen{
+@include responsive.smallScreen {
   .timetable-specs {
     justify-content: center;
   }

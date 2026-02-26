@@ -10,14 +10,14 @@
 
     <hr />
 
-    <div @click="toggleExtraInfo" style="cursor: pointer">
+    <div style="cursor: pointer">
       <!-- Status -->
       <EntryStatus :timetable="timetableEntry" />
     </div>
 
     <!-- Extra -->
     <EntryDetails
-      :timetable="timetableEntry"
+      :timetableEntry="timetableEntry"
       :show-extra-info="showExtraInfo"
       @toggle-extra-info="toggleExtraInfo"
     />
@@ -28,7 +28,6 @@
 import { defineComponent, PropType } from 'vue';
 import { API } from '../../../typings/api';
 import { useApiStore } from '../../../store/apiStore';
-import { Journal } from '../typings';
 
 import trainCategoryMixin from '../../../mixins/trainCategoryMixin';
 import dateMixin from '../../../mixins/dateMixin';
@@ -41,7 +40,7 @@ import EntryDetails from './EntryDetails.vue';
 export default defineComponent({
   props: {
     timetableEntry: {
-      type: Object as PropType<API.TimetableHistory.Data>,
+      type: Object as PropType<API.TimetableHistory.DataShort>,
       required: true
     },
     showExtraInfo: {
@@ -60,74 +59,9 @@ export default defineComponent({
     };
   },
 
-  computed: {
-    timetablePathDetails() {
-      if (!this.timetableEntry.path || this.timetableEntry.path == '') return null;
-
-      return this.timetableEntry.path.split(';').map((pathEl, i) => {
-        const [arrival, name, departure] = pathEl.split(',');
-        const sceneryName = name.split(' ').slice(0, -1).join(' ');
-        const sceneryHash = name.split(' ').pop()?.replace('.sc', '') ?? '';
-
-        return {
-          arrival,
-          sceneryName,
-          sceneryHash,
-          departure,
-          isVisited: this.timetableEntry.visitedSceneries?.includes(sceneryHash) ?? false
-        };
-      });
-    },
-
-    timetableStops(): Journal.TimetableStopDetails[] {
-      const timetableEntry = this.timetableEntry;
-
-      const stopNames = timetableEntry.sceneriesString.split('%');
-
-      return stopNames.reduce<Journal.TimetableStopDetails[]>((acc, stopName, i, arr) => {
-        const arrivalDate =
-          i == arr.length - 1
-            ? (timetableEntry.checkpointArrivals.at(i) ?? timetableEntry.endDate)
-            : timetableEntry.checkpointArrivals.at(i);
-
-        const scheduledArrivalDate =
-          i == arr.length - 1
-            ? (timetableEntry.checkpointArrivalsScheduled.at(i) ?? timetableEntry.scheduledEndDate)
-            : timetableEntry.checkpointArrivalsScheduled.at(i);
-
-        const departureDate =
-          i == 0
-            ? (timetableEntry.checkpointDepartures.at(i) ?? timetableEntry.beginDate)
-            : timetableEntry.checkpointDepartures.at(i);
-
-        const scheduledDepartureDate =
-          i == 0
-            ? (timetableEntry.checkpointDeparturesScheduled.at(i) ??
-              timetableEntry.scheduledBeginDate)
-            : timetableEntry.checkpointDeparturesScheduled.at(i);
-
-        const stopTime = Number(timetableEntry.checkpointStopTypes.at(i)?.split(',')[0]) || 0;
-        const stopType = timetableEntry.checkpointStopTypes.at(i)?.split(',')[1] || '';
-
-        acc.push({
-          stopName,
-          arrivalTimestamp: this.dateStringToTimestamp(arrivalDate),
-          scheduledArrivalTimestamp: this.dateStringToTimestamp(scheduledArrivalDate),
-          departureTimestamp: this.dateStringToTimestamp(departureDate),
-          scheduledDepartureTimestamp: this.dateStringToTimestamp(scheduledDepartureDate),
-          stopTime,
-          stopType,
-          isConfirmed: i < timetableEntry.confirmedStopsCount
-        });
-
-        return acc;
-      }, []);
-    }
-  },
-
   methods: {
-    toggleExtraInfo() {
-      this.$emit('toggleShowExtraInfo');
+    toggleExtraInfo(data: API.TimetableHistory.Data | null) {
+      this.$emit('toggleShowExtraInfo', data);
     }
   }
 });
@@ -145,7 +79,7 @@ export default defineComponent({
   display: flex;
 }
 
-@include responsive.smallScreen{
+@include responsive.smallScreen {
   .entry-route {
     justify-content: center;
     text-align: center;

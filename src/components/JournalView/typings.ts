@@ -1,5 +1,6 @@
 export namespace Journal {
   export type DispatcherSearchKey =
+    | 'search-duty-id'
     | 'search-dispatcher'
     | 'search-station'
     | 'search-date-from'
@@ -60,19 +61,6 @@ export namespace Journal {
     filterSection: string;
     isActive: boolean;
     default: boolean;
-  }
-
-  export enum StatsTab {
-    DRIVER_STATS = 'journal-driver-stats',
-    DISPATCHER_STATS = 'journal-dispatcher-stats',
-    DAILY_STATS = 'journal-daily-stats'
-  }
-
-  export interface StatsButton {
-    tab: StatsTab;
-    localeKey: string;
-    iconName: string;
-    disabled: boolean;
   }
 
   export interface TimetableStopDetails {

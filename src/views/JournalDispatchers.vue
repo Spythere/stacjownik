@@ -14,7 +14,7 @@
           optionsType="dispatchers"
         />
 
-        <JournalStats :statsButtons="statsButtons" />
+        <JournalStats :chosen-player-id="chosenPlayerId" />
       </div>
 
       <div class="journal_refreshed-date">
@@ -50,16 +50,8 @@ import JournalHeader from '../components/JournalView/JournalHeader.vue';
 import JournalStats from '../components/JournalView/JournalStats.vue';
 import { useApiStore } from '../store/apiStore';
 
-const statsButtons: Journal.StatsButton[] = [
-  {
-    tab: Journal.StatsTab.DISPATCHER_STATS,
-    localeKey: 'journal.dispatcher-stats.button',
-    iconName: 'user',
-    disabled: true
-  }
-];
-
 interface DispatchersQueryParams {
+  dutyId?: number;
   dispatcherName?: string;
   stationName?: string;
   stationHash?: string;
@@ -105,18 +97,15 @@ export default defineComponent({
   },
 
   data: () => ({
-    statsButtons,
-
     dataRefreshedAt: null as Date | null,
     currentQueryParams: {} as DispatchersQueryParams,
 
     scrollDataLoaded: true,
     scrollNoMoreData: false,
 
-    showReturnButton: false,
-    statsCardOpen: false,
-    currentOptionsActive: false,
+    chosenPlayerId: -1,
 
+    currentOptionsActive: false,
     dataStatus: Status.Data.Loading,
 
     historyList: [] as API.DispatcherHistory.Response
@@ -126,12 +115,13 @@ export default defineComponent({
     const sorterActive: Journal.DispatcherSorter = reactive({ id: 'timestampFrom', dir: -1 });
     const journalFilterActive = ref({});
 
-    const searchersValues = reactive({
+    const searchersValues = reactive<Record<Journal.DispatcherSearchKey, string>>({
+      'search-duty-id': '',
       'search-dispatcher': '',
       'search-station': '',
       'search-date-from': '',
       'search-date-to': ''
-    } as Journal.DispatcherSearchType);
+    });
 
     provide('sorterActive', sorterActive);
     provide('journalFilterActive', journalFilterActive);
@@ -158,15 +148,6 @@ export default defineComponent({
           queryParams[k as keyof DispatchersQueryParams] !=
           defaultQueryParams[k as keyof DispatchersQueryParams]
       );
-    },
-
-    'mainStore.dispatcherStatsData'(stats) {
-      this.statsButtons.find((sb) => sb.tab == Journal.StatsTab.DISPATCHER_STATS)!.disabled =
-        stats === undefined;
-    },
-
-    async 'mainStore.dispatcherStatsName'() {
-      this.fetchDispatcherStats();
     }
   },
 
@@ -192,6 +173,7 @@ export default defineComponent({
     handleRouteParams() {
       this.$router.push({
         query: {
+          'search-duty-id': this.searchersValues['search-duty-id'] || undefined,
           'search-date-from': this.searchersValues['search-date-from'] || undefined,
           'search-date-to': this.searchersValues['search-date-to'] || undefined,
           'search-station': this.searchersValues['search-station'] || undefined,
@@ -215,30 +197,8 @@ export default defineComponent({
       this.setOptions(query as any);
     },
 
-    async fetchDispatcherStats() {
-      if (!this.mainStore.dispatcherStatsName) {
-        this.mainStore.dispatcherStatsData = undefined;
-        return;
-      }
-
-      try {
-        const statsData: API.DispatcherStats.Response = await (
-          await this.apiStore.client!.get('api/getDispatcherStats', {
-            params: {
-              name: this.mainStore.dispatcherStatsName
-            }
-          })
-        ).data;
-
-        this.mainStore.dispatcherStatsData = statsData;
-      } catch (error) {
-        this.mainStore.dispatcherStatsData = undefined;
-
-        console.error('Ups! Wystąpił błąd przy próbie pobrania statystyk dyżurnego! :/');
-      }
-    },
-
-    setOptions(options: { [key: string]: string }) {
+    setOptions(options: Record<string, string>) {
+      this.searchersValues['search-duty-id'] = options['search-duty-id'] ?? '';
       this.searchersValues['search-date-from'] = options['search-date-from'] ?? '';
       this.searchersValues['search-date-to'] = options['search-date-to'] ?? '';
       this.searchersValues['search-station'] = options['search-station'] ?? '';
@@ -275,6 +235,7 @@ export default defineComponent({
     async fetchHistoryData() {
       const queryParams: DispatchersQueryParams = {};
 
+      const dutyId = this.searchersValues['search-duty-id'].trim() || undefined;
       const dispatcherName = this.searchersValues['search-dispatcher'].trim() || undefined;
       const stationName = this.searchersValues['search-station'].trim() || undefined;
       const dateFromString = this.searchersValues['search-date-from'].trim() || undefined;
@@ -295,6 +256,7 @@ export default defineComponent({
         dateToISO = dateTo.toISOString();
       }
 
+      queryParams['dutyId'] = Number(dutyId) || undefined;
       queryParams['dispatcherName'] = dispatcherName;
 
       queryParams['dateFrom'] = dateFromISO;
@@ -320,24 +282,24 @@ export default defineComponent({
 
         if (!responseData) {
           this.dataStatus = Status.Data.Error;
+          this.chosenPlayerId = -1;
+
           return;
         }
-
-        if (!responseData) return;
 
         // Response data exists
         this.historyList = responseData;
 
-        // Stats display
-        this.mainStore.dispatcherStatsName =
-          this.historyList.length > 0 && this.searchersValues['search-dispatcher'].trim()
-            ? this.historyList[0].dispatcherName
-            : '';
+        this.chosenPlayerId =
+          this.historyList.length > 0 && this.searchersValues['search-dispatcher'].trim() != ''
+            ? this.historyList[0].dispatcherId
+            : -1;
 
         this.dataRefreshedAt = new Date();
         this.dataStatus = Status.Data.Loaded;
       } catch (error) {
         this.dataStatus = Status.Data.Error;
+        this.chosenPlayerId = -1;
       }
 
       this.scrollNoMoreData = false;

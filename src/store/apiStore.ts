@@ -9,7 +9,8 @@ export const useApiStore = defineStore('apiStore', {
     dataStatuses: {
       connection: Status.Data.Loading,
       sceneries: Status.Data.Loading,
-      vehicles: Status.Data.Loading
+      vehicles: Status.Data.Loading,
+      dailyStatsData: Status.Data.Loading
     },
 
     activeData: undefined as API.ActiveData.Response | undefined,
@@ -17,6 +18,8 @@ export const useApiStore = defineStore('apiStore', {
 
     donatorsData: [] as API.Donators.Response,
     sceneryData: [] as StationJSONData[],
+
+    dailyStatsData: null as API.DailyStats.Response | null,
 
     nextUpdateTime: 0,
     nextDataCheckTime: 0,
@@ -65,7 +68,7 @@ export const useApiStore = defineStore('apiStore', {
       // Active data fefresh
       if (t >= this.nextUpdateTime) {
         this.fetchActiveData();
-        this.nextUpdateTime = t + 20000;
+        this.nextUpdateTime = t + 31000;
       }
 
       window.requestAnimationFrame(this.updateTick);
@@ -118,6 +121,21 @@ export const useApiStore = defineStore('apiStore', {
       } catch (error) {
         this.dataStatuses.vehicles = Status.Data.Error;
         console.error('Ups! Wystąpił błąd podczas pobierania informacji o pojazdach:', error);
+      }
+    },
+
+    async fetchDailyStats() {
+      try {
+        const res: API.DailyStats.Response = await (
+          await this.client!.get('api/getDailyStats')
+        ).data;
+
+        this.dailyStatsData = res;
+
+        this.dataStatuses.dailyStatsData = Status.Data.Loaded;
+      } catch (error) {
+        console.error('Ups! Wystąpił błąd podczas pobierania statystyk rozkładów jazdy...');
+        this.dataStatuses.dailyStatsData = Status.Data.Error;
       }
     }
   }
