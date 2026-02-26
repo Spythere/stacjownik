@@ -332,7 +332,6 @@ export default defineComponent({
 @use '../../styles/dropdown-filters';
 
 .filters-options > .dropdown_wrapper {
-  height: calc(100vh - 19em);
-  min-height: 500px;
+  max-height: calc(100vh - 18.5em);
 }
 </style>
