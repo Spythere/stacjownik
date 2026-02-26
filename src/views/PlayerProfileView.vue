@@ -30,7 +30,7 @@
 
 <script lang="ts" setup>
 import { onActivated, onDeactivated, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useApiStore } from '../store/apiStore';
 import { API, Td2API } from '../typings/api';
 import { useI18n } from 'vue-i18n';
@@ -43,6 +43,7 @@ import ProfileHistoryList from '../components/PlayerProfileView/ProfileHistoryLi
 import axios from 'axios';
 
 const { t } = useI18n();
+const router = useRouter();
 
 const apiStore = useApiStore();
 const route = useRoute();
@@ -119,7 +120,12 @@ async function fetchPlayerData() {
       playerInfoResp.data.dispatcherStats.dispatcherName ||
       '';
 
-    playerInfo.value = playerInfoResp.data;
+    if (!playerName.value) {
+      router.push('/');
+      return;
+    }
+
+    playerInfo.value = playerName.value ? playerInfoResp.data : undefined;
     playerInfoStatus.value = Status.Data.Loaded;
 
     if (playerName.value) {
@@ -160,7 +166,12 @@ async function fetchPlayerData() {
 }
 
 .no-data-found {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   text-align: center;
+  font-size: 1.35em;
 
   max-width: var(--max-container-width);
   width: 100%;
