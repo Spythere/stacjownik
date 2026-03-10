@@ -18,8 +18,8 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import { StopStatus } from '../../typings/common';
-import { SceneryTimetableRow } from './typings';
+import { StopStatus } from '../../../typings/common';
+import { SceneryTimetableRow } from '../typings';
 
 export default defineComponent({
   props: {
