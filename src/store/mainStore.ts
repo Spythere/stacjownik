@@ -30,8 +30,6 @@ export const useMainStore = defineStore('mainStore', {
 
       modalLastClickedTarget: null,
       currentLocale: 'pl',
-
-      isMigrateInfoCardOpen: false
     }) as MainStoreState,
 
   actions: {
