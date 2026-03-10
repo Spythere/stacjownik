@@ -64,7 +64,7 @@
     "refresh": "ODŚWIEŻ"
   },
   "update": {
-    "title": "Aktualizacja Stacjownika!",
+    "title": "Stacjownik został zaktualizowany!",
     "confirm": "PRZYJĄŁEM!",
     "no-data": "Nie znaleziono informacji o ostatnich zmianach w aplikacji",
     "info-1": "Ten changelog będzie zawsze dostępny po kliknięciu numeru wersji w stopce strony",

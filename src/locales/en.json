@@ -65,7 +65,7 @@
     "refresh": "REFRESH"
   },
   "update": {
-    "title": "Stacjownik update!",
+    "title": "Stacjownik has been updated!",
     "confirm": "ROGER THAT!",
     "no-data": "No data about the latest app update has been found",
     "info-1": "This changelog will be available to see once again after clicking the version number in the footer",

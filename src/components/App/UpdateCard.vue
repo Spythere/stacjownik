@@ -1,7 +1,7 @@
 <template>
   <Card :is-open="isUpdateCardOpen" @toggle-card="toggleCard(false)">
     <div class="content" tabindex="0" ref="content">
-      <h1 style="margin-bottom: 0.5em">🚀 {{ $t('update.title') }}</h1>
+      <h1 class="content-title"><i class="fa-solid fa-wand-sparkles"></i> {{ $t('update.title') }}</h1>
 
       <div class="features-body" v-if="htmlChangelog != ''" v-html="htmlChangelog"></div>
       <div class="no-features" v-else>{{ $t('update.no-data') }}</div>
@@ -16,7 +16,7 @@
 
         <i18n-t keypath="update.info-2">
           <template v-slot:link>
-            <a href="https://github.com/Spythere/stacjownik" target="_blank">{{
+            <a href="https://github.com/Spythere/stacjownik/releases" target="_blank">{{
               $t('update.info-2-link-text')
             }}</a>
           </template>
@@ -86,18 +86,13 @@ export default defineComponent({
 }
 
 ::v-deep(h2) {
-  margin-top: 1em;
   padding: 0.5em 0;
   border-bottom: 1px solid #aaa;
 }
 
-::v-deep(h3) {
-  padding: 0.5em 0;
-}
-
 ::v-deep(ul) {
   list-style: disc;
-  padding: 0 1.5em;
+  padding: 0.5em 1.5em;
   line-height: 1.5em;
 }
 
@@ -110,6 +105,19 @@ export default defineComponent({
   overflow: auto;
   text-align: justify;
   max-width: 700px;
+}
+
+.content-title {
+  color: var(--clr-primary);
+  color: transparent;
+
+  background: var(--clr-primary);
+  background: linear-gradient(90deg, var(--clr-primary) 30%, #ffffff 90%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  text-shadow: var(--clr-primary) 0 0 10px;
 }
 
 .no-features {
