@@ -44,7 +44,7 @@
 
           <a
             class="a-button btn--image gnr-link"
-            href="https://generator-td2.web.app/"
+            href="https://generator-td2.spythere.eu/"
             target="_blank"
             data-tooltip-type="HtmlTooltip"
             :data-tooltip-content="`<b>${$t('app.gnr-link-content')}</b>`"
@@ -54,7 +54,7 @@
 
           <a
             class="a-button btn--image pojazdownik-link"
-            href="https://pojazdownik-td2.web.app/"
+            href="https://pojazdownik-td2.spythere.eu/"
             target="_blank"
             data-tooltip-type="HtmlTooltip"
             :data-tooltip-content="`<b>${$t('app.pojazdownik-link-content')}</b>`"

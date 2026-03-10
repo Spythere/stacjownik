@@ -63,19 +63,19 @@
         </b>
 
         <div class="apps-grid">
-          <a class="app-item" href="https://pojazdownik-td2.web.app/" target="_blank">
+          <a class="app-item" href="https://pojazdownik-td2.spythere.eu/" target="_blank">
             <img src="/images/icon-pojazdownik.svg" alt="pojazdownik app logo" />
             <h3 class="text--primary">Pojazdownik</h3>
             <p>{{ $t('welcome.pojazdownik-desc') }}</p>
           </a>
 
-          <a class="app-item" href="https://generator-td2.web.app/" target="_blank">
+          <a class="app-item" href="https://generator-td2.spythere.eu/" target="_blank">
             <img src="/images/icon-gnr.svg" alt="generator app logo" />
             <h3 class="text--primary">GeneraTOR</h3>
             <p>{{ $t('welcome.generator-desc') }}</p>
           </a>
 
-          <a class="app-item" href="https://srjp-td2.web.app/" target="_blank">
+          <a class="app-item" href="https://srjp-td2.spythere.eu/" target="_blank">
             <img src="/images/icon-srjp.svg" alt="srjp app logo" />
             <h3 class="text--primary">Rozkładownik</h3>
             <p>{{ $t('welcome.srjp-desc') }}</p>
