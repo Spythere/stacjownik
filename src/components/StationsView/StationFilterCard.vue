@@ -137,20 +137,16 @@
           </section>
 
           <section class="card_sliders">
-            <div class="slider" v-for="(slider, i) in sliderStates" :key="i">
-              <input
-                class="slider-input"
-                type="range"
-                :name="slider.id"
-                :id="slider.id"
-                :min="slider.minRange"
-                :max="slider.maxRange"
-                :step="slider.step"
-                v-model.number="filters[slider.id]"
-              />
-              <span class="slider-value">{{ filters[slider.id] }}</span>
+            <div class="slider-box" v-for="(sliderGroup, i) in sliderGroups" :key="i">
+              <FilterSlider :sliderGroup="sliderGroup" />
+
+              <span class="slider-value">
+                {{ filters[sliderOptionsList[sliderGroup][0].id] }} -
+                {{ filters[sliderOptionsList[sliderGroup][1].id] }}
+              </span>
+
               <div class="slider-content">
-                {{ $t(`filters.sliders.${slider.id}`) }}
+                {{ $t(`filters.sliders.${sliderGroups[i]}`) }}
               </div>
             </div>
           </section>
@@ -190,13 +186,15 @@ import routerMixin from '../../mixins/routerMixin';
 import { useMainStore } from '../../store/mainStore';
 
 import FilterOption from './FilterOption.vue';
+import FilterSlider from './FilterSlider.vue';
 import StorageManager from '../../managers/storageManager';
 
 import {
   filtersSections,
-  sliderStates,
   initFilters,
-  getChangedFilters
+  sliderGroups,
+  getChangedFilters,
+  sliderOptionsList
 } from '../../managers/stationFilterManager';
 
 import { StationFilterSection } from '../../managers/stationFilterManager';
@@ -206,14 +204,15 @@ import { watch } from 'vue';
 const STORAGE_KEY = 'options_saved';
 
 export default defineComponent({
-  components: { FilterOption },
+  components: { FilterOption, FilterSlider },
   mixins: [keyMixin, routerMixin],
 
   data: () => ({
     saveOptions: false,
 
     filtersSections,
-    sliderStates,
+    sliderGroups,
+    sliderOptionsList,
 
     minimumHours: 0,
 
@@ -516,7 +515,7 @@ h3.hours-section-header {
 
 .section-filters {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
   gap: 0.5em;
   margin: 1em 0;
 }
@@ -528,9 +527,11 @@ h3.hours-section-header {
   -moz-user-select: none;
 
   span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
     cursor: pointer;
-    display: inline-block;
-    width: 100%;
     text-align: center;
     padding: 0.25em;
     font-weight: bold;
@@ -588,10 +589,14 @@ h3.hours-section-header {
   }
 }
 
-.slider {
+.card_sliders {
+  margin-top: 1em;
+}
+
+.slider-box {
   display: grid;
-  grid-template-columns: 1fr 50px 1fr;
   align-items: center;
+  grid-template-columns: 250px 100px 1fr;
   gap: 0.25em;
 
   margin-bottom: 1em;
@@ -601,88 +606,14 @@ h3.hours-section-header {
     padding: 0.1em 0.2em;
     text-align: center;
   }
+}
 
-  &-input {
-    -webkit-appearance: none;
-    appearance: none;
-    background: none;
-    border: none;
-    outline: none;
-
-    min-width: 25%;
-
-    &:focus-visible ~ * {
-      color: gold;
-    }
-
-    &::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-
-      height: 20px;
-      width: 20px;
-      margin-top: -7px;
-
-      border-radius: 50%;
-
-      background: white;
-      border: 3px solid var(--clr-primary);
-      background-color: #333;
-
-      @include responsive.smallScreen {
-        width: 15px;
-        height: 15px;
-        margin-top: -5px;
-        border: 3px solid var(--clr-primary);
-      }
-    }
-
-    &::-moz-range-thumb {
-      height: 1em;
-      width: 1em;
-
-      border-radius: 50%;
-
-      background: white;
-      border: 4px solid var(--clr-primary);
-
-      cursor: pointer;
-
-      @include responsive.smallScreen {
-        width: 1em;
-        height: 1em;
-        border: 3px solid var(--clr-primary);
-      }
-    }
-
-    &::-webkit-slider-runnable-track {
-      width: 100%;
-      height: 5px;
-      cursor: pointer;
-      background: #ffffff;
-      border-radius: 1em;
-    }
-
-    &::-moz-range-track {
-      width: 100%;
-      height: 5px;
-      cursor: pointer;
-      background: #ffffff;
-      border-radius: 1em;
-    }
-
-    &::-ms-track {
-      width: 100%;
-      height: 5px;
-      cursor: pointer;
-      background: #ffffff;
-      border-radius: 1em;
-    }
-  }
+.slider-value {
+  text-align: center;
 }
 
 @include responsive.smallScreen {
-  .slider {
+  .slider-box {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;

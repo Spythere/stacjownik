@@ -1,5 +1,24 @@
 import StorageManager from './storageManager';
 
+export type SliderGroup =
+  | 'vMax'
+  | 'level'
+  | 'routeOneWay'
+  | 'routeOneWayCatenary'
+  | 'routeOneWayInternal'
+  | 'routeOneWayInternalCatenary'
+  | 'routeTwoWay'
+  | 'routeTwoWayCatenary'
+  | 'routeTwoWayInternal'
+  | 'routeTwoWayInternalCatenary';
+
+export interface SliderOptions {
+  id: string;
+  minRange: number;
+  maxRange: number;
+  step: number;
+}
+
 export const sections = [
   'status',
   'timetables',
@@ -10,7 +29,9 @@ export const sections = [
   'control',
   'blockades',
   'signals',
-  'addons'
+  'addons',
+  'externalRoutes',
+  'internalRoutes'
 ] as const;
 
 export const initFilters = {
@@ -60,33 +81,110 @@ export const initFilters = {
   onlineFromHours: 0,
   minLevel: 0,
   maxLevel: 20,
+  oneWay: false,
+  oneWayCatenary: false,
+  twoWay: false,
+  twoWayCatenary: false,
+  oneWayCatenaryInt: false,
+  oneWayInt: false,
+  twoWayInt: false,
+  twoWayCatenaryInt: false,
   minOneWay: 0,
   minOneWayCatenary: 0,
-  minOneWayInt: 0,
   minOneWayCatenaryInt: 0,
+  minOneWayInt: 0,
   minTwoWay: 0,
   minTwoWayCatenary: 0,
   minTwoWayInt: 0,
   minTwoWayCatenaryInt: 0,
+  maxOneWay: 5,
+  maxOneWayCatenary: 5,
+  maxOneWayInt: 5,
+  maxOneWayCatenaryInt: 5,
+  maxTwoWay: 5,
+  maxTwoWayCatenary: 5,
+  maxTwoWayInt: 5,
+  maxTwoWayCatenaryInt: 5,
   authors: '',
   projects: '',
   lines: ''
 };
 
-export const sliderStates = [
-  { id: 'maxVmax', minRange: 0, maxRange: 200, step: 10 },
-  { id: 'minVmax', minRange: 0, maxRange: 200, step: 10 },
-  { id: 'minLevel', minRange: 0, maxRange: 20, step: 1 },
-  { id: 'maxLevel', minRange: 0, maxRange: 20, step: 1 },
-  { id: 'minOneWay', minRange: 0, maxRange: 5, step: 1 },
-  { id: 'minOneWayCatenary', minRange: 0, maxRange: 5, step: 1 },
-  { id: 'minOneWayInt', minRange: 0, maxRange: 5, step: 1 },
-  { id: 'minOneWayCatenaryInt', minRange: 0, maxRange: 5, step: 1 },
-  { id: 'minTwoWay', minRange: 0, maxRange: 5, step: 1 },
-  { id: 'minTwoWayCatenary', minRange: 0, maxRange: 5, step: 1 },
-  { id: 'minTwoWayInt', minRange: 0, maxRange: 5, step: 1 },
-  { id: 'minTwoWayCatenaryInt', minRange: 0, maxRange: 5, step: 1 }
+export const sliderGroups: SliderGroup[] = [
+  'vMax',
+  'level',
+  'routeOneWay',
+  'routeOneWayCatenary',
+  'routeOneWayInternal',
+  'routeOneWayInternalCatenary',
+  'routeTwoWay',
+  'routeTwoWayCatenary',
+  'routeTwoWayInternal',
+  'routeTwoWayInternalCatenary'
 ];
+
+export const sliderOptionsList: Record<SliderGroup, SliderOptions[]> = {
+  vMax: [
+    { id: 'minVmax', minRange: 0, maxRange: 200, step: 10 },
+    { id: 'maxVmax', minRange: 0, maxRange: 200, step: 10 }
+  ],
+  level: [
+    { id: 'minLevel', minRange: 0, maxRange: 20, step: 1 },
+    { id: 'maxLevel', minRange: 0, maxRange: 20, step: 1 }
+  ],
+  routeOneWay: [
+    { id: 'minOneWay', minRange: 0, maxRange: 5, step: 1 },
+    { id: 'maxOneWay', minRange: 0, maxRange: 5, step: 1 }
+  ],
+  routeOneWayCatenary: [
+    { id: 'minOneWayCatenary', minRange: 0, maxRange: 5, step: 1 },
+    { id: 'maxOneWayCatenary', minRange: 0, maxRange: 5, step: 1 }
+  ],
+  routeOneWayInternal: [
+    { id: 'minOneWayInt', minRange: 0, maxRange: 5, step: 1 },
+    { id: 'maxOneWayInt', minRange: 0, maxRange: 5, step: 1 }
+  ],
+  routeOneWayInternalCatenary: [
+    {
+      id: 'minOneWayCatenaryInt',
+      minRange: 0,
+      maxRange: 5,
+      step: 1
+    },
+    {
+      id: 'maxOneWayCatenaryInt',
+      minRange: 0,
+      maxRange: 5,
+      step: 1
+    }
+  ],
+  routeTwoWay: [
+    { id: 'minTwoWay', minRange: 0, maxRange: 5, step: 1 },
+    { id: 'maxTwoWay', minRange: 0, maxRange: 5, step: 1 }
+  ],
+  routeTwoWayCatenary: [
+    { id: 'minTwoWayCatenary', minRange: 0, maxRange: 5, step: 1 },
+    { id: 'maxTwoWayCatenary', minRange: 0, maxRange: 5, step: 1 }
+  ],
+  routeTwoWayInternal: [
+    { id: 'minTwoWayInt', minRange: 0, maxRange: 5, step: 1 },
+    { id: 'maxTwoWayInt', minRange: 0, maxRange: 5, step: 1 }
+  ],
+  routeTwoWayInternalCatenary: [
+    {
+      id: 'minTwoWayCatenaryInt',
+      minRange: 0,
+      maxRange: 5,
+      step: 1
+    },
+    {
+      id: 'maxTwoWayCatenaryInt',
+      minRange: 0,
+      maxRange: 5,
+      step: 1
+    }
+  ]
+};
 
 export type StationFilter = keyof typeof initFilters;
 export type StationFilterSection = (typeof sections)[number];
@@ -112,7 +210,9 @@ export const filtersSections: Record<StationFilterSection, StationFilter[]> = {
     'manual'
   ],
   blockades: ['SBL', 'PBL'],
-  signals: ['modern', 'semaphores', 'mixed', 'historical']
+  signals: ['modern', 'semaphores', 'mixed', 'historical'],
+  externalRoutes: ['oneWay', 'oneWayCatenary', 'twoWay', 'twoWayCatenary'],
+  internalRoutes: ['oneWayInt', 'oneWayCatenaryInt', 'twoWayInt', 'twoWayCatenaryInt']
 };
 
 export function setupFilters(currentFilters: Record<string, any>) {
