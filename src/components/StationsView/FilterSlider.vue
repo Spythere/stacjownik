@@ -1,7 +1,7 @@
 <template>
   <div class="filter-slider">
     <input
-      v-for="slider in sliderOptionsList[sliderGroup]"
+      v-for="slider in sliderGroupsOptions[sliderGroup]"
       type="range"
       :name="slider.id"
       :id="slider.id"
@@ -15,13 +15,13 @@
 
 <script lang="ts" setup>
 import { inject, PropType } from 'vue';
-import { SliderGroup, sliderOptionsList } from '../../managers/stationFilterManager';
+import { SliderGroup, sliderGroupsOptions } from '../../managers/stationFilterManager';
 
 const filters = inject('StationsView_filters') as Record<string, any>;
 
 const props = defineProps({
   sliderGroup: {
-    type: Object as PropType<SliderGroup>,
+    type: String as PropType<SliderGroup>,
     required: true
   }
 });

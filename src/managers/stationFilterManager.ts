@@ -59,9 +59,6 @@ export const initFilters = {
   mixed: false,
   SBL: false,
   PBL: false,
-  'include-selected': false,
-  'no-1track': false,
-  'no-2track': false,
   free: true,
   occupied: false,
   nonPublic: false,
@@ -123,7 +120,7 @@ export const sliderGroups: SliderGroup[] = [
   'routeTwoWayInternalCatenary'
 ];
 
-export const sliderOptionsList: Record<SliderGroup, SliderOptions[]> = {
+export const sliderGroupsOptions: Record<SliderGroup, SliderOptions[]> = {
   vMax: [
     { id: 'minVmax', minRange: 0, maxRange: 200, step: 10 },
     { id: 'maxVmax', minRange: 0, maxRange: 200, step: 10 }

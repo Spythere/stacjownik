@@ -29,7 +29,7 @@ export const useMainStore = defineStore('mainStore', {
       chosenModalTrainId: undefined,
 
       modalLastClickedTarget: null,
-      currentLocale: 'pl',
+      currentLocale: 'pl'
     }) as MainStoreState,
 
   actions: {
@@ -391,11 +391,13 @@ export const useMainStore = defineStore('mainStore', {
 
             const tracksKey = route.routeTracks == 2 ? 'double' : 'single';
             const isElectric = route.isElectric;
+
             const routesKey: keyof StationRoutes = `${tracksKey}${
               !isElectric ? 'Other' : 'Electrified'
-            }Names`;
+            }${route.isInternal ? 'Internal' : ''}Names`;
+            
+            acc[routesKey].push(route.routeName);
 
-            if (!route.isInternal) acc[routesKey].push(route.routeName);
             if (route.isRouteSBL) acc['sblNames'].push(route.routeName);
 
             acc.minRouteSpeed =
@@ -410,14 +412,21 @@ export const useMainStore = defineStore('mainStore', {
             return acc;
           },
           {
+            all: [],
             single: [],
+            double: [],
+
             singleElectrifiedNames: [],
             singleOtherNames: [],
-            double: [],
             doubleElectrifiedNames: [],
             doubleOtherNames: [],
+
+            singleElectrifiedInternalNames: [],
+            singleOtherInternalNames: [],
+            doubleElectrifiedInternalNames: [],
+            doubleOtherInternalNames: [],
+
             sblNames: [],
-            all: [],
             minRouteSpeed: 0,
             maxRouteSpeed: 0
           } as StationRoutes

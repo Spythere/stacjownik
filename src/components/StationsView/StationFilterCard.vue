@@ -141,8 +141,8 @@
               <FilterSlider :sliderGroup="sliderGroup" />
 
               <span class="slider-value">
-                {{ filters[sliderOptionsList[sliderGroup][0].id] }} -
-                {{ filters[sliderOptionsList[sliderGroup][1].id] }}
+                {{ filters[sliderGroupsOptions[sliderGroup][0].id] }} -
+                {{ filters[sliderGroupsOptions[sliderGroup][1].id] }}
               </span>
 
               <div class="slider-content">
@@ -194,7 +194,7 @@ import {
   initFilters,
   sliderGroups,
   getChangedFilters,
-  sliderOptionsList
+  sliderGroupsOptions
 } from '../../managers/stationFilterManager';
 
 import { StationFilterSection } from '../../managers/stationFilterManager';
@@ -212,7 +212,7 @@ export default defineComponent({
 
     filtersSections,
     sliderGroups,
-    sliderOptionsList,
+    sliderGroupsOptions,
 
     minimumHours: 0,
 
