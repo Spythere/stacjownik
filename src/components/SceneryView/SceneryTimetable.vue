@@ -116,7 +116,6 @@ export default defineComponent({
 .scenery-timetable {
   display: grid;
   height: 100%;
-  padding: 0 0.5em;
   overflow: hidden;
   grid-template-rows: auto 1fr;
 }
