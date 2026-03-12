@@ -28,6 +28,16 @@
       </template>
     </div>
 
+    <div>
+      <input
+        type="checkbox"
+        name="show-stock-thumbnails"
+        id="show-stock-thumbnails"
+        v-model="showStockThumbnails"
+      />
+      <label for="show-stock-thumbnails">POKAZUJ PODGLĄDY SKŁADÓW</label>
+    </div>
+
     <div class="list-container">
       <transition-group name="list-anim" tag="ul">
         <li
@@ -294,7 +304,7 @@ const sceneryTimetables: ComputedRef<SceneryTimetableRow[]> = computed(() => {
 
 .scenery-timetable-list {
   display: grid;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: auto auto 1fr;
   overflow: hidden;
   gap: 1em;
 }
