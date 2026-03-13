@@ -232,7 +232,8 @@ export function getChangedFilters(currentFilters: Record<string, any>): string[]
   return (
     Object.keys(currentFilters).filter(
       (filterKey) =>
-        currentFilters[filterKey] !== initFilters[filterKey as keyof typeof initFilters]
+        currentFilters[filterKey].toString() !==
+        initFilters[filterKey as keyof typeof initFilters].toString()
     ) ?? []
   );
 }
