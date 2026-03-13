@@ -59,9 +59,11 @@ export const useApiStore = defineStore('apiStore', {
     async updateTick(t: number) {
       // Static data refresh
       if (t >= this.nextDataCheckTime) {
-        await this.fetchStationsGeneralInfo();
-        await this.fetchVehiclesInfo();
-        await this.fetchDonatorsData();
+        await Promise.all([
+          this.fetchStationsGeneralInfo(),
+          this.fetchVehiclesInfo(),
+          this.fetchDonatorsData()
+        ]);
 
         this.nextDataCheckTime = t + 3600000;
       }
