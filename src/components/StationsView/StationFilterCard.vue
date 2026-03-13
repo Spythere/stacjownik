@@ -137,7 +137,7 @@
           </section>
 
           <section class="card_sliders">
-            <div class="slider-box" v-for="(sliderGroup, i) in sliderGroups" :key="i">
+            <div class="option-slider" v-for="(sliderGroup, i) in sliderGroups" :key="i">
               <FilterSlider :sliderGroup="sliderGroup" />
 
               <span class="slider-value">
@@ -593,38 +593,29 @@ h3.hours-section-header {
   margin-top: 1em;
 }
 
-.slider-box {
+.option-slider {
   display: grid;
   align-items: center;
   grid-template-columns: 250px 100px 1fr;
   gap: 0.25em;
 
   margin-bottom: 1em;
-
-  &-value {
-    color: var(--clr-primary);
-    padding: 0.1em 0.2em;
-    text-align: center;
-  }
 }
 
 .slider-value {
+  color: var(--clr-primary);
+  padding: 0.1em 0.2em;
   text-align: center;
+  font-weight: bold;
 }
 
 @include responsive.smallScreen {
-  .slider-box {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+  .option-slider {
+    grid-template-columns: 1fr;
+  }
 
-    &-input {
-      width: 90%;
-    }
-
-    &-content {
-      text-align: center;
-    }
+  .slider-content {
+    text-align: center;
   }
 
   .card_controls > button > p {
