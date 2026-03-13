@@ -67,7 +67,7 @@ const props = defineProps({
 const mainStore = useMainStore();
 
 const tabliceZbiorczeHref = computed(() => {
-  let url = `https://tablice-td2.spythere.eu/?station=${props.station!.name}`;
+  let url = `https://tablice-td2.web.app/?station=${props.station!.name}`;
   if (props.chosenCheckpoint) url += `&checkpoint=${props.chosenCheckpoint}`;
 
   return url;
