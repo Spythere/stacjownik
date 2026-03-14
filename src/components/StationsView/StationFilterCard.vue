@@ -598,6 +598,7 @@ h3.hours-section-header {
   align-items: center;
   grid-template-columns: 250px 100px 1fr;
   gap: 0.25em;
+  min-height: 35px;
 
   margin-bottom: 1em;
 }
