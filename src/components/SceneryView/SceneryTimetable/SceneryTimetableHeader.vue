@@ -39,6 +39,15 @@
         >
           <img src="/images/icon-tablice.ico" alt="icon-tablice" />
         </a>
+
+        <button
+          class="thumbnails-btn"
+          data-tooltip-type="HtmlTooltip"
+          :data-tooltip-content="`<b>${$t(`scenery.btn-${showStockThumbnails ? 'show' : 'hide'}-timetable-thumbnails`)}</b>`"
+          @click="toggleThumbnails"
+        >
+          <i class="fa-solid" :class="`${showStockThumbnails ? 'fa-eye' : 'fa-eye-slash'}`"></i>
+        </button>
       </span>
     </h3>
   </div>
@@ -61,8 +70,15 @@ const props = defineProps({
   chosenCheckpoint: {
     type: String,
     required: true
+  },
+
+  showStockThumbnails: {
+    type: Boolean,
+    required: true
   }
 });
+
+const emits = defineEmits(['toggleThumbnails']);
 
 const mainStore = useMainStore();
 
@@ -83,6 +99,10 @@ const pragotronHref = computed(() => {
 const generatorHref = computed(() => {
   return `https://generator-td2.spythere.eu/?sceneryId=${props.onlineScenery!.name}|${props.onlineScenery!.region}`;
 });
+
+function toggleThumbnails() {
+  emits('toggleThumbnails');
+}
 </script>
 
 <style lang="scss" scoped>
@@ -110,5 +130,10 @@ img {
   display: flex;
   gap: 0.25em;
   margin-left: 0.5em;
+}
+
+.thumbnails-btn {
+  padding: 0.25em;
+  width: 2em;
 }
 </style>

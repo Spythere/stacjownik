@@ -35,15 +35,6 @@
       </template>
     </div>
 
-    <div class="timetable-options">
-      <div class="thumbnails-checkbox">
-        <label>
-          <input type="checkbox" v-model="showStockThumbnails" />
-          <span>POKAZUJ PODGLĄDY SKŁADÓW</span>
-        </label>
-      </div>
-    </div>
-
     <div class="list-container">
       <transition-group name="list-anim">
         <div
@@ -250,14 +241,17 @@ const props = defineProps({
   chosenCheckpoint: {
     type: String,
     required: true
+  },
+
+  showStockThumbnails: {
+    type: Boolean,
+    required: true
   }
 });
 
 const route = useRoute();
 const mainStore = useMainStore();
 const apiStore = useApiStore();
-
-const showStockThumbnails = ref(false);
 
 const sceneryTimetables: ComputedRef<SceneryTimetableRow[]> = computed(() => {
   if (!props.onlineScenery) return [];
@@ -310,7 +304,7 @@ const sceneryTimetables: ComputedRef<SceneryTimetableRow[]> = computed(() => {
 
 .scenery-timetable-list {
   display: grid;
-  grid-template-rows: auto auto 1fr;
+  grid-template-rows: auto 1fr;
   overflow: hidden;
 }
 
@@ -355,26 +349,6 @@ const sceneryTimetables: ComputedRef<SceneryTimetableRow[]> = computed(() => {
   &.current {
     font-weight: bold;
     color: var(--clr-primary);
-  }
-}
-
-.thumbnails-checkbox {
-  label {
-    cursor: pointer;
-    color: #aaa;
-  }
-
-  input {
-    width: 0;
-    outline: none;
-  }
-
-  input:checked + span {
-    color: var(--clr-success);
-  }
-
-  input:focus-visible + span {
-    outline: 1px solid white;
   }
 }
 

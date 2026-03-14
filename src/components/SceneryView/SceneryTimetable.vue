@@ -4,12 +4,15 @@
       :station="station"
       :onlineScenery="onlineScenery"
       :chosenCheckpoint="chosenCheckpoint"
+      :showStockThumbnails="showStockThumbnails"
+      @toggleThumbnails="toggleThumbnails"
     />
 
     <SceneryTimetableList
       :station="station"
       :onlineScenery="onlineScenery"
       :chosenCheckpoint="chosenCheckpoint"
+      :showStockThumbnails="showStockThumbnails"
     />
   </section>
 </template>
@@ -45,7 +48,8 @@ export default defineComponent({
   },
 
   data: () => ({
-    listOpen: false
+    listOpen: false,
+    showStockThumbnails: false
   }),
 
   activated() {
@@ -82,6 +86,10 @@ export default defineComponent({
   },
 
   methods: {
+    toggleThumbnails() {
+      this.showStockThumbnails = !this.showStockThumbnails;
+    },
+
     loadSelectedOption() {
       const queryCheckpoint = this.$route.query['checkpoint']?.toString();
 
