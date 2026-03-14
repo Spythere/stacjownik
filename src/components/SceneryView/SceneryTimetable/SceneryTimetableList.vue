@@ -1,7 +1,11 @@
 <template>
   <div class="scenery-timetable-list">
     <!-- Checkpoints derived from station data -->
-    <div class="timetable-checkpoints" v-if="station?.generalInfo?.checkpoints">
+
+    <div
+      class="timetable-checkpoints"
+      v-if="station?.generalInfo && station.generalInfo.checkpoints.length > 0"
+    >
       <template v-for="(ch, i) in station.generalInfo.checkpoints" :key="i">
         <template v-if="i > 0">&bull;</template>
         <router-link
@@ -15,7 +19,10 @@
     </div>
 
     <!-- Missing checkpoints if scenery is not in database -->
-    <div class="timetable-checkpoints" v-else-if="onlineScenery">
+    <div
+      class="timetable-checkpoints"
+      v-else-if="onlineScenery && onlineScenery.missingCheckpoints.length > 0"
+    >
       <template v-for="(ch, i) in onlineScenery.missingCheckpoints" :key="i">
         <template v-if="i > 0">&bull;</template>
         <router-link
@@ -28,192 +35,191 @@
       </template>
     </div>
 
-    <div>
-      <input
-        type="checkbox"
-        name="show-stock-thumbnails"
-        id="show-stock-thumbnails"
-        v-model="showStockThumbnails"
-      />
-      <label for="show-stock-thumbnails">POKAZUJ PODGLĄDY SKŁADÓW</label>
+    <div class="timetable-options">
+      <div class="thumbnails-checkbox">
+        <label>
+          <input type="checkbox" v-model="showStockThumbnails" />
+          <span>POKAZUJ PODGLĄDY SKŁADÓW</span>
+        </label>
+      </div>
     </div>
 
     <div class="list-container">
-      <transition-group name="list-anim" tag="ul">
-        <li
+      <transition-group name="list-anim">
+        <div
           v-if="apiStore.dataStatuses.connection == 0 && sceneryTimetables.length == 0"
           style="padding-bottom: 5em"
           key="list-loading"
         >
           <Loading />
-        </li>
+        </div>
 
-        <li
+        <div
           class="timetable-item empty"
           v-else-if="sceneryTimetables.length == 0 && !onlineScenery"
           key="list-offline"
         >
           {{ $t('scenery.offline') }}
-        </li>
+        </div>
 
-        <li
+        <div
           class="timetable-item empty"
           v-else-if="sceneryTimetables.length == 0"
           key="list-no-timetables"
         >
           {{ $t('scenery.no-timetables') }}
-        </li>
+        </div>
 
-        <li v-else class="timetable-item" v-for="(row, i) in sceneryTimetables" :key="row.train.id">
-          <!-- {{ row.train.id + row.checkpointStop.arrivalTimestamp.toString() }} -->
-          <router-link class="item-link" tabindex="0" :to="row.train.driverRouteLocation">
-            <div class="item-top">
-              <div class="top-general">
-                <span class="general-info">
-                  <div class="info-train">
-                    <!-- Cargo warnings & details badges -->
-                    <span
-                      class="train-badge twr"
-                      v-if="row.train.timetableData!.twr"
-                      data-tooltip-type="BaseTooltip"
-                      :data-tooltip-content="$t('warnings.TWR')"
-                    >
-                      TWR
-                    </span>
+        <router-link
+          v-for="row in sceneryTimetables"
+          class="timetable-item"
+          :to="row.train.driverRouteLocation"
+          :key="row.train.id"
+        >
+          <div class="item-top">
+            <div class="top-general">
+              <span class="general-info">
+                <div class="info-train">
+                  <!-- Cargo warnings & details badges -->
+                  <span
+                    class="train-badge twr"
+                    v-if="row.train.timetableData!.twr"
+                    data-tooltip-type="BaseTooltip"
+                    :data-tooltip-content="$t('warnings.TWR')"
+                  >
+                    TWR
+                  </span>
 
-                    <span
-                      class="train-badge tn"
-                      v-if="row.train.timetableData!.hasDangerousCargo"
-                      data-tooltip-type="BaseTooltip"
-                      :data-tooltip-content="$t('warnings.TN')"
-                    >
-                      TN
-                    </span>
+                  <span
+                    class="train-badge tn"
+                    v-if="row.train.timetableData!.hasDangerousCargo"
+                    data-tooltip-type="BaseTooltip"
+                    :data-tooltip-content="$t('warnings.TN')"
+                  >
+                    TN
+                  </span>
 
-                    <span
-                      class="train-badge pn"
-                      v-if="row.train.timetableData!.hasExtraDeliveries"
-                      data-tooltip-type="BaseTooltip"
-                      :data-tooltip-content="$t('warnings.PN')"
-                    >
-                      PN
-                    </span>
+                  <span
+                    class="train-badge pn"
+                    v-if="row.train.timetableData!.hasExtraDeliveries"
+                    data-tooltip-type="BaseTooltip"
+                    :data-tooltip-content="$t('warnings.PN')"
+                  >
+                    PN
+                  </span>
 
-                    <!-- Train info -->
-                    <span
-                      data-tooltip-type="TrainInfoTooltip"
-                      :data-tooltip-content="row.train.id"
-                      class="tooltip-help"
-                    >
-                      <b class="text--primary">
-                        {{ row.train.timetableData!.category }}
-                      </b>
+                  <!-- Train info -->
+                  <span
+                    data-tooltip-type="TrainInfoTooltip"
+                    :data-tooltip-content="row.train.id"
+                    class="tooltip-help"
+                  >
+                    <b class="text--primary">
+                      {{ row.train.timetableData!.category }}
+                    </b>
 
-                      <b>&nbsp;{{ row.train.trainNo }}</b>
-                      &bull;
-                      {{ row.train.driverName }}
+                    <b>&nbsp;{{ row.train.trainNo }}</b>
+                    &bull;
+                    {{ row.train.driverName }}
 
-                      <i
-                        class="fa-solid fa-user-slash"
-                        style="color: salmon"
-                        v-if="!row.train.online && row.train.lastSeen <= Date.now() - 60000"
-                      ></i>
-                    </span>
+                    <i
+                      class="fa-solid fa-user-slash"
+                      style="color: salmon"
+                      v-if="!row.train.online && row.train.lastSeen <= Date.now() - 60000"
+                    ></i>
+                  </span>
 
-                    <!-- Train stop comments -->
-                    <span
-                      v-if="row.checkpointStop.comments"
-                      class="stop-comments-icon"
-                      data-tooltip-type="BaseTooltip"
-                      :data-tooltip-content="row.checkpointStop.comments"
-                    >
-                      <img src="/images/icon-warning.svg" />
+                  <!-- Train stop comments -->
+                  <span
+                    v-if="row.checkpointStop.comments"
+                    class="stop-comments-icon"
+                    data-tooltip-type="BaseTooltip"
+                    :data-tooltip-content="row.checkpointStop.comments"
+                  >
+                    <img src="/images/icon-warning.svg" />
+                  </span>
+                </div>
+
+                <div class="info-route">
+                  <strong>{{ row.train.timetableData!.route.replace('|', ' - ') }}</strong>
+                </div>
+
+                <ScheduledTrainStatus :sceneryTimetableRow="row" />
+              </span>
+            </div>
+
+            <div class="top-schedule">
+              <span class="schedule-arrival">
+                <span class="arrival-time begins" v-if="row.checkpointStop.beginsHere">
+                  {{ $t('timetables.begins') }}
+                </span>
+
+                <span class="arrival-time" v-else>
+                  <div v-if="row.checkpointStop.arrivalDelay == 0">
+                    <span>{{ timestampToTimeString(row.checkpointStop.arrivalTimestamp) }}</span>
+                  </div>
+                  <div v-else>
+                    <div>
+                      <s style="margin-right: 0.2em" class="text--grayed">{{
+                        timestampToTimeString(row.checkpointStop.arrivalTimestamp)
+                      }}</s>
+                    </div>
+
+                    <span>
+                      {{ timestampToTimeString(row.checkpointStop.arrivalRealTimestamp) }}
+                      ({{ row.checkpointStop.arrivalDelay > 0 ? '+' : ''
+                      }}{{ row.checkpointStop.arrivalDelay }})
                     </span>
                   </div>
+                </span>
+              </span>
 
-                  <div class="info-route">
-                    <strong>{{ row.train.timetableData!.route.replace('|', ' - ') }}</strong>
+              <span class="schedule-stop">
+                <span class="stop-connection">
+                  {{ row.currentElement.arrivalRouteExt }}
+                </span>
+
+                <span class="stop-time">
+                  {{ row.checkpointStop.stopTime || '' }}
+                  {{ row.checkpointStop.stopTime ? row.checkpointStop.stopType || 'pt' : '' }}
+                </span>
+
+                <span class="stop-connection">
+                  {{ row.currentElement.departureRouteExt }}
+                </span>
+              </span>
+
+              <span class="schedule-departure">
+                <span class="departure-time terminates" v-if="row.checkpointStop.terminatesHere">
+                  {{ $t('timetables.terminates') }}
+                </span>
+
+                <span class="departure-time" v-else>
+                  <div v-if="row.checkpointStop.departureDelay == 0">
+                    <span>{{ timestampToTimeString(row.checkpointStop.departureTimestamp) }}</span>
                   </div>
-
-                  <ScheduledTrainStatus :sceneryTimetableRow="row" />
-                </span>
-              </div>
-
-              <div class="top-schedule">
-                <span class="schedule-arrival">
-                  <span class="arrival-time begins" v-if="row.checkpointStop.beginsHere">
-                    {{ $t('timetables.begins') }}
-                  </span>
-
-                  <span class="arrival-time" v-else>
-                    <div v-if="row.checkpointStop.arrivalDelay == 0">
-                      <span>{{ timestampToTimeString(row.checkpointStop.arrivalTimestamp) }}</span>
-                    </div>
-                    <div v-else>
-                      <div>
-                        <s style="margin-right: 0.2em" class="text--grayed">{{
-                          timestampToTimeString(row.checkpointStop.arrivalTimestamp)
-                        }}</s>
-                      </div>
-
-                      <span>
-                        {{ timestampToTimeString(row.checkpointStop.arrivalRealTimestamp) }}
-                        ({{ row.checkpointStop.arrivalDelay > 0 ? '+' : ''
-                        }}{{ row.checkpointStop.arrivalDelay }})
-                      </span>
-                    </div>
-                  </span>
-                </span>
-
-                <span class="schedule-stop">
-                  <span class="stop-connection">
-                    {{ row.currentElement.arrivalRouteExt }}
-                  </span>
-
-                  <span class="stop-time">
-                    {{ row.checkpointStop.stopTime || '' }}
-                    {{ row.checkpointStop.stopTime ? row.checkpointStop.stopType || 'pt' : '' }}
-                  </span>
-
-                  <span class="stop-connection">
-                    {{ row.currentElement.departureRouteExt }}
-                  </span>
-                </span>
-
-                <span class="schedule-departure">
-                  <span class="departure-time terminates" v-if="row.checkpointStop.terminatesHere">
-                    {{ $t('timetables.terminates') }}
-                  </span>
-
-                  <span class="departure-time" v-else>
-                    <div v-if="row.checkpointStop.departureDelay == 0">
-                      <span>{{
+                  <div v-else>
+                    <div>
+                      <s style="margin-right: 0.2em" class="text--grayed">{{
                         timestampToTimeString(row.checkpointStop.departureTimestamp)
-                      }}</span>
+                      }}</s>
                     </div>
-                    <div v-else>
-                      <div>
-                        <s style="margin-right: 0.2em" class="text--grayed">{{
-                          timestampToTimeString(row.checkpointStop.departureTimestamp)
-                        }}</s>
-                      </div>
 
-                      <span>
-                        {{ timestampToTimeString(row.checkpointStop.departureRealTimestamp) }}
-                        ({{ row.checkpointStop.departureDelay > 0 ? '+' : ''
-                        }}{{ row.checkpointStop.departureDelay }})
-                      </span>
-                    </div>
-                  </span>
+                    <span>
+                      {{ timestampToTimeString(row.checkpointStop.departureRealTimestamp) }}
+                      ({{ row.checkpointStop.departureDelay > 0 ? '+' : ''
+                      }}{{ row.checkpointStop.departureDelay }})
+                    </span>
+                  </div>
                 </span>
-              </div>
+              </span>
             </div>
+          </div>
 
-            <div class="item-stock-list" v-if="showStockThumbnails">
-              <StockList :trainStockList="row.train.stockList" />
-            </div>
-          </router-link>
-        </li>
+          <div class="item-stock-list" v-if="showStockThumbnails">
+            <StockList :trainStockList="row.train.stockList" />
+          </div>
+        </router-link>
       </transition-group>
     </div>
   </div>
@@ -306,7 +312,6 @@ const sceneryTimetables: ComputedRef<SceneryTimetableRow[]> = computed(() => {
   display: grid;
   grid-template-rows: auto auto 1fr;
   overflow: hidden;
-  gap: 1em;
 }
 
 .top-general {
@@ -336,7 +341,7 @@ const sceneryTimetables: ComputedRef<SceneryTimetableRow[]> = computed(() => {
   flex-wrap: wrap;
   font-size: 1.1em;
 
-  margin-top: 0.5em;
+  margin: 0.5em 0;
 }
 
 .checkpoint-item {
@@ -353,20 +358,45 @@ const sceneryTimetables: ComputedRef<SceneryTimetableRow[]> = computed(() => {
   }
 }
 
+.thumbnails-checkbox {
+  label {
+    cursor: pointer;
+    color: #aaa;
+  }
+
+  input {
+    width: 0;
+    outline: none;
+  }
+
+  input:checked + span {
+    color: var(--clr-success);
+  }
+
+  input:focus-visible + span {
+    outline: 1px solid white;
+  }
+}
+
 .list-container {
   position: relative;
   overflow-y: auto;
+  overflow-x: hidden;
+
+  margin-top: 0.5em;
+  padding: 2px;
+  width: 100%;
 }
 
 .timetable-item {
-  margin: 0.5em 0;
+  display: block;
+
+  margin-bottom: 0.5em;
   padding: 0.35em;
-  max-width: 1100px;
+  width: 100%;
 
   overflow: hidden;
   background: #353535;
-
-  z-index: 10;
 
   &.empty {
     padding: 1rem;
@@ -375,13 +405,13 @@ const sceneryTimetables: ComputedRef<SceneryTimetableRow[]> = computed(() => {
   }
 }
 
-.timetable-item > .item-link > .item-top {
+.timetable-item > .item-top {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 1.2em 0.5em;
 }
 
-.timetable-item > .item-link > .item-stock-list {
+.timetable-item > .item-stock-list {
   margin-top: 1em;
 }
 
