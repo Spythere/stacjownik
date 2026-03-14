@@ -110,14 +110,14 @@ export const initFilters = {
 export const sliderGroups: SliderGroup[] = [
   'vMax',
   'level',
-  'routeOneWay',
   'routeOneWayCatenary',
-  'routeOneWayInternal',
-  'routeOneWayInternalCatenary',
-  'routeTwoWay',
+  'routeOneWay',
   'routeTwoWayCatenary',
-  'routeTwoWayInternal',
-  'routeTwoWayInternalCatenary'
+  'routeTwoWay',
+  'routeOneWayInternalCatenary',
+  'routeOneWayInternal',
+  'routeTwoWayInternalCatenary',
+  'routeTwoWayInternal'
 ];
 
 export const sliderGroupsOptions: Record<SliderGroup, SliderOptions[]> = {
@@ -208,8 +208,8 @@ export const filtersSections: Record<StationFilterSection, StationFilter[]> = {
   ],
   blockades: ['SBL', 'PBL'],
   signals: ['modern', 'semaphores', 'mixed', 'historical'],
-  externalRoutes: ['oneWay', 'oneWayCatenary', 'twoWay', 'twoWayCatenary'],
-  internalRoutes: ['oneWayInt', 'oneWayCatenaryInt', 'twoWayInt', 'twoWayCatenaryInt']
+  externalRoutes: ['oneWayCatenary', 'oneWay', 'twoWayCatenary', 'twoWay'],
+  internalRoutes: ['oneWayCatenaryInt', 'oneWayInt', 'twoWayCatenaryInt', 'twoWayInt']
 };
 
 export function setupFilters(currentFilters: Record<string, any>) {

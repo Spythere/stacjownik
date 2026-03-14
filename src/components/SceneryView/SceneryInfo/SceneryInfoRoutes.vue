@@ -5,7 +5,7 @@
         class="routes-btn"
         @click="toggleRoutesVisibility('single')"
         data-tooltip-type="BaseTooltip"
-        :data-tooltip-content="`${showInternalSingleRoutes ? $t('scenery.btn-hide-internal-routes') : $t('scenery.btn-show-internal-routes')}`"
+        :data-tooltip-content="`${showInternalSingleRoutes ? $t('scenery.btn-show-internal-routes') : $t('scenery.btn-hide-internal-routes')}`"
       >
         <b>{{ $t('scenery.one-way-routes') }}</b>
         <i class="fa-solid" :class="`${showInternalSingleRoutes ? 'fa-eye' : 'fa-eye-slash'}`"></i>
@@ -32,7 +32,7 @@
         class="routes-btn"
         @click="toggleRoutesVisibility('double')"
         data-tooltip-type="BaseTooltip"
-        :data-tooltip-content="`${showInternalDoubleRoutes ? $t('scenery.btn-hide-internal-routes') : $t('scenery.btn-show-internal-routes')}`"
+        :data-tooltip-content="`${showInternalDoubleRoutes ? $t('scenery.btn-show-internal-routes') : $t('scenery.btn-hide-internal-routes')}`"
       >
         <b>{{ $t('scenery.two-way-routes') }}</b>
         <i class="fa-solid" :class="`${showInternalDoubleRoutes ? 'fa-eye' : 'fa-eye-slash'}`"></i>

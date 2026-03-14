@@ -293,6 +293,16 @@
     "withoutActiveTimetables": "NO ACTIVE",
     "junction": "JUNCTIONS",
     "nonJunction": "OTHER",
+
+    "oneWay": "OTHER SINGLE TRACK",
+    "oneWayCatenary": "CATENARY SINGLE TRACK",
+    "twoWayCatenary": "CATENARY DOUBLE TRACK",
+    "twoWay": "OTHER DOUBLE TRACK",
+    "oneWayCatenaryInt": "CATENARY SINGLE TRACK",
+    "oneWayInt": "OTHER SINGLE TRACK",
+    "twoWayCatenaryInt": "CATENARY DOUBLE TRACK",
+    "twoWayInt": "OTHER DOUBLE TRACK",
+
     "sliders": {
       "minLevel": "MIN. REQUIRED DISPATCHER LEVEL",
       "maxLevel": "MAX. REQUIRED DISPATCHER LEVEL",
@@ -562,6 +572,8 @@
     "option-active-timetables": "Active timetables",
     "option-timetables-history": "Timetables history PL1",
     "option-dispatchers-history": "Dispatchers history PL1",
+    "btn-show-timetable-thumbnails": "Show rolling stock thumbnails",
+    "btn-hide-timetable-thumbnails": "Hide rolling stock thumbnails",
     "timetable-includesScenery": "ALL TIMETABLES",
     "timetable-via": "PASSES THROUGH",
     "timetable-issuedFrom": "BEGINS HERE",

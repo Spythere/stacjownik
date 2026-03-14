@@ -306,14 +306,14 @@
     "sliders": {
       "vMax": "PRĘDKOŚĆ SZLAKOWA",
       "level": "WYMAGANY POZIOM DYŻURNEGO",
-      "routeOneWay": "SZLAKI JEDNOTOROWE NIEZELEKTR.",
-      "routeOneWayCatenary": "SZLAKI JEDNOTOROWE ZELEKTR.",
-      "routeTwoWayCatenary": "SZLAKI DWUTOROWE ZELEKTR.",
-      "routeTwoWay": "SZLAKI DWUTOROWE NIEZELEKTR.",
-      "routeOneWayInternalCatenary": "SZLAKI JEDNOTOROWE ZELEKTR. WEWNĘTRZNE",
-      "routeOneWayInternal": "SZLAKI JEDNOTOROWE NIEZELEKTR. WEWNĘTRZNE",
-      "routeTwoWayInternalCatenary": "SZLAKI DWUTOROWE ZELEKTR. WEWNĘTRZNE",
-      "routeTwoWayInternal": "SZLAKI DWUTOROWE NIEZELEKTR. WEWNĘTRZNE"
+      "routeOneWay": "SZLAKI 1-TOROWE NIEZELEKTR.",
+      "routeOneWayCatenary": "SZLAKI 1-TOROWE ZELEKTR.",
+      "routeTwoWayCatenary": "SZLAKI 2-TOROWE ZELEKTR.",
+      "routeTwoWay": "SZLAKI 2-TOROWE NIEZELEKTR.",
+      "routeOneWayInternalCatenary": "SZLAKI WEWN. 1-TOROWE ZELEKTR.",
+      "routeOneWayInternal": "SZLAKI WEWN. 1-TOROWE NIEZELEKTR.",
+      "routeTwoWayInternalCatenary": "SZLAKI WEWN. 2-TOROWE ZELEKTR.",
+      "routeTwoWayInternal": "SZLAKI WEWN. 2-TOROWE NIEZELEKTR."
     },
     "sceneries-placeholder": "Wyszukaj scenerię",
     "line-numbers-placeholder": "Numery linii (oddzielone przecinkami)",
