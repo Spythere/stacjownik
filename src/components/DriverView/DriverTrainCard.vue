@@ -63,7 +63,7 @@
       </div>
     </transition>
 
-    <StockList :trainStockList="chosenTrain.stockList" :key="chosenTrain.id" />
+    <StockList :trainStockList="chosenTrain.stockList" :key="chosenTrain.id" :showPreviews="true" />
     <TrainSchedule :train="chosenTrain" />
   </div>
 </template>
