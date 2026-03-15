@@ -130,6 +130,12 @@ export interface StationRoutes {
   singleOtherNames: string[];
   doubleElectrifiedNames: string[];
   doubleOtherNames: string[];
+
+  singleElectrifiedInternalNames: string[];
+  singleOtherInternalNames: string[];
+  doubleElectrifiedInternalNames: string[];
+  doubleOtherInternalNames: string[];
+
   sblNames: string[];
 
   minRouteSpeed: number;

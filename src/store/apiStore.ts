@@ -7,6 +7,7 @@ import axios, { AxiosInstance } from 'axios';
 export const useApiStore = defineStore('apiStore', {
   state: () => ({
     dataStatuses: {
+      allData: Status.Data.Loading,
       connection: Status.Data.Loading,
       sceneries: Status.Data.Loading,
       vehicles: Status.Data.Loading,
@@ -55,19 +56,21 @@ export const useApiStore = defineStore('apiStore', {
       window.requestAnimationFrame(this.updateTick);
     },
 
-    updateTick(t: number) {
+    async updateTick(t: number) {
       // Static data refresh
       if (t >= this.nextDataCheckTime) {
-        this.fetchDonatorsData();
-        this.fetchVehiclesInfo();
-        this.fetchStationsGeneralInfo();
+        await Promise.all([
+          this.fetchStationsGeneralInfo(),
+          this.fetchVehiclesInfo(),
+          this.fetchDonatorsData()
+        ]);
 
         this.nextDataCheckTime = t + 3600000;
       }
 
       // Active data fefresh
       if (t >= this.nextUpdateTime) {
-        this.fetchActiveData();
+        await this.fetchActiveData();
         this.nextUpdateTime = t + 31000;
       }
 

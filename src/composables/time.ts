@@ -35,3 +35,10 @@ export function dateToLocaleString(date: Date, dateOptions: Intl.DateTimeFormatO
 
   return date.toLocaleString(locale.value == 'pl' ? 'pl-PL' : 'en-GB', dateOptions);
 }
+
+export function timestampToTimeString(timestamp: number) {
+  return new Date(timestamp).toLocaleTimeString('pl-PL', {
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+}

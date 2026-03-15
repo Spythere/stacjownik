@@ -13,7 +13,7 @@
       <div class="actions actions-right">
         <a
           class="a-button btn--filled btn--image"
-          :href="`https://srjp-td2.web.app/?id=${chosenTrain.id}`"
+          :href="`https://srjp-td2.spythere.eu/?id=${chosenTrain.id}`"
           target="_blank"
         >
           <span class="hidable">

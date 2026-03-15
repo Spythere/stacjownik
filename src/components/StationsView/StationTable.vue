@@ -578,6 +578,7 @@ tbody tr {
 .station-name {
   font-weight: bold;
   max-width: 200px;
+  padding: 0.25em;
 
   &.default {
     color: var(--clr-primary);

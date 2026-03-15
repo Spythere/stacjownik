@@ -14,16 +14,6 @@
 
         <div class="topbar-links">
           <button
-            v-if="isOldStacjownikDomain"
-            class="btn--image migrate-info-button"
-            @click="toggleMigrateInfoCard(true)"
-            data-tooltip-type="HtmlTooltip"
-            :data-tooltip-content="`<b>${$t('migrate-info.tooltip-content')}</b>`"
-          >
-            <img :src="`/images/icon-alert-triangle.svg`" alt="show migrate info card" />
-          </button>
-
-          <button
             class="btn--image lang-button"
             @click="toggleLocales()"
             data-tooltip-type="HtmlTooltip"
@@ -44,7 +34,7 @@
 
           <a
             class="a-button btn--image gnr-link"
-            href="https://generator-td2.web.app/"
+            href="https://generator-td2.spythere.eu/"
             target="_blank"
             data-tooltip-type="HtmlTooltip"
             :data-tooltip-content="`<b>${$t('app.gnr-link-content')}</b>`"
@@ -54,7 +44,7 @@
 
           <a
             class="a-button btn--image pojazdownik-link"
-            href="https://pojazdownik-td2.web.app/"
+            href="https://pojazdownik-td2.spythere.eu/"
             target="_blank"
             data-tooltip-type="HtmlTooltip"
             :data-tooltip-content="`<b>${$t('app.pojazdownik-link-content')}</b>`"
@@ -129,18 +119,8 @@ export default defineComponent({
       this.isDonationCardOpen = value;
     },
 
-    toggleMigrateInfoCard(value: boolean) {
-      this.mainStore.isMigrateInfoCardOpen = value;
-    },
-
     toggleLocales() {
       this.mainStore.changeLocale(this.mainStore.currentLocale == 'pl' ? 'en' : 'pl');
-    }
-  },
-
-  computed: {
-    isOldStacjownikDomain() {
-      return location.hostname == 'stacjownik-td2.web.app';
     }
   }
 });
@@ -198,11 +178,6 @@ button.donation-button {
 button.lang-button {
   padding: 0 0.5em;
   background-color: #111;
-}
-
-button.migrate-info-button {
-  padding: 0 0.5em;
-  background-color: var(--clr-primary);
 }
 
 a.pojazdownik-link {

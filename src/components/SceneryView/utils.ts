@@ -1,6 +1,6 @@
 import { StopStatus, TrainStop } from '../../typings/common';
 
-export const stopStatusPriority = [
+export const stopStatusPriorities = [
   StopStatus.ONLINE,
   StopStatus.STOPPED,
   StopStatus.DEPARTED,

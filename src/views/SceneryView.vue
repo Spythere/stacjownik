@@ -196,6 +196,7 @@ function setViewMode(componentName: string) {
   display: grid;
   grid-template-rows: auto 1fr;
   gap: 1em;
+
 }
 
 .scenery-actions {
@@ -239,7 +240,7 @@ function setViewMode(componentName: string) {
   .scenery-view {
     height: auto;
   }
-  
+
   .scenery-wrapper {
     grid-template-columns: 1fr;
     gap: 0;

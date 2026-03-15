@@ -11,7 +11,8 @@
         :src="`https://stacjownik.spythere.eu/static/thumbnails/${thumbnailImage}.png`"
         height="70"
         loading="lazy"
-        data-tooltip-type="VehiclePreviewTooltip"
+        :data-crosshair-cursor="showPreviews"
+        :data-tooltip-type="showPreviews ? 'VehiclePreviewTooltip' : ''"
         :data-tooltip-content="vehicleString"
         @error="onImageError($event, imageFallbacks[imageIndex])"
         @load="onImageLoad"
@@ -20,13 +21,14 @@
   </div>
 </template>
 
-<script setup lang="ts">    
+<script setup lang="ts">
 import { computed, PropType, Ref, ref } from 'vue';
 
 const props = defineProps({
   vehicleString: { type: String, required: true },
   images: { type: Object as PropType<string[]>, required: true },
-  imageFallbacks: { type: Object as PropType<string[]>, required: true }
+  imageFallbacks: { type: Object as PropType<string[]>, required: true },
+  showPreviews: { type: Boolean }
 });
 
 const thumbRef = ref(null) as Ref<HTMLElement | null>;
@@ -74,8 +76,10 @@ function onImageLoad() {
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  cursor: crosshair;
-
   padding: 0.5em 0;
+
+  &[data-crosshair-cursor='true'] {
+    cursor: crosshair;
+  }
 }
 </style>
