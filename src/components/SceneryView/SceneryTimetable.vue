@@ -30,6 +30,7 @@ import { useMainStore } from '../../store/mainStore';
 import { useApiStore } from '../../store/apiStore';
 import { ActiveScenery, Station } from '../../typings/common';
 import SceneryTimetableList from './SceneryTimetable/SceneryTimetableList.vue';
+import StorageManager from '../../managers/storageManager';
 
 export default defineComponent({
   name: 'SceneryTimetable',
@@ -54,6 +55,7 @@ export default defineComponent({
 
   activated() {
     this.loadSelectedOption();
+    this.handleStockThumbnails();
   },
 
   watch: {
@@ -88,6 +90,8 @@ export default defineComponent({
   methods: {
     toggleThumbnails() {
       this.showStockThumbnails = !this.showStockThumbnails;
+
+      StorageManager.setBooleanValue('showStockThumbnails', this.showStockThumbnails);
     },
 
     loadSelectedOption() {
@@ -115,6 +119,12 @@ export default defineComponent({
           checkpointsListRef[0] ??
           sceneryName;
       }
+    },
+
+    handleStockThumbnails() {
+      const storageVal = StorageManager.getBooleanValue('showStockThumbnails');
+
+      this.showStockThumbnails = storageVal;
     }
   }
 });
