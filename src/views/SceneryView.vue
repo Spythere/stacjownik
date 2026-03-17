@@ -184,7 +184,7 @@ function setViewMode(componentName: string) {
 
   background-color: #181818;
   border-radius: 0.5em;
-  padding: 1em 0.5em;
+  padding: 0.5em;
 }
 
 .scenery-left {
@@ -196,7 +196,6 @@ function setViewMode(componentName: string) {
   display: grid;
   grid-template-rows: auto 1fr;
   gap: 1em;
-
 }
 
 .scenery-actions {

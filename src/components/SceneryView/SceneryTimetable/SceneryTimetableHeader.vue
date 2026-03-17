@@ -11,44 +11,6 @@
           {{ onlineScenery?.scheduledTrainCount.confirmed ?? 0 }}
         </span>
       </span>
-
-      <span class="header-links" v-if="station && onlineScenery">
-        <a
-          :href="generatorHref"
-          target="_blank"
-          data-tooltip-type="HtmlTooltip"
-          :data-tooltip-content="`<b>${$t('scenery.gnr-link')}</b>`"
-        >
-          <img src="/images/icon-gnr.svg" alt="GeneraTOR app icon" />
-        </a>
-
-        <a
-          :href="pragotronHref"
-          target="_blank"
-          data-tooltip-type="HtmlTooltip"
-          :data-tooltip-content="`<b>${$t('scenery.pragotron-link')}</b>`"
-        >
-          <img src="/images/icon-pragotron.svg" alt="icon-pragotron" />
-        </a>
-
-        <a
-          :href="tabliceZbiorczeHref"
-          target="_blank"
-          data-tooltip-type="HtmlTooltip"
-          :data-tooltip-content="`<b>${$t('scenery.tablice-link')}</b>`"
-        >
-          <img src="/images/icon-tablice.ico" alt="icon-tablice" />
-        </a>
-
-        <button
-          class="thumbnails-btn"
-          data-tooltip-type="HtmlTooltip"
-          :data-tooltip-content="`<b>${$t(`scenery.btn-${showStockThumbnails ? 'show' : 'hide'}-timetable-thumbnails`)}</b>`"
-          @click="toggleThumbnails"
-        >
-          <i class="fa-solid" :class="`${showStockThumbnails ? 'fa-eye' : 'fa-eye-slash'}`"></i>
-        </button>
-      </span>
     </h3>
   </div>
 </template>
@@ -70,39 +32,8 @@ const props = defineProps({
   chosenCheckpoint: {
     type: String,
     required: true
-  },
-
-  showStockThumbnails: {
-    type: Boolean,
-    required: true
   }
 });
-
-const emits = defineEmits(['toggleThumbnails']);
-
-const mainStore = useMainStore();
-
-const tabliceZbiorczeHref = computed(() => {
-  let url = `https://tablice-td2.web.app/?station=${props.station!.name}`;
-  if (props.chosenCheckpoint) url += `&checkpoint=${props.chosenCheckpoint}`;
-
-  return url;
-});
-
-const pragotronHref = computed(() => {
-  let url = `https://pragotron-td2.web.app/board?name=${props.station!.name}&region=${mainStore.region.id}`;
-  if (props.chosenCheckpoint) url += `&checkpoint=${props.chosenCheckpoint}`;
-
-  return url;
-});
-
-const generatorHref = computed(() => {
-  return `https://generator-td2.spythere.eu/?sceneryId=${props.onlineScenery!.name}|${props.onlineScenery!.region}`;
-});
-
-function toggleThumbnails() {
-  emits('toggleThumbnails');
-}
 </script>
 
 <style lang="scss" scoped>
@@ -119,21 +50,5 @@ h3 {
 
   gap: 0.5em;
   font-size: 1.3em;
-}
-
-img {
-  width: 25px;
-  vertical-align: middle;
-}
-
-.header-links {
-  display: flex;
-  gap: 0.25em;
-  margin-left: 0.5em;
-}
-
-.thumbnails-btn {
-  padding: 0.25em;
-  width: 2em;
 }
 </style>

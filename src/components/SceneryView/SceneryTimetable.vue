@@ -5,7 +5,6 @@
       :onlineScenery="onlineScenery"
       :chosenCheckpoint="chosenCheckpoint"
       :showStockThumbnails="showStockThumbnails"
-      @toggleThumbnails="toggleThumbnails"
     />
 
     <SceneryTimetableList
@@ -55,7 +54,6 @@ export default defineComponent({
 
   activated() {
     this.loadSelectedOption();
-    this.handleStockThumbnails();
   },
 
   watch: {
@@ -88,12 +86,6 @@ export default defineComponent({
   },
 
   methods: {
-    toggleThumbnails() {
-      this.showStockThumbnails = !this.showStockThumbnails;
-
-      StorageManager.setBooleanValue('showStockThumbnails', this.showStockThumbnails);
-    },
-
     loadSelectedOption() {
       const queryCheckpoint = this.$route.query['checkpoint']?.toString();
 
@@ -119,12 +111,6 @@ export default defineComponent({
           checkpointsListRef[0] ??
           sceneryName;
       }
-    },
-
-    handleStockThumbnails() {
-      const storageVal = StorageManager.getBooleanValue('showStockThumbnails');
-
-      this.showStockThumbnails = storageVal;
     }
   }
 });

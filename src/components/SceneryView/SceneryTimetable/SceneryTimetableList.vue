@@ -35,6 +35,8 @@
       </template>
     </div>
 
+    <div v-else></div>
+
     <div class="list-container">
       <transition-group name="list-anim">
         <div
@@ -213,11 +215,49 @@
         </router-link>
       </transition-group>
     </div>
+
+    <div class="list-actions" v-if="station && onlineScenery">
+      <a
+        :href="generatorHref"
+        target="_blank"
+        data-tooltip-type="HtmlTooltip"
+        :data-tooltip-content="`<b>${$t('scenery.gnr-link')}</b>`"
+      >
+        <img src="/images/icon-gnr.svg" alt="GeneraTOR app icon" />
+      </a>
+
+      <a
+        :href="pragotronHref"
+        target="_blank"
+        data-tooltip-type="HtmlTooltip"
+        :data-tooltip-content="`<b>${$t('scenery.pragotron-link')}</b>`"
+      >
+        <img src="/images/icon-pragotron.svg" alt="icon-pragotron" />
+      </a>
+
+      <a
+        :href="tabliceZbiorczeHref"
+        target="_blank"
+        data-tooltip-type="HtmlTooltip"
+        :data-tooltip-content="`<b>${$t('scenery.tablice-link')}</b>`"
+      >
+        <img src="/images/icon-tablice.ico" alt="icon-tablice" />
+      </a>
+
+      <button
+        class="thumbnails-btn"
+        data-tooltip-type="HtmlTooltip"
+        :data-tooltip-content="`<b>${$t(`scenery.btn-${showStockThumbnails ? 'show' : 'hide'}-timetable-thumbnails`)}</b>`"
+        @click="toggleThumbnails"
+      >
+        <i class="fa-solid" :class="`${showStockThumbnails ? 'fa-eye' : 'fa-eye-slash'}`"></i>
+      </button>
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, ComputedRef, PropType, ref } from 'vue';
+import { computed, ComputedRef, onMounted, PropType, ref } from 'vue';
 import { Station, ActiveScenery } from '../../../typings/common';
 import { SceneryTimetableRow } from '../typings';
 import { getTrainStopStatus, stopStatusPriorities } from '../utils';
@@ -228,6 +268,7 @@ import { timestampToTimeString } from '../../../composables/time';
 import ScheduledTrainStatus from './ScheduledTrainStatus.vue';
 import Loading from '../../Global/Loading.vue';
 import StockList from '../../Global/StockList.vue';
+import StorageManager from '../../../managers/storageManager';
 
 const props = defineProps({
   station: {
@@ -241,17 +282,18 @@ const props = defineProps({
   chosenCheckpoint: {
     type: String,
     required: true
-  },
-
-  showStockThumbnails: {
-    type: Boolean,
-    required: true
   }
 });
 
 const route = useRoute();
 const mainStore = useMainStore();
 const apiStore = useApiStore();
+
+const showStockThumbnails = ref(false);
+
+onMounted(() => {
+  handleStockThumbnails();
+});
 
 const sceneryTimetables: ComputedRef<SceneryTimetableRow[]> = computed(() => {
   if (!props.onlineScenery) return [];
@@ -295,6 +337,36 @@ const sceneryTimetables: ComputedRef<SceneryTimetableRow[]> = computed(() => {
       return a.checkpointStop.departureTimestamp > b.checkpointStop.departureTimestamp ? 1 : -1;
     });
 });
+
+const tabliceZbiorczeHref = computed(() => {
+  let url = `https://tablice-td2.web.app/?station=${props.station!.name}`;
+  if (props.chosenCheckpoint) url += `&checkpoint=${props.chosenCheckpoint}`;
+
+  return url;
+});
+
+const pragotronHref = computed(() => {
+  let url = `https://pragotron-td2.web.app/board?name=${props.station!.name}&region=${mainStore.region.id}`;
+  if (props.chosenCheckpoint) url += `&checkpoint=${props.chosenCheckpoint}`;
+
+  return url;
+});
+
+const generatorHref = computed(() => {
+  return `https://generator-td2.spythere.eu/?sceneryId=${props.onlineScenery!.name}|${props.onlineScenery!.region}`;
+});
+
+function handleStockThumbnails() {
+  const storageVal = StorageManager.getBooleanValue('showStockThumbnails');
+
+  showStockThumbnails.value = storageVal;
+}
+
+function toggleThumbnails() {
+  showStockThumbnails.value = !showStockThumbnails.value;
+
+  StorageManager.setBooleanValue('showStockThumbnails', showStockThumbnails.value);
+}
 </script>
 
 <style lang="scss" scoped>
@@ -304,7 +376,7 @@ const sceneryTimetables: ComputedRef<SceneryTimetableRow[]> = computed(() => {
 
 .scenery-timetable-list {
   display: grid;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: auto 1fr auto;
   overflow: hidden;
 }
 
@@ -456,9 +528,30 @@ const sceneryTimetables: ComputedRef<SceneryTimetableRow[]> = computed(() => {
   font-size: 0.85em;
 }
 
+.list-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-top: 0.5em;
+
+  img {
+    width: 25px;
+    vertical-align: middle;
+  }
+
+  .thumbnails-btn {
+    width: 25px;
+    font-size: 1.2em;
+  }
+}
+
 @include responsive.smallScreen {
   .timetable-item {
     grid-template-columns: 1fr;
+  }
+
+  .list-actions {
+    justify-content: center;
   }
 }
 </style>
