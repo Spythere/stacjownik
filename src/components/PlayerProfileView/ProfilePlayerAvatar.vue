@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, PropType, ref, useTemplateRef } from 'vue';
+import { PropType, ref, useTemplateRef } from 'vue';
 import { Status } from '../../typings/common';
 import Loading from '../Global/Loading.vue';
 import { Td2API } from '../../typings/api';
@@ -34,10 +34,6 @@ const props = defineProps({
   playerTD2Info: {
     type: Object as PropType<Td2API.UsersInfoByName.UserInfo>
   }
-});
-
-onMounted(() => {
-  console.log(avatarImageRef.value);
 });
 
 const avatarImageRef = useTemplateRef('avatarImageRef');
