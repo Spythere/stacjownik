@@ -249,7 +249,9 @@
       "blockades": "BLOCK SIGNALLING",
       "status": "ONLINE STATUS",
       "timetables": "ACTIVE TIMETABLES",
-      "spawns": "OPEN SPAWNS"
+      "spawns": "OPEN SPAWNS",
+      "externalRoutes": "EXTERNAL ROUTES",
+      "internalRoutes": "INTERNAL ROUTES"
     },
     "changed-filters-count": "Changed filters:",
     "no-changed-filters": "No changed filters",
@@ -304,18 +306,16 @@
     "twoWayInt": "OTHER DOUBLE TRACK",
 
     "sliders": {
-      "minLevel": "MIN. REQUIRED DISPATCHER LEVEL",
-      "maxLevel": "MAX. REQUIRED DISPATCHER LEVEL",
-      "minVmax": "MIN. SCENERY ROUTE SPEED",
-      "maxVmax": "MAX. SCENERY ROUTE SPEED",
-      "minOneWayCatenary": "MIN. CATENARY SINGLE TRACK ROUTES",
-      "minOneWay": "MIN. OTHER SINGLE TRACK ROUTES",
-      "minTwoWayCatenary": "MIN. CATENARY DOUBLE TRACK ROUTES",
-      "minTwoWay": "MIN. OTHER DOUBLE TRACK ROUTES",
-      "minOneWayCatenaryInt": "MIN. INTERNAL CATENARY SINGLE TRACK ROUTES",
-      "minOneWayInt": "MIN. INTERNAL OTHER SINGLE TRACK ROUTES",
-      "minTwoWayCatenaryInt": "MIN. INTERNAL CATENARY DOUBLE TRACK ROUTES",
-      "minTwoWayInt": "MIN. INTERNAL OTHER DOUBLE TRACK ROUTES"
+      "vMax": "ROUTE SPEED",
+      "level": "REQUIRED DISPATCHER LEVEL",
+      "routeOneWay": "SINGLE TRACK ROUTES (OTHER)",
+      "routeOneWayCatenary": "SINGLE TRACK ROUTES (CATENARY)",
+      "routeTwoWayCatenary": "DOUBLE TRACK ROUTES (CATENARY)",
+      "routeTwoWay": "DOUBLE TRACK ROUTES (OTHER)",
+      "routeOneWayInternalCatenary": "INTERNAL SINGLE TRACK ROUTES (CATENARY)",
+      "routeOneWayInternal": "INTERNAL SINGLE TRACK ROUTES (OTHER)",
+      "routeTwoWayInternalCatenary": "INTERNAL DOUBLE TRACK ROUTES (CATENARY)",
+      "routeTwoWayInternal": "INTERNAL DOUBLE TRACK ROUTES (OTHER)"
     },
     "sceneries-placeholder": "Search for scenery",
     "line-numbers-placeholder": "Line numbers (separated by commas)",
