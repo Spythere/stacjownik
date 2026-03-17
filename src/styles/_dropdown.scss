@@ -40,10 +40,3 @@
   padding: 1em;
   z-index: 100;
 }
-
-@include responsive.smallScreen {
-  .dropdown_wrapper {
-    font-size: 1.1em;
-    max-width: 100%;
-  }
-}
