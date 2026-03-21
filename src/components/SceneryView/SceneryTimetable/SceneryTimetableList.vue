@@ -244,13 +244,15 @@
         <img src="/images/icon-tablice.ico" alt="icon-tablice" />
       </a>
 
+      <div class="list-divider"></div>
+
       <button
         class="thumbnails-btn"
         data-tooltip-type="HtmlTooltip"
         :data-tooltip-content="`<b>${$t(`scenery.btn-${showStockThumbnails ? 'show' : 'hide'}-timetable-thumbnails`)}</b>`"
         @click="toggleThumbnails"
       >
-        <i class="fa-solid" :class="`${showStockThumbnails ? 'fa-eye' : 'fa-eye-slash'}`"></i>
+        <i class="fa-solid" :class="`${showStockThumbnails ? 'fa-expand' : 'fa-compress'}`"></i>
       </button>
     </div>
   </div>
@@ -376,7 +378,7 @@ function toggleThumbnails() {
 
 .scenery-timetable-list {
   display: grid;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: auto 1fr 40px;
   overflow: hidden;
 }
 
@@ -534,14 +536,22 @@ function toggleThumbnails() {
   gap: 0.5em;
   margin-top: 0.5em;
 
+  .list-divider {
+    height: 80%;
+    width: 3px;
+    background-color: #6b6b6b;
+  }
+
   img {
     width: 25px;
+    height: 25px;
     vertical-align: middle;
   }
 
   .thumbnails-btn {
     width: 25px;
-    font-size: 1.2em;
+    height: 25px;
+    font-size: 25px;
   }
 }
 
