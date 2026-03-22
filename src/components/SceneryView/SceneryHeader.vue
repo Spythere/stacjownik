@@ -1,19 +1,15 @@
 <template>
   <section class="info-header">
-    <button
-      class="btn btn-return"
-      :title="$t('scenery.return-btn')"
-      @click="onReturnButtonClick"
-    >
+    <button class="btn btn-return" :title="$t('scenery.return-btn')" @click="onReturnButtonClick">
       <img src="/images/icon-back.svg" alt="return button" />
     </button>
 
-    <a class="scenery-name" :href="station?.generalInfo?.url" target="_blank">
-      {{ stationName.replace(/_/g, ' ') }}
-    </a>
+    <div class="scenery-name">
+      <a v-if="station?.generalInfo" :href="station.generalInfo.url" target="_blank">
+        {{ stationName.replace(/_/g, ' ') }}
+      </a>
 
-    <div class="scenery-abbrev" v-if="station?.generalInfo?.abbr">
-      {{ $t('scenery.abbrev') }} <b>{{ station.generalInfo.abbr }}</b>
+      <span v-else> {{ stationName.replace(/_/g, ' ') }}</span>
     </div>
 
     <div class="scenery-hash" v-if="onlineScenery?.hash">#{{ onlineScenery.hash }}</div>
@@ -61,14 +57,13 @@ function onReturnButtonClick() {
 .btn-return {
   $bgColor: #2b2b2b;
   background-color: $bgColor;
-  margin-bottom: 0.5em;
-
-  img {
-    width: 2em;
-  }
 
   &:hover {
     background-color: color.adjust($color: $bgColor, $lightness: 15%);
+  }
+
+  img {
+    height: 2em;
   }
 }
 
@@ -81,13 +76,7 @@ function onReturnButtonClick() {
   text-transform: uppercase;
 }
 
-.scenery-abbrev {
-  font-size: 1.3em;
-  color: #aaa;
-}
-
 .scenery-hash {
-  margin-top: 0.5em;
   color: #aaa;
   font-size: 1.2em;
 }

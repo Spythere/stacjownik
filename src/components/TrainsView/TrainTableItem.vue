@@ -4,7 +4,7 @@
       <TrainInfo :train="train" />
 
       <div class="train-stats">
-        <StockList :trainStockList="train.stockList" :tractionOnly="true" />
+        <StockList :trainStockList="train.stockList" :tractionOnly="true" :showPreviews="true" />
 
         <div>
           <span>{{ train.speed }}km/h</span>

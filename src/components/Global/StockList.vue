@@ -7,6 +7,7 @@
           :vehicle-string="vehicleString"
           :images="images"
           :image-fallbacks="imagesFallbacks"
+          :show-previews="showPreviews"
         />
       </li>
     </ul>
@@ -23,7 +24,8 @@ export default defineComponent({
 
   props: {
     trainStockList: { type: Array as PropType<string[]>, required: true },
-    tractionOnly: { type: Boolean, required: false }
+    tractionOnly: { type: Boolean, required: false },
+    showPreviews: { type: Boolean }
   },
 
   data() {

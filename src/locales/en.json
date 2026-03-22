@@ -23,15 +23,6 @@
     "bottom-text": "Enjoy!\n~Spythere",
     "button-confirm": "Start using the app!"
   },
-  "migrate-info": {
-    "tooltip-content": "Information about migration of\nStacjownik site!",
-    "header-text": "Attention!",
-    "paragraph-1-html": "Due to the growing interest in Stacjownik and other applications I have made, <b>as of January 1, 2026, Stacjownik will be <u>permanently moved</u> to a new dedicated domain:</b>",
-    "paragraph-2-link-text": "https://stacjownik-td2.spythere.eu",
-    "paragraph-3-text": "This website will no longer receive future updates and after the New Year it will only redirect to the address above.",
-    "paragraph-4-italic-text": "\"Why are you messing this up? It's been fine for so long!\"",
-    "paragraph-4-html": "<i>\"Why are you messing this up? It's been fine for so long!\"</i> <br /> The change is mainly caused by the growing website interest and exceeding the free limit plan of the current Google hosting, which forces additional fees for each use of the service above a certain threshold (or otherwise blocks access to it). By moving the site to a dedicated domain (which has already been purchased and is maintained with the financial help of <span class=\"text--donator\">Supporters</span>), I will get rid of unnecessary expenses for a large corporation that can shut down my application at any given time."
-  },
   "donations": {
     "button-title": "TOSS A COIN",
     "header": "Toss a coin to Stacjownik!",
@@ -65,7 +56,7 @@
     "refresh": "REFRESH"
   },
   "update": {
-    "title": "Stacjownik update!",
+    "title": "Stacjownik has been updated!",
     "confirm": "ROGER THAT!",
     "no-data": "No data about the latest app update has been found",
     "info-1": "This changelog will be available to see once again after clicking the version number in the footer",
@@ -258,7 +249,9 @@
       "blockades": "BLOCK SIGNALLING",
       "status": "ONLINE STATUS",
       "timetables": "ACTIVE TIMETABLES",
-      "spawns": "OPEN SPAWNS"
+      "spawns": "OPEN SPAWNS",
+      "externalRoutes": "EXTERNAL ROUTES",
+      "internalRoutes": "INTERNAL ROUTES"
     },
     "changed-filters-count": "Changed filters:",
     "no-changed-filters": "No changed filters",
@@ -302,19 +295,27 @@
     "withoutActiveTimetables": "NO ACTIVE",
     "junction": "JUNCTIONS",
     "nonJunction": "OTHER",
+
+    "oneWay": "OTHER SINGLE TRACK",
+    "oneWayCatenary": "CATENARY SINGLE TRACK",
+    "twoWayCatenary": "CATENARY DOUBLE TRACK",
+    "twoWay": "OTHER DOUBLE TRACK",
+    "oneWayCatenaryInt": "CATENARY SINGLE TRACK",
+    "oneWayInt": "OTHER SINGLE TRACK",
+    "twoWayCatenaryInt": "CATENARY DOUBLE TRACK",
+    "twoWayInt": "OTHER DOUBLE TRACK",
+
     "sliders": {
-      "minLevel": "MIN. REQUIRED DISPATCHER LEVEL",
-      "maxLevel": "MAX. REQUIRED DISPATCHER LEVEL",
-      "minVmax": "MIN. SCENERY ROUTE SPEED",
-      "maxVmax": "MAX. SCENERY ROUTE SPEED",
-      "minOneWayCatenary": "MIN. CATENARY SINGLE TRACK ROUTES",
-      "minOneWay": "MIN. OTHER SINGLE TRACK ROUTES",
-      "minTwoWayCatenary": "MIN. CATENARY DOUBLE TRACK ROUTES",
-      "minTwoWay": "MIN. OTHER DOUBLE TRACK ROUTES",
-      "minOneWayCatenaryInt": "MIN. INTERNAL CATENARY SINGLE TRACK ROUTES",
-      "minOneWayInt": "MIN. INTERNAL OTHER SINGLE TRACK ROUTES",
-      "minTwoWayCatenaryInt": "MIN. INTERNAL CATENARY DOUBLE TRACK ROUTES",
-      "minTwoWayInt": "MIN. INTERNAL OTHER DOUBLE TRACK ROUTES"
+      "vMax": "ROUTE SPEED",
+      "level": "REQUIRED DISPATCHER LEVEL",
+      "routeOneWay": "SINGLE TRACK ROUTES (OTHER)",
+      "routeOneWayCatenary": "SINGLE TRACK ROUTES (CATENARY)",
+      "routeTwoWayCatenary": "DOUBLE TRACK ROUTES (CATENARY)",
+      "routeTwoWay": "DOUBLE TRACK ROUTES (OTHER)",
+      "routeOneWayInternalCatenary": "INTERNAL SINGLE TRACK ROUTES (CATENARY)",
+      "routeOneWayInternal": "INTERNAL SINGLE TRACK ROUTES (OTHER)",
+      "routeTwoWayInternalCatenary": "INTERNAL DOUBLE TRACK ROUTES (CATENARY)",
+      "routeTwoWayInternal": "INTERNAL DOUBLE TRACK ROUTES (OTHER)"
     },
     "sceneries-placeholder": "Search for scenery",
     "line-numbers-placeholder": "Line numbers (separated by commas)",
@@ -325,7 +326,6 @@
     "now": "NOW",
     "hour": "h",
     "no-limit": "NO LIMIT",
-    "include-selected": "INCLUDE SELECTED",
     "save": "REMEMBER FILTERS",
     "reset": "RESET FILTERS",
     "close": "CLOSE FILTERS"
@@ -558,7 +558,7 @@
     "no-users": "NO ACTIVE PLAYERS",
     "no-spawns": "NO OPEN SPAWNS",
     "no-scenery": "Oops! This scenery doesn't exist!",
-    "return-btn": "BACK TO THE LAST SITE",
+    "return-btn": "BACK TO THE MAIN SITE",
     "history-btn": "View the dispatcher history",
     "info-btn": "Return to the scenery view",
     "authors-title": "Scenery author | Scenery authors",
@@ -572,6 +572,8 @@
     "option-active-timetables": "Active timetables",
     "option-timetables-history": "Timetables history PL1",
     "option-dispatchers-history": "Dispatchers history PL1",
+    "btn-show-timetable-thumbnails": "Show rolling stock thumbnails",
+    "btn-hide-timetable-thumbnails": "Hide rolling stock thumbnails",
     "timetable-includesScenery": "ALL TIMETABLES",
     "timetable-via": "PASSES THROUGH",
     "timetable-issuedFrom": "BEGINS HERE",
@@ -583,7 +585,7 @@
     "dispatcher-status-changes": "Status changes:",
     "req-level": "all dispatcher levels | dispatcher level {lvl} required | dispatcher level {lvl} required",
     "history-list-empty": "No recorded scenery history!",
-    "forum-topic": "Official {name} forum topic",
+    "forum-topic": "Scenery's forum topic",
     "gnr-link": "Train orders generator",
     "pragotron-link": "Timetable pallet board",
     "tablice-link": "Timetable summary board <br> (by Thundo)",

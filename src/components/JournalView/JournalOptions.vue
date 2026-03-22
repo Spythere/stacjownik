@@ -120,15 +120,15 @@
               </div>
             </section>
           </div>
+        </div>
 
-          <div class="options_actions">
-            <button class="btn--action" @click="onResetButtonClick">
-              {{ $t('options.reset-button') }}
-            </button>
-            <button class="btn--action" @click="onSearchButtonConfirm">
-              {{ $t('options.search-button') }}
-            </button>
-          </div>
+        <div class="options_actions">
+          <button class="btn--action" @click="onResetButtonClick">
+            {{ $t('options.reset-button') }}
+          </button>
+          <button class="btn--action" @click="onSearchButtonConfirm">
+            {{ $t('options.search-button') }}
+          </button>
         </div>
       </div>
     </transition>
@@ -330,8 +330,16 @@ export default defineComponent({
 <style lang="scss" scoped>
 @use '../../styles/dropdown';
 @use '../../styles/dropdown-filters';
+@use '../../styles/responsive';
 
-.filters-options > .dropdown_wrapper {
-  max-height: calc(100vh - 18.5em);
+.dropdown_wrapper {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  overflow: hidden;
+  max-height: 530px;
+}
+
+.options_content {
+  overflow: auto;
 }
 </style>

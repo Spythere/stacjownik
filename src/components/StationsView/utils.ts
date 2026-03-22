@@ -120,28 +120,40 @@ function filterSliderValues(filters: Record<string, any>, generalInfo: StationGe
   const otherAvailability =
     availability == 'nonPublic' || availability == 'unavailable' || availability == 'abandoned';
 
-  const internalRoutes = routes.all.filter((r) => r.isInternal && !r.isRouteSBL && !r.hidden);
+  if (filters['minLevel'] > reqLevel + (otherAvailability ? 1 : 0)) return true;
+  if (filters['maxLevel'] < reqLevel + (otherAvailability ? 1 : 0)) return true;
+  if (filters['minVmax'] > routes.maxRouteSpeed) return true;
+  if (filters['maxVmax'] < routes.minRouteSpeed) return true;
 
-  return (
-    filters['minLevel'] > reqLevel + (otherAvailability ? 1 : 0) ||
-    filters['maxLevel'] < reqLevel + (otherAvailability ? 1 : 0) ||
-    filters['minVmax'] > routes.maxRouteSpeed ||
-    filters['maxVmax'] < routes.minRouteSpeed ||
-    (filters['no-1track'] && routes.single.length != 0) ||
-    (filters['no-2track'] && routes.double.length != 0) ||
-    filters['minOneWayCatenary'] > routes.singleElectrifiedNames.length ||
-    filters['minOneWay'] > routes.singleOtherNames.length ||
-    filters['minTwoWayCatenary'] > routes.doubleElectrifiedNames.length ||
-    filters['minTwoWay'] > routes.doubleOtherNames.length ||
-    filters['minOneWayCatenaryInt'] >
-      internalRoutes.filter((r) => r.routeTracks == 1 && r.isElectric == true).length ||
-    filters['minOneWayInt'] >
-      internalRoutes.filter((r) => r.routeTracks == 1 && r.isElectric == false).length ||
-    filters['minTwoWayCatenaryInt'] >
-      internalRoutes.filter((r) => r.routeTracks == 2 && r.isElectric == true).length ||
-    filters['minTwoWayInt'] >
-      internalRoutes.filter((r) => r.routeTracks == 2 && r.isElectric == false).length
-  );
+  if (filters['oneWay'] && routes.singleOtherNames.length > 0) return true;
+  if (filters['oneWayCatenary'] && routes.singleElectrifiedNames.length > 0) return true;
+  if (filters['twoWay'] && routes.doubleOtherNames.length > 0) return true;
+  if (filters['twoWayCatenary'] && routes.doubleElectrifiedNames.length > 0) return true;
+
+  if (filters['minOneWay'] > routes.singleOtherNames.length) return true;
+  if (filters['maxOneWay'] < routes.singleOtherNames.length) return true;
+  if (filters['minOneWayCatenary'] > routes.singleElectrifiedNames.length) return true;
+  if (filters['maxOneWayCatenary'] < routes.singleElectrifiedNames.length) return true;
+  if (filters['minTwoWay'] > routes.doubleOtherNames.length) return true;
+  if (filters['maxTwoWay'] < routes.doubleOtherNames.length) return true;
+  if (filters['minTwoWayCatenary'] > routes.doubleElectrifiedNames.length) return true;
+  if (filters['maxTwoWayCatenary'] < routes.doubleElectrifiedNames.length) return true;
+
+  if (filters['oneWayInt'] && routes.singleOtherInternalNames.length > 0) return true;
+  if (filters['oneWayCatenaryInt'] && routes.singleElectrifiedInternalNames.length > 0) return true;
+  if (filters['twoWayInt'] && routes.doubleOtherInternalNames.length > 0) return true;
+  if (filters['twoWayCatenaryInt'] && routes.doubleElectrifiedInternalNames.length > 0) return true;
+
+  // Internal routes
+  if (filters['minOneWayInt'] > routes.singleOtherInternalNames.length) return true;
+  if (filters['maxOneWayInt'] < routes.singleOtherInternalNames.length) return true;
+  if (filters['minOneWayCatenaryInt'] > routes.singleElectrifiedInternalNames.length) return true;
+  if (filters['maxOneWayCatenaryInt'] < routes.singleElectrifiedInternalNames.length) return true;
+
+  if (filters['minTwoWayInt'] > routes.doubleOtherInternalNames.length) return true;
+  if (filters['maxTwoWayInt'] < routes.doubleOtherInternalNames.length) return true;
+  if (filters['minTwoWayCatenaryInt'] > routes.doubleElectrifiedInternalNames.length) return true;
+  if (filters['maxTwoWayCatenaryInt'] < routes.doubleElectrifiedInternalNames.length) return true;
 }
 
 function filterInputValues(filters: Record<string, any>, generalInfo: StationGeneralInfo) {

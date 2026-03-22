@@ -184,7 +184,7 @@ function setViewMode(componentName: string) {
 
   background-color: #181818;
   border-radius: 0.5em;
-  padding: 1em 0.5em;
+  padding: 0.5em;
 }
 
 .scenery-left {
@@ -239,7 +239,7 @@ function setViewMode(componentName: string) {
   .scenery-view {
     height: auto;
   }
-  
+
   .scenery-wrapper {
     grid-template-columns: 1fr;
     gap: 0;

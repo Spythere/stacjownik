@@ -23,14 +23,6 @@
     "bottom-text": "Miłego korzystania\n~Spythere",
     "button-confirm": "Zacznij korzystać z aplikacji!"
   },
-  "migrate-info": {
-    "tooltip-content": "Informacja o migracji\nstrony Stacjownika!",
-    "header-text": "Uwaga!",
-    "paragraph-1-html": "Ze względu na coraz większe zainteresowanie Stacjownikiem oraz innymi aplikacjami mojego autorstwa <b>z dniem 1 stycznia 2026r. Stacjownik zostaje <u>permamentnie przeniesiony</u> na nową dedykowaną domenę:</b>",
-    "paragraph-2-link-text": "https://stacjownik-td2.spythere.eu",
-    "paragraph-3-text": "Obecna strona nie będzie otrzymywać już przyszłych aktualizacji, a po Nowym Roku będzie jedynie przenosić na powyższy adres.",
-    "paragraph-4-html": "<i>\"Po co psujesz? Przecież było dobrze tyle czasu!\"</i> <br /> Zmiana podyktowana jest głównie wzrostem zainteresowania stroną i przekraczaniem darmowego limitu obecnego hostingu Google'a, który wymusza płatność za każde użycie serwisu ponad określoną wartość (lub w przeciwnym wypadku blokuje do niego dostęp). Przenosząc stronę na dedykowaną domenę (która jest już wykupiona i utrzymywana dzięki pomocy <span class=\"text--donator\">Wspierających</span>), pozbędę się niepotrzebnego wydatku dla wielkiej korporacji, która w każdej chwili może mi wyłączyć aplikację."
-  },
   "donations": {
     "button-title": "GROSZA DAJ",
     "header": "Grosza daj Stacjownikowi!",
@@ -64,7 +56,7 @@
     "refresh": "ODŚWIEŻ"
   },
   "update": {
-    "title": "Aktualizacja Stacjownika!",
+    "title": "Stacjownik został zaktualizowany!",
     "confirm": "PRZYJĄŁEM!",
     "no-data": "Nie znaleziono informacji o ostatnich zmianach w aplikacji",
     "info-1": "Ten changelog będzie zawsze dostępny po kliknięciu numeru wersji w stopce strony",
@@ -255,7 +247,9 @@
       "blockades": "BLOKADY LINIOWE",
       "status": "STATUS ONLINE",
       "timetables": "AKTYWNE ROZKŁADY JAZDY",
-      "spawns": "OTWARTE SPAWNY"
+      "spawns": "OTWARTE SPAWNY",
+      "externalRoutes": "SZLAKI ZEWNĘTRZNE",
+      "internalRoutes": "SZLAKI WEWNĘTRZNE"
     },
     "changed-filters-count": "Zmienione filtry:",
     "no-changed-filters": "Brak zmienionych filtrów",
@@ -299,19 +293,27 @@
     "withoutActiveTimetables": "BEZ AKTYWNYCH",
     "junction": "WĘZŁOWE",
     "nonJunction": "INNE",
+
+    "oneWay": "JEDNOTOROWE NIEZELEKTRYFIKOWANE",
+    "oneWayCatenary": "JEDNOTOROWE ZELEKTRYFIKOWANE",
+    "twoWayCatenary": "DWUTOROWE ZELEKTRYFIKOWANE",
+    "twoWay": "DWUTOROWE NIEZELEKTRYFIKOWANE",
+    "oneWayCatenaryInt": "JEDNOTOROWE ZELEKTRYFIKOWANE",
+    "oneWayInt": "JEDNOTOROWE NIEZELEKTRYFIKOWANE",
+    "twoWayCatenaryInt": "DWUTOROWE ZELEKTRYFIKOWANE",
+    "twoWayInt": "DWUTOROWE NIEZELEKTRYFIKOWANE",
+
     "sliders": {
-      "minLevel": "MIN. WYMAGANY POZIOM DYŻURNEGO",
-      "maxLevel": "MAKS. WYMAGANY POZIOM DYŻURNEGO",
-      "minVmax": "MIN. PRĘDKOŚĆ SZLAKOWA",
-      "maxVmax": "MAKS. PRĘDKOŚĆ SZLAKOWA",
-      "minOneWayCatenary": "SZLAKI JEDNOTOROWE ZELEKTR. (MINIMUM)",
-      "minOneWay": "SZLAKI JEDNOTOROWE NIEZELEKTR. (MINIMUM)",
-      "minTwoWayCatenary": "SZLAKI DWUTOROWE ZELEKTR. (MINIMUM)",
-      "minTwoWay": "SZLAKI DWUTOROWE NIEZELEKTR. (MINIMUM)",
-      "minOneWayCatenaryInt": "SZLAKI JEDNOTOROWE ZELEKTR. WEWNĘTRZNE (MINIMUM)",
-      "minOneWayInt": "SZLAKI JEDNOTOROWE NIEZELEKTR. WEWNĘTRZNE (MINIMUM)",
-      "minTwoWayCatenaryInt": "SZLAKI DWUTOROWE ZELEKTR. WEWNĘTRZNE (MINIMUM)",
-      "minTwoWayInt": "SZLAKI DWUTOROWE NIEZELEKTR. WEWNĘTRZNE (MINIMUM)"
+      "vMax": "PRĘDKOŚĆ SZLAKOWA",
+      "level": "WYMAGANY POZIOM DYŻURNEGO",
+      "routeOneWay": "SZLAKI 1-TOROWE NIEZELEKTR.",
+      "routeOneWayCatenary": "SZLAKI 1-TOROWE ZELEKTR.",
+      "routeTwoWayCatenary": "SZLAKI 2-TOROWE ZELEKTR.",
+      "routeTwoWay": "SZLAKI 2-TOROWE NIEZELEKTR.",
+      "routeOneWayInternalCatenary": "SZLAKI WEWN. 1-TOROWE ZELEKTR.",
+      "routeOneWayInternal": "SZLAKI WEWN. 1-TOROWE NIEZELEKTR.",
+      "routeTwoWayInternalCatenary": "SZLAKI WEWN. 2-TOROWE ZELEKTR.",
+      "routeTwoWayInternal": "SZLAKI WEWN. 2-TOROWE NIEZELEKTR."
     },
     "sceneries-placeholder": "Wyszukaj scenerię",
     "line-numbers-placeholder": "Numery linii (oddzielone przecinkami)",
@@ -322,7 +324,6 @@
     "now": "TERAZ",
     "hour": " godz.",
     "no-limit": "BEZ LIMITU",
-    "include-selected": "POKAŻ ZAZNACZONE",
     "save": "ZAPAMIĘTAJ FILTRY",
     "reset": "RESETUJ FILTRY",
     "close": "ZAMKNIJ FILTRY"
@@ -543,7 +544,7 @@
     "no-users": "BRAK AKTYWNYCH GRACZY",
     "no-spawns": "BRAK OTWARTYCH SPAWNÓW",
     "no-scenery": "Ups! Ta sceneria nie istnieje!",
-    "return-btn": "POWRÓT DO POPRZEDNIEJ STRONY",
+    "return-btn": "POWRÓT DO STRONY GŁÓWNEJ",
     "history-btn": "Przejdź do widoku historii dyżurnych ruchu",
     "info-btn": "Wróć do widoku scenerii",
     "authors-title": "Autor scenerii | Autorzy scenerii",
@@ -557,6 +558,8 @@
     "option-active-timetables": "Aktywne rozkłady jazdy",
     "option-timetables-history": "Historia rozkładów PL1",
     "option-dispatchers-history": "Historia dyżurów PL1",
+    "btn-show-timetable-thumbnails": "Pokazuj podglądy składów",
+    "btn-hide-timetable-thumbnails": "Ukrywaj podglądy składów",
     "timetable-includesScenery": "WSZYSTKIE RJ",
     "timetable-via": "PRZEJEŻDŻA",
     "timetable-issuedFrom": "ROZPOCZYNA BIEG",
@@ -568,7 +571,7 @@
     "dispatcher-status-changes": "Zmiany statusów:",
     "req-level": "ogólnodostępna | minimum {lvl} poziom dyżurnego | minimum {lvl} poziom dyżurnego",
     "history-list-empty": "Brak historii dla tej scenerii!",
-    "forum-topic": "Oficjalny wątek scenerii {name}",
+    "forum-topic": "Wątek scenerii",
     "gnr-link": "Generator rozkazów pisemnych",
     "pragotron-link": "Paletowa tablica informacyjna",
     "tablice-link": "Tablica informacyjna zbiorcza <br> (autorstwa Thundo)",

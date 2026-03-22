@@ -129,6 +129,7 @@
                   : stockHistory[currentHistoryIndex].stockString
                 ).split(';')
               "
+              :showPreviews="true"
             />
           </div>
         </div>
