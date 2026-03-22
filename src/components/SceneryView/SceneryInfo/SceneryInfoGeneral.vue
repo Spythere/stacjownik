@@ -5,51 +5,57 @@
     </div>
 
     <div v-else>
-      <span>
-        <b>{{ $t('availability.title') }}:</b>
-        {{ $t(`availability.${station.generalInfo.availability}`) }}
-
-        <span v-if="station.generalInfo.reqLevel > -1">
-          -
-          {{
-            $t(
-              'scenery.req-level',
-              { lvl: station.generalInfo.reqLevel },
-              station.generalInfo.reqLevel
-            )
-          }}
+      <div>
+        <span>
+          <b>{{ $t('scenery.abbrev') }}</b> {{ station.generalInfo.abbr }}
         </span>
-      </span>
 
-      <span>
-        &bull; <b>{{ $t('controls.title') }}:</b>
-        {{ $t(`controls.${station.generalInfo.controlType}`) }}
-      </span>
+        <span>
+          &bull; <b>{{ $t('availability.title') }}:</b>
+          {{ $t(`availability.${station.generalInfo.availability}`) }}
 
-      <span>
-        &bull; <b>{{ $t('signals.title') }}:</b>
-        {{ $t(`signals.${station.generalInfo.signalType}`) }}
-      </span>
+          <span v-if="station.generalInfo.reqLevel > -1">
+            -
+            {{
+              $t(
+                'scenery.req-level',
+                { lvl: station.generalInfo.reqLevel },
+                station.generalInfo.reqLevel
+              )
+            }}
+          </span>
+        </span>
 
-      <span v-if="station.generalInfo.lines">
-        &bull; <b>{{ $t('scenery.lines-title') }}:</b> {{ station.generalInfo.lines }}
-      </span>
+        <span>
+          &bull; <b>{{ $t('controls.title') }}:</b>
+          {{ $t(`controls.${station.generalInfo.controlType}`) }}
+        </span>
 
-      <span v-if="station.generalInfo.project">
-        &bull; <b>{{ $t('scenery.project-title') }}: </b>
-        <a
-          style="color: salmon; text-decoration: underline; font-weight: bold"
-          :href="station.generalInfo.projectUrl"
-          target="_blank"
-        >
-          {{ station.generalInfo.project }}
-        </a>
-      </span>
+        <span>
+          &bull; <b>{{ $t('signals.title') }}:</b>
+          {{ $t(`signals.${station.generalInfo.signalType}`) }}
+        </span>
 
-      <span v-if="additionalTools.length != 0">
-        &bull; <b>{{ $t('scenery.additional-tools-title') }}: </b>
-        {{ additionalTools.join(', ') }}
-      </span>
+        <span v-if="station.generalInfo.lines">
+          &bull; <b>{{ $t('scenery.lines-title') }}:</b> {{ station.generalInfo.lines }}
+        </span>
+
+        <span v-if="station.generalInfo.project">
+          &bull; <b>{{ $t('scenery.project-title') }}: </b>
+          <a
+            style="color: salmon; text-decoration: underline; font-weight: bold"
+            :href="station.generalInfo.projectUrl"
+            target="_blank"
+          >
+            {{ station.generalInfo.project }}
+          </a>
+        </span>
+
+        <span v-if="additionalTools.length != 0">
+          &bull; <b>{{ $t('scenery.additional-tools-title') }}: </b>
+          {{ additionalTools.join(', ') }}
+        </span>
+      </div>
     </div>
   </section>
 </template>
@@ -84,9 +90,9 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
+}
 
-  div {
-    margin: 0 0.15em;
-  }
+.scenery-abbrev {
+  font-size: 1.05em;
 }
 </style>

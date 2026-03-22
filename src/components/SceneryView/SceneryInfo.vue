@@ -1,29 +1,32 @@
 <template>
   <div class="scenery-info">
     <section>
-      <SceneryInfoIcons :station="station" />
-      <SceneryInfoGeneral :station="station" />
-      <SceneryInfoRoutes v-if="station" :station="station" />
-      <SceneryInfoAuthors :station="station" />
+      <div class="info-station-data" v-if="apiStore.dataStatuses.sceneries == Status.Data.Loaded">
+        <SceneryInfoIcons :station="station" />
+        <SceneryInfoGeneral :station="station" />
+        <SceneryInfoRoutes v-if="station" :station="station" />
+        <SceneryInfoAuthors :station="station" />
+      </div>
 
-      <div style="margin: 1em 0; height: 2px; background-color: white"></div>
+      <div class="info-station-loading" v-else>
+        <Loading />
+      </div>
 
-      <!-- info dispatcher -->
+      <div class="info-divider"></div>
+
       <SceneryInfoDispatcher :onlineScenery="onlineScenery" />
 
-      <div class="info-lists">
-        <!-- user list -->
+      <div class="info-online-lists">
         <SceneryInfoUserList :onlineScenery="onlineScenery" :station="station" />
-
-        <!-- spawn list -->
         <SceneryInfoSpawnList :onlineScenery="onlineScenery" />
       </div>
     </section>
   </div>
 </template>
 
-<script lang="ts">
-import { PropType, defineComponent } from 'vue';
+<script lang="ts" setup>
+import { PropType } from 'vue';
+import { ActiveScenery, Station, Status } from '../../typings/common';
 
 import SceneryInfoDispatcher from './SceneryInfo/SceneryInfoDispatcher.vue';
 import SceneryInfoIcons from './SceneryInfo/SceneryInfoIcons.vue';
@@ -32,27 +35,18 @@ import SceneryInfoSpawnList from './SceneryInfo/SceneryInfoSpawnList.vue';
 import SceneryInfoRoutes from './SceneryInfo/SceneryInfoRoutes.vue';
 import SceneryInfoGeneral from './SceneryInfo/SceneryInfoGeneral.vue';
 import SceneryInfoAuthors from './SceneryInfo/SceneryInfoAuthors.vue';
+import { useApiStore } from '../../store/apiStore';
+import Loading from '../Global/Loading.vue';
 
-import { ActiveScenery, Station } from '../../typings/common';
+const apiStore = useApiStore();
 
-export default defineComponent({
-  components: {
-    SceneryInfoDispatcher,
-    SceneryInfoGeneral,
-    SceneryInfoIcons,
-    SceneryInfoAuthors,
-    SceneryInfoUserList,
-    SceneryInfoSpawnList,
-    SceneryInfoRoutes
+defineProps({
+  station: {
+    type: Object as PropType<Station>
   },
-  props: {
-    station: {
-      type: Object as PropType<Station>
-    },
 
-    onlineScenery: {
-      type: Object as PropType<ActiveScenery>
-    }
+  onlineScenery: {
+    type: Object as PropType<ActiveScenery>
   }
 });
 </script>
@@ -60,12 +54,26 @@ export default defineComponent({
 <style lang="scss" scoped>
 @use '../../styles/responsive';
 
-.info-lists {
+.info-station-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 300px;
+}
+
+.info-online-lists {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
 
   margin-top: 1em;
+}
+
+.info-divider {
+  margin: 1em 0;
+  height: 3px;
+  background-color: #5b5b5b;
 }
 
 .scenery-topic a {

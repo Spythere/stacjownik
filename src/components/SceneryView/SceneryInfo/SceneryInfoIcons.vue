@@ -1,102 +1,101 @@
 <template>
-  <section class="info-icons">
-    <span v-if="!station || !station.generalInfo">
+  <section class="info-icons-section">
+    <div class="icons-box">
+      <span v-if="!station || !station.generalInfo">
+        <img
+          class="icon-info"
+          src="/images/icon-unknown.svg"
+          alt="icon-unknown"
+          :title="$t('sceneries.info.unknown')"
+        />
+      </span>
+
+      <span
+        v-if="station?.generalInfo && station?.generalInfo.reqLevel >= 0"
+        class="scenery-icon icon-info level"
+        :style="calculateExpStyles(station?.generalInfo.reqLevel)"
+      >
+        {{ station?.generalInfo.reqLevel >= 2 ? station?.generalInfo.reqLevel : 'L' }}
+      </span>
+
       <img
+        v-if="station?.generalInfo?.availability == 'nonPublic'"
         class="icon-info"
-        src="/images/icon-unknown.svg"
-        alt="icon-unknown"
-        :title="$t('sceneries.info.unknown')"
+        src="/images/icon-lock.svg"
+        alt="Non-public scenery"
+        :title="$t('sceneries.info.non-public')"
       />
-    </span>
 
-    <span
-      v-if="station?.generalInfo && station?.generalInfo.reqLevel >= 0"
-      class="scenery-icon icon-info level"
-      :style="calculateExpStyle(station?.generalInfo.reqLevel)"
-    >
-      {{ station?.generalInfo.reqLevel >= 2 ? station?.generalInfo.reqLevel : 'L' }}
-    </span>
+      <img
+        v-if="station?.generalInfo?.availability == 'unavailable'"
+        class="icon-info"
+        src="/images/icon-unavailable.svg"
+        alt="Unavailable scenery"
+        :title="$t('sceneries.info.unavailable')"
+      />
 
-    <img
-      v-if="station?.generalInfo?.availability == 'nonPublic'"
-      class="icon-info"
-      src="/images/icon-lock.svg"
-      alt="Non-public scenery"
-      :title="$t('sceneries.info.non-public')"
-    />
+      <img
+        v-if="station?.generalInfo?.availability == 'abandoned'"
+        class="icon-info"
+        src="/images/icon-abandoned.svg"
+        alt="Abandoned scenery"
+        :title="$t('sceneries.info.abandoned')"
+      />
 
-    <img
-      v-if="station?.generalInfo?.availability == 'unavailable'"
-      class="icon-info"
-      src="/images/icon-unavailable.svg"
-      alt="Unavailable scenery"
-      :title="$t('sceneries.info.unavailable')"
-    />
+      <span
+        v-if="station?.generalInfo"
+        class="scenery-icon icon-info"
+        :class="station?.generalInfo.controlType.replace('+', '-')"
+        :title="
+          $t('sceneries.info.control-type') + $t(`controls.${station?.generalInfo.controlType}`)
+        "
+      >
+        {{ $t(`controls.abbrevs.${station.generalInfo.controlType}`) }}
+      </span>
 
-    <img
-      v-if="station?.generalInfo?.availability == 'abandoned'"
-      class="icon-info"
-      src="/images/icon-abandoned.svg"
-      alt="Abandoned scenery"
-      :title="$t('sceneries.info.abandoned')"
-    />
+      <img
+        v-if="station?.generalInfo?.signalType"
+        class="icon-info"
+        :src="`/images/icon-${station.generalInfo.signalType}.svg`"
+        :alt="station.generalInfo.signalType"
+        :title="$t('sceneries.info.signals-type') + $t(`signals.${station.generalInfo.signalType}`)"
+      />
 
-    <span
-      v-if="station?.generalInfo"
-      class="scenery-icon icon-info"
-      :class="station?.generalInfo.controlType.replace('+', '-')"
-      :title="
-        $t('sceneries.info.control-type') + $t(`controls.${station?.generalInfo.controlType}`)
-      "
-    >
-      {{ $t(`controls.abbrevs.${station.generalInfo.controlType}`) }}
-    </span>
+      <img
+        v-if="station?.generalInfo?.lines"
+        class="icon-info"
+        src="/images/icon-real.svg"
+        alt="real scenery"
+        :title="`${$t('sceneries.info.real')} ${station.generalInfo.lines}`"
+      />
 
-    <img
-      v-if="station?.generalInfo?.signalType"
-      class="icon-info"
-      :src="`/images/icon-${station.generalInfo.signalType}.svg`"
-      :alt="station.generalInfo.signalType"
-      :title="$t('sceneries.info.signals-type') + $t(`signals.${station.generalInfo.signalType}`)"
-    />
+      <img
+        v-if="station?.generalInfo?.SUP"
+        class="icon-info"
+        src="/images/icon-SUP.svg"
+        alt="SUP (RASP-UZK)"
+        :title="$t('sceneries.info.SUP')"
+      />
 
-    <img
-      v-if="station?.generalInfo?.lines"
-      class="icon-info"
-      src="/images/icon-real.svg"
-      alt="real scenery"
-      :title="`${$t('sceneries.info.real')} ${station.generalInfo.lines}`"
-    />
-
-    <img
-      v-if="station?.generalInfo?.SUP"
-      class="icon-info"
-      src="/images/icon-SUP.svg"
-      alt="SUP (RASP-UZK)"
-      :title="$t('sceneries.info.SUP')"
-    />
-
-    <img
-      v-if="station?.generalInfo?.ASDEK"
-      class="icon-info"
-      src="/images/icon-ASDEK.svg"
-      alt="dSAT ASDEK"
-      :title="$t('sceneries.info.ASDEK')"
-    />
+      <img
+        v-if="station?.generalInfo?.ASDEK"
+        class="icon-info"
+        src="/images/icon-ASDEK.svg"
+        alt="dSAT ASDEK"
+        :title="$t('sceneries.info.ASDEK')"
+      />
+    </div>
   </section>
 </template>
 
-<script lang="ts">
-import { PropType, defineComponent } from 'vue';
-import styleMixin from '../../../mixins/styleMixin';
+<script lang="ts" setup>
+import { PropType } from 'vue';
 import { Station } from '../../../typings/common';
+import { calculateExpStyles } from '../../../composables/badge';
 
-export default defineComponent({
-  mixins: [styleMixin],
-  props: {
-    station: {
-      type: Object as PropType<Station>
-    }
+defineProps({
+  station: {
+    type: Object as PropType<Station>
   }
 });
 </script>
@@ -104,12 +103,12 @@ export default defineComponent({
 <style lang="scss" scoped>
 @use '../../../styles/icons';
 
-.info-icons {
+.icons-box {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
 
-  margin: 1em;
+  margin: 0.5em;
 }
 
 .icon-info {

@@ -1,20 +1,12 @@
 <template>
   <section class="info-header">
-    <button
-      class="btn btn-return"
-      :title="$t('scenery.return-btn')"
-      @click="onReturnButtonClick"
-    >
+    <button class="btn btn-return" :title="$t('scenery.return-btn')" @click="onReturnButtonClick">
       <img src="/images/icon-back.svg" alt="return button" />
     </button>
 
     <a class="scenery-name" :href="station?.generalInfo?.url" target="_blank">
       {{ stationName.replace(/_/g, ' ') }}
     </a>
-
-    <div class="scenery-abbrev" v-if="station?.generalInfo?.abbr">
-      {{ $t('scenery.abbrev') }} <b>{{ station.generalInfo.abbr }}</b>
-    </div>
 
     <div class="scenery-hash" v-if="onlineScenery?.hash">#{{ onlineScenery.hash }}</div>
   </section>
@@ -81,13 +73,7 @@ function onReturnButtonClick() {
   text-transform: uppercase;
 }
 
-.scenery-abbrev {
-  font-size: 1.3em;
-  color: #aaa;
-}
-
 .scenery-hash {
-  margin-top: 0.5em;
   color: #aaa;
   font-size: 1.2em;
 }
