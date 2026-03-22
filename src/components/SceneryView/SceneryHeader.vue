@@ -4,9 +4,13 @@
       <img src="/images/icon-back.svg" alt="return button" />
     </button>
 
-    <a class="scenery-name" :href="station?.generalInfo?.url" target="_blank">
-      {{ stationName.replace(/_/g, ' ') }}
-    </a>
+    <div class="scenery-name">
+      <a v-if="station?.generalInfo" :href="station.generalInfo.url" target="_blank">
+        {{ stationName.replace(/_/g, ' ') }}
+      </a>
+
+      <span v-else> {{ stationName.replace(/_/g, ' ') }}</span>
+    </div>
 
     <div class="scenery-hash" v-if="onlineScenery?.hash">#{{ onlineScenery.hash }}</div>
   </section>
@@ -53,14 +57,13 @@ function onReturnButtonClick() {
 .btn-return {
   $bgColor: #2b2b2b;
   background-color: $bgColor;
-  margin-bottom: 0.5em;
-
-  img {
-    width: 2em;
-  }
 
   &:hover {
     background-color: color.adjust($color: $bgColor, $lightness: 15%);
+  }
+
+  img {
+    height: 2em;
   }
 }
 

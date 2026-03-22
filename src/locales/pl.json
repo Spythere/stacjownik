@@ -571,7 +571,7 @@
     "dispatcher-status-changes": "Zmiany statusów:",
     "req-level": "ogólnodostępna | minimum {lvl} poziom dyżurnego | minimum {lvl} poziom dyżurnego",
     "history-list-empty": "Brak historii dla tej scenerii!",
-    "forum-topic": "Oficjalny wątek scenerii {name}",
+    "forum-topic": "Wątek scenerii",
     "gnr-link": "Generator rozkazów pisemnych",
     "pragotron-link": "Paletowa tablica informacyjna",
     "tablice-link": "Tablica informacyjna zbiorcza <br> (autorstwa Thundo)",

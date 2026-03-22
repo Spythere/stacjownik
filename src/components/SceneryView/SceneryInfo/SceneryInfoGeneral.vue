@@ -7,6 +7,18 @@
     <div v-else>
       <div>
         <span>
+          <a
+            v-if="station?.generalInfo"
+            :href="station.generalInfo.url"
+            class="forum-link"
+            target="_blank"
+          >
+            {{ $t('scenery.forum-topic') }}
+          </a>
+        </span>
+
+        <span>
+          &bull;
           <b>{{ $t('scenery.abbrev') }}</b> {{ station.generalInfo.abbr }}
         </span>
 
@@ -94,5 +106,10 @@ export default defineComponent({
 
 .scenery-abbrev {
   font-size: 1.05em;
+}
+
+a.forum-link {
+  text-decoration: underline;
+  font-weight: bold;
 }
 </style>
