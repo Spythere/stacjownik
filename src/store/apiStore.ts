@@ -78,6 +78,7 @@ export const useApiStore = defineStore('apiStore', {
     },
 
     async fetchActiveData() {
+      if (this.dataStatuses.connection == Status.Data.Offline) return;
       if (!this.activeData) this.dataStatuses.connection = Status.Data.Loading;
 
       try {
