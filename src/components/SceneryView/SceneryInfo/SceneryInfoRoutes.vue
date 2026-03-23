@@ -1,6 +1,6 @@
 <template>
   <section class="info-routes" v-if="station.generalInfo">
-    <div class="routes one-way" v-if="oneWayRoutes.length > 0">
+    <div class="routes one-way" v-if="singleRoutesAvailable.length > 0">
       <button
         class="routes-btn"
         @click="toggleRoutesVisibility('single')"
@@ -12,7 +12,7 @@
       </button>
 
       <ul class="routes-list">
-        <li v-for="route in oneWayRoutes" :key="route.routeName">
+        <li v-for="route in singleRoutesFiltered" :key="route.routeName">
           <span :class="{ 'no-catenary': !route.isElectric, internal: route.isInternal }">
             {{ route.routeName }}</span
           >
@@ -24,10 +24,17 @@
           </span>
           <span v-if="route.isRouteSBL" class="sbl">SBL</span>
         </li>
+
+        <li v-if="singleRoutesFiltered.length == 0">
+          <span class="routes-hidden">
+            <i class="fa-solid fa-eye-slash"></i>
+            {{ $t('scenery.routes-hidden') }}
+          </span>
+        </li>
       </ul>
     </div>
 
-    <div class="routes two-way" v-if="twoWayRoutes.length > 0">
+    <div class="routes two-way" v-if="doubleRoutesAvailable.length > 0">
       <button
         class="routes-btn"
         @click="toggleRoutesVisibility('double')"
@@ -39,7 +46,7 @@
       </button>
 
       <ul class="routes-list">
-        <li v-for="route in twoWayRoutes" :key="route.routeName">
+        <li v-for="route in doubleRoutesFiltered" :key="route.routeName">
           <span :class="{ 'no-catenary': !route.isElectric, internal: route.isInternal }">
             {{ route.routeName }}
           </span>
@@ -53,6 +60,13 @@
             {{ (route.routeLength / 1000).toFixed(1) + 'km' }}
           </span>
           <span v-if="route.isRouteSBL" class="sbl">SBL</span>
+        </li>
+
+        <li v-if="doubleRoutesFiltered.length == 0">
+          <span class="routes-hidden">
+            <i class="fa-solid fa-eye-slash"></i>
+            {{ $t('scenery.routes-hidden') }}
+          </span>
         </li>
       </ul>
     </div>
@@ -102,19 +116,31 @@ export default defineComponent({
   },
 
   computed: {
-    oneWayRoutes() {
+    singleRoutesAvailable() {
       return (
         this.station.generalInfo?.routes.single
-          .filter((r) => !r.isInternal || r.isInternal == this.showInternalSingleRoutes)
+          .filter((r) => !r.hidden)
           .sort((r1, r2) => r1.routeName.localeCompare(r2.routeName)) ?? []
       );
     },
 
-    twoWayRoutes() {
+    doubleRoutesAvailable() {
       return (
         this.station.generalInfo?.routes.double
-          .filter((r) => !r.isInternal || r.isInternal == this.showInternalDoubleRoutes)
+          .filter((r) => !r.hidden)
           .sort((r1, r2) => r1.routeName.localeCompare(r2.routeName)) ?? []
+      );
+    },
+
+    singleRoutesFiltered() {
+      return this.singleRoutesAvailable.filter(
+        (r) => this.showInternalSingleRoutes || !r.isInternal
+      );
+    },
+
+    doubleRoutesFiltered() {
+      return this.doubleRoutesAvailable.filter(
+        (r) => this.showInternalDoubleRoutes || !r.isInternal
       );
     }
   }
@@ -154,11 +180,6 @@ ul.routes-list {
 
   li {
     margin: 0.5em 0.25em;
-    cursor: pointer;
-
-    user-select: none;
-    -moz-user-select: none;
-    -webkit-user-select: none;
 
     & > span {
       padding: 0.2em;
@@ -182,9 +203,14 @@ ul.routes-list {
         background-color: #303030;
         color: #cfcfcf;
       }
+
       &.sbl {
         color: var(--clr-primary);
         background-color: #404040;
+      }
+
+      &.routes-hidden {
+        background-color: #4b4b4b;
       }
 
       &:last-child {
