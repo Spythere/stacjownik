@@ -94,14 +94,14 @@ export const initFilters = {
   minTwoWayCatenary: 0,
   minTwoWayInt: 0,
   minTwoWayCatenaryInt: 0,
-  maxOneWay: 5,
-  maxOneWayCatenary: 5,
-  maxOneWayInt: 5,
-  maxOneWayCatenaryInt: 5,
-  maxTwoWay: 5,
-  maxTwoWayCatenary: 5,
-  maxTwoWayInt: 5,
-  maxTwoWayCatenaryInt: 5,
+  maxOneWay: 10,
+  maxOneWayCatenary: 10,
+  maxOneWayInt: 20,
+  maxOneWayCatenaryInt: 20,
+  maxTwoWay: 10,
+  maxTwoWayCatenary: 10,
+  maxTwoWayInt: 20,
+  maxTwoWayCatenaryInt: 20,
   authors: '',
   projects: '',
   lines: ''
@@ -122,62 +122,62 @@ export const sliderGroups: SliderGroup[] = [
 
 export const sliderGroupsOptions: Record<SliderGroup, SliderOptions[]> = {
   vMax: [
-    { id: 'minVmax', minRange: 0, maxRange: 200, step: 10 },
-    { id: 'maxVmax', minRange: 0, maxRange: 200, step: 10 }
+    { id: 'minVmax', minRange: 0, maxRange: 200, step: 20 },
+    { id: 'maxVmax', minRange: 0, maxRange: 200, step: 20 }
   ],
   level: [
     { id: 'minLevel', minRange: 0, maxRange: 20, step: 1 },
     { id: 'maxLevel', minRange: 0, maxRange: 20, step: 1 }
   ],
   routeOneWay: [
-    { id: 'minOneWay', minRange: 0, maxRange: 5, step: 1 },
-    { id: 'maxOneWay', minRange: 0, maxRange: 5, step: 1 }
+    { id: 'minOneWay', minRange: 0, maxRange: 10, step: 1 },
+    { id: 'maxOneWay', minRange: 0, maxRange: 10, step: 1 }
   ],
   routeOneWayCatenary: [
-    { id: 'minOneWayCatenary', minRange: 0, maxRange: 5, step: 1 },
-    { id: 'maxOneWayCatenary', minRange: 0, maxRange: 5, step: 1 }
+    { id: 'minOneWayCatenary', minRange: 0, maxRange: 10, step: 1 },
+    { id: 'maxOneWayCatenary', minRange: 0, maxRange: 10, step: 1 }
   ],
   routeOneWayInternal: [
-    { id: 'minOneWayInt', minRange: 0, maxRange: 5, step: 1 },
-    { id: 'maxOneWayInt', minRange: 0, maxRange: 5, step: 1 }
+    { id: 'minOneWayInt', minRange: 0, maxRange: 20, step: 1 },
+    { id: 'maxOneWayInt', minRange: 0, maxRange: 20, step: 1 }
   ],
   routeOneWayInternalCatenary: [
     {
       id: 'minOneWayCatenaryInt',
       minRange: 0,
-      maxRange: 5,
+      maxRange: 20,
       step: 1
     },
     {
       id: 'maxOneWayCatenaryInt',
       minRange: 0,
-      maxRange: 5,
+      maxRange: 20,
       step: 1
     }
   ],
   routeTwoWay: [
-    { id: 'minTwoWay', minRange: 0, maxRange: 5, step: 1 },
-    { id: 'maxTwoWay', minRange: 0, maxRange: 5, step: 1 }
+    { id: 'minTwoWay', minRange: 0, maxRange: 10, step: 1 },
+    { id: 'maxTwoWay', minRange: 0, maxRange: 10, step: 1 }
   ],
   routeTwoWayCatenary: [
-    { id: 'minTwoWayCatenary', minRange: 0, maxRange: 5, step: 1 },
-    { id: 'maxTwoWayCatenary', minRange: 0, maxRange: 5, step: 1 }
+    { id: 'minTwoWayCatenary', minRange: 0, maxRange: 10, step: 1 },
+    { id: 'maxTwoWayCatenary', minRange: 0, maxRange: 10, step: 1 }
   ],
   routeTwoWayInternal: [
-    { id: 'minTwoWayInt', minRange: 0, maxRange: 5, step: 1 },
-    { id: 'maxTwoWayInt', minRange: 0, maxRange: 5, step: 1 }
+    { id: 'minTwoWayInt', minRange: 0, maxRange: 20, step: 1 },
+    { id: 'maxTwoWayInt', minRange: 0, maxRange: 20, step: 1 }
   ],
   routeTwoWayInternalCatenary: [
     {
       id: 'minTwoWayCatenaryInt',
       minRange: 0,
-      maxRange: 5,
+      maxRange: 20,
       step: 1
     },
     {
       id: 'maxTwoWayCatenaryInt',
       minRange: 0,
-      maxRange: 5,
+      maxRange: 20,
       step: 1
     }
   ]
