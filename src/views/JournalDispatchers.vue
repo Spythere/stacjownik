@@ -217,9 +217,10 @@ export default defineComponent({
       this.scrollDataLoaded = false;
       this.currentQueryParams['countFrom'] = this.historyList.length;
 
-      const responseData: API.DispatcherHistory.Response = await (
-        await this.apiStore.client!.get(`api/getDispatchers`, { params: this.currentQueryParams })
-      ).data;
+      const responseData: API.DispatcherHistory.Response = await await this.apiStore.client.get(
+        `api/getDispatchers`,
+        this.currentQueryParams
+      );
 
       if (!responseData) return;
 
@@ -276,9 +277,10 @@ export default defineComponent({
       this.currentQueryParams = queryParams;
 
       try {
-        const responseData: API.DispatcherHistory.Response = await (
-          await this.apiStore.client!.get(`api/getDispatchers`, { params: this.currentQueryParams })
-        ).data;
+        const responseData: API.DispatcherHistory.Response = await this.apiStore.client.get(
+          `api/getDispatchers`,
+          this.currentQueryParams
+        );
 
         if (!responseData) {
           this.dataStatus = Status.Data.Error;

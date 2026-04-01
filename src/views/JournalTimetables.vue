@@ -277,11 +277,10 @@ export default defineComponent({
 
       this.currentQueryParams['countFrom'] = this.timetableHistory.length;
 
-      const responseData: API.TimetableHistory.Response = await (
-        await this.apiStore.client!.get('api/getTimetables', {
-          params: this.currentQueryParams
-        })
-      ).data;
+      const responseData: API.TimetableHistory.Response = await this.apiStore.client.get(
+        'api/getTimetables',
+        this.currentQueryParams
+      );
 
       if (!responseData) return;
 
@@ -400,11 +399,10 @@ export default defineComponent({
       this.currentQueryParams = queryParams;
 
       try {
-        const responseData: API.TimetableHistory.ResponseShort = await (
-          await this.apiStore.client!.get('api/getTimetables', {
-            params: this.currentQueryParams
-          })
-        ).data;
+        const responseData: API.TimetableHistory.ResponseShort = await this.apiStore.client.get(
+          'api/getTimetables',
+          this.currentQueryParams
+        );
 
         if (!responseData) {
           this.dataStatus = Status.Data.Error;

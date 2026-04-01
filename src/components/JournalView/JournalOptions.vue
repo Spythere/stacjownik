@@ -269,9 +269,9 @@ export default defineComponent({
 
       this.searchTimeout = window.setTimeout(async () => {
         try {
-          const suggestions: string[] = await (
-            await this.apiStore.client!.get(`api/get${type}Suggestions?name=${value}`)
-          ).data;
+          const suggestions: string[] = await this.apiStore.client.get(
+            `api/get${type}Suggestions?name=${value}`
+          );
 
           this[`${type}Suggestions`] = suggestions;
         } catch (error) {
