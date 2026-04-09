@@ -15,7 +15,7 @@ export class HttpClient {
     const data = await fetch(absoluteURL);
 
     if (!data.ok) {
-      throw new Error(`Cannot fetch: ${absoluteURL}`);
+      throw new Error(`Cannot fetch ${absoluteURL}: ${data.statusText}`);
     }
 
     return data.json();

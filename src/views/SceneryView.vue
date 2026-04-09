@@ -58,6 +58,7 @@ import SceneryDispatchersHistory from '../components/SceneryView/SceneryDispatch
 
 import { useApiStore } from '../store/apiStore';
 import { Status } from '../typings/common';
+import SceneryTopList from '../components/SceneryView/SceneryTopList.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -89,6 +90,10 @@ const viewModes = [
   {
     id: 'scenery.option-dispatchers-history',
     component: SceneryDispatchersHistory
+  },
+  {
+    id: 'scenery.option-top-list',
+    component: SceneryTopList
   }
 ];
 
