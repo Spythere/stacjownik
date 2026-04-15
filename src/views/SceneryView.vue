@@ -189,7 +189,7 @@ function setViewMode(componentName: string) {
 
   background-color: #181818;
   border-radius: 0.5em;
-  padding: 0.5em;
+  padding: 1em;
 }
 
 .scenery-left {

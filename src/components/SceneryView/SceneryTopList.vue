@@ -28,23 +28,18 @@
       <Loading v-if="listState == Status.Data.Loading" />
       <div v-else-if="listState == Status.Data.Error">Ups, coś poszło nie tak...</div>
 
-      <ul v-else-if="currentListMode == 'dispatchers'" v-for="value in topDispatchersList">
-        {{
-          value.dispatcherName
-        }}
-        -
-        {{
-          value.count
-        }}
+      <ul v-else-if="currentListMode == 'likes'">
+        <li v-for="(value, i) in topLikesList">
+          {{ i + 1 }}. miejsce - <b>{{ value.dispatcherName }}</b> -
+          <b class="text--primary">{{ value.sumRate }} łapek</b>
+        </li>
       </ul>
-      <ul v-else v-for="value in topLikesList">
-        {{
-          value.dispatcherName
-        }}
-        -
-        {{
-          value.sumRate
-        }}
+
+      <ul v-else>
+        <li v-for="(value, i) in topDispatchersList">
+          {{ i + 1 }}. miejsce - <b>{{ value.dispatcherName }}</b> -
+          <b class="text--primary">{{ value.count }} dyżurów</b>
+        </li>
       </ul>
     </div>
   </div>
@@ -156,10 +151,8 @@ async function fetchTopDispatchersList() {
 .scenery-top-list {
   display: grid;
   grid-template-rows: auto auto 1fr;
-}
-
-.header {
-  margin-bottom: 0.5em;
+  overflow: hidden;
+  gap: 1em;
 }
 
 .top-actions {
@@ -179,5 +172,24 @@ async function fetchTopDispatchersList() {
   button {
     font-weight: bold;
   }
+}
+
+.rating-list-wrapper {
+  overflow: auto;
+}
+
+.rating-list-wrapper > ul > li {
+  padding: 0.5em;
+  margin: 1em 0.5em;
+
+  &:first-child {
+    margin-top: 0;
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  background-color: #2b2b2b;
 }
 </style>
