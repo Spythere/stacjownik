@@ -580,13 +580,16 @@
     "bottom-info": "Pokaż pełną historię w zakładce Dziennika",
     "btn-show-internal-routes": "Pokazuj szlaki wewnętrzne",
     "btn-hide-internal-routes": "Ukrywaj szlaki wewnętrzne",
-
     "top-list": {
       "header": "REKORDY NA SCENERII",
       "mode-likes": "OCENA DR",
       "mode-dispatchers": "LICZBA DYŻURÓW",
       "scope-name": "OGÓLNIE",
-      "scope-hash": "OBECNY HASH"
+      "scope-hash": "OBECNY HASH",
+
+      "place": "{n}. miejsce",
+      "like-count": "Ocena: {n}",
+      "dispatch-count": "Brak dyżurów | 1 dyżur | Dyżury: {n}"
     }
   },
   "availability": {

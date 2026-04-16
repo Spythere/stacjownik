@@ -593,7 +593,18 @@
     "tablice-link": "Timetable summary board <br> (by Thundo)",
     "bottom-info": "Show full history in the Journal tab",
     "btn-show-internal-routes": "Show internal routes",
-    "btn-hide-internal-routes": "Hide internal routes"
+    "btn-hide-internal-routes": "Hide internal routes",
+    "top-list": {
+      "header": "RECORDS ON THE SCENERY",
+      "mode-likes": "DISP. RATING",
+      "mode-dispatchers": "DUTY COUNT",
+      "scope-name": "GENERAL",
+      "scope-hash": "CURRENT HASH",
+
+      "place": "{n}. place",
+      "like-count": "Rating: {n}",
+      "dispatch-count": "No duties | 1 duty | Duties: {n}"
+    }
   },
   "availability": {
     "title": "Availability",
