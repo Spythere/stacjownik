@@ -30,15 +30,23 @@
 
       <ul v-else-if="currentListMode == 'likes'">
         <li v-for="(value, i) in topLikesList">
-          {{ i + 1 }}. miejsce - <b>{{ value.dispatcherName }}</b> -
-          <b class="text--primary">{{ value.sumRate }} łapek</b>
+          <div>
+            {{ t('scenery.top-list.place', i + 1) }} - <b>{{ value.dispatcherName }}</b>
+          </div>
+          <div>
+            <b class="text--primary">{{ t('scenery.top-list.like-count', value.sumRate) }}</b>
+          </div>
         </li>
       </ul>
 
       <ul v-else>
         <li v-for="(value, i) in topDispatchersList">
-          {{ i + 1 }}. miejsce - <b>{{ value.dispatcherName }}</b> -
-          <b class="text--primary">{{ value.count }} dyżurów</b>
+          <div>
+            {{ t('scenery.top-list.place', i + 1) }} - <b>{{ value.dispatcherName }}</b>
+          </div>
+          <div>
+            <b class="text--primary">{{ t('scenery.top-list.dispatch-count', value.count) }}</b>
+          </div>
         </li>
       </ul>
     </div>
@@ -130,7 +138,7 @@ async function fetchTopDispatchersList() {
     listState.value = Status.Data.Loading;
 
     const response = await apiStore.client.get(
-      `api/getSceneryTop${currentListMode.value}By${currentListScope.value}?${currentListScope.value}=${searchedStationValue}`
+      `api/getSceneryTop${currentListMode.value}By${currentListScope.value}?${currentListScope.value}=${searchedStationValue}&countLimit=40`
     );
 
     if (currentListMode.value == 'dispatchers') {
@@ -178,18 +186,22 @@ async function fetchTopDispatchersList() {
   overflow: auto;
 }
 
+.rating-list-wrapper > ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  align-items: center;
+  gap: 0.65em;
+  padding-right: 0.5em;
+}
+
 .rating-list-wrapper > ul > li {
-  padding: 0.5em;
-  margin: 1em 0.5em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 
-  &:first-child {
-    margin-top: 0;
-  }
-
-  &:last-child {
-    margin-bottom: 0;
-  }
-
+  padding: 0.25em;
   background-color: #2b2b2b;
+  height: 100%;
 }
 </style>
