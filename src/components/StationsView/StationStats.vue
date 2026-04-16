@@ -290,5 +290,9 @@ export default defineComponent({
   .filter-button > span {
     display: none;
   }
+
+  .no-data {
+    text-align: center;
+  }
 }
 </style>
