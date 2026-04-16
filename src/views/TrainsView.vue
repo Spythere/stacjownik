@@ -130,7 +130,6 @@ export default defineComponent({
   align-items: center;
   gap: 0.5em;
 
-  position: relative;
   margin-bottom: 0.5em;
 }
 

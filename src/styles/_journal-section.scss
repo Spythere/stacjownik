@@ -24,8 +24,8 @@
   width: 100%;
 
   margin: 0 auto;
-
   padding: 1em 0;
+  position: relative;
 }
 
 .journal_refreshed-date {
@@ -57,7 +57,6 @@
   justify-content: space-between;
   align-items: center;
   gap: 0.5em;
-  position: relative;
 }
 
 .btn--load-data {
@@ -68,7 +67,7 @@
   font-size: 1.2em;
 }
 
-@include responsive.smallScreen{
+@include responsive.smallScreen {
   .journal_top-bar {
     justify-content: center;
     flex-wrap: wrap;

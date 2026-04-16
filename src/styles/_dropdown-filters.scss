@@ -85,7 +85,7 @@ h1.option-title {
   }
 }
 
-@include responsive.smallScreen{
+@include responsive.smallScreen {
   h1 {
     text-align: center;
 

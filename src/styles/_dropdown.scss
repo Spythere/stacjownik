@@ -26,7 +26,7 @@
 .dropdown_wrapper {
   position: absolute;
   left: 0;
-  top: calc(100% + 0.5em);
+  top: 0;
 
   background-color: var(--clr-bg3);
   box-shadow: 0 0 5px 1px var(--clr-primary);
@@ -34,7 +34,6 @@
   width: 100%;
   max-width: 550px;
 
-  max-height: 750px;
   overflow: auto;
 
   padding: 1em;

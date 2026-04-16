@@ -336,7 +336,8 @@ export default defineComponent({
   display: grid;
   grid-template-rows: 1fr auto;
   overflow: hidden;
-  max-height: 530px;
+  max-height: calc(100% - 4.5em);
+  top: 3.5em;
 }
 
 .options_content {
