@@ -196,6 +196,7 @@
     "search-date-from": "Data (UTC+2 / CEST)",
     "search-date-to": "Data (UTC+2 / CEST)",
     "select-categoryCode": "Kategoria pociągu",
+    "search-headUnit": "Pojazd trakcyjny (np. EP09, ET22-137)",
     "sort-routeDistance": "kilometraż",
     "sort-allStopsCount": "stacje",
     "sort-beginDate": "data",

@@ -253,8 +253,10 @@ export namespace API {
       pn?: number;
       tn?: number;
 
-      returnType?: 'all' | 'short' | 'detailed';
+      headUnitName?: string;
+      headUnitType?: string;
 
+      returnType?: 'all' | 'short' | 'detailed';
       sortBy?: Journal.TimetableSorter['id'];
     }
 

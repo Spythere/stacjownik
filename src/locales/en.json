@@ -199,6 +199,7 @@
     "search-date-from": "Date (UTC+2 / CEST)",
     "search-date-to": "Date (UTC+2 / CEST)",
     "select-categoryCode": "Train category",
+    "search-headUnit": "Traction unit (e.g. EP09, ET22-401)",
     "sort-mass": "mass",
     "sort-speed": "speed",
     "sort-length": "length",

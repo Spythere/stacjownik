@@ -173,8 +173,9 @@ export default defineComponent({
       'search-issuedFrom': '',
       'search-via': '',
       'search-terminatingAt': '',
-      'select-categoryCode': '',
-      'search-date-from': ''
+      'search-headUnit': '',
+      'search-date-from': '',
+      'select-categoryCode': ''
     } as Journal.TimetableSearchType);
 
     const countFromIndex = ref(0);
@@ -296,6 +297,8 @@ export default defineComponent({
     async fetchHistoryData() {
       this.extraInfoIndexes.length = 0;
 
+      const queryParams: API.TimetableHistory.QueryParams = {};
+
       const driverName = this.searchersValues['search-driver'].trim() || undefined;
       const trainNo = this.searchersValues['search-train'].trim() || undefined;
       const authorName = this.searchersValues['search-dispatcher'].trim() || undefined;
@@ -305,6 +308,7 @@ export default defineComponent({
       const via = this.searchersValues['search-via'].trim() || undefined;
       const terminatingAt = this.searchersValues['search-terminatingAt'].trim() || undefined;
       const categoryCode = this.searchersValues['select-categoryCode'].trim() || undefined;
+      const headUnit = this.searchersValues['search-headUnit'].trim() || undefined;
 
       let dateFromISO: string | undefined = undefined;
       let dateToISO: string | undefined = undefined;
@@ -319,8 +323,6 @@ export default defineComponent({
         dateFromISO = dateFrom.toISOString();
         dateToISO = dateTo.toISOString();
       }
-
-      const queryParams: API.TimetableHistory.QueryParams = {};
 
       this.filterList
         .filter((f) => f.isActive)
@@ -392,6 +394,17 @@ export default defineComponent({
       queryParams['issuedFrom'] = issuedFrom;
       queryParams['sortBy'] =
         this.sorterActive.id != 'timetableId' ? this.sorterActive.id : undefined;
+
+      // Head unit params
+      if (headUnit) {
+        const [headUnitName, headUnitNumber] = headUnit.split('-');
+
+        if (headUnitNumber && !isNaN(Number(headUnitNumber))) {
+          queryParams['headUnitName'] = `${headUnitName}-${headUnitNumber}`;
+        } else {
+          queryParams['headUnitType'] = headUnitName;
+        }
+      }
 
       if (JSON.stringify(this.currentQueryParams) != JSON.stringify(queryParams))
         this.dataStatus = Status.Data.Loading;
