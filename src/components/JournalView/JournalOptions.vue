@@ -338,9 +338,15 @@ export default defineComponent({
   overflow: hidden;
   max-height: calc(100% - 4.5em);
   top: 3.5em;
+  padding: 1em 0;
 }
 
 .options_content {
   overflow: auto;
+  padding: 0 1em;
+}
+
+.options_actions {
+  padding: 0 1em;
 }
 </style>

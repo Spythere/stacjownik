@@ -278,6 +278,10 @@ export default defineComponent({
   color: #ccc;
 }
 
+.dropdown_wrapper {
+  top: 2.5em;
+}
+
 @include responsive.smallScreen {
   .stats-title {
     text-align: center;

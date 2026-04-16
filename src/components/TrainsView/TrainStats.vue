@@ -250,9 +250,10 @@ h3 {
 
 .dropdown_wrapper {
   max-width: 600px;
+  top: 2.5em;
 }
 
-@include responsive.smallScreen{
+@include responsive.smallScreen {
   .no-data {
     text-align: center;
   }
