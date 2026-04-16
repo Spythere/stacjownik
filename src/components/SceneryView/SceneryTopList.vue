@@ -31,7 +31,10 @@
       <ul v-else-if="currentListMode == 'likes'">
         <li v-for="(value, i) in topLikesList">
           <div>
-            {{ t('scenery.top-list.place', i + 1) }} - <b>{{ value.dispatcherName }}</b>
+            {{ t('scenery.top-list.place', i + 1) }} -
+            <router-link :to="`/profile?playerId=${value.dispatcherId}`">{{
+              value.dispatcherName
+            }}</router-link>
           </div>
           <div>
             <b class="text--primary">{{ t('scenery.top-list.like-count', value.sumRate) }}</b>
@@ -42,7 +45,10 @@
       <ul v-else>
         <li v-for="(value, i) in topDispatchersList">
           <div>
-            {{ t('scenery.top-list.place', i + 1) }} - <b>{{ value.dispatcherName }}</b>
+            {{ t('scenery.top-list.place', i + 1) }} -
+            <router-link :to="`/profile?playerId=${value.dispatcherId}`">{{
+              value.dispatcherName
+            }}</router-link>
           </div>
           <div>
             <b class="text--primary">{{ t('scenery.top-list.dispatch-count', value.count) }}</b>
@@ -63,11 +69,13 @@ import { useMainStore } from '../../store/mainStore';
 
 interface DispatcherTopCount {
   dispatcherName: string;
+  dispatcherId: number;
   count: number;
 }
 
 interface LikesTopCount {
   dispatcherName: string;
+  dispatcherId: number;
   sumRate: number;
 }
 
@@ -203,5 +211,11 @@ async function fetchTopDispatchersList() {
   padding: 0.25em;
   background-color: #2b2b2b;
   height: 100%;
+
+  line-height: 1.5em;
+
+  a {
+    font-weight: bold;
+  }
 }
 </style>
