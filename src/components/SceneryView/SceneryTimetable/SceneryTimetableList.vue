@@ -348,7 +348,7 @@ const tabliceZbiorczeHref = computed(() => {
 });
 
 const pragotronHref = computed(() => {
-  let url = `https://pragotron-td2.web.app/board?name=${props.station!.name}&region=${mainStore.region.id}`;
+  let url = `https://pragotron-td2.spythere.eu/board?name=${props.station!.name}&region=${mainStore.region.id}`;
   if (props.chosenCheckpoint) url += `&checkpoint=${props.chosenCheckpoint}`;
 
   return url;
