@@ -29,7 +29,8 @@
             <i
               v-if="
                 train.timetableData != undefined &&
-                (train.lastSeen <= Date.now() - 60000 || !train.online)
+                train.lastSeen <= Date.now() - 60000 &&
+                !train.online
               "
               class="fa-solid fa-user-slash"
               style="color: lightcoral"
