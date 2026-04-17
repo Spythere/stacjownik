@@ -583,14 +583,16 @@
     "btn-hide-internal-routes": "Ukrywaj szlaki wewnętrzne",
     "top-list": {
       "header": "REKORDY NA SCENERII (PL1)",
-      "mode-likes": "OCENA DR",
-      "mode-dispatchers": "LICZBA DYŻURÓW",
+      "mode-dispatcherRating": "OCENA DR",
+      "mode-dutyCount": "DYŻURY",
+      "mode-dutyDuration": "CZAS DYŻURU",
       "scope-name": "OGÓLNIE",
       "scope-hash": "OBECNY HASH",
 
       "place": "{n}. miejsce",
-      "like-count": "Ocena: {n}",
-      "dispatch-count": "Brak dyżurów | 1 dyżur | Dyżury: {n}"
+      "dispatcher-rating": "Ocena: {n}",
+      "duty-count": "Brak dyżurów | 1 dyżur | Dyżury: {n}",
+      "duration": "Czas:"
     }
   },
   "availability": {

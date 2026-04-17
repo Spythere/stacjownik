@@ -597,14 +597,16 @@
     "btn-hide-internal-routes": "Hide internal routes",
     "top-list": {
       "header": "RECORDS ON THE SCENERY (PL1)",
-      "mode-likes": "DISP. RATING",
-      "mode-dispatchers": "DUTY COUNT",
+      "mode-dispatcherRating": "DISP. RATING",
+      "mode-dutyCount": "DUTY COUNT",
+      "mode-dutyDuration": "DUTY DURATION",
       "scope-name": "GENERAL",
       "scope-hash": "CURRENT HASH",
 
       "place": "{n}. place",
-      "like-count": "Rating: {n}",
-      "dispatch-count": "No duties | 1 duty | Duties: {n}"
+      "dispatcher-rating": "Rating: {n}",
+      "duty-count": "No duties | 1 duty | Duties: {n}",
+      "duration": "Duration:"
     }
   },
   "availability": {

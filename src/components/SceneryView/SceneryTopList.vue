@@ -28,22 +28,8 @@
       <Loading v-if="listState == Status.Data.Loading" />
       <div v-else-if="listState == Status.Data.Error">Ups, coś poszło nie tak...</div>
 
-      <ul v-else-if="currentListMode == 'likes'">
-        <li v-for="(value, i) in topLikesList">
-          <div>
-            {{ t('scenery.top-list.place', i + 1) }} -
-            <router-link :to="`/profile?playerId=${value.dispatcherId}`">{{
-              value.dispatcherName
-            }}</router-link>
-          </div>
-          <div>
-            <b class="text--primary">{{ t('scenery.top-list.like-count', value.sumRate) }}</b>
-          </div>
-        </li>
-      </ul>
-
       <ul v-else>
-        <li v-for="(value, i) in topDispatchersList">
+        <li v-for="(value, i) in bestScoreList">
           <div>
             {{ t('scenery.top-list.place', i + 1) }} -
             <router-link :to="`/profile?playerId=${value.dispatcherId}`">{{
@@ -51,7 +37,18 @@
             }}</router-link>
           </div>
           <div>
-            <b class="text--primary">{{ t('scenery.top-list.dispatch-count', value.count) }}</b>
+            <b class="text--primary" v-if="currentListMode == 'dutyCount'">{{
+              t('scenery.top-list.duty-count', value.value)
+            }}</b>
+
+            <b class="text--primary" v-else-if="currentListMode == 'dispatcherRating'">{{
+              t('scenery.top-list.dispatcher-rating', value.value)
+            }}</b>
+
+            <b class="text--primary" v-else>
+              {{ t('scenery.top-list.duration') }}
+              {{ humanizeDuration(value.value) }}
+            </b>
           </div>
         </li>
       </ul>
@@ -65,24 +62,17 @@ import { useI18n } from 'vue-i18n';
 import { useApiStore } from '../../store/apiStore';
 import { Station, ActiveScenery, Status } from '../../typings/common';
 import Loading from '../Global/Loading.vue';
-import { useMainStore } from '../../store/mainStore';
+import { humanizeDuration } from '../../composables/time';
 
-interface DispatcherTopCount {
+interface SceneryBestScoreItem {
   dispatcherName: string;
   dispatcherId: number;
-  count: number;
-}
-
-interface LikesTopCount {
-  dispatcherName: string;
-  dispatcherId: number;
-  sumRate: number;
+  value: number;
 }
 
 const { t } = useI18n();
 
 const apiStore = useApiStore();
-const mainStore = useMainStore();
 
 defineOptions({
   name: 'SceneryTopList'
@@ -98,19 +88,18 @@ const props = defineProps({
   }
 });
 
-const availableModes = ['likes', 'dispatchers'] as const;
+const availableModes = ['dutyCount', 'dispatcherRating', 'dutyDuration'] as const;
 const availableScopes = ['name', 'hash'] as const;
 
 type ListMode = (typeof availableModes)[number];
 type ListScope = (typeof availableScopes)[number];
 
-const currentListMode = ref<ListMode>('likes');
+const currentListMode = ref<ListMode>('dutyCount');
 const currentListScope = ref<ListScope>('name');
 
 const listState = ref<Status.Data>(Status.Data.Loading);
 
-const topLikesList = ref<LikesTopCount[]>([]);
-const topDispatchersList = ref<DispatcherTopCount[]>([]);
+const bestScoreList = ref<SceneryBestScoreItem[]>([]);
 
 onActivated(() => {
   fetchTopDispatchersList();
@@ -132,10 +121,7 @@ async function fetchTopDispatchersList() {
       ? props.station?.name
       : apiStore.sceneryData.find((sc) => sc.name == props.station!.name)?.hash;
 
-  console.log(searchedStationValue);
-
-  topDispatchersList.value = [];
-  topLikesList.value = [];
+  bestScoreList.value = [];
 
   if (!searchedStationValue) {
     listState.value = Status.Data.Loaded;
@@ -145,16 +131,13 @@ async function fetchTopDispatchersList() {
   try {
     listState.value = Status.Data.Loading;
 
-    const response = await apiStore.client.get(
-      `api/getSceneryTop${currentListMode.value}By${currentListScope.value}?${currentListScope.value}=${searchedStationValue}&countLimit=40`
-    );
+    const response: SceneryBestScoreItem[] = await apiStore.client.get(`api/getSceneryBestScores`, {
+      [currentListScope.value]: searchedStationValue,
+      type: currentListMode.value,
+      currentLimit: 40
+    });
 
-    if (currentListMode.value == 'dispatchers') {
-      topDispatchersList.value = response as DispatcherTopCount[];
-    } else {
-      topLikesList.value = response as LikesTopCount[];
-    }
-
+    bestScoreList.value = response;
     listState.value = Status.Data.Loaded;
   } catch (error) {
     listState.value = Status.Data.Error;
