@@ -269,9 +269,9 @@ export default defineComponent({
 
       this.searchTimeout = window.setTimeout(async () => {
         try {
-          const suggestions: string[] = await (
-            await this.apiStore.client!.get(`api/get${type}Suggestions?name=${value}`)
-          ).data;
+          const suggestions: string[] = await this.apiStore.client.get(
+            `api/get${type}Suggestions?name=${value}`
+          );
 
           this[`${type}Suggestions`] = suggestions;
         } catch (error) {
@@ -336,10 +336,17 @@ export default defineComponent({
   display: grid;
   grid-template-rows: 1fr auto;
   overflow: hidden;
-  max-height: 530px;
+  max-height: calc(100% - 4.5em);
+  top: 3.5em;
+  padding: 1em 0;
 }
 
 .options_content {
   overflow: auto;
+  padding: 0 1em;
+}
+
+.options_actions {
+  padding: 0 1em;
 }
 </style>

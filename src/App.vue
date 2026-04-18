@@ -30,7 +30,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import axios from 'axios';
 
 import { version } from '../package.json';
 import { Status } from './typings/common';
@@ -114,11 +113,15 @@ export default defineComponent({
       }
 
       try {
-        const releaseData = await (
-          await axios.get('https://api.github.com/repos/Spythere/stacjownik/releases/latest')
-        ).data;
+        const response = await fetch(
+          'https://api.github.com/repos/Spythere/stacjownik/releases/latest'
+        );
 
-        if (!releaseData) return;
+        if (!response.ok) {
+          throw new Error('Failed to fetch release data from repository!');
+        }
+
+        const releaseData = await response.json();
 
         this.store.appUpdate = {
           version,
@@ -130,7 +133,7 @@ export default defineComponent({
           (storageVersion != '' && storageVersion != version && this.isOnProductionHost) ||
           import.meta.env.VITE_UPDATE_TEST === 'test';
       } catch (error) {
-        console.error(`Wystąpił błąd podczas pobierania danych z API GitHuba: ${error}`);
+        console.error(error);
       }
 
       StorageManager.setStringValue(STORAGE_VERSION_KEY, version);

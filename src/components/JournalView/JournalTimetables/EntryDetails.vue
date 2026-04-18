@@ -201,22 +201,20 @@ const driverRouteLocation = computed<RouteLocationRaw | null>(() => {
 
 async function fetchTimetableDetails() {
   try {
-    const responseData = await apiStore.client!.get<API.TimetableHistory.Response>(
+    const responseData = await apiStore.client.get<API.TimetableHistory.Response>(
       'api/getTimetables',
       {
-        params: {
-          timetableId: props.timetableEntry.id,
-          returnType: 'detailed'
-        }
+        timetableId: props.timetableEntry.id,
+        returnType: 'detailed'
       }
     );
 
-    if (!responseData || responseData.data.length != 1) {
+    if (!responseData || responseData.length != 1) {
       timetableDetails.value = null;
       return;
     }
 
-    timetableDetails.value = responseData.data[0];
+    timetableDetails.value = responseData[0];
   } catch (error) {
     // this.dataStatus = Status.Data.Error;
     console.error(error);

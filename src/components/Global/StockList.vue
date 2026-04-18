@@ -8,6 +8,7 @@
           :images="images"
           :image-fallbacks="imagesFallbacks"
           :show-previews="showPreviews"
+          :thumbnail-size="thumbnailSize"
         />
       </li>
     </ul>
@@ -25,7 +26,8 @@ export default defineComponent({
   props: {
     trainStockList: { type: Array as PropType<string[]>, required: true },
     tractionOnly: { type: Boolean, required: false },
-    showPreviews: { type: Boolean }
+    showPreviews: { type: Boolean },
+    thumbnailSize: { type: Number }
   },
 
   data() {

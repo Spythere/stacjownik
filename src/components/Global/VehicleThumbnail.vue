@@ -9,7 +9,7 @@
       <img
         v-for="(thumbnailImage, imageIndex) in images"
         :src="`https://stacjownik.spythere.eu/static/thumbnails/${thumbnailImage}.png`"
-        height="70"
+        :height="thumbnailSize || 70"
         loading="lazy"
         :data-crosshair-cursor="showPreviews"
         :data-tooltip-type="showPreviews ? 'VehiclePreviewTooltip' : ''"
@@ -28,7 +28,8 @@ const props = defineProps({
   vehicleString: { type: String, required: true },
   images: { type: Object as PropType<string[]>, required: true },
   imageFallbacks: { type: Object as PropType<string[]>, required: true },
-  showPreviews: { type: Boolean }
+  showPreviews: { type: Boolean },
+  thumbnailSize: { type: Number }
 });
 
 const thumbRef = ref(null) as Ref<HTMLElement | null>;
@@ -67,7 +68,7 @@ function onImageLoad() {
   max-width: 90%;
   text-align: center;
   color: #aaa;
-  font-size: 0.85em;
+  font-size: 0.8em;
   margin: 0 auto;
   padding: 0.25em 0;
 }

@@ -78,14 +78,14 @@ h1.option-title {
   display: flex;
   gap: 0.5em;
   width: 100%;
-  margin-top: 0.5em;
+  margin-top: 1em;
 
   button {
     width: 100%;
   }
 }
 
-@include responsive.smallScreen{
+@include responsive.smallScreen {
   h1 {
     text-align: center;
 

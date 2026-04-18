@@ -210,7 +210,7 @@
           </div>
 
           <div class="item-stock-list" v-if="showStockThumbnails">
-            <StockList :trainStockList="row.train.stockList" />
+            <StockList :trainStockList="row.train.stockList" :thumbnailSize="45" />
           </div>
         </router-link>
       </transition-group>
@@ -348,7 +348,7 @@ const tabliceZbiorczeHref = computed(() => {
 });
 
 const pragotronHref = computed(() => {
-  let url = `https://pragotron-td2.web.app/board?name=${props.station!.name}&region=${mainStore.region.id}`;
+  let url = `https://pragotron-td2.spythere.eu/board?name=${props.station!.name}&region=${mainStore.region.id}`;
   if (props.chosenCheckpoint) url += `&checkpoint=${props.chosenCheckpoint}`;
 
   return url;

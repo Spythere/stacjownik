@@ -2,7 +2,20 @@ import { defineStore } from 'pinia';
 import { API } from '../typings/api';
 import { Status } from '../typings/common';
 import { StationJSONData } from './typings';
-import axios, { AxiosInstance } from 'axios';
+import { HttpClient } from '../http';
+
+let baseURL = 'https://stacjownik.spythere.eu';
+
+switch (import.meta.env.VITE_API_MODE) {
+  case 'development':
+    baseURL = 'http://localhost:3001';
+    break;
+  case 'mocking':
+    baseURL = 'http://localhost:3123';
+    break;
+  default:
+    break;
+}
 
 export const useApiStore = defineStore('apiStore', {
   state: () => ({
@@ -25,30 +38,13 @@ export const useApiStore = defineStore('apiStore', {
     nextUpdateTime: 0,
     nextDataCheckTime: 0,
 
-    client: undefined as AxiosInstance | undefined,
+    client: new HttpClient(baseURL),
 
     activeDataScheduler: undefined as number | undefined
   }),
 
   actions: {
     async setupAPIData() {
-      let baseURL = 'https://stacjownik.spythere.eu';
-
-      switch (import.meta.env.VITE_API_MODE) {
-        case 'development':
-          baseURL = 'http://localhost:3001';
-          break;
-        case 'mocking':
-          baseURL = 'http://localhost:3123';
-          break;
-        default:
-          break;
-      }
-
-      this.client = axios.create({
-        baseURL
-      });
-
       this.connectToAPI();
     },
 
@@ -82,9 +78,9 @@ export const useApiStore = defineStore('apiStore', {
       if (!this.activeData) this.dataStatuses.connection = Status.Data.Loading;
 
       try {
-        const response = await this.client!.get<API.ActiveData.Response>('api/getActiveData');
+        const response = await this.client.get<API.ActiveData.Response>('api/getActiveData');
 
-        this.activeData = response.data;
+        this.activeData = response;
         this.dataStatuses.connection = Status.Data.Loaded;
       } catch (error) {
         this.dataStatuses.connection = Status.Data.Error;
@@ -94,9 +90,9 @@ export const useApiStore = defineStore('apiStore', {
 
     async fetchDonatorsData() {
       try {
-        const response = await this.client!.get<API.Donators.Response>('api/getDonators');
+        const response = await this.client.get<API.Donators.Response>('api/getDonators');
 
-        this.donatorsData = response.data;
+        this.donatorsData = response;
       } catch (error) {
         console.error('Ups! Wystąpił błąd podczas pobierania informacji o donatorach:', error);
       }
@@ -104,9 +100,7 @@ export const useApiStore = defineStore('apiStore', {
 
     async fetchStationsGeneralInfo() {
       try {
-        const sceneryData: StationJSONData[] = (
-          await this.client!.get<StationJSONData[]>(`api/getSceneries`)
-        ).data;
+        const sceneryData = await this.client.get<StationJSONData[]>(`api/getSceneries`);
 
         this.dataStatuses.sceneries = Status.Data.Loaded;
         this.sceneryData = sceneryData;
@@ -118,10 +112,10 @@ export const useApiStore = defineStore('apiStore', {
 
     async fetchVehiclesInfo() {
       try {
-        const response = await this.client!.get<API.VehiclesData.Response>('api/getVehiclesData');
+        const response = await this.client.get<API.VehiclesData.Response>('api/getVehiclesData');
 
-        this.vehiclesData = response.data;
-        this.dataStatuses.vehicles = response.data ? Status.Data.Loaded : Status.Data.Warning;
+        this.vehiclesData = response;
+        this.dataStatuses.vehicles = response ? Status.Data.Loaded : Status.Data.Warning;
       } catch (error) {
         this.dataStatuses.vehicles = Status.Data.Error;
         console.error('Ups! Wystąpił błąd podczas pobierania informacji o pojazdach:', error);
@@ -130,9 +124,7 @@ export const useApiStore = defineStore('apiStore', {
 
     async fetchDailyStats() {
       try {
-        const res: API.DailyStats.Response = await (
-          await this.client!.get('api/getDailyStats')
-        ).data;
+        const res = await this.client.get<API.DailyStats.Response>('api/getDailyStats');
 
         this.dailyStatsData = res;
 

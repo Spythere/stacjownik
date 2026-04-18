@@ -149,11 +149,12 @@ export default defineComponent({
       requestFilters['returnType'] = 'short';
 
       try {
-        const response: API.TimetableHistory.ResponseShort = await (
-          await this.apiStore.client!.get('api/getTimetables', {
-            params: requestFilters
-          })
-        ).data;
+        const response: API.TimetableHistory.ResponseShort = await this.apiStore.client.get(
+          'api/getTimetables',
+          requestFilters
+        );
+
+        console.log(response);
 
         this.historyList = response;
 

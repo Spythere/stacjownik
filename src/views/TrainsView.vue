@@ -116,13 +116,10 @@ export default defineComponent({
 <style lang="scss" scoped>
 @use '../styles/responsive';
 
-.trains-view {
-  position: relative;
-}
-
 .trains_wrapper {
   margin: 1rem auto;
   max-width: var(--max-container-width);
+  position: relative;
 }
 
 .trains_topbar {
@@ -130,7 +127,6 @@ export default defineComponent({
   align-items: center;
   gap: 0.5em;
 
-  position: relative;
   margin-bottom: 0.5em;
 }
 

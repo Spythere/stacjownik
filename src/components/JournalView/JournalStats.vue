@@ -69,5 +69,6 @@ function navigateToProfile() {
   left: auto;
   right: 0;
   max-width: 700px;
+  top: 3.5em;
 }
 </style>

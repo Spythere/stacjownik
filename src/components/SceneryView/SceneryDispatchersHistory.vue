@@ -127,9 +127,8 @@ export default defineComponent({
           this.station?.name || this.onlineScenery?.name
         }&countFrom=${countFrom}&countLimit=${countLimit}`;
 
-        const historyAPIData: API.DispatcherHistory.Response = await (
-          await this.apiStore.client!.get(requestString)
-        ).data;
+        const historyAPIData: API.DispatcherHistory.Response =
+          await this.apiStore.client.get(requestString);
 
         this.dataStatus = Status.Data.Loaded;
         return historyAPIData;

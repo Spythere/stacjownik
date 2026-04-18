@@ -210,6 +210,10 @@ export default defineComponent({
 @use '../../styles/dropdown';
 @use '../../styles/dropdown-filters';
 
+.dropdown_wrapper {
+  top: 2.5em;
+}
+
 .search_content > div {
   margin: 0.5em auto;
 }

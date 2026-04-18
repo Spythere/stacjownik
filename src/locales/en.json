@@ -199,6 +199,7 @@
     "search-date-from": "Date (UTC+2 / CEST)",
     "search-date-to": "Date (UTC+2 / CEST)",
     "select-categoryCode": "Train category",
+    "search-headUnit": "Traction unit (e.g. EP09, ET22-401)",
     "sort-mass": "mass",
     "sort-speed": "speed",
     "sort-length": "length",
@@ -573,6 +574,7 @@
     "option-active-timetables": "Active timetables",
     "option-timetables-history": "Timetables history PL1",
     "option-dispatchers-history": "Dispatchers history PL1",
+    "option-top-list": "Scenery records",
     "btn-show-timetable-thumbnails": "Show rolling stock thumbnails",
     "btn-hide-timetable-thumbnails": "Hide rolling stock thumbnails",
     "timetable-includesScenery": "ALL TIMETABLES",
@@ -592,7 +594,20 @@
     "tablice-link": "Timetable summary board <br> (by Thundo)",
     "bottom-info": "Show full history in the Journal tab",
     "btn-show-internal-routes": "Show internal routes",
-    "btn-hide-internal-routes": "Hide internal routes"
+    "btn-hide-internal-routes": "Hide internal routes",
+    "top-list": {
+      "header": "RECORDS ON THE SCENERY (PL1)",
+      "mode-dutyCount": "DUTIES",
+      "mode-dispatcherRating": "RATING",
+      "mode-dutyDuration": "DUTY DURATION",
+      "scope-name": "GENERAL",
+      "scope-hash": "CURRENT HASH",
+
+      "place": "{n}. place",
+      "dispatcher-rating": "Rating: {n}",
+      "duty-count": "No duties | 1 duty | Duties: {n}",
+      "duration": "Duration:"
+    }
   },
   "availability": {
     "title": "Availability",

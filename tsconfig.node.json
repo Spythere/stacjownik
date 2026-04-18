@@ -1,9 +1,12 @@
+// TSConfig for modules that run in Node.js environment via either transpilation or type-stripping.
 {
+  "extends": "@tsconfig/node24/tsconfig.json",
+  "include": ["vite.config.*", "eslint.config.*"],
   "compilerOptions": {
-    "composite": true,
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
-    "allowSyntheticDefaultImports": true
-  },
-  "include": ["vite.config.ts"]
+    "module": "preserve",
+    "moduleResolution": "bundler",
+    "types": ["node", "vite/client", "vite-plugin-pwa/client"],
+    "noEmit": true,
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo"
+  }
 }

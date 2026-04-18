@@ -18,23 +18,31 @@ export function getTrainStopStatus(
     return StopStatus.TERMINATED;
   }
 
-  if (!stopInfo.terminatesHere && stopInfo.confirmed && currentStationName == sceneryName) {
+  if (
+    !stopInfo.terminatesHere &&
+    stopInfo.confirmed &&
+    currentStationName.startsWith(sceneryName)
+  ) {
     return StopStatus.DEPARTED;
   }
 
-  if (!stopInfo.terminatesHere && stopInfo.confirmed && currentStationName != sceneryName) {
+  if (
+    !stopInfo.terminatesHere &&
+    stopInfo.confirmed &&
+    !currentStationName.startsWith(sceneryName)
+  ) {
     return StopStatus.DEPARTED_AWAY;
   }
 
-  if (currentStationName == sceneryName && !stopInfo.stopped) {
+  if (currentStationName.startsWith(sceneryName) && !stopInfo.stopped) {
     return StopStatus.ONLINE;
   }
 
-  if (currentStationName == sceneryName && stopInfo.stopped) {
+  if (currentStationName.startsWith(sceneryName) && stopInfo.stopped) {
     return StopStatus.STOPPED;
   }
 
-  if (currentStationName != sceneryName) {
+  if (!currentStationName.startsWith(sceneryName)) {
     return StopStatus.ARRIVING;
   }
 
