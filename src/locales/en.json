@@ -597,8 +597,8 @@
     "btn-hide-internal-routes": "Hide internal routes",
     "top-list": {
       "header": "RECORDS ON THE SCENERY (PL1)",
-      "mode-dispatcherRating": "DISP. RATING",
-      "mode-dutyCount": "DUTY COUNT",
+      "mode-dutyCount": "DUTIES",
+      "mode-dispatcherRating": "RATING",
       "mode-dutyDuration": "DUTY DURATION",
       "scope-name": "GENERAL",
       "scope-hash": "CURRENT HASH",

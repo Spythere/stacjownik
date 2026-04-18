@@ -583,8 +583,8 @@
     "btn-hide-internal-routes": "Ukrywaj szlaki wewnętrzne",
     "top-list": {
       "header": "REKORDY NA SCENERII (PL1)",
-      "mode-dispatcherRating": "OCENA DR",
       "mode-dutyCount": "DYŻURY",
+      "mode-dispatcherRating": "OCENA",
       "mode-dutyDuration": "CZAS DYŻURU",
       "scope-name": "OGÓLNIE",
       "scope-hash": "OBECNY HASH",
