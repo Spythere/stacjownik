@@ -134,7 +134,7 @@ async function fetchTopDispatchersList() {
     const response: SceneryBestScoreItem[] = await apiStore.client.get(`api/getSceneryBestScores`, {
       [currentListScope.value]: searchedStationValue,
       type: currentListMode.value,
-      currentLimit: 40
+      countLimit: 40
     });
 
     bestScoreList.value = response;
