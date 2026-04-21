@@ -603,7 +603,7 @@
       "scope-name": "GENERAL",
       "scope-hash": "CURRENT HASH",
 
-      "place": "{n}. place",
+      "place": "place",
       "dispatcher-rating": "Rating: {n}",
       "duty-count": "No duties | 1 duty | Duties: {n}",
       "duration": "Duration:",

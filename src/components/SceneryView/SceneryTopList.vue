@@ -31,11 +31,12 @@
       <ul v-else-if="bestScoreList.length > 0">
         <li v-for="(value, i) in bestScoreList">
           <div>
-            {{ t('scenery.top-list.place', i + 1) }} -
+            {{ t('ordinal', { count: i + 1 }) }} {{ t('scenery.top-list.place') }} -
             <router-link :to="`/profile?playerId=${value.dispatcherId}`">{{
               value.dispatcherName
             }}</router-link>
           </div>
+
           <div>
             <b class="text--primary" v-if="currentListMode == 'dutyCount'">{{
               t('scenery.top-list.duty-count', value.value)

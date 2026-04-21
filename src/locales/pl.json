@@ -589,7 +589,7 @@
       "scope-name": "OGÓLNIE",
       "scope-hash": "OBECNY HASH",
 
-      "place": "{n}. miejsce",
+      "place": "miejsce",
       "dispatcher-rating": "Ocena: {n}",
       "duty-count": "Brak dyżurów | 1 dyżur | Dyżury: {n}",
       "duration": "Czas:",
