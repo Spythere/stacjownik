@@ -172,10 +172,6 @@ async function fetchTopDispatchersList() {
   flex-wrap: wrap;
   gap: 0.5em;
   font-weight: bold;
-
-  button {
-    font-weight: bold;
-  }
 }
 
 .rating-list-wrapper {
