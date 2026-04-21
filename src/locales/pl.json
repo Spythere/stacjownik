@@ -592,7 +592,10 @@
       "place": "{n}. miejsce",
       "dispatcher-rating": "Ocena: {n}",
       "duty-count": "Brak dyżurów | 1 dyżur | Dyżury: {n}",
-      "duration": "Czas:"
+      "duration": "Czas:",
+
+      "no-data-general": "Brak zapisanych rekordów scenerii na serwerze PL1!",
+      "no-data-current-hash": "Brak zapisanych rekordów scenerii z obecnym hashem na serwerze PL1!"
     }
   },
   "availability": {

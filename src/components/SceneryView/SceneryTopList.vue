@@ -28,7 +28,7 @@
       <Loading v-if="listState == Status.Data.Loading" />
       <div v-else-if="listState == Status.Data.Error">Ups, coś poszło nie tak...</div>
 
-      <ul v-else>
+      <ul v-else-if="bestScoreList.length > 0">
         <li v-for="(value, i) in bestScoreList">
           <div>
             {{ t('scenery.top-list.place', i + 1) }} -
@@ -52,6 +52,11 @@
           </div>
         </li>
       </ul>
+
+      <div v-else class="no-data">
+        <span v-if="currentListScope == 'name'">{{ t('scenery.top-list.no-data-general') }}</span>
+        <span v-else>{{ t('scenery.top-list.no-data-current-hash') }}</span>
+      </div>
     </div>
   </div>
 </template>
@@ -200,5 +205,12 @@ async function fetchTopDispatchersList() {
   a {
     font-weight: bold;
   }
+}
+
+.no-data {
+  padding: 1em 0.5em;
+  font-size: 1.1em;
+  background-color: #333;
+  color: #ccc;
 }
 </style>
