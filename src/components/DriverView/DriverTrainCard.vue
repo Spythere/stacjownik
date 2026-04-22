@@ -152,8 +152,8 @@ function generateNumberPropositions() {
   for (let i = 0; i < 5; i++) {
     let generatedNumStr = '';
 
-    generatedNumStr += trainNoStr.at(0) ?? Math.floor(Math.random() * 10);
-    generatedNumStr += trainNoStr.at(1) ?? Math.floor(Math.random() * 10);
+    generatedNumStr += trainNoStr[0] ?? Math.floor(Math.random() * 10);
+    generatedNumStr += trainNoStr[1] ?? Math.floor(Math.random() * 10);
 
     // Third number
     generatedNumStr += thirdNumber ?? '';
@@ -188,12 +188,12 @@ function generateNumberPropositions() {
 }
 
 const chosenCategory = computed(() => {
-  return availableCategories.value.at(chosenCategoryIndex.value);
+  return availableCategories.value[chosenCategoryIndex.value];
 });
 
 const availableCategories = computed(() => {
   const stockList = props.chosenTrain.stockList;
-  const headVehicle = stockList.at(0)?.split('-')[0] ?? '';
+  const headVehicle = stockList[0]?.split('-')[0] ?? '';
 
   let availableCategories: string[] = [];
   let categoryTraction = 'E';
