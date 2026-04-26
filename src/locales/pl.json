@@ -434,6 +434,15 @@
     "number-propositions-title": "Propozycje:",
     "number-propositions-empty": "Brak propozycji dla wybranej kategorii! :/"
   },
+  "cargo-warnings": {
+    "title": "Dodatkowe uwagi przewozowe:",
+    "pn-innofreight": "PN - Innofreight C45: przekroczona skrajnia",
+    "twr-un1965": "TWR - gazy węglowodorowe skroplone (UN 1965)",
+    "tn-un1965": "TN - gazy węglowodorowe skroplone - puste cysterny (UN 1965)",
+    "tn-un1202": "TN - olej napędowy (UN 1202)",
+    "pn-military": "PN - transport wojskowy",
+    "pn-edk80": "PN - żuraw kolejowy EDK80"
+  },
   "train-stats": {
     "stats-button": "STATYSTYKI",
     "title": "STATYSTYKI AKTYWNYCH POCIĄGÓW",

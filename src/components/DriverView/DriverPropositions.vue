@@ -1,7 +1,5 @@
 <template>
   <div class="driver-propositions">
-    <h3 style="margin-bottom: 0.5em">{{ t('trains.number-propositions-header') }}</h3>
-
     <div class="categories-select">
       <button
         v-for="(category, i) in availableCategories"
@@ -44,6 +42,21 @@
     </div>
 
     <div class="no-propositions" v-else>{{ t('trains.number-propositions-empty') }}</div>
+
+    <div class="cargo-warnings" v-if="getCargoWarnings.size > 0">
+      <hr />
+      <h3>{{ t('cargo-warnings.title') }}</h3>
+
+      <div class="warnings-container">
+        <div
+          v-for="warning in getCargoWarnings"
+          class="train-badge"
+          :class="`${warning.split('-')[0]}`"
+        >
+          {{ t('cargo-warnings.' + warning) }}
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -145,6 +158,27 @@ const chosenCategory = computed(() => {
   return availableCategories.value[chosenCategoryIndex.value];
 });
 
+const getCargoWarnings = computed(() => {
+  const stockList = props.chosenTrain.stockList;
+
+  let warnings: Set<string> = new Set();
+
+  stockList.forEach((stockVehicle) => {
+    const [vehicleName, vehicleCargo] = stockVehicle.split(':');
+
+    if (vehicleName.startsWith('WB117')) warnings.add(vehicleCargo ? 'twr-un1965' : 'tn-un1965');
+    else if (vehicleName.startsWith('445Rb')) warnings.add('tn-un1202');
+    else if (vehicleName.startsWith('EDK80')) warnings.add('pn-edk80');
+
+    if (vehicleCargo) {
+      if (vehicleCargo.startsWith('wt_20')) warnings.add('pn-innofreight');
+      else if (/^(tank|vehicles_01|truck)/.test(vehicleCargo)) warnings.add('pn-military');
+    }
+  });
+
+  return warnings;
+});
+
 const availableCategories = computed(() => {
   const stockList = props.chosenTrain.stockList;
   const headVehicle = stockList[0]?.split('-')[0] ?? '';
@@ -221,6 +255,7 @@ function selectCategory(i: number) {
 
 <style lang="scss" scoped>
 @use '../../styles/responsive';
+@use '../../styles/badge';
 
 .driver-propositions {
   margin-bottom: 1em;
@@ -254,6 +289,19 @@ function selectCategory(i: number) {
 .no-propositions {
   margin-top: 1em;
   color: #ccc;
+}
+
+.cargo-warnings {
+  margin-top: 0.5em;
+
+  h3 {
+    margin: 0.5em 0;
+  }
+}
+
+.warnings-container {
+  display: flex;
+  gap: 0.5em;
 }
 
 @include responsive.smallScreen {

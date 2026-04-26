@@ -447,6 +447,15 @@
     "number-propositions-title": "Propositions:",
     "number-propositions-empty": "No propositions available for the chosen category! :/"
   },
+  "cargo-warnings": {
+    "title": "Additional cargo warnings:",
+    "pn-innofreight": "PN - Innofreight C45: exceeded gauge",
+    "twr-un1965": "TWR - LPG tanks (UN 1965)",
+    "tn-un1965": "TN - empty LPG tanks (UN 1965)",
+    "tn-un1202": "TN - diesel fuel (UN 1202)",
+    "pn-military": "PN - military transport",
+    "pn-edk80": "PN - EDK80 railway crane"
+  },
   "train-stats": {
     "stats-button": "STATISTICS",
     "title": "ONLINE TRAINS STATS",
