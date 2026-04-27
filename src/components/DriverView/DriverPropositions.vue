@@ -167,7 +167,8 @@ const getCargoWarnings = computed(() => {
     const [vehicleName, vehicleCargo] = stockVehicle.split(':');
 
     if (vehicleName.startsWith('WB117')) warnings.add(vehicleCargo ? 'twr-un1965' : 'tn-un1965');
-    else if (vehicleName.startsWith('445Rb')) warnings.add('tn-un1202');
+    else if (vehicleName.startsWith('445Rb'))
+      warnings.add(vehicleCargo ? 'tn-un1202' : 'tn-un1202-empty');
     else if (vehicleName.startsWith('EDK80')) warnings.add('pn-edk80');
 
     if (vehicleCargo) {
@@ -301,6 +302,7 @@ function selectCategory(i: number) {
 
 .warnings-container {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5em;
 }
 
@@ -310,6 +312,10 @@ function selectCategory(i: number) {
   }
 
   .categories-select {
+    justify-content: center;
+  }
+
+  .warnings-container {
     justify-content: center;
   }
 }

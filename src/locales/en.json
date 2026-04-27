@@ -449,12 +449,13 @@
   },
   "cargo-warnings": {
     "title": "Additional cargo warnings:",
-    "pn-innofreight": "PN - Innofreight C45: exceeded gauge",
-    "twr-un1965": "TWR - LPG tanks (UN 1965)",
-    "tn-un1965": "TN - empty LPG tanks (UN 1965)",
-    "tn-un1202": "TN - diesel fuel (UN 1202)",
-    "pn-military": "PN - military transport",
-    "pn-edk80": "PN - EDK80 railway crane"
+    "pn-innofreight": "PN: Innofreight C45: exceeded gauge",
+    "twr-un1965": "TWR: UN1965 (LPG)",
+    "tn-un1965": "TN: unclean tanks after UN1965",
+    "tn-un1202": "TN: UN1202 (diesel fuel)",
+    "tn-un1202-empty": "TN: unclean tanks after UN1202",
+    "pn-military": "PN: military transport",
+    "pn-edk80": "PN: EDK80 railway crane"
   },
   "train-stats": {
     "stats-button": "STATISTICS",

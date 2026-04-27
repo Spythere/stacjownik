@@ -436,12 +436,13 @@
   },
   "cargo-warnings": {
     "title": "Dodatkowe uwagi przewozowe:",
-    "pn-innofreight": "PN - Innofreight C45: przekroczona skrajnia",
-    "twr-un1965": "TWR - gazy węglowodorowe skroplone (UN 1965)",
-    "tn-un1965": "TN - gazy węglowodorowe skroplone - puste cysterny (UN 1965)",
-    "tn-un1202": "TN - olej napędowy (UN 1202)",
-    "pn-military": "PN - transport wojskowy",
-    "pn-edk80": "PN - żuraw kolejowy EDK80"
+    "pn-innofreight": "PN: Innofreight C45: przekroczona skrajnia",
+    "twr-un1965": "TWR: UN1965 (LPG)",
+    "tn-un1965": "TN: brudne cysterny po UN1965",
+    "tn-un1202": "TN: UN1202 (olej napędowy)",
+    "tn-un1202-empty": "TN: brudne cysterny po UN1202",
+    "pn-military": "PN: transport wojskowy",
+    "pn-edk80": "PN: żuraw kolejowy EDK80"
   },
   "train-stats": {
     "stats-button": "STATYSTYKI",
