@@ -4,11 +4,11 @@
 
     <!-- Train action buttons -->
     <div class="train-stock-actions">
-      <button class="btn btn--action" style="margin: 1em 0" @click="copyStockToClipboard()">
+      <button class="btn btn--action" @click="copyStockToClipboard()">
         <i class="fa-regular fa-copy"></i> {{ i18n.t('trains.stock-copy') }}
       </button>
 
-      <button class="btn btn--action" style="margin: 1em 0" @click="toggleNumberPropositions()">
+      <button class="btn btn--action" @click="toggleNumberPropositions()">
         <i class="fa-regular fa-lightbulb"></i> {{ i18n.t('trains.number-propositions') }}
       </button>
     </div>
@@ -68,6 +68,8 @@ function toggleNumberPropositions() {
 </script>
 
 <style lang="scss" scoped>
+@use '../../styles/responsive';
+
 .driver-train-card {
   padding: 1em;
   background-color: var(--clr-view-bg);
@@ -76,6 +78,14 @@ function toggleNumberPropositions() {
 
 .train-stock-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5em;
+  margin: 1em 0;
+}
+
+@include responsive.smallScreen {
+  .train-stock-actions {
+    justify-content: center;
+  }
 }
 </style>
