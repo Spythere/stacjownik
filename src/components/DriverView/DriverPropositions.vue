@@ -1,5 +1,7 @@
 <template>
   <div class="driver-propositions">
+    <h3>{{ t('trains.number-propositions-header') }}</h3>
+
     <div class="categories-select">
       <button
         v-for="(category, i) in availableCategories"
@@ -268,6 +270,7 @@ function selectCategory(i: number) {
   display: inline-flex;
   flex-wrap: wrap;
   gap: 0.5em;
+  margin-top: 0.5em;
 
   position: relative;
 
