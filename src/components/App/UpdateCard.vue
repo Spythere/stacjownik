@@ -1,7 +1,9 @@
 <template>
   <Card :is-open="isUpdateCardOpen" @toggle-card="toggleCard(false)">
     <div class="content" tabindex="0" ref="content">
-      <h1 class="content-title"><i class="fa-solid fa-wand-sparkles"></i> {{ $t('update.title') }}</h1>
+      <h1 class="content-title">
+        <i class="fa-solid fa-wand-sparkles"></i> {{ $t('update.title') }}
+      </h1>
 
       <div class="features-body" v-if="htmlChangelog != ''" v-html="htmlChangelog"></div>
       <div class="no-features" v-else>{{ $t('update.no-data') }}</div>
@@ -87,13 +89,27 @@ export default defineComponent({
 
 ::v-deep(h2) {
   padding: 0.5em 0;
-  border-bottom: 1px solid #aaa;
+
+  &::after {
+    content: '';
+    display: block;
+    height: 2px;
+    width: 100%;
+    background-color: #aaa;
+    margin-top: 0.25em;
+  }
+}
+
+::v-deep(h3) {
+  padding-bottom: 0.25em;
 }
 
 ::v-deep(ul) {
   list-style: disc;
-  padding: 0.5em 1.5em;
   line-height: 1.5em;
+  padding: 0 1.5em;
+
+  padding-bottom: 0.5em;
 }
 
 .content {

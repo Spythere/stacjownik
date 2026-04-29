@@ -425,14 +425,24 @@
     "driver-not-found-others": "Gracz {driver} jest online jako:",
     "driver-not-found-return": "WRÓĆ NA STRONĘ GŁÓWNĄ",
     "stock-copy": "SKOPIUJ SKŁAD",
-    "number-propositions": "ZAPROPONUJ NUMER",
+    "number-propositions": "PROPOZYCJE NUMERÓW I UWAG",
     "stock-clipboard-success": "Pomyślnie skopiowano skład w postaci tekstowej do schowka!",
     "stock-clipboard-failure": "Ups! Nie udało się skopiować składu do schowka! :/",
-    "number-propositions-header": "Wygeneruj propozycje numerów dla kategorii pociągu:",
+    "number-propositions-header": "Wygeneruj propozycje numerów dla pociągu kategorii:",
     "number-propositions-third-number": "Trzecia cyfra:",
     "number-propositions-last-nums": "{count} ostatnie cyfry z przedziału:",
     "number-propositions-title": "Propozycje:",
     "number-propositions-empty": "Brak propozycji dla wybranej kategorii! :/"
+  },
+  "cargo-warnings": {
+    "title": "Dodatkowe uwagi przewozowe:",
+    "pn-innofreight": "PN: Innofreight C45: przekroczona skrajnia",
+    "twr-un1965": "TWR: UN1965 (LPG)",
+    "tn-un1965": "TN: brudne cysterny po UN1965",
+    "tn-un1202": "TN: UN1202 (olej napędowy)",
+    "tn-un1202-empty": "TN: brudne cysterny po UN1202",
+    "pn-military": "PN: transport wojskowy",
+    "pn-edk80": "PN: żuraw kolejowy EDK80"
   },
   "train-stats": {
     "stats-button": "STATYSTYKI",
@@ -545,7 +555,7 @@
     "no-users": "BRAK AKTYWNYCH GRACZY",
     "no-spawns": "BRAK OTWARTYCH SPAWNÓW",
     "no-scenery": "Ups! Ta sceneria nie istnieje!",
-    "return-btn": "POWRÓT DO STRONY GŁÓWNEJ",
+    "return-btn": "POWRÓT DO SCENERII",
     "history-btn": "Przejdź do widoku historii dyżurnych ruchu",
     "info-btn": "Wróć do widoku scenerii",
     "authors-title": "Autor scenerii | Autorzy scenerii",
@@ -589,10 +599,13 @@
       "scope-name": "OGÓLNIE",
       "scope-hash": "OBECNY HASH",
 
-      "place": "{n}. miejsce",
+      "place": "miejsce",
       "dispatcher-rating": "Ocena: {n}",
       "duty-count": "Brak dyżurów | 1 dyżur | Dyżury: {n}",
-      "duration": "Czas:"
+      "duration": "Czas:",
+
+      "no-data-general": "Brak zapisanych rekordów scenerii na serwerze PL1!",
+      "no-data-current-hash": "Brak zapisanych rekordów scenerii z obecnym hashem na serwerze PL1!"
     }
   },
   "availability": {

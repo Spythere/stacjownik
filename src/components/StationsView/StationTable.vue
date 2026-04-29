@@ -1,5 +1,5 @@
 <template>
-  <section class="station_table">
+  <section class="station_table" @scroll="onScroll" ref="tableRef">
     <Loading
       v-if="apiStore.dataStatuses.connection == Status.Loading && filteredStationList.length == 0"
     />
@@ -363,7 +363,8 @@ export default defineComponent({
   data: () => ({
     headIconsIds,
     headIds,
-    getChangedFilters
+    getChangedFilters,
+    scrollTop: 0
   }),
 
   setup() {
@@ -389,6 +390,10 @@ export default defineComponent({
       filteredStationList,
       activeSorter
     };
+  },
+
+  activated() {
+    (this.$refs['tableRef'] as HTMLElement).scrollTop = this.scrollTop;
   },
 
   methods: {
@@ -431,6 +436,10 @@ export default defineComponent({
       }));
 
       return JSON.stringify(usersTrains);
+    },
+
+    onScroll(e: Event) {
+      this.scrollTop = (e.target as HTMLElement).scrollTop;
     }
   }
 });

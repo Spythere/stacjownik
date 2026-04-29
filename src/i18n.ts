@@ -3,25 +3,6 @@ import plLang from './locales/pl.json';
 
 import { createI18n } from 'vue-i18n';
 
-function customRule(choice: number, choicesLength: number) {
-  if (choice === 0) {
-    return 0;
-  }
-
-  const teen = choice > 10 && choice < 20;
-  const endsWithOne = choice % 10 === 1;
-
-  if (!teen && endsWithOne) {
-    return 1;
-  }
-
-  if (!teen && choice % 10 >= 2 && choice % 10 <= 4) {
-    return 2;
-  }
-
-  return choicesLength < 4 ? 2 : 3;
-}
-
 const i18n = createI18n({
   locale: 'pl',
   legacy: false,
@@ -29,12 +10,42 @@ const i18n = createI18n({
   fallbackLocale: 'pl',
 
   pluralizationRules: {
-    pl: customRule
+    en: {
+      ordinal: (ctx: { named: (arg0: string) => number }) => {
+        const number = ctx.named('count');
+
+        const suffixes: Record<number, string> = {
+          1: 'st',
+          2: 'nd',
+          3: 'rd'
+        };
+        const suffix = suffixes[number % 10] || 'th';
+
+        return `${number}${suffix}`;
+      }
+    }
   },
 
   messages: {
-    en: enLang,
-    pl: plLang
+    en: {
+      ...enLang,
+      ordinal: (ctx: { named: (arg0: string) => number }) => {
+        const number = ctx.named('count');
+
+        const suffixes: Record<number, string> = {
+          1: 'st',
+          2: 'nd',
+          3: 'rd'
+        };
+        const suffix = suffixes[number % 10] || 'th';
+
+        return `${number}${suffix}`;
+      }
+    },
+    pl: {
+      ...plLang,
+      ordinal: '{count}.'
+    }
   },
   enableLegacy: false
 });

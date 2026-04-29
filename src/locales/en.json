@@ -438,14 +438,24 @@
     "driver-not-found-others": "Player {driver} is online as:",
     "driver-not-found-return": "RETURN TO THE MAIN SITE",
     "stock-copy": "COPY THE STOCK",
-    "number-propositions": "PROPOSE NUMBER",
+    "number-propositions": "NUMBER & WARNINGS SUGGESTIONS",
     "stock-clipboard-success": "Successfully copied the railway stock in a text form to your clipboard!",
     "stock-clipboard-failure": "Oops! Something happened and the railway stock couldn't be copied to your clipboard! :/",
-    "number-propositions-header": "Generate number examples for selected category:",
+    "number-propositions-header": "Generate number examples for a train category:",
     "number-propositions-third-number": "Third digit:",
     "number-propositions-last-nums": "{count} last digits from the range of:",
     "number-propositions-title": "Propositions:",
     "number-propositions-empty": "No propositions available for the chosen category! :/"
+  },
+  "cargo-warnings": {
+    "title": "Additional cargo warnings:",
+    "pn-innofreight": "PN: Innofreight C45: exceeded gauge",
+    "twr-un1965": "TWR: UN1965 (LPG)",
+    "tn-un1965": "TN: unclean tanks after UN1965",
+    "tn-un1202": "TN: UN1202 (diesel fuel)",
+    "tn-un1202-empty": "TN: unclean tanks after UN1202",
+    "pn-military": "PN: military transport",
+    "pn-edk80": "PN: EDK80 railway crane"
   },
   "train-stats": {
     "stats-button": "STATISTICS",
@@ -559,7 +569,7 @@
     "no-users": "NO ACTIVE PLAYERS",
     "no-spawns": "NO OPEN SPAWNS",
     "no-scenery": "Oops! This scenery doesn't exist!",
-    "return-btn": "BACK TO THE MAIN SITE",
+    "return-btn": "BACK TO SCENERIES",
     "history-btn": "View the dispatcher history",
     "info-btn": "Return to the scenery view",
     "authors-title": "Scenery author | Scenery authors",
@@ -587,7 +597,7 @@
     "dispatcher-rate": "Rate:",
     "dispatcher-status-changes": "Status changes:",
     "req-level": "all dispatcher levels | dispatcher level {lvl} required | dispatcher level {lvl} required",
-    "history-list-empty": "No recorded scenery history!",
+    "history-list-empty": "No saved scenery history!",
     "forum-topic": "Scenery's forum topic",
     "gnr-link": "Train orders generator",
     "pragotron-link": "Timetable pallet board",
@@ -603,10 +613,13 @@
       "scope-name": "GENERAL",
       "scope-hash": "CURRENT HASH",
 
-      "place": "{n}. place",
+      "place": "place",
       "dispatcher-rating": "Rating: {n}",
       "duty-count": "No duties | 1 duty | Duties: {n}",
-      "duration": "Duration:"
+      "duration": "Duration:",
+
+      "no-data-general": "No best scores for this scenery on the PL1 server!",
+      "no-data-current-hash": "No best scores for the current scenery hash on the PL1 server!"
     }
   },
   "availability": {

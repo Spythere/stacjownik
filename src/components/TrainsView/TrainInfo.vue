@@ -278,8 +278,6 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   font-size: 1em;
-  gap: 0.25em;
-
   background-color: #1a1a1a;
   gap: 0.5em;
 }
@@ -358,8 +356,6 @@ export default defineComponent({
 .status-badges {
   display: flex;
   flex-wrap: wrap;
-  margin-left: 0.25em;
-
   gap: 0.25em;
 
   img {
@@ -372,7 +368,7 @@ export default defineComponent({
   align-items: center;
   flex-wrap: wrap;
   gap: 0.5em;
-  padding: 0.5em 0;
+  padding: 0.25em 0;
 }
 
 .progress-distance {
