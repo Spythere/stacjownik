@@ -9,7 +9,8 @@ export const tooltipKeys = [
   'SpawnsTooltip',
   'UsersTooltip',
   'HtmlTooltip',
-  'TrainInfoTooltip'
+  'TrainInfoTooltip',
+  'CreatorTooltip'
 ] as const;
 
 export type TooltipType = (typeof tooltipKeys)[number];

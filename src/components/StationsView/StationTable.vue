@@ -131,7 +131,16 @@
           <td class="station-dispatcher-name">
             <span v-if="station.onlineInfo?.dispatcherName">
               <b
-                v-if="apiStore.donatorsData.includes(station.onlineInfo.dispatcherName)"
+                v-if="isCreator(station.onlineInfo.dispatcherName)"
+                data-tooltip-type="CreatorTooltip"
+                :data-tooltip-content="$t('donations.creator-message')"
+              >
+                <img src="/images/icon-creator.png" alt="creator icon" />
+                <span class="text--creator">&nbsp;{{ station.onlineInfo.dispatcherName }}</span>
+              </b>
+
+              <b
+                v-else-if="apiStore.donatorsData.includes(station.onlineInfo.dispatcherName)"
                 data-tooltip-type="DonatorTooltip"
                 :data-tooltip-content="$t('donations.dispatcher-message')"
               >
@@ -353,6 +362,7 @@ import { ActiveSorter, HeadIdsType, headIconsIds, headIds } from './typings';
 import { filterStations, sortStations } from './utils';
 import { getLanguageNameById } from '../../utils/languageUtils';
 import FlagIcon from '../Global/FlagIcon.vue';
+import { isCreator } from '../../utils/userUtils';
 
 export default defineComponent({
   emits: ['toggleDonationCard'],
@@ -363,8 +373,9 @@ export default defineComponent({
   data: () => ({
     headIconsIds,
     headIds,
+    scrollTop: 0,
     getChangedFilters,
-    scrollTop: 0
+    isCreator
   }),
 
   setup() {
@@ -622,8 +633,8 @@ tbody tr {
 
 .station-dispatcher-name {
   img {
-    max-width: 1.35em;
-    vertical-align: text-bottom;
+    max-height: 1.3em;
+    vertical-align: text-top;
   }
 }
 

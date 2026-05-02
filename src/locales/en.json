@@ -42,7 +42,8 @@
     "action-paypal": "DONATE WITH PAYPAL",
     "action-buycoffee": "BUY ME A COFFEE!",
     "dispatcher-message": "Dispatcher supporting the Stacjownik project!",
-    "driver-message": "Driver supporting the Stacjownik project!"
+    "driver-message": "Driver supporting the Stacjownik project!",
+    "creator-message": "Creator of the Stacjownik project"
   },
   "warnings": {
     "TWR": "Train with high risk cargo",

@@ -42,7 +42,8 @@
     "action-paypal": "PRZELEJ PAYPALEM",
     "action-buycoffee": "POSTAW KAWĘ!",
     "dispatcher-message": "Dyżurny wspierający projekt Stacjownika!",
-    "driver-message": "Maszynista wspierający projekt Stacjownika!"
+    "driver-message": "Maszynista wspierający projekt Stacjownika!",
+    "creator-message": "Twórca projektu Stacjownik"
   },
   "warnings": {
     "TWR": "Pociąg z towarami niebezpiecznymi wysokiego ryzyka",

@@ -5,7 +5,10 @@
         <ProfilePlayerAvatar :playerTD2Info="playerTD2Info" />
 
         <div>
-          <h2 class="player-name-header" :class="{ 'text--donator': isPlayerDonator }">
+          <h2
+            class="player-name-header"
+            :class="{ 'text--donator': isPlayerDonator, 'text--creator': isPlayerCreator }"
+          >
             <a :href="`https://td2.info.pl/profile/?u=${route.query.playerId}`" target="_blank">
               <img
                 v-if="isPlayerDonator"
@@ -232,6 +235,7 @@ import { useApiStore } from '../../store/apiStore';
 import StationStatusBadge from '../Global/StationStatusBadge.vue';
 import ProfilePlayerAvatar from './ProfilePlayerAvatar.vue';
 import { getRegionNameById } from '../../utils/regionUtils';
+import { isCreator } from '../../utils/userUtils';
 
 const { t } = useI18n();
 
@@ -256,6 +260,8 @@ const props = defineProps({
 const isPlayerDonator = computed(() =>
   props.playerName ? apiStore.donatorsData.includes(props.playerName) : false
 );
+
+const isPlayerCreator = computed(() => (props.playerName ? isCreator(props.playerName) : false));
 
 const activeDispatches = computed(() => {
   if (!props.playerName) return [];
