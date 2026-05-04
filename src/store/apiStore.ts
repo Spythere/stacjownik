@@ -63,14 +63,14 @@ export const useApiStore = defineStore('apiStore', {
         ]);
 
         if (this.nextDataCheckTime == 0) {
-          this.nextDataCheckTime = getRandomDurationFromRange(5000, 7500);
+          this.nextDataCheckTime = t + getRandomDurationFromRange(5000, 7500);
         } else {
-          this.nextDataCheckTime = getRandomDurationFromRange(600000, 720000);
+          this.nextDataCheckTime = t + getRandomDurationFromRange(600000, 720000);
         }
 
         console.log(
-          'Next data check at:',
-          new Date(Date.now() + this.nextDataCheckTime).toLocaleTimeString()
+          'Next time check:',
+          new Date(Date.now() + this.nextDataCheckTime - t).toLocaleTimeString()
         );
       }
 
