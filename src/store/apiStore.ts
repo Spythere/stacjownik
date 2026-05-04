@@ -3,6 +3,7 @@ import { API } from '../typings/api';
 import { Status } from '../typings/common';
 import { StationJSONData } from './typings';
 import { HttpClient } from '../http';
+import { getRandomDurationFromRange } from './utils';
 
 let baseURL = 'https://stacjownik.spythere.eu';
 
@@ -61,7 +62,16 @@ export const useApiStore = defineStore('apiStore', {
           this.fetchDonatorsData()
         ]);
 
-        this.nextDataCheckTime = t + 3600000;
+        if (this.nextDataCheckTime == 0) {
+          this.nextDataCheckTime = getRandomDurationFromRange(5000, 7500);
+        } else {
+          this.nextDataCheckTime = getRandomDurationFromRange(600000, 720000);
+        }
+
+        console.log(
+          'Next data check at:',
+          new Date(Date.now() + this.nextDataCheckTime).toLocaleTimeString()
+        );
       }
 
       // Active data fefresh

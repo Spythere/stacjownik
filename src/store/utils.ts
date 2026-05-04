@@ -48,3 +48,7 @@ export function parseSpawns(spawnString: string | null): ScenerySpawn[] {
 export function getTimestamp(date: string | null): number {
   return date ? new Date(date).getTime() : 0;
 }
+
+export function getRandomDurationFromRange(minDuration = 0, maxDuration: number) {
+  return Math.round(Math.random() * (maxDuration - minDuration) + minDuration);
+}
