@@ -72,9 +72,8 @@
             <span v-if="station.generalInfo">
               <span
                 v-if="
-                  station.generalInfo.reqLevel > -1 &&
-                  station.generalInfo.availability != 'nonPublic' &&
-                  station.generalInfo.availability != 'unavailable'
+                  station.generalInfo.availability == 'default' ||
+                  station.generalInfo.availability == 'nonDefault'
                 "
                 data-tooltip-type="BaseTooltip"
                 :data-tooltip-content="`${$t(`sceneries.info.${station.generalInfo.availability}`)} (${$t(
