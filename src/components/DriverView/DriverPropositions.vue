@@ -45,19 +45,60 @@
 
     <div class="no-propositions" v-else>{{ t('trains.number-propositions-empty') }}</div>
 
-    <div class="cargo-warnings" v-if="getCargoWarnings.size > 0">
+    <div class="cargo-warnings" v-if="Object.values(cargoWarnings).length > 0">
       <hr />
       <h3>{{ t('cargo-warnings.title') }}</h3>
 
       <div class="warnings-container">
         <div
-          v-for="warning in getCargoWarnings"
+          v-for="(_, warningKey) of cargoWarnings"
           class="train-badge"
-          :class="`${warning.split('-')[0]}`"
+          :class="warningKey.split('-')[2]"
         >
-          {{ t('cargo-warnings.' + warning) }}
+          {{ t('cargo-warnings.' + warningKey) }}
         </div>
       </div>
+    </div>
+
+    <div class="analysis">
+      <hr />
+      <div>
+        <h3>Analiza (PL):</h3>
+        <div v-if="Object.values(cargoWarnings).length > 0" v-html="analysisString"></div>
+
+        <!-- <div v-if="Object.keys(cargoWarnings).some((k) => k.includes('-twr'))">
+          {{ t('cargo-warnings.has-twr') }},
+        </div>
+
+        <div v-if="Object.keys(cargoWarnings).some((k) => k.includes('-tn'))">
+          {{ t('cargo-warnings.has-tn') }},
+        </div>
+
+        <div>
+          <i v-if="cargoWarnings['zags-loaded-twr'] || cargoWarnings['zags-empty-tn']">
+            33UN1965 {{ cargoWarnings['zags-loaded-twr'] }} /
+            {{ cargoWarnings['zags-empty-tn'] }} Zags
+          </i>
+        </div>
+
+        <div>
+          <i v-if="cargoWarnings['zans-loaded-tn'] || cargoWarnings['zans-empty-tn']">
+            33UN1203 {{ cargoWarnings['zans-loaded-tn'] }} /
+            {{ cargoWarnings['zans-empty-tn'] }} Zans
+          </i>
+        </div>
+
+        <div v-if="Object.keys(cargoWarnings).some((k) => k.includes('-pn'))">
+          {{ t('cargo-warnings.has-pn') }}:
+
+          <i v-if="cargoWarnings['innofreight-all-pn']"> Innofreight - przekroczona skrajnia </i>
+          <i v-if="cargoWarnings['military-all-pn']"> transport wojskowy </i>
+        </div> -->
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn--action btn-copy">SKOPIUJ ANALIZĘ</button>
     </div>
   </div>
 </template>
@@ -160,22 +201,41 @@ const chosenCategory = computed(() => {
   return availableCategories.value[chosenCategoryIndex.value];
 });
 
-const getCargoWarnings = computed(() => {
+const cargoWarnings = computed(() => {
   const stockList = props.chosenTrain.stockList;
 
-  let warnings: Set<string> = new Set();
+  let warnings: Record<string, number> = {};
 
   stockList.forEach((stockVehicle) => {
     const [vehicleName, vehicleCargo] = stockVehicle.split(':');
 
-    if (vehicleName.startsWith('WB117')) warnings.add(vehicleCargo ? 'twr-un1965' : 'tn-un1965');
-    else if (vehicleName.startsWith('445Rb'))
-      warnings.add(vehicleCargo ? 'tn-un1202' : 'tn-un1202-empty');
-    else if (vehicleName.startsWith('EDK80')) warnings.add('pn-edk80');
+    if (/^WB117/.test(vehicleName)) {
+      if (vehicleCargo) {
+        // warnings.add('twr-un1965');
+        warnings['zags-loaded-twr'] = (warnings['zags-loaded-twr'] || 0) + 1;
+      } else {
+        // warnings.add('tn-un1965');
+        warnings['zags-empty-tn'] = (warnings['zags-empty-tn'] || 0) + 1;
+      }
+    } else if (/^445Rb/.test(vehicleName)) {
+      if (vehicleCargo) {
+        // warnings.add(vehicleCargo ? 'tn-un1202' : 'tn-un1202-empty');
+        warnings['zans-loaded-tn'] = (warnings['zans-loaded-tn'] || 0) + 1;
+      } else {
+        // warnings.add(vehicleCargo ? 'tn-un1202' : 'tn-un1202-empty');
+        warnings['zans-empty-tn'] = (warnings['zans-empty-tn'] || 0) + 1;
+      }
+    } else if (/^EDK80/.test(vehicleName)) {
+      // warnings.add('pn-edk80');
+      warnings['edk80-all-pn'] = (warnings['edk80-all-pn'] || 0) + 1;
+    }
 
-    if (vehicleCargo) {
-      if (vehicleCargo.startsWith('wt_20')) warnings.add('pn-innofreight');
-      else if (/^(tank|vehicles_01|truck)/.test(vehicleCargo)) warnings.add('pn-military');
+    if (/^wt_20/.test(vehicleCargo)) {
+      warnings['innofreight-all-pn'] = (warnings['innofreight-all-pn'] || 0) + 1;
+    }
+
+    if (/^(tank|vehicles_01|truck)/.test(vehicleCargo)) {
+      warnings['military-all-pn'] = (warnings['military-all-pn'] || 0) + 1;
     }
   });
 
@@ -254,6 +314,42 @@ function selectCategory(i: number) {
   chosenCategoryIndex.value = i;
   generateNumberPropositions();
 }
+
+const analysisString = computed(() => {
+  let analysisStr = 'Analiza: ';
+
+  analysisStr = `<i>$number</i>, <b>${chosenCategory.value}</b> (${props.chosenTrain.stockList[0]}, ${(props.chosenTrain.mass / 1000).toFixed(1)}t, ${props.chosenTrain.length}m)`;
+
+  if (Object.keys(cargoWarnings.value).length > 0) {
+    if (Object.keys(cargoWarnings.value).some((k) => k.includes('-twr')))
+      analysisStr += `<br>${t('cargo-warnings.has-twr')}`;
+
+    if (Object.keys(cargoWarnings.value).some((k) => k.includes('-tn')))
+      analysisStr += `<br>${t('cargo-warnings.has-tn')}`;
+
+    if (cargoWarnings.value['zags-loaded-twr'] || cargoWarnings.value['zags-empty-tn']) {
+      analysisStr += `<br><i>33UN1965 ${cargoWarnings.value['zags-loaded-twr'] || 0}/${cargoWarnings.value['zags-empty-tn'] || 0} Zags</i>`;
+    }
+
+    if (cargoWarnings.value['zans-loaded-tn'] || cargoWarnings.value['zans-empty-tn']) {
+      analysisStr += `<br><i>33UN1203 ${cargoWarnings.value['zans-loaded-tn'] || 0}/${cargoWarnings.value['zans-empty-tn'] || 0} Zans</i>`;
+    }
+
+    if (Object.keys(cargoWarnings.value).some((k) => k.includes('-pn'))) {
+      analysisStr += `${t('cargo-warnings.has-pn')}:`;
+
+      if (cargoWarnings.value['innofreight-all-pn']) {
+        analysisStr += `<br> - Innofreight - przekroczona skrajnia`;
+      }
+
+      if (cargoWarnings.value['military-all-pn']) {
+        analysisStr += `<br> - transport wojskowy`;
+      }
+    }
+  }
+
+  return analysisStr;
+});
 </script>
 
 <style lang="scss" scoped>
@@ -307,6 +403,18 @@ function selectCategory(i: number) {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5em;
+}
+
+.analysis {
+  margin-top: 0.5em;
+
+  h3 {
+    margin: 0.5em 0;
+  }
+}
+
+.actions {
+  margin-top: 0.5em;
 }
 
 @include responsive.smallScreen {

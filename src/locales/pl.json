@@ -46,7 +46,7 @@
     "creator-message": "Twórca projektu Stacjownik"
   },
   "warnings": {
-    "TWR": "Pociąg z towarami niebezpiecznymi wysokiego ryzyka",
+    "TWR": "Pociąg z towarami niebezpiecznymi wysokiego ryzyka (TWR)",
     "SKR": "Pociąg z przekroczoną skrajnią",
     "PN": "Pociąg z przesyłkami nadzwyczajnymi",
     "TN": "Pociąg z towarami niebezpiecznymi",
@@ -437,13 +437,20 @@
   },
   "cargo-warnings": {
     "title": "Dodatkowe uwagi przewozowe:",
-    "pn-innofreight": "PN: Innofreight C45: przekroczona skrajnia",
-    "twr-un1965": "TWR: UN1965 (LPG)",
-    "tn-un1965": "TN: brudne cysterny po UN1965",
-    "tn-un1202": "TN: UN1202 (olej napędowy)",
-    "tn-un1202-empty": "TN: brudne cysterny po UN1202",
-    "pn-military": "PN: transport wojskowy",
-    "pn-edk80": "PN: żuraw kolejowy EDK80"
+    "zags-loaded-twr": "TWR: UN1965 (LPG)",
+    "zags-empty-tn": "TN: brudne cysterny po UN1965",
+    "zans-tn": "TN: UN1202 (olej napędowy)",
+    "zans-empty-tn": "TN: brudne cysterny po UN1202",
+    "military-all-pn": "PN: transport wojskowy",
+    "edk80-all-pn": "PN: żuraw kolejowy EDK80",
+    "innofreight-all-pn": "PN: Innofreight C45: przekroczona skrajnia",
+
+    "has-pn": "* przejazd z przesyłkami nadzwyczajnymi (PN)",
+    "has-tn": "* przewozi towary niebezpieczne (TN)",
+    "has-twr": "* przewozi towary niebezpieczne wysokiego ryzyka (TWR)",
+
+    "empty": "puste",
+    "loaded": "pełne"
   },
   "train-stats": {
     "stats-button": "STATYSTYKI",
