@@ -4,12 +4,8 @@
 
     <!-- Train action buttons -->
     <div class="train-stock-actions">
-      <button class="btn btn--action" @click="copyStockToClipboard()">
-        <i class="fa-regular fa-copy"></i> {{ i18n.t('trains.stock-copy') }}
-      </button>
-
       <button class="btn btn--action" @click="toggleNumberPropositions()">
-        <i class="fa-regular fa-lightbulb"></i> {{ i18n.t('trains.number-propositions') }}
+        <i class="fa-regular fa-lightbulb"></i> {{ i18n.t('analysis.button-show') }}
       </button>
     </div>
 
@@ -44,32 +40,12 @@ const props = defineProps({
   }
 });
 
-function copyStockToClipboard() {
-  const stockString = props.chosenTrain.stockList.join(';');
-
-  if (!stockString) {
-    alert(i18n.t('trains.stock-clipboard-failure'));
-    return;
-  }
-
-  navigator.clipboard
-    .writeText(stockString)
-    .then(() => {
-      prompt(i18n.t('trains.stock-clipboard-success'), stockString);
-    })
-    .catch(() => {
-      alert(i18n.t('trains.stock-clipboard-failure'));
-    });
-}
-
 function toggleNumberPropositions() {
   arePropositionsVisible.value = !arePropositionsVisible.value;
 }
 </script>
 
 <style lang="scss" scoped>
-@use '../../styles/responsive';
-
 .driver-train-card {
   padding: 1em;
   background-color: var(--clr-view-bg);
@@ -81,11 +57,5 @@ function toggleNumberPropositions() {
   flex-wrap: wrap;
   gap: 0.5em;
   margin: 1em 0;
-}
-
-@include responsive.smallScreen {
-  .train-stock-actions {
-    justify-content: center;
-  }
 }
 </style>

@@ -437,27 +437,45 @@
     "driver-not-found-desc-2": "You can browse timetable history in the",
     "driver-not-found-journal": "TIMETABLES JOURNAL",
     "driver-not-found-others": "Player {driver} is online as:",
-    "driver-not-found-return": "RETURN TO THE MAIN SITE",
+    "driver-not-found-return": "RETURN TO THE MAIN SITE"
+  },
+
+  "analysis": {
+    "button-show": "ANALYSIS & STOCK",
+    "number-info": "will be automatically updated to the current train number chosen in the simulator after the analysis is sent in the chat.",
+    "button-copy": "COPY THE ANALYSIS",
+    "title": "Analysis content",
     "stock-copy": "COPY THE STOCK",
-    "number-propositions": "NUMBER & WARNINGS SUGGESTIONS",
     "stock-clipboard-success": "Successfully copied the railway stock in a text form to your clipboard!",
     "stock-clipboard-failure": "Oops! Something happened and the railway stock couldn't be copied to your clipboard! :/",
-    "number-propositions-header": "Generate number examples for a train category:",
-    "number-propositions-third-number": "Third digit:",
-    "number-propositions-last-nums": "{count} last digits from the range of:",
-    "number-propositions-title": "Propositions:",
-    "number-propositions-empty": "No propositions available for the chosen category! :/"
+
+    "propositions": {
+      "title": "Number propositions:",
+      "header": "Generate number examples for the chosen train category:",
+      "third-number": "Third digit:",
+      "last-nums": "{count} last digits from the range of:",
+      "empty": "No propositions available for the chosen category! :/"
+    },
+
+    "warnings": {
+      "title": "Additional cargo warnings:",
+      "zags-loaded-twr": "TWR: UN1965 (LPG)",
+      "zags-empty-tn": "TN: unclean tanks after UN1965",
+      "zans-loaded-tn": "TN: UN1202 (diesel fuel)",
+      "zans-empty-tn": "TN: unclean tanks after UN1202",
+      "military-all-pn": "PN: military transport",
+      "edk80-all-pn": "PN: EDK80 railway crane",
+      "innofreight-all-pn": "PN: Innofreight C45: exceeded gauge",
+
+      "has-pn": "* contains extraordinary deliveries (PN)",
+      "has-tn": "* contains dangerous cargo (TN)",
+      "has-twr": "* contains high risk dangerous cargo (TWR)",
+
+      "empty": "empty",
+      "loaded": "loaded"
+    }
   },
-  "cargo-warnings": {
-    "title": "Additional cargo warnings:",
-    "pn-innofreight": "PN: Innofreight C45: exceeded gauge",
-    "twr-un1965": "TWR: UN1965 (LPG)",
-    "tn-un1965": "TN: unclean tanks after UN1965",
-    "tn-un1202": "TN: UN1202 (diesel fuel)",
-    "tn-un1202-empty": "TN: unclean tanks after UN1202",
-    "pn-military": "PN: military transport",
-    "pn-edk80": "PN: EDK80 railway crane"
-  },
+
   "train-stats": {
     "stats-button": "STATISTICS",
     "title": "ONLINE TRAINS STATS",
