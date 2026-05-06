@@ -1,0 +1,10 @@
+{
+  "title": "Analiza dla: ",
+
+  "has-pn": "* przejazd z przesyłkami nadzwyczajnymi (PN)",
+  "has-tn": "* przewozi towary niebezpieczne (TN)",
+  "has-twr": "* przewozi towary niebezpieczne wysokiego ryzyka (TWR)",
+
+  "empty": "puste",
+  "loaded": "pełne"
+}

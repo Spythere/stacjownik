@@ -444,7 +444,6 @@
     "button-show": "ANALYSIS & STOCK",
     "number-info": "will be automatically updated to the current train number chosen in the simulator after the analysis is sent in the chat.",
     "button-copy": "COPY THE ANALYSIS",
-    "title": "Analysis content",
     "stock-copy": "COPY THE STOCK",
     "stock-clipboard-success": "Successfully copied the railway stock in a text form to your clipboard!",
     "stock-clipboard-failure": "Oops! Something happened and the railway stock couldn't be copied to your clipboard! :/",
@@ -465,14 +464,7 @@
       "zans-empty-tn": "TN: unclean tanks after UN1202",
       "military-all-pn": "PN: military transport",
       "edk80-all-pn": "PN: EDK80 railway crane",
-      "innofreight-all-pn": "PN: Innofreight C45: exceeded gauge",
-
-      "has-pn": "* contains extraordinary deliveries (PN)",
-      "has-tn": "* contains dangerous cargo (TN)",
-      "has-twr": "* contains high risk dangerous cargo (TWR)",
-
-      "empty": "empty",
-      "loaded": "loaded"
+      "innofreight-all-pn": "PN: Innofreight C45: exceeded gauge"
     }
   },
 

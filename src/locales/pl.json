@@ -434,7 +434,7 @@
     "button-show": "ANALIZA I SKŁAD",
     "number-info": "zostanie automatycznie zaktualizowany na obecny numer wybrany w symulatorze po wysłaniu wiadomości na czacie.",
     "button-copy": "SKOPIUJ ANALIZĘ",
-    "title": "Treść analizy",
+    "title": "Treść analizy:",
 
     "stock-copy": "SKOPIUJ SKŁAD",
     "stock-clipboard-success": "Pomyślnie skopiowano skład w postaci tekstowej do schowka:",
@@ -456,14 +456,7 @@
       "zans-empty-tn": "TN: brudne cysterny po UN1202",
       "military-all-pn": "PN: transport wojskowy",
       "edk80-all-pn": "PN: żuraw kolejowy EDK80",
-      "innofreight-all-pn": "PN: Innofreight C45: przekroczona skrajnia",
-
-      "has-pn": "* przejazd z przesyłkami nadzwyczajnymi (PN)",
-      "has-tn": "* przewozi towary niebezpieczne (TN)",
-      "has-twr": "* przewozi towary niebezpieczne wysokiego ryzyka (TWR)",
-
-      "empty": "puste",
-      "loaded": "pełne"
+      "innofreight-all-pn": "PN: Innofreight C45: przekroczona skrajnia"
     }
   },
   "train-stats": {

@@ -1,0 +1,10 @@
+{
+  "title": "Analysis for: ",
+
+  "has-pn": "* contains extraordinary deliveries (PN)",
+  "has-tn": "* contains dangerous cargo (TN)",
+  "has-twr": "* contains high risk dangerous cargo (TWR)",
+
+  "empty": "empty",
+  "loaded": "loaded"
+}

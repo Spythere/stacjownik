@@ -71,13 +71,20 @@
           {{ t('analysis.title') }}
         </h3>
 
-        {{ analysisLanguage }}
-        <button class="btn btn--image" @click="changeAnalysisLanguage('pl')">
-          <img src="/images/flags/pl.svg" alt="" width="20" />
+        <button
+          class="btn btn--image"
+          :data-checked="analysisi18n.global.locale == 'pl'"
+          @click="changeAnalysisLanguage('pl')"
+        >
+          <img src="/images/flags/pl.svg" alt="flag pl" width="25" />
         </button>
 
-        <button class="btn btn--image" @click="changeAnalysisLanguage('en')">
-          <img src="/images/flags/en.svg" alt="" width="20" />
+        <button
+          class="btn btn--image"
+          :data-checked="analysisi18n.global.locale == 'en'"
+          @click="changeAnalysisLanguage('en')"
+        >
+          <img src="/images/flags/en.svg" alt="flag eng" width="25" />
         </button>
       </div>
 
@@ -86,8 +93,10 @@
       <hr class="divider" />
 
       <div class="analysis-actions">
-        <button class="btn btn--action">
-          <i class="fa-regular fa-copy"></i>{{ t('analysis.button-copy') }}
+        <button class="btn btn--action" @click="copyAnalysisToClipboard()">
+          <i class="fa-regular fa-copy"></i>{{ t('analysis.button-copy') }} ({{
+            analysisi18n.global.locale.toUpperCase()
+          }})
         </button>
 
         <button class="btn btn--action" @click="copyStockToClipboard()">
@@ -102,12 +111,24 @@
 
 <script setup lang="ts">
 import { ref, computed, PropType, watch, onMounted } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { createI18n, useI18n } from 'vue-i18n';
 import { Train } from '../../typings/common';
 import rulesJSON from '../../data/trainNumberRules.json';
 import { useApiStore } from '../../store/apiStore';
 
-const { t, locale } = useI18n();
+import enLang from '../../locales/analysis/en.json';
+import plLang from '../../locales/analysis/pl.json';
+
+const { t } = useI18n();
+
+const analysisi18n = createI18n({
+  locale: 'pl',
+  messages: {
+    en: enLang,
+    pl: plLang
+  },
+  sync: false
+});
 
 const apiStore = useApiStore();
 
@@ -121,11 +142,8 @@ const props = defineProps({
 const emits = defineEmits(['selectCategory']);
 
 const chosenCategoryIndex = ref(0);
-
 const numberPropositions = ref<string[]>([]);
 const chosenCategoryRules = ref<any[]>([]);
-
-const analysisLanguage = ref(locale.value);
 
 watch(
   computed(() => props.chosenTrain.trainNo),
@@ -220,8 +238,24 @@ function copyStockToClipboard() {
     });
 }
 
-function changeAnalysisLanguage(langId: string) {
-  analysisLanguage.value = langId;
+function copyAnalysisToClipboard() {
+  let content = `\n${analysisi18n.global.t('title')}`;
+  content += analysisHtml.value;
+
+  content = content.replace(/<br>/g, '\n');
+
+  navigator.clipboard
+    .writeText(content)
+    .then(() => {
+      prompt(t('analysis.stock-clipboard-success'), content);
+    })
+    .catch(() => {
+      alert(t('analysis.stock-clipboard-failure'));
+    });
+}
+
+function changeAnalysisLanguage(langId: 'pl' | 'en') {
+  analysisi18n.global.locale = langId;
 }
 
 const chosenCategory = computed(() => {
@@ -338,16 +372,14 @@ const availableCategories = computed(() => {
 });
 
 const analysisHtml = computed(() => {
-  let analysisStr = `${t('analysis.title')}: `;
-
-  analysisStr += `<b>${chosenCategory.value} $number </b> (${props.chosenTrain.stockList[0]}, ${(props.chosenTrain.mass / 1000).toFixed(1)}t, ${props.chosenTrain.length}m)`;
+  let analysisStr = `<b>${chosenCategory.value} $number </b> (${props.chosenTrain.stockList[0]}, ${(props.chosenTrain.mass / 1000).toFixed(1)}t, ${props.chosenTrain.length}m)`;
 
   if (Object.keys(cargoWarnings.value).length > 0) {
     if (Object.keys(cargoWarnings.value).some((k) => k.includes('-twr')))
-      analysisStr += `<br>${t('analysis.warnings.has-twr')}`;
+      analysisStr += `<br>${analysisi18n.global.t('has-twr')}`;
 
     if (Object.keys(cargoWarnings.value).some((k) => k.includes('-tn')))
-      analysisStr += `<br>${t('analysis.warnings.has-tn')}`;
+      analysisStr += `<br>${analysisi18n.global.t('has-tn')}`;
 
     if (cargoWarnings.value['zags-loaded-twr'] || cargoWarnings.value['zags-empty-tn']) {
       analysisStr += `<br><i>33UN1965 ${cargoWarnings.value['zags-loaded-twr'] || 0}/${cargoWarnings.value['zags-empty-tn'] || 0} Zags</i>`;
@@ -358,7 +390,7 @@ const analysisHtml = computed(() => {
     }
 
     if (Object.keys(cargoWarnings.value).some((k) => k.includes('-pn'))) {
-      analysisStr += `${t('analysis.warnings.has-pn')}:`;
+      analysisStr += `${analysisi18n.global.t('has-pn')}:`;
 
       if (cargoWarnings.value['innofreight-all-pn']) {
         analysisStr += `<br> - Innofreight - przekroczona skrajnia`;
@@ -380,8 +412,7 @@ const analysisHtml = computed(() => {
 
 hr.divider {
   margin: 0.5em 0;
-  border-bottom: #111;
-  border-width: 2px;
+  border-top: #111;
 }
 
 .analysis-box {
@@ -423,6 +454,7 @@ hr.divider {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5em;
+  margin-top: 0.5em;
 }
 
 .analysis-html {
@@ -438,8 +470,13 @@ hr.divider {
   align-items: center;
   gap: 0.5em;
 
-  .btn {
+  & > .btn {
     padding: 0;
+    opacity: 0.6;
+
+    &[data-checked='true'] {
+      opacity: 1;
+    }
   }
 }
 

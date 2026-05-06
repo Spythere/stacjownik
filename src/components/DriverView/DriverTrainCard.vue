@@ -11,7 +11,7 @@
 
     <!-- Proposed numbers container -->
     <transition name="view-anim">
-      <DriverPropositions :chosenTrain="chosenTrain" v-if="arePropositionsVisible" />
+      <DriverAnalysis :chosenTrain="chosenTrain" v-if="arePropositionsVisible" />
     </transition>
 
     <StockList :trainStockList="chosenTrain.stockList" :key="chosenTrain.id" :showPreviews="true" />
@@ -27,7 +27,7 @@ import { useI18n } from 'vue-i18n';
 import StockList from '../Global/StockList.vue';
 import TrainSchedule from '../TrainsView/TrainSchedule.vue';
 import TrainInfo from '../TrainsView/TrainInfo.vue';
-import DriverPropositions from './DriverPropositions.vue';
+import DriverAnalysis from './DriverAnalysis.vue';
 
 const i18n = useI18n();
 
