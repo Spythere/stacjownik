@@ -24,12 +24,6 @@ import { useRoute, useRouter } from 'vue-router';
 const route = useRoute();
 const router = useRouter();
 
-const prevPath = ref('/');
-
-onMounted(() => {
-  prevPath.value = (route.meta['prevPath'] as string) ?? '/';
-});
-
 defineProps({
   station: {
     type: Object as PropType<Station>
@@ -46,7 +40,7 @@ defineProps({
 });
 
 function onReturnButtonClick() {
-  router.push(prevPath.value);
+  router.push('/');
 }
 </script>
 

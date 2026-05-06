@@ -42,10 +42,11 @@
     "action-paypal": "PRZELEJ PAYPALEM",
     "action-buycoffee": "POSTAW KAWĘ!",
     "dispatcher-message": "Dyżurny wspierający projekt Stacjownika!",
-    "driver-message": "Maszynista wspierający projekt Stacjownika!"
+    "driver-message": "Maszynista wspierający projekt Stacjownika!",
+    "creator-message": "Twórca projektu Stacjownik"
   },
   "warnings": {
-    "TWR": "Pociąg z towarami niebezpiecznymi wysokiego ryzyka",
+    "TWR": "Pociąg z towarami niebezpiecznymi wysokiego ryzyka (TWR)",
     "SKR": "Pociąg z przekroczoną skrajnią",
     "PN": "Pociąg z przesyłkami nadzwyczajnymi",
     "TN": "Pociąg z towarami niebezpiecznymi",
@@ -425,14 +426,38 @@
     "driver-not-found-others": "Gracz {driver} jest online jako:",
     "driver-not-found-return": "WRÓĆ NA STRONĘ GŁÓWNĄ",
     "stock-copy": "SKOPIUJ SKŁAD",
-    "number-propositions": "ZAPROPONUJ NUMER",
     "stock-clipboard-success": "Pomyślnie skopiowano skład w postaci tekstowej do schowka!",
+    "stock-clipboard-failure": "Ups! Nie udało się skopiować składu do schowka! :/"
+  },
+
+  "analysis": {
+    "button-show": "ANALIZA I SKŁAD",
+    "number-info": "zostanie automatycznie zaktualizowany na obecny numer wybrany w symulatorze po wysłaniu wiadomości na czacie.",
+    "button-copy": "SKOPIUJ ANALIZĘ",
+    "title": "Treść analizy:",
+
+    "stock-copy": "SKOPIUJ SKŁAD",
+    "stock-clipboard-success": "Pomyślnie skopiowano skład w postaci tekstowej do schowka:",
     "stock-clipboard-failure": "Ups! Nie udało się skopiować składu do schowka! :/",
-    "number-propositions-header": "Wygeneruj propozycje numerów dla kategorii pociągu:",
-    "number-propositions-third-number": "Trzecia cyfra:",
-    "number-propositions-last-nums": "{count} ostatnie cyfry z przedziału:",
-    "number-propositions-title": "Propozycje:",
-    "number-propositions-empty": "Brak propozycji dla wybranej kategorii! :/"
+
+    "propositions": {
+      "title": "Propozycje numerów:",
+      "header": "Wygeneruj analizę dla pociągu wybranej kategorii:",
+      "third-number": "Trzecia cyfra:",
+      "last-nums": "{count} ostatnie cyfry z przedziału:",
+      "empty": "Brak propozycji dla wybranej kategorii!"
+    },
+
+    "warnings": {
+      "title": "Dodatkowe uwagi przewozowe:",
+      "zags-loaded-twr": "TWR: UN1965 (LPG)",
+      "zags-empty-tn": "TN: brudne cysterny po UN1965",
+      "zans-loaded-tn": "TN: UN1202 (olej napędowy)",
+      "zans-empty-tn": "TN: brudne cysterny po UN1202",
+      "military-all-pn": "PN: transport wojskowy",
+      "edk80-all-pn": "PN: żuraw kolejowy EDK80",
+      "innofreight-all-pn": "PN: Innofreight C45: przekroczona skrajnia"
+    }
   },
   "train-stats": {
     "stats-button": "STATYSTYKI",
@@ -479,9 +504,7 @@
     "stock-timetable-speed": "Prędkość RJ",
     "stock-dangers": "DODATKOWE UWAGI",
     "stock-preview": "PODGLĄD SKŁADU",
-    "stock-copy": "SKOPIUJ SKŁAD",
-    "stock-clipboard-success": "Pomyślnie skopiowano skład w postaci tekstowej do schowka:",
-    "stock-clipboard-failure": "Ups! Nie udało się skopiować składu do schowka! :/",
+    "stock-copy": "KOPIUJ SKŁAD",
     "load-data": "Pobierz dalszą historię...",
     "last-seen-at": "Ostatnio widziany na: ",
     "currently-at": "Obecnie na scenerii: ",
@@ -545,7 +568,7 @@
     "no-users": "BRAK AKTYWNYCH GRACZY",
     "no-spawns": "BRAK OTWARTYCH SPAWNÓW",
     "no-scenery": "Ups! Ta sceneria nie istnieje!",
-    "return-btn": "POWRÓT DO STRONY GŁÓWNEJ",
+    "return-btn": "POWRÓT DO SCENERII",
     "history-btn": "Przejdź do widoku historii dyżurnych ruchu",
     "info-btn": "Wróć do widoku scenerii",
     "authors-title": "Autor scenerii | Autorzy scenerii",
@@ -589,10 +612,13 @@
       "scope-name": "OGÓLNIE",
       "scope-hash": "OBECNY HASH",
 
-      "place": "{n}. miejsce",
+      "place": "miejsce",
       "dispatcher-rating": "Ocena: {n}",
       "duty-count": "Brak dyżurów | 1 dyżur | Dyżury: {n}",
-      "duration": "Czas:"
+      "duration": "Czas:",
+
+      "no-data-general": "Brak zapisanych rekordów scenerii na serwerze PL1!",
+      "no-data-current-hash": "Brak zapisanych rekordów scenerii z obecnym hashem na serwerze PL1!"
     }
   },
   "availability": {

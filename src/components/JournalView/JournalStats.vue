@@ -64,11 +64,18 @@ function navigateToProfile() {
 <style lang="scss" scoped>
 @use '../../styles/dropdown';
 @use '../../styles/dropdown-filters';
+@use '../../styles/responsive';
 
 .dropdown_wrapper {
   left: auto;
   right: 0;
   max-width: 700px;
   top: 3.5em;
+}
+
+@include responsive.smallScreen {
+  .dropdown_wrapper {
+    top: 6.25em;
+  }
 }
 </style>

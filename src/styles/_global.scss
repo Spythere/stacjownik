@@ -217,6 +217,19 @@ ul {
     text-shadow: #f050ff 0 0 10px;
   }
 
+  &--creator {
+    color: var(--clr-primary);
+    color: transparent;
+
+    background: var(--clr-primary);
+    background: linear-gradient(90deg, gold 30%, #ffffff 70%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    text-shadow: gold 0 0 10px;
+  }
+
   &--discord {
     color: var(--clr-donator);
     color: transparent;

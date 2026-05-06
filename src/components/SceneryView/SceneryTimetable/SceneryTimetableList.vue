@@ -67,7 +67,7 @@
           v-for="row in sceneryTimetables"
           class="timetable-item"
           :to="row.train.driverRouteLocation"
-          :key="row.train.id"
+          :key="row.train.id + (row.checkpointStop.departureTimestamp || 0)"
         >
           <div class="item-top">
             <div class="top-general">
