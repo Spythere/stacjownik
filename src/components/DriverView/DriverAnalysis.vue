@@ -1,6 +1,6 @@
 <template>
   <div class="analysis-box">
-    <div class="driver-propositions">
+    <div class="analysis-propositions">
       <h3>{{ t('analysis.propositions.header') }}</h3>
 
       <div class="categories-select">
@@ -57,78 +57,37 @@
             class="train-badge"
             :class="warningKey.split('-')[2]"
           >
-            {{ t('analysis.warnings.' + warningKey) }}
+            {{ t('analysis.warnings.' + warningKey, cargoWarnings[warningKey]) }}
           </div>
         </div>
       </div>
+
+      <div class="cargo-warnings no-warnings" v-else>
+        <hr class="divider" />
+        {{ t('analysis.warnings.no-warnings') }}
+      </div>
     </div>
 
-    <hr class="divider" />
+    <div class="analysis-actions">
+      <button class="btn btn--action" @click="copyStockToClipboard()">
+        <i class="fa-regular fa-copy"></i> {{ t('analysis.stock-copy') }}
+      </button>
 
-    <div class="analysis-content">
-      <div class="analysis-header">
-        <h3>
-          {{ t('analysis.title') }}
-        </h3>
-
-        <button
-          class="btn btn--image"
-          :data-checked="analysisi18n.global.locale == 'pl'"
-          @click="changeAnalysisLanguage('pl')"
-        >
-          <img src="/images/flags/pl.svg" alt="flag pl" width="25" />
-        </button>
-
-        <button
-          class="btn btn--image"
-          :data-checked="analysisi18n.global.locale == 'en'"
-          @click="changeAnalysisLanguage('en')"
-        >
-          <img src="/images/flags/en.svg" alt="flag eng" width="25" />
-        </button>
-      </div>
-
-      <div class="analysis-html" v-html="analysisHtml"></div>
-
-      <hr class="divider" />
-
-      <div class="analysis-actions">
-        <button class="btn btn--action" @click="copyAnalysisToClipboard()">
-          <i class="fa-regular fa-copy"></i>{{ t('analysis.button-copy') }} ({{
-            analysisi18n.global.locale.toUpperCase()
-          }})
-        </button>
-
-        <button class="btn btn--action" @click="copyStockToClipboard()">
-          <i class="fa-regular fa-copy"></i> {{ t('analysis.stock-copy') }}
-        </button>
-      </div>
-
-      <p class="number-info"><i>$number</i> {{ t('analysis.number-info') }}</p>
+      <button class="btn btn--action" @click="copyNumberToClipboard()">
+        <i class="fa-regular fa-copy"></i> {{ t('analysis.number-copy') }}
+      </button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, PropType, watch, onMounted } from 'vue';
-import { createI18n, useI18n } from 'vue-i18n';
+import { useI18n } from 'vue-i18n';
 import { Train } from '../../typings/common';
 import rulesJSON from '../../data/trainNumberRules.json';
 import { useApiStore } from '../../store/apiStore';
 
-import enLang from '../../locales/analysis/en.json';
-import plLang from '../../locales/analysis/pl.json';
-
 const { t } = useI18n();
-
-const analysisi18n = createI18n({
-  locale: 'pl',
-  messages: {
-    en: enLang,
-    pl: plLang
-  },
-  sync: false
-});
 
 const apiStore = useApiStore();
 
@@ -156,107 +115,6 @@ watch(
 onMounted(() => {
   generateNumberPropositions();
 });
-
-function selectCategory(i: number) {
-  chosenCategoryIndex.value = i;
-  generateNumberPropositions();
-}
-
-function generateNumberPropositions() {
-  const categoryCode = chosenCategory.value?.slice(0, 2);
-  const trainNoStr = props.chosenTrain.trainNo.toString();
-
-  // Get category rules
-  const rules = categoryCode
-    ? ((rulesJSON.categoriesRules as any)[categoryCode] as any[])
-    : undefined;
-
-  if (!categoryCode || !rules) {
-    numberPropositions.value.length = 0;
-    chosenCategoryRules.value.length = 0;
-
-    return;
-  }
-
-  const [thirdNumber, minRange, maxRange] = rules;
-
-  const propositionsArr: string[] = [];
-
-  for (let i = 0; i < 5; i++) {
-    let generatedNumStr = '';
-
-    generatedNumStr += trainNoStr[0] ?? Math.floor(Math.random() * 10);
-    generatedNumStr += trainNoStr[1] ?? Math.floor(Math.random() * 10);
-
-    // Third number
-    generatedNumStr += thirdNumber ?? '';
-
-    // Remaining numbers
-    const rangeNums = minRange?.length ?? 3;
-
-    const randRange = Math.floor(
-      Math.random() * (Number(maxRange) - Number(minRange)) + Number(minRange)
-    ).toString();
-
-    const leadingZeros = new Array(Math.abs(randRange.toString().length - rangeNums))
-      .fill('0')
-      .join('');
-
-    generatedNumStr += `${leadingZeros}${randRange}`;
-
-    const isNumberTaken =
-      apiStore.activeData?.trains?.some((t) => t.trainNo.toString() == generatedNumStr) ?? false;
-
-    if (!isNumberTaken) {
-      propositionsArr.push(generatedNumStr);
-    } else {
-      i--;
-    }
-
-    if (Number(randRange) > Number(maxRange)) break;
-  }
-
-  numberPropositions.value = propositionsArr;
-  chosenCategoryRules.value = rules;
-}
-
-function copyStockToClipboard() {
-  const stockString = props.chosenTrain.stockList.join(';');
-
-  if (!stockString) {
-    alert(t('analysis.stock-clipboard-failure'));
-    return;
-  }
-
-  navigator.clipboard
-    .writeText(stockString)
-    .then(() => {
-      prompt(t('analysis.stock-clipboard-success'), stockString);
-    })
-    .catch(() => {
-      alert(t('analysis.stock-clipboard-failure'));
-    });
-}
-
-function copyAnalysisToClipboard() {
-  let content = `\n${analysisi18n.global.t('title')}`;
-  content += analysisHtml.value;
-
-  content = content.replace(/<br>/g, '\n');
-
-  navigator.clipboard
-    .writeText(content)
-    .then(() => {
-      prompt(t('analysis.stock-clipboard-success'), content);
-    })
-    .catch(() => {
-      alert(t('analysis.stock-clipboard-failure'));
-    });
-}
-
-function changeAnalysisLanguage(langId: 'pl' | 'en') {
-  analysisi18n.global.locale = langId;
-}
 
 const chosenCategory = computed(() => {
   return availableCategories.value[chosenCategoryIndex.value];
@@ -371,39 +229,100 @@ const availableCategories = computed(() => {
   return availableCategories.map((c) => `${c}${categoryTraction}`);
 });
 
-const analysisHtml = computed(() => {
-  let analysisStr = `<b>${chosenCategory.value} $number </b> (${props.chosenTrain.stockList[0]}, ${(props.chosenTrain.mass / 1000).toFixed(1)}t, ${props.chosenTrain.length}m)`;
+function selectCategory(i: number) {
+  chosenCategoryIndex.value = i;
+  generateNumberPropositions();
+}
 
-  if (Object.keys(cargoWarnings.value).length > 0) {
-    if (Object.keys(cargoWarnings.value).some((k) => k.includes('-twr')))
-      analysisStr += `<br>${analysisi18n.global.t('has-twr')}`;
+function generateNumberPropositions() {
+  const categoryCode = chosenCategory.value?.slice(0, 2);
+  const trainNoStr = props.chosenTrain.trainNo.toString();
 
-    if (Object.keys(cargoWarnings.value).some((k) => k.includes('-tn')))
-      analysisStr += `<br>${analysisi18n.global.t('has-tn')}`;
+  // Get category rules
+  const rules = categoryCode
+    ? ((rulesJSON.categoriesRules as any)[categoryCode] as any[])
+    : undefined;
 
-    if (cargoWarnings.value['zags-loaded-twr'] || cargoWarnings.value['zags-empty-tn']) {
-      analysisStr += `<br><i>33UN1965 ${cargoWarnings.value['zags-loaded-twr'] || 0}/${cargoWarnings.value['zags-empty-tn'] || 0} Zags</i>`;
-    }
+  if (!categoryCode || !rules) {
+    numberPropositions.value.length = 0;
+    chosenCategoryRules.value.length = 0;
 
-    if (cargoWarnings.value['zans-loaded-tn'] || cargoWarnings.value['zans-empty-tn']) {
-      analysisStr += `<br><i>33UN1203 ${cargoWarnings.value['zans-loaded-tn'] || 0}/${cargoWarnings.value['zans-empty-tn'] || 0} Zans</i>`;
-    }
-
-    if (Object.keys(cargoWarnings.value).some((k) => k.includes('-pn'))) {
-      analysisStr += `${analysisi18n.global.t('has-pn')}:`;
-
-      if (cargoWarnings.value['innofreight-all-pn']) {
-        analysisStr += `<br> - Innofreight - przekroczona skrajnia`;
-      }
-
-      if (cargoWarnings.value['military-all-pn']) {
-        analysisStr += `<br> - transport wojskowy`;
-      }
-    }
+    return;
   }
 
-  return analysisStr;
-});
+  const [thirdNumber, minRange, maxRange] = rules;
+
+  const propositionsArr: string[] = [];
+
+  for (let i = 0; i < 5; i++) {
+    let generatedNumStr = '';
+
+    generatedNumStr += trainNoStr[0] ?? Math.floor(Math.random() * 10);
+    generatedNumStr += trainNoStr[1] ?? Math.floor(Math.random() * 10);
+
+    // Third number
+    generatedNumStr += thirdNumber ?? '';
+
+    // Remaining numbers
+    const rangeNums = minRange?.length ?? 3;
+
+    const randRange = Math.floor(
+      Math.random() * (Number(maxRange) - Number(minRange)) + Number(minRange)
+    ).toString();
+
+    const leadingZeros = new Array(Math.abs(randRange.toString().length - rangeNums))
+      .fill('0')
+      .join('');
+
+    generatedNumStr += `${leadingZeros}${randRange}`;
+
+    const isNumberTaken =
+      apiStore.activeData?.trains?.some((t) => t.trainNo.toString() == generatedNumStr) ?? false;
+
+    if (!isNumberTaken) {
+      propositionsArr.push(generatedNumStr);
+    } else {
+      i--;
+    }
+
+    if (Number(randRange) > Number(maxRange)) break;
+  }
+
+  numberPropositions.value = propositionsArr;
+  chosenCategoryRules.value = rules;
+}
+
+function copyStockToClipboard() {
+  const stockString = props.chosenTrain.stockList.join(';');
+
+  if (!stockString) {
+    alert(t('analysis.stock-clipboard-failure'));
+    return;
+  }
+
+  navigator.clipboard
+    .writeText(stockString)
+    .then(() => {
+      prompt(t('analysis.stock-clipboard-success'), stockString);
+    })
+    .catch(() => {
+      alert(t('analysis.stock-clipboard-failure'));
+    });
+}
+
+function copyNumberToClipboard() {
+  const randomProposition =
+    numberPropositions.value[Math.floor(Math.random() * numberPropositions.value.length)];
+
+  navigator.clipboard
+    .writeText(randomProposition)
+    .then(() => {
+      prompt(t('analysis.number-clipboard-success'), randomProposition);
+    })
+    .catch(() => {
+      alert(t('analysis.number-clipboard-failure'));
+    });
+}
 </script>
 
 <style lang="scss" scoped>
@@ -457,38 +376,16 @@ hr.divider {
   margin-top: 0.5em;
 }
 
-.analysis-html {
-  display: inline-block;
-  padding: 0.5em;
-  background-color: #2e2e2e;
-  margin-top: 0.5em;
-  user-select: none;
-}
-
-.analysis-header {
-  display: flex;
-  align-items: center;
-  gap: 0.5em;
-
-  & > .btn {
-    padding: 0;
-    opacity: 0.6;
-
-    &[data-checked='true'] {
-      opacity: 1;
-    }
-  }
-}
-
 .analysis-actions {
   display: flex;
   gap: 0.5em;
-  margin: 0.5em 0;
+  flex-wrap: wrap;
+
+  margin-top: 1em;
 }
 
-.number-info {
-  font-size: 0.85em;
-  color: #aaa;
+.no-warnings {
+  color: #ccc;
 }
 
 @include responsive.smallScreen {
@@ -501,6 +398,10 @@ hr.divider {
   }
 
   .warnings-container {
+    justify-content: center;
+  }
+
+  .analysis-actions {
     justify-content: center;
   }
 }

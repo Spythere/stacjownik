@@ -443,10 +443,15 @@
   "analysis": {
     "button-show": "ANALYSIS & STOCK",
     "number-info": "will be automatically updated to the current train number chosen in the simulator after the analysis is sent in the chat.",
-    "button-copy": "COPY THE ANALYSIS",
+
     "stock-copy": "COPY THE STOCK",
-    "stock-clipboard-success": "Successfully copied the railway stock in a text form to your clipboard!",
+    "stock-clipboard-success": "Successfully copied the railway stock in a text form to your clipboard:",
     "stock-clipboard-failure": "Oops! Something happened and the railway stock couldn't be copied to your clipboard! :/",
+
+    "number-copy": "COPY A NUMBER",
+    "cargo-copy": "COPY CARGO WARNINGS",
+    "number-clipboard-success": "Successfully copied the number in a text form to your clipboard:",
+    "number-clipboard-failure": "Oops! Something happened and the number couldn't be copied to your clipboard! :/",
 
     "propositions": {
       "title": "Number propositions:",
@@ -458,13 +463,16 @@
 
     "warnings": {
       "title": "Additional cargo warnings:",
-      "zags-loaded-twr": "TWR: UN1965 (LPG)",
-      "zags-empty-tn": "TN: unclean tanks after UN1965",
-      "zans-loaded-tn": "TN: UN1202 (diesel fuel)",
-      "zans-empty-tn": "TN: unclean tanks after UN1202",
+
+      "zags-loaded-twr": "TWR: 33UN1965 (LPG), {0}x Zags",
+      "zags-empty-tn": "TN: 33UN1965 (LPG), {0}x Zags (empty)",
+      "zans-loaded-tn": "TN: 33UN1202 (diesel), {0}x Zans",
+      "zans-empty-tn": "TN: 33UN1202 (diesel), {0}x Zans (empty)",
       "military-all-pn": "PN: military transport",
       "edk80-all-pn": "PN: EDK80 railway crane",
-      "innofreight-all-pn": "PN: Innofreight C45: exceeded gauge"
+      "innofreight-all-pn": "PN: Innofreight C45: (exceeded gauge)",
+
+      "no-warnings": "No additional cargo warnings"
     }
   },
 

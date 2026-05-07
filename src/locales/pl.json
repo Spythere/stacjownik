@@ -433,16 +433,19 @@
   "analysis": {
     "button-show": "ANALIZA I SKŁAD",
     "number-info": "zostanie automatycznie zaktualizowany na obecny numer wybrany w symulatorze po wysłaniu wiadomości na czacie.",
-    "button-copy": "SKOPIUJ ANALIZĘ",
     "title": "Treść analizy:",
 
     "stock-copy": "SKOPIUJ SKŁAD",
-    "stock-clipboard-success": "Pomyślnie skopiowano skład w postaci tekstowej do schowka:",
+    "stock-clipboard-success": "Pomyślnie skopiowano do schowka skład w postaci tekstowej:",
     "stock-clipboard-failure": "Ups! Nie udało się skopiować składu do schowka! :/",
+
+    "number-copy": "SKOPIUJ NUMER",
+    "number-clipboard-success": "Pomyślnie skopiowano do schowka numer:",
+    "number-clipboard-failure": "Ups! Nie udało się skopiować numeru do schowka! :/",
 
     "propositions": {
       "title": "Propozycje numerów:",
-      "header": "Wygeneruj analizę dla pociągu wybranej kategorii:",
+      "header": "Wygeneruj propozycje numerów dla pociągu wybranej kategorii:",
       "third-number": "Trzecia cyfra:",
       "last-nums": "{count} ostatnie cyfry z przedziału:",
       "empty": "Brak propozycji dla wybranej kategorii!"
@@ -450,13 +453,15 @@
 
     "warnings": {
       "title": "Dodatkowe uwagi przewozowe:",
-      "zags-loaded-twr": "TWR: UN1965 (LPG)",
-      "zags-empty-tn": "TN: brudne cysterny po UN1965",
-      "zans-loaded-tn": "TN: UN1202 (olej napędowy)",
-      "zans-empty-tn": "TN: brudne cysterny po UN1202",
+      "zags-loaded-twr": "TWR: 33UN1965 (LPG), {0}x Zags",
+      "zags-empty-tn": "TN: 33UN1965 (LPG), {0}x Zags (puste)",
+      "zans-loaded-tn": "TN: 33UN1202 (ON), {0}x Zans",
+      "zans-empty-tn": "TN: 33UN1202 (ON), {0}x Zans (puste)",
       "military-all-pn": "PN: transport wojskowy",
       "edk80-all-pn": "PN: żuraw kolejowy EDK80",
-      "innofreight-all-pn": "PN: Innofreight C45: przekroczona skrajnia"
+      "innofreight-all-pn": "PN: Innofreight C45 (przekroczona skrajnia)",
+
+      "no-warnings": "Brak dodatkowych uwag przewozowych"
     }
   },
   "train-stats": {
