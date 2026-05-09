@@ -57,7 +57,7 @@
             class="train-badge"
             :class="warningKey.split('-')[2]"
           >
-            {{ t('analysis.warnings.' + warningKey, cargoWarnings[warningKey]) }}
+            {{ t('analysis.warnings.' + warningKey, [cargoWarnings[warningKey]]) }}
           </div>
         </div>
       </div>
