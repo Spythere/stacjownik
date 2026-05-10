@@ -49,7 +49,7 @@
       <div class="cargo-warnings" v-if="Object.values(cargoWarnings).length > 0">
         <hr class="divider" />
 
-        <h3>{{ t('analysis.warnings.title') }}</h3>
+        <h3>{{ t('analysis.warnings-title') }}</h3>
 
         <div class="warnings-container">
           <div
@@ -64,7 +64,7 @@
 
       <div class="cargo-warnings no-warnings" v-else>
         <hr class="divider" />
-        {{ t('analysis.warnings.no-warnings') }}
+        {{ t('analysis.no-warnings') }}
       </div>
     </div>
 
@@ -86,6 +86,9 @@ import { useI18n } from 'vue-i18n';
 import { Train } from '../../typings/common';
 import rulesJSON from '../../data/trainNumberRules.json';
 import { useApiStore } from '../../store/apiStore';
+import { analysis } from '../../locales/pl.json';
+
+type AnalysisKey = keyof typeof analysis.warnings;
 
 const { t } = useI18n();
 
@@ -128,33 +131,22 @@ const cargoWarnings = computed(() => {
   stockList.forEach((stockVehicle) => {
     const [vehicleName, vehicleCargo] = stockVehicle.split(':');
 
+    let warningsKey: AnalysisKey | null = null;
+
     if (/^WB117/.test(vehicleName)) {
-      if (vehicleCargo) {
-        // warnings.add('twr-un1965');
-        warnings['zags-loaded-twr'] = (warnings['zags-loaded-twr'] || 0) + 1;
-      } else {
-        // warnings.add('tn-un1965');
-        warnings['zags-empty-tn'] = (warnings['zags-empty-tn'] || 0) + 1;
-      }
+      warningsKey = vehicleCargo ? 'zags-loaded-twr' : 'zags-empty-tn';
     } else if (/^445Rb/.test(vehicleName)) {
-      if (vehicleCargo) {
-        // warnings.add(vehicleCargo ? 'tn-un1202' : 'tn-un1202-empty');
-        warnings['zans-loaded-tn'] = (warnings['zans-loaded-tn'] || 0) + 1;
-      } else {
-        // warnings.add(vehicleCargo ? 'tn-un1202' : 'tn-un1202-empty');
-        warnings['zans-empty-tn'] = (warnings['zans-empty-tn'] || 0) + 1;
-      }
+      warningsKey = vehicleCargo ? 'zans-loaded-tn' : 'zans-empty-tn';
     } else if (/^EDK80/.test(vehicleName)) {
-      // warnings.add('pn-edk80');
-      warnings['edk80-all-pn'] = (warnings['edk80-all-pn'] || 0) + 1;
+      warningsKey = 'edk80-all-pn';
+    } else if (/^wt_20/.test(vehicleCargo)) {
+      warningsKey = 'innofreight-all-pn';
+    } else if (/^(tank|vehicles_01|truck)/.test(vehicleCargo)) {
+      warningsKey = 'military-all-pn';
     }
 
-    if (/^wt_20/.test(vehicleCargo)) {
-      warnings['innofreight-all-pn'] = (warnings['innofreight-all-pn'] || 0) + 1;
-    }
-
-    if (/^(tank|vehicles_01|truck)/.test(vehicleCargo)) {
-      warnings['military-all-pn'] = (warnings['military-all-pn'] || 0) + 1;
+    if (warningsKey) {
+      warnings[warningsKey] = (warnings[warningsKey] || 0) + 1;
     }
   });
 

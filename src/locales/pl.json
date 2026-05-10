@@ -431,7 +431,7 @@
   },
 
   "analysis": {
-    "button-show": "ANALIZA I SKŁAD",
+    "button-show": "INFORMACJE O SKŁADZIE",
     "number-info": "zostanie automatycznie zaktualizowany na obecny numer wybrany w symulatorze po wysłaniu wiadomości na czacie.",
     "title": "Treść analizy:",
 
@@ -453,17 +453,17 @@
       "empty": "Brak propozycji dla wybranej kategorii!"
     },
 
+    "warnings-title": "Dodatkowe uwagi przewozowe:",
+    "no-warnings": "Brak dodatkowych uwag przewozowych",
+
     "warnings": {
-      "title": "Dodatkowe uwagi przewozowe:",
       "zags-loaded-twr": "TWR: 23UN1965, {0}x Zags",
       "zags-empty-tn": "TN: 23UN1965, {0}x Zags (próżne)",
       "zans-loaded-tn": "TN: 33UN1202, {0}x Zans",
       "zans-empty-tn": "TN: 33UN1202, {0}x Zans (próżne)",
       "military-all-pn": "PN: transport wojskowy",
       "edk80-all-pn": "PN: żuraw kolejowy EDK80",
-      "innofreight-all-pn": "PN: Innofreight C45 (przekroczona skrajnia)",
-
-      "no-warnings": "Brak dodatkowych uwag przewozowych"
+      "innofreight-all-pn": "PN: Innofreight C45 (przekroczona skrajnia)"
     }
   },
   "train-stats": {
