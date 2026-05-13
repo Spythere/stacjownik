@@ -44,11 +44,11 @@ const props = defineProps({
   }
 });
 
-const { activeData } = useApiStore();
+const apiStore = useApiStore();
 const { t } = useI18n();
 
 const activeScenery = computed(() => {
-  return activeData?.activeSceneries
+  return apiStore.activeData?.activeSceneries
     ?.filter((sc) => sc.stationName == props.sceneryName)
     .sort((s1, s2) => s2.lastSeen - s1.lastSeen)[0];
 });
