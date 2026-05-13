@@ -6,8 +6,9 @@
 
     <span v-if="activeScenery">
       &bull;
-      {{ activeScenery.dispatcherName }}
-      &bull;
+      {{ activeScenery.dispatcherName }} ({{
+        activeScenery.dispatcherExp > 1 ? activeScenery.dispatcherExp : 'L'
+      }}) &bull;
       <span
         v-if="activeScenery.lastSeen >= Date.now() - 60000 || activeScenery.isOnline"
         class="online-status"
