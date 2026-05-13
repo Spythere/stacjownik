@@ -463,17 +463,9 @@ $blinkAnim: 0.5s ease-in-out alternate infinite blink;
     border-color: $haltClr;
   }
 
-  // &[data-minor-stop-active='true'] {
-  //   .progress > .line {
-  //     animation: $blinkAnim;
-  //   }
-
-  //   & + div {
-  //     .progress > .line_node-top {
-  //       animation: $blinkAnim;
-  //     }
-  //   }
-  // }
+  &[data-stop-type*='ph,pt'] .node {
+    border-color: $haltClr;
+  }
 
   &[data-is-active='true'] {
     .progress > .line_connection {
