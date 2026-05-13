@@ -443,7 +443,7 @@
   },
 
   "analysis": {
-    "button-show": "STOCK INFORMATION",
+    "button-show": "DRIVER'S HELPER",
     "number-info": "will be automatically updated to the current train number chosen in the simulator after the analysis is sent in the chat.",
 
     "stock-copy": "COPY CURRENT STOCK",
