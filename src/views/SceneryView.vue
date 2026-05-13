@@ -2,6 +2,15 @@
   <div class="scenery-view">
     <div class="scenery-wrapper" ref="card-wrapper">
       <div class="scenery-left">
+        <div class="scenery-actions">
+          <button class="btn--filled btn--image" @click="onReturnButtonClick">
+            <img src="/images/icon-back.svg" alt="return icon" />
+            <span>
+              {{ $t('scenery.return-btn') }}
+            </span>
+          </button>
+        </div>
+
         <SceneryHeader
           :stationName="station"
           :station="stationInfo"
@@ -131,6 +140,10 @@ function setViewMode(componentName: string) {
     }
   });
 }
+
+function onReturnButtonClick() {
+  router.back();
+}
 </script>
 
 <style lang="scss" scoped>
@@ -186,10 +199,8 @@ function setViewMode(componentName: string) {
 .scenery-right {
   position: relative;
   overflow: auto;
-
-  background-color: #181818;
   border-radius: 0.5em;
-  padding: 1em;
+  background-color: var(--clr-tile);
 }
 
 .scenery-left {
@@ -201,10 +212,20 @@ function setViewMode(componentName: string) {
   display: grid;
   grid-template-rows: auto 1fr;
   gap: 1em;
+
+  padding: 1em;
 }
 
 .scenery-actions {
+  position: sticky;
+  top: 0;
+  padding: 0.25em;
+
   display: flex;
+
+  button {
+    padding: 0.5em;
+  }
 }
 
 .info-actions {

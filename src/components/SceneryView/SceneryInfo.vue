@@ -54,6 +54,11 @@ defineProps({
 <style lang="scss" scoped>
 @use '../../styles/responsive';
 
+.scenery-info {
+  padding: 1em;
+  border-radius: 0 0 1em 1em;
+}
+
 .info-station-loading {
   display: flex;
   align-items: center;
