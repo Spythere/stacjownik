@@ -171,7 +171,9 @@
     "afk": "Z/W",
     "no-space": "BRAK MIEJSCA",
     "invalid": "NIEWPISANY",
-    "unknown": "NIEZNANY"
+    "unknown": "NIEZNANY",
+    "online-to": "dostępny do: {0}",
+    "offline-since": "offline od: {0}"
   },
   "options": {
     "filters": "FILTRY",

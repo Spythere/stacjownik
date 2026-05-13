@@ -444,6 +444,15 @@ export namespace API {
 
     export type Response = Data;
   }
+
+  export namespace TimetableDetails {
+    export interface Data {
+      timetable: TimetableHistory.Data | null;
+      timetableDispatchers: (DispatcherHistory.Data | null)[] | null;
+    }
+
+    export type Response = Data;
+  }
 }
 
 export namespace GithubAPI {
