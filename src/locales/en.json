@@ -442,7 +442,7 @@
     "driver-not-found-return": "RETURN TO THE MAIN SITE"
   },
 
-  "analysis": {
+  "helper": {
     "button-show": "DRIVER'S HELPER",
     "number-info": "will be automatically updated to the current train number chosen in the simulator after the analysis is sent in the chat.",
 

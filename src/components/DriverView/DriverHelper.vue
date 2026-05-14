@@ -1,7 +1,7 @@
 <template>
-  <div class="analysis-box">
-    <div class="analysis-propositions">
-      <h3>{{ t('analysis.propositions.header') }}</h3>
+  <div class="helper-box">
+    <div class="helper-propositions">
+      <h3>{{ t('helper.propositions.header') }}</h3>
 
       <div class="categories-select">
         <button
@@ -23,13 +23,13 @@
 
         <div v-if="chosenCategoryRules">
           <span v-if="chosenCategoryRules[0]"
-            >{{ t('analysis.propositions.third-number') }}
+            >{{ t('helper.propositions.third-number') }}
             <b class="text--primary">{{ chosenCategoryRules[0] }}</b> &bull;
           </span>
 
           <span
             >{{
-              t('analysis.propositions.last-nums', {
+              t('helper.propositions.last-nums', {
                 count: chosenCategoryRules[1].length
               })
             }}
@@ -39,17 +39,17 @@
         </div>
 
         <div style="margin-top: 0.5em">
-          <b>{{ t('analysis.propositions.title') }}&nbsp;</b>
+          <b>{{ t('helper.propositions.title') }}&nbsp;</b>
           <i>{{ numberPropositions.join(', ') }}</i>
         </div>
       </div>
 
-      <div class="no-propositions" v-else>{{ t('analysis.propositions.empty') }}</div>
+      <div class="no-propositions" v-else>{{ t('helper.propositions.empty') }}</div>
 
       <div class="cargo-warnings" v-if="Object.values(cargoWarnings).length > 0">
         <hr class="divider" />
 
-        <h3>{{ t('analysis.warnings-title') }}</h3>
+        <h3>{{ t('helper.warnings-title') }}</h3>
 
         <div class="warnings-container">
           <div
@@ -57,24 +57,24 @@
             class="train-badge"
             :class="warningKey.split('-')[2]"
           >
-            {{ t('analysis.warnings.' + warningKey, [cargoWarnings[warningKey]]) }}
+            {{ t('helper.warnings.' + warningKey, [cargoWarnings[warningKey]]) }}
           </div>
         </div>
       </div>
 
       <div class="cargo-warnings no-warnings" v-else>
         <hr class="divider" />
-        {{ t('analysis.no-warnings') }}
+        {{ t('helper.no-warnings') }}
       </div>
     </div>
 
     <div class="analysis-actions">
       <button class="btn btn--action" @click="copyStockToClipboard()">
-        <i class="fa-regular fa-copy"></i> {{ t('analysis.stock-copy') }}
+        <i class="fa-regular fa-copy"></i> {{ t('helper.stock-copy') }}
       </button>
 
       <button class="btn btn--action" @click="copyNumberToClipboard()">
-        <i class="fa-regular fa-copy"></i> {{ t('analysis.number-copy') }}
+        <i class="fa-regular fa-copy"></i> {{ t('helper.number-copy') }}
       </button>
     </div>
   </div>
@@ -86,9 +86,9 @@ import { useI18n } from 'vue-i18n';
 import { Train } from '../../typings/common';
 import rulesJSON from '../../data/trainNumberRules.json';
 import { useApiStore } from '../../store/apiStore';
-import { analysis } from '../../locales/pl.json';
+import { helper } from '../../locales/pl.json';
 
-type AnalysisKey = keyof typeof analysis.warnings;
+type CargoWarningsKey = keyof typeof helper.warnings;
 
 const { t } = useI18n();
 
@@ -131,7 +131,7 @@ const cargoWarnings = computed(() => {
   stockList.forEach((stockVehicle) => {
     const [vehicleName, vehicleCargo] = stockVehicle.split(':');
 
-    let warningsKey: AnalysisKey | null = null;
+    let warningsKey: CargoWarningsKey | null = null;
 
     if (/^WB117/.test(vehicleName)) {
       warningsKey = vehicleCargo ? 'zags-loaded-twr' : 'zags-empty-tn';
@@ -288,17 +288,17 @@ function copyStockToClipboard() {
   const stockString = props.chosenTrain.stockList.join(';');
 
   if (!stockString) {
-    alert(t('analysis.stock-clipboard-failure'));
+    alert(t('helper.stock-clipboard-failure'));
     return;
   }
 
   navigator.clipboard
     .writeText(stockString)
     .then(() => {
-      prompt(t('analysis.stock-clipboard-success'), stockString);
+      prompt(t('helper.stock-clipboard-success'), stockString);
     })
     .catch(() => {
-      alert(t('analysis.stock-clipboard-failure'));
+      alert(t('helper.stock-clipboard-failure'));
     });
 }
 
@@ -309,10 +309,10 @@ function copyNumberToClipboard() {
   navigator.clipboard
     .writeText(randomProposition)
     .then(() => {
-      prompt(t('analysis.number-clipboard-success'), randomProposition);
+      prompt(t('helper.number-clipboard-success'), randomProposition);
     })
     .catch(() => {
-      alert(t('analysis.number-clipboard-failure'));
+      alert(t('helper.number-clipboard-failure'));
     });
 }
 </script>
@@ -326,7 +326,7 @@ hr.divider {
   border-top: #111;
 }
 
-.analysis-box {
+.helper-box {
   padding: 0.5em;
   margin-bottom: 1em;
   background-color: #111;
@@ -381,7 +381,7 @@ hr.divider {
 }
 
 @include responsive.smallScreen {
-  .analysis-box {
+  .helper-box {
     text-align: center;
   }
 

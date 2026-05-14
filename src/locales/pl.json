@@ -432,7 +432,7 @@
     "stock-clipboard-failure": "Ups! Nie udało się skopiować składu do schowka! :/"
   },
 
-  "analysis": {
+  "helper": {
     "button-show": "POMOCNIK MASZYNISTY",
     "number-info": "zostanie automatycznie zaktualizowany na obecny numer wybrany w symulatorze po wysłaniu wiadomości na czacie.",
     "title": "Treść analizy:",
@@ -468,6 +468,7 @@
       "innofreight-all-pn": "PN: Innofreight C45 (przekroczona skrajnia)"
     }
   },
+
   "train-stats": {
     "stats-button": "STATYSTYKI",
     "title": "STATYSTYKI AKTYWNYCH POCIĄGÓW",

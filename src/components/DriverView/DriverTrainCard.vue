@@ -5,13 +5,13 @@
     <!-- Train action buttons -->
     <div class="train-stock-actions">
       <button class="btn btn--action" @click="toggleNumberPropositions()">
-        <i class="fa-regular fa-lightbulb"></i> {{ i18n.t('analysis.button-show') }}
+        <i class="fa-regular fa-lightbulb"></i> {{ i18n.t('helper.button-show') }}
       </button>
     </div>
 
     <!-- Proposed numbers container -->
     <transition name="view-anim">
-      <DriverAnalysis :chosenTrain="chosenTrain" v-if="arePropositionsVisible" />
+      <DriverHelper :chosenTrain="chosenTrain" v-if="arePropositionsVisible" />
     </transition>
 
     <StockList :trainStockList="chosenTrain.stockList" :key="chosenTrain.id" :showPreviews="true" />
@@ -24,7 +24,7 @@ import { Train } from '@/typings/common';
 import { ref, PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import DriverAnalysis from './DriverAnalysis.vue';
+import DriverHelper from './DriverHelper.vue';
 import StockList from '../Global/StockList.vue';
 import DriverTrainSchedule from './DriverTrainSchedule.vue';
 import TrainInfo from '../TrainsView/TrainInfo.vue';
