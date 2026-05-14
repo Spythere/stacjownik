@@ -176,7 +176,7 @@
     "invalid": "INVALID HASH",
     "unknown": "UNKNOWN",
     "online-to": "online until: {0}",
-    "offline-since": "offline since: {0}"
+    "offline-since": "offline since ~{0}"
   },
   "options": {
     "filters": "FILTERS",

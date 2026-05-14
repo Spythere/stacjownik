@@ -173,7 +173,7 @@
     "invalid": "NIEWPISANY",
     "unknown": "NIEZNANY",
     "online-to": "dostępny do: {0}",
-    "offline-since": "offline od: {0}"
+    "offline-since": "offline od ~{0}"
   },
   "options": {
     "filters": "FILTRY",
