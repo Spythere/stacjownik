@@ -107,7 +107,7 @@
                   "
                   class="scenery-change-name"
                 >
-                  <TrainScheduleSceneryInfo :scenery-name="stop.nextPointRef.sceneryName" />
+                  <ScheduleSceneryInfo :scenery-name="stop.nextPointRef.sceneryName" />
                 </div>
 
                 <div
@@ -162,18 +162,24 @@
 </template>
 
 <script lang="ts">
+import dateMixin from '@/mixins/dateMixin';
+import { useApiStore } from '@/store/apiStore';
+import { useMainStore } from '@/store/mainStore';
+import {
+  Train,
+  TimetablePathElement,
+  TrainSchedulePoint,
+  StationRoutesInfo
+} from '@/typings/common';
 import { defineComponent, PropType } from 'vue';
-import dateMixin from '../../mixins/dateMixin';
-import StopLabel from './StopLabel.vue';
+
+import StopLabel from '../TrainsView/StopLabel.vue';
 import StockList from '../Global/StockList.vue';
-import { useMainStore } from '../../store/mainStore';
-import { useApiStore } from '../../store/apiStore';
-import { StationRoutesInfo, TimetablePathElement, Train } from '../../typings/common';
-import { TrainSchedulePoint } from './typings';
-import TrainScheduleSceneryInfo from './TrainScheduleSceneryInfo.vue';
+
+import ScheduleSceneryInfo from './ScheduleSceneryInfo.vue';
 
 export default defineComponent({
-  components: { StopLabel, StockList, TrainScheduleSceneryInfo },
+  components: { StopLabel, StockList, ScheduleSceneryInfo },
 
   props: {
     train: {

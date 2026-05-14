@@ -248,3 +248,37 @@ export interface TooltipTrainInfo {
   stockCount: number;
   trainTimetableCategory?: string;
 }
+
+export interface TrainSchedulePoint {
+  nameHtml: string;
+  nameRaw: string;
+
+  status: 'confirmed' | 'unconfirmed' | 'stopped';
+  position: 'begin' | 'end' | 'en-route';
+  type: string;
+  duration: number;
+  distance: number;
+  arrivalScheduled: number;
+  arrivalReal: number;
+  departureScheduled: number;
+  departureReal: number;
+
+  comments: string | null;
+
+  arrivalDelay: number;
+  departureDelay: number;
+  arrivalLine: string | null;
+  departureLine: string | null;
+
+  arrivalLineInfo: StationRoutesInfo | null;
+  departureLineInfo: StationRoutesInfo | null;
+
+  isExternal: boolean;
+
+  isActive: boolean;
+  isSBL: boolean;
+  sceneryName: string | null;
+  isSceneryOnline: boolean;
+
+  nextPointRef: TrainSchedulePoint | null;
+}

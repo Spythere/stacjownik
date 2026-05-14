@@ -15,19 +15,19 @@
     </transition>
 
     <StockList :trainStockList="chosenTrain.stockList" :key="chosenTrain.id" :showPreviews="true" />
-    <TrainSchedule :train="chosenTrain" />
+    <DriverTrainSchedule :train="chosenTrain" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { PropType, ref } from 'vue';
-import { Train } from '../../typings/common';
+import { Train } from '@/typings/common';
+import { ref, PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import StockList from '../Global/StockList.vue';
-import TrainSchedule from '../TrainsView/TrainSchedule.vue';
-import TrainInfo from '../TrainsView/TrainInfo.vue';
 import DriverAnalysis from './DriverAnalysis.vue';
+import StockList from '../Global/StockList.vue';
+import DriverTrainSchedule from './DriverTrainSchedule.vue';
+import TrainInfo from '../TrainsView/TrainInfo.vue';
 
 const i18n = useI18n();
 
