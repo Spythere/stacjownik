@@ -2,14 +2,7 @@
   <div class="scenery-view">
     <div class="scenery-wrapper" ref="card-wrapper">
       <div class="scenery-left">
-        <div class="scenery-actions">
-          <button class="btn--filled btn--image" @click="onReturnButtonClick">
-            <img src="/images/icon-back.svg" alt="return icon" />
-            <span>
-              {{ $t('scenery.return-btn') }}
-            </span>
-          </button>
-        </div>
+        <SceneryActions />
 
         <SceneryHeader
           :stationName="station"
@@ -54,9 +47,11 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted } from 'vue';
+import { computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useMainStore } from '../store/mainStore';
+import { useApiStore } from '../store/apiStore';
+import { Status } from '../typings/common';
 
 import SceneryInfo from '../components/SceneryView/SceneryInfo.vue';
 import SceneryHeader from '../components/SceneryView/SceneryHeader.vue';
@@ -64,10 +59,8 @@ import SceneryHeader from '../components/SceneryView/SceneryHeader.vue';
 import SceneryTimetable from '../components/SceneryView/SceneryTimetable.vue';
 import SceneryTimetablesHistory from '../components/SceneryView/SceneryTimetablesHistory.vue';
 import SceneryDispatchersHistory from '../components/SceneryView/SceneryDispatchersHistory.vue';
-
-import { useApiStore } from '../store/apiStore';
-import { Status } from '../typings/common';
 import SceneryTopList from '../components/SceneryView/SceneryTopList.vue';
+import SceneryActions from '@/components/SceneryView/SceneryActions.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -140,10 +133,6 @@ function setViewMode(componentName: string) {
     }
   });
 }
-
-function onReturnButtonClick() {
-  router.back();
-}
 </script>
 
 <style lang="scss" scoped>
@@ -214,18 +203,6 @@ function onReturnButtonClick() {
   gap: 1em;
 
   padding: 1em;
-}
-
-.scenery-actions {
-  position: sticky;
-  top: 0;
-  padding: 0.25em;
-
-  display: flex;
-
-  button {
-    padding: 0.5em;
-  }
 }
 
 .info-actions {
