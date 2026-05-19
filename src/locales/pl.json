@@ -469,6 +469,12 @@
     }
   },
 
+  "driver": {
+    "details": {
+      "button-show": "INFORMACJE O ROZKŁADZIE"
+    }
+  },
+
   "train-stats": {
     "stats-button": "STATYSTYKI",
     "title": "STATYSTYKI AKTYWNYCH POCIĄGÓW",

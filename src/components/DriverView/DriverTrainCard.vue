@@ -7,11 +7,19 @@
       <button class="btn btn--action" @click="toggleNumberPropositions()">
         <i class="fa-regular fa-lightbulb"></i> {{ i18n.t('helper.button-show') }}
       </button>
+
+      <button class="btn btn--action" @click="toggleNumberPropositions()">
+        <i class="fa-regular fa-calendar"></i> {{ i18n.t('driver.details.button-show') }}
+      </button>
     </div>
 
     <!-- Proposed numbers container -->
     <transition name="view-anim">
       <DriverHelper :chosenTrain="chosenTrain" v-if="arePropositionsVisible" />
+    </transition>
+
+    <transition name="view-anim">
+      <DriverTimetableHistory />
     </transition>
 
     <StockList :trainStockList="chosenTrain.stockList" :key="chosenTrain.id" :showPreviews="true" />
@@ -28,6 +36,7 @@ import DriverHelper from './DriverHelper.vue';
 import StockList from '../Global/StockList.vue';
 import DriverTrainSchedule from './DriverTrainSchedule.vue';
 import TrainInfo from '../TrainsView/TrainInfo.vue';
+import DriverTimetableHistory from './DriverTimetableHistory.vue';
 
 const i18n = useI18n();
 
