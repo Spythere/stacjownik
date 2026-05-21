@@ -688,6 +688,13 @@
       "driver": "DRIVER",
       "dispatcher": "DISPATCHER",
 
+      "last-seen-date": "Last seen on {date} at {time}",
+      "last-seen-relative": "Last seen {n} ago",
+      "last-seen-active": "Currently online",
+      "active-as-dispatcher": "Online as dispatcher",
+      "active-as-driver": "Online as driver",
+      "active-as-both": "Online as dispatcher and driver",
+
       "header-driver": "DRIVER'S STATS",
       "fulfilled-timetables": "fulfilled timetables",
       "route-distance": "confirmed timetables distance",

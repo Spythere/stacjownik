@@ -21,28 +21,45 @@
           </a>
         </h2>
 
-        <div class="player-journal-links">
-          <router-link
-            class="a-button btn--action"
-            :to="`/journal/timetables?search-driver=${playerInfo.driverStats.driverName}`"
-          >
-            {{ t('profile.stats.timetables-journal') }}
-          </router-link>
+        <div class="player-last-seen">
+          <span v-if="activeDispatches.length > 0 && activeTrains.length > 0" class="active">
+            {{ t('profile.stats.active-as-both') }}
+          </span>
 
-          <router-link
-            class="a-button btn--action"
-            :to="`/journal/dispatchers?search-dispatcher=${playerInfo.dispatcherStats.dispatcherName}`"
-          >
-            {{ t('profile.stats.dispatchers-journal') }}
-          </router-link>
+          <span v-else-if="activeTrains.length > 0" class="active">
+            {{ t('profile.stats.active-as-driver') }}
+          </span>
 
-          <a
-            class="a-button btn--action"
-            :href="`https://td2.info.pl/profile/?u=${route.query.playerId}`"
-            target="_blank"
+          <span v-else-if="activeDispatches.length > 0" class="active">
+            {{ t('profile.stats.active-as-dispatcher') }}
+          </span>
+
+          <span
+            v-else-if="playerInfo.lastSeen && Date.now() - playerInfo.lastSeen < 300000"
+            class="active"
           >
-            {{ t('profile.stats.forum-profile') }}
-          </a>
+            {{ t('profile.stats.last-seen-active') }}
+          </span>
+
+          <span
+            v-else-if="playerInfo.lastSeen && Date.now() - playerInfo.lastSeen < 3600000"
+            class="offline-recently"
+          >
+            {{
+              t('profile.stats.last-seen-relative', {
+                n: humanizeDuration(Date.now() - new Date(playerInfo.lastSeen).getTime())
+              })
+            }}
+          </span>
+
+          <span v-else-if="playerInfo.lastSeen" class="offline">
+            {{
+              t('profile.stats.last-seen-date', {
+                date: dateToLocaleString(new Date(playerInfo.lastSeen), { dateStyle: 'short' }),
+                time: dateToLocaleString(new Date(playerInfo.lastSeen), { timeStyle: 'short' })
+              })
+            }}
+          </span>
         </div>
 
         <div class="player-badges">
@@ -105,6 +122,30 @@
               <span class="text--grayed">{{ t.stockString.split(';')[0] }}</span>
             </router-link>
           </div>
+        </div>
+
+        <div class="player-journal-links">
+          <router-link
+            class="a-button btn--action"
+            :to="`/journal/timetables?search-driver=${playerInfo.driverStats.driverName}`"
+          >
+            {{ t('profile.stats.timetables-journal') }}
+          </router-link>
+
+          <router-link
+            class="a-button btn--action"
+            :to="`/journal/dispatchers?search-dispatcher=${playerInfo.dispatcherStats.dispatcherName}`"
+          >
+            {{ t('profile.stats.dispatchers-journal') }}
+          </router-link>
+
+          <a
+            class="a-button btn--action"
+            :href="`https://td2.info.pl/profile/?u=${route.query.playerId}`"
+            target="_blank"
+          >
+            {{ t('profile.stats.forum-profile') }}
+          </a>
         </div>
       </div>
     </div>
@@ -228,7 +269,7 @@ import { computed, PropType } from 'vue';
 import { API, Td2API } from '../../typings/api';
 import { calculateExpStyles } from '../../composables/badge';
 import { getCountPercentage } from '../../utils/calcUtils';
-import { humanizeDuration } from '../../composables/time';
+import { dateToLocaleString, humanizeDuration } from '../../composables/time';
 import { useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useApiStore } from '../../store/apiStore';
@@ -330,6 +371,22 @@ const activeTrains = computed(() => {
   gap: 0.5em;
 
   margin-top: 1em;
+}
+
+.player-last-seen {
+  margin-top: 0.5em;
+
+  .active {
+    color: var(--clr-success);
+  }
+
+  .offline-recently {
+    color: var(--clr-primary);
+  }
+
+  .offline {
+    color: #ccc;
+  }
 }
 
 .info-activity {

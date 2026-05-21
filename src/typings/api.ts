@@ -114,6 +114,9 @@ export namespace API {
       dispatcherStatsLastMonth: DispatcherStats.Data;
       driverStats: DriverStats.Data;
       driverStatsLastMonth: DriverStats.Data;
+
+      lastSeen: number | null;
+      languageId: number | null;
     }
   }
 
