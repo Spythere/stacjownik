@@ -19,7 +19,7 @@
     </transition>
 
     <transition name="view-anim">
-      <DriverTimetableHistory />
+      <DriverTimetableDetails :chosenTrain="chosenTrain" />
     </transition>
 
     <StockList :trainStockList="chosenTrain.stockList" :key="chosenTrain.id" :showPreviews="true" />
@@ -36,7 +36,7 @@ import DriverHelper from './DriverHelper.vue';
 import StockList from '../Global/StockList.vue';
 import DriverTrainSchedule from './DriverTrainSchedule.vue';
 import TrainInfo from '../TrainsView/TrainInfo.vue';
-import DriverTimetableHistory from './DriverTimetableHistory.vue';
+import DriverTimetableDetails from './DriverTimetableDetails.vue';
 
 const i18n = useI18n();
 
