@@ -1,7 +1,7 @@
 <template>
   <section class="profile-summary">
     <div class="player-info">
-      <div class="info-name">
+      <div>
         <h2
           class="player-name-header"
           :class="{ 'text--donator': isPlayerDonator, 'text--creator': isPlayerCreator }"
@@ -21,11 +21,29 @@
           </a>
         </h2>
 
-        <p>Gracz TD2</p>
-      </div>
+        <div class="player-journal-links">
+          <router-link
+            class="a-button btn--action"
+            :to="`/journal/timetables?search-driver=${playerInfo.driverStats.driverName}`"
+          >
+            {{ t('profile.stats.timetables-journal') }}
+          </router-link>
 
-      <div class="info-main">
-        <!-- <ProfilePlayerAvatar :playerTD2Info="playerTD2Info" /> -->
+          <router-link
+            class="a-button btn--action"
+            :to="`/journal/dispatchers?search-dispatcher=${playerInfo.dispatcherStats.dispatcherName}`"
+          >
+            {{ t('profile.stats.dispatchers-journal') }}
+          </router-link>
+
+          <a
+            class="a-button btn--action"
+            :href="`https://td2.info.pl/profile/?u=${route.query.playerId}`"
+            target="_blank"
+          >
+            {{ t('profile.stats.forum-profile') }}
+          </a>
+        </div>
 
         <div class="player-badges">
           <div class="badge-container" v-if="playerInfo.driverStats.driverLevel != null">
@@ -53,30 +71,6 @@
             </span>
             {{ t('profile.stats.dispatcher') }}
           </div>
-        </div>
-
-        <div class="player-journal-links">
-          <router-link
-            class="a-button btn--action"
-            :to="`/journal/timetables?search-driver=${playerInfo.driverStats.driverName}`"
-          >
-            {{ t('profile.stats.timetables-journal') }}
-          </router-link>
-
-          <router-link
-            class="a-button btn--action"
-            :to="`/journal/dispatchers?search-dispatcher=${playerInfo.dispatcherStats.dispatcherName}`"
-          >
-            {{ t('profile.stats.dispatchers-journal') }}
-          </router-link>
-
-          <a
-            class="a-button btn--action"
-            :href="`https://td2.info.pl/profile/?u=${route.query.playerId}`"
-            target="_blank"
-          >
-            {{ t('profile.stats.forum-profile') }}
-          </a>
         </div>
 
         <!-- Current activities -->
@@ -313,7 +307,7 @@ const activeTrains = computed(() => {
   justify-content: center;
   gap: 1em;
 
-  margin-bottom: 1em;
+  margin-top: 1em;
 }
 
 .badge-container {
@@ -334,6 +328,8 @@ const activeTrains = computed(() => {
   justify-content: center;
   flex-wrap: wrap;
   gap: 0.5em;
+
+  margin-top: 1em;
 }
 
 .info-activity {
@@ -342,6 +338,7 @@ const activeTrains = computed(() => {
   align-items: center;
   flex-wrap: wrap;
   gap: 1em;
+
   margin-top: 1em;
 
   .dispatcher-badge {

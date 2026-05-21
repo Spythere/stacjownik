@@ -686,7 +686,7 @@
       "header-driver": "STATYSTYKI MASZYNISTY",
       "fulfilled-timetables": "wypełnione rozkłady jazdy",
       "route-distance": "zatwierdzony kilometraż w RJ",
-      "confirmed-stops": "potwierdzonych stacji w RJ",
+      "confirmed-stops": "potwierdzone stacje w RJ",
       "longest-timetable": "najdłuższy rozkład jazdy",
       "avg-timetable-length": "średnia długość wszystkich rozkładów",
       "no-timetable-stats": "Ten użytkownik nie posiada statystyk maszynisty zarejestrowanych przez Stacjownik!",
