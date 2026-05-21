@@ -1,109 +1,115 @@
 <template>
   <section class="profile-summary">
     <div class="player-info">
+      <div class="info-name">
+        <h2
+          class="player-name-header"
+          :class="{ 'text--donator': isPlayerDonator, 'text--creator': isPlayerCreator }"
+        >
+          <a
+            :href="`https://td2.info.pl/profile/?u=${route.query.playerId}`"
+            target="_blank"
+            class="a-link"
+          >
+            <img
+              v-if="isPlayerDonator"
+              src="/images/icon-diamond.svg"
+              width="25"
+              alt="diamond icon"
+            />
+            {{ playerName }}
+          </a>
+        </h2>
+
+        <p>Gracz TD2</p>
+      </div>
+
       <div class="info-main">
-        <ProfilePlayerAvatar :playerTD2Info="playerTD2Info" />
+        <!-- <ProfilePlayerAvatar :playerTD2Info="playerTD2Info" /> -->
 
-        <div>
-          <h2
-            class="player-name-header"
-            :class="{ 'text--donator': isPlayerDonator, 'text--creator': isPlayerCreator }"
-          >
-            <a :href="`https://td2.info.pl/profile/?u=${route.query.playerId}`" target="_blank">
-              <img
-                v-if="isPlayerDonator"
-                src="/images/icon-diamond.svg"
-                width="25"
-                alt="diamond icon"
-              />
-              {{ playerName }}
-            </a>
-          </h2>
-
-          <div class="player-badges">
-            <div class="badge-container" v-if="playerInfo.driverStats.driverLevel != null">
-              <span
-                class="level-badge driver"
-                :style="calculateExpStyles(playerInfo.driverStats.driverLevel)"
-              >
-                {{
-                  playerInfo.driverStats.driverLevel > 1 ? playerInfo.driverStats.driverLevel : 'L'
-                }}
-              </span>
-              {{ t('profile.stats.driver') }}
-            </div>
-
-            <div class="badge-container" v-if="playerInfo.dispatcherStats.dispatcherLevel != null">
-              <span
-                class="level-badge dispatcher"
-                :style="calculateExpStyles(playerInfo.dispatcherStats.dispatcherLevel)"
-              >
-                {{
-                  playerInfo.dispatcherStats.dispatcherLevel > 1
-                    ? playerInfo.dispatcherStats.dispatcherLevel
-                    : 'L'
-                }}
-              </span>
-              {{ t('profile.stats.dispatcher') }}
-            </div>
+        <div class="player-badges">
+          <div class="badge-container" v-if="playerInfo.driverStats.driverLevel != null">
+            <span
+              class="level-badge driver"
+              :style="calculateExpStyles(playerInfo.driverStats.driverLevel)"
+            >
+              {{
+                playerInfo.driverStats.driverLevel > 1 ? playerInfo.driverStats.driverLevel : 'L'
+              }}
+            </span>
+            {{ t('profile.stats.driver') }}
           </div>
 
-          <div class="player-journal-links">
-            <router-link
-              class="a-button btn--action"
-              :to="`/journal/timetables?search-driver=${playerInfo.driverStats.driverName}`"
+          <div class="badge-container" v-if="playerInfo.dispatcherStats.dispatcherLevel != null">
+            <span
+              class="level-badge dispatcher"
+              :style="calculateExpStyles(playerInfo.dispatcherStats.dispatcherLevel)"
             >
-              {{ t('profile.stats.timetables-journal') }}
-            </router-link>
+              {{
+                playerInfo.dispatcherStats.dispatcherLevel > 1
+                  ? playerInfo.dispatcherStats.dispatcherLevel
+                  : 'L'
+              }}
+            </span>
+            {{ t('profile.stats.dispatcher') }}
+          </div>
+        </div>
 
-            <router-link
-              class="a-button btn--action"
-              :to="`/journal/dispatchers?search-dispatcher=${playerInfo.dispatcherStats.dispatcherName}`"
-            >
-              {{ t('profile.stats.dispatchers-journal') }}
-            </router-link>
+        <div class="player-journal-links">
+          <router-link
+            class="a-button btn--action"
+            :to="`/journal/timetables?search-driver=${playerInfo.driverStats.driverName}`"
+          >
+            {{ t('profile.stats.timetables-journal') }}
+          </router-link>
 
-            <a
-              class="a-button btn--action"
-              :href="`https://td2.info.pl/profile/?u=${route.query.playerId}`"
-              target="_blank"
+          <router-link
+            class="a-button btn--action"
+            :to="`/journal/dispatchers?search-dispatcher=${playerInfo.dispatcherStats.dispatcherName}`"
+          >
+            {{ t('profile.stats.dispatchers-journal') }}
+          </router-link>
+
+          <a
+            class="a-button btn--action"
+            :href="`https://td2.info.pl/profile/?u=${route.query.playerId}`"
+            target="_blank"
+          >
+            {{ t('profile.stats.forum-profile') }}
+          </a>
+        </div>
+
+        <!-- Current activities -->
+        <div
+          class="player-activities-box"
+          v-if="activeDispatches.length > 0 || activeTrains.length > 0"
+        >
+          <div class="info-activity" v-if="activeDispatches.length > 0">
+            <router-link
+              v-for="d in activeDispatches"
+              class="dispatcher-badge"
+              :to="`/scenery?station=${d.stationName}&region=${d.region}`"
             >
-              {{ t('profile.stats.forum-profile') }}
-            </a>
+              <img src="/images/icon-user.svg" width="25" alt="user icon" />
+              <b>{{ d.stationName }} ({{ getRegionNameById(d.region) }})</b>
+              <StationStatusBadge :isOnline="true" :dispatcherStatus="d.dispatcherStatus" />
+            </router-link>
           </div>
 
-          <!-- Current activities -->
-          <div
-            class="player-activities-box"
-            v-if="activeDispatches.length > 0 || activeTrains.length > 0"
-          >
-            <div class="info-activity" v-if="activeDispatches.length > 0">
-              <router-link
-                v-for="d in activeDispatches"
-                class="dispatcher-badge"
-                :to="`/scenery?station=${d.stationName}&region=${d.region}`"
-              >
-                <img src="/images/icon-user.svg" width="25" alt="user icon" />
-                <b>{{ d.stationName }} ({{ getRegionNameById(d.region) }})</b>
-                <StationStatusBadge :isOnline="true" :dispatcherStatus="d.dispatcherStatus" />
-              </router-link>
-            </div>
-
-            <div class="info-activity" v-if="activeTrains.length > 0">
-              <router-link
-                v-for="t in activeTrains"
-                :to="`/driver?trainId=${t.id}`"
-                class="driver-badge"
-              >
-                <img src="/images/icon-train.svg" width="25" alt="train icon" />
-                <span v-if="t.timetable" class="text--primary">{{ t.timetable.category }}</span>
-                <span>{{ t.trainNo }}</span>
-                &bull;
-                <span>{{ t.currentStationName }} ({{ getRegionNameById(t.region) }})</span>
-                &bull;
-                <span class="text--grayed">{{ t.stockString.split(';')[0] }}</span>
-              </router-link>
-            </div>
+          <div class="info-activity" v-if="activeTrains.length > 0">
+            <router-link
+              v-for="t in activeTrains"
+              :to="`/driver?trainId=${t.id}`"
+              class="driver-badge"
+            >
+              <img src="/images/icon-train.svg" width="25" alt="train icon" />
+              <span v-if="t.timetable" class="text--primary">{{ t.timetable.category }}</span>
+              <span>{{ t.trainNo }}</span>
+              &bull;
+              <span>{{ t.currentStationName }} ({{ getRegionNameById(t.region) }})</span>
+              &bull;
+              <span class="text--grayed">{{ t.stockString.split(';')[0] }}</span>
+            </router-link>
           </div>
         </div>
       </div>
@@ -224,7 +230,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onActivated, onMounted, PropType, ref, watch } from 'vue';
+import { computed, PropType } from 'vue';
 import { API, Td2API } from '../../typings/api';
 import { calculateExpStyles } from '../../composables/badge';
 import { getCountPercentage } from '../../utils/calcUtils';
@@ -233,7 +239,6 @@ import { useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useApiStore } from '../../store/apiStore';
 import StationStatusBadge from '../Global/StationStatusBadge.vue';
-import ProfilePlayerAvatar from './ProfilePlayerAvatar.vue';
 import { getRegionNameById } from '../../utils/regionUtils';
 import { isCreator } from '../../utils/userUtils';
 
@@ -248,9 +253,9 @@ const props = defineProps({
     required: true
   },
 
-  playerTD2Info: {
-    type: Object as PropType<Td2API.UsersInfoByName.UserInfo>
-  },
+  // playerTD2Info: {
+  //   type: Object as PropType<Td2API.UsersInfoByName.UserInfo>
+  // },
 
   playerName: {
     type: String
@@ -295,8 +300,6 @@ const activeTrains = computed(() => {
 }
 
 .player-name-header {
-  margin: 0.5em 0;
-
   a {
     display: flex;
     justify-content: center;
@@ -309,6 +312,8 @@ const activeTrains = computed(() => {
   display: flex;
   justify-content: center;
   gap: 1em;
+
+  margin-bottom: 1em;
 }
 
 .badge-container {
@@ -329,7 +334,6 @@ const activeTrains = computed(() => {
   justify-content: center;
   flex-wrap: wrap;
   gap: 0.5em;
-  margin-top: 1em;
 }
 
 .info-activity {
@@ -358,21 +362,24 @@ const activeTrains = computed(() => {
   }
 }
 
-.player-stats {
+.player-stats,
+.player-info {
   display: flex;
   flex-direction: column;
   gap: 1em;
-
-  hr {
-    margin: 0.5em 0;
-  }
 }
 
-.player-info,
+.player-info > div,
 .player-stats > div {
   background-color: var(--clr-tile);
   border-radius: 0.5em;
   padding: 1em;
+}
+
+.player-stats {
+  hr {
+    margin: 0.5em 0;
+  }
 }
 
 .stats-header {

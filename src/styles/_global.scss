@@ -156,6 +156,14 @@ a {
   color: inherit;
 }
 
+a.a-link {
+  transition: color 100ms;
+
+  &:hover {
+    color: var(--clr-primary);
+  }
+}
+
 a.a-row {
   display: table-row;
 }

@@ -676,9 +676,9 @@
     },
 
     "stats": {
-      "timetables-journal": "DZIENNIK RJ",
-      "dispatchers-journal": "DZIENNIK DR",
-      "forum-profile": "PROFIL FORUM",
+      "timetables-journal": "DZIENNIK ROZKŁADÓW",
+      "dispatchers-journal": "DZIENNIK DYŻURÓW",
+      "forum-profile": "PROFIL FORUM TD2",
 
       "driver": "MASZYNISTA",
       "dispatcher": "DYŻURNY RUCHU",
