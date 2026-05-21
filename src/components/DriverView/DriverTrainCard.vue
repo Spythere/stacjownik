@@ -8,18 +8,17 @@
         <i class="fa-regular fa-lightbulb"></i> {{ i18n.t('helper.button-show') }}
       </button>
 
-      <button class="btn btn--action" @click="toggleNumberPropositions()">
+      <button class="btn btn--action" @click="toggleTimetableDetails()">
         <i class="fa-regular fa-calendar"></i> {{ i18n.t('driver.details.button-show') }}
       </button>
     </div>
 
-    <!-- Proposed numbers container -->
     <transition name="view-anim">
-      <DriverHelper :chosenTrain="chosenTrain" v-if="arePropositionsVisible" />
+      <DriverHelper :chosenTrain="chosenTrain" v-if="isDriverHelperOpen" />
     </transition>
 
     <transition name="view-anim">
-      <DriverTimetableDetails :chosenTrain="chosenTrain" />
+      <DriverTimetableDetails :chosenTrain="chosenTrain" v-if="isDetailsInfoOpen" />
     </transition>
 
     <StockList :trainStockList="chosenTrain.stockList" :key="chosenTrain.id" :showPreviews="true" />
@@ -40,7 +39,8 @@ import DriverTimetableDetails from './DriverTimetableDetails.vue';
 
 const i18n = useI18n();
 
-const arePropositionsVisible = ref(false);
+const isDriverHelperOpen = ref(false);
+const isDetailsInfoOpen = ref(false);
 
 const props = defineProps({
   chosenTrain: {
@@ -50,7 +50,11 @@ const props = defineProps({
 });
 
 function toggleNumberPropositions() {
-  arePropositionsVisible.value = !arePropositionsVisible.value;
+  isDriverHelperOpen.value = !isDriverHelperOpen.value;
+}
+
+function toggleTimetableDetails() {
+  isDetailsInfoOpen.value = !isDetailsInfoOpen.value;
 }
 </script>
 
