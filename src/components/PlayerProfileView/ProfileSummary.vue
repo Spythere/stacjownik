@@ -1,27 +1,30 @@
 <template>
   <section class="profile-summary">
-    <div class="player-info">
-      <div>
-        <h2
-          class="player-name-header"
-          :class="{ 'text--donator': isPlayerDonator, 'text--creator': isPlayerCreator }"
-        >
-          <a
-            :href="`https://td2.info.pl/profile/?u=${route.query.playerId}`"
-            target="_blank"
-            class="a-link"
-          >
-            <img
-              v-if="isPlayerDonator"
-              src="/images/icon-diamond.svg"
-              width="25"
-              alt="diamond icon"
-            />
-            {{ playerName }}
-          </a>
-        </h2>
+    <div class="summary-main">
+      <div class="summary-box">
+        <div class="main-player-name">
+          <img v-if="isPlayerDonator" src="/images/icon-diamond.svg" alt="diamond icon" />
 
-        <div class="player-last-seen">
+          <h2>
+            <a
+              class="a-link"
+              :class="{ 'text--donator': isPlayerDonator, 'text--creator': isPlayerCreator }"
+              :href="`https://td2.info.pl/profile/?u=${route.query.playerId}`"
+              target="_blank"
+            >
+              {{ playerName }}
+            </a>
+          </h2>
+
+          <img
+            v-if="playerInfo.languageId != null"
+            class="g-image"
+            :src="`/images/flags/${getLanguageNameById(playerInfo.languageId)}.svg`"
+            alt="language flag"
+          />
+        </div>
+
+        <div class="main-last-seen">
           <span v-if="activeDispatches.length > 0 && activeTrains.length > 0" class="active">
             {{ t('profile.stats.active-as-both') }}
           </span>
@@ -62,7 +65,7 @@
           </span>
         </div>
 
-        <div class="player-badges">
+        <div class="main-badges">
           <div class="badge-container" v-if="playerInfo.driverStats.driverLevel != null">
             <span
               class="level-badge driver"
@@ -92,10 +95,10 @@
 
         <!-- Current activities -->
         <div
-          class="player-activities-box"
+          class="main-current-activities"
           v-if="activeDispatches.length > 0 || activeTrains.length > 0"
         >
-          <div class="info-activity" v-if="activeDispatches.length > 0">
+          <div class="activity" v-if="activeDispatches.length > 0">
             <router-link
               v-for="d in activeDispatches"
               class="dispatcher-badge"
@@ -107,7 +110,7 @@
             </router-link>
           </div>
 
-          <div class="info-activity" v-if="activeTrains.length > 0">
+          <div class="activity" v-if="activeTrains.length > 0">
             <router-link
               v-for="t in activeTrains"
               :to="`/driver?trainId=${t.id}`"
@@ -124,7 +127,7 @@
           </div>
         </div>
 
-        <div class="player-journal-links">
+        <div class="main-links">
           <router-link
             class="a-button btn--action"
             :to="`/journal/timetables?search-driver=${playerInfo.driverStats.driverName}`"
@@ -150,8 +153,8 @@
       </div>
     </div>
 
-    <div class="player-stats">
-      <div class="stats-driver">
+    <div class="summary-stats">
+      <div class="summary-box stats-driver">
         <h3 class="stats-header">
           <img src="/images/icon-train.svg" width="30" alt="train icon" />
           {{ t('profile.stats.header-driver') }}
@@ -216,7 +219,7 @@
       </div>
 
       <div
-        class="stats-dispatcher"
+        class="summary-box stats-dispatcher"
         v-if="playerInfo.dispatcherStats && playerInfo.dispatcherStats.services?.count"
       >
         <h3 class="stats-header">
@@ -276,6 +279,7 @@ import { useApiStore } from '../../store/apiStore';
 import StationStatusBadge from '../Global/StationStatusBadge.vue';
 import { getRegionNameById } from '../../utils/regionUtils';
 import { isCreator } from '../../utils/userUtils';
+import { getLanguageNameById } from '@/utils/languageUtils';
 
 const { t } = useI18n();
 
@@ -334,16 +338,18 @@ const activeTrains = computed(() => {
   overflow: auto;
 }
 
-.player-name-header {
-  a {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 0.25em;
+.main-player-name {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5em;
+
+  img {
+    height: 1.2em;
   }
 }
 
-.player-badges {
+.main-badges {
   display: flex;
   justify-content: center;
   gap: 1em;
@@ -364,7 +370,7 @@ const activeTrains = computed(() => {
   }
 }
 
-.player-journal-links {
+.main-links {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
@@ -373,7 +379,7 @@ const activeTrains = computed(() => {
   margin-top: 1em;
 }
 
-.player-last-seen {
+.main-last-seen {
   margin-top: 0.5em;
 
   .active {
@@ -389,7 +395,7 @@ const activeTrains = computed(() => {
   }
 }
 
-.info-activity {
+.activity {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -416,21 +422,17 @@ const activeTrains = computed(() => {
   }
 }
 
-.player-stats,
-.player-info {
-  display: flex;
-  flex-direction: column;
-  gap: 1em;
-}
-
-.player-info > div,
-.player-stats > div {
+.summary-box {
   background-color: var(--clr-tile);
   border-radius: 0.5em;
   padding: 1em;
 }
 
-.player-stats {
+.summary-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+
   hr {
     margin: 0.5em 0;
   }

@@ -137,6 +137,10 @@ select {
   outline: 1px solid var(--clr-primary);
 }
 
+img.g-image {
+  vertical-align: middle;
+}
+
 .title {
   color: var(--clr-primary);
   font-weight: 600;
