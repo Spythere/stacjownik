@@ -56,11 +56,9 @@ export const useApiStore = defineStore('apiStore', {
     async updateTick(t: number) {
       // Static data refresh
       if (t >= this.nextDataCheckTime) {
-        await Promise.all([
-          this.fetchStationsGeneralInfo(),
-          this.fetchVehiclesInfo(),
-          this.fetchDonatorsData()
-        ]);
+        this.fetchStationsGeneralInfo();
+        this.fetchVehiclesInfo();
+        this.fetchDonatorsData();
 
         if (this.nextDataCheckTime == 0) {
           this.nextDataCheckTime = t + getRandomDurationFromRange(5000, 7500);
@@ -76,8 +74,8 @@ export const useApiStore = defineStore('apiStore', {
 
       // Active data fefresh
       if (t >= this.nextUpdateTime) {
-        await this.fetchActiveData();
-        this.nextUpdateTime = t + 31000;
+        this.fetchActiveData();
+        this.nextUpdateTime = t + 16000;
       }
 
       window.requestAnimationFrame(this.updateTick);
