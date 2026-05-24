@@ -10,11 +10,11 @@
 
       <router-link
         v-if="chosenTrain.timetableData"
-        :to="`/journal/timetables?search-train=${chosenTrain.trainNo}&timetable-status=active&expanded=1`"
+        :to="`/journal/timetables?search-train=${chosenTrain.trainNo}&timetable-status=active`"
         class="a-button btn--action"
       >
         <i class="fa-regular fa-calendar"></i>
-        {{ i18n.t('trains.timetable-details-link') }}
+        {{ i18n.t('trains.timetable-history-link') }}
       </router-link>
     </div>
 

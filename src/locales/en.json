@@ -433,7 +433,7 @@
     "timeout": "An error occured while trying to refresh SWDR timetable data!",
     "driver-profile-link": "PLAYER'S PROFILE",
     "driver-srjp-link": "SRJP",
-    "timetable-details-link": "TIMETABLE DETAILS",
+    "timetable-history-link": "TIMETABLE HISTORY",
     "driver-return-link": "RETURN",
     "driver-not-found-header": "Train not found! :/",
     "driver-not-found-desc-1": "This train has already been terminated, changed its number or is offline.",

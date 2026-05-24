@@ -420,7 +420,7 @@
     "timeout": "Wystąpił problem z aktualizacją rozkładów jazdy z SWDR",
     "driver-profile-link": "PROFIL GRACZA",
     "driver-srjp-link": "SRJP",
-    "timetable-details-link": "SZCZEGÓŁY ROZKŁADU",
+    "timetable-history-link": "HISTORIA ROZKŁADU",
     "driver-return-link": "POWRÓĆ",
     "driver-not-found-header": "Nie znaleziono pociągu! :/",
     "driver-not-found-desc-1": "Ten pociąg prawdopodobnie zakończył już swój bieg, zmienił numer lub jest offline.",
