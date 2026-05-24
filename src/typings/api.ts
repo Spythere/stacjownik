@@ -114,6 +114,9 @@ export namespace API {
       dispatcherStatsLastMonth: DispatcherStats.Data;
       driverStats: DriverStats.Data;
       driverStatsLastMonth: DriverStats.Data;
+
+      lastSeen: number | null;
+      languageId: number | null;
     }
   }
 
@@ -440,6 +443,15 @@ export namespace API {
     export interface Data {
       vehicles: VehicleObject[];
       vehicleGroups: VehicleGroupObject[];
+    }
+
+    export type Response = Data;
+  }
+
+  export namespace TimetableDetails {
+    export interface Data {
+      timetable: TimetableHistory.Data | null;
+      timetableDispatchers: (DispatcherHistory.Data | null)[] | null;
     }
 
     export type Response = Data;

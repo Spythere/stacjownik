@@ -2,6 +2,8 @@
   <div class="scenery-view">
     <div class="scenery-wrapper" ref="card-wrapper">
       <div class="scenery-left">
+        <SceneryActions />
+
         <SceneryHeader
           :stationName="station"
           :station="stationInfo"
@@ -45,9 +47,11 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted } from 'vue';
+import { computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useMainStore } from '../store/mainStore';
+import { useApiStore } from '../store/apiStore';
+import { Status } from '../typings/common';
 
 import SceneryInfo from '../components/SceneryView/SceneryInfo.vue';
 import SceneryHeader from '../components/SceneryView/SceneryHeader.vue';
@@ -55,10 +59,8 @@ import SceneryHeader from '../components/SceneryView/SceneryHeader.vue';
 import SceneryTimetable from '../components/SceneryView/SceneryTimetable.vue';
 import SceneryTimetablesHistory from '../components/SceneryView/SceneryTimetablesHistory.vue';
 import SceneryDispatchersHistory from '../components/SceneryView/SceneryDispatchersHistory.vue';
-
-import { useApiStore } from '../store/apiStore';
-import { Status } from '../typings/common';
 import SceneryTopList from '../components/SceneryView/SceneryTopList.vue';
+import SceneryActions from '@/components/SceneryView/SceneryActions.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -186,10 +188,8 @@ function setViewMode(componentName: string) {
 .scenery-right {
   position: relative;
   overflow: auto;
-
-  background-color: #181818;
   border-radius: 0.5em;
-  padding: 1em;
+  background-color: var(--clr-tile);
 }
 
 .scenery-left {
@@ -201,10 +201,8 @@ function setViewMode(componentName: string) {
   display: grid;
   grid-template-rows: auto 1fr;
   gap: 1em;
-}
 
-.scenery-actions {
-  display: flex;
+  padding: 1em;
 }
 
 .info-actions {

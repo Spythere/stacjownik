@@ -8,12 +8,13 @@
 import { defineComponent } from 'vue';
 import { useTooltipStore } from '../../store/tooltipStore';
 import DonatorTooltip from './DonatorTooltip.vue';
+import CreatorTooltip from './CreatorTooltip.vue';
 import VehiclePreviewTooltip from './VehiclePreviewTooltip.vue';
 import BaseTooltip from './BaseTooltip.vue';
 import SpawnsTooltip from './SpawnsTooltip.vue';
 import UsersTooltip from './UsersTooltip.vue';
 import HtmlTooltip from './HtmlTooltip.vue';
-import TrainInfoTooltip from "./TrainInfoTooltip.vue";
+import TrainInfoTooltip from './TrainInfoTooltip.vue';
 
 const BOX_PADDING_PX = 20;
 
@@ -25,7 +26,8 @@ export default defineComponent({
     SpawnsTooltip,
     UsersTooltip,
     HtmlTooltip,
-    TrainInfoTooltip
+    TrainInfoTooltip,
+    CreatorTooltip
   },
 
   data() {

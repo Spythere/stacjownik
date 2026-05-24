@@ -42,7 +42,8 @@
     "action-paypal": "DONATE WITH PAYPAL",
     "action-buycoffee": "BUY ME A COFFEE!",
     "dispatcher-message": "Dispatcher supporting the Stacjownik project!",
-    "driver-message": "Driver supporting the Stacjownik project!"
+    "driver-message": "Driver supporting the Stacjownik project!",
+    "creator-message": "Creator of the Stacjownik project"
   },
   "warnings": {
     "TWR": "Train with high risk cargo",
@@ -173,7 +174,9 @@
     "afk": "AFK",
     "no-space": "NO SPACE",
     "invalid": "INVALID HASH",
-    "unknown": "UNKNOWN"
+    "unknown": "UNKNOWN",
+    "online-to": "online until: {0}",
+    "offline-since": "offline since ~{0}"
   },
   "options": {
     "filters": "FILTERS",
@@ -430,23 +433,51 @@
     "timeout": "An error occured while trying to refresh SWDR timetable data!",
     "driver-profile-link": "PLAYER'S PROFILE",
     "driver-srjp-link": "SRJP",
+    "timetable-history-link": "TIMETABLE HISTORY",
     "driver-return-link": "RETURN",
     "driver-not-found-header": "Train not found! :/",
     "driver-not-found-desc-1": "This train has already been terminated, changed its number or is offline.",
     "driver-not-found-desc-2": "You can browse timetable history in the",
     "driver-not-found-journal": "TIMETABLES JOURNAL",
     "driver-not-found-others": "Player {driver} is online as:",
-    "driver-not-found-return": "RETURN TO THE MAIN SITE",
-    "stock-copy": "COPY THE STOCK",
-    "number-propositions": "PROPOSE NUMBER",
-    "stock-clipboard-success": "Successfully copied the railway stock in a text form to your clipboard!",
-    "stock-clipboard-failure": "Oops! Something happened and the railway stock couldn't be copied to your clipboard! :/",
-    "number-propositions-header": "Generate number examples for selected category:",
-    "number-propositions-third-number": "Third digit:",
-    "number-propositions-last-nums": "{count} last digits from the range of:",
-    "number-propositions-title": "Propositions:",
-    "number-propositions-empty": "No propositions available for the chosen category! :/"
+    "driver-not-found-return": "RETURN TO THE MAIN SITE"
   },
+
+  "helper": {
+    "button-show": "DRIVER'S HELPER",
+    "number-info": "will be automatically updated to the current train number chosen in the simulator after the analysis is sent in the chat.",
+
+    "stock-copy": "COPY CURRENT STOCK",
+    "stock-clipboard-success": "Successfully copied the railway stock in a text form to your clipboard:",
+    "stock-clipboard-failure": "Oops! Something happened and the railway stock couldn't be copied to your clipboard! :/",
+
+    "number-copy": "COPY RANDOM NUMBER",
+    "cargo-copy": "COPY CARGO WARNINGS",
+    "number-clipboard-success": "Successfully copied the number in a text form to your clipboard:",
+    "number-clipboard-failure": "Oops! Something happened and the number couldn't be copied to your clipboard! :/",
+
+    "propositions": {
+      "title": "Number propositions:",
+      "header": "Generate number examples for the chosen train category:",
+      "third-number": "Third digit:",
+      "last-nums": "{count} last digits from the range of:",
+      "empty": "No propositions available for the chosen category! :/"
+    },
+
+    "warnings-title": "Additional cargo warnings:",
+    "no-warnings": "No additional cargo warnings",
+
+    "warnings": {
+      "zags-loaded-twr": "TWR: 23UN1965, {0}x Zags",
+      "zags-empty-tn": "TN: 23UN1965, {0}x Zags (empty)",
+      "zans-loaded-tn": "TN: 33UN1202, {0}x Zans",
+      "zans-empty-tn": "TN: 33UN1202, {0}x Zans (empty)",
+      "military-all-pn": "PN: military transport",
+      "edk80-all-pn": "PN: EDK80 railway crane",
+      "innofreight-all-pn": "PN: Innofreight C45 (exceeded gauge)"
+    }
+  },
+
   "train-stats": {
     "stats-button": "STATISTICS",
     "title": "ONLINE TRAINS STATS",
@@ -559,7 +590,7 @@
     "no-users": "NO ACTIVE PLAYERS",
     "no-spawns": "NO OPEN SPAWNS",
     "no-scenery": "Oops! This scenery doesn't exist!",
-    "return-btn": "BACK TO THE MAIN SITE",
+    "return-btn": "RETURN",
     "history-btn": "View the dispatcher history",
     "info-btn": "Return to the scenery view",
     "authors-title": "Scenery author | Scenery authors",
@@ -587,7 +618,7 @@
     "dispatcher-rate": "Rate:",
     "dispatcher-status-changes": "Status changes:",
     "req-level": "all dispatcher levels | dispatcher level {lvl} required | dispatcher level {lvl} required",
-    "history-list-empty": "No recorded scenery history!",
+    "history-list-empty": "No saved scenery history!",
     "forum-topic": "Scenery's forum topic",
     "gnr-link": "Train orders generator",
     "pragotron-link": "Timetable pallet board",
@@ -603,10 +634,13 @@
       "scope-name": "GENERAL",
       "scope-hash": "CURRENT HASH",
 
-      "place": "{n}. place",
+      "place": "place",
       "dispatcher-rating": "Rating: {n}",
       "duty-count": "No duties | 1 duty | Duties: {n}",
-      "duration": "Duration:"
+      "duration": "Duration:",
+
+      "no-data-general": "No best scores for this scenery on the PL1 server!",
+      "no-data-current-hash": "No best scores for the current scenery hash on the PL1 server!"
     }
   },
   "availability": {
@@ -650,10 +684,17 @@
     "stats": {
       "timetables-journal": "TIMETABLE JOURNAL",
       "dispatchers-journal": "DISPATCHER JOURNAL",
-      "forum-profile": "FORUM PROFILE",
+      "forum-profile": "TD2 FORUM PROFILE",
 
       "driver": "DRIVER",
       "dispatcher": "DISPATCHER",
+
+      "last-seen-date": "Last seen on {date} at {time}",
+      "last-seen-relative": "Last seen {n} ago",
+      "last-seen-active": "Currently online",
+      "active-as-dispatcher": "Online as dispatcher",
+      "active-as-driver": "Online as train driver",
+      "active-as-both": "Online as dispatcher and driver",
 
       "header-driver": "DRIVER'S STATS",
       "fulfilled-timetables": "fulfilled timetables",

@@ -31,6 +31,15 @@
   --no-scroll-padding: 17px;
   --max-container-width: 1700px;
 
+  --status-free: #8a8a8a;
+  --status-ending: #e6c300;
+  --status-no-limit: #117fc9;
+  --status-unavailable: #ff3d5d;
+  --status-afk: #e6a100;
+  --status-no-space: #222;
+  --status-online: #09a116;
+  --status-unknown: #b93c3c;
+
   font-size: 16px;
 }
 
@@ -128,9 +137,13 @@ select {
   outline: 1px solid var(--clr-primary);
 }
 
+img.g-image {
+  vertical-align: middle;
+}
+
 .title {
   color: var(--clr-primary);
-  font-weight: 600;
+  font-weight: bold;
 
   padding: 0.35em 0;
 }
@@ -145,6 +158,14 @@ select {
 a {
   text-decoration: none;
   color: inherit;
+}
+
+a.a-link {
+  transition: color 100ms;
+
+  &:hover {
+    color: var(--clr-primary);
+  }
 }
 
 a.a-row {
@@ -215,6 +236,19 @@ ul {
     -webkit-text-fill-color: transparent;
 
     text-shadow: #f050ff 0 0 10px;
+  }
+
+  &--creator {
+    color: var(--clr-primary);
+    color: transparent;
+
+    background: var(--clr-primary);
+    background: linear-gradient(90deg, gold 30%, #ffffff 70%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    text-shadow: gold 0 0 10px;
   }
 
   &--discord {

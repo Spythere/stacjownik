@@ -80,6 +80,15 @@ export default defineComponent({
   async mounted() {
     window.addEventListener('mousemove', (e: MouseEvent) => this.tooltipStore.handle(e));
     window.addEventListener('mousedown', () => this.tooltipStore.hide());
+
+    // Dev only - for locale testing
+    if (import.meta.env.DEV) {
+      window.addEventListener('keydown', (e) => {
+        if (e.key.toLowerCase() == 'l' && e.shiftKey) {
+          this.store.changeLocale(this.store.currentLocale == 'pl' ? 'en' : 'pl');
+        }
+      });
+    }
   },
 
   methods: {

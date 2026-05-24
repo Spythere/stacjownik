@@ -101,18 +101,13 @@
                 </div>
 
                 <div
-                  v-if="stop.nextPointRef && stop.sceneryName != stop.nextPointRef.sceneryName"
+                  v-if="
+                    stop.nextPointRef?.sceneryName &&
+                    stop.sceneryName != stop.nextPointRef.sceneryName
+                  "
                   class="scenery-change-name"
                 >
-                  <span>{{ stop.nextPointRef.sceneryName }}</span>
-
-                  <i
-                    v-if="!stop.nextPointRef.isSceneryOnline"
-                    class="fa-solid fa-ban fa-sm"
-                    data-tooltip-type="BaseTooltip"
-                    :data-tooltip-content="$t('app.tooltip-scenery-offline')"
-                    style="color: salmon; margin-left: 0.25em"
-                  ></i>
+                  <ScheduleSceneryInfo :scenery-name="stop.nextPointRef.sceneryName" />
                 </div>
 
                 <div
@@ -167,17 +162,25 @@
 </template>
 
 <script lang="ts">
+import dateMixin from '@/mixins/dateMixin';
+import { useApiStore } from '@/store/apiStore';
+import { useMainStore } from '@/store/mainStore';
+import {
+  Train,
+  TimetablePathElement,
+  TrainSchedulePoint,
+  StationRoutesInfo
+} from '@/typings/common';
 import { defineComponent, PropType } from 'vue';
-import dateMixin from '../../mixins/dateMixin';
-import StopLabel from './StopLabel.vue';
+
+import StopLabel from '../TrainsView/StopLabel.vue';
 import StockList from '../Global/StockList.vue';
-import { useMainStore } from '../../store/mainStore';
-import { useApiStore } from '../../store/apiStore';
-import { StationRoutesInfo, TimetablePathElement, Train } from '../../typings/common';
-import { TrainSchedulePoint } from './typings';
+
+import ScheduleSceneryInfo from './ScheduleSceneryInfo.vue';
 
 export default defineComponent({
-  components: { StopLabel, StockList },
+  components: { StopLabel, StockList, ScheduleSceneryInfo },
+
   props: {
     train: {
       type: Object as PropType<Train>,
@@ -466,17 +469,9 @@ $blinkAnim: 0.5s ease-in-out alternate infinite blink;
     border-color: $haltClr;
   }
 
-  // &[data-minor-stop-active='true'] {
-  //   .progress > .line {
-  //     animation: $blinkAnim;
-  //   }
-
-  //   & + div {
-  //     .progress > .line_node-top {
-  //       animation: $blinkAnim;
-  //     }
-  //   }
-  // }
+  &[data-stop-type*='ph,pt'] .node {
+    border-color: $haltClr;
+  }
 
   &[data-is-active='true'] {
     .progress > .line_connection {
@@ -665,6 +660,7 @@ $blinkAnim: 0.5s ease-in-out alternate infinite blink;
 
   img[data-tooltip] {
     cursor: help;
+    vertical-align: middle;
   }
 }
 
@@ -682,6 +678,13 @@ $blinkAnim: 0.5s ease-in-out alternate infinite blink;
     top: 50%;
     right: calc(100% + 5px);
     transform: translate(0, -50%);
+  }
+
+  i {
+    color: salmon;
+    margin-left: 0.25em;
+    font-size: 0.9em;
+    vertical-align: middle;
   }
 }
 </style>

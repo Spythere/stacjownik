@@ -33,7 +33,10 @@ export function humanizeDuration(timestampMs: number, showSeconds = false) {
 export function dateToLocaleString(date: Date, dateOptions: Intl.DateTimeFormatOptions) {
   const { locale } = useI18n();
 
-  return date.toLocaleString(locale.value == 'pl' ? 'pl-PL' : 'en-GB', dateOptions);
+  return date.toLocaleString(locale.value == 'pl' ? 'pl-PL' : 'en-GB', {
+    ...dateOptions,
+    hour12: locale.value != 'pl'
+  });
 }
 
 export function timestampToTimeString(timestamp: number) {

@@ -10,8 +10,15 @@
 
       <router-link class="dispatcher-name" :to="`/profile?playerId=${onlineScenery.dispatcherId}`">
         <span
+          class="text--creator"
+          v-if="isCreator(onlineScenery.dispatcherName)"
+          :title="$t('donations.creator-message')"
+        >
+          {{ onlineScenery.dispatcherName }}
+        </span>
+        <span
           class="text--donator"
-          v-if="apiStore.donatorsData.includes(onlineScenery.dispatcherName)"
+          v-else-if="apiStore.donatorsData.includes(onlineScenery.dispatcherName)"
           :title="$t('donations.dispatcher-message')"
         >
           {{ onlineScenery.dispatcherName }}
@@ -51,6 +58,7 @@ import StationStatusBadge from '../../Global/StationStatusBadge.vue';
 import { ActiveScenery } from '../../../typings/common';
 import { useApiStore } from '../../../store/apiStore';
 import FlagIcon from '../../Global/FlagIcon.vue';
+import { isCreator } from '../../../utils/userUtils';
 
 export default defineComponent({
   mixins: [styleMixin, dateMixin, routerMixin],
@@ -58,7 +66,8 @@ export default defineComponent({
 
   data() {
     return {
-      apiStore: useApiStore()
+      apiStore: useApiStore(),
+      isCreator
     };
   },
 

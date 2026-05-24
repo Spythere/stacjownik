@@ -1,113 +1,160 @@
 <template>
   <section class="profile-summary">
-    <div class="player-info">
-      <div class="info-main">
-        <ProfilePlayerAvatar :playerTD2Info="playerTD2Info" />
+    <div class="summary-main">
+      <div class="summary-box">
+        <div class="main-player-name">
+          <img v-if="isPlayerDonator" src="/images/icon-diamond.svg" alt="diamond icon" />
 
-        <div>
-          <h2 class="player-name-header" :class="{ 'text--donator': isPlayerDonator }">
-            <a :href="`https://td2.info.pl/profile/?u=${route.query.playerId}`" target="_blank">
-              <img
-                v-if="isPlayerDonator"
-                src="/images/icon-diamond.svg"
-                width="25"
-                alt="diamond icon"
-              />
+          <h2>
+            <a
+              class="a-link"
+              :class="{ 'text--donator': isPlayerDonator, 'text--creator': isPlayerCreator }"
+              :href="`https://td2.info.pl/profile/?u=${route.query.playerId}`"
+              target="_blank"
+            >
               {{ playerName }}
             </a>
           </h2>
 
-          <div class="player-badges">
-            <div class="badge-container" v-if="playerInfo.driverStats.driverLevel != null">
-              <span
-                class="level-badge driver"
-                :style="calculateExpStyles(playerInfo.driverStats.driverLevel)"
-              >
-                {{
-                  playerInfo.driverStats.driverLevel > 1 ? playerInfo.driverStats.driverLevel : 'L'
-                }}
-              </span>
-              {{ t('profile.stats.driver') }}
-            </div>
+          <img
+            v-if="playerInfo.languageId != null"
+            class="g-image"
+            :src="`/images/flags/${getLanguageNameById(playerInfo.languageId)}.svg`"
+            alt="language flag"
+          />
+        </div>
 
-            <div class="badge-container" v-if="playerInfo.dispatcherStats.dispatcherLevel != null">
-              <span
-                class="level-badge dispatcher"
-                :style="calculateExpStyles(playerInfo.dispatcherStats.dispatcherLevel)"
-              >
-                {{
-                  playerInfo.dispatcherStats.dispatcherLevel > 1
-                    ? playerInfo.dispatcherStats.dispatcherLevel
-                    : 'L'
-                }}
-              </span>
-              {{ t('profile.stats.dispatcher') }}
-            </div>
-          </div>
+        <div class="main-last-seen">
+          <span v-if="activeDispatches.length > 0 && activeTrains.length > 0" class="active">
+            {{ t('profile.stats.active-as-both') }}
+          </span>
 
-          <div class="player-journal-links">
-            <router-link
-              class="a-button btn--action"
-              :to="`/journal/timetables?search-driver=${playerInfo.driverStats.driverName}`"
-            >
-              {{ t('profile.stats.timetables-journal') }}
-            </router-link>
+          <span v-else-if="activeTrains.length > 0" class="active">
+            {{ t('profile.stats.active-as-driver') }}
+          </span>
 
-            <router-link
-              class="a-button btn--action"
-              :to="`/journal/dispatchers?search-dispatcher=${playerInfo.dispatcherStats.dispatcherName}`"
-            >
-              {{ t('profile.stats.dispatchers-journal') }}
-            </router-link>
+          <span v-else-if="activeDispatches.length > 0" class="active">
+            {{ t('profile.stats.active-as-dispatcher') }}
+          </span>
 
-            <a
-              class="a-button btn--action"
-              :href="`https://td2.info.pl/profile/?u=${route.query.playerId}`"
-              target="_blank"
-            >
-              {{ t('profile.stats.forum-profile') }}
-            </a>
-          </div>
-
-          <!-- Current activities -->
-          <div
-            class="player-activities-box"
-            v-if="activeDispatches.length > 0 || activeTrains.length > 0"
+          <span
+            v-else-if="playerInfo.lastSeen && Date.now() - playerInfo.lastSeen < 300000"
+            class="active"
           >
-            <div class="info-activity" v-if="activeDispatches.length > 0">
-              <router-link
-                v-for="d in activeDispatches"
-                class="dispatcher-badge"
-                :to="`/scenery?station=${d.stationName}&region=${d.region}`"
-              >
-                <img src="/images/icon-user.svg" width="25" alt="user icon" />
-                <b>{{ d.stationName }} ({{ getRegionNameById(d.region) }})</b>
-                <StationStatusBadge :isOnline="true" :dispatcherStatus="d.dispatcherStatus" />
-              </router-link>
-            </div>
+            {{ t('profile.stats.last-seen-active') }}
+          </span>
 
-            <div class="info-activity" v-if="activeTrains.length > 0">
-              <router-link
-                v-for="t in activeTrains"
-                :to="`/driver?trainId=${t.id}`"
-                class="driver-badge"
-              >
-                <img src="/images/icon-train.svg" width="25" alt="train icon" />
-                <span v-if="t.timetable" class="text--primary">{{ t.timetable.category }}</span>
-                <span>{{ t.trainNo }}</span>
-                &bull;
-                <span>{{ t.currentStationName }} ({{ getRegionNameById(t.region) }})</span>
-                &bull;
-                <span class="text--grayed">{{ t.stockString.split(';')[0] }}</span>
-              </router-link>
-            </div>
+          <span
+            v-else-if="playerInfo.lastSeen && Date.now() - playerInfo.lastSeen < 3600000"
+            class="offline-recently"
+          >
+            {{
+              t('profile.stats.last-seen-relative', {
+                n: humanizeDuration(Date.now() - new Date(playerInfo.lastSeen).getTime())
+              })
+            }}
+          </span>
+
+          <span v-else-if="playerInfo.lastSeen" class="offline">
+            {{
+              t('profile.stats.last-seen-date', {
+                date: dateToLocaleString(new Date(playerInfo.lastSeen), { dateStyle: 'short' }),
+                time: dateToLocaleString(new Date(playerInfo.lastSeen), { timeStyle: 'short' })
+              })
+            }}
+          </span>
+        </div>
+
+        <div class="main-badges">
+          <div class="badge-container" v-if="playerInfo.driverStats.driverLevel != null">
+            <span
+              class="level-badge driver"
+              :style="calculateExpStyles(playerInfo.driverStats.driverLevel)"
+            >
+              {{
+                playerInfo.driverStats.driverLevel > 1 ? playerInfo.driverStats.driverLevel : 'L'
+              }}
+            </span>
+            {{ t('profile.stats.driver') }}
           </div>
+
+          <div class="badge-container" v-if="playerInfo.dispatcherStats.dispatcherLevel != null">
+            <span
+              class="level-badge dispatcher"
+              :style="calculateExpStyles(playerInfo.dispatcherStats.dispatcherLevel)"
+            >
+              {{
+                playerInfo.dispatcherStats.dispatcherLevel > 1
+                  ? playerInfo.dispatcherStats.dispatcherLevel
+                  : 'L'
+              }}
+            </span>
+            {{ t('profile.stats.dispatcher') }}
+          </div>
+        </div>
+
+        <!-- Current activities -->
+        <div
+          class="main-current-activities"
+          v-if="activeDispatches.length > 0 || activeTrains.length > 0"
+        >
+          <div class="activity" v-if="activeDispatches.length > 0">
+            <router-link
+              v-for="d in activeDispatches"
+              class="dispatcher-badge"
+              :to="`/scenery?station=${d.stationName}&region=${d.region}`"
+            >
+              <img src="/images/icon-user.svg" width="25" alt="user icon" />
+              <b>{{ d.stationName }} ({{ getRegionNameById(d.region) }})</b>
+              <StationStatusBadge :isOnline="true" :dispatcherStatus="d.dispatcherStatus" />
+            </router-link>
+          </div>
+
+          <div class="activity" v-if="activeTrains.length > 0">
+            <router-link
+              v-for="t in activeTrains"
+              :to="`/driver?trainId=${t.id}`"
+              class="driver-badge"
+            >
+              <img src="/images/icon-train.svg" width="25" alt="train icon" />
+              <span v-if="t.timetable" class="text--primary">{{ t.timetable.category }}</span>
+              <span>{{ t.trainNo }}</span>
+              &bull;
+              <span>{{ t.currentStationName }} ({{ getRegionNameById(t.region) }})</span>
+              &bull;
+              <span class="text--grayed">{{ t.stockString.split(';')[0] }}</span>
+            </router-link>
+          </div>
+        </div>
+
+        <div class="main-links">
+          <router-link
+            class="a-button btn--action"
+            :to="`/journal/timetables?search-driver=${playerInfo.driverStats.driverName}`"
+          >
+            {{ t('profile.stats.timetables-journal') }}
+          </router-link>
+
+          <router-link
+            class="a-button btn--action"
+            :to="`/journal/dispatchers?search-dispatcher=${playerInfo.dispatcherStats.dispatcherName}`"
+          >
+            {{ t('profile.stats.dispatchers-journal') }}
+          </router-link>
+
+          <a
+            class="a-button btn--action"
+            :href="`https://td2.info.pl/profile/?u=${route.query.playerId}`"
+            target="_blank"
+          >
+            {{ t('profile.stats.forum-profile') }}
+          </a>
         </div>
       </div>
     </div>
 
-    <div class="player-stats">
-      <div class="stats-driver">
+    <div class="summary-stats">
+      <div class="summary-box stats-driver">
         <h3 class="stats-header">
           <img src="/images/icon-train.svg" width="30" alt="train icon" />
           {{ t('profile.stats.header-driver') }}
@@ -172,7 +219,7 @@
       </div>
 
       <div
-        class="stats-dispatcher"
+        class="summary-box stats-dispatcher"
         v-if="playerInfo.dispatcherStats && playerInfo.dispatcherStats.services?.count"
       >
         <h3 class="stats-header">
@@ -221,17 +268,18 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onActivated, onMounted, PropType, ref, watch } from 'vue';
+import { computed, PropType } from 'vue';
 import { API, Td2API } from '../../typings/api';
 import { calculateExpStyles } from '../../composables/badge';
 import { getCountPercentage } from '../../utils/calcUtils';
-import { humanizeDuration } from '../../composables/time';
+import { dateToLocaleString, humanizeDuration } from '../../composables/time';
 import { useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useApiStore } from '../../store/apiStore';
 import StationStatusBadge from '../Global/StationStatusBadge.vue';
-import ProfilePlayerAvatar from './ProfilePlayerAvatar.vue';
 import { getRegionNameById } from '../../utils/regionUtils';
+import { isCreator } from '../../utils/userUtils';
+import { getLanguageNameById } from '@/utils/languageUtils';
 
 const { t } = useI18n();
 
@@ -244,9 +292,9 @@ const props = defineProps({
     required: true
   },
 
-  playerTD2Info: {
-    type: Object as PropType<Td2API.UsersInfoByName.UserInfo>
-  },
+  // playerTD2Info: {
+  //   type: Object as PropType<Td2API.UsersInfoByName.UserInfo>
+  // },
 
   playerName: {
     type: String
@@ -256,6 +304,8 @@ const props = defineProps({
 const isPlayerDonator = computed(() =>
   props.playerName ? apiStore.donatorsData.includes(props.playerName) : false
 );
+
+const isPlayerCreator = computed(() => (props.playerName ? isCreator(props.playerName) : false));
 
 const activeDispatches = computed(() => {
   if (!props.playerName) return [];
@@ -288,21 +338,23 @@ const activeTrains = computed(() => {
   overflow: auto;
 }
 
-.player-name-header {
-  margin: 0.5em 0;
+.main-player-name {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5em;
 
-  a {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 0.25em;
+  img {
+    height: 1.2em;
   }
 }
 
-.player-badges {
+.main-badges {
   display: flex;
   justify-content: center;
   gap: 1em;
+
+  margin-top: 1em;
 }
 
 .badge-container {
@@ -318,20 +370,38 @@ const activeTrains = computed(() => {
   }
 }
 
-.player-journal-links {
+.main-links {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
   gap: 0.5em;
+
   margin-top: 1em;
 }
 
-.info-activity {
+.main-last-seen {
+  margin-top: 0.5em;
+
+  .active {
+    color: var(--clr-success);
+  }
+
+  .offline-recently {
+    color: var(--clr-primary);
+  }
+
+  .offline {
+    color: #ccc;
+  }
+}
+
+.activity {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
   gap: 1em;
+
   margin-top: 1em;
 
   .dispatcher-badge {
@@ -352,7 +422,13 @@ const activeTrains = computed(() => {
   }
 }
 
-.player-stats {
+.summary-box {
+  background-color: var(--clr-tile);
+  border-radius: 0.5em;
+  padding: 1em;
+}
+
+.summary-stats {
   display: flex;
   flex-direction: column;
   gap: 1em;
@@ -360,13 +436,6 @@ const activeTrains = computed(() => {
   hr {
     margin: 0.5em 0;
   }
-}
-
-.player-info,
-.player-stats > div {
-  background-color: var(--clr-tile);
-  border-radius: 0.5em;
-  padding: 1em;
 }
 
 .stats-header {

@@ -1,7 +1,7 @@
 <template>
   <div class="tooltip-content">
-    <img src="/images/icon-diamond.svg" alt="donator diamond icon" />
-    <b class="text--donator">&nbsp;{{ tooltipStore.content }}</b>
+    <img src="/images/icon-creator.png" alt="creator icon" />
+    <b class="text--creator">&nbsp;{{ tooltipStore.content }}</b>
   </div>
 </template>
 

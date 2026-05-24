@@ -29,12 +29,12 @@ export default defineConfig({
           {
             urlPattern:
               /^https:\/\/stacjownik.spythere.eu\/api\/(getVehiclesData|getDonators|getSceneries)/i,
-            handler: 'StaleWhileRevalidate',
+            handler: 'NetworkFirst',
             options: {
               cacheName: 'stacjownik-api-cache',
               cacheableResponse: { statuses: [0, 200] },
               expiration: {
-                maxAgeSeconds: 3600
+                maxAgeSeconds: 600
               }
             }
           }

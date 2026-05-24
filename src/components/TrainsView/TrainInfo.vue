@@ -56,12 +56,21 @@
           </b>
 
           <b
-            v-if="apiStore.donatorsData.includes(train.driverName)"
+            v-if="isCreator(train.driverName)"
+            data-tooltip-type="CreatorTooltip"
+            :data-tooltip-content="$t('donations.creator-message')"
+          >
+            <img src="/images/icon-creator.png" alt="creator icon" />
+            <span class="text--creator">&nbsp;{{ train.driverName }}</span>
+          </b>
+
+          <b
+            v-else-if="apiStore.donatorsData.includes(train.driverName)"
             data-tooltip-type="DonatorTooltip"
             :data-tooltip-content="$t('donations.driver-message')"
           >
-            <span class="text--donator">{{ train.driverName }}&nbsp;</span>
             <img src="/images/icon-diamond.svg" alt="donator diamond icon" />
+            <span class="text--donator">&nbsp;{{ train.driverName }}</span>
           </b>
 
           <span v-else>{{ train.driverName }}</span>
@@ -204,6 +213,7 @@ import trainCategoryMixin from '../../mixins/trainCategoryMixin';
 import ProgressBar from '../Global/ProgressBar.vue';
 import StockList from '../Global/StockList.vue';
 import FlagIcon from '../Global/FlagIcon.vue';
+import { isCreator } from '../../utils/userUtils';
 
 export default defineComponent({
   mixins: [trainInfoMixin, styleMixin, trainCategoryMixin],
@@ -222,7 +232,8 @@ export default defineComponent({
   data() {
     return {
       store: useMainStore(),
-      apiStore: useApiStore()
+      apiStore: useApiStore(),
+      isCreator
     };
   },
 
@@ -278,8 +289,6 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   font-size: 1em;
-  gap: 0.25em;
-
   background-color: #1a1a1a;
   gap: 0.5em;
 }
@@ -358,8 +367,6 @@ export default defineComponent({
 .status-badges {
   display: flex;
   flex-wrap: wrap;
-  margin-left: 0.25em;
-
   gap: 0.25em;
 
   img {
@@ -372,7 +379,7 @@ export default defineComponent({
   align-items: center;
   flex-wrap: wrap;
   gap: 0.5em;
-  padding: 0.5em 0;
+  padding: 0.25em 0;
 }
 
 .progress-distance {

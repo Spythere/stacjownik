@@ -1,11 +1,7 @@
 <template>
   <div class="profile-view">
     <div class="profile-wrapper" v-if="playerInfo && playerInfoStatus == Status.Data.Loaded">
-      <ProfileSummary
-        :playerInfo="playerInfo"
-        :playerTD2Info="playerTD2Info"
-        :playerName="playerName"
-      />
+      <ProfileSummary :playerInfo="playerInfo" :playerName="playerName" />
 
       <div class="profile-side">
         <ProfileRecentStats :playerInfo="playerInfo" />
@@ -49,9 +45,9 @@ const route = useRoute();
 
 const playerId = ref(-1);
 const playerName = ref('');
+const playerLanguage = ref(-1);
 
 const playerInfo = ref<API.PlayerInfo.Data | undefined>(undefined);
-const playerTD2Info = ref<Td2API.UsersInfoByName.UserInfo | undefined>(undefined);
 const playerJournal = ref<API.PlayerJournal.Data | undefined>(undefined);
 
 const playerInfoStatus = ref(Status.Data.Initialized);
@@ -82,17 +78,17 @@ async function fetchPlayerJournal(playerId: number) {
   });
 }
 
-async function fetchPlayerTd2Info(playerName: string): Promise<Td2API.UsersInfoByName.Response> {
-  const response = await fetch(
-    `https://api.td2.info.pl?method=getUsersInfoByName&name=${playerName}`
-  );
+// async function fetchPlayerTd2Info(playerName: string): Promise<Td2API.UsersInfoByName.Response> {
+//   const response = await fetch(
+//     `https://api.td2.info.pl?method=getUsersInfoByName&name=${playerName}`
+//   );
 
-  if (!response.ok) {
-    throw new Error('fetchPlayerTd2Info: could not fetch data');
-  }
+//   if (!response.ok) {
+//     throw new Error('fetchPlayerTd2Info: could not fetch data');
+//   }
 
-  return response.json();
-}
+//   return response.json();
+// }
 
 async function fetchPlayerData() {
   const queryPlayerId = Number(route.query.playerId) || -1;
@@ -104,48 +100,42 @@ async function fetchPlayerData() {
     playerJournalStatus.value = Status.Data.Loading;
 
     playerInfo.value = undefined;
-    playerTD2Info.value = undefined;
     playerJournal.value = undefined;
   }
 
   playerId.value = queryPlayerId;
 
-  try {
-    const playerInfoResp = await fetchPlayerInfo(playerId.value);
+  fetchPlayerInfo(playerId.value)
+    .then((response) => {
+      playerName.value =
+        response.driverStats.driverName || response.dispatcherStats.dispatcherName || '';
 
-    playerName.value =
-      playerInfoResp.driverStats.driverName || playerInfoResp.dispatcherStats.dispatcherName || '';
-
-    if (!playerName.value) {
-      router.push('/');
-      return;
-    }
-
-    playerInfo.value = playerName.value ? playerInfoResp : undefined;
-    playerInfoStatus.value = Status.Data.Loaded;
-
-    if (playerName.value) {
-      const playerTD2InfoResp = await fetchPlayerTd2Info(playerName.value);
-
-      if (playerTD2InfoResp.success && playerTD2InfoResp.message.length == 1) {
-        playerTD2Info.value = playerTD2InfoResp.message[0];
+      if (!playerName.value) {
+        router.push('/');
+        return;
       }
-    }
-  } catch (error) {
-    playerInfo.value = undefined;
-    playerTD2Info.value = undefined;
-    playerInfoStatus.value = Status.Data.Error;
-  }
 
-  try {
-    const playerJournalResp = await fetchPlayerJournal(playerId.value);
+      playerInfo.value = playerName.value ? response : undefined;
+      playerInfoStatus.value = Status.Data.Loaded;
+    })
+    .catch((err) => {
+      playerInfo.value = undefined;
+      playerInfoStatus.value = Status.Data.Error;
 
-    playerJournal.value = playerJournalResp;
-    playerJournalStatus.value = Status.Data.Loaded;
-  } catch (error) {
-    playerJournal.value = undefined;
-    playerJournalStatus.value = Status.Data.Error;
-  }
+      console.error(err);
+    });
+
+  fetchPlayerJournal(playerId.value)
+    .then((response) => {
+      playerJournal.value = response;
+      playerJournalStatus.value = Status.Data.Loaded;
+    })
+    .catch((err) => {
+      playerJournal.value = undefined;
+      playerJournalStatus.value = Status.Data.Error;
+
+      console.error(err);
+    });
 }
 </script>
 

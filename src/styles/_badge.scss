@@ -1,8 +1,7 @@
 @use 'responsive';
 
 .badge {
-  font-weight: 600;
-
+  font-weight: bold;
   display: inline-block;
   padding: 0;
 
@@ -16,8 +15,6 @@
   }
 
   &-none {
-    font-weight: 600;
-
     padding: 0.2em 0.4em;
     background: firebrick;
 
@@ -85,7 +82,6 @@
   padding: 0.1em 0.3em;
   border-radius: 0.2em;
   font-weight: bold;
-  user-select: none;
 
   &.twr {
     background-color: var(--clr-twr);

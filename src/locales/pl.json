@@ -42,10 +42,11 @@
     "action-paypal": "PRZELEJ PAYPALEM",
     "action-buycoffee": "POSTAW KAWĘ!",
     "dispatcher-message": "Dyżurny wspierający projekt Stacjownika!",
-    "driver-message": "Maszynista wspierający projekt Stacjownika!"
+    "driver-message": "Maszynista wspierający projekt Stacjownika!",
+    "creator-message": "Twórca projektu Stacjownik"
   },
   "warnings": {
-    "TWR": "Pociąg z towarami niebezpiecznymi wysokiego ryzyka",
+    "TWR": "Pociąg z towarami niebezpiecznymi wysokiego ryzyka (TWR)",
     "SKR": "Pociąg z przekroczoną skrajnią",
     "PN": "Pociąg z przesyłkami nadzwyczajnymi",
     "TN": "Pociąg z towarami niebezpiecznymi",
@@ -170,7 +171,9 @@
     "afk": "Z/W",
     "no-space": "BRAK MIEJSCA",
     "invalid": "NIEWPISANY",
-    "unknown": "NIEZNANY"
+    "unknown": "NIEZNANY",
+    "online-to": "dostępny do: {0}",
+    "offline-since": "offline od ~{0}"
   },
   "options": {
     "filters": "FILTRY",
@@ -417,7 +420,8 @@
     "timeout": "Wystąpił problem z aktualizacją rozkładów jazdy z SWDR",
     "driver-profile-link": "PROFIL GRACZA",
     "driver-srjp-link": "SRJP",
-    "driver-return-link": "POWRÓT",
+    "timetable-history-link": "HISTORIA ROZKŁADU",
+    "driver-return-link": "POWRÓĆ",
     "driver-not-found-header": "Nie znaleziono pociągu! :/",
     "driver-not-found-desc-1": "Ten pociąg prawdopodobnie zakończył już swój bieg, zmienił numer lub jest offline.",
     "driver-not-found-desc-2": "Historię rozkładów jazdy możesz przejrzeć w",
@@ -425,15 +429,47 @@
     "driver-not-found-others": "Gracz {driver} jest online jako:",
     "driver-not-found-return": "WRÓĆ NA STRONĘ GŁÓWNĄ",
     "stock-copy": "SKOPIUJ SKŁAD",
-    "number-propositions": "ZAPROPONUJ NUMER",
     "stock-clipboard-success": "Pomyślnie skopiowano skład w postaci tekstowej do schowka!",
-    "stock-clipboard-failure": "Ups! Nie udało się skopiować składu do schowka! :/",
-    "number-propositions-header": "Wygeneruj propozycje numerów dla kategorii pociągu:",
-    "number-propositions-third-number": "Trzecia cyfra:",
-    "number-propositions-last-nums": "{count} ostatnie cyfry z przedziału:",
-    "number-propositions-title": "Propozycje:",
-    "number-propositions-empty": "Brak propozycji dla wybranej kategorii! :/"
+    "stock-clipboard-failure": "Ups! Nie udało się skopiować składu do schowka! :/"
   },
+
+  "helper": {
+    "button-show": "POMOCNIK MASZYNISTY",
+    "number-info": "zostanie automatycznie zaktualizowany na obecny numer wybrany w symulatorze po wysłaniu wiadomości na czacie.",
+    "title": "Treść analizy:",
+
+    "stock-copy": "SKOPIUJ OBECNY SKŁAD",
+    "stock-clipboard-success": "Pomyślnie skopiowano do schowka skład w postaci tekstowej:",
+    "stock-clipboard-failure": "Ups! Nie udało się skopiować składu do schowka! :/",
+
+    "cargo-copy": "SKOPIUJ UWAGI PRZEWOZOWE",
+
+    "number-copy": "SKOPIUJ LOSOWY NUMER",
+    "number-clipboard-success": "Pomyślnie skopiowano do schowka numer:",
+    "number-clipboard-failure": "Ups! Nie udało się skopiować numeru do schowka! :/",
+
+    "propositions": {
+      "title": "Propozycje numerów:",
+      "header": "Wygeneruj propozycje numerów dla pociągu wybranej kategorii:",
+      "third-number": "Trzecia cyfra:",
+      "last-nums": "{count} ostatnie cyfry z przedziału:",
+      "empty": "Brak propozycji dla wybranej kategorii!"
+    },
+
+    "warnings-title": "Dodatkowe uwagi przewozowe:",
+    "no-warnings": "Brak dodatkowych uwag przewozowych",
+
+    "warnings": {
+      "zags-loaded-twr": "TWR: 23UN1965, {0}x Zags",
+      "zags-empty-tn": "TN: 23UN1965, {0}x Zags (próżne)",
+      "zans-loaded-tn": "TN: 33UN1202, {0}x Zans",
+      "zans-empty-tn": "TN: 33UN1202, {0}x Zans (próżne)",
+      "military-all-pn": "PN: transport wojskowy",
+      "edk80-all-pn": "PN: żuraw kolejowy EDK80",
+      "innofreight-all-pn": "PN: Innofreight C45 (przekroczona skrajnia)"
+    }
+  },
+
   "train-stats": {
     "stats-button": "STATYSTYKI",
     "title": "STATYSTYKI AKTYWNYCH POCIĄGÓW",
@@ -479,9 +515,7 @@
     "stock-timetable-speed": "Prędkość RJ",
     "stock-dangers": "DODATKOWE UWAGI",
     "stock-preview": "PODGLĄD SKŁADU",
-    "stock-copy": "SKOPIUJ SKŁAD",
-    "stock-clipboard-success": "Pomyślnie skopiowano skład w postaci tekstowej do schowka:",
-    "stock-clipboard-failure": "Ups! Nie udało się skopiować składu do schowka! :/",
+    "stock-copy": "KOPIUJ SKŁAD",
     "load-data": "Pobierz dalszą historię...",
     "last-seen-at": "Ostatnio widziany na: ",
     "currently-at": "Obecnie na scenerii: ",
@@ -545,7 +579,7 @@
     "no-users": "BRAK AKTYWNYCH GRACZY",
     "no-spawns": "BRAK OTWARTYCH SPAWNÓW",
     "no-scenery": "Ups! Ta sceneria nie istnieje!",
-    "return-btn": "POWRÓT DO STRONY GŁÓWNEJ",
+    "return-btn": "COFNIJ",
     "history-btn": "Przejdź do widoku historii dyżurnych ruchu",
     "info-btn": "Wróć do widoku scenerii",
     "authors-title": "Autor scenerii | Autorzy scenerii",
@@ -589,10 +623,13 @@
       "scope-name": "OGÓLNIE",
       "scope-hash": "OBECNY HASH",
 
-      "place": "{n}. miejsce",
+      "place": "miejsce",
       "dispatcher-rating": "Ocena: {n}",
       "duty-count": "Brak dyżurów | 1 dyżur | Dyżury: {n}",
-      "duration": "Czas:"
+      "duration": "Czas:",
+
+      "no-data-general": "Brak zapisanych rekordów scenerii na serwerze PL1!",
+      "no-data-current-hash": "Brak zapisanych rekordów scenerii z obecnym hashem na serwerze PL1!"
     }
   },
   "availability": {
@@ -634,17 +671,24 @@
     },
 
     "stats": {
-      "timetables-journal": "DZIENNIK RJ",
-      "dispatchers-journal": "DZIENNIK DR",
-      "forum-profile": "PROFIL FORUM",
+      "timetables-journal": "DZIENNIK ROZKŁADÓW",
+      "dispatchers-journal": "DZIENNIK DYŻURÓW",
+      "forum-profile": "PROFIL FORUM TD2",
 
       "driver": "MASZYNISTA",
       "dispatcher": "DYŻURNY RUCHU",
 
+      "last-seen-date": "Ostatnia aktywność: {date} o {time}",
+      "last-seen-relative": "Ostatnia aktywność: {n} temu",
+      "last-seen-active": "Obecnie online",
+      "active-as-dispatcher": "Online jako dyżurny ruchu",
+      "active-as-driver": "Online jako maszynista",
+      "active-as-both": "Online jako dyżurny i maszynista",
+
       "header-driver": "STATYSTYKI MASZYNISTY",
       "fulfilled-timetables": "wypełnione rozkłady jazdy",
       "route-distance": "zatwierdzony kilometraż w RJ",
-      "confirmed-stops": "potwierdzonych stacji w RJ",
+      "confirmed-stops": "potwierdzone stacje w RJ",
       "longest-timetable": "najdłuższy rozkład jazdy",
       "avg-timetable-length": "średnia długość wszystkich rozkładów",
       "no-timetable-stats": "Ten użytkownik nie posiada statystyk maszynisty zarejestrowanych przez Stacjownik!",

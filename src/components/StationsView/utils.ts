@@ -118,10 +118,12 @@ function filterSliderValues(filters: Record<string, any>, generalInfo: StationGe
   const { availability, reqLevel, routes } = generalInfo;
 
   const otherAvailability =
-    availability == 'nonPublic' || availability == 'unavailable' || availability == 'abandoned';
+    availability == 'nonPublic' || availability == 'unavailable' || availability == 'abandoned'
+      ? 1
+      : 0;
 
-  if (filters['minLevel'] > reqLevel + (otherAvailability ? 1 : 0)) return true;
-  if (filters['maxLevel'] < reqLevel + (otherAvailability ? 1 : 0)) return true;
+  if (filters['minLevel'] > Math.max(reqLevel, 0) + otherAvailability) return true;
+  if (filters['maxLevel'] < Math.max(reqLevel, 0) + otherAvailability) return true;
   if (filters['minVmax'] > routes.maxRouteSpeed) return true;
   if (filters['maxVmax'] < routes.minRouteSpeed) return true;
 

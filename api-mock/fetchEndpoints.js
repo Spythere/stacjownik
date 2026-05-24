@@ -19,7 +19,7 @@ async function main() {
   if (!existsSync('endpoints')) await mkdir('endpoints');
 
   Promise.all(
-    ['getActiveData', 'getDonators', 'getSceneries', 'getVehicles'].map((endpointName) =>
+    ['getActiveData', 'getDonators', 'getSceneries', 'getVehiclesData'].map((endpointName) =>
       fetchJSONEndpointData(
         `https://stacjownik.spythere.eu/api/${endpointName}`,
         `${endpointName}.json`

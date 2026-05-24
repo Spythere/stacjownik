@@ -59,7 +59,17 @@
       </strong>
 
       <router-link
-        v-if="apiStore.donatorsData.includes(timetable.driverName)"
+        v-if="isCreator(timetable.driverName)"
+        class="text--creator"
+        data-tooltip-type="CreatorTooltip"
+        :data-tooltip-content="$t('donations.creator-message')"
+        :to="`/journal/timetables?search-driver=${timetable.driverName}`"
+      >
+        <strong>{{ timetable.driverName }}</strong>
+      </router-link>
+
+      <router-link
+        v-else-if="apiStore.donatorsData.includes(timetable.driverName)"
         class="text--donator"
         data-tooltip-type="DonatorTooltip"
         :data-tooltip-content="$t('donations.driver-message')"
@@ -115,6 +125,7 @@ import styleMixin from '../../../mixins/styleMixin';
 import { useApiStore } from '../../../store/apiStore';
 import trainCategoryMixin from '../../../mixins/trainCategoryMixin';
 import FlagIcon from '../../Global/FlagIcon.vue';
+import { isCreator } from '../../../utils/userUtils';
 
 export default defineComponent({
   components: { FlagIcon },
@@ -122,7 +133,8 @@ export default defineComponent({
 
   data() {
     return {
-      apiStore: useApiStore()
+      apiStore: useApiStore(),
+      isCreator
     };
   },
 

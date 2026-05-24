@@ -70,54 +70,44 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-$free: #8a8a8a;
-$ending: #e6c300;
-$no-limit: #117fc9;
-$unav: #ff3d5d;
-$afk: #e6a100;
-$no-space: #222;
-$online: #09a116;
-$unknown: #b93c3c;
-
 .status-badge {
   border-radius: 1em;
-  font-weight: 500;
   text-wrap: nowrap;
 
   padding: 0.2rem 0.55rem;
 
-  background-color: $online;
+  background-color: var(--status-online);
 
   &.free {
-    background-color: $free;
+    background-color: var(--status-free);
     font-size: 0.95em;
   }
 
   &.ending {
-    background-color: $ending;
+    background-color: var(--status-ending);
     color: black;
     font-size: 0.9em;
   }
 
   &.no-limit {
-    background-color: $no-limit;
+    background-color: var(--status-no-limit);
     font-size: 0.9em;
   }
 
   &.not-signed,
   &.unavailable {
-    background-color: $unav;
+    background-color: var(--status-unavailable);
     font-size: 0.9em;
   }
 
   &.afk {
-    background-color: $afk;
+    background-color: var(--status-afk);
     color: black;
     font-size: 0.95em;
   }
 
   &.no-space {
-    background-color: $no-space;
+    background-color: var(--status-no-spac);
     border: 1px solid white;
     color: white;
     font-size: 0.9em;
@@ -125,7 +115,7 @@ $unknown: #b93c3c;
 
   &.unknown,
   &.invalid {
-    background-color: $unknown;
+    background-color: var(--status-unknown);
     font-size: 0.95em;
   }
 }

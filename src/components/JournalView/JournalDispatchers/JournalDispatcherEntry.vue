@@ -18,7 +18,20 @@
           </b>
 
           <span
-            v-if="apiStore.donatorsData.includes(entry.dispatcherName)"
+            v-if="isCreator(entry.dispatcherName)"
+            data-tooltip-type="CreatorTooltip"
+            :data-tooltip-content="$t('donations.creator-message')"
+          >
+            <router-link
+              class="text--creator"
+              :to="`/journal/dispatchers?search-dispatcher=${entry.dispatcherName}`"
+            >
+              {{ entry.dispatcherName }}
+            </router-link>
+          </span>
+
+          <span
+            v-else-if="apiStore.donatorsData.includes(entry.dispatcherName)"
             data-tooltip-type="DonatorTooltip"
             :data-tooltip-content="$t('donations.dispatcher-message')"
           >
@@ -122,6 +135,7 @@ import styleMixin from '../../../mixins/styleMixin';
 import { useApiStore } from '../../../store/apiStore';
 import StationStatusBadge from '../../Global/StationStatusBadge.vue';
 import FlagIcon from '../../Global/FlagIcon.vue';
+import { isCreator } from '../../../utils/userUtils';
 
 export default defineComponent({
   props: {
@@ -134,7 +148,7 @@ export default defineComponent({
   emits: ['toggleShowExtraInfo'],
 
   data() {
-    return { regions, apiStore: useApiStore() };
+    return { regions, apiStore: useApiStore(), isCreator };
   },
 
   methods: {

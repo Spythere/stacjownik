@@ -9,7 +9,8 @@ export const tooltipKeys = [
   'SpawnsTooltip',
   'UsersTooltip',
   'HtmlTooltip',
-  'TrainInfoTooltip'
+  'TrainInfoTooltip',
+  'CreatorTooltip'
 ] as const;
 
 export type TooltipType = (typeof tooltipKeys)[number];
@@ -18,20 +19,23 @@ export const useTooltipStore = defineStore('tooltipStore', {
   state: () => ({
     mousePos: [0, 0],
     type: null as TooltipType | null,
-    content: ''
+    content: '',
+    placement: 'default'
   }),
 
   actions: {
-    show(_e: MouseEvent, type: string, value?: string) {
+    show(_e: MouseEvent, type: string, value: string | null, placement: string | null) {
       if (!isTooltip(type)) return;
 
       this.type = type;
-      this.content = value ?? '';
+      this.content = value || '';
+      this.placement = placement || 'default';
     },
 
     hide() {
       this.type = null;
       this.content = '';
+      this.placement = 'default';
     },
 
     // Tooltip handler reading attributes of DOM elements
@@ -49,8 +53,10 @@ export const useTooltipStore = defineStore('tooltipStore', {
       // Tooltip content is a string but may be parsed to objects / html in corresponding tooltip type components
       const tooltipType = targetEl.getAttribute('data-tooltip-type');
       const tooltipContent = targetEl.getAttribute('data-tooltip-content');
+      const tooltipPlacement = targetEl.getAttribute('data-tooltip-placement');
 
-      if (tooltipType && tooltipContent) this.show(e, tooltipType, tooltipContent);
+      if (tooltipType && tooltipContent)
+        this.show(e, tooltipType, tooltipContent, tooltipPlacement);
       else if (this.type != null) this.hide();
 
       this.mousePos[0] = e.pageX;
