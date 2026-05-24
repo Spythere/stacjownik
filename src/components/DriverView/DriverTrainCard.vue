@@ -8,17 +8,18 @@
         <i class="fa-regular fa-lightbulb"></i> {{ i18n.t('helper.button-show') }}
       </button>
 
-      <button class="btn btn--action" @click="toggleTimetableDetails()">
-        <i class="fa-regular fa-calendar"></i> {{ i18n.t('driver.details.button-show') }}
-      </button>
+      <router-link
+        v-if="chosenTrain.timetableData"
+        :to="`/journal/timetables?search-train=${chosenTrain.trainNo}&timetable-status=active&expanded=1`"
+        class="a-button btn--action"
+      >
+        <i class="fa-regular fa-calendar"></i>
+        {{ i18n.t('trains.timetable-details-link') }}
+      </router-link>
     </div>
 
     <transition name="view-anim">
       <DriverHelper :chosenTrain="chosenTrain" v-if="isDriverHelperOpen" />
-    </transition>
-
-    <transition name="view-anim">
-      <DriverTimetableDetails :chosenTrain="chosenTrain" v-if="isDetailsInfoOpen" />
     </transition>
 
     <StockList :trainStockList="chosenTrain.stockList" :key="chosenTrain.id" :showPreviews="true" />
@@ -35,7 +36,6 @@ import DriverHelper from './DriverHelper.vue';
 import StockList from '../Global/StockList.vue';
 import DriverTrainSchedule from './DriverTrainSchedule.vue';
 import TrainInfo from '../TrainsView/TrainInfo.vue';
-import DriverTimetableDetails from './DriverTimetableDetails.vue';
 
 const i18n = useI18n();
 
