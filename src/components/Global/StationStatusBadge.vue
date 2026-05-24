@@ -72,7 +72,6 @@ export default defineComponent({
 <style lang="scss" scoped>
 .status-badge {
   border-radius: 1em;
-  font-weight: 500;
   text-wrap: nowrap;
 
   padding: 0.2rem 0.55rem;

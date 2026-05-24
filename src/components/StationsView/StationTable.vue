@@ -468,7 +468,6 @@ $rowCol: #424242;
   max-height: 2000px;
   min-height: 500px;
   overflow: auto;
-  font-weight: 500;
 }
 
 .no-stations {
