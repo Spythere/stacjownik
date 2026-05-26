@@ -46,7 +46,7 @@
     "creator-message": "Twórca projektu Stacjownik"
   },
   "warnings": {
-    "TWR": "Pociąg z towarami niebezpiecznymi wysokiego ryzyka (TWR)",
+    "TWR": "Pociąg z towarami niebezpiecznymi wysokiego ryzyka",
     "SKR": "Pociąg z przekroczoną skrajnią",
     "PN": "Pociąg z przesyłkami nadzwyczajnymi",
     "TN": "Pociąg z towarami niebezpiecznymi",

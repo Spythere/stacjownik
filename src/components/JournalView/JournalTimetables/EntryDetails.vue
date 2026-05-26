@@ -48,7 +48,7 @@
 
           <ul>
             <li v-if="timetableDetails.twr">
-              <b class="text--primary">{{ $t('warnings.TWR') }} (TWR)</b>
+              <b class="text--primary">{{ $t('warnings.TWR') }}</b>
             </li>
 
             <li v-if="timetableDetails.skr">
