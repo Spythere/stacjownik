@@ -46,7 +46,7 @@
     "creator-message": "Twórca projektu Stacjownik"
   },
   "warnings": {
-    "TWR": "Pociąg z towarami niebezpiecznymi wysokiego ryzyka (TWR)",
+    "TWR": "Pociąg z towarami niebezpiecznymi wysokiego ryzyka",
     "SKR": "Pociąg z przekroczoną skrajnią",
     "PN": "Pociąg z przesyłkami nadzwyczajnymi",
     "TN": "Pociąg z towarami niebezpiecznymi",
@@ -462,8 +462,8 @@
     "warnings": {
       "zags-loaded-twr": "TWR: 23UN1965, {0}x Zags",
       "zags-empty-tn": "TN: 23UN1965, {0}x Zags (próżne)",
-      "zans-loaded-tn": "TN: 33UN1202, {0}x Zans",
-      "zans-empty-tn": "TN: 33UN1202, {0}x Zans (próżne)",
+      "zans-loaded-tn": "TN: 30UN1202, {0}x Zans",
+      "zans-empty-tn": "TN: 30UN1202, {0}x Zans (próżne)",
       "military-all-pn": "PN: transport wojskowy",
       "edk80-all-pn": "PN: żuraw kolejowy EDK80",
       "innofreight-all-pn": "PN: Innofreight C45 (przekroczona skrajnia)"
