@@ -29,60 +29,40 @@
           </span>
         </span>
       </div>
-      <!-- <li
-        v-for="(pathData, i) in timetablePathDetails"
-        :data-visited="pathData.isVisited"
-        :data-next-visited="
-          i < timetablePathDetails.length - 1 && timetablePathDetails[i + 1].isVisited
-        "
-      >
-        <span v-if="i > 0" class="arrow">&gt;</span>
-        <span class="arrival" v-if="pathData.arrival">{{ pathData.arrival }}</span>
-        <b class="name">{{ pathData.sceneryName }}</b>
-        <span class="departure" v-if="pathData.departure">{{ pathData.departure }}</span>
-      </li> -->
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { PropType, defineComponent } from 'vue';
-import dateMixin from '../../../../mixins/dateMixin';
+<script lang="ts" setup>
+import { PropType, computed } from 'vue';
 import { API } from '../../../../typings/api';
 
-export default defineComponent({
-  mixins: [dateMixin],
-
-  props: {
-    timetable: {
-      type: Object as PropType<API.TimetableHistory.Data>,
-      required: true
-    }
-  },
-
-  computed: {
-    timetablePathDetails() {
-      if (!this.timetable.path || this.timetable.path == '') return null;
-
-      return this.timetable.path.split(';').map((pathEl, i) => {
-        const [arrival, name, departure] = pathEl.split(',');
-        const sceneryName = name.split(' ').slice(0, -1).join(' ');
-        const sceneryHash = name.split(' ').pop()?.replace('.sc', '') ?? '';
-        const isVisited = this.timetable.visitedSceneries.includes(sceneryHash);
-
-        return {
-          arrival,
-          sceneryName,
-          sceneryHash,
-          departure,
-          isVisited,
-          isVisitedOffline:
-            !isVisited &&
-            this.timetable.visitedSceneries.includes(`${sceneryName} ${sceneryHash}.sc`)
-        };
-      });
-    }
+const props = defineProps({
+  timetable: {
+    type: Object as PropType<API.TimetableHistory.Data>,
+    required: true
   }
+});
+
+const timetablePathDetails = computed(() => {
+  if (!props.timetable.path || props.timetable.path == '') return null;
+
+  return props.timetable.path.split(';').map((pathEl) => {
+    const [arrival, name, departure] = pathEl.split(',');
+    const sceneryName = name.split(' ').slice(0, -1).join(' ');
+    const sceneryHash = name.split(' ').pop()?.replace('.sc', '') ?? '';
+    const isVisited = props.timetable.visitedSceneries.includes(sceneryHash);
+
+    return {
+      arrival,
+      sceneryName,
+      sceneryHash,
+      departure,
+      isVisited,
+      isVisitedOffline:
+        !isVisited && props.timetable.visitedSceneries.includes(`${sceneryName} ${sceneryHash}.sc`)
+    };
+  });
 });
 </script>
 
