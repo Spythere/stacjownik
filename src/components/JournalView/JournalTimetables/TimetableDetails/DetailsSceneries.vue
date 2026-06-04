@@ -3,8 +3,33 @@
     <div class="g-separator"></div>
 
     <h4>SCENERIE I SZLAKI:</h4>
-    <ul class="sceneries-list" v-if="timetablePathDetails">
-      <li
+    <div class="path-list" v-if="timetablePathDetails">
+      <div
+        class="path-element"
+        v-for="(pathData, i) in timetablePathDetails"
+        :data-visited="pathData.isVisited"
+        :data-visited-offline-only="pathData.isVisitedOffline"
+      >
+        <span class="connection" v-if="i > 0">
+          <span>{{ timetablePathDetails[i - 1].departure }}</span>
+          <span class="arrow"></span>
+          <span>{{ pathData.arrival }}</span>
+        </span>
+
+        <span class="scenery-info">
+          <span class="name">{{ pathData.sceneryName }}</span>
+          <span class="hash">#{{ pathData.sceneryHash }}</span>
+          <span
+            class="checkmark"
+            v-if="pathData.isVisited"
+            data-tooltip-type="BaseTooltip"
+            :data-tooltip-content="`${pathData.sceneryName}: sceneria odwiedzona`"
+          >
+            &checkmark;
+          </span>
+        </span>
+      </div>
+      <!-- <li
         v-for="(pathData, i) in timetablePathDetails"
         :data-visited="pathData.isVisited"
         :data-next-visited="
@@ -15,8 +40,8 @@
         <span class="arrival" v-if="pathData.arrival">{{ pathData.arrival }}</span>
         <b class="name">{{ pathData.sceneryName }}</b>
         <span class="departure" v-if="pathData.departure">{{ pathData.departure }}</span>
-      </li>
-    </ul>
+      </li> -->
+    </div>
   </div>
 </template>
 
@@ -62,54 +87,64 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-ul.sceneries-list {
+.path-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5em 0;
-  color: #ccc;
+  align-items: center;
+
+  gap: 0.5em;
   margin-top: 0.5em;
 
   font-size: 0.95em;
 }
 
-ul.sceneries-list > li {
-  & > .name:first-child,
-  & > .arrival:nth-child(2) {
-    border-radius: 0.5em 0 0 0.5em;
+.path-list > .path-element {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.path-element > .connection {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5em;
+  color: var(--clr-primary);
+  font-size: 0.9em;
+
+  & > .arrow::after {
+    content: '\027F6';
+    display: block;
+    font-size: 1.2em;
   }
-
-  & > :last-child {
-    border-radius: 0 0.5em 0.5em 0;
-  }
 }
 
-.name {
-  padding: 0.25em 0.5em;
-  background-color: #303030;
+.scenery-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25em;
 }
 
-.arrival,
-.departure {
-  padding: 0.25em;
-  display: inline-block;
-  background-color: #4e4e4e;
-  min-width: 25px;
-  text-align: center;
+.scenery-info > .hash {
+  color: #aaa;
 }
 
-.arrow {
-  padding: 0 0.5em;
+.scenery-info > .checkmark {
+  font-size: 1.5em;
+  line-height: 0.75em;
+  user-select: none;
+  -moz-user-select: none;
 }
 
-.sceneries-list > li[data-visited='true'] {
-  .arrival,
+.path-element[data-visited='true'] > .scenery-info {
   .name,
-  .arrow {
+  .checkmark {
     color: lightgreen;
   }
+}
 
-  &[data-next-visited='true'] .departure {
-    color: lightgreen;
-  }
+.path-element[data-visited-offline-only='true'] > .scenery-info > .name {
+  color: lightgreen;
 }
 </style>
