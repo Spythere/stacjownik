@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useMainStore } from '../store/mainStore';
 import { useApiStore } from '../store/apiStore';
@@ -61,9 +61,6 @@ import SceneryTimetablesHistory from '../components/SceneryView/SceneryTimetable
 import SceneryDispatchersHistory from '../components/SceneryView/SceneryDispatchersHistory.vue';
 import SceneryTopList from '../components/SceneryView/SceneryTopList.vue';
 import SceneryActions from '@/components/SceneryView/SceneryActions.vue';
-
-const route = useRoute();
-const router = useRouter();
 
 const props = defineProps({
   region: {
@@ -99,9 +96,7 @@ const viewModes = [
   }
 ];
 
-const currentMode = computed(() => {
-  return route.query.view?.toString() ?? 'SceneryTimetable';
-});
+const currentMode = ref('SceneryTimetable');
 
 const currentViewComponent = computed(() => {
   return (
@@ -125,13 +120,7 @@ const onlineSceneryInfo = computed(() => {
 });
 
 function setViewMode(componentName: string) {
-  router.push({
-    path: route.path,
-    query: {
-      ...route.query,
-      view: componentName
-    }
-  });
+  currentMode.value = componentName;
 }
 </script>
 
