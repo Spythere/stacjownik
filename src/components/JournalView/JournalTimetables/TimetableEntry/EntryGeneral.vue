@@ -119,13 +119,13 @@
 <script lang="ts">
 import { PropType, defineComponent } from 'vue';
 
-import { API } from '../../../typings/api';
-import dateMixin from '../../../mixins/dateMixin';
-import styleMixin from '../../../mixins/styleMixin';
-import { useApiStore } from '../../../store/apiStore';
-import trainCategoryMixin from '../../../mixins/trainCategoryMixin';
-import FlagIcon from '../../Global/FlagIcon.vue';
-import { isCreator } from '../../../utils/userUtils';
+import dateMixin from '@/mixins/dateMixin';
+import styleMixin from '@/mixins/styleMixin';
+import trainCategoryMixin from '@/mixins/trainCategoryMixin';
+import { useApiStore } from '@/store/apiStore';
+import { API } from '@/typings/api';
+import FlagIcon from '@/components/Global/FlagIcon.vue';
+import { isCreator } from '@/utils/userUtils';
 
 export default defineComponent({
   components: { FlagIcon },
@@ -148,8 +148,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use '../../../styles/responsive';
-@use '../../../styles/badge';
+@use '@/styles/responsive';
+@use '@/styles/badge';
 
 .item-general {
   display: flex;

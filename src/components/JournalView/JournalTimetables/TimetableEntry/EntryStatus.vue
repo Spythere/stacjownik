@@ -44,8 +44,8 @@
 
 <script lang="ts">
 import { PropType, defineComponent } from 'vue';
-import ProgressBar from '../../Global/ProgressBar.vue';
-import { API } from '../../../typings/api';
+import { API } from '@/typings/api.ts';
+import ProgressBar from '@/components/Global/ProgressBar.vue';
 
 export default defineComponent({
   components: { ProgressBar },
@@ -59,7 +59,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use '../../../styles/responsive';
+@use '@/styles/responsive';
 
 .entry-status {
   display: flex;
@@ -67,7 +67,7 @@ export default defineComponent({
   flex-wrap: wrap;
   gap: 0.5em;
 
-  @include responsive.smallScreen{
+  @include responsive.smallScreen {
     justify-content: center;
   }
 }

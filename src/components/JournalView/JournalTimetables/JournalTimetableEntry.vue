@@ -33,9 +33,9 @@ import trainCategoryMixin from '../../../mixins/trainCategoryMixin';
 import dateMixin from '../../../mixins/dateMixin';
 import styleMixin from '../../../mixins/styleMixin';
 
-import EntryGeneral from './EntryGeneral.vue';
-import EntryStatus from './EntryStatus.vue';
-import EntryDetails from './EntryDetails.vue';
+import EntryStatus from './TimetableEntry/EntryStatus.vue';
+import EntryDetails from './TimetableEntry/EntryDetails.vue';
+import EntryGeneral from './TimetableEntry/EntryGeneral.vue';
 
 export default defineComponent({
   props: {
