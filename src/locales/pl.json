@@ -519,6 +519,9 @@
     "load-data": "Pobierz dalszą historię...",
     "last-seen-at": "Ostatnio widziany na: ",
     "currently-at": "Obecnie na scenerii: ",
+    "timetable-sceneries-title": "SCENERIE I SZLAKI:",
+    "timetable-scenery-visited": "sceneria odwiedzona",
+    "timetable-stops-title": "TRASA ROZKŁADU:",
     "driver-stats": {
       "button": "STAT. MASZYNISTY",
       "title": "STATYSTYKI MASZYNISTY {name}",

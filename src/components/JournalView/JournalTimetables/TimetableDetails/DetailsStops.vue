@@ -1,6 +1,7 @@
 <template>
   <div class="details-stops">
-    <h4>TRASA ROZKŁADU:</h4>
+    <h4>{{ $t('journal.timetable-stops-title') }}</h4>
+
     <ul class="stop-list">
       <li v-for="(stop, i) in timetableStops" :key="stop.stopName">
         <span class="stop-label" :data-confirmed="stop.isConfirmed">
