@@ -2,7 +2,8 @@
   <div class="details-sceneries">
     <div class="g-separator"></div>
 
-    <h4>SCENERIE I SZLAKI:</h4>
+    <h4>{{ $t('journal.timetable-sceneries-title') }}</h4>
+
     <div class="path-list" v-if="timetablePathDetails">
       <div
         class="path-element"
@@ -23,7 +24,7 @@
             class="checkmark"
             v-if="pathData.isVisited"
             data-tooltip-type="BaseTooltip"
-            :data-tooltip-content="`${pathData.sceneryName}: sceneria odwiedzona`"
+            :data-tooltip-content="`${pathData.sceneryName}: ${$t('journal.timetable-scenery-visited')}`"
           >
             &checkmark;
           </span>

@@ -529,6 +529,9 @@
     "load-data": "Load further data...",
     "last-seen-at": "Last seen at",
     "currently-at": "Currently at",
+    "timetable-sceneries-title": "SCENERIES AND LINES:",
+    "timetable-scenery-visited": "scenery visited",
+    "timetable-stops-title": "TIMETABLE ROUTE:",
     "driver-stats": {
       "button": "DRIVER STATS",
       "title": "{name}'s DRIVER STATS",
