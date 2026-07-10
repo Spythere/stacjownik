@@ -13,7 +13,7 @@
       >
         <span class="connection" v-if="i > 0">
           <span>{{ timetablePathDetails[i - 1].departure }}</span>
-          <span class="arrow"></span>
+          &gt;
           <span>{{ pathData.arrival }}</span>
         </span>
 
