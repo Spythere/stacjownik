@@ -107,7 +107,10 @@
                   "
                   class="scenery-change-name"
                 >
-                  <ScheduleSceneryInfo :scenery-name="stop.nextPointRef.sceneryName" />
+                  <ScheduleSceneryInfo
+                    :scenery-name="stop.nextPointRef.sceneryName"
+                    :region="train.region"
+                  />
                 </div>
 
                 <div

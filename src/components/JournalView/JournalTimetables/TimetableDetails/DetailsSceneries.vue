@@ -20,14 +20,14 @@
         <span class="scenery-info">
           <span class="name">{{ pathData.sceneryName }}</span>
           <span class="hash">#{{ pathData.sceneryHash }}</span>
-          <span
-            class="checkmark"
+          <i
+            class="fa fa-check"
             v-if="pathData.isVisited"
             data-tooltip-type="BaseTooltip"
             :data-tooltip-content="`${pathData.sceneryName}: ${$t('journal.timetable-scenery-visited')}`"
+            aria-hidden="true"
           >
-            &checkmark;
-          </span>
+          </i>
         </span>
       </div>
     </div>
@@ -103,6 +103,7 @@ const timetablePathDetails = computed(() => {
 
 .scenery-info {
   display: flex;
+  align-items: center;
   flex-wrap: wrap;
   gap: 0.25em;
 }
@@ -111,11 +112,8 @@ const timetablePathDetails = computed(() => {
   color: #aaa;
 }
 
-.scenery-info > .checkmark {
-  font-size: 1.5em;
-  line-height: 0.75em;
-  user-select: none;
-  -moz-user-select: none;
+.scenery-info > i {
+  color: lightgreen;
 }
 
 .path-element[data-visited='true'] > .scenery-info {
