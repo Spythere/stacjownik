@@ -41,6 +41,11 @@ const props = defineProps({
   sceneryName: {
     type: String,
     required: true
+  },
+
+  region: {
+    type: String,
+    required: true
   }
 });
 
@@ -49,7 +54,7 @@ const { t } = useI18n();
 
 const activeScenery = computed(() => {
   return apiStore.activeData?.activeSceneries
-    ?.filter((sc) => sc.stationName == props.sceneryName)
+    ?.filter((sc) => sc.stationName == props.sceneryName && sc.region == props.region)
     .sort((s1, s2) => s2.lastSeen - s1.lastSeen)[0];
 });
 </script>
