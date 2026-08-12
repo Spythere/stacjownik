@@ -22,6 +22,7 @@
                 v-if="activeSorter.headerName == headerName"
                 :src="`/images/icon-arrow-${activeSorter.dir == 1 ? 'asc' : 'desc'}.svg`"
                 alt="sort icon"
+                width="15"
               />
             </div>
           </th>
@@ -38,12 +39,13 @@
               data-tooltip-type="BaseTooltip"
               :data-tooltip-content="$t(`sceneries.headers.${headerName}`)"
             >
-              <img :src="`/images/icon-${headerName}.svg`" :alt="headerName" />
+              <img :src="`/images/icon-${headerName}.svg`" :alt="headerName" width="25" />
 
               <img
                 class="sort-icon"
                 v-if="activeSorter.headerName == headerName"
                 :src="`/images/icon-arrow-${activeSorter.dir == 1 ? 'asc' : 'desc'}.svg`"
+                width="15"
                 alt="sort icon"
               />
             </span>
@@ -552,11 +554,7 @@ thead th .header_wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
-
-  img {
-    width: 1.5em;
-    vertical-align: middle;
-  }
+  gap: 0.25em;
 }
 
 tbody tr {

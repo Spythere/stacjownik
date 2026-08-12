@@ -3,7 +3,11 @@
     <div class="details-actions">
       <button class="btn--action" @click="toggleExtraInfo">
         <b>{{ $t('journal.entry-details') }}</b>
-        <img :src="`/images/icon-arrow-${showExtraInfo ? 'asc' : 'desc'}.svg`" alt="Arrow icon" />
+        <img
+          :src="`/images/icon-arrow-${showExtraInfo ? 'asc' : 'desc'}.svg`"
+          alt="Arrow icon"
+          width="15"
+        />
       </button>
 
       <router-link

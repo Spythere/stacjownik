@@ -4,7 +4,11 @@
       <button class="selected-region" @click="toggleBox">
         <span>{{ selectedItem.name }}</span>
 
-        <img :src="`/images/icon-arrow-${listOpen ? 'asc' : 'desc'}.svg`" alt="Arrow icon" />
+        <img
+          :src="`/images/icon-arrow-${listOpen ? 'asc' : 'desc'}.svg`"
+          alt="Arrow icon"
+          width="15"
+        />
       </button>
 
       <ul class="options">
@@ -128,7 +132,6 @@ export default defineComponent({
 
 button img {
   vertical-align: middle;
-  width: 1.35em;
 }
 
 button.selected-region {
