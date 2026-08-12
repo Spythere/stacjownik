@@ -4,9 +4,9 @@ export default defineComponent({
   methods: {
     calculateExpStyle(exp: number, isSupporter = false): string {
       const bgColor =
-        exp >= -1 ? (exp < 2 ? '#26B0D9' : `hsl(${-exp * 5 + 100},  85%, 50%)`) : '#666';
+        exp >= -1 ? (exp < 2 ? '#26B0D9' : `hsl(${-exp * 3.5 + 90},  85%, 50%)`) : '#666';
 
-      const fontColor = exp > 14 || exp == -1 ? 'white' : 'black';
+      const fontColor = exp == -1 || exp > 17 ? 'white' : 'black';
       const boxShadow = isSupporter ? `box-shadow: 0 0 6px 2px ${bgColor};` : '';
 
       return `background-color: ${bgColor}; color: ${fontColor}; ${boxShadow};`;
@@ -14,7 +14,7 @@ export default defineComponent({
 
     calculateTextExpStyle(exp: number, isSupporter = false): string {
       const textColor =
-        exp > -1 ? (exp < 2 ? '#26B0D9' : `hsl(${-exp * 5 + 100},  75%, 50%)`) : '#666';
+        exp > -1 ? (exp < 2 ? '#26B0D9' : `hsl(${-exp * 3.5 + 90},  75%, 50%)`) : '#666';
 
       return `color: ${textColor}; ${isSupporter ? 'text-shadow: 0 0 6px ' + textColor : ''};`;
     },
