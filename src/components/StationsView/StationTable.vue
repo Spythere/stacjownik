@@ -1,5 +1,10 @@
 <template>
-  <section class="station_table" @scroll="onScroll" ref="tableRef">
+  <section
+    class="station_table"
+    :data-header-mode="mainStore.headerMode"
+    @scroll="onScroll"
+    ref="tableRef"
+  >
     <Loading
       v-if="apiStore.dataStatuses.connection == Status.Loading && filteredStationList.length == 0"
     />
@@ -364,6 +369,7 @@ import { filterStations, sortStations } from './utils';
 import { getLanguageNameById } from '../../utils/languageUtils';
 import FlagIcon from '../Global/FlagIcon.vue';
 import { isCreator } from '../../utils/userUtils';
+import { storeToRefs } from 'pinia';
 
 export default defineComponent({
   emits: ['toggleDonationCard'],
@@ -470,6 +476,10 @@ $rowCol: #424242;
   max-height: 2000px;
   min-height: 500px;
   overflow: auto;
+
+  &[data-header-mode='COMPACT'] {
+    height: calc(100vh - 10em);
+  }
 }
 
 .no-stations {

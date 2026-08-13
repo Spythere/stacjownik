@@ -1,10 +1,10 @@
 <template>
   <header class="app_header">
-    <div class="header_container">
-      <div class="header_body">
+    <div class="header-container">
+      <div class="header-body">
         <StatusIndicator />
 
-        <span class="header_brand">
+        <span class="header-brand">
           <router-link to="/">
             <img
               v-if="isChristmas"
@@ -15,10 +15,10 @@
           </router-link>
         </span>
 
-        <span class="header_info">
+        <span class="header-info">
           <Clock />
 
-          <div class="info_counter">
+          <div class="info-counter">
             <img src="/images/icon-dispatcher.svg" alt="icon dispatcher" />
             <span class="text--primary">{{ onlineDispatchersCount }}</span>
 
@@ -27,12 +27,12 @@
             <img src="/images/icon-train.svg" alt="icon train" />
           </div>
 
-          <div class="info_region">
+          <div class="info-region">
             <RegionDropdown />
           </div>
         </span>
 
-        <span class="header_links">
+        <span class="header-links">
           <router-link class="route-link" active-class="route-link-active" to="/" exact>
             {{ $t('app.sceneries') }}
           </router-link>
@@ -102,65 +102,63 @@ export default defineComponent({
   background-color: #2c2c2c;
 }
 
-.header {
-  &_body {
+.header-body {
+  position: relative;
+  max-width: 20em;
+}
+
+.header-container {
+  display: flex;
+  justify-content: center;
+
+  border-radius: 0 0 1em 1em;
+
+  @include responsive.smallScreen {
     position: relative;
-    max-width: 20em;
+    margin-top: 0.5em;
   }
+}
 
-  &_container {
-    display: flex;
-    justify-content: center;
+.header-brand {
+  display: flex;
 
-    border-radius: 0 0 1em 1em;
+  img {
+    width: 100%;
 
-    @include responsive.smallScreen {
-      position: relative;
-      margin-top: 0.5em;
-    }
+    margin: 0 auto;
   }
+}
 
-  &_brand {
-    display: flex;
+.header-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  font-size: 1.15em;
+}
 
-    img {
-      width: 100%;
+.header-links {
+  display: flex;
+  justify-content: center;
 
-      margin: 0 auto;
-    }
-  }
+  border-radius: 0.7em;
 
-  &_info {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    font-size: 1.15em;
-  }
+  font-size: 1.25em;
+  padding: 0.5em;
+}
 
-  &_links {
-    display: flex;
-    justify-content: center;
+.header_icons {
+  position: absolute;
+  right: 0;
+  top: 0;
 
-    border-radius: 0.7em;
+  padding: 0.5em;
 
-    font-size: 1.25em;
-    padding: 0.5em;
-  }
-
-  &_icons {
-    position: absolute;
-    right: 0;
-    top: 0;
-
-    padding: 0.5em;
-
-    @include responsive.smallScreen {
-      transform: translateX(85%);
-    }
+  @include responsive.smallScreen {
+    transform: translateX(85%);
   }
 }
 
 // COUNTER
-.info_counter {
+.info-counter {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -174,7 +172,7 @@ export default defineComponent({
   }
 }
 
-.info_region {
+.info-region {
   display: flex;
   justify-content: flex-end;
 }

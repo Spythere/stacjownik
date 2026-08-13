@@ -1,5 +1,6 @@
-import { API } from '../typings/api';
-import { Availability, CheckpointTrain, StationRoutesInfo, Status } from '../typings/common';
+import { Availability, StationRoutesInfo } from '../typings/common';
+
+export type HeaderMode = 'STANDARD' | 'COMPACT';
 
 export interface MainStoreState {
   region: { id: string; value: string; name: string };
@@ -8,6 +9,7 @@ export interface MainStoreState {
   chosenModalTrainId?: string;
   modalLastClickedTarget: EventTarget | null;
   currentLocale: string;
+  headerMode: HeaderMode;
 }
 
 export interface StationJSONData {
@@ -28,7 +30,6 @@ export interface StationJSONData {
   SUP: boolean;
   ASDEK: boolean;
 
-  // routes: string;
   routesInfo: StationRoutesInfo[];
 
   checkpoints: string | null;

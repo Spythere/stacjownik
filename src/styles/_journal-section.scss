@@ -17,6 +17,10 @@
   position: relative;
 
   padding-right: 0.2em;
+
+  &[data-header-mode='COMPACT'] {
+    height: calc(100vh - 14em);
+  }
 }
 
 .journal_wrapper {

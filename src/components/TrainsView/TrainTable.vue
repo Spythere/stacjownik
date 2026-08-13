@@ -6,6 +6,7 @@
     class="train-table"
     @scroll="onScroll"
     ref="trainTableRef"
+    :data-header-mode="store.headerMode"
   >
     <div :key="apiStore.dataStatuses.connection">
       <div class="table-warning" key="offline" v-if="store.isOffline">

@@ -9,7 +9,8 @@
 
     <Tooltip />
 
-    <AppHeader />
+    <AppHeader v-if="store.headerMode == 'STANDARD'" />
+    <AppHeaderCompact v-else />
 
     <main class="app_main">
       <router-view v-slot="{ Component }">
@@ -46,6 +47,8 @@ import UpdateCard from './components/App/UpdateCard.vue';
 import StorageManager from './managers/storageManager';
 import AppFooter from './components/App/AppFooter.vue';
 import AppWelcomeCard from './components/App/AppWelcomeCard.vue';
+import AppHeaderCompact from './components/App/AppHeaderCompact.vue';
+import { HeaderMode } from './store/typings.ts';
 
 const STORAGE_VERSION_KEY = 'app_version';
 const WELCOME_CARD_SEEN_KEY = 'welcome_card_seen';
@@ -55,6 +58,7 @@ export default defineComponent({
     Clock,
     StatusIndicator,
     AppHeader,
+    AppHeaderCompact,
     AppFooter,
     UpdateCard,
     AppWelcomeCard,
@@ -87,6 +91,11 @@ export default defineComponent({
         if (e.key.toLowerCase() == 'l' && e.shiftKey) {
           this.store.changeLocale(this.store.currentLocale == 'pl' ? 'en' : 'pl');
         }
+
+        if (e.key.toLowerCase() == 'h' && e.shiftKey) {
+          this.store.headerMode = this.store.headerMode == 'COMPACT' ? 'STANDARD' : 'COMPACT';
+          StorageManager.setStringValue('headerMode', this.store.headerMode);
+        }
       });
     }
   },
@@ -96,6 +105,7 @@ export default defineComponent({
       if (!this.isOnProductionHost) document.title = 'Stacjownik Dev';
 
       this.loadLang();
+      this.setupStorageSettings();
       this.setupOfflineHandling();
       this.checkAppVersion();
       this.handleQueries();
@@ -146,6 +156,14 @@ export default defineComponent({
       }
 
       StorageManager.setStringValue(STORAGE_VERSION_KEY, version);
+    },
+
+    setupStorageSettings() {
+      const headerModeStorage = StorageManager.getStringValue('headerMode');
+
+      if (headerModeStorage != '') {
+        this.store.headerMode = headerModeStorage as HeaderMode;
+      }
     },
 
     setupOfflineHandling() {

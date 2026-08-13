@@ -29,7 +29,9 @@ export const useMainStore = defineStore('mainStore', {
       chosenModalTrainId: undefined,
 
       modalLastClickedTarget: null,
-      currentLocale: 'pl'
+      currentLocale: 'pl',
+
+      headerMode: 'STANDARD'
     }) as MainStoreState,
 
   actions: {
@@ -395,7 +397,7 @@ export const useMainStore = defineStore('mainStore', {
             const routesKey: keyof StationRoutes = `${tracksKey}${
               !isElectric ? 'Other' : 'Electrified'
             }${route.isInternal ? 'Internal' : ''}Names`;
-            
+
             acc[routesKey].push(route.routeName);
 
             if (route.isRouteSBL) acc['sblNames'].push(route.routeName);
