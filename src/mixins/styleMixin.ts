@@ -12,13 +12,6 @@ export default defineComponent({
       return `background-color: ${bgColor}; color: ${fontColor}; ${boxShadow};`;
     },
 
-    calculateTextExpStyle(exp: number, isSupporter = false): string {
-      const textColor =
-        exp > -1 ? (exp < 2 ? '#26B0D9' : `hsl(${-exp * 3.5 + 90},  75%, 50%)`) : '#666';
-
-      return `color: ${textColor}; ${isSupporter ? 'text-shadow: 0 0 6px ' + textColor : ''};`;
-    },
-
     statusClasses(occupiedTo: string) {
       let className = '';
 

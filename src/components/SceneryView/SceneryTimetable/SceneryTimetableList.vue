@@ -103,17 +103,27 @@
 
                   <!-- Train info -->
                   <span
+                    class="train-driver-info tooltip-help"
                     data-tooltip-type="TrainInfoTooltip"
                     :data-tooltip-content="row.train.id"
-                    class="tooltip-help"
                   >
                     <b class="text--primary">
                       {{ row.train.timetableData!.category }}
                     </b>
 
-                    <b>&nbsp;{{ row.train.trainNo }}</b>
+                    <b>{{ row.train.trainNo }}</b>
                     &bull;
+
+                    <b
+                      class="level-badge driver"
+                      :style="calculateExpStyles(row.train.driverLevel, row.train.isSupporter)"
+                    >
+                      {{ row.train.driverLevel < 2 ? 'L' : `${row.train.driverLevel}` }}
+                    </b>
+
                     {{ row.train.driverName }}
+
+                    <FlagIcon :language-id="row.train.driverLanguageId" width="1.5em" />
 
                     <i
                       class="fa-solid fa-user-slash"
@@ -254,6 +264,15 @@
       >
         <i class="fa-solid" :class="`${showStockThumbnails ? 'fa-expand' : 'fa-compress'}`"></i>
       </button>
+
+      <button
+        class="thumbnails-btn"
+        data-tooltip-type="HtmlTooltip"
+        :data-tooltip-content="`<b>${$t(`scenery.btn-${showStockThumbnails ? 'show' : 'hide'}-timetable-thumbnails`)}</b>`"
+        @click="toggleThumbnails"
+      >
+        <i class="fa-solid" :class="`${showStockThumbnails ? 'fa-expand' : 'fa-compress'}`"></i>
+      </button>
     </div>
   </div>
 </template>
@@ -271,6 +290,8 @@ import ScheduledTrainStatus from './ScheduledTrainStatus.vue';
 import Loading from '../../Global/Loading.vue';
 import StockList from '../../Global/StockList.vue';
 import StorageManager from '../../../managers/storageManager';
+import { calculateExpStyles } from '@/composables/badge.ts';
+import FlagIcon from '@/components/Global/FlagIcon.vue';
 
 const props = defineProps({
   station: {
@@ -439,12 +460,15 @@ function toggleThumbnails() {
 .timetable-item {
   display: block;
 
-  margin-bottom: 0.5em;
   padding: 0.35em;
   width: 100%;
 
   overflow: hidden;
   background: #353535;
+
+  &:not(:last-child) {
+    margin-bottom: 0.5em;
+  }
 
   &.empty {
     padding: 1rem;
@@ -471,7 +495,14 @@ function toggleThumbnails() {
 
 .info-train {
   display: flex;
+  align-items: center;
   flex-wrap: wrap;
+  gap: 0.25em;
+}
+
+.train-driver-info {
+  display: flex;
+  align-items: center;
   gap: 0.25em;
 }
 
@@ -534,7 +565,7 @@ function toggleThumbnails() {
   display: flex;
   align-items: center;
   gap: 0.5em;
-  margin-top: 0.5em;
+  margin-top: 1em;
 
   .list-divider {
     height: 80%;
