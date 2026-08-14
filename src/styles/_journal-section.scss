@@ -11,15 +11,15 @@
 
 .list_wrapper {
   overflow-y: auto;
-  height: calc(100vh - 21em);
+  height: calc(100vh - 9em);
   min-height: 500px;
   margin-top: 0.5em;
   position: relative;
 
   padding-right: 0.2em;
 
-  &[data-header-mode='COMPACT'] {
-    height: calc(100vh - 14em);
+  @include responsive.smallScreen {
+    height: calc(100vh - 11em);
   }
 }
 

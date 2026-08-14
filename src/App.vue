@@ -9,8 +9,7 @@
 
     <Tooltip />
 
-    <AppHeader v-if="store.headerMode == 'STANDARD'" />
-    <AppHeaderCompact v-else />
+    <AppHeader />
 
     <main class="app_main">
       <router-view v-slot="{ Component }">
@@ -34,31 +33,26 @@ import { defineComponent } from 'vue';
 
 import { version } from '../package.json';
 import { Status } from './typings/common';
+import { HeaderMode } from './store/typings.ts';
 import { useMainStore } from './store/mainStore';
 import { useApiStore } from './store/apiStore';
 import { useTooltipStore } from './store/tooltipStore';
 
-import Clock from './components/App/Clock.vue';
-import StatusIndicator from './components/App/StatusIndicator.vue';
-import AppHeader from './components/App/AppHeader.vue';
 import Tooltip from './components/Tooltip/Tooltip.vue';
 import UpdateCard from './components/App/UpdateCard.vue';
 
 import StorageManager from './managers/storageManager';
+
+import AppHeader from './components/App/Header/AppHeader.vue';
 import AppFooter from './components/App/AppFooter.vue';
 import AppWelcomeCard from './components/App/AppWelcomeCard.vue';
-import AppHeaderCompact from './components/App/AppHeaderCompact.vue';
-import { HeaderMode } from './store/typings.ts';
 
 const STORAGE_VERSION_KEY = 'app_version';
 const WELCOME_CARD_SEEN_KEY = 'welcome_card_seen';
 
 export default defineComponent({
   components: {
-    Clock,
-    StatusIndicator,
     AppHeader,
-    AppHeaderCompact,
     AppFooter,
     UpdateCard,
     AppWelcomeCard,

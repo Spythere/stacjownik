@@ -29,5 +29,6 @@ export default defineComponent({
 .clock {
   display: flex;
   align-items: center;
+  font-size: 1em;
 }
 </style>

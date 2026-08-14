@@ -33,8 +33,8 @@
 
 <script lang="ts">
 import { defineComponent, Ref, ref } from 'vue';
-import { regions as regionsJSON } from '../../data/options.json';
-import { useMainStore } from '../../store/mainStore';
+import { regions as regionsJSON } from '@/data/options.json';
+import { useMainStore } from '@/store/mainStore';
 
 interface Item {
   id: string;
@@ -137,6 +137,9 @@ button img {
 button.selected-region {
   display: flex;
   justify-content: space-between;
+
+  padding: 0.25em;
+
   color: paleturquoise;
 
   font-weight: bold;
@@ -148,7 +151,6 @@ button.selected-region {
 
 .content {
   position: relative;
-  margin: 0 auto;
   font-weight: bold;
 
   height: 100%;
