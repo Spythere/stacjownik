@@ -77,21 +77,16 @@
 
           <td class="station-level">
             <span v-if="station.generalInfo">
-              <span
+              <LevelBadge
                 v-if="
                   station.generalInfo.availability == 'default' ||
                   station.generalInfo.availability == 'nonDefault'
                 "
+                badge-type="scenery-req"
+                :level="station.generalInfo.reqLevel"
                 data-tooltip-type="BaseTooltip"
-                :data-tooltip-content="`${$t(`sceneries.info.${station.generalInfo.availability}`)} (${$t(
-                  'sceneries.info.req-level',
-                  { lvl: station.generalInfo.reqLevel },
-                  station.generalInfo.reqLevel
-                )})`"
-                :style="calculateExpStyle(station.generalInfo.reqLevel)"
-              >
-                {{ station.generalInfo.reqLevel >= 2 ? station.generalInfo.reqLevel : 'L' }}
-              </span>
+                :data-tooltip-content="getLevelTooltipContent(station.generalInfo)"
+              />
 
               <span
                 v-else-if="station.generalInfo.availability == 'abandoned'"
@@ -169,17 +164,12 @@
           </td>
 
           <td class="station-dispatcher-exp">
-            <span
+            <LevelBadge
               v-if="station.onlineInfo && station.onlineInfo?.dispatcherExp != -1"
-              :style="
-                calculateExpStyle(
-                  station.onlineInfo.dispatcherExp,
-                  station.onlineInfo.dispatcherIsSupporter
-                )
-              "
-            >
-              {{ station.onlineInfo.dispatcherExp < 2 ? 'L' : station.onlineInfo.dispatcherExp }}
-            </span>
+              badge-type="scenery-dispatcher"
+              :level="station.onlineInfo.dispatcherExp"
+              :is-supporter="station.onlineInfo.dispatcherIsSupporter"
+            />
           </td>
 
           <td class="station-tracks">
@@ -356,25 +346,24 @@
 <script lang="ts">
 import { defineComponent, inject, computed } from 'vue';
 import StationStatusBadge from '../Global/StationStatusBadge.vue';
+import FlagIcon from '../Global/FlagIcon.vue';
+import LevelBadge from '../Global/LevelBadge.vue';
 import Loading from '../Global/Loading.vue';
 import dateMixin from '../../mixins/dateMixin';
 import styleMixin from '../../mixins/styleMixin';
 import { useApiStore } from '../../store/apiStore';
 import { useMainStore } from '../../store/mainStore';
-import { Station, Status, TooltipUserTrain, Train } from '../../typings/common';
+import { Station, StationGeneralInfo, Status, TooltipUserTrain, Train } from '../../typings/common';
 import { useTooltipStore } from '../../store/tooltipStore';
 import { getChangedFilters } from '../../managers/stationFilterManager';
 import { ActiveSorter, HeadIdsType, headIconsIds, headIds } from './typings';
 import { filterStations, sortStations } from './utils';
-import { getLanguageNameById } from '../../utils/languageUtils';
-import FlagIcon from '../Global/FlagIcon.vue';
 import { isCreator } from '../../utils/userUtils';
-import { storeToRefs } from 'pinia';
 
 export default defineComponent({
   emits: ['toggleDonationCard'],
 
-  components: { Loading, StationStatusBadge, FlagIcon },
+  components: { Loading, StationStatusBadge, FlagIcon, LevelBadge },
   mixins: [styleMixin, dateMixin],
 
   data: () => ({
@@ -454,6 +443,14 @@ export default defineComponent({
       }));
 
       return JSON.stringify(usersTrains);
+    },
+
+    getLevelTooltipContent(generalInfo: StationGeneralInfo) {
+      return `${this.$t(`sceneries.info.${generalInfo.availability}`)} (${this.$t(
+        'sceneries.info.req-level',
+        { lvl: generalInfo.reqLevel },
+        generalInfo.reqLevel
+      )})`;
     },
 
     onScroll(e: Event) {

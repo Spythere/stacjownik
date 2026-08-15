@@ -42,24 +42,24 @@
   }
 }
 
-.level-badge {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+// .level-badge {
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
 
-  &.driver {
-    border-radius: 50%;
-    width: 1.7em;
-    height: 1.7em;
-  }
+//   &.driver {
+//     border-radius: 50%;
+//     width: 1.7em;
+//     height: 1.7em;
+//   }
 
-  &.dispatcher {
-    border-radius: 0.25em;
+//   &.dispatcher {
+//     border-radius: 0.25em;
 
-    width: 1.6em;
-    height: 1.6em;
-  }
-}
+//     width: 1.6em;
+//     height: 1.6em;
+//   }
+// }
 
 .region-badge {
   padding: 0.25em 0.5em;

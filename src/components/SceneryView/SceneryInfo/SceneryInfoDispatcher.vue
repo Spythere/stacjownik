@@ -1,12 +1,11 @@
 <template>
   <section class="info-dispatcher">
     <div class="info-top" v-if="onlineScenery && onlineScenery.dispatcherExp != -1">
-      <span
-        class="dispatcher-level"
-        :style="calculateExpStyle(onlineScenery.dispatcherExp, onlineScenery.dispatcherIsSupporter)"
-      >
-        {{ onlineScenery.dispatcherExp > 1 ? onlineScenery.dispatcherExp : 'L' }}
-      </span>
+      <LevelBadge
+        badgeType="dispatcher"
+        :level="onlineScenery.dispatcherExp"
+        :isSupporter="onlineScenery.dispatcherIsSupporter"
+      />
 
       <router-link class="dispatcher-name" :to="`/profile?playerId=${onlineScenery.dispatcherId}`">
         <span
@@ -59,10 +58,11 @@ import { ActiveScenery } from '../../../typings/common';
 import { useApiStore } from '../../../store/apiStore';
 import FlagIcon from '../../Global/FlagIcon.vue';
 import { isCreator } from '../../../utils/userUtils';
+import LevelBadge from '@/components/Global/LevelBadge.vue';
 
 export default defineComponent({
   mixins: [styleMixin, dateMixin, routerMixin],
-  components: { StationStatusBadge, FlagIcon },
+  components: { StationStatusBadge, FlagIcon, LevelBadge },
 
   data() {
     return {
@@ -99,17 +99,6 @@ export default defineComponent({
   gap: 0.5em;
 
   margin-top: 0.5em;
-}
-
-.dispatcher-level {
-  background: firebrick;
-
-  border-radius: 0.1em;
-
-  width: 1.5em;
-  height: 1.5em;
-  line-height: 1.5em;
-  font-weight: bold;
 }
 
 .dispatcher-likes {

@@ -114,12 +114,11 @@
                     <b>{{ row.train.trainNo }}</b>
                     &bull;
 
-                    <b
-                      class="level-badge driver"
-                      :style="calculateExpStyles(row.train.driverLevel, row.train.isSupporter)"
-                    >
-                      {{ row.train.driverLevel < 2 ? 'L' : `${row.train.driverLevel}` }}
-                    </b>
+                    <LevelBadge
+                      badge-type="driver"
+                      :level="row.train.driverLevel"
+                      :is-supporter="row.train.isSupporter"
+                    />
 
                     {{ row.train.driverName }}
 
@@ -292,6 +291,7 @@ import StockList from '../../Global/StockList.vue';
 import StorageManager from '../../../managers/storageManager';
 import { calculateExpStyles } from '@/composables/badge.ts';
 import FlagIcon from '@/components/Global/FlagIcon.vue';
+import LevelBadge from '@/components/Global/LevelBadge.vue';
 
 const props = defineProps({
   station: {
