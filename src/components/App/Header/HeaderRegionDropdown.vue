@@ -138,8 +138,6 @@ button.selected-region {
   display: flex;
   justify-content: space-between;
 
-  padding: 0.25em;
-
   color: paleturquoise;
 
   font-weight: bold;

@@ -3,12 +3,12 @@
     <img src="/images/icon-dispatcher.svg" alt="icon dispatcher" />
     <span class="text--primary">{{ onlineDispatchersCount }}</span>
 
-    <span class="text--grayed"> / </span>
+    <span class="text--grayed">&nbsp;</span>
 
     <img src="/images/icon-train.svg" alt="icon train" />
     <span class="text--primary">{{ onlineTrainsCount }}</span>
 
-    <span class="text--grayed"> / </span>
+    <span class="text--grayed">&nbsp;</span>
 
     <img src="/images/icon-timetable.svg" alt="icon timetable" />
     <span class="text--primary">{{ onlineTimetablesCount }}</span>
@@ -49,7 +49,7 @@ const onlineDispatchersCount = computed(() => {
   }
 
   img {
-    width: 1.5em;
+    width: 1.3em;
   }
 }
 </style>
