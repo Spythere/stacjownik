@@ -8,27 +8,22 @@
       </div>
 
       <div v-else class="journal-list">
-        <div v-for="historyItem in historyList" :key="historyItem.id">
+        <div v-for="historyItem in historyList" class="journal-list-item" :key="historyItem.id">
           <span>
-            <span class="text--grayed" style="margin-right: 10px">
-              #{{ historyItem.stationHash }}
-            </span>
-            <b
+            <span class="text--grayed">#{{ historyItem.stationHash }}</span>
+            <span>&nbsp;</span>
+            <LevelBadge
               v-if="historyItem.dispatcherLevel !== null"
-              class="level-badge dispatcher"
-              :style="
-                calculateExpStyle(historyItem.dispatcherLevel, historyItem.dispatcherIsSupporter)
-              "
+              badge-type="dispatcher"
+              :level="historyItem.dispatcherLevel"
+              :is-supporter="historyItem.dispatcherIsSupporter"
+            />
+            <span>&nbsp;</span>
+            <router-link
+              :to="`/journal/dispatchers?search-dispatcher=${historyItem.dispatcherName}`"
             >
-              {{ historyItem.dispatcherLevel >= 2 ? historyItem.dispatcherLevel : 'L' }}
-            </b>
-            <b style="margin-left: 5px">
-              <router-link
-                :to="`/journal/dispatchers?search-dispatcher=${historyItem.dispatcherName}`"
-              >
-                {{ historyItem.dispatcherName }}
-              </router-link>
-            </b>
+              {{ historyItem.dispatcherName }}
+            </router-link>
 
             <div>
               <span>
@@ -79,11 +74,12 @@ import styleMixin from '../../mixins/styleMixin';
 import { API } from '../../typings/api';
 import { ActiveScenery, Station, Status } from '../../typings/common';
 import { useApiStore } from '../../store/apiStore';
+import LevelBadge from '../Global/LevelBadge.vue';
 
 export default defineComponent({
   name: 'SceneryDispatchersHistory',
   mixins: [dateMixin, styleMixin],
-  components: { Loading },
+  components: { Loading, LevelBadge },
   props: {
     station: {
       type: Object as PropType<Station>
@@ -173,7 +169,7 @@ export default defineComponent({
   text-align: left;
 }
 
-.journal-list > div {
+.journal-list-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -183,12 +179,10 @@ export default defineComponent({
   padding: 0.5em;
   background-color: #2b2b2b;
   line-height: 1.75em;
-}
 
-.level-badge {
-  text-align: center;
-  display: inline-block;
-  line-height: 1.6em;
+  a {
+    font-weight: bold;
+  }
 }
 
 .dispatcher-online {
@@ -196,7 +190,7 @@ export default defineComponent({
 }
 
 @include responsive.smallScreen {
-  .journal-list > div {
+  .journal-list-item {
     flex-direction: column;
     justify-content: center;
     text-align: center;

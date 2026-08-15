@@ -38,7 +38,10 @@ function calculateLevelStyle() {
 
 <style lang="scss" scoped>
 .level-badge {
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   text-align: center;
 
   &.driver {
@@ -46,7 +49,6 @@ function calculateLevelStyle() {
 
     width: 1.65em;
     height: 1.65em;
-    line-height: 1.65em;
     font-weight: bold;
   }
 
@@ -55,7 +57,6 @@ function calculateLevelStyle() {
 
     width: 1.6em;
     height: 1.6em;
-    line-height: 1.6em;
     font-weight: bold;
   }
 
@@ -64,7 +65,6 @@ function calculateLevelStyle() {
 
     width: 2em;
     height: 2em;
-    line-height: 2em;
   }
 
   &.scenery-dispatcher {
@@ -72,7 +72,17 @@ function calculateLevelStyle() {
 
     width: 2em;
     height: 2em;
-    line-height: 2em;
+  }
+
+  &.scenery-details-level {
+    border-radius: 50%;
+
+    width: 3em;
+    height: 3em;
+
+    border: 2px solid #4e4e4e;
+
+    font-weight: bold;
   }
 }
 </style>

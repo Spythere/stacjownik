@@ -289,7 +289,6 @@ import ScheduledTrainStatus from './ScheduledTrainStatus.vue';
 import Loading from '../../Global/Loading.vue';
 import StockList from '../../Global/StockList.vue';
 import StorageManager from '../../../managers/storageManager';
-import { calculateExpStyles } from '@/composables/badge.ts';
 import FlagIcon from '@/components/Global/FlagIcon.vue';
 import LevelBadge from '@/components/Global/LevelBadge.vue';
 
