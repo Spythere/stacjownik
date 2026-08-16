@@ -611,6 +611,8 @@
     "option-top-list": "Scenery records",
     "btn-show-timetable-thumbnails": "Show rolling stock thumbnails",
     "btn-hide-timetable-thumbnails": "Hide rolling stock thumbnails",
+    "btn-show-player-details": "Show additional timetable details",
+    "btn-hide-player-details": "Hide additional timetable details",
     "timetable-includesScenery": "ALL TIMETABLES",
     "timetable-via": "PASSES THROUGH",
     "timetable-issuedFrom": "BEGINS HERE",

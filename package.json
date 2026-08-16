@@ -16,6 +16,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@lucide/vue": "^1.31.0",
     "core-js": "^3.42.0",
     "dotenv": "^17.2.2",
     "pinia": "^3.0.2",

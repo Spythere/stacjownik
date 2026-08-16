@@ -600,6 +600,8 @@
     "option-top-list": "Rekordy scenerii",
     "btn-show-timetable-thumbnails": "Pokazuj podglądy składów",
     "btn-hide-timetable-thumbnails": "Ukrywaj podglądy składów",
+    "btn-show-player-details": "Pokazuj dodatkowe informacje w rozkładach",
+    "btn-hide-player-details": "Ukrywaj dodatkowe informacje w rozkładach",
     "timetable-includesScenery": "WSZYSTKIE RJ",
     "timetable-via": "PRZEJEŻDŻA",
     "timetable-issuedFrom": "ROZPOCZYNA BIEG",
