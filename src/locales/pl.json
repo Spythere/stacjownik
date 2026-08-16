@@ -664,7 +664,8 @@
   },
   "profile": {
     "journal-button": "PROFIL GRACZA",
-    "no-player-found": "Nie znaleziono gracza! :/",
+    "no-player-found": "Nie znaleziono gracza!",
+    "no-player-desc": "Gracz o ID #{id} nie istnieje w bazie Stacjownika. Może to wynikać z braku informacji o użytkowniku lub błędnie wpisanego identyfikatora.",
     "return-to-main": "Powrót do strony głównej",
 
     "filters": {

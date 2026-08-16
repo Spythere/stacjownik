@@ -64,7 +64,14 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/profile',
     name: 'PlayerProfileView',
-    component: () => import('../views/PlayerProfileView.vue')
+    component: () => import('../views/PlayerProfileView.vue'),
+    beforeEnter: (to, from) => {
+      if (typeof to.query['playerId'] !== 'string' || to.query['playerId'].length == 0) {
+        return {
+          path: from.path || '/'
+        };
+      }
+    }
   },
   {
     path: '/:catchAll(.*)',

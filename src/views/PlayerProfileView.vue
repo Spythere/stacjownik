@@ -17,7 +17,14 @@
 
     <div class="no-data-found" v-else>
       <div>
-        <h3>{{ t('profile.no-player-found') }}</h3>
+        <img src="/images/icon-error.svg" alt="error icon" />
+        <h2>{{ t('profile.no-player-found') }}</h2>
+        <br />
+        <h4>
+          {{ t('profile.no-player-desc', { id: playerId }) }}
+        </h4>
+        <br />
+        <hr />
         <router-link to="/" class="btn btn--text"> {{ t('profile.return-to-main') }}</router-link>
       </div>
     </div>
@@ -26,9 +33,9 @@
 
 <script lang="ts" setup>
 import { onActivated, onDeactivated, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 import { useApiStore } from '../store/apiStore';
-import { API, Td2API } from '../typings/api';
+import { API } from '../typings/api';
 import { useI18n } from 'vue-i18n';
 import { Status } from '../typings/common';
 
@@ -38,14 +45,12 @@ import ProfileRecentStats from '../components/PlayerProfileView/ProfileRecentSta
 import ProfileHistoryList from '../components/PlayerProfileView/ProfileHistoryList.vue';
 
 const { t } = useI18n();
-const router = useRouter();
 
 const apiStore = useApiStore();
 const route = useRoute();
 
 const playerId = ref(-1);
 const playerName = ref('');
-const playerLanguage = ref(-1);
 
 const playerInfo = ref<API.PlayerInfo.Data | undefined>(undefined);
 const playerJournal = ref<API.PlayerJournal.Data | undefined>(undefined);
@@ -78,18 +83,6 @@ async function fetchPlayerJournal(playerId: number) {
   });
 }
 
-// async function fetchPlayerTd2Info(playerName: string): Promise<Td2API.UsersInfoByName.Response> {
-//   const response = await fetch(
-//     `https://api.td2.info.pl?method=getUsersInfoByName&name=${playerName}`
-//   );
-
-//   if (!response.ok) {
-//     throw new Error('fetchPlayerTd2Info: could not fetch data');
-//   }
-
-//   return response.json();
-// }
-
 async function fetchPlayerData() {
   const queryPlayerId = Number(route.query.playerId) || -1;
 
@@ -109,11 +102,6 @@ async function fetchPlayerData() {
     .then((response) => {
       playerName.value =
         response.driverStats.driverName || response.dispatcherStats.dispatcherName || '';
-
-      if (!playerName.value) {
-        router.push('/');
-        return;
-      }
 
       playerInfo.value = playerName.value ? response : undefined;
       playerInfoStatus.value = Status.Data.Loaded;
@@ -169,6 +157,10 @@ async function fetchPlayerData() {
     display: inline-block;
     text-decoration: underline;
     margin-top: 0.5em;
+  }
+
+  img {
+    width: 6em;
   }
 }
 

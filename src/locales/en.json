@@ -675,7 +675,8 @@
   },
   "profile": {
     "journal-button": "PLAYER'S PROFILE",
-    "no-player-found": "Player not found! :/",
+    "no-player-found": "Player not found!",
+    "no-player-desc": "Player with ID #{id} does not exist in the Stacjownik database. It may be caused by the lack of the user information or an incorrectly entered ID.",
     "return-to-main": "Return to the main site",
 
     "filters": {
