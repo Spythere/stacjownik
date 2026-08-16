@@ -32,9 +32,10 @@
       <span
         class="dispatcher-likes text--primary"
         v-if="onlineScenery && onlineScenery.dispatcherExp != -1"
+        :data-negative="onlineScenery.dispatcherRate < 0"
       >
         <img src="/images/icon-like.svg" alt="Likes count icon" />
-        <span>{{ onlineScenery?.dispatcherRate || '0' }}</span>
+        <span>{{ onlineScenery.dispatcherRate || '0' }}</span>
       </span>
 
       <span class="dispatcher-badge">
@@ -107,6 +108,10 @@ export default defineComponent({
 
   img {
     width: 1em;
+  }
+
+  &[data-negative='true'] img {
+    transform: rotateX(180deg);
   }
 }
 
