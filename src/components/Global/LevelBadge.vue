@@ -38,7 +38,7 @@ function calculateLevelStyle() {
 
 <style lang="scss" scoped>
 .level-badge {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
 

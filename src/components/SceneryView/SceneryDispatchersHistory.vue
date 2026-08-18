@@ -11,14 +11,18 @@
         <div v-for="historyItem in historyList" class="journal-list-item" :key="historyItem.id">
           <span>
             <span class="text--grayed">#{{ historyItem.stationHash }}</span>
+
             <span>&nbsp;</span>
+
             <LevelBadge
               v-if="historyItem.dispatcherLevel !== null"
               badge-type="dispatcher"
               :level="historyItem.dispatcherLevel"
               :is-supporter="historyItem.dispatcherIsSupporter"
             />
+
             <span>&nbsp;</span>
+
             <router-link
               :to="`/journal/dispatchers?search-dispatcher=${historyItem.dispatcherName}`"
             >
