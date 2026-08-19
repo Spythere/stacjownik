@@ -67,29 +67,16 @@
 
         <div class="main-badges">
           <div class="badge-container" v-if="playerInfo.driverStats.driverLevel != null">
-            <span
-              class="level-badge driver"
-              :style="calculateExpStyles(playerInfo.driverStats.driverLevel)"
-            >
-              {{
-                playerInfo.driverStats.driverLevel > 1 ? playerInfo.driverStats.driverLevel : 'L'
-              }}
-            </span>
-            {{ t('profile.stats.driver') }}
+            <LevelBadge badge-type="driver" :level="playerInfo.driverStats.driverLevel" />
+            <span>{{ t('profile.stats.driver') }}</span>
           </div>
 
           <div class="badge-container" v-if="playerInfo.dispatcherStats.dispatcherLevel != null">
-            <span
-              class="level-badge dispatcher"
-              :style="calculateExpStyles(playerInfo.dispatcherStats.dispatcherLevel)"
-            >
-              {{
-                playerInfo.dispatcherStats.dispatcherLevel > 1
-                  ? playerInfo.dispatcherStats.dispatcherLevel
-                  : 'L'
-              }}
-            </span>
-            {{ t('profile.stats.dispatcher') }}
+            <LevelBadge
+              badge-type="dispatcher"
+              :level="playerInfo.dispatcherStats.dispatcherLevel"
+            />
+            <span>{{ t('profile.stats.dispatcher') }}</span>
           </div>
         </div>
 
@@ -269,8 +256,7 @@
 
 <script lang="ts" setup>
 import { computed, PropType } from 'vue';
-import { API, Td2API } from '../../typings/api';
-import { calculateExpStyles } from '../../composables/badge';
+import { API } from '../../typings/api';
 import { getCountPercentage } from '../../utils/calcUtils';
 import { dateToLocaleString, humanizeDuration } from '../../composables/time';
 import { useRoute } from 'vue-router';
@@ -280,6 +266,7 @@ import StationStatusBadge from '../Global/StationStatusBadge.vue';
 import { getRegionNameById } from '../../utils/regionUtils';
 import { isCreator } from '../../utils/userUtils';
 import { getLanguageNameById } from '@/utils/languageUtils';
+import LevelBadge from '../Global/LevelBadge.vue';
 
 const { t } = useI18n();
 
@@ -291,10 +278,6 @@ const props = defineProps({
     type: Object as PropType<API.PlayerInfo.Data>,
     required: true
   },
-
-  // playerTD2Info: {
-  //   type: Object as PropType<Td2API.UsersInfoByName.UserInfo>
-  // },
 
   playerName: {
     type: String
@@ -364,10 +347,6 @@ const activeTrains = computed(() => {
   gap: 0.25em;
 
   font-weight: bold;
-
-  & > .level-badge {
-    font-size: 1.15em;
-  }
 }
 
 .main-links {

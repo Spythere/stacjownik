@@ -6,6 +6,7 @@
     class="train-table"
     @scroll="onScroll"
     ref="trainTableRef"
+    :data-header-mode="store.headerMode"
   >
     <div :key="apiStore.dataStatuses.connection">
       <div class="table-warning" key="offline" v-if="store.isOffline">
@@ -97,7 +98,7 @@ export default defineComponent({
 @use '../../styles/animations';
 
 .train-table {
-  height: calc(100vh - 17em);
+  height: calc(100vh - 6.5em);
   min-height: 500px;
 
   position: relative;

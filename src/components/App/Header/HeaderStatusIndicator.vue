@@ -198,9 +198,9 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { Status } from '../../typings/common';
-import { useApiStore } from '../../store/apiStore';
-import { APIDataStatus } from '../../typings/api';
+import { Status } from '@/typings/common';
+import { useApiStore } from '@/store/apiStore';
+import { APIDataStatus } from '@/typings/api';
 
 interface Indicator {
   // status: Status.Data;
@@ -310,7 +310,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@use '../../styles/responsive';
+@use '@/styles/responsive';
 
 // INDICATOR TOOLTIP ANIMATION
 .tooltip-anim {
@@ -331,7 +331,7 @@ export default defineComponent({
   right: 0;
   z-index: 100;
 
-  transform: translateX(1.5em);
+  transform: translateX(1.75em);
 }
 
 .indicator {
@@ -393,7 +393,7 @@ export default defineComponent({
       }
     }
 
-    @include responsive.smallScreen{
+    @include responsive.smallScreen {
       min-width: 8em;
     }
   }

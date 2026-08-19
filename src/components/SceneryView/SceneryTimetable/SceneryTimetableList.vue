@@ -103,17 +103,33 @@
 
                   <!-- Train info -->
                   <span
+                    class="train-driver-info tooltip-help"
                     data-tooltip-type="TrainInfoTooltip"
                     :data-tooltip-content="row.train.id"
-                    class="tooltip-help"
                   >
                     <b class="text--primary">
                       {{ row.train.timetableData!.category }}
                     </b>
 
-                    <b>&nbsp;{{ row.train.trainNo }}</b>
+                    <b>{{ row.train.trainNo }}</b>
                     &bull;
-                    {{ row.train.driverName }}
+
+                    <LevelBadge
+                      v-if="showPlayerDetails"
+                      badge-type="driver"
+                      :level="row.train.driverLevel"
+                      :is-supporter="row.train.isSupporter"
+                    />
+
+                    <FlagIcon
+                      v-if="showPlayerDetails"
+                      :language-id="row.train.driverLanguageId"
+                      width="1.5em"
+                    />
+
+                    <span>
+                      {{ row.train.driverName }}
+                    </span>
 
                     <i
                       class="fa-solid fa-user-slash"
@@ -247,12 +263,21 @@
       <div class="list-divider"></div>
 
       <button
-        class="thumbnails-btn"
         data-tooltip-type="HtmlTooltip"
         :data-tooltip-content="`<b>${$t(`scenery.btn-${showStockThumbnails ? 'show' : 'hide'}-timetable-thumbnails`)}</b>`"
         @click="toggleThumbnails"
       >
-        <i class="fa-solid" :class="`${showStockThumbnails ? 'fa-expand' : 'fa-compress'}`"></i>
+        <Image v-if="showStockThumbnails" />
+        <ImageOff v-else />
+      </button>
+
+      <button
+        data-tooltip-type="HtmlTooltip"
+        :data-tooltip-content="`<b>${$t(`scenery.btn-${showPlayerDetails ? 'show' : 'hide'}-player-details`)}</b>`"
+        @click="togglePlayerDetails"
+      >
+        <UserRoundCheck v-if="showPlayerDetails" />
+        <UserRoundX v-else />
       </button>
     </div>
   </div>
@@ -260,17 +285,20 @@
 
 <script lang="ts" setup>
 import { computed, ComputedRef, onMounted, PropType, ref } from 'vue';
-import { Station, ActiveScenery } from '../../../typings/common';
+import Loading from '@/components/Global/Loading.vue';
+import StockList from '@/components/Global/StockList.vue';
+import StorageManager from '@/managers/storageManager';
+import FlagIcon from '@/components/Global/FlagIcon.vue';
+import LevelBadge from '@/components/Global/LevelBadge.vue';
+import ScheduledTrainStatus from './ScheduledTrainStatus.vue';
+import { Station, ActiveScenery } from '@/typings/common';
 import { SceneryTimetableRow } from '../typings';
 import { getTrainStopStatus, stopStatusPriorities } from '../utils';
 import { useRoute } from 'vue-router';
-import { useMainStore } from '../../../store/mainStore';
-import { useApiStore } from '../../../store/apiStore';
-import { timestampToTimeString } from '../../../composables/time';
-import ScheduledTrainStatus from './ScheduledTrainStatus.vue';
-import Loading from '../../Global/Loading.vue';
-import StockList from '../../Global/StockList.vue';
-import StorageManager from '../../../managers/storageManager';
+import { useMainStore } from '@/store/mainStore';
+import { useApiStore } from '@/store/apiStore';
+import { timestampToTimeString } from '@/composables/time';
+import { Image, ImageOff, UserRoundCheck, UserRoundX } from '@lucide/vue';
 
 const props = defineProps({
   station: {
@@ -292,9 +320,10 @@ const mainStore = useMainStore();
 const apiStore = useApiStore();
 
 const showStockThumbnails = ref(false);
+const showPlayerDetails = ref(false);
 
 onMounted(() => {
-  handleStockThumbnails();
+  setupListSettings();
 });
 
 const sceneryTimetables: ComputedRef<SceneryTimetableRow[]> = computed(() => {
@@ -358,16 +387,22 @@ const generatorHref = computed(() => {
   return `https://generator-td2.spythere.eu/?sceneryId=${props.onlineScenery!.name}|${props.onlineScenery!.region}`;
 });
 
-function handleStockThumbnails() {
-  const storageVal = StorageManager.getBooleanValue('showStockThumbnails');
+function setupListSettings() {
+  const stockThumbnailsStorage = StorageManager.getBooleanValue('showStockThumbnails');
+  const playerDetailsStorage = StorageManager.getBooleanValue('showPlayerDetails');
 
-  showStockThumbnails.value = storageVal;
+  showStockThumbnails.value = stockThumbnailsStorage;
+  showPlayerDetails.value = playerDetailsStorage;
 }
 
 function toggleThumbnails() {
   showStockThumbnails.value = !showStockThumbnails.value;
-
   StorageManager.setBooleanValue('showStockThumbnails', showStockThumbnails.value);
+}
+
+function togglePlayerDetails() {
+  showPlayerDetails.value = !showPlayerDetails.value;
+  StorageManager.setBooleanValue('showPlayerDetails', showPlayerDetails.value);
 }
 </script>
 
@@ -439,12 +474,15 @@ function toggleThumbnails() {
 .timetable-item {
   display: block;
 
-  margin-bottom: 0.5em;
   padding: 0.35em;
   width: 100%;
 
   overflow: hidden;
   background: #353535;
+
+  &:not(:last-child) {
+    margin-bottom: 0.5em;
+  }
 
   &.empty {
     padding: 1rem;
@@ -471,7 +509,14 @@ function toggleThumbnails() {
 
 .info-train {
   display: flex;
+  align-items: center;
   flex-wrap: wrap;
+  gap: 0.25em;
+}
+
+.train-driver-info {
+  display: flex;
+  align-items: center;
   gap: 0.25em;
 }
 
@@ -534,24 +579,24 @@ function toggleThumbnails() {
   display: flex;
   align-items: center;
   gap: 0.5em;
-  margin-top: 0.5em;
+  margin-top: 0.75em;
+  padding: 0.25em;
 
   .list-divider {
-    height: 80%;
+    height: 90%;
     width: 3px;
     background-color: #6b6b6b;
   }
 
-  img {
-    width: 25px;
-    height: 25px;
+  img,
+  svg {
+    width: 1.5em;
+    height: 1.5em;
     vertical-align: middle;
   }
 
-  .thumbnails-btn {
-    width: 25px;
-    height: 25px;
-    font-size: 25px;
+  button {
+    padding: 0;
   }
 }
 

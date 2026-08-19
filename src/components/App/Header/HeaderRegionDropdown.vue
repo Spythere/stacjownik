@@ -4,7 +4,11 @@
       <button class="selected-region" @click="toggleBox">
         <span>{{ selectedItem.name }}</span>
 
-        <img :src="`/images/icon-arrow-${listOpen ? 'asc' : 'desc'}.svg`" alt="Arrow icon" />
+        <img
+          :src="`/images/icon-arrow-${listOpen ? 'asc' : 'desc'}.svg`"
+          alt="Arrow icon"
+          width="15"
+        />
       </button>
 
       <ul class="options">
@@ -29,8 +33,8 @@
 
 <script lang="ts">
 import { defineComponent, Ref, ref } from 'vue';
-import { regions as regionsJSON } from '../../data/options.json';
-import { useMainStore } from '../../store/mainStore';
+import { regions as regionsJSON } from '@/data/options.json';
+import { useMainStore } from '@/store/mainStore';
 
 interface Item {
   id: string;
@@ -128,12 +132,12 @@ export default defineComponent({
 
 button img {
   vertical-align: middle;
-  width: 1.35em;
 }
 
 button.selected-region {
   display: flex;
   justify-content: space-between;
+
   color: paleturquoise;
 
   font-weight: bold;
@@ -145,7 +149,6 @@ button.selected-region {
 
 .content {
   position: relative;
-  margin: 0 auto;
   font-weight: bold;
 
   height: 100%;

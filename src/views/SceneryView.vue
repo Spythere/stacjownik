@@ -48,7 +48,6 @@
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
 import { useMainStore } from '../store/mainStore';
 import { useApiStore } from '../store/apiStore';
 import { Status } from '../typings/common';

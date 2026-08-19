@@ -4,11 +4,16 @@
       {{ sceneryName }}
     </router-link>
 
-    <span v-if="activeScenery">
-      &bull;
-      {{ activeScenery.dispatcherName }} ({{
-        activeScenery.dispatcherExp > 1 ? activeScenery.dispatcherExp : 'L'
-      }}) &bull;
+    <template v-if="activeScenery">
+      <span> &bull; </span>
+      <span>{{ activeScenery.dispatcherName }}</span>
+      <span> &bull; </span>
+      <span> {{ activeScenery.dispatcherExp > 1 ? activeScenery.dispatcherExp : 'L' }} lvl </span>
+      <span> &bull; </span>
+      <LucideThumbsUp :size="14" />
+      <span> {{ activeScenery.dispatcherRate }}</span>
+      <span> &bull; </span>
+
       <span
         v-if="activeScenery.lastSeen >= Date.now() - 60000 || activeScenery.isOnline"
         class="online-status"
@@ -24,7 +29,7 @@
       <span v-else class="offline-since-status">
         {{ t('status.offline-since', [humanizeDuration(Date.now() - activeScenery.lastSeen)]) }}
       </span>
-    </span>
+    </template>
 
     <span v-else class="offline-status"> &bull; offline</span>
   </div>
@@ -34,6 +39,7 @@
 import { getDispatcherStatusId } from '@/composables/dispatcher';
 import { humanizeDuration, timestampToTimeString } from '@/composables/time';
 import { useApiStore } from '@/store/apiStore';
+import { LucideThumbsUp } from '@lucide/vue';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -86,5 +92,12 @@ const activeScenery = computed(() => {
 
 .scenery-link {
   color: white;
+}
+
+.scenery-info {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25em;
 }
 </style>

@@ -1,12 +1,11 @@
 <template>
   <section class="info-dispatcher">
     <div class="info-top" v-if="onlineScenery && onlineScenery.dispatcherExp != -1">
-      <span
-        class="dispatcher-level"
-        :style="calculateExpStyle(onlineScenery.dispatcherExp, onlineScenery.dispatcherIsSupporter)"
-      >
-        {{ onlineScenery.dispatcherExp > 1 ? onlineScenery.dispatcherExp : 'L' }}
-      </span>
+      <LevelBadge
+        badgeType="dispatcher"
+        :level="onlineScenery.dispatcherExp"
+        :isSupporter="onlineScenery.dispatcherIsSupporter"
+      />
 
       <router-link class="dispatcher-name" :to="`/profile?playerId=${onlineScenery.dispatcherId}`">
         <span
@@ -33,9 +32,10 @@
       <span
         class="dispatcher-likes text--primary"
         v-if="onlineScenery && onlineScenery.dispatcherExp != -1"
+        :data-negative="onlineScenery.dispatcherRate < 0"
       >
         <img src="/images/icon-like.svg" alt="Likes count icon" />
-        <span>{{ onlineScenery?.dispatcherRate || '0' }}</span>
+        <span>{{ onlineScenery.dispatcherRate || '0' }}</span>
       </span>
 
       <span class="dispatcher-badge">
@@ -59,10 +59,11 @@ import { ActiveScenery } from '../../../typings/common';
 import { useApiStore } from '../../../store/apiStore';
 import FlagIcon from '../../Global/FlagIcon.vue';
 import { isCreator } from '../../../utils/userUtils';
+import LevelBadge from '@/components/Global/LevelBadge.vue';
 
 export default defineComponent({
   mixins: [styleMixin, dateMixin, routerMixin],
-  components: { StationStatusBadge, FlagIcon },
+  components: { StationStatusBadge, FlagIcon, LevelBadge },
 
   data() {
     return {
@@ -101,23 +102,16 @@ export default defineComponent({
   margin-top: 0.5em;
 }
 
-.dispatcher-level {
-  background: firebrick;
-
-  border-radius: 0.1em;
-
-  width: 1.5em;
-  height: 1.5em;
-  line-height: 1.5em;
-  font-weight: bold;
-}
-
 .dispatcher-likes {
   display: flex;
   gap: 0.25em;
 
   img {
     width: 1em;
+  }
+
+  &[data-negative='true'] img {
+    transform: rotateX(180deg);
   }
 }
 

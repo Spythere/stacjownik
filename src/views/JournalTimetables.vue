@@ -22,7 +22,7 @@
         {{ dataRefreshedAt?.toLocaleString($i18n.locale) ?? '---' }}
       </div>
 
-      <div class="list_wrapper" @scroll="handleScroll">
+      <div class="list_wrapper" @scroll="handleScroll" :data-header-mode="mainStore.headerMode">
         <JournalTimetablesList
           :timetableHistory="timetableHistory"
           :addHistoryData="addHistoryData"

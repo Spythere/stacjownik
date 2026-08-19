@@ -9,13 +9,19 @@
 
           <b class="text--grayed"> #{{ entry.stationHash }}</b>
           &bull;
-          <b
+
+          <LevelBadge
             v-if="entry.dispatcherLevel !== null"
-            class="level-badge dispatcher"
-            :style="calculateExpStyle(entry.dispatcherLevel, entry.dispatcherIsSupporter)"
-          >
-            {{ entry.dispatcherLevel >= 2 ? entry.dispatcherLevel : 'L' }}
-          </b>
+            badge-type="driver"
+            :level="entry.dispatcherLevel"
+            :is-supporter="entry.dispatcherIsSupporter"
+          />
+
+          <FlagIcon
+            v-if="entry.dispatcherLanguageId != null"
+            :language-id="entry.dispatcherLanguageId"
+            width="1.75em"
+          />
 
           <span
             v-if="isCreator(entry.dispatcherName)"
@@ -49,16 +55,12 @@
           >
             {{ entry.dispatcherName }}
           </router-link>
-
-          <span class="dispatcher-language" v-if="entry.dispatcherLanguageId != null">
-            <FlagIcon :language-id="entry.dispatcherLanguageId" width="1.75em" />
-          </span>
         </div>
 
         <div>
           <span v-if="entry.timestampTo">
             <b>{{ $d(entry.timestampFrom) }}</b>
-            {{ timestampToString(entry.timestampFrom) }}
+            {{ timestampToTimeString(entry.timestampFrom) }}
             -
             <b
               v-if="
@@ -67,8 +69,8 @@
             >
               {{ $d(entry.timestampTo) }}
             </b>
-            {{ timestampToString(entry.timestampTo) }} ({{
-              calculateDuration(entry.currentDuration)
+            {{ timestampToTimeString(entry.timestampTo) }} ({{
+              humanizeDuration(entry.currentDuration)
             }})
           </span>
 
@@ -84,9 +86,9 @@
                   ? $d(entry.timestampFrom)
                   : ''
               }}
-              {{ timestampToString(entry.timestampFrom) }}
+              {{ timestampToTimeString(entry.timestampFrom) }}
             </b>
-            ({{ calculateDuration(entry.currentDuration) }})
+            ({{ humanizeDuration(entry.currentDuration) }})
           </router-link>
         </div>
       </span>
@@ -104,7 +106,7 @@
         </div>
 
         <b class="region-badge" :aria-describedby="entry.region">
-          REGION: {{ regions.find((r) => r.id == entry.region)?.name }}
+          REGION: {{ getRegionNameById(entry.region) }}
         </b>
       </span>
     </div>
@@ -113,7 +115,7 @@
       <ul class="status-list">
         <li v-for="statusItem in entry.statusHistory">
           <b style="margin-right: 0.5em">{{
-            timestampToString(parseInt(statusItem.split('@')[0]))
+            timestampToTimeString(parseInt(statusItem.split('@')[0]))
           }}</b>
 
           <StationStatusBadge
@@ -126,37 +128,29 @@
   </li>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType } from 'vue';
-import { regions } from '../../../data/options.json';
-import { API } from '../../../typings/api';
-import dateMixin from '../../../mixins/dateMixin';
-import styleMixin from '../../../mixins/styleMixin';
-import { useApiStore } from '../../../store/apiStore';
-import StationStatusBadge from '../../Global/StationStatusBadge.vue';
-import FlagIcon from '../../Global/FlagIcon.vue';
-import { isCreator } from '../../../utils/userUtils';
+<script lang="ts" setup>
+import { PropType } from 'vue';
+import FlagIcon from '@/components/Global/FlagIcon.vue';
+import LevelBadge from '@/components/Global/LevelBadge.vue';
+import StationStatusBadge from '@/components/Global/StationStatusBadge.vue';
+import { humanizeDuration, timestampToTimeString } from '@/composables/time.ts';
+import { useApiStore } from '@/store/apiStore';
+import { API } from '@/typings/api';
+import { getRegionNameById } from '@/utils/regionUtils';
+import { isCreator } from '@/utils/userUtils';
 
-export default defineComponent({
-  props: {
-    entry: { type: Object as PropType<API.DispatcherHistory.Data>, required: true },
-    showExtraInfo: { type: Boolean, required: true }
-  },
+const apiStore = useApiStore();
 
-  components: { StationStatusBadge, FlagIcon },
-  mixins: [dateMixin, styleMixin],
-  emits: ['toggleShowExtraInfo'],
-
-  data() {
-    return { regions, apiStore: useApiStore(), isCreator };
-  },
-
-  methods: {
-    toggleExtraInfo() {
-      this.$emit('toggleShowExtraInfo', this.entry.id);
-    }
-  }
+const props = defineProps({
+  entry: { type: Object as PropType<API.DispatcherHistory.Data>, required: true },
+  showExtraInfo: { type: Boolean, required: true }
 });
+
+const emits = defineEmits(['toggleShowExtraInfo']);
+
+function toggleExtraInfo() {
+  emits('toggleShowExtraInfo', props.entry.id);
+}
 </script>
 
 <style lang="scss" scoped>
@@ -167,12 +161,6 @@ export default defineComponent({
   padding: 0 0.25em;
 }
 
-.level-badge {
-  text-align: center;
-  display: inline-block;
-  line-height: 1.6em;
-}
-
 .dispatcher-online {
   color: springgreen;
 }
@@ -180,11 +168,6 @@ export default defineComponent({
 .dispatcher-history-entry {
   background-color: #1a1a1a;
   padding: 1em;
-}
-
-.dispatcher-language {
-  display: inline-block;
-  vertical-align: middle;
 }
 
 .entry-info {

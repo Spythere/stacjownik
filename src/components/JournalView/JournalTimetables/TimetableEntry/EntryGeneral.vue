@@ -49,14 +49,21 @@
         </strong>
         <strong>&nbsp;{{ timetable.trainNo }}</strong>
       </span>
+
       &bull;
-      <strong
+
+      <LevelBadge
         v-if="timetable.driverLevel !== null"
-        class="level-badge driver"
-        :style="calculateExpStyle(timetable.driverLevel, timetable.driverIsSupporter)"
-      >
-        {{ timetable.driverLevel < 2 ? 'L' : `${timetable.driverLevel}` }}
-      </strong>
+        badge-type="driver"
+        :level="timetable.driverLevel"
+        :is-supporter="timetable.driverIsSupporter"
+      />
+
+      <FlagIcon
+        v-if="timetable.driverLanguageId != null"
+        :language-id="timetable.driverLanguageId"
+        width="1.75em"
+      />
 
       <router-link
         v-if="isCreator(timetable.driverName)"
@@ -81,10 +88,6 @@
       <router-link v-else :to="`/journal/timetables?search-driver=${timetable.driverName}`">
         <strong>{{ timetable.driverName }}</strong>
       </router-link>
-
-      <div v-if="timetable.driverLanguageId != null">
-        <FlagIcon :language-id="timetable.driverLanguageId" width="1.75em" />
-      </div>
     </span>
 
     <span class="general-time">
@@ -119,16 +122,17 @@
 <script lang="ts">
 import { PropType, defineComponent } from 'vue';
 
+import LevelBadge from '@/components/Global/LevelBadge.vue';
+import FlagIcon from '@/components/Global/FlagIcon.vue';
 import dateMixin from '@/mixins/dateMixin';
 import styleMixin from '@/mixins/styleMixin';
 import trainCategoryMixin from '@/mixins/trainCategoryMixin';
 import { useApiStore } from '@/store/apiStore';
 import { API } from '@/typings/api';
-import FlagIcon from '@/components/Global/FlagIcon.vue';
 import { isCreator } from '@/utils/userUtils';
 
 export default defineComponent({
-  components: { FlagIcon },
+  components: { FlagIcon, LevelBadge },
   mixins: [dateMixin, styleMixin, trainCategoryMixin],
 
   data() {

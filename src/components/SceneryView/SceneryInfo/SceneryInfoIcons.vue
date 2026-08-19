@@ -10,13 +10,11 @@
         />
       </span>
 
-      <span
-        v-if="station?.generalInfo && station?.generalInfo.reqLevel >= 0"
-        class="scenery-icon icon-info level"
-        :style="calculateExpStyles(station?.generalInfo.reqLevel)"
-      >
-        {{ station?.generalInfo.reqLevel >= 2 ? station?.generalInfo.reqLevel : 'L' }}
-      </span>
+      <LevelBadge
+        v-if="station?.generalInfo && station.generalInfo.reqLevel >= 0"
+        :level="station.generalInfo.reqLevel"
+        badge-type="scenery-details-level"
+      />
 
       <img
         v-if="station?.generalInfo?.availability == 'nonPublic'"
@@ -91,7 +89,7 @@
 <script lang="ts" setup>
 import { PropType } from 'vue';
 import { Station } from '../../../typings/common';
-import { calculateExpStyles } from '../../../composables/badge';
+import LevelBadge from '@/components/Global/LevelBadge.vue';
 
 defineProps({
   station: {
@@ -106,6 +104,7 @@ defineProps({
 .icons-box {
   display: flex;
   justify-content: center;
+  align-items: center;
   flex-wrap: wrap;
 
   margin: 0.5em;

@@ -48,12 +48,13 @@
         <span>&bull;</span>
 
         <div class="train-driver">
-          <b
-            class="level-badge driver"
-            :style="calculateExpStyle(train.driverLevel, train.isSupporter)"
-          >
-            {{ train.driverLevel < 2 ? 'L' : `${train.driverLevel}` }}
-          </b>
+          <LevelBadge
+            badge-type="driver"
+            :level="train.driverLevel"
+            :is-supporter="train.isSupporter"
+          />
+
+          <FlagIcon :language-id="train.driverLanguageId" width="1.6em" />
 
           <b
             v-if="isCreator(train.driverName)"
@@ -74,10 +75,6 @@
           </b>
 
           <span v-else>{{ train.driverName }}</span>
-        </div>
-
-        <div class="train-language-flag">
-          <FlagIcon :language-id="train.driverLanguageId" width="1.75em" />
         </div>
       </div>
     </div>
@@ -214,10 +211,11 @@ import ProgressBar from '../Global/ProgressBar.vue';
 import StockList from '../Global/StockList.vue';
 import FlagIcon from '../Global/FlagIcon.vue';
 import { isCreator } from '../../utils/userUtils';
+import LevelBadge from '../Global/LevelBadge.vue';
 
 export default defineComponent({
   mixins: [trainInfoMixin, styleMixin, trainCategoryMixin],
-  components: { ProgressBar, StockList, FlagIcon },
+  components: { ProgressBar, StockList, FlagIcon, LevelBadge },
 
   props: {
     train: {

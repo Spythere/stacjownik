@@ -600,6 +600,8 @@
     "option-top-list": "Rekordy scenerii",
     "btn-show-timetable-thumbnails": "Pokazuj podglądy składów",
     "btn-hide-timetable-thumbnails": "Ukrywaj podglądy składów",
+    "btn-show-player-details": "Pokazuj dodatkowe informacje w rozkładach",
+    "btn-hide-player-details": "Ukrywaj dodatkowe informacje w rozkładach",
     "timetable-includesScenery": "WSZYSTKIE RJ",
     "timetable-via": "PRZEJEŻDŻA",
     "timetable-issuedFrom": "ROZPOCZYNA BIEG",
@@ -664,7 +666,8 @@
   },
   "profile": {
     "journal-button": "PROFIL GRACZA",
-    "no-player-found": "Nie znaleziono gracza! :/",
+    "no-player-found": "Nie znaleziono gracza!",
+    "no-player-desc": "Gracz o ID #{id} nie istnieje w bazie Stacjownika. Może to wynikać z braku informacji o użytkowniku lub błędnie wpisanego identyfikatora.",
     "return-to-main": "Powrót do strony głównej",
 
     "filters": {
