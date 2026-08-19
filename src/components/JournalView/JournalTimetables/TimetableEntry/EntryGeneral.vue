@@ -59,6 +59,12 @@
         :is-supporter="timetable.driverIsSupporter"
       />
 
+      <FlagIcon
+        v-if="timetable.driverLanguageId != null"
+        :language-id="timetable.driverLanguageId"
+        width="1.75em"
+      />
+
       <router-link
         v-if="isCreator(timetable.driverName)"
         class="text--creator"
@@ -82,10 +88,6 @@
       <router-link v-else :to="`/journal/timetables?search-driver=${timetable.driverName}`">
         <strong>{{ timetable.driverName }}</strong>
       </router-link>
-
-      <div v-if="timetable.driverLanguageId != null">
-        <FlagIcon :language-id="timetable.driverLanguageId" width="1.75em" />
-      </div>
     </span>
 
     <span class="general-time">

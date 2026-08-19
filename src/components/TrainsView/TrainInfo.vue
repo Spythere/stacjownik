@@ -54,6 +54,8 @@
             :is-supporter="train.isSupporter"
           />
 
+          <FlagIcon :language-id="train.driverLanguageId" width="1.6em" />
+
           <b
             v-if="isCreator(train.driverName)"
             data-tooltip-type="CreatorTooltip"
@@ -73,10 +75,6 @@
           </b>
 
           <span v-else>{{ train.driverName }}</span>
-        </div>
-
-        <div class="train-language-flag">
-          <FlagIcon :language-id="train.driverLanguageId" width="1.75em" />
         </div>
       </div>
     </div>

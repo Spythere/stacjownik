@@ -9,11 +9,18 @@
 
           <b class="text--grayed"> #{{ entry.stationHash }}</b>
           &bull;
+
           <LevelBadge
             v-if="entry.dispatcherLevel !== null"
             badge-type="driver"
             :level="entry.dispatcherLevel"
             :is-supporter="entry.dispatcherIsSupporter"
+          />
+
+          <FlagIcon
+            v-if="entry.dispatcherLanguageId != null"
+            :language-id="entry.dispatcherLanguageId"
+            width="1.75em"
           />
 
           <span
@@ -48,10 +55,6 @@
           >
             {{ entry.dispatcherName }}
           </router-link>
-
-          <span class="dispatcher-language" v-if="entry.dispatcherLanguageId != null">
-            <FlagIcon :language-id="entry.dispatcherLanguageId" width="1.75em" />
-          </span>
         </div>
 
         <div>
@@ -165,11 +168,6 @@ function toggleExtraInfo() {
 .dispatcher-history-entry {
   background-color: #1a1a1a;
   padding: 1em;
-}
-
-.dispatcher-language {
-  display: inline-block;
-  vertical-align: middle;
 }
 
 .entry-info {
