@@ -52,7 +52,7 @@ import HeaderStatusIndicator from './HeaderStatusIndicator.vue';
 
 .header-info {
   display: grid;
-  grid-template-columns: 70px 1fr auto;
+  grid-template-columns: 4em 1fr auto;
   gap: 0.5em;
   font-size: 1.15em;
   margin-bottom: 0.5em;
