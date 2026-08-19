@@ -158,12 +158,6 @@ function toggleExtraInfo() {
   padding: 0 0.25em;
 }
 
-.level-badge {
-  text-align: center;
-  display: inline-block;
-  line-height: 1.6em;
-}
-
 .dispatcher-online {
   color: springgreen;
 }

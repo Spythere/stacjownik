@@ -347,10 +347,6 @@ const activeTrains = computed(() => {
   gap: 0.25em;
 
   font-weight: bold;
-
-  & > .level-badge {
-    font-size: 1.15em;
-  }
 }
 
 .main-links {
