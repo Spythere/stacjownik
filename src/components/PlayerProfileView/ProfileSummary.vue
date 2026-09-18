@@ -65,21 +65,6 @@
           </span>
         </div>
 
-        <div class="main-badges">
-          <div class="badge-container" v-if="playerInfo.driverStats.driverLevel != null">
-            <LevelBadge badge-type="driver" :level="playerInfo.driverStats.driverLevel" />
-            <span>{{ t('profile.stats.driver') }}</span>
-          </div>
-
-          <div class="badge-container" v-if="playerInfo.dispatcherStats.dispatcherLevel != null">
-            <LevelBadge
-              badge-type="dispatcher"
-              :level="playerInfo.dispatcherStats.dispatcherLevel"
-            />
-            <span>{{ t('profile.stats.dispatcher') }}</span>
-          </div>
-        </div>
-
         <!-- Current activities -->
         <div
           class="main-current-activities"
@@ -114,7 +99,7 @@
           </div>
         </div>
 
-        <div class="main-links">
+        <!-- <div class="main-links">
           <router-link
             class="a-button btn--action"
             :to="`/journal/timetables?search-driver=${playerInfo.driverStats.driverName}`"
@@ -136,14 +121,20 @@
           >
             {{ t('profile.stats.forum-profile') }}
           </a>
-        </div>
+        </div> -->
       </div>
     </div>
 
     <div class="summary-stats">
+      <!-- Driver stats box -->
       <div class="summary-box stats-driver">
         <h3 class="stats-header">
-          <img src="/images/icon-train.svg" width="30" alt="train icon" />
+          <LevelBadge
+            v-if="playerInfo.driverStats.driverLevel"
+            badge-type="driver"
+            :level="playerInfo.driverStats.driverLevel"
+          />
+
           {{ t('profile.stats.header-driver') }}
         </h3>
         <hr />
@@ -205,22 +196,27 @@
         </div>
       </div>
 
-      <div
-        class="summary-box stats-dispatcher"
-        v-if="playerInfo.dispatcherStats && playerInfo.dispatcherStats.services?.count"
-      >
+      <!-- Dispatcher stats box -->
+      <div class="summary-box stats-dispatcher" v-if="playerInfo.dispatcherStats">
         <h3 class="stats-header">
-          <img src="/images/icon-user.svg" width="30" alt="user icon" />
+          <LevelBadge
+            v-if="playerInfo.dispatcherStats.dispatcherLevel"
+            badge-type="driver"
+            :level="playerInfo.dispatcherStats.dispatcherLevel"
+          />
+
+          <img src="/images/icon-user.svg" width="30" alt="user icon" v-else />
           {{ t('profile.stats.header-dispatcher') }}
         </h3>
 
         <hr />
 
-        <div>
+        <div v-if="playerInfo.dispatcherStats.services">
           <b class="text--primary">{{ playerInfo.dispatcherStats.services.count }}</b> -
           {{ t('profile.stats.duties-count') }}
         </div>
-        <div>
+
+        <div v-if="playerInfo.dispatcherStats.services">
           <b class="text--primary">{{
             humanizeDuration(playerInfo.dispatcherStats.services.durationMax)
           }}</b>
@@ -246,8 +242,8 @@
           </div>
         </div>
 
-        <div class="text--grayed" v-else>
-          {{ t('profile.stats.no-dispatcher-stats') }}
+        <div class="no-issued-timetables" v-else>
+          {{ t('profile.stats.no-issued-timetables') }}
         </div>
       </div>
     </div>
@@ -408,8 +404,8 @@ const activeTrains = computed(() => {
 }
 
 .summary-stats {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 1em;
 
   hr {
@@ -422,6 +418,11 @@ const activeTrains = computed(() => {
   align-items: center;
   justify-content: center;
   gap: 0.25em;
+}
+
+.no-issued-timetables {
+  color: var(--clr-grayed);
+  margin-top: 0.5em;
 }
 
 @include responsive.midScreen {

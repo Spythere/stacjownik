@@ -691,7 +691,7 @@
       "active-as-driver": "Online jako maszynista",
       "active-as-both": "Online jako dyżurny i maszynista",
 
-      "header-driver": "STATYSTYKI MASZYNISTY",
+      "header-driver": "MASZYNISTA",
       "fulfilled-timetables": "wypełnione rozkłady jazdy",
       "route-distance": "zatwierdzony kilometraż w RJ",
       "confirmed-stops": "potwierdzone stacje w RJ",
@@ -699,13 +699,14 @@
       "avg-timetable-length": "średnia długość wszystkich rozkładów",
       "no-timetable-stats": "Ten użytkownik nie posiada statystyk maszynisty zarejestrowanych przez Stacjownik!",
 
-      "header-dispatcher": "STATYSTYKI DYŻURNEGO RUCHU",
+      "header-dispatcher": "DYŻURNY RUCHU",
       "duties-count": "służby jako dyżurny ruchu",
       "longest-duty": "najdłuższa służba",
       "created-timetables-count": "wystawione RJ jako dyżurny ruchu",
       "longest-created-timetable": "najdłuższy wystawiony RJ",
       "created-timetables-length-sum": "suma długości wystawionych RJ",
-      "no-dispatcher-stats": "Ten użytkownik nie posiada statystyk dyżurnego zarejestrowanych przez Stacjownik!"
+      "no-dispatcher-stats": "Ten użytkownik nie posiada statystyk dyżurnego zarejestrowanych przez Stacjownik!",
+      "no-issued-timetables": "Ten użytkownik nie stworzył jeszcze żadnego rozkładu jazdy"
     },
 
     "recent-stats": {

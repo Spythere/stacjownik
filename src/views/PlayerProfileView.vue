@@ -3,14 +3,14 @@
     <div class="profile-wrapper" v-if="playerInfo && playerInfoStatus == Status.Data.Loaded">
       <ProfileSummary :playerInfo="playerInfo" :playerName="playerName" />
 
-      <div class="profile-side">
+      <!-- <div class="profile-side">
         <ProfileRecentStats :playerInfo="playerInfo" />
         <ProfileHistoryList
           :playerName="playerName"
           :playerJournal="playerJournal"
           :journalStatus="playerJournalStatus"
         />
-      </div>
+      </div> -->
     </div>
 
     <Loading v-else-if="playerInfoStatus == Status.Data.Loading" />
@@ -134,8 +134,7 @@ async function fetchPlayerData() {
   display: flex;
   justify-content: center;
 
-  height: 100vh;
-  min-height: 500px;
+  min-height: 100vh;
   max-height: 2000px;
 }
 
@@ -165,14 +164,9 @@ async function fetchPlayerData() {
 }
 
 .profile-wrapper {
-  display: grid;
-  grid-template-columns: 500px 1fr;
-
   gap: 1em;
   position: relative;
-
-  max-width: var(--max-container-width);
-  width: 100%;
+  min-width: 1000px;
 
   padding: 1rem 0;
   text-align: center;
@@ -184,6 +178,7 @@ async function fetchPlayerData() {
   overflow: auto;
   background-color: var(--clr-tile);
   border-radius: 0.5em;
+  margin-top: 1em;
 }
 
 @include responsive.midScreen {
