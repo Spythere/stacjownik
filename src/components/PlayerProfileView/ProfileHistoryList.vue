@@ -139,7 +139,7 @@ const props = defineProps({
   },
 
   playerJournal: {
-    type: Object as PropType<API.PlayerJournal.Data>,
+    type: Object as PropType<API.PlayerJournal.Data>
   },
 
   journalStatus: {
