@@ -98,12 +98,11 @@ export default defineComponent({
 @use '../../styles/animations';
 
 .train-table {
-  height: calc(100vh - 6.5em);
-  min-height: 500px;
+  height: calc(100vh - 17em);
+  min-height: 450px;
+  overflow-x: hidden;
 
   position: relative;
-  overflow-y: auto;
-  overflow-x: hidden;
 }
 
 .list_wrapper {
