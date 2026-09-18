@@ -2,6 +2,7 @@
   <div class="profile-view">
     <div class="profile-wrapper" v-if="playerInfo && playerInfoStatus == Status.Data.Loaded">
       <ProfileSummary :playerInfo="playerInfo" :playerName="playerName" />
+      <ProfileChart />
 
       <!-- <div class="profile-side">
         <ProfileRecentStats :playerInfo="playerInfo" />
@@ -41,8 +42,7 @@ import { Status } from '../typings/common';
 
 import Loading from '../components/Global/Loading.vue';
 import ProfileSummary from '../components/PlayerProfileView/ProfileSummary.vue';
-import ProfileRecentStats from '../components/PlayerProfileView/ProfileRecentStats.vue';
-import ProfileHistoryList from '../components/PlayerProfileView/ProfileHistoryList.vue';
+import ProfileChart from '@/components/PlayerProfileView/ProfileChart.vue';
 
 const { t } = useI18n();
 
@@ -134,7 +134,7 @@ async function fetchPlayerData() {
   display: flex;
   justify-content: center;
 
-  min-height: 100vh;
+  // min-height: 100vh;
   max-height: 2000px;
 }
 
@@ -166,7 +166,8 @@ async function fetchPlayerData() {
 .profile-wrapper {
   gap: 1em;
   position: relative;
-  min-width: 1000px;
+  max-width: 1000px;
+  width: 100%;
 
   padding: 1rem 0;
   text-align: center;
@@ -188,7 +189,6 @@ async function fetchPlayerData() {
 
   .profile-wrapper {
     grid-template-columns: 1fr;
-    max-width: 1000px;
   }
 }
 </style>
