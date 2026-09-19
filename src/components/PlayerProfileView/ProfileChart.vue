@@ -1,41 +1,46 @@
 <template>
   <div class="player-chart">
-    <Bar
-      v-if="showChart"
-      ref="barChart"
-      id="player-chart"
-      :options="chartOptions"
-      :data="chartData"
-      :style="chartStyles"
-    />
+    <canvas ref="barChart" id="player-chart-canvas"></canvas>
+    <!-- <Bar v-if="showChart" :options="chartOptions" :data="chuj" :style="chartStyles" /> -->
   </div>
 </template>
 
 <script setup lang="ts">
 import {
-  Chart as ChartJS,
-  ChartData,
-  ChartOptions,
+  Chart,
   Title,
   Tooltip,
   Legend,
   BarElement,
   CategoryScale,
-  LinearScale
+  LinearScale,
+  BarController
 } from 'chart.js';
 
-import { computed, onActivated, PropType, ref, useTemplateRef, watch } from 'vue';
-import { Bar } from 'vue-chartjs';
+import { onActivated, onMounted, PropType, ref, useTemplateRef } from 'vue';
 import zoomPlugin from 'chartjs-plugin-zoom';
 import { API } from '@/typings/api';
 import { Status } from '@/typings/common';
 
-ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, zoomPlugin);
-ChartJS.defaults.backgroundColor = '#9BD0F5';
-ChartJS.defaults.borderColor = '#aaa';
-ChartJS.defaults.color = '#fff';
+Chart.register(
+  Title,
+  Tooltip,
+  Legend,
+  BarElement,
+  BarController,
+  CategoryScale,
+  LinearScale,
+  zoomPlugin
+);
+
+Chart.defaults.backgroundColor = '#ccc';
+Chart.defaults.borderColor = '#333';
+Chart.defaults.color = '#fff';
 
 const showChart = ref(false);
+
+const chartRef = useTemplateRef('barChart');
+let chart: Chart | null = null;
 
 const props = defineProps({
   playerName: {
@@ -52,59 +57,91 @@ const props = defineProps({
   }
 });
 
-watch(
-  computed(() => props.playerJournal),
-  () => {
-    renderChart();
-  }
-);
+onMounted(() => {
+  // const chart = (barChart.value as any).chart;
 
-const chartOptions: ChartOptions<'bar'> = {
-  maintainAspectRatio: false,
-  responsive: true,
-  animation: false,
+  setupChart();
+  renderChart();
+});
 
-  plugins: {
-    zoom: {
-      pan: {
-        enabled: true,
-        mode: 'x',
-        threshold: 0.5
+function setupChart() {
+  if (!chartRef.value) return;
+
+  chart = new Chart(chartRef.value, {
+    type: 'bar',
+
+    data: {
+      labels: new Array(30).fill(0).map((_, i) => {
+        const date = new Date();
+        date.setDate(date.getDate() - 29 + i);
+
+        return date.toLocaleDateString('pl-PL', {
+          month: '2-digit',
+          day: '2-digit'
+        });
+      }),
+
+      datasets: [
+        {
+          label: 'Rozkłady jazdy',
+          data: [],
+          borderWidth: 1,
+          backgroundColor: '#57baeb'
+        },
+        {
+          label: 'Dyżury',
+          data: [],
+          borderWidth: 1,
+          backgroundColor: '#eb5757'
+        }
+      ]
+    },
+
+    options: {
+      animation: false,
+      maintainAspectRatio: false,
+
+      plugins: {
+        zoom: {
+          pan: {
+            enabled: true,
+            mode: 'x',
+            threshold: 0.5
+          },
+
+          zoom: {
+            wheel: {
+              enabled: true
+            },
+            pinch: {
+              enabled: true
+            },
+            mode: 'x'
+          }
+        }
       },
 
-      zoom: {
-        wheel: {
-          enabled: true
-        },
-        pinch: {
-          enabled: true
-        },
-        mode: 'x'
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            precision: 0
+          }
+        }
       }
     }
-  },
+  });
 
-  scales: {
-    y: {
-      beginAtZero: true,
-      ticks: {
-        precision: 0
-      }
-    }
-  }
-};
-
-const chartStyles = {
-  height: '300px'
-};
-
-let chartData: ChartData<'bar'> = {
-  datasets: []
-};
+  chart.zoomScale('x', {
+    min: 10,
+    max: 50
+  });
+}
 
 function renderChart() {
+  showChart.value = false;
+
   if (props.playerJournal === undefined) {
-    showChart.value = false;
     return;
   }
 
@@ -135,57 +172,27 @@ function renderChart() {
     });
   }
 
-  chartData = {
-    labels: countList.map((c) => {
-      return c.date.toLocaleDateString('pl-PL', {
-        month: '2-digit',
-        day: '2-digit'
-      });
-    }),
+  if (chart) {
+    chart.data.datasets[0].data = countList.map((v) => v.timetableCount);
+    chart.data.datasets[1].data = countList.map((v) => v.dutyCount);
 
-    datasets: [
-      {
-        label: 'Rozkłady jazdy',
-        data: countList.map((v) => v.timetableCount),
-        borderWidth: 1,
-        backgroundColor: '#57baeb'
-      },
-      {
-        label: 'Dyżury',
-        data: countList.map((v) => v.dutyCount),
-        borderWidth: 1,
-        backgroundColor: '#eb5757'
-      }
-    ]
-  };
+    console.log(chart.data);
+    chart.update();
+  }
 
   showChart.value = true;
 }
 
 // const chart = (barChart.value as any).chart;
-
-// chart.zoomScale('x', {
-//   min: 20,
-//   max: 50
-// });
-
-// onMounted(() => {
-//   const chart = (barChart.value as any).chart;
-
-//   chart.zoomScale('x', {
-//     min: 20,
-//     max: 50
-//   });
-// });
 </script>
 
 <style lang="scss" scoped>
 .player-chart {
+  background-color: var(--clr-tile);
+  padding: 0.5em;
+  border-radius: 0.5em;
   margin-top: 1em;
   position: relative;
-}
-
-a {
-  color: #57baeb;
+  height: 350px;
 }
 </style>

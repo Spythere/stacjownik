@@ -2,7 +2,9 @@
   <div class="profile-view">
     <div class="profile-wrapper" v-if="playerInfo && playerInfoStatus == Status.Data.Loaded">
       <ProfileSummary :playerInfo="playerInfo" :playerName="playerName" />
+
       <ProfileChart
+        v-if="playerJournalStatus == Status.Data.Loaded"
         :playerName="playerName"
         :playerJournal="playerJournal"
         :journalStatus="playerJournalStatus"
