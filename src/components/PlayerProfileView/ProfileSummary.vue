@@ -26,21 +26,23 @@
 
         <div class="main-last-seen">
           <span v-if="activeDispatches.length > 0 && activeTrains.length > 0" class="active">
-            {{ t('profile.stats.active-as-both') }}
+            <WifiIcon :size="20" /> {{ t('profile.stats.active-as-both') }}
           </span>
 
           <span v-else-if="activeTrains.length > 0" class="active">
-            {{ t('profile.stats.active-as-driver') }}
+            <WifiIcon :size="20" /> {{ t('profile.stats.active-as-driver') }}
           </span>
 
           <span v-else-if="activeDispatches.length > 0" class="active">
-            {{ t('profile.stats.active-as-dispatcher') }}
+            <WifiIcon :size="20" /> {{ t('profile.stats.active-as-dispatcher') }}
           </span>
 
           <span
             v-else-if="playerInfo.lastSeen && Date.now() - playerInfo.lastSeen < 300000"
             class="active"
           >
+            <WifiOffIcon :size="20" />
+
             {{ t('profile.stats.last-seen-active') }}
           </span>
 
@@ -48,6 +50,8 @@
             v-else-if="playerInfo.lastSeen && Date.now() - playerInfo.lastSeen < 3600000"
             class="offline-recently"
           >
+            <WifiOffIcon :size="20" />
+
             {{
               t('profile.stats.last-seen-relative', {
                 n: humanizeDuration(Date.now() - new Date(playerInfo.lastSeen).getTime())
@@ -56,6 +60,8 @@
           </span>
 
           <span v-else-if="playerInfo.lastSeen" class="offline">
+            <WifiOffIcon :size="20" />
+
             {{
               t('profile.stats.last-seen-date', {
                 date: dateToLocaleString(new Date(playerInfo.lastSeen), { dateStyle: 'short' }),
@@ -99,11 +105,13 @@
           </div>
         </div>
 
+        <!-- Links -->
         <div class="main-links">
           <router-link
             class="a-button btn--action"
             :to="`/journal/timetables?search-driver=${playerInfo.driverStats.driverName}`"
           >
+            <img src="/images/icon-timetable.svg" width="20" alt="timetable icon" />
             {{ t('profile.stats.timetables-journal') }}
           </router-link>
 
@@ -111,6 +119,7 @@
             class="a-button btn--action"
             :to="`/journal/dispatchers?search-dispatcher=${playerInfo.dispatcherStats.dispatcherName}`"
           >
+            <img src="/images/icon-user.svg" width="20" alt="user icon" />
             {{ t('profile.stats.dispatchers-journal') }}
           </router-link>
 
@@ -119,6 +128,7 @@
             :href="`https://td2.info.pl/profile/?u=${route.query.playerId}`"
             target="_blank"
           >
+            <TypeOutlineIcon :size="20" />
             {{ t('profile.stats.forum-profile') }}
           </a>
         </div>
@@ -329,7 +339,10 @@ import {
   GaugeIcon,
   SigmaIcon,
   StarIcon,
-  UserIcon
+  TypeOutlineIcon,
+  UserIcon,
+  WifiIcon,
+  WifiOffIcon
 } from '@lucide/vue';
 
 const { t } = useI18n();
@@ -424,6 +437,13 @@ const activeTrains = computed(() => {
 
 .main-last-seen {
   margin-top: 0.5em;
+
+  span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+  }
 
   .active {
     color: var(--clr-success);
