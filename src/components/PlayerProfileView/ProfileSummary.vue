@@ -99,7 +99,7 @@
           </div>
         </div>
 
-        <!-- <div class="main-links">
+        <div class="main-links">
           <router-link
             class="a-button btn--action"
             :to="`/journal/timetables?search-driver=${playerInfo.driverStats.driverName}`"
@@ -121,7 +121,7 @@
           >
             {{ t('profile.stats.forum-profile') }}
           </a>
-        </div> -->
+        </div>
       </div>
     </div>
 
@@ -197,7 +197,7 @@
       </div>
 
       <!-- Dispatcher stats box -->
-      <div class="summary-box stats-dispatcher" v-if="playerInfo.dispatcherStats">
+      <div class="summary-box stats-dispatcher">
         <h3 class="stats-header">
           <LevelBadge
             v-if="playerInfo.dispatcherStats.dispatcherLevel"
@@ -242,7 +242,11 @@
           </div>
         </div>
 
-        <div class="no-issued-timetables" v-else>
+        <div class="no-issued-timetables" v-if="!playerInfo.dispatcherStats.services">
+          {{ t('profile.stats.no-dispatcher-stats') }}
+        </div>
+
+        <div class="no-issued-timetables" v-else-if="!playerInfo.dispatcherStats.issuedTimetables">
           {{ t('profile.stats.no-issued-timetables') }}
         </div>
       </div>
@@ -404,8 +408,8 @@ const activeTrains = computed(() => {
 }
 
 .summary-stats {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 1em;
 
   hr {

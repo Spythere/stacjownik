@@ -1,7 +1,6 @@
 <template>
   <div class="player-chart">
     <canvas ref="barChart" id="player-chart-canvas"></canvas>
-    <!-- <Bar v-if="showChart" :options="chartOptions" :data="chuj" :style="chartStyles" /> -->
   </div>
 </template>
 
@@ -93,6 +92,12 @@ function setupChart() {
           data: [],
           borderWidth: 1,
           backgroundColor: '#eb5757'
+        },
+        {
+          label: 'Utworzone RJ',
+          data: [],
+          borderWidth: 1,
+          backgroundColor: '#8cef57'
         }
       ]
     },
@@ -132,10 +137,13 @@ function setupChart() {
     }
   });
 
-  chart.zoomScale('x', {
-    min: 10,
-    max: 50
-  });
+  // chart.zoomScale('x', {
+  //   min: 10,
+  //   max: 50
+  // });
+
+  (chart.canvas.parentNode as any).style.height = '300px';
+  (chart.canvas.parentNode as any).style.width = '100%';
 }
 
 function renderChart() {
@@ -152,7 +160,8 @@ function renderChart() {
     return {
       date,
       timetableCount: 0,
-      dutyCount: 0
+      dutyCount: 0,
+      createdCount: 0
     };
   });
 
@@ -170,13 +179,20 @@ function renderChart() {
 
       if (countEl) countEl.dutyCount += 1;
     });
+
+    props.playerJournal.issuedTimetables.forEach((t) => {
+      const dateString = new Date(t.createdAt).toLocaleDateString('pl-PL');
+      const countEl = countList.find((c) => c.date.toLocaleDateString('pl-PL') == dateString);
+
+      if (countEl) countEl.createdCount += 1;
+    });
   }
 
   if (chart) {
     chart.data.datasets[0].data = countList.map((v) => v.timetableCount);
     chart.data.datasets[1].data = countList.map((v) => v.dutyCount);
+    chart.data.datasets[2].data = countList.map((v) => v.createdCount);
 
-    console.log(chart.data);
     chart.update();
   }
 
@@ -192,7 +208,10 @@ function renderChart() {
   padding: 0.5em;
   border-radius: 0.5em;
   margin-top: 1em;
+
   position: relative;
-  height: 350px;
+  overflow: auto;
+
+  // color: #8cef57;
 }
 </style>

@@ -682,6 +682,7 @@
     "return-to-main": "Return to the main site",
 
     "filters": {
+      "All": "ALL",
       "Timetable": "TIMETABLES",
       "Dispatcher": "DISPATCHER DUTIES",
       "IssuedTimetable": "ISSUED TIMETABLES"
@@ -708,7 +709,7 @@
       "confirmed-stops": "confirmed stations in timetables",
       "longest-timetable": "longest timetable",
       "avg-timetable-length": "average distance of all timetables",
-      "no-timetable-stats": "This player does not have any registered timetables in Stacjownik!",
+      "no-timetable-stats": "This player does not have any registered timetables on Stacjownik!",
 
       "header-dispatcher": "DISPATCHER'S STATS",
       "duties-count": "duties as dispatcher",
@@ -716,7 +717,8 @@
       "created-timetables-count": "issued timetables as dispatcher",
       "longest-created-timetable": "longest issued timetable",
       "created-timetables-length-sum": "distance sum of issued timetables",
-      "no-dispatcher-stats": "No registered dispatcher duties in Stacjownik!"
+      "no-dispatcher-stats": "This player has no duties recorded on Stacjownik!",
+      "no-issued-timetables": "This player hasn't created any timetable yet!"
     },
 
     "recent-stats": {
@@ -730,7 +732,8 @@
     "list": {
       "for": "for",
       "online-since": "online since",
-      "no-recent-history": "No recent activity in the simulator :("
+      "no-recent-history": "No recent activity in the simulator :(",
+      "no-filtered-history": "No recent actiity with chosen category!"
     }
   }
 }

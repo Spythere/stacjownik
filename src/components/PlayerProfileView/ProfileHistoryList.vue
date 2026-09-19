@@ -3,12 +3,12 @@
     <div class="list-header">
       <div class="history-menu">
         <button
-          v-for="(filterState, filterKey) in activeFilterTypes"
+          v-for="filter in filterTypes"
           class="menu-btn btn--option"
-          :data-active="filterState"
-          @click="toggleFilter(filterKey)"
+          :data-active="filter == activeFilterType"
+          @click="toggleFilter(filter)"
         >
-          {{ t(`profile.filters.${filterKey}`) }}
+          {{ t(`profile.filters.${filter}`) }}
         </button>
       </div>
     </div>
@@ -17,7 +17,13 @@
       <Loading v-if="journalStatus == Status.Data.Loading" />
 
       <div v-else-if="combinedJournal.length == 0" class="no-recent-history">
-        {{ t('profile.list.no-recent-history') }}
+        {{
+          t(
+            activeFilterType == 'All'
+              ? 'profile.list.no-recent-history'
+              : 'profile.list.no-filtered-history'
+          )
+        }}
       </div>
 
       <router-link
@@ -120,12 +126,10 @@ import {
 import { dateToLocaleString, humanizeDuration } from '../../composables/time';
 import { API } from '../../typings/api';
 import { useI18n } from 'vue-i18n';
-import { useApiStore } from '../../store/apiStore';
-import { onBeforeRouteUpdate, useRoute } from 'vue-router';
 import { Status } from '../../typings/common';
 import Loading from '../Global/Loading.vue';
 
-type JournalEntryType = 'Timetable' | 'Dispatcher' | 'IssuedTimetable';
+type JournalEntryType = 'All' | 'Timetable' | 'Dispatcher' | 'IssuedTimetable';
 
 interface JournalEntry {
   type: JournalEntryType;
@@ -150,11 +154,8 @@ const props = defineProps({
 
 const { t } = useI18n();
 
-const activeFilterTypes = reactive<Record<JournalEntryType, boolean>>({
-  Timetable: true,
-  Dispatcher: true,
-  IssuedTimetable: true
-});
+const activeFilterType = ref<JournalEntryType>('All');
+const filterTypes: JournalEntryType[] = ['All', 'Timetable', 'Dispatcher', 'IssuedTimetable'];
 
 const combinedJournal = computed<JournalEntry[]>(() => {
   if (!props.playerJournal || !props.playerName) return [];
@@ -169,8 +170,14 @@ const combinedJournal = computed<JournalEntry[]>(() => {
       if ('trainNo' in v) {
         const isIssued = v.authorName == props.playerName;
 
-        if (!isIssued && !activeFilterTypes['Timetable']) return acc;
-        if (isIssued && !activeFilterTypes['IssuedTimetable']) return acc;
+        if (!isIssued && activeFilterType.value != 'Timetable' && activeFilterType.value != 'All')
+          return acc;
+        if (
+          isIssued &&
+          activeFilterType.value != 'IssuedTimetable' &&
+          activeFilterType.value != 'All'
+        )
+          return acc;
 
         acc.push({
           date: new Date(v.createdAt),
@@ -178,7 +185,7 @@ const combinedJournal = computed<JournalEntry[]>(() => {
           value: v
         });
       } else {
-        if (!activeFilterTypes['Dispatcher']) return acc;
+        if (activeFilterType.value != 'Dispatcher' && activeFilterType.value != 'All') return acc;
 
         acc.push({
           date: new Date(v.timestampFrom),
@@ -197,17 +204,7 @@ const combinedJournal = computed<JournalEntry[]>(() => {
 });
 
 function toggleFilter(filterType: JournalEntryType) {
-  const toggledState = !activeFilterTypes[filterType];
-
-  // Prevent switching off all filters at the same time (at least one must be active)
-  if (
-    toggledState === false &&
-    Object.values(activeFilterTypes).filter((v) => v === false).length ==
-      Object.values(activeFilterTypes).length - 1
-  )
-    return;
-
-  activeFilterTypes[filterType] = toggledState;
+  activeFilterType.value = filterType;
 }
 </script>
 
@@ -232,7 +229,7 @@ function toggleFilter(filterType: JournalEntryType) {
 
 .history-menu {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 1em;
   background-color: var(--clr-tile);
   padding: 0.5em;
@@ -244,7 +241,7 @@ function toggleFilter(filterType: JournalEntryType) {
   color: #aaa;
 
   &[data-active='true'] {
-    color: var(--clr-success);
+    color: var(--clr-primary);
   }
 }
 

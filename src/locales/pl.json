@@ -671,6 +671,7 @@
     "return-to-main": "Powrót do strony głównej",
 
     "filters": {
+      "All": "WSZYSTKO",
       "Timetable": "ROZKŁADY JAZDY",
       "Dispatcher": "SŁUŻBY DYŻURNEGO",
       "IssuedTimetable": "WYSTAWIONE RJ"
@@ -697,7 +698,7 @@
       "confirmed-stops": "potwierdzone stacje w RJ",
       "longest-timetable": "najdłuższy rozkład jazdy",
       "avg-timetable-length": "średnia długość wszystkich rozkładów",
-      "no-timetable-stats": "Ten użytkownik nie posiada statystyk maszynisty zarejestrowanych przez Stacjownik!",
+      "no-timetable-stats": "Ten gracz nie posiada rozkładów zarejestrowanych przez Stacjownik!",
 
       "header-dispatcher": "DYŻURNY RUCHU",
       "duties-count": "służby jako dyżurny ruchu",
@@ -705,8 +706,8 @@
       "created-timetables-count": "wystawione RJ jako dyżurny ruchu",
       "longest-created-timetable": "najdłuższy wystawiony RJ",
       "created-timetables-length-sum": "suma długości wystawionych RJ",
-      "no-dispatcher-stats": "Ten użytkownik nie posiada statystyk dyżurnego zarejestrowanych przez Stacjownik!",
-      "no-issued-timetables": "Ten użytkownik nie stworzył jeszcze żadnego rozkładu jazdy"
+      "no-dispatcher-stats": "Ten gracz nie posiada dyżurów zarejestrowanych przez Stacjownik!",
+      "no-issued-timetables": "Ten gracz nie stworzył jeszcze żadnego rozkładu jazdy!"
     },
 
     "recent-stats": {
@@ -720,7 +721,8 @@
     "list": {
       "for": "dla",
       "online-since": "online od",
-      "no-recent-history": "Brak ostatniej aktywności w symulatorze :("
+      "no-recent-history": "Brak ostatniej aktywności w symulatorze :(",
+      "no-filtered-history": "Brak ostatniej aktywności w wybranej kategorii!"
     }
   }
 }
