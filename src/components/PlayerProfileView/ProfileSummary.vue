@@ -137,61 +137,94 @@
 
           {{ t('profile.stats.header-driver') }}
         </h3>
+
         <hr />
 
-        <div v-if="playerInfo.driverStats.countAll > 0">
-          <div>
-            <b class="text--primary">
-              {{ playerInfo.driverStats.countFulfilled }} /
-              {{ playerInfo.driverStats.countAll }} ({{
-                getCountPercentage(
-                  playerInfo.driverStats.countFulfilled,
-                  playerInfo.driverStats.countAll,
-                  2
-                )
-              }}%)
-            </b>
-            - {{ t('profile.stats.fulfilled-timetables') }}
+        <div class="stats-container">
+          <!-- Timetable count -->
+          <div v-if="playerInfo.driverStats.countAll > 0" class="stat-item">
+            <img src="/images/icon-timetable.svg" width="20" alt="timetable icon" />
+
+            <span>
+              <b>{{ t('profile.stats.fulfilled-timetables') }}: </b>
+
+              <b class="text--primary">
+                {{ playerInfo.driverStats.countFulfilled }} /
+                {{ playerInfo.driverStats.countAll }} ({{
+                  getCountPercentage(
+                    playerInfo.driverStats.countFulfilled,
+                    playerInfo.driverStats.countAll,
+                    2
+                  )
+                }}%)
+              </b>
+            </span>
           </div>
-          <div>
-            <b class="text--primary">
-              {{ playerInfo.driverStats.currentDistanceTotal?.toFixed(2) }} /
-              {{ playerInfo.driverStats.routeDistanceTotal?.toFixed(2) }} ({{
-                getCountPercentage(
-                  playerInfo.driverStats.currentDistanceTotal || 0,
-                  playerInfo.driverStats.routeDistanceTotal || 0,
-                  2
-                )
-              }}%)
-            </b>
-            - {{ t('profile.stats.route-distance') }}
+
+          <!-- Timetable distance -->
+          <div v-if="playerInfo.driverStats.countAll > 0" class="stat-item">
+            <GaugeIcon width="25" />
+
+            <span>
+              <b>{{ t('profile.stats.route-distance') }}: </b>
+
+              <b class="text--primary">
+                {{ playerInfo.driverStats.currentDistanceTotal?.toFixed(2) }} /
+                {{ playerInfo.driverStats.routeDistanceTotal?.toFixed(2) }} ({{
+                  getCountPercentage(
+                    playerInfo.driverStats.currentDistanceTotal || 0,
+                    playerInfo.driverStats.routeDistanceTotal || 0,
+                    2
+                  )
+                }}%)
+              </b>
+            </span>
           </div>
-          <div>
-            <b class="text--primary">
-              {{ playerInfo.driverStats.confirmedStopsTotal }} /
-              {{ playerInfo.driverStats.allStopsTotal }} ({{
-                getCountPercentage(
-                  playerInfo.driverStats.confirmedStopsTotal || 0,
-                  playerInfo.driverStats.allStopsTotal || 0,
-                  2
-                )
-              }}%)
-            </b>
-            - {{ t('profile.stats.confirmed-stops') }}
+
+          <!-- Stops count -->
+          <div v-if="playerInfo.driverStats.allStopsTotal" class="stat-item">
+            <CheckIcon width="25" />
+
+            <span>
+              <b>{{ t('profile.stats.confirmed-stops') }}: </b>
+              <b class="text--primary">
+                {{ playerInfo.driverStats.confirmedStopsTotal || 0 }} /
+                {{ playerInfo.driverStats.allStopsTotal || 0 }} ({{
+                  getCountPercentage(
+                    playerInfo.driverStats.confirmedStopsTotal || 0,
+                    playerInfo.driverStats.allStopsTotal || 0,
+                    2
+                  )
+                }}%)
+              </b>
+            </span>
           </div>
-          <div>
-            <b class="text--primary">{{ playerInfo.driverStats.routeDistanceMax || 0 }}km</b> -
-            {{ t('profile.stats.longest-timetable') }}
+
+          <!-- Max. distance -->
+          <div v-if="playerInfo.driverStats.routeDistanceMax" class="stat-item">
+            <StarIcon width="25" />
+
+            <span>
+              <b>{{ t('profile.stats.longest-timetable') }}: </b>
+              <b class="text--primary">{{ playerInfo.driverStats.routeDistanceMax }}km</b>
+            </span>
           </div>
-          <div>
-            <b class="text--primary">
-              {{ playerInfo.driverStats.routeDistanceAvg?.toFixed(2) || 0 }}km
-            </b>
-            - {{ t('profile.stats.avg-timetable-length') }}
+
+          <!-- Avg. distance -->
+          <div v-if="playerInfo.driverStats.routeDistanceAvg" class="stat-item">
+            <CircleSlash2 width="25" />
+
+            <span>
+              <b>{{ t('profile.stats.avg-timetable-length') }}: </b>
+              <b class="text--primary">
+                {{ playerInfo.driverStats.routeDistanceAvg.toFixed(2) }}km</b
+              >
+            </span>
           </div>
         </div>
 
-        <div class="text--grayed" v-else>
+        <!-- No stats info -->
+        <div class="text--grayed" v-if="playerInfo.driverStats.countAll == 0">
           {{ t('profile.stats.no-timetable-stats') }}
         </div>
       </div>
@@ -201,44 +234,66 @@
         <h3 class="stats-header">
           <LevelBadge
             v-if="playerInfo.dispatcherStats.dispatcherLevel"
-            badge-type="driver"
+            badge-type="dispatcher"
             :level="playerInfo.dispatcherStats.dispatcherLevel"
           />
 
-          <img src="/images/icon-user.svg" width="30" alt="user icon" v-else />
+          <img src="/images/icon-abandoned.svg" width="30" alt="user icon" v-else />
           {{ t('profile.stats.header-dispatcher') }}
         </h3>
 
         <hr />
 
-        <div v-if="playerInfo.dispatcherStats.services">
-          <b class="text--primary">{{ playerInfo.dispatcherStats.services.count }}</b> -
-          {{ t('profile.stats.duties-count') }}
-        </div>
+        <div class="stats-container">
+          <div v-if="playerInfo.dispatcherStats.services" class="stat-item">
+            <UserIcon />
 
-        <div v-if="playerInfo.dispatcherStats.services">
-          <b class="text--primary">{{
-            humanizeDuration(playerInfo.dispatcherStats.services.durationMax)
-          }}</b>
-          - {{ t('profile.stats.longest-duty') }}
-        </div>
+            <span>
+              <b>{{ t('profile.stats.duties-count') }}: </b>
+              <b class="text--primary">{{ playerInfo.dispatcherStats.services.count }}</b>
+            </span>
+          </div>
 
-        <div v-if="playerInfo.dispatcherStats.issuedTimetables">
-          <div>
-            <b class="text--primary">{{ playerInfo.dispatcherStats.issuedTimetables.count }}</b>
-            - {{ t('profile.stats.created-timetables-count') }}
+          <div v-if="playerInfo.dispatcherStats.services" class="stat-item">
+            <FlameIcon />
+
+            <span>
+              <b>{{ t('profile.stats.longest-duty') }}: </b>
+              <b class="text--primary">
+                {{ humanizeDuration(playerInfo.dispatcherStats.services.durationMax) }}
+              </b>
+            </span>
           </div>
-          <div>
-            <b class="text--primary">
-              {{ playerInfo.dispatcherStats.issuedTimetables.distanceMax }}km
-            </b>
-            - {{ t('profile.stats.longest-created-timetable') }}
+
+          <div v-if="playerInfo.dispatcherStats.issuedTimetables" class="stat-item">
+            <img src="/images/icon-timetable.svg" width="20" alt="timetable icon" />
+
+            <span>
+              <b>{{ t('profile.stats.created-timetables-count') }}: </b>
+              <b class="text--primary">{{ playerInfo.dispatcherStats.issuedTimetables.count }}</b>
+            </span>
           </div>
-          <div>
-            <b class="text--primary">
-              {{ playerInfo.dispatcherStats.issuedTimetables.distanceSum.toFixed(2) }}km
-            </b>
-            - {{ t('profile.stats.created-timetables-length-sum') }}
+
+          <div v-if="playerInfo.dispatcherStats.issuedTimetables" class="stat-item">
+            <StarIcon />
+
+            <span>
+              <b>{{ t('profile.stats.longest-created-timetable') }}: </b>
+              <b class="text--primary">
+                {{ playerInfo.dispatcherStats.issuedTimetables.distanceMax }}km
+              </b>
+            </span>
+          </div>
+
+          <div v-if="playerInfo.dispatcherStats.issuedTimetables" class="stat-item">
+            <SigmaIcon />
+
+            <span>
+              <b>{{ t('profile.stats.created-timetables-length-sum') }}: </b>
+              <b class="text--primary">
+                {{ playerInfo.dispatcherStats.issuedTimetables.distanceSum.toFixed(2) }}km
+              </b>
+            </span>
           </div>
         </div>
 
@@ -267,6 +322,15 @@ import { getRegionNameById } from '../../utils/regionUtils';
 import { isCreator } from '../../utils/userUtils';
 import { getLanguageNameById } from '@/utils/languageUtils';
 import LevelBadge from '../Global/LevelBadge.vue';
+import {
+  CheckIcon,
+  CircleSlash2,
+  FlameIcon,
+  GaugeIcon,
+  SigmaIcon,
+  StarIcon,
+  UserIcon
+} from '@lucide/vue';
 
 const { t } = useI18n();
 
@@ -417,11 +481,33 @@ const activeTrains = computed(() => {
   }
 }
 
+.stats-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  text-align: left;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.25em;
+
+  svg,
+  img {
+    width: 20px;
+  }
+}
+
 .stats-header {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.25em;
+
+  img {
+    border-radius: 0.5em;
+  }
 }
 
 .no-issued-timetables {
