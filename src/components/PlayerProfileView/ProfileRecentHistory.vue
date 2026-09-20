@@ -6,22 +6,23 @@
     </h2>
 
     <ProfileChart
-      v-if="journalStatus == Status.Data.Loaded"
       :playerName="playerName"
       :playerJournal="playerJournal"
       :journalStatus="journalStatus"
+      @onBarClick="onBarClick"
     />
 
     <ProfileHistoryList
       :playerName="playerName"
       :playerJournal="playerJournal"
       :journalStatus="journalStatus"
+      :chosenDayKey="chosenDayKey"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { PropType } from 'vue';
+import { PropType, ref } from 'vue';
 import ProfileChart from './ProfileChart.vue';
 import ProfileHistoryList from './ProfileHistoryList.vue';
 import { Status } from '@/typings/common.ts';
@@ -30,6 +31,8 @@ import { useI18n } from 'vue-i18n';
 import { RotateCcwClockIcon } from '@lucide/vue';
 
 const { t } = useI18n();
+
+const chosenDayKey = ref('');
 
 const props = defineProps({
   playerName: {
@@ -45,12 +48,16 @@ const props = defineProps({
     required: true
   }
 });
+
+function onBarClick(dateKey: string) {
+  chosenDayKey.value = dateKey;
+}
 </script>
 
 <style lang="scss" scoped>
 .profile-recent-history {
   display: grid;
-  grid-template-rows: auto auto 1fr;
+  grid-template-rows: auto 1fr;
   overflow: auto;
   background-color: var(--clr-tile);
   border-radius: 0.5em;

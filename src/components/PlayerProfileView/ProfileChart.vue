@@ -1,6 +1,6 @@
 <template>
   <div class="player-chart">
-    <canvas ref="barChart" id="player-chart-canvas" height="300"></canvas>
+    <canvas ref="barChart" id="player-chart-canvas" height="250"></canvas>
   </div>
 </template>
 
@@ -20,6 +20,7 @@ import { computed, onActivated, onMounted, PropType, ref, useTemplateRef, watch 
 import zoomPlugin from 'chartjs-plugin-zoom';
 import { API } from '@/typings/api';
 import { Status } from '@/typings/common';
+import { getRelativePosition } from 'chart.js/helpers';
 
 Chart.register(
   Title,
@@ -56,20 +57,20 @@ const props = defineProps({
   }
 });
 
-onMounted(() => {
-  // const chart = (barChart.value as any).chart;
+const emits = defineEmits(['onBarClick']);
 
+onMounted(() => {
   setupChart();
   renderChart();
 });
 
 watch(
   computed(() => props.playerJournal),
-  (v) => {
-    console.log('journal change');
+  () => {
     renderChart();
   }
 );
+
 function setupChart() {
   if (!chartRef.value) return;
 
@@ -113,6 +114,13 @@ function setupChart() {
       animation: false,
       maintainAspectRatio: false,
 
+      onClick(_, elements, chart) {
+        if (elements.length == 0 || !chart.data.labels) return;
+
+        const dateIndex = elements[0].index;
+        emits('onBarClick', chart.data.labels[dateIndex]);
+      },
+
       plugins: {
         zoom: {
           pan: {
@@ -149,7 +157,7 @@ function setupChart() {
   //   max: 50
   // });
 
-  (chart.canvas.parentNode as any).style.height = '300px';
+  (chart.canvas.parentNode as any).style.height = '250px';
   (chart.canvas.parentNode as any).style.width = '100%';
 }
 
@@ -205,8 +213,6 @@ function renderChart() {
 
   showChart.value = true;
 }
-
-// const chart = (barChart.value as any).chart;
 </script>
 
 <style lang="scss" scoped>
@@ -217,7 +223,5 @@ function renderChart() {
 
   position: relative;
   overflow: auto;
-
-  // color: #8cef57;
 }
 </style>

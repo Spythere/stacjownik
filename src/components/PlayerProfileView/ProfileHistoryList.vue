@@ -1,18 +1,18 @@
 <template>
-  <section class="profile-history-list">
-    <div class="list-header">
-      <div class="history-menu">
-        <button
-          v-for="filter in filterTypes"
-          class="menu-btn btn--option"
-          :data-active="filter == activeFilterType"
-          @click="toggleFilter(filter)"
-        >
-          {{ t(`profile.filters.${filter}`) }}
-        </button>
-      </div>
+  <div class="list-header">
+    <div class="history-menu">
+      <button
+        v-for="filter in filterTypes"
+        class="menu-btn btn--option"
+        :data-active="filter == activeFilterType"
+        @click="toggleFilter(filter)"
+      >
+        {{ t(`profile.filters.${filter}`) }}
+      </button>
     </div>
+  </div>
 
+  <section class="profile-history-list">
     <div class="history-list-box">
       <Loading v-if="journalStatus == Status.Data.Loading" />
 
@@ -26,8 +26,18 @@
         }}
       </div>
 
-      <template v-else v-for="journalObj in combinedJournal" :key="journalObj.dateKey.getTime()">
-        <div class="date-box">{{ journalObj.dateKey.toLocaleDateString('pl-PL') }}</div>
+      <div
+        v-else
+        v-for="journalObj in combinedJournal"
+        :key="journalObj.dateKey.getTime()"
+        :data-key="
+          journalObj.dateKey.toLocaleDateString('pl-PL', { month: '2-digit', day: '2-digit' })
+        "
+        ref="journalElements"
+      >
+        <div class="date-box">
+          {{ journalObj.dateKey.toLocaleDateString('pl-PL') }}
+        </div>
 
         <router-link
           v-for="entry in journalObj.entries"
@@ -107,18 +117,14 @@
             </b>
           </div></router-link
         >
-      </template>
+      </div>
     </div>
   </section>
 </template>
 
 <script lang="ts" setup>
-import { computed, PropType, ref } from 'vue';
-import {
-  dateToLocaleString,
-  humanizeDuration,
-  timestampToTimeString
-} from '../../composables/time';
+import { computed, onMounted, PropType, ref, useTemplateRef, watch } from 'vue';
+import { humanizeDuration, timestampToTimeString } from '../../composables/time';
 import { API } from '../../typings/api';
 import { useI18n } from 'vue-i18n';
 import { Status } from '../../typings/common';
@@ -149,10 +155,19 @@ const props = defineProps({
   journalStatus: {
     type: Number as PropType<Status.Data>,
     required: true
+  },
+
+  chosenDayKey: {
+    type: String,
+    required: true
   }
 });
 
 const { t } = useI18n();
+
+const journalElements = useTemplateRef('journalElements');
+
+onMounted(() => {});
 
 const activeFilterType = ref<JournalEntryType>('All');
 const filterTypes: JournalEntryType[] = ['All', 'Timetable', 'Dispatcher', 'IssuedTimetable'];
@@ -222,6 +237,19 @@ const combinedJournal = computed<JournalDateEntries[]>(() => {
   return list;
 });
 
+watch(
+  computed(() => props.chosenDayKey),
+  (v) => {
+    const elementToScroll = journalElements.value?.find(
+      (el) => el.dataset['key'] == props.chosenDayKey
+    );
+
+    if (elementToScroll) {
+      elementToScroll.scrollIntoView({ behavior: 'instant' });
+    }
+  }
+);
+
 function toggleFilter(filterType: JournalEntryType) {
   activeFilterType.value = filterType;
 }
@@ -231,15 +259,11 @@ function toggleFilter(filterType: JournalEntryType) {
 @use '../../styles/responsive';
 
 .profile-history-list {
-  overflow-y: scroll;
   height: 100%;
+  overflow: auto;
 }
 
 .list-header {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-
   & > h3 {
     padding: 0.5em;
     margin-bottom: 0.5em;
@@ -293,7 +317,7 @@ function toggleFilter(filterType: JournalEntryType) {
   background-color: var(--clr-tile);
 
   position: sticky;
-  top: 3em;
+  top: 0;
 }
 
 .no-recent-history {
