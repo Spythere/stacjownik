@@ -130,8 +130,8 @@ async function fetchPlayerData() {
   display: flex;
   justify-content: center;
 
-  height: calc(100vh - 2em);
-  min-height: 500px;
+  height: calc(100vh - 2.5em);
+  min-height: 800px;
   max-height: 2000px;
 }
 

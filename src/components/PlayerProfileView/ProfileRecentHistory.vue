@@ -57,7 +57,7 @@ function onBarClick(dateKey: string) {
 <style lang="scss" scoped>
 .profile-recent-history {
   display: grid;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: auto 250px auto 1fr;
   overflow: auto;
   background-color: var(--clr-tile);
   border-radius: 0.5em;

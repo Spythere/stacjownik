@@ -536,16 +536,9 @@ const activeTrains = computed(() => {
 }
 
 @include responsive.midScreen {
-  .player-stats {
+  .summary-stats {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
-  }
-}
-
-@include responsive.smallScreen {
-  .player-stats {
-    display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(430px, 1fr));
   }
 }
 </style>

@@ -245,7 +245,7 @@ watch(
     );
 
     if (elementToScroll) {
-      elementToScroll.scrollIntoView({ behavior: 'instant' });
+      elementToScroll.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }
 );
@@ -272,7 +272,7 @@ function toggleFilter(filterType: JournalEntryType) {
 
 .history-menu {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
   gap: 1em;
   background-color: var(--clr-tile);
   padding: 0.5em;
@@ -296,6 +296,7 @@ function toggleFilter(filterType: JournalEntryType) {
 .list-entry {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 0.25em;
 
   background-color: var(--clr-bg-light);
@@ -325,6 +326,7 @@ function toggleFilter(filterType: JournalEntryType) {
   font-size: 1.25em;
   font-weight: bold;
   color: #aaa;
+  height: 100%;
 }
 
 .entry-top-date {
@@ -343,7 +345,8 @@ function toggleFilter(filterType: JournalEntryType) {
 
 @include responsive.midScreen {
   .profile-history-list {
-    height: 100vh;
+    height: calc(100vh - 10em);
+    min-height: 300px;
   }
 }
 </style>

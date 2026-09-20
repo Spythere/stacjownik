@@ -16,11 +16,10 @@ import {
   BarController
 } from 'chart.js';
 
-import { computed, onActivated, onMounted, PropType, ref, useTemplateRef, watch } from 'vue';
+import { computed, onMounted, PropType, ref, useTemplateRef, watch } from 'vue';
 import zoomPlugin from 'chartjs-plugin-zoom';
 import { API } from '@/typings/api';
 import { Status } from '@/typings/common';
-import { getRelativePosition } from 'chart.js/helpers';
 
 Chart.register(
   Title,
@@ -152,13 +151,17 @@ function setupChart() {
     }
   });
 
-  // chart.zoomScale('x', {
-  //   min: 10,
-  //   max: 50
-  // });
+  if (window.innerWidth < 1150) {
+    chart.zoomScale('x', {
+      min: 15,
+      max: 50
+    });
+  }
 
   (chart.canvas.parentNode as any).style.height = '250px';
   (chart.canvas.parentNode as any).style.width = '100%';
+
+  console.log(window.innerWidth);
 }
 
 function renderChart() {
