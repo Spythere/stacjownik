@@ -687,7 +687,7 @@
 
       "last-seen-date": "Ostatnia aktywność: {date} o {time}",
       "last-seen-relative": "Ostatnia aktywność: {n} temu",
-      "last-seen-active": "Obecnie online",
+      "last-seen-active": "Widziany niedawno online",
       "active-as-dispatcher": "Online jako dyżurny ruchu",
       "active-as-driver": "Online jako maszynista",
       "active-as-both": "Online jako dyżurny i maszynista",
@@ -710,12 +710,8 @@
       "no-issued-timetables": "Ten gracz nie stworzył jeszcze żadnego rozkładu jazdy!"
     },
 
-    "recent-stats": {
-      "header": "STATYSTYKI AKTYWNOŚCI (30 DNI)",
-      "timetables": "ROZKŁADÓW JAZDY",
-      "distance": "POKONANYCH KILOMETRÓW",
-      "duties": "SŁUŻB DYŻURNEGO",
-      "created-timetables": "WYSTAWIONYCH ROZKŁADÓW"
+    "recent-history": {
+      "header": "OSTATNIA AKTYWNOŚĆ"
     },
 
     "list": {

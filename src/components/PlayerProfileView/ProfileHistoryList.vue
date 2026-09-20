@@ -26,110 +26,110 @@
         }}
       </div>
 
-      <router-link
-        v-else
-        v-for="entry in combinedJournal"
-        :to="
-          'trainNo' in entry.value
-            ? `/journal/timetables?search-train=%23${entry.value.id}`
-            : `/journal/dispatchers?search-duty-id=${entry.value.id}`
-        "
-      >
-        <!-- Date -->
-        <div class="entry-top-date">
-          <img
-            v-if="entry.type == 'Dispatcher'"
-            src="/images/icon-user.svg"
-            width="25"
-            alt="user icon"
-          />
+      <template v-else v-for="journalObj in combinedJournal" :key="journalObj.dateKey.getTime()">
+        <div class="date-box">{{ journalObj.dateKey.toLocaleDateString('pl-PL') }}</div>
 
-          <img
-            v-else-if="entry.type == 'Timetable'"
-            src="/images/icon-train.svg"
-            width="25"
-            alt="train icon"
-          />
+        <router-link
+          v-for="entry in journalObj.entries"
+          class="list-entry"
+          :to="
+            'trainNo' in entry.value
+              ? `/journal/timetables?search-train=%23${entry.value.id}`
+              : `/journal/dispatchers?search-duty-id=${entry.value.id}`
+          "
+        >
+          <!-- Date -->
+          <div class="entry-top-date">
+            <img
+              v-if="entry.type == 'Dispatcher'"
+              src="/images/icon-user.svg"
+              width="25"
+              alt="user icon"
+            />
 
-          <img v-else src="/images/icon-timetable.svg" width="25" alt="timetable icon" />
+            <img
+              v-else-if="entry.type == 'Timetable'"
+              src="/images/icon-train.svg"
+              width="25"
+              alt="train icon"
+            />
 
-          <b
-            class="timestamp-indicator"
-            :data-online="
-              'isOnline' in entry.value
-                ? entry.value.isOnline
-                : !entry.value.terminated && entry.type != 'IssuedTimetable'
-            "
-          >
-            {{ dateToLocaleString(entry.date, { dateStyle: 'long', timeStyle: 'short' }) }}
-            <span v-if="'timestampTo' in entry.value && entry.value.timestampTo">
-              -
-              <span v-if="new Date(entry.value.timestampTo).getDay() == entry.date.getDay()">{{
-                dateToLocaleString(new Date(entry.value.timestampTo), {
-                  timeStyle: 'short'
-                })
+            <img v-else src="/images/icon-timetable.svg" width="25" alt="timetable icon" />
+
+            <b
+              class="timestamp-indicator"
+              :data-online="
+                'isOnline' in entry.value
+                  ? entry.value.isOnline
+                  : !entry.value.terminated && entry.type != 'IssuedTimetable'
+              "
+            >
+              {{ timestampToTimeString(entry.date.getTime()) }}
+
+              <span v-if="'timestampTo' in entry.value && entry.value.timestampTo">
+                -
+                <span v-if="new Date(entry.value.timestampTo).getDay() == entry.date.getDay()">{{
+                  timestampToTimeString(entry.value.timestampTo)
+                }}</span>
+                <span v-else>{{ timestampToTimeString(entry.value.timestampTo) }}</span>
+              </span>
+            </b>
+          </div>
+
+          <!-- Timetables -->
+          <div v-if="'trainNo' in entry.value">
+            <b class="text--primary">
+              {{ entry.value.trainCategoryCode }}
+            </b>
+            {{ ' ' }}
+            <b>{{ entry.value.trainNo }}</b>
+            <b class="text--grayed" v-if="entry.type == 'IssuedTimetable'">
+              {{ ' ' }} {{ t('profile.list.for') }}: {{ entry.value.driverName }}
+            </b>
+            {{ ' ' }}
+            <b>{{ entry.value.route.replace('|', ' > ') }}</b>
+            {{ ' ' }}
+            <b class="text--primary">{{ entry.value.currentDistance }} km</b>
+            <b> / {{ entry.value.routeDistance }} km</b>
+          </div>
+
+          <!-- Dispatchers -->
+          <div v-else>
+            <b class="text--primary">{{ entry.value.stationName }}</b>
+            {{ ' - ' }}
+            <b class="timestamp-indicator" :data-online="entry.value.isOnline">
+              <span v-if="entry.value.isOnline">{{ t('profile.list.online-since') }}: </span>
+              <span>{{
+                humanizeDuration(
+                  (entry.value.timestampTo || Date.now()) - entry.value.timestampFrom
+                )
               }}</span>
-              <span v-else>{{
-                dateToLocaleString(new Date(entry.value.timestampTo), {
-                  dateStyle: 'long',
-                  timeStyle: 'short'
-                })
-              }}</span>
-            </span>
-          </b>
-        </div>
-
-        <!-- Timetables -->
-        <div v-if="'trainNo' in entry.value">
-          <b class="text--primary">
-            {{ entry.value.trainCategoryCode }}
-          </b>
-          {{ ' ' }}
-          <b>{{ entry.value.trainNo }}</b>
-          <b class="text--grayed" v-if="entry.type == 'IssuedTimetable'">
-            {{ ' ' }} {{ t('profile.list.for') }}: {{ entry.value.driverName }}
-          </b>
-          {{ ' ' }}
-          <b>{{ entry.value.route.replace('|', ' > ') }}</b>
-          {{ ' ' }}
-          <b class="text--primary">{{ entry.value.currentDistance }} km</b>
-          <b> / {{ entry.value.routeDistance }} km</b>
-        </div>
-
-        <!-- Dispatchers -->
-        <div v-else>
-          <b class="text--primary">{{ entry.value.stationName }}</b>
-          {{ ' - ' }}
-          <b class="timestamp-indicator" :data-online="entry.value.isOnline">
-            <span v-if="entry.value.isOnline">{{ t('profile.list.online-since') }}: </span>
-            <span>{{
-              humanizeDuration((entry.value.timestampTo || Date.now()) - entry.value.timestampFrom)
-            }}</span>
-          </b>
-        </div>
-      </router-link>
+            </b>
+          </div></router-link
+        >
+      </template>
     </div>
   </section>
 </template>
 
 <script lang="ts" setup>
+import { computed, PropType, ref } from 'vue';
 import {
-  computed,
-  onActivated,
-  onDeactivated,
-  onMounted,
-  onUnmounted,
-  PropType,
-  reactive,
-  ref
-} from 'vue';
-import { dateToLocaleString, humanizeDuration } from '../../composables/time';
+  dateToLocaleString,
+  humanizeDuration,
+  timestampToTimeString
+} from '../../composables/time';
 import { API } from '../../typings/api';
 import { useI18n } from 'vue-i18n';
 import { Status } from '../../typings/common';
 import Loading from '../Global/Loading.vue';
 
 type JournalEntryType = 'All' | 'Timetable' | 'Dispatcher' | 'IssuedTimetable';
+
+interface JournalDateEntries {
+  dateKey: Date;
+  entries: JournalEntry[];
+}
 
 interface JournalEntry {
   type: JournalEntryType;
@@ -157,7 +157,7 @@ const { t } = useI18n();
 const activeFilterType = ref<JournalEntryType>('All');
 const filterTypes: JournalEntryType[] = ['All', 'Timetable', 'Dispatcher', 'IssuedTimetable'];
 
-const combinedJournal = computed<JournalEntry[]>(() => {
+const combinedJournal = computed<JournalDateEntries[]>(() => {
   if (!props.playerJournal || !props.playerName) return [];
 
   const list = [
@@ -165,7 +165,11 @@ const combinedJournal = computed<JournalEntry[]>(() => {
     ...props.playerJournal.duties,
     ...props.playerJournal.issuedTimetables
   ]
-    .reduce<JournalEntry[]>((acc, v) => {
+    .reduce<JournalDateEntries[]>((acc, v) => {
+      let date = new Date();
+      let type: JournalEntryType = 'All';
+      let value: API.TimetableHistory.DataShort | API.DispatcherHistory.Data | null = null;
+
       // Timetable or dispatcher type
       if ('trainNo' in v) {
         const isIssued = v.authorName == props.playerName;
@@ -179,26 +183,41 @@ const combinedJournal = computed<JournalEntry[]>(() => {
         )
           return acc;
 
-        acc.push({
-          date: new Date(v.createdAt),
-          type: isIssued ? 'IssuedTimetable' : 'Timetable',
-          value: v
-        });
+        date = new Date(v.createdAt);
+        type = isIssued ? 'IssuedTimetable' : 'Timetable';
+        value = v;
       } else {
         if (activeFilterType.value != 'Dispatcher' && activeFilterType.value != 'All') return acc;
 
+        date = new Date(v.timestampFrom);
+        type = 'Dispatcher';
+        value = v;
+      }
+
+      const journalObj = acc.find(
+        (k) => k.dateKey.toLocaleDateString('pl-PL') == date.toLocaleDateString('pl-PL')
+      );
+
+      const entry: JournalEntry = {
+        date,
+        type,
+        value
+      };
+
+      if (!journalObj) {
         acc.push({
-          date: new Date(v.timestampFrom),
-          type: 'Dispatcher',
-          value: v
+          dateKey: date,
+          entries: [entry]
         });
+      } else {
+        journalObj.entries.push(entry);
       }
 
       return acc;
     }, [])
-    .sort((a, b) => {
-      return a.date.getTime() - b.date.getTime() > 0 ? -1 : 1;
-    });
+    .sort((a, b) => b.dateKey.getTime() - a.dateKey.getTime());
+
+  list.forEach((v) => v.entries.sort((a, b) => b.date.getTime() - a.date.getTime()));
 
   return list;
 });
@@ -250,9 +269,9 @@ function toggleFilter(filterType: JournalEntryType) {
   position: relative;
 }
 
-.history-list-box > a {
+.list-entry {
   display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: 0.25em;
 
   background-color: var(--clr-bg-light);
@@ -264,6 +283,17 @@ function toggleFilter(filterType: JournalEntryType) {
   &:hover {
     background-color: #333;
   }
+}
+
+.date-box {
+  padding: 0.5em;
+  margin: 0.5em 0;
+  font-weight: bold;
+
+  background-color: var(--clr-tile);
+
+  position: sticky;
+  top: 3em;
 }
 
 .no-recent-history {

@@ -16,7 +16,7 @@ import {
   BarController
 } from 'chart.js';
 
-import { onActivated, onMounted, PropType, ref, useTemplateRef } from 'vue';
+import { computed, onActivated, onMounted, PropType, ref, useTemplateRef, watch } from 'vue';
 import zoomPlugin from 'chartjs-plugin-zoom';
 import { API } from '@/typings/api';
 import { Status } from '@/typings/common';
@@ -63,6 +63,13 @@ onMounted(() => {
   renderChart();
 });
 
+watch(
+  computed(() => props.playerJournal),
+  (v) => {
+    console.log('journal change');
+    renderChart();
+  }
+);
 function setupChart() {
   if (!chartRef.value) return;
 
@@ -207,7 +214,6 @@ function renderChart() {
   background-color: var(--clr-tile);
   padding: 0.5em;
   border-radius: 0.5em;
-  margin-top: 1em;
 
   position: relative;
   overflow: auto;

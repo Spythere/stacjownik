@@ -698,7 +698,7 @@
 
       "last-seen-date": "Last seen on {date} at {time}",
       "last-seen-relative": "Last seen {n} ago",
-      "last-seen-active": "Currently online",
+      "last-seen-active": "Seen recently online",
       "active-as-dispatcher": "Online as dispatcher",
       "active-as-driver": "Online as train driver",
       "active-as-both": "Online as dispatcher and driver",
@@ -721,12 +721,8 @@
       "no-issued-timetables": "This player hasn't created any timetable yet!"
     },
 
-    "recent-stats": {
-      "header": "ACTIVITY STATISTICS (30 LAST DAYS)",
-      "timetables": "TIMETABLES",
-      "distance": "MADE KILOMETERS",
-      "duties": "DISPATCHER DUTIES",
-      "created-timetables": "ISSUED TIMETABLES"
+    "recent-history": {
+      "header": "RECENT ACTIVITY"
     },
 
     "list": {

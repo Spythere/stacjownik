@@ -3,28 +3,11 @@
     <div class="profile-wrapper" v-if="playerInfo && playerInfoStatus == Status.Data.Loaded">
       <ProfileSummary :playerInfo="playerInfo" :playerName="playerName" />
 
-      <!-- <ProfileChart
-        v-if="playerJournalStatus == Status.Data.Loaded"
+      <ProfileRecentHistory
         :playerName="playerName"
         :playerJournal="playerJournal"
         :journalStatus="playerJournalStatus"
-      /> -->
-
-      <div class="profile-side">
-        <!-- <ProfileRecentStats :playerInfo="playerInfo" /> -->
-        <ProfileChart
-          v-if="playerJournalStatus == Status.Data.Loaded"
-          :playerName="playerName"
-          :playerJournal="playerJournal"
-          :journalStatus="playerJournalStatus"
-        />
-
-        <ProfileHistoryList
-          :playerName="playerName"
-          :playerJournal="playerJournal"
-          :journalStatus="playerJournalStatus"
-        />
-      </div>
+      />
     </div>
 
     <Loading v-else-if="playerInfoStatus == Status.Data.Loading" />
@@ -55,9 +38,7 @@ import { Status } from '../typings/common';
 
 import Loading from '../components/Global/Loading.vue';
 import ProfileSummary from '../components/PlayerProfileView/ProfileSummary.vue';
-import ProfileChart from '@/components/PlayerProfileView/ProfileChart.vue';
-import ProfileRecentStats from '@/components/PlayerProfileView/ProfileRecentStats.vue';
-import ProfileHistoryList from '@/components/PlayerProfileView/ProfileHistoryList.vue';
+import ProfileRecentHistory from '@/components/PlayerProfileView/ProfileRecentHistory.vue';
 
 const { t } = useI18n();
 
@@ -149,7 +130,7 @@ async function fetchPlayerData() {
   display: flex;
   justify-content: center;
 
-  height: 100vh;
+  height: calc(100vh - 2em);
   min-height: 500px;
   max-height: 2000px;
 }
@@ -189,14 +170,6 @@ async function fetchPlayerData() {
 
   padding: 1rem 0;
   text-align: center;
-}
-
-.profile-side {
-  display: grid;
-  grid-template-rows: auto 1fr;
-  overflow: auto;
-  background-color: var(--clr-tile);
-  border-radius: 0.5em;
 }
 
 @include responsive.midScreen {
