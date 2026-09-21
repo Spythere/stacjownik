@@ -688,6 +688,12 @@
       "IssuedTimetable": "ISSUED TIMETABLES"
     },
 
+    "chart": {
+      "timetables-label": "Timetables",
+      "duties-label": "Duties",
+      "issued-timetables-label": "Issued timetables"
+    },
+
     "stats": {
       "timetables-journal": "TIMETABLE JOURNAL",
       "dispatchers-journal": "DISPATCHER JOURNAL",

@@ -9,6 +9,7 @@
       :playerName="playerName"
       :playerJournal="playerJournal"
       :journalStatus="journalStatus"
+      :activeFilterType="activeFilterType"
       @onBarClick="onBarClick"
     />
 
@@ -17,22 +18,25 @@
       :playerJournal="playerJournal"
       :journalStatus="journalStatus"
       :chosenDayKey="chosenDayKey"
+      :activeFilterType="activeFilterType"
+      @toggleFilter="toggleHistoryFilter"
     />
   </div>
 </template>
 
 <script setup lang="ts">
 import { PropType, ref } from 'vue';
-import ProfileChart from './ProfileChart.vue';
-import ProfileHistoryList from './ProfileHistoryList.vue';
-import { Status } from '@/typings/common.ts';
+import { PlayerHistoryEntryType, Status } from '@/typings/common.ts';
 import { API } from '@/typings/api.ts';
 import { useI18n } from 'vue-i18n';
+import ProfileChart from './ProfileChart.vue';
+import ProfileHistoryList from './ProfileHistoryList.vue';
 import { RotateCcwClockIcon } from '@lucide/vue';
 
 const { t } = useI18n();
 
 const chosenDayKey = ref('');
+const activeFilterType = ref<PlayerHistoryEntryType>('All');
 
 const props = defineProps({
   playerName: {
@@ -51,6 +55,10 @@ const props = defineProps({
 
 function onBarClick(dateKey: string) {
   chosenDayKey.value = dateKey;
+}
+
+function toggleHistoryFilter(filterType: PlayerHistoryEntryType) {
+  activeFilterType.value = filterType;
 }
 </script>
 

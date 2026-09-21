@@ -677,6 +677,12 @@
       "IssuedTimetable": "WYSTAWIONE RJ"
     },
 
+    "chart": {
+      "timetables-label": "Rozkłady jazdy",
+      "duties-label": "Dyżury",
+      "issued-timetables-label": "Wystawione RJ"
+    },
+
     "stats": {
       "timetables-journal": "DZIENNIK ROZKŁADÓW",
       "dispatchers-journal": "DZIENNIK DYŻURÓW",

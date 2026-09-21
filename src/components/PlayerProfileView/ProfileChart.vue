@@ -16,10 +16,11 @@ import {
   BarController
 } from 'chart.js';
 
-import { computed, onMounted, PropType, ref, useTemplateRef, watch } from 'vue';
+import { computed, onMounted, PropType, ref, useTemplateRef, watch, watchEffect } from 'vue';
 import zoomPlugin from 'chartjs-plugin-zoom';
 import { API } from '@/typings/api';
-import { Status } from '@/typings/common';
+import { PlayerHistoryEntryType, Status } from '@/typings/common';
+import { useI18n } from 'vue-i18n';
 
 Chart.register(
   Title,
@@ -36,11 +37,6 @@ Chart.defaults.backgroundColor = '#ccc';
 Chart.defaults.borderColor = '#333';
 Chart.defaults.color = '#fff';
 
-const showChart = ref(false);
-
-const chartRef = useTemplateRef('barChart');
-let chart: Chart | null = null;
-
 const props = defineProps({
   playerName: {
     type: String
@@ -53,10 +49,21 @@ const props = defineProps({
   journalStatus: {
     type: Number as PropType<Status.Data>,
     required: true
+  },
+
+  activeFilterType: {
+    type: String as PropType<PlayerHistoryEntryType>,
+    required: true
   }
 });
 
 const emits = defineEmits(['onBarClick']);
+const { t } = useI18n();
+
+const showChart = ref(false);
+const chartRef = useTemplateRef('barChart');
+
+let chart: Chart | null = null;
 
 onMounted(() => {
   setupChart();
@@ -66,6 +73,19 @@ onMounted(() => {
 watch(
   computed(() => props.playerJournal),
   () => {
+    renderChart();
+  }
+);
+
+watch(
+  computed(() => props.activeFilterType),
+  (v) => {
+    if (!chart) return;
+
+    chart.data.datasets[0].hidden = v != 'All' && v != 'Timetable';
+    chart.data.datasets[1].hidden = v != 'All' && v != 'Dispatcher';
+    chart.data.datasets[2].hidden = v != 'All' && v != 'IssuedTimetable';
+
     renderChart();
   }
 );
@@ -89,19 +109,19 @@ function setupChart() {
 
       datasets: [
         {
-          label: 'Rozkłady jazdy',
+          label: t('profile.chart.timetables-label'),
           data: [],
           borderWidth: 1,
           backgroundColor: '#57baeb'
         },
         {
-          label: 'Dyżury',
+          label: t('profile.chart.duties-label'),
           data: [],
           borderWidth: 1,
           backgroundColor: '#eb5757'
         },
         {
-          label: 'Utworzone RJ',
+          label: t('profile.chart.issued-timetables-label'),
           data: [],
           borderWidth: 1,
           backgroundColor: '#8cef57'

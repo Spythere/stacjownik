@@ -123,22 +123,20 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, PropType, ref, useTemplateRef, watch } from 'vue';
+import { computed, PropType, ref, useTemplateRef, watch } from 'vue';
 import { humanizeDuration, timestampToTimeString } from '../../composables/time';
 import { API } from '../../typings/api';
 import { useI18n } from 'vue-i18n';
-import { Status } from '../../typings/common';
+import { PlayerHistoryEntryType, Status } from '../../typings/common';
 import Loading from '../Global/Loading.vue';
 
-type JournalEntryType = 'All' | 'Timetable' | 'Dispatcher' | 'IssuedTimetable';
-
-interface JournalDateEntries {
+interface PlayerHistoryDate {
   dateKey: Date;
-  entries: JournalEntry[];
+  entries: PlayerHistoryEntry[];
 }
 
-interface JournalEntry {
-  type: JournalEntryType;
+interface PlayerHistoryEntry {
+  type: PlayerHistoryEntryType;
   date: Date;
   value: API.TimetableHistory.DataShort | API.DispatcherHistory.Data;
 }
@@ -157,22 +155,37 @@ const props = defineProps({
     required: true
   },
 
+  activeFilterType: {
+    type: String as PropType<PlayerHistoryEntryType>,
+    required: true
+  },
+
   chosenDayKey: {
     type: String,
     required: true
   }
 });
 
+const emits = defineEmits(['toggleFilter']);
 const { t } = useI18n();
 
+const filterTypes: PlayerHistoryEntryType[] = ['All', 'Timetable', 'Dispatcher', 'IssuedTimetable'];
 const journalElements = useTemplateRef('journalElements');
 
-onMounted(() => {});
+watch(
+  computed(() => props.chosenDayKey),
+  () => {
+    const elementToScroll = journalElements.value?.find(
+      (el) => el.dataset['key'] == props.chosenDayKey
+    );
 
-const activeFilterType = ref<JournalEntryType>('All');
-const filterTypes: JournalEntryType[] = ['All', 'Timetable', 'Dispatcher', 'IssuedTimetable'];
+    if (elementToScroll) {
+      elementToScroll.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+);
 
-const combinedJournal = computed<JournalDateEntries[]>(() => {
+const combinedJournal = computed<PlayerHistoryDate[]>(() => {
   if (!props.playerJournal || !props.playerName) return [];
 
   const list = [
@@ -180,21 +193,21 @@ const combinedJournal = computed<JournalDateEntries[]>(() => {
     ...props.playerJournal.duties,
     ...props.playerJournal.issuedTimetables
   ]
-    .reduce<JournalDateEntries[]>((acc, v) => {
+    .reduce<PlayerHistoryDate[]>((acc, v) => {
       let date = new Date();
-      let type: JournalEntryType = 'All';
+      let type: PlayerHistoryEntryType = 'All';
       let value: API.TimetableHistory.DataShort | API.DispatcherHistory.Data | null = null;
 
       // Timetable or dispatcher type
       if ('trainNo' in v) {
         const isIssued = v.authorName == props.playerName;
 
-        if (!isIssued && activeFilterType.value != 'Timetable' && activeFilterType.value != 'All')
+        if (!isIssued && props.activeFilterType != 'Timetable' && props.activeFilterType != 'All')
           return acc;
         if (
           isIssued &&
-          activeFilterType.value != 'IssuedTimetable' &&
-          activeFilterType.value != 'All'
+          props.activeFilterType != 'IssuedTimetable' &&
+          props.activeFilterType != 'All'
         )
           return acc;
 
@@ -202,7 +215,7 @@ const combinedJournal = computed<JournalDateEntries[]>(() => {
         type = isIssued ? 'IssuedTimetable' : 'Timetable';
         value = v;
       } else {
-        if (activeFilterType.value != 'Dispatcher' && activeFilterType.value != 'All') return acc;
+        if (props.activeFilterType != 'Dispatcher' && props.activeFilterType != 'All') return acc;
 
         date = new Date(v.timestampFrom);
         type = 'Dispatcher';
@@ -213,7 +226,7 @@ const combinedJournal = computed<JournalDateEntries[]>(() => {
         (k) => k.dateKey.toLocaleDateString('pl-PL') == date.toLocaleDateString('pl-PL')
       );
 
-      const entry: JournalEntry = {
+      const entry: PlayerHistoryEntry = {
         date,
         type,
         value
@@ -237,21 +250,8 @@ const combinedJournal = computed<JournalDateEntries[]>(() => {
   return list;
 });
 
-watch(
-  computed(() => props.chosenDayKey),
-  (v) => {
-    const elementToScroll = journalElements.value?.find(
-      (el) => el.dataset['key'] == props.chosenDayKey
-    );
-
-    if (elementToScroll) {
-      elementToScroll.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  }
-);
-
-function toggleFilter(filterType: JournalEntryType) {
-  activeFilterType.value = filterType;
+function toggleFilter(filterType: PlayerHistoryEntryType) {
+  emits('toggleFilter', filterType);
 }
 </script>
 
