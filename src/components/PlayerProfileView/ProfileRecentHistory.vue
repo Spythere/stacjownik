@@ -75,8 +75,9 @@ function toggleHistoryFilter(filterType: PlayerHistoryEntryType) {
   display: flex;
   justify-content: center;
   align-items: center;
-
   gap: 0.25em;
+
   padding: 0.5em;
+  font-size: 1.75em;
 }
 </style>

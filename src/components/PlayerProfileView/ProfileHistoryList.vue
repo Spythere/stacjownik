@@ -7,12 +7,50 @@
         :data-active="filter == activeFilterType"
         @click="toggleFilter(filter)"
       >
-        {{ t(`profile.filters.${filter}`) }}
+        <img v-if="filter == 'Dispatcher'" src="/images/icon-user.svg" width="25" alt="user icon" />
+
+        <img
+          v-else-if="filter == 'Timetable'"
+          src="/images/icon-train.svg"
+          width="25"
+          alt="train icon"
+        />
+
+        <img
+          v-else-if="filter == 'IssuedTimetable'"
+          src="/images/icon-timetable.svg"
+          width="25"
+          alt="timetable icon"
+        />
+
+        <span>
+          {{ t(`profile.filters.${filter}`) }} &bull;
+
+          <span v-if="filter == 'Timetable'">
+            {{ props.playerJournal?.timetables.length || 0 }}
+          </span>
+
+          <span v-else-if="filter == 'IssuedTimetable'">
+            {{ props.playerJournal?.issuedTimetables.length || 0 }}
+          </span>
+
+          <span v-else-if="filter == 'Dispatcher'">
+            {{ props.playerJournal?.duties.length || 0 }}
+          </span>
+
+          <span v-else>
+            {{
+              (props.playerJournal?.timetables.length || 0) +
+              (props.playerJournal?.duties.length || 0) +
+              (props.playerJournal?.issuedTimetables.length || 0)
+            }}
+          </span>
+        </span>
       </button>
     </div>
   </div>
 
-  <section class="profile-history-list">
+  <section class="profile-history-list" ref="historyListEl">
     <div class="history-list-box">
       <Loading v-if="journalStatus == Status.Data.Loading" />
 
@@ -36,7 +74,7 @@
         ref="journalElements"
       >
         <div class="date-box">
-          {{ journalObj.dateKey.toLocaleDateString('pl-PL') }}
+          {{ dateToLocaleString(journalObj.dateKey, { dateStyle: 'full' }) }}
         </div>
 
         <router-link
@@ -87,36 +125,31 @@
           </div>
 
           <!-- Timetables -->
-          <div v-if="'trainNo' in entry.value">
-            <b class="text--primary">
-              {{ entry.value.trainCategoryCode }}
-            </b>
-            {{ ' ' }}
+          <div v-if="'trainNo' in entry.value" class="entry-info">
+            <b class="text--primary">{{ entry.value.trainCategoryCode }}</b>
             <b>{{ entry.value.trainNo }}</b>
-            <b class="text--grayed" v-if="entry.type == 'IssuedTimetable'">
-              {{ ' ' }} {{ t('profile.list.for') }}: {{ entry.value.driverName }}
+            <span>{{ entry.value.route.replace('|', ' - ') }}</span>
+            <span>
+              (<span class="text--primary">{{ entry.value.currentDistance }} km</span> /
+              {{ entry.value.routeDistance }} km)
+            </span>
+            <b v-if="entry.type == 'IssuedTimetable'">
+              {{ t('profile.list.for') }}: {{ entry.value.driverName }}
             </b>
-            {{ ' ' }}
-            <b>{{ entry.value.route.replace('|', ' > ') }}</b>
-            {{ ' ' }}
-            <b class="text--primary">{{ entry.value.currentDistance }} km</b>
-            <b> / {{ entry.value.routeDistance }} km</b>
           </div>
 
           <!-- Dispatchers -->
-          <div v-else>
-            <b class="text--primary">{{ entry.value.stationName }}</b>
-            {{ ' - ' }}
+          <div v-else class="entry-info">
             <b class="timestamp-indicator" :data-online="entry.value.isOnline">
-              <span v-if="entry.value.isOnline">{{ t('profile.list.online-since') }}: </span>
-              <span>{{
+              ({{
                 humanizeDuration(
                   (entry.value.timestampTo || Date.now()) - entry.value.timestampFrom
                 )
-              }}</span>
+              }})
             </b>
-          </div></router-link
-        >
+            <b class="text--primary">{{ entry.value.stationName }}</b>
+          </div>
+        </router-link>
       </div>
     </div>
   </section>
@@ -124,7 +157,11 @@
 
 <script lang="ts" setup>
 import { computed, PropType, ref, useTemplateRef, watch } from 'vue';
-import { humanizeDuration, timestampToTimeString } from '../../composables/time';
+import {
+  dateToLocaleString,
+  humanizeDuration,
+  timestampToTimeString
+} from '../../composables/time';
 import { API } from '../../typings/api';
 import { useI18n } from 'vue-i18n';
 import { PlayerHistoryEntryType, Status } from '../../typings/common';
@@ -171,6 +208,7 @@ const { t } = useI18n();
 
 const filterTypes: PlayerHistoryEntryType[] = ['All', 'Timetable', 'Dispatcher', 'IssuedTimetable'];
 const journalElements = useTemplateRef('journalElements');
+const historyListEl = useTemplateRef('historyListEl');
 
 watch(
   computed(() => props.chosenDayKey),
@@ -252,6 +290,10 @@ const combinedJournal = computed<PlayerHistoryDate[]>(() => {
 
 function toggleFilter(filterType: PlayerHistoryEntryType) {
   emits('toggleFilter', filterType);
+
+  if (historyListEl.value) {
+    historyListEl.value.scrollTo(0, 0);
+  }
 }
 </script>
 
@@ -272,16 +314,16 @@ function toggleFilter(filterType: PlayerHistoryEntryType) {
 
 .history-menu {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(9em, 1fr));
   gap: 1em;
   background-color: var(--clr-tile);
   padding: 0.5em;
 }
 
 .menu-btn {
-  padding: 0.5em;
+  padding: 0.25em;
   font-weight: bold;
-  color: #aaa;
+  color: #ccc;
 
   &[data-active='true'] {
     color: var(--clr-primary);
@@ -310,10 +352,24 @@ function toggleFilter(filterType: PlayerHistoryEntryType) {
   }
 }
 
+.entry-top-date {
+  display: flex;
+  align-items: center;
+  gap: 0.25em;
+}
+
+.entry-info {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.25em;
+}
+
 .date-box {
   padding: 0.5em;
   margin: 0.5em 0;
   font-weight: bold;
+  text-align: left;
 
   background-color: var(--clr-tile);
 
@@ -329,12 +385,6 @@ function toggleFilter(filterType: PlayerHistoryEntryType) {
   height: 100%;
 }
 
-.entry-top-date {
-  display: flex;
-  align-items: center;
-  gap: 0.25em;
-}
-
 .timestamp-indicator {
   color: #ccc;
 
@@ -347,6 +397,16 @@ function toggleFilter(filterType: PlayerHistoryEntryType) {
   .profile-history-list {
     height: calc(100vh - 10em);
     min-height: 300px;
+  }
+
+  .date-box {
+    text-align: center;
+  }
+}
+
+@media only screen and (max-width: 1800px) {
+  .history-menu {
+    grid-template-columns: 1fr 1fr;
   }
 }
 </style>

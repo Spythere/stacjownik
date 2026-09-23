@@ -1,6 +1,6 @@
 <template>
-  <div class="player-chart">
-    <canvas ref="barChart" id="player-chart-canvas" height="250"></canvas>
+  <div class="chart-container">
+    <canvas ref="chartEl" id="player-chart-canvas" height="250"></canvas>
   </div>
 </template>
 
@@ -61,7 +61,7 @@ const emits = defineEmits(['onBarClick']);
 const { t } = useI18n();
 
 const showChart = ref(false);
-const chartRef = useTemplateRef('barChart');
+const chartRef = useTemplateRef('chartEl');
 
 let chart: Chart | null = null;
 
@@ -85,6 +85,11 @@ watch(
     chart.data.datasets[0].hidden = v != 'All' && v != 'Timetable';
     chart.data.datasets[1].hidden = v != 'All' && v != 'Dispatcher';
     chart.data.datasets[2].hidden = v != 'All' && v != 'IssuedTimetable';
+
+    chart.zoomScale('x', {
+      min: 0,
+      max: 50
+    });
 
     renderChart();
   }
@@ -180,8 +185,6 @@ function setupChart() {
 
   (chart.canvas.parentNode as any).style.height = '250px';
   (chart.canvas.parentNode as any).style.width = '100%';
-
-  console.log(window.innerWidth);
 }
 
 function renderChart() {
@@ -239,10 +242,10 @@ function renderChart() {
 </script>
 
 <style lang="scss" scoped>
-.player-chart {
+.chart-container {
   background-color: var(--clr-tile);
-  padding: 0.5em;
   border-radius: 0.5em;
+  padding: 0 0.5em;
 
   position: relative;
   overflow: auto;
