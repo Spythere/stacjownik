@@ -1,8 +1,22 @@
 <template>
   <div class="scenery-view">
+    <TrafficChartCard
+      v-if="isTrafficChartOpen"
+      @toggleCard="isTrafficChartOpen = false"
+      :stationName="station"
+      :stationInfo="stationInfo"
+      :onlineScenery="onlineSceneryInfo"
+    />
+
     <div class="scenery-wrapper" ref="card-wrapper">
       <div class="scenery-left">
         <SceneryActions />
+
+        <div>
+          <button class="btn btn--action" @click="() => (isTrafficChartOpen = !isTrafficChartOpen)">
+            Otwórz wykres ruchu
+          </button>
+        </div>
 
         <SceneryHeader
           :stationName="station"
@@ -60,6 +74,7 @@ import SceneryTimetablesHistory from '../components/SceneryView/SceneryTimetable
 import SceneryDispatchersHistory from '../components/SceneryView/SceneryDispatchersHistory.vue';
 import SceneryTopList from '../components/SceneryView/SceneryTopList.vue';
 import SceneryActions from '@/components/SceneryView/SceneryActions.vue';
+import TrafficChartCard from '@/components/Global/TrafficChartCard.vue';
 
 const props = defineProps({
   region: {
@@ -96,6 +111,7 @@ const viewModes = [
 ];
 
 const currentMode = ref('SceneryTimetable');
+const isTrafficChartOpen = ref(false);
 
 const currentViewComponent = computed(() => {
   return (
@@ -120,6 +136,10 @@ const onlineSceneryInfo = computed(() => {
 
 function setViewMode(componentName: string) {
   currentMode.value = componentName;
+}
+
+function toggleTrafficChart(isOpen: boolean) {
+  isTrafficChartOpen.value = isOpen;
 }
 </script>
 

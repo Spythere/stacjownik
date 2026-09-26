@@ -16,7 +16,7 @@ import {
   BarController
 } from 'chart.js';
 
-import { computed, onMounted, PropType, ref, useTemplateRef, watch, watchEffect } from 'vue';
+import { computed, onMounted, PropType, ref, useTemplateRef, watch } from 'vue';
 import zoomPlugin from 'chartjs-plugin-zoom';
 import { API } from '@/typings/api';
 import { PlayerHistoryEntryType, Status } from '@/typings/common';

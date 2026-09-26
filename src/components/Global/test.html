@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Wykres ruchu pociągów</title>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding: 30px;
+        font-family: Arial, sans-serif;
+        background: #f5f6f8;
+      }
+
+      .railway-chart {
+        max-width: 1400px;
+        margin: auto;
+        background: white;
+        border: 1px solid #d9dce1;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+      }
+
+      .railway-chart h2 {
+        margin: 0 0 5px;
+        font-size: 22px;
+      }
+
+      .subtitle {
+        color: #666;
+        margin-bottom: 20px;
+      }
+
+      .chart-container {
+        position: relative;
+        height: 650px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="railway-chart">
+      <h2>Wykres ruchu pociągów</h2>
+      <div class="subtitle">Odcinek X – Z – Y</div>
+
+      <div class="chart-container">
+        <canvas id="railwayChart"></canvas>
+      </div>
+    </div>
+
+    <script>
+      const trains = [
+        {
+          number: 'IC 101',
+          name: 'Matejko',
+          points: [
+            { station: 'X', time: '06:05' },
+            { station: 'Z', time: '06:42' },
+            { station: 'Z', time: '06:45' },
+            { station: 'Y', time: '07:20' }
+          ]
+        },
+
+        {
+          number: 'REG 201',
+          name: 'Regionalny',
+          points: [
+            { station: 'X', time: '06:25' },
+            { station: 'Z', time: '07:05' },
+            { station: 'Z', time: '07:08' },
+            { station: 'Y', time: '07:52' }
+          ]
+        },
+
+        {
+          number: 'IC 305',
+          name: 'Silesia',
+          points: [
+            { station: 'Y', time: '07:10' },
+            { station: 'Z', time: '07:45' },
+            { station: 'Z', time: '07:48' },
+            { station: 'X', time: '08:25' }
+          ]
+        },
+
+        {
+          number: 'REG 207',
+          name: 'Regionalny',
+          points: [
+            { station: 'X', time: '07:40' },
+            { station: 'Z', time: '08:20' },
+            { station: 'Z', time: '08:23' },
+            { station: 'Y', time: '09:00' }
+          ]
+        }
+      ];
+
+      // ---------------------------------------------------------
+      // Pomocnicze
+      // ---------------------------------------------------------
+
+      function timeToMinutes(time) {
+        const [hours, minutes] = time.split(':').map(Number);
+
+        return hours * 60 + minutes;
+      }
+
+      function minutesToTime(minutes) {
+        minutes = Math.round(minutes);
+
+        const hours = Math.floor(minutes / 60) % 24;
+        const mins = minutes % 60;
+
+        return String(hours).padStart(2, '0') + ':' + String(mins).padStart(2, '0');
+      }
+
+      // ---------------------------------------------------------
+      // Stacje
+      // ---------------------------------------------------------
+
+      const stations = ['Y', 'Z', 'X'];
+
+      // ---------------------------------------------------------
+      // Kolory pociągów
+      // ---------------------------------------------------------
+
+      const trainColors = ['#1976d2', '#d32f2f', '#388e3c', '#7b1fa2', '#f57c00', '#455a64'];
+
+      // ---------------------------------------------------------
+      // Tworzenie datasetów
+      // ---------------------------------------------------------
+
+      const datasets = trains.map((train, index) => {
+        const color = trainColors[index % trainColors.length];
+
+        return {
+          label: `${train.number} ${train.name}`,
+
+          data: train.points.map((point) => ({
+            x: timeToMinutes(point.time),
+
+            y: stations.indexOf(point.station),
+
+            station: point.station,
+
+            time: point.time,
+
+            train: train
+          })),
+
+          borderColor: color,
+
+          backgroundColor: color,
+
+          borderWidth: 3,
+
+          pointRadius: 5,
+
+          pointHoverRadius: 8,
+
+          tension: 0,
+
+          fill: false
+        };
+      });
+
+      // ---------------------------------------------------------
+      // Plugin — pionowe linie czasu
+      // ---------------------------------------------------------
+
+      const railwayPlugin = {
+        id: 'railwayPlugin',
+
+        beforeDraw(chart) {
+          const { ctx, chartArea, scales } = chart;
+
+          const yScale = scales.y;
+
+          ctx.save();
+
+          // Linie stacji
+          stations.forEach((station, index) => {
+            const y = yScale.getPixelForValue(index);
+
+            ctx.beginPath();
+
+            ctx.moveTo(chartArea.left, y);
+
+            ctx.lineTo(chartArea.right, y);
+
+            ctx.lineWidth = 1;
+
+            ctx.strokeStyle = '#d7d7d7';
+
+            ctx.stroke();
+          });
+
+          ctx.restore();
+        }
+      };
+
+      // ---------------------------------------------------------
+      // Chart
+      // ---------------------------------------------------------
+
+      const ctx = document.getElementById('railwayChart').getContext('2d');
+
+      const railwayChart = new Chart(ctx, {
+        type: 'line',
+
+        data: {
+          datasets: datasets
+        },
+
+        options: {
+          responsive: true,
+
+          maintainAspectRatio: false,
+
+          interaction: {
+            mode: 'nearest',
+            intersect: false
+          },
+
+          plugins: {
+            legend: {
+              position: 'bottom',
+
+              labels: {
+                usePointStyle: true,
+                padding: 20
+              }
+            },
+
+            tooltip: {
+              callbacks: {
+                title: function (items) {
+                  if (!items.length) return '';
+
+                  return items[0].dataset.label;
+                },
+
+                label: function (context) {
+                  const point = context.raw;
+
+                  return [`Stacja: ${point.station}`, `Czas: ${point.time}`];
+                }
+              }
+            }
+          },
+
+          scales: {
+            x: {
+              type: 'linear',
+
+              min: 360,
+              max: 560,
+
+              grid: {
+                color: '#e5e5e5'
+              },
+
+              ticks: {
+                stepSize: 15,
+
+                callback: function (value) {
+                  return minutesToTime(value);
+                }
+              },
+
+              title: {
+                display: true,
+
+                text: 'Czas'
+              }
+            },
+
+            y: {
+              min: -0.3,
+
+              max: 2.3,
+
+              reverse: false,
+
+              ticks: {
+                stepSize: 1,
+
+                callback: function (value) {
+                  return stations[value] ?? '';
+                },
+
+                font: {
+                  size: 14,
+                  weight: 'bold'
+                }
+              },
+
+              grid: {
+                display: false
+              },
+
+              title: {
+                display: true,
+
+                text: 'Stacja'
+              }
+            }
+          }
+        },
+
+        plugins: [railwayPlugin]
+      });
+    </script>
+  </body>
+</html>
