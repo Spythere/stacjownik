@@ -212,6 +212,9 @@ export interface TrainStop {
   confirmed: number;
   stopped: number;
   stopTime: number | null;
+
+  stationName: string;
+  stationHash: string;
 }
 
 export interface CheckpointTrain {

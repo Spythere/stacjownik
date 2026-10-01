@@ -330,6 +330,7 @@ export namespace API {
       checkpointComments: string[];
       visitedSceneries: string[];
       sceneryNames: string[];
+      stopListString?: string;
 
       path: string;
       warningNotes: string | null;
@@ -455,6 +456,30 @@ export namespace API {
     }
 
     export type Response = Data;
+  }
+
+  export namespace SceneryTraffic {
+    export interface Data {
+      pointNames: string[];
+      trafficData: TrafficDaum[];
+    }
+
+    export interface TrafficDaum {
+      id: number;
+      createdAt: string;
+      trainNo: number;
+      trainCategoryCode: string;
+      route: string;
+      points: Point[];
+    }
+
+    export interface Point {
+      pointName: string;
+      pointType: string;
+      dateScheduled: string;
+    }
+
+    export type Response = Data | null;
   }
 }
 
