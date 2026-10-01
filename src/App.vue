@@ -101,10 +101,10 @@ export default defineComponent({
       this.loadLang();
       this.setupStorageSettings();
       this.setupOfflineHandling();
-      this.checkAppVersion();
       this.handleQueries();
 
       this.apiStore.setupAPIData();
+      this.checkAppVersion();
     },
 
     handleQueries() {

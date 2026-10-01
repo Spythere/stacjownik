@@ -154,8 +154,6 @@ export default defineComponent({
           requestFilters
         );
 
-        console.log(response);
-
         this.historyList = response;
 
         this.dataStatus = Status.Data.Loaded;

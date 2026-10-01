@@ -671,9 +671,16 @@
     "return-to-main": "Powrót do strony głównej",
 
     "filters": {
+      "All": "WSZYSTKO",
       "Timetable": "ROZKŁADY JAZDY",
       "Dispatcher": "SŁUŻBY DYŻURNEGO",
       "IssuedTimetable": "WYSTAWIONE RJ"
+    },
+
+    "chart": {
+      "timetables-label": "Rozkłady jazdy",
+      "duties-label": "Dyżury",
+      "issued-timetables-label": "Wystawione RJ"
     },
 
     "stats": {
@@ -686,40 +693,38 @@
 
       "last-seen-date": "Ostatnia aktywność: {date} o {time}",
       "last-seen-relative": "Ostatnia aktywność: {n} temu",
-      "last-seen-active": "Obecnie online",
+      "last-seen-active": "Widziany niedawno online",
       "active-as-dispatcher": "Online jako dyżurny ruchu",
       "active-as-driver": "Online jako maszynista",
       "active-as-both": "Online jako dyżurny i maszynista",
 
-      "header-driver": "STATYSTYKI MASZYNISTY",
-      "fulfilled-timetables": "wypełnione rozkłady jazdy",
-      "route-distance": "zatwierdzony kilometraż w RJ",
-      "confirmed-stops": "potwierdzone stacje w RJ",
-      "longest-timetable": "najdłuższy rozkład jazdy",
-      "avg-timetable-length": "średnia długość wszystkich rozkładów",
-      "no-timetable-stats": "Ten użytkownik nie posiada statystyk maszynisty zarejestrowanych przez Stacjownik!",
+      "header-driver": "MASZYNISTA",
+      "fulfilled-timetables": "ROZKŁADY JAZDY",
+      "route-distance": "KILOMETRAŻ",
+      "confirmed-stops": "ZATWIERDZONE STACJE",
+      "longest-timetable": "NAJDŁUŻSZY ROZKŁAD",
+      "avg-timetable-length": "ŚREDNIA DŁ. ROZKŁADÓW",
+      "no-timetable-stats": "Ten gracz nie posiada rozkładów zarejestrowanych przez Stacjownik!",
 
-      "header-dispatcher": "STATYSTYKI DYŻURNEGO RUCHU",
-      "duties-count": "służby jako dyżurny ruchu",
-      "longest-duty": "najdłuższa służba",
-      "created-timetables-count": "wystawione RJ jako dyżurny ruchu",
-      "longest-created-timetable": "najdłuższy wystawiony RJ",
-      "created-timetables-length-sum": "suma długości wystawionych RJ",
-      "no-dispatcher-stats": "Ten użytkownik nie posiada statystyk dyżurnego zarejestrowanych przez Stacjownik!"
+      "header-dispatcher": "DYŻURNY RUCHU",
+      "duties-count": "SŁUŻBY",
+      "longest-duty": "NAJDŁUŻSZA SŁUŻBA",
+      "created-timetables-count": "WYSTAWIONE ROZKŁADY JAZDY",
+      "longest-created-timetable": "NAJDŁUŻSZY WYSTAWIONY RJ",
+      "created-timetables-length-sum": "DŁUGOŚĆ WYSTAWIONYCH RJ",
+      "no-dispatcher-stats": "Ten gracz nie posiada dyżurów zarejestrowanych przez Stacjownik!",
+      "no-issued-timetables": "Ten gracz nie stworzył jeszcze żadnego rozkładu jazdy!"
     },
 
-    "recent-stats": {
-      "header": "STATYSTYKI AKTYWNOŚCI (30 DNI)",
-      "timetables": "ROZKŁADÓW JAZDY",
-      "distance": "POKONANYCH KILOMETRÓW",
-      "duties": "SŁUŻB DYŻURNEGO",
-      "created-timetables": "WYSTAWIONYCH ROZKŁADÓW"
+    "recent-history": {
+      "header": "OSTATNIA AKTYWNOŚĆ"
     },
 
     "list": {
       "for": "dla",
       "online-since": "online od",
-      "no-recent-history": "Brak ostatniej aktywności w symulatorze :("
+      "no-recent-history": "Brak ostatniej aktywności w symulatorze :(",
+      "no-filtered-history": "Brak ostatniej aktywności w wybranej kategorii!"
     }
   }
 }

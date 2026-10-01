@@ -61,15 +61,10 @@ export const useApiStore = defineStore('apiStore', {
         this.fetchDonatorsData();
 
         if (this.nextDataCheckTime == 0) {
-          this.nextDataCheckTime = t + getRandomDurationFromRange(5000, 7500);
+          this.nextDataCheckTime = t + getRandomDurationFromRange(2000, 2500);
         } else {
           this.nextDataCheckTime = t + getRandomDurationFromRange(600000, 720000);
         }
-
-        console.log(
-          'Next time check:',
-          new Date(Date.now() + this.nextDataCheckTime - t).toLocaleTimeString()
-        );
       }
 
       // Active data fefresh

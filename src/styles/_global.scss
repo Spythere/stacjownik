@@ -4,6 +4,7 @@
 :root {
   --clr-primary: #ffc014;
   --clr-secondary: #2f2f2f;
+  --clr-grayed: #ccc;
 
   --clr-bg: #4d4d4d;
   --clr-bg2: #1b1b1b;
@@ -29,7 +30,7 @@
   --clr-success: springgreen;
 
   --no-scroll-padding: 17px;
-  --max-container-width: 2000px;
+  --max-container-width: 100%;
 
   --status-free: #8a8a8a;
   --status-ending: #e6c300;
@@ -218,7 +219,7 @@ ul {
   }
 
   &--grayed {
-    color: #ccc;
+    color: var(--clr-grayed);
   }
 
   &--error {

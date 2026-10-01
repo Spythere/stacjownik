@@ -682,9 +682,16 @@
     "return-to-main": "Return to the main site",
 
     "filters": {
+      "All": "ALL",
       "Timetable": "TIMETABLES",
       "Dispatcher": "DISPATCHER DUTIES",
       "IssuedTimetable": "ISSUED TIMETABLES"
+    },
+
+    "chart": {
+      "timetables-label": "Timetables",
+      "duties-label": "Duties",
+      "issued-timetables-label": "Issued timetables"
     },
 
     "stats": {
@@ -697,40 +704,38 @@
 
       "last-seen-date": "Last seen on {date} at {time}",
       "last-seen-relative": "Last seen {n} ago",
-      "last-seen-active": "Currently online",
+      "last-seen-active": "Seen recently online",
       "active-as-dispatcher": "Online as dispatcher",
       "active-as-driver": "Online as train driver",
       "active-as-both": "Online as dispatcher and driver",
 
-      "header-driver": "DRIVER'S STATS",
-      "fulfilled-timetables": "fulfilled timetables",
-      "route-distance": "confirmed timetables distance",
-      "confirmed-stops": "confirmed stations in timetables",
-      "longest-timetable": "longest timetable",
-      "avg-timetable-length": "average distance of all timetables",
-      "no-timetable-stats": "This player does not have any registered timetables in Stacjownik!",
+      "header-driver": "DRIVER",
+      "fulfilled-timetables": "TIMETABLES",
+      "route-distance": "DISTANCE",
+      "confirmed-stops": "STATIONS",
+      "longest-timetable": "LONGEST TIMETABLE",
+      "avg-timetable-length": "AVG TIMETABLE DISTANCE",
+      "no-timetable-stats": "This player does not have any registered timetables on Stacjownik!",
 
-      "header-dispatcher": "DISPATCHER'S STATS",
-      "duties-count": "duties as dispatcher",
-      "longest-duty": "longest duty",
-      "created-timetables-count": "issued timetables as dispatcher",
-      "longest-created-timetable": "longest issued timetable",
-      "created-timetables-length-sum": "distance sum of issued timetables",
-      "no-dispatcher-stats": "No registered dispatcher duties in Stacjownik!"
+      "header-dispatcher": "DISPATCHER",
+      "duties-count": "DUTIES",
+      "longest-duty": "LONGEST DUTY",
+      "created-timetables-count": "ISSUED TIMETABLES",
+      "longest-created-timetable": "LONGEST ISSUED TIMETABLE",
+      "created-timetables-length-sum": "ISSUED TIMETABLES DISTANCE",
+      "no-dispatcher-stats": "This player has no duties recorded on Stacjownik!",
+      "no-issued-timetables": "This player hasn't created any timetable yet!"
     },
 
-    "recent-stats": {
-      "header": "ACTIVITY STATISTICS (30 LAST DAYS)",
-      "timetables": "TIMETABLES",
-      "distance": "MADE KILOMETERS",
-      "duties": "DISPATCHER DUTIES",
-      "created-timetables": "ISSUED TIMETABLES"
+    "recent-history": {
+      "header": "RECENT ACTIVITY"
     },
 
     "list": {
       "for": "for",
       "online-since": "online since",
-      "no-recent-history": "No recent activity in the simulator :("
+      "no-recent-history": "No recent activity in the simulator :(",
+      "no-filtered-history": "No recent activity with chosen category!"
     }
   }
 }

@@ -282,3 +282,5 @@ export interface TrainSchedulePoint {
 
   nextPointRef: TrainSchedulePoint | null;
 }
+
+export type PlayerHistoryEntryType = 'All' | 'Timetable' | 'Dispatcher' | 'IssuedTimetable';

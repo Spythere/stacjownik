@@ -26,21 +26,23 @@
 
         <div class="main-last-seen">
           <span v-if="activeDispatches.length > 0 && activeTrains.length > 0" class="active">
-            {{ t('profile.stats.active-as-both') }}
+            <WifiIcon :size="20" /> {{ t('profile.stats.active-as-both') }}
           </span>
 
           <span v-else-if="activeTrains.length > 0" class="active">
-            {{ t('profile.stats.active-as-driver') }}
+            <WifiIcon :size="20" /> {{ t('profile.stats.active-as-driver') }}
           </span>
 
           <span v-else-if="activeDispatches.length > 0" class="active">
-            {{ t('profile.stats.active-as-dispatcher') }}
+            <WifiIcon :size="20" /> {{ t('profile.stats.active-as-dispatcher') }}
           </span>
 
           <span
-            v-else-if="playerInfo.lastSeen && Date.now() - playerInfo.lastSeen < 300000"
+            v-else-if="playerInfo.lastSeen && Date.now() - playerInfo.lastSeen < 120000"
             class="active"
           >
+            <WifiIcon :size="20" />
+
             {{ t('profile.stats.last-seen-active') }}
           </span>
 
@@ -48,6 +50,8 @@
             v-else-if="playerInfo.lastSeen && Date.now() - playerInfo.lastSeen < 3600000"
             class="offline-recently"
           >
+            <WifiOffIcon :size="20" />
+
             {{
               t('profile.stats.last-seen-relative', {
                 n: humanizeDuration(Date.now() - new Date(playerInfo.lastSeen).getTime())
@@ -56,6 +60,8 @@
           </span>
 
           <span v-else-if="playerInfo.lastSeen" class="offline">
+            <WifiOffIcon :size="20" />
+
             {{
               t('profile.stats.last-seen-date', {
                 date: dateToLocaleString(new Date(playerInfo.lastSeen), { dateStyle: 'short' }),
@@ -63,21 +69,6 @@
               })
             }}
           </span>
-        </div>
-
-        <div class="main-badges">
-          <div class="badge-container" v-if="playerInfo.driverStats.driverLevel != null">
-            <LevelBadge badge-type="driver" :level="playerInfo.driverStats.driverLevel" />
-            <span>{{ t('profile.stats.driver') }}</span>
-          </div>
-
-          <div class="badge-container" v-if="playerInfo.dispatcherStats.dispatcherLevel != null">
-            <LevelBadge
-              badge-type="dispatcher"
-              :level="playerInfo.dispatcherStats.dispatcherLevel"
-            />
-            <span>{{ t('profile.stats.dispatcher') }}</span>
-          </div>
         </div>
 
         <!-- Current activities -->
@@ -114,11 +105,13 @@
           </div>
         </div>
 
+        <!-- Links -->
         <div class="main-links">
           <router-link
             class="a-button btn--action"
             :to="`/journal/timetables?search-driver=${playerInfo.driverStats.driverName}`"
           >
+            <img src="/images/icon-timetable.svg" width="20" alt="timetable icon" />
             {{ t('profile.stats.timetables-journal') }}
           </router-link>
 
@@ -126,6 +119,7 @@
             class="a-button btn--action"
             :to="`/journal/dispatchers?search-dispatcher=${playerInfo.dispatcherStats.dispatcherName}`"
           >
+            <img src="/images/icon-user.svg" width="20" alt="user icon" />
             {{ t('profile.stats.dispatchers-journal') }}
           </router-link>
 
@@ -134,6 +128,7 @@
             :href="`https://td2.info.pl/profile/?u=${route.query.playerId}`"
             target="_blank"
           >
+            <TypeOutlineIcon :size="20" />
             {{ t('profile.stats.forum-profile') }}
           </a>
         </div>
@@ -141,113 +136,183 @@
     </div>
 
     <div class="summary-stats">
+      <!-- Driver stats box -->
       <div class="summary-box stats-driver">
         <h3 class="stats-header">
-          <img src="/images/icon-train.svg" width="30" alt="train icon" />
+          <LevelBadge
+            v-if="playerInfo.driverStats.driverLevel"
+            badge-type="driver"
+            :level="playerInfo.driverStats.driverLevel"
+          />
+
           {{ t('profile.stats.header-driver') }}
         </h3>
+
         <hr />
 
-        <div v-if="playerInfo.driverStats.countAll > 0">
-          <div>
-            <b class="text--primary">
-              {{ playerInfo.driverStats.countFulfilled }} /
-              {{ playerInfo.driverStats.countAll }} ({{
-                getCountPercentage(
-                  playerInfo.driverStats.countFulfilled,
-                  playerInfo.driverStats.countAll,
-                  2
-                )
-              }}%)
-            </b>
-            - {{ t('profile.stats.fulfilled-timetables') }}
+        <div class="stats-container">
+          <!-- Timetable count -->
+          <div v-if="playerInfo.driverStats.countAll > 0" class="stat-item">
+            <img src="/images/icon-timetable.svg" width="20" alt="timetable icon" />
+
+            <span>
+              <b>{{ t('profile.stats.fulfilled-timetables') }}: </b>
+
+              <b class="text--primary">
+                {{ playerInfo.driverStats.countFulfilled }} /
+                {{ playerInfo.driverStats.countAll }} ({{
+                  getCountPercentage(
+                    playerInfo.driverStats.countFulfilled,
+                    playerInfo.driverStats.countAll,
+                    2
+                  )
+                }}%)
+              </b>
+            </span>
           </div>
-          <div>
-            <b class="text--primary">
-              {{ playerInfo.driverStats.currentDistanceTotal?.toFixed(2) }} /
-              {{ playerInfo.driverStats.routeDistanceTotal?.toFixed(2) }} ({{
-                getCountPercentage(
-                  playerInfo.driverStats.currentDistanceTotal || 0,
-                  playerInfo.driverStats.routeDistanceTotal || 0,
-                  2
-                )
-              }}%)
-            </b>
-            - {{ t('profile.stats.route-distance') }}
+
+          <!-- Timetable distance -->
+          <div v-if="playerInfo.driverStats.countAll > 0" class="stat-item">
+            <GaugeIcon width="25" />
+
+            <span>
+              <b>{{ t('profile.stats.route-distance') }}: </b>
+
+              <b class="text--primary">
+                {{ playerInfo.driverStats.currentDistanceTotal?.toFixed(2) }} /
+                {{ playerInfo.driverStats.routeDistanceTotal?.toFixed(2) }} ({{
+                  getCountPercentage(
+                    playerInfo.driverStats.currentDistanceTotal || 0,
+                    playerInfo.driverStats.routeDistanceTotal || 0,
+                    2
+                  )
+                }}%)
+              </b>
+            </span>
           </div>
-          <div>
-            <b class="text--primary">
-              {{ playerInfo.driverStats.confirmedStopsTotal }} /
-              {{ playerInfo.driverStats.allStopsTotal }} ({{
-                getCountPercentage(
-                  playerInfo.driverStats.confirmedStopsTotal || 0,
-                  playerInfo.driverStats.allStopsTotal || 0,
-                  2
-                )
-              }}%)
-            </b>
-            - {{ t('profile.stats.confirmed-stops') }}
+
+          <!-- Stops count -->
+          <div v-if="playerInfo.driverStats.allStopsTotal" class="stat-item">
+            <CheckIcon width="25" />
+
+            <span>
+              <b>{{ t('profile.stats.confirmed-stops') }}: </b>
+              <b class="text--primary">
+                {{ playerInfo.driverStats.confirmedStopsTotal || 0 }} /
+                {{ playerInfo.driverStats.allStopsTotal || 0 }} ({{
+                  getCountPercentage(
+                    playerInfo.driverStats.confirmedStopsTotal || 0,
+                    playerInfo.driverStats.allStopsTotal || 0,
+                    2
+                  )
+                }}%)
+              </b>
+            </span>
           </div>
-          <div>
-            <b class="text--primary">{{ playerInfo.driverStats.routeDistanceMax || 0 }}km</b> -
-            {{ t('profile.stats.longest-timetable') }}
+
+          <!-- Max. distance -->
+          <div v-if="playerInfo.driverStats.routeDistanceMax" class="stat-item">
+            <StarIcon width="25" />
+
+            <span>
+              <b>{{ t('profile.stats.longest-timetable') }}: </b>
+              <b class="text--primary">{{ playerInfo.driverStats.routeDistanceMax }}km</b>
+            </span>
           </div>
-          <div>
-            <b class="text--primary">
-              {{ playerInfo.driverStats.routeDistanceAvg?.toFixed(2) || 0 }}km
-            </b>
-            - {{ t('profile.stats.avg-timetable-length') }}
+
+          <!-- Avg. distance -->
+          <div v-if="playerInfo.driverStats.routeDistanceAvg" class="stat-item">
+            <CircleSlash2 width="25" />
+
+            <span>
+              <b>{{ t('profile.stats.avg-timetable-length') }}: </b>
+              <b class="text--primary">
+                {{ playerInfo.driverStats.routeDistanceAvg.toFixed(2) }}km</b
+              >
+            </span>
           </div>
         </div>
 
-        <div class="text--grayed" v-else>
+        <!-- No stats info -->
+        <div class="text--grayed" v-if="playerInfo.driverStats.countAll == 0">
           {{ t('profile.stats.no-timetable-stats') }}
         </div>
       </div>
 
-      <div
-        class="summary-box stats-dispatcher"
-        v-if="playerInfo.dispatcherStats && playerInfo.dispatcherStats.services?.count"
-      >
+      <!-- Dispatcher stats box -->
+      <div class="summary-box stats-dispatcher">
         <h3 class="stats-header">
-          <img src="/images/icon-user.svg" width="30" alt="user icon" />
+          <LevelBadge
+            v-if="playerInfo.dispatcherStats.dispatcherLevel"
+            badge-type="dispatcher"
+            :level="playerInfo.dispatcherStats.dispatcherLevel"
+          />
+
+          <img src="/images/icon-abandoned.svg" width="30" alt="user icon" v-else />
           {{ t('profile.stats.header-dispatcher') }}
         </h3>
 
         <hr />
 
-        <div>
-          <b class="text--primary">{{ playerInfo.dispatcherStats.services.count }}</b> -
-          {{ t('profile.stats.duties-count') }}
-        </div>
-        <div>
-          <b class="text--primary">{{
-            humanizeDuration(playerInfo.dispatcherStats.services.durationMax)
-          }}</b>
-          - {{ t('profile.stats.longest-duty') }}
+        <div class="stats-container">
+          <div v-if="playerInfo.dispatcherStats.services" class="stat-item">
+            <UserIcon />
+
+            <span>
+              <b>{{ t('profile.stats.duties-count') }}: </b>
+              <b class="text--primary">{{ playerInfo.dispatcherStats.services.count }}</b>
+            </span>
+          </div>
+
+          <div v-if="playerInfo.dispatcherStats.services" class="stat-item">
+            <FlameIcon />
+
+            <span>
+              <b>{{ t('profile.stats.longest-duty') }}: </b>
+              <b class="text--primary">
+                {{ humanizeDuration(playerInfo.dispatcherStats.services.durationMax) }}
+              </b>
+            </span>
+          </div>
+
+          <div v-if="playerInfo.dispatcherStats.issuedTimetables" class="stat-item">
+            <img src="/images/icon-timetable.svg" width="20" alt="timetable icon" />
+
+            <span>
+              <b>{{ t('profile.stats.created-timetables-count') }}: </b>
+              <b class="text--primary">{{ playerInfo.dispatcherStats.issuedTimetables.count }}</b>
+            </span>
+          </div>
+
+          <div v-if="playerInfo.dispatcherStats.issuedTimetables" class="stat-item">
+            <StarIcon />
+
+            <span>
+              <b>{{ t('profile.stats.longest-created-timetable') }}: </b>
+              <b class="text--primary">
+                {{ playerInfo.dispatcherStats.issuedTimetables.distanceMax }}km
+              </b>
+            </span>
+          </div>
+
+          <div v-if="playerInfo.dispatcherStats.issuedTimetables" class="stat-item">
+            <SigmaIcon />
+
+            <span>
+              <b>{{ t('profile.stats.created-timetables-length-sum') }}: </b>
+              <b class="text--primary">
+                {{ playerInfo.dispatcherStats.issuedTimetables.distanceSum.toFixed(2) }}km
+              </b>
+            </span>
+          </div>
         </div>
 
-        <div v-if="playerInfo.dispatcherStats.issuedTimetables">
-          <div>
-            <b class="text--primary">{{ playerInfo.dispatcherStats.issuedTimetables.count }}</b>
-            - {{ t('profile.stats.created-timetables-count') }}
-          </div>
-          <div>
-            <b class="text--primary">
-              {{ playerInfo.dispatcherStats.issuedTimetables.distanceMax }}km
-            </b>
-            - {{ t('profile.stats.longest-created-timetable') }}
-          </div>
-          <div>
-            <b class="text--primary">
-              {{ playerInfo.dispatcherStats.issuedTimetables.distanceSum.toFixed(2) }}km
-            </b>
-            - {{ t('profile.stats.created-timetables-length-sum') }}
-          </div>
-        </div>
-
-        <div class="text--grayed" v-else>
+        <div class="no-issued-timetables" v-if="!playerInfo.dispatcherStats.services">
           {{ t('profile.stats.no-dispatcher-stats') }}
+        </div>
+
+        <div class="no-issued-timetables" v-else-if="!playerInfo.dispatcherStats.issuedTimetables">
+          {{ t('profile.stats.no-issued-timetables') }}
         </div>
       </div>
     </div>
@@ -267,6 +332,18 @@ import { getRegionNameById } from '../../utils/regionUtils';
 import { isCreator } from '../../utils/userUtils';
 import { getLanguageNameById } from '@/utils/languageUtils';
 import LevelBadge from '../Global/LevelBadge.vue';
+import {
+  CheckIcon,
+  CircleSlash2,
+  FlameIcon,
+  GaugeIcon,
+  SigmaIcon,
+  StarIcon,
+  TypeOutlineIcon,
+  UserIcon,
+  WifiIcon,
+  WifiOffIcon
+} from '@lucide/vue';
 
 const { t } = useI18n();
 
@@ -361,6 +438,13 @@ const activeTrains = computed(() => {
 .main-last-seen {
   margin-top: 0.5em;
 
+  span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+  }
+
   .active {
     color: var(--clr-success);
   }
@@ -417,24 +501,44 @@ const activeTrains = computed(() => {
   }
 }
 
+.stats-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  text-align: left;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.25em;
+
+  svg,
+  img {
+    width: 20px;
+  }
+}
+
 .stats-header {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.25em;
-}
 
-@include responsive.midScreen {
-  .player-stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+  img {
+    border-radius: 0.5em;
   }
 }
 
-@include responsive.smallScreen {
-  .player-stats {
+.no-issued-timetables {
+  color: var(--clr-grayed);
+  margin-top: 0.5em;
+}
+
+@include responsive.midScreen {
+  .summary-stats {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(430px, 1fr));
   }
 }
 </style>
