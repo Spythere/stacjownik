@@ -38,10 +38,10 @@
           </span>
 
           <span
-            v-else-if="playerInfo.lastSeen && Date.now() - playerInfo.lastSeen < 300000"
+            v-else-if="playerInfo.lastSeen && Date.now() - playerInfo.lastSeen < 120000"
             class="active"
           >
-            <WifiOffIcon :size="20" />
+            <WifiIcon :size="20" />
 
             {{ t('profile.stats.last-seen-active') }}
           </span>

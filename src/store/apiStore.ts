@@ -65,11 +65,6 @@ export const useApiStore = defineStore('apiStore', {
         } else {
           this.nextDataCheckTime = t + getRandomDurationFromRange(600000, 720000);
         }
-
-        console.log(
-          'Next time check:',
-          new Date(Date.now() + this.nextDataCheckTime - t).toLocaleTimeString()
-        );
       }
 
       // Active data fefresh
