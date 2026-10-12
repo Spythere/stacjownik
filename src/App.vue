@@ -1,17 +1,10 @@
 <template>
-  <div class="app_container">
-    <AppNewDomainInfo />
-  </div>
+  <div class="app_container"></div>
 </template>
 
-<script lang="ts" setup>
-import AppNewDomainInfo from './components/App/AppNewDomainInfo.vue';
-</script>
+<script lang="ts" setup></script>
 
 <style lang="scss">
-@use './styles/animations';
-
-// APP
 #app {
   color: white;
   overflow-x: hidden;

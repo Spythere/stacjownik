@@ -1,8 +1,5 @@
 import { createApp, Directive, ref } from 'vue';
 import App from './App.vue';
-import router from './router';
-
-import i18n from './i18n';
 
 import { createPinia } from 'pinia';
 import { registerSW } from 'virtual:pwa-register';
@@ -30,7 +27,5 @@ const clickOutsideDirective: Directive = {
 createApp(App)
   .provide('isFilterCardVisible', ref(false))
   .use(createPinia())
-  .use(router)
-  .use(i18n)
   .directive('click-outside', clickOutsideDirective)
   .mount('#app');

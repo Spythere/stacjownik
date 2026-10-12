@@ -1,15 +1,12 @@
 {
   "hosting": {
     "public": "dist",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
-    "rewrites": [
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "redirects": [
       {
-        "source": "**",
-        "destination": "/index.html"
+        "source": "/",
+        "destination": "https://stacjownik-td2.spythere.eu/",
+        "type": 301
       }
     ]
   }
