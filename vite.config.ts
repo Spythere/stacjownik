@@ -19,19 +19,7 @@ export default defineConfig({
       registerType: 'autoUpdate',
       workbox: {
         disableDevLogs: true,
-        globPatterns: ['**/*.{js,css,html,ico,woff,woff2,ttf}', '**/*.{png,jpg,jpeg,svg,webp,gif}'],
-        cleanupOutdatedCaches: true,
-        runtimeCaching: [
-          {
-            urlPattern:
-              /^https:\/\/stacjownik.spythere.eu\/api\/(getVehicles|getDonators|getSceneries)/i,
-            handler: 'NetworkFirst',
-            options: {
-              cacheName: 'stacjownik-api-cache',
-              cacheableResponse: { statuses: [0, 200] }
-            }
-          }
-        ]
+        cleanupOutdatedCaches: true
       },
       devOptions: { enabled: true, suppressWarnings: true }
     })

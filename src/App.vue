@@ -17,7 +17,6 @@
   grid-template-rows: auto 1fr auto;
   grid-template-columns: 100%;
 
-  min-height: 100vh;
   overflow: hidden;
   position: relative;
 }
