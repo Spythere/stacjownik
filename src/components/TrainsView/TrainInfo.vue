@@ -92,7 +92,7 @@
       </span>
     </div>
 
-    <hr style="margin: 0.25em 0" />
+    <hr class="general-separator" />
 
     <div class="general-stops" v-if="train.timetableData">
       <span v-if="train.timetableData.followingStops.length > 2">
@@ -101,7 +101,14 @@
       </span>
     </div>
 
-    <div class="general-status">
+    <div
+      class="general-status"
+      v-if="
+        train.timetableData ||
+        !train.currentStationHash ||
+        (!train.online && train.lastSeen <= Date.now() - 60000)
+      "
+    >
       <div class="status-timetable-progress" v-if="train.timetableData">
         <ProgressBar :progressPercent="confirmedPercentage(train.timetableData.followingStops)" />
 
@@ -164,11 +171,7 @@
       </div>
     </div>
 
-    <div
-      class="text--grayed"
-      style="margin-top: 0.25em"
-      v-html="displayTrainPositionHTML(train)"
-    ></div>
+    <div class="text--grayed" v-html="displayTrainPositionHTML(train)"></div>
 
     <div
       class="train-dangers"
@@ -315,6 +318,10 @@ export default defineComponent({
   text-align: center;
 
   padding: 0 0.25em;
+}
+
+.general-separator {
+  margin: 0.25em 0;
 }
 
 .general-stops {

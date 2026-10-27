@@ -69,23 +69,25 @@ export default defineComponent({
     getTrainStopsHtml(stops: TrainStop[]): string {
       if (!stops) return '';
 
-      return stops
-        .reduce((acc: string[], stop: TrainStop, i: number) => {
-          if (stop.stopType.includes('ph'))
-            acc.push(
-              `<strong style='color:${stop.confirmed ? 'springgreen' : 'white'}'>${
-                stop.stopName
-              }</strong>`
-            );
-          else if (i > 0 && i < stops.length - 1 && !/(, po$|sbl)/gi.test(stop.stopNameRAW))
-            acc.push(
-              `<span style='color:${stop.confirmed ? 'springgreen' : 'lightgray'}'>${
-                stop.stopName
-              }</span>`
-            );
-          return acc;
-        }, [])
-        .join(' > ');
+      return (
+        stops
+          .reduce((acc: string[], stop: TrainStop, i: number) => {
+            if (stop.stopType.includes('ph'))
+              acc.push(
+                `<strong style='color:${stop.confirmed ? 'springgreen' : 'white'}'>${
+                  stop.stopName
+                }</strong>`
+              );
+            else if (i > 0 && i < stops.length - 1 && !/(, po$|sbl)/gi.test(stop.stopNameRAW))
+              acc.push(
+                `<span style='color:${stop.confirmed ? 'springgreen' : 'lightgray'}'>${
+                  stop.stopName
+                }</span>`
+              );
+            return acc;
+          }, [])
+          .join(' > ') || '-'
+      );
     },
 
     currentDistance(stops: TrainStop[]) {
