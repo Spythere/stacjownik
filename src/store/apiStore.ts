@@ -3,7 +3,6 @@ import { API } from '../typings/api';
 import { Status } from '../typings/common';
 import { StationJSONData } from './typings';
 import { HttpClient } from '../http';
-import { getRandomDurationFromRange } from './utils';
 
 let baseURL = 'https://stacjownik.spythere.eu';
 
