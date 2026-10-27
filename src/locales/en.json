@@ -442,13 +442,13 @@
     "button-show": "DRIVER'S HELPER",
     "number-info": "will be automatically updated to the current train number chosen in the simulator after the analysis is sent in the chat.",
 
-    "stock-copy": "COPY CURRENT STOCK",
+    "stock-copy": "COPY ROLLING STOCK",
     "stock-clipboard-success": "Successfully copied the railway stock in a text form to your clipboard:",
     "stock-clipboard-failure": "Oops! Something happened and the railway stock couldn't be copied to your clipboard! :/",
 
     "number-copy": "COPY RANDOM NUMBER",
     "cargo-copy": "COPY CARGO WARNINGS",
-    "number-clipboard-success": "Successfully copied the number in a text form to your clipboard:",
+    "number-clipboard-success": "Successfully copied the number to your clipboard:",
     "number-clipboard-failure": "Oops! Something happened and the number couldn't be copied to your clipboard! :/",
 
     "propositions": {
