@@ -167,6 +167,7 @@ export namespace API {
       signal: string;
       distance: number;
       connectedTrack: string;
+      insulatedCircuit: string;
 
       driverName: string;
       driverId: number;

@@ -37,7 +37,33 @@ export default defineComponent({
 
       if (train.distance) positionString += `(${this.displayDistance(train.distance)})`;
 
+      if (train.insulatedCircuit)
+        positionString += ' ' + this.$t('trains.current-circuit') + ' ' + train.insulatedCircuit;
+
       return positionString.charAt(0).toUpperCase() + positionString.slice(1);
+    },
+
+    displayTrainPositionHTML(train: Train) {
+      let positionString = this.$t('trains.current-scenery');
+
+      if (train.currentStationHash) {
+        positionString += ` <b>${train.currentStationName}</b>`;
+      } else {
+        positionString += ` <b>${train.currentStationName.replace(/.[a-zA-Z0-9]+.sc/, '')} (offline)</b>`;
+      }
+
+      if (train.signal)
+        positionString += ` &bull; ${this.$t('trains.current-signal')} <b>${train.signal}</b>`;
+
+      if (train.connectedTrack)
+        positionString += ` &bull; ${this.$t('trains.current-track')} <b>${train.connectedTrack}</b>`;
+
+      if (train.distance) positionString += ` (${this.displayDistance(train.distance)})`;
+
+      if (train.insulatedCircuit)
+        positionString += ` &bull; ${this.$t('trains.current-circuit')} <b>${train.insulatedCircuit}</b>`;
+
+      return positionString;
     },
 
     getTrainStopsHtml(stops: TrainStop[]): string {

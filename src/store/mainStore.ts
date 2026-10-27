@@ -53,7 +53,7 @@ export const useMainStore = defineStore('mainStore', {
 
       const dateNow = new Date();
 
-      const x = (apiStore.activeData?.trains ?? [])
+      return (apiStore.activeData?.trains ?? [])
         .filter(
           (train) =>
             train.timetable || train.lastSeen >= dateNow.getTime() - 60000 || train.online == 1
@@ -83,6 +83,7 @@ export const useMainStore = defineStore('mainStore', {
             currentStationName: train.currentStationName,
             currentStationHash: train.currentStationHash,
             connectedTrack: train.connectedTrack,
+            insulatedCircuit: train.insulatedCircuit,
             stockList: stock,
             locoType,
 
@@ -207,8 +208,6 @@ export const useMainStore = defineStore('mainStore', {
 
           return trainObj;
         });
-
-      return x;
     },
 
     // computed active sceneries

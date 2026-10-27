@@ -164,9 +164,11 @@
       </div>
     </div>
 
-    <div class="text--grayed" style="margin-top: 0.25em">
-      {{ displayTrainPosition(train) }}
-    </div>
+    <div
+      class="text--grayed"
+      style="margin-top: 0.25em"
+      v-html="displayTrainPositionHTML(train)"
+    ></div>
 
     <div
       class="train-dangers"

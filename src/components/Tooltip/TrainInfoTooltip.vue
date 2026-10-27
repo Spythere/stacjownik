@@ -23,10 +23,13 @@
       </div>
 
       <div class="text--grayed">
-        {{ displayTrainPosition(trainInfo) }} - {{ trainInfo.speed }}km/h
+        <span v-html="displayTrainPositionHTML(trainInfo)"></span>
+        <span>
+          &bull; {{ $t('trains.current-speed') }} <b>{{ trainInfo.speed }}km/h</b>
+        </span>
         <span v-if="!trainInfo.online" style="color: salmon">
-          - offline {{ lastSeenMessage(trainInfo.lastSeen) }}</span
-        >
+          &bull; offline {{ lastSeenMessage(trainInfo.lastSeen) }}
+        </span>
       </div>
 
       <div></div>
