@@ -18,6 +18,10 @@ switch (import.meta.env.VITE_API_MODE) {
     break;
 }
 
+const ACTIVE_DATA_REFRESH_MS = 25000; // 25s
+const STATIC_DATA_REFRESH_MS = 600000; // 600s = 10min
+const STATIC_DATA_INIT_MS = 2000; // 2s
+
 export const useApiStore = defineStore('apiStore', {
   state: () => ({
     dataStatuses: {
@@ -36,8 +40,8 @@ export const useApiStore = defineStore('apiStore', {
 
     dailyStatsData: null as API.DailyStats.Response | null,
 
-    nextUpdateTime: 0,
-    nextDataCheckTime: 0,
+    nextActiveDataCheckTime: 0,
+    nextStaticDataCheckTime: 0,
 
     client: new HttpClient(baseURL),
 
@@ -55,22 +59,19 @@ export const useApiStore = defineStore('apiStore', {
 
     async updateTick(t: number) {
       // Static data refresh
-      if (t >= this.nextDataCheckTime) {
+      if (t >= this.nextStaticDataCheckTime) {
         this.fetchStationsGeneralInfo();
         this.fetchVehiclesInfo();
         this.fetchDonatorsData();
 
-        if (this.nextDataCheckTime == 0) {
-          this.nextDataCheckTime = t + getRandomDurationFromRange(2000, 2500);
-        } else {
-          this.nextDataCheckTime = t + getRandomDurationFromRange(600000, 720000);
-        }
+        this.nextStaticDataCheckTime =
+          t + (this.nextStaticDataCheckTime == 0 ? STATIC_DATA_INIT_MS : STATIC_DATA_REFRESH_MS);
       }
 
       // Active data fefresh
-      if (t >= this.nextUpdateTime) {
+      if (t >= this.nextActiveDataCheckTime) {
         this.fetchActiveData();
-        this.nextUpdateTime = t + 16000;
+        this.nextActiveDataCheckTime = t + ACTIVE_DATA_REFRESH_MS;
       }
 
       window.requestAnimationFrame(this.updateTick);
