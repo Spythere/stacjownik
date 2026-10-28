@@ -206,9 +206,13 @@ export default defineComponent({
       if (typeof massSpeeds === 'number') return massSpeeds;
 
       // Record type for passenger or cargo, find the closest range
-      const massKey = Object.keys(massSpeeds).findLast((massKey) => trainMass >= Number(massKey));
 
-      const massMaxSpeed = massKey ? massSpeeds[massKey] : Infinity;
+      let largestMassKey: string | null = null;
+      for (let massSpeedKey in massSpeeds) {
+        if (trainMass >= Number(massSpeedKey)) largestMassKey = massSpeedKey;
+      }
+
+      const massMaxSpeed = largestMassKey ? massSpeeds[largestMassKey] : Infinity;
 
       return Math.min(massMaxSpeed, vehicleMaxSpeed);
     }
