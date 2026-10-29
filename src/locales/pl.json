@@ -447,6 +447,9 @@
     "number-clipboard-success": "Pomyślnie skopiowano do schowka numer:",
     "number-clipboard-failure": "Ups! Nie udało się skopiować numeru do schowka! :/",
 
+    "speed-proposition": "Proponowana prędkość na podstawie pojazdów w składzie i ich masy:",
+    "speed-disclaimer": "Wartość może odbiegać od prawidłowej prędkości wyliczonej na podstawie wszystkich czynników wpływających na procent masy hamującej.",
+
     "propositions": {
       "title": "Propozycje numerów:",
       "header": "Wygeneruj propozycje numerów dla pociągu wybranej kategorii:",

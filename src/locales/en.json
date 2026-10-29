@@ -451,6 +451,9 @@
     "number-clipboard-success": "Successfully copied the number to your clipboard:",
     "number-clipboard-failure": "Oops! Something happened and the number couldn't be copied to your clipboard! :/",
 
+    "speed-proposition": "Recommended speed based on vehicles in the rolling stock and their mass",
+    "speed-disclaimer": "The calculated value may differ from the actual speed based on all factors affecting the braked weight percentage.",
+
     "propositions": {
       "title": "Number propositions:",
       "header": "Generate number examples for the chosen train category:",
