@@ -1,5 +1,8 @@
 <template>
   <div class="filter-slider-container">
+    <div class="slider-track" @click="moveCloserSliderToMousePos" ref="track"></div>
+    <div class="slider-range" @click="moveCloserSliderToMousePos" ref="range"></div>
+
     <input
       class="slider"
       v-for="slider in sliderGroupsOptions[sliderGroup]"
@@ -11,16 +14,16 @@
       :step="slider.step"
       v-model="filters[slider.id]"
     />
-
-    <div class="slider-track" @click="moveCloserSliderToMousePos"></div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { inject, PropType } from 'vue';
+import { inject, nextTick, PropType, useTemplateRef, watchEffect } from 'vue';
 import { SliderGroup, sliderGroupsOptions } from '../../managers/stationFilterManager';
 
 const filters = inject('StationsView_filters') as Record<string, any>;
+const rangeRef = useTemplateRef('range');
+const trackRef = useTemplateRef('track');
 
 const props = defineProps({
   sliderGroup: {
@@ -29,12 +32,34 @@ const props = defineProps({
   }
 });
 
+watchEffect(() => {
+  updateRangeSlider();
+});
+
+function updateRangeSlider() {
+  const sliderInfo = sliderGroupsOptions[props.sliderGroup][0];
+
+  const minSliderValue = filters[sliderGroupsOptions[props.sliderGroup][0].id];
+  const maxSliderValue = filters[sliderGroupsOptions[props.sliderGroup][1].id];
+
+  const percentMin =
+    ((minSliderValue - sliderInfo.minRange) / (sliderInfo.maxRange - sliderInfo.minRange)) * 100;
+
+  const percentMax =
+    ((maxSliderValue - sliderInfo.minRange) / (sliderInfo.maxRange - sliderInfo.minRange)) * 100;
+
+  if (rangeRef.value) {
+    rangeRef.value.style.left = `${percentMin}%`;
+    rangeRef.value.style.width = `${percentMax - percentMin}%`;
+  }
+}
+
 // Change slider value that's the closest one to the mouse position on the slider track click
 function moveCloserSliderToMousePos(e: MouseEvent) {
-  const { clientX, target } = e;
+  const { clientX } = e;
   const { minRange, maxRange, step } = sliderGroupsOptions[props.sliderGroup][0];
 
-  const boundingRect = (target as HTMLElement).getBoundingClientRect();
+  const boundingRect = trackRef.value!.getBoundingClientRect();
   const mouseX = clientX - boundingRect.left;
 
   const leftSliderValue = filters[sliderGroupsOptions[props.sliderGroup][0].id];
@@ -57,27 +82,33 @@ function moveCloserSliderToMousePos(e: MouseEvent) {
 
 .filter-slider-container {
   position: relative;
-  padding: 0.5em;
-  height: 1.25em;
+  height: 2em;
+}
+
+.slider-track,
+.slider-range {
+  position: absolute;
+  height: 0.5em;
+  top: 0.75em;
+  border-radius: 0.5em;
 }
 
 .slider-track {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-
-  border-radius: 1em;
-  z-index: 10;
-
   cursor: pointer;
   background-color: #444;
   transition: background-color 0.2s;
 
+  z-index: 10;
+  width: 100%;
+
   &:hover {
     background-color: #4d4d4d;
   }
+}
+
+.slider-range {
+  z-index: 20;
+  background: var(--clr-primary);
 }
 
 .slider {
@@ -103,6 +134,10 @@ function moveCloserSliderToMousePos(e: MouseEvent) {
 
   &:hover ~ .slider-track {
     background-color: #4d4d4d;
+  }
+
+  &:hover ~ .slider-range {
+    background-color: #598eff;
   }
 
   &:focus-visible {
@@ -133,9 +168,6 @@ function moveCloserSliderToMousePos(e: MouseEvent) {
     pointer-events: all;
   }
 
-  // &:first-child::-webkit-slider-runnable-track {
-  // }
-
   &::-moz-range-track {
     position: relative;
     z-index: -1;
@@ -146,9 +178,5 @@ function moveCloserSliderToMousePos(e: MouseEvent) {
     background: none;
     border-radius: 1em;
   }
-
-  // &:first-child::-moz-range-track {
-  //   background: var(--clr-primary);
-  // }
 }
 </style>
