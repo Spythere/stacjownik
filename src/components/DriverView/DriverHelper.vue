@@ -1,7 +1,10 @@
 <template>
   <div class="helper-box">
     <div class="helper-propositions">
-      <h3>{{ t('helper.propositions.header') }}</h3>
+      <h3 class="helper-header">
+        <LightbulbIcon :size="25" />
+        {{ t('helper.propositions.header') }}
+      </h3>
 
       <div class="categories-select">
         <button
@@ -46,10 +49,31 @@
 
       <div class="no-propositions" v-else>{{ t('helper.propositions.empty') }}</div>
 
-      <div class="cargo-warnings" v-if="Object.values(cargoWarnings).length > 0">
-        <hr class="divider" />
+      <div class="divider"></div>
 
-        <h3>{{ t('helper.warnings-title') }}</h3>
+      <div class="train-speed">
+        <div>
+          <GaugeIcon :size="20" />
+          <b>
+            {{ t('helper.speed-proposition') }}
+            <span
+              class="text--primary"
+              data-tooltip-type="BaseTooltip"
+              :data-tooltip-content="t('helper.speed-disclaimer')"
+            >
+              {{ getTrainSpeedLimit(chosenTrain) }}km/h*
+            </span>
+          </b>
+        </div>
+      </div>
+
+      <div class="cargo-warnings" v-if="Object.values(cargoWarnings).length > 0">
+        <div class="divider"></div>
+
+        <h3 class="helper-header">
+          <TriangleAlertIcon :size="25" />
+          {{ t('helper.warnings-title') }}
+        </h3>
 
         <div class="warnings-container">
           <div
@@ -61,12 +85,9 @@
           </div>
         </div>
       </div>
-
-      <div class="cargo-warnings no-warnings" v-else>
-        <hr class="divider" />
-        {{ t('helper.no-warnings') }}
-      </div>
     </div>
+
+    <div class="divider"></div>
 
     <div class="analysis-actions">
       <button class="btn btn--action" @click="copyStockToClipboard()">
@@ -87,6 +108,8 @@ import { Train } from '../../typings/common';
 import rulesJSON from '../../data/trainNumberRules.json';
 import { useApiStore } from '../../store/apiStore';
 import { helper } from '../../locales/pl.json';
+import { getTrainSpeedLimit } from '../../composables/stock';
+import { GaugeIcon, LightbulbIcon, TriangleAlertIcon } from '@lucide/vue';
 
 type CargoWarningsKey = keyof typeof helper.warnings;
 
@@ -321,15 +344,23 @@ function copyNumberToClipboard() {
 @use '../../styles/responsive';
 @use '../../styles/badge';
 
-hr.divider {
+.divider {
+  height: 2px;
+  width: 100%;
+  background-color: #aaa;
   margin: 0.5em 0;
-  border-top: #111;
 }
 
 .helper-box {
   padding: 0.5em;
   margin-bottom: 1em;
   background-color: #111;
+}
+
+.helper-header {
+  display: flex;
+  align-items: center;
+  gap: 0.25em;
 }
 
 .categories-select {
@@ -361,6 +392,12 @@ hr.divider {
   color: #ccc;
 }
 
+.train-speed > div {
+  display: flex;
+  align-items: center;
+  gap: 0.25em;
+}
+
 .warnings-container {
   display: flex;
   flex-wrap: wrap;
@@ -368,16 +405,14 @@ hr.divider {
   margin-top: 0.5em;
 }
 
+.no-warnings {
+  color: #ccc;
+}
+
 .analysis-actions {
   display: flex;
   gap: 0.5em;
   flex-wrap: wrap;
-
-  margin-top: 1em;
-}
-
-.no-warnings {
-  color: #ccc;
 }
 
 @include responsive.smallScreen {

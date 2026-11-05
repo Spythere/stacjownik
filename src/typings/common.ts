@@ -59,6 +59,7 @@ export interface Train {
   signal: string;
   distance: number;
   connectedTrack: string;
+  insulatedCircuit: string;
   driverId: number;
   driverLanguageId: number;
   trainNo: number;

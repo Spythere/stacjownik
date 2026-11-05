@@ -37,29 +37,57 @@ export default defineComponent({
 
       if (train.distance) positionString += `(${this.displayDistance(train.distance)})`;
 
+      if (train.insulatedCircuit)
+        positionString += ' ' + this.$t('trains.current-circuit') + ' ' + train.insulatedCircuit;
+
       return positionString.charAt(0).toUpperCase() + positionString.slice(1);
+    },
+
+    displayTrainPositionHTML(train: Train) {
+      let positionString = this.$t('trains.current-scenery');
+
+      if (train.currentStationHash) {
+        positionString += ` <b>${train.currentStationName}</b>`;
+      } else {
+        positionString += ` <b>${train.currentStationName.replace(/.[a-zA-Z0-9]+.sc/, '')} (offline)</b>`;
+      }
+
+      if (train.signal)
+        positionString += ` &bull; ${this.$t('trains.current-signal')} <b>${train.signal}</b>`;
+
+      if (train.connectedTrack)
+        positionString += ` &bull; ${this.$t('trains.current-track')} <b>${train.connectedTrack}</b>`;
+
+      if (train.distance) positionString += ` (${this.displayDistance(train.distance)})`;
+
+      if (train.insulatedCircuit)
+        positionString += ` &bull; ${this.$t('trains.current-circuit')} <b>${train.insulatedCircuit}</b>`;
+
+      return positionString;
     },
 
     getTrainStopsHtml(stops: TrainStop[]): string {
       if (!stops) return '';
 
-      return stops
-        .reduce((acc: string[], stop: TrainStop, i: number) => {
-          if (stop.stopType.includes('ph'))
-            acc.push(
-              `<strong style='color:${stop.confirmed ? 'springgreen' : 'white'}'>${
-                stop.stopName
-              }</strong>`
-            );
-          else if (i > 0 && i < stops.length - 1 && !/(, po$|sbl)/gi.test(stop.stopNameRAW))
-            acc.push(
-              `<span style='color:${stop.confirmed ? 'springgreen' : 'lightgray'}'>${
-                stop.stopName
-              }</span>`
-            );
-          return acc;
-        }, [])
-        .join(' > ');
+      return (
+        stops
+          .reduce((acc: string[], stop: TrainStop, i: number) => {
+            if (stop.stopType.includes('ph'))
+              acc.push(
+                `<strong style='color:${stop.confirmed ? 'springgreen' : 'white'}'>${
+                  stop.stopName
+                }</strong>`
+              );
+            else if (i > 0 && i < stops.length - 1 && !/(, po$|sbl)/gi.test(stop.stopNameRAW))
+              acc.push(
+                `<span style='color:${stop.confirmed ? 'springgreen' : 'lightgray'}'>${
+                  stop.stopName
+                }</span>`
+              );
+            return acc;
+          }, [])
+          .join(' > ') || '-'
+      );
     },
 
     currentDistance(stops: TrainStop[]) {
@@ -178,9 +206,13 @@ export default defineComponent({
       if (typeof massSpeeds === 'number') return massSpeeds;
 
       // Record type for passenger or cargo, find the closest range
-      const massKey = Object.keys(massSpeeds).findLast((massKey) => trainMass >= Number(massKey));
 
-      const massMaxSpeed = massKey ? massSpeeds[massKey] : Infinity;
+      let largestMassKey: string | null = null;
+      for (let massSpeedKey in massSpeeds) {
+        if (trainMass >= Number(massSpeedKey)) largestMassKey = massSpeedKey;
+      }
+
+      const massMaxSpeed = largestMassKey ? massSpeeds[largestMassKey] : Infinity;
 
       return Math.min(massMaxSpeed, vehicleMaxSpeed);
     }

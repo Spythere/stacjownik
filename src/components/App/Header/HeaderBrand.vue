@@ -1,17 +1,13 @@
 <template>
   <div class="header-brand">
     <router-link to="/" v-if="!isChristmas">
-      <img
-        src="/images/stacjownik-header-logo.svg"
-        alt="Stacjownik logo (christmas)"
-        :width="imageWidth"
-      />
+      <img src="/images/stacjownik-header-logo.svg" alt="Stacjownik logo" :width="imageWidth" />
     </router-link>
 
     <router-link to="/" v-else>
       <img
         src="/images/stacjownik-header-logo-christmas.svg"
-        alt="Stacjownik logo"
+        alt="Stacjownik logo (christmas edition)"
         :width="imageWidth"
       />
     </router-link>
